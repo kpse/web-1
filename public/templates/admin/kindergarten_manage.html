@@ -57,6 +57,11 @@
           家园互动
         </a>
       </li>
+      <li class="action" ng-class="{active : kg.isSelected('assignment')}">
+        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/assignment" class="btn btn-danger">
+          亲子作业
+        </a>
+      </li>
       <li class="action">
         <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/class-bulletin" class="btn btn-warning">
           班级通知设置

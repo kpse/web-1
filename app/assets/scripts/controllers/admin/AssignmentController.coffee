@@ -1,12 +1,12 @@
 'use strict'
 
 angular.module('kulebaoAdmin')
-.controller 'ConversationsListCtrl',
+.controller 'AssignmentListCtrl',
     [ '$scope', '$rootScope', '$stateParams',
       'schoolService', 'classService', '$location'
       (scope, rootScope, stateParams, School, Class, location) ->
-        rootScope.tabName = 'conversation'
-        scope.heading = '联系家长'
+        rootScope.tabName = 'assignment'
+        scope.heading = '按班级布置作业'
 
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query ->
@@ -18,29 +18,28 @@ angular.module('kulebaoAdmin')
     ]
 
 angular.module('kulebaoAdmin')
-.controller 'ConversationsInClassCtrl',
+.controller 'AssignmentsInClassCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', 'classService', 'parentService', 'conversationService'
-      (scope, rootScope, stateParams, location, School, Class, Parent, Chat) ->
+      '$location', 'schoolService', 'classService', 'assignmentService',
+      (scope, rootScope, stateParams, location, School, Class, Assignment) ->
 
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query()
-          scope.parents = Parent.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query ->
-            _.forEach scope.parents, (p) ->
-              p.messages = Chat.bind(school_id: stateParams.kindergarten, phone: p.phone, most: 1, sort: 'desc').query ->
-                 p.lastMessage = p.messages[0]
+          scope.kindergarten.classes = Class.bind(school_id: scope.kindergarten.school_id).query ->
+            scope.assignments = Assignment.bind(school_id: scope.kindergarten.school_id, class_id: stateParams.class_id).query ->
+              _.forEach scope.assignments, (a) ->
+                a.class_name = (_.find scope.kindergarten.classes, (c) -> c.class_id == a.class_id).name
 
         scope.goDetail = (parent) ->
           if (location.path().indexOf('/list') > 0 )
-            location.path location.path().replace(/\/list$/, '/parent/' + parent.phone)
+            location.path location.path().replace(/\/list$/, '/a/' + parent.phone)
           else
-            location.path location.path().replace(/\/parent\/\d+$/, '') + '/parent/' + parent.phone
+            location.path location.path().replace(/\/parent\/\d+$/, '') + '/a/' + parent.phone
 
 
     ]
 
 angular.module('kulebaoAdmin')
-.controller 'ConversationCtrl',
+.controller 'AssignmentCtrl',
     [ '$scope', '$rootScope', '$stateParams',
       '$location', 'schoolService', '$http', 'classService', 'conversationService', 'parentService'
       (scope, rootScope, stateParams, location, School, $http, Class, Message, Parent) ->
