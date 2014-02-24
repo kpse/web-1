@@ -15,6 +15,6 @@ object DailyLogController extends Controller {
   def newerThan(to: Option[Long]): CheckNotificationFilter = (n: CheckNotification) => to.forall(n.timestamp < _)
 
   def index(kg: Long, parentId: String, childId: String, from: Option[Long], to: Option[Long], most: Option[Int]) = Action {
-    Ok(Json.toJson(DailyLog.all(kg, parentId, childId).filter(olderThan(from)).filter(newerThan(to)).take(most.getOrElse(25))))
+    Ok(Json.toJson(DailyLog.all(kg, parentId, childId, from, to).take(most.getOrElse(25))))
   }
 }
