@@ -1,31 +1,26 @@
 package models.helper
 
 object RangerHelper {
-  def generateFrom(from: Option[Long]) = {
+  def generateFrom(from: Option[Long], field: Option[String]) = {
     from map {
       f =>
-        " and uid > {from}"
+        " and %s > {from}".format(field.getOrElse("uid"))
     }
   }
 
-  def generateTo(to: Option[Long]) = {
+  def generateTo(to: Option[Long], field: Option[String]) = {
     to map {
       t =>
-        " and uid < {to}"
-    }
-  }
-
-  def generateSort(from: Option[Long], to: Option[Long]) = {
-    (from, to) match {
-      case (Some(f), None) =>
-        "asc"
-      case _ =>
-        "desc"
+        " and %s < {to}".format(field.getOrElse("uid"))
     }
   }
 
   def rangerQuery(from: Option[Long], to: Option[Long]) = {
-    " " + generateFrom(from).getOrElse("") + generateTo(to).getOrElse("") + " order by uid " + generateSort(from, to)
+    rangerQueryWithField(from, to, None)
+  }
+
+  def rangerQueryWithField(from: Option[Long], to: Option[Long], field: Option[String]) = {
+    " " + generateFrom(from, field).getOrElse("") + generateTo(to, field).getOrElse("") + " order by " + field.getOrElse("uid") + " DESC"
   }
 
 }

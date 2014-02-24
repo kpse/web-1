@@ -9,13 +9,8 @@ import play.api.data.Forms._
 object NewsController extends Controller {
   implicit val writes = Json.writes[News]
 
-  type NewsFilter = (News) => Boolean
-
-  def olderThan(from: Option[Long]): NewsFilter = (n: News) => from.forall(n.news_id > _)
-  def newerThan(to: Option[Long]): NewsFilter = (n: News) => to.forall(n.news_id < _)
-
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = Action {
-    val jsons = News.allSortById(kg).filter(olderThan(from)).filter(newerThan(to)).take(most.getOrElse(25))
+    val jsons = News.allSortById(kg, from, to).take(most.getOrElse(25))
     Ok(Json.toJson(jsons))
   }
 

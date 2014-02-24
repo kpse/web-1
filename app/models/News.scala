@@ -5,6 +5,7 @@ import anorm._
 import play.api.db.DB
 import anorm.~
 import play.api.Play.current
+import models.helper.RangerHelper.rangerQuery
 
 case class News(news_id: Long, school_id: Long, title: String, content: String, timestamp: Long, published: Boolean, notice_type: Int)
 
@@ -74,10 +75,14 @@ object News {
         .as(simple *)
   }
 
-  def allSortById(kg: Long): List[News] = DB.withConnection {
+  def allSortById(kg: Long, from: Option[Long], to: Option[Long]): List[News] = DB.withConnection {
     implicit c =>
-      SQL(allNewsSql + " order by uid DESC")
-        .on('kg -> kg.toString)
+      SQL(allNewsSql + rangerQuery(from, to))
+        .on(
+          'kg -> kg.toString,
+          'from -> from,
+          'to -> to
+        )
         .as(simple *)
   }
 

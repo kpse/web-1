@@ -7,6 +7,7 @@ import anorm.~
 import models.json_models.CheckNotification
 import models.json_models.CheckInfo
 import play.api.Play.current
+import models.helper.RangerHelper.rangerQueryWithField
 
 object DailyLog {
   val simple = {
@@ -20,12 +21,14 @@ object DailyLog {
     }
   }
 
-  def all(kg: Long, parentId: String, childId: String) = DB.withConnection {
+  def all(kg: Long, parentId: String, childId: String, from: Option[Long], to: Option[Long]) = DB.withConnection {
     implicit c =>
-      SQL("select * from dailylog where child_id={child_id} and school_id={school_id} order by check_at DESC")
+      SQL("select * from dailylog where child_id={child_id} and school_id={school_id} " + rangerQueryWithField(from, to, Some("check_at")))
         .on(
           'child_id -> childId,
-          'school_id -> kg.toString
+          'school_id -> kg.toString,
+          'from -> from,
+          'to -> to
         ).as(simple *)
   }
 

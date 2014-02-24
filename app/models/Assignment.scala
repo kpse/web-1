@@ -5,7 +5,7 @@ import anorm._
 import play.api.Play.current
 import anorm.SqlParser._
 import play.Logger
-import models.helper.RangerHelper._
+import models.helper.RangerHelper.rangerQuery
 
 case class Assignment(id: Long, timestamp: Long, title: String, content: String, publisher: String, icon_url: String, class_id: Int)
 
