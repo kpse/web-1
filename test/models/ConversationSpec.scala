@@ -23,8 +23,8 @@ class ConversationSpec extends Specification with TestSupport {
 
       index.size must equalTo(2)
       index(0).phone must equalTo("13408654680")
-      index(0).id must equalTo(Some(2))
-      index(0).id must lessThan(index(1).id)
+      index(0).id must equalTo(Some(3))
+      index(0).id must greaterThan(index(1).id)
 
     }
 

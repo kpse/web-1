@@ -559,7 +559,7 @@ CREATE TABLE conversation (
   content   TEXT COLLATE utf8_bin NOT NULL DEFAULT '',
   image TEXT DEFAULT '',
   sender VARCHAR(20) COLLATE utf8_bin NOT NULL DEFAULT '',
-  timestamp BIGINT(20) NOT NULL DEFAULT 0,
+  `timestamp` BIGINT(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (uid)
 )
   ENGINE =InnoDB
@@ -572,6 +572,28 @@ VALUES
   ('93740362', '13408654680', '老师你好。', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '', 12312313123),
   ('93740362', '13408654680', '家长你好。', 'http://suoqin-test.u.qiniudn.com/Fget0Tx492DJofAy-ZeUg1SANJ4X', '老师A', 12313313123),
   ('93740362', '13408654680', '老师再见。', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '', 12314313123);
+
+CREATE TABLE assignment (
+  uid         INT(11)          NOT NULL AUTO_INCREMENT,
+  school_id   VARCHAR(20) NOT NULL,
+  class_id int(11) NOT NULL,
+  title   VARCHAR(20) COLLATE utf8_bin NOT NULL DEFAULT '',
+  content   TEXT COLLATE utf8_bin NOT NULL,
+  image TEXT DEFAULT '',
+  publisher VARCHAR(20) COLLATE utf8_bin NOT NULL DEFAULT '',
+  `timestamp` BIGINT(20) NOT NULL DEFAULT 0,
+  PRIMARY KEY (uid)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  COLLATE =utf8_bin
+  AUTO_INCREMENT =2;
+
+INSERT INTO assignment (school_id, class_id, title, content, image, publisher, `timestamp`)
+VALUES
+  ('93740362', 777888, '老师你好。', '今天的作业是写生。', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '马老师', 12312313123),
+  ('93740362', 777888, '家长你好。', '今天的作业是吃饭。',  'http://suoqin-test.u.qiniudn.com/Fget0Tx492DJofAy-ZeUg1SANJ4X', '朱老师', 12313313123),
+  ('93740362', 777666, '老师再见。', '今天请带一只小兔子回家。', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '杨老师', 12314313123);
 
 
 
