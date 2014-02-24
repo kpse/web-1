@@ -13,7 +13,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="c in conversations | filter: searchText" class="row">
+  <tr ng-repeat="c in conversations | filter: searchText | orderBy:'id':true " class="row">
     <td class=".col-xs-2">{{c.sender || '家长'}}</td>
     <td class=".col-xs-7">{{c.content}}</td>
     <td class=".col-xs-3">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm:ss'}}收到</td>
