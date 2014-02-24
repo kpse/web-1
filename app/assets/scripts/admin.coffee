@@ -63,7 +63,7 @@ class Config
         controller: 'RelationshipCtrl'
     .state 'kindergarten.conversation',
         url: '/conversation',
-        templateUrl: 'templates/admin/all_conversations.html',
+        templateUrl: 'templates/admin/search_panel.html',
         controller: 'ConversationsListCtrl'
     .state 'kindergarten.conversation.class',
         url: '/class/:class_id',
@@ -77,6 +77,19 @@ class Config
         url: '/card/:card',
         templateUrl: 'templates/admin/conversation.html',
         controller: 'ConversationCtrl'
+    .state 'kindergarten.assignment',
+        url: '/assignment',
+        templateUrl: 'templates/admin/search_panel.html',
+        controller: 'AssignmentListCtrl'
+    .state 'kindergarten.assignment.class',
+        url: '/class/:class_id',
+        templateUrl: 'templates/admin/classes.html',
+        controller: 'AssignmentsInClassCtrl'
+    .state 'kindergarten.assignment.class.list',
+        url: '/list',
+        templateUrl: 'templates/admin/assignment_in_class.html',
+        controller: 'AssignmentsInClassCtrl'
+
     .state('kindergarten.wip',
         url: '/wip',
         template: '<div>Sorry, we are still in Building...</div><image class="img-responsive" src="assets/images/wip.gif"></image>',
