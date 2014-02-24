@@ -2,9 +2,6 @@ package models.json_models
 
 import org.specs2.mutable.Specification
 import helper.TestSupport
-import play.api.test.Helpers._
-import play.api.test.FakeRequest
-import play.api.libs.json.{Json, JsValue}
 
 class SchoolIntroSpec extends Specification with TestSupport {
 
