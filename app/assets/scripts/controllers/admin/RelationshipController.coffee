@@ -18,7 +18,9 @@ angular.module('kulebaoAdmin')
         scope.relationship = scope.relationships[0]
 
         scope.$on 'refreshRelationship', ->
-          scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query()
+          scope.loading = true
+          scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
+            scope.loading = false
 
         scope.newParent = ->
           scope.currentModal = Modal scope: scope, contentTemplate: 'templates/admin/add_adult.html'
@@ -166,6 +168,7 @@ angular.module('kulebaoAdmin')
      'relationshipService', '$modal', 'childService', '$http', 'uploadService',
       (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, modal, Child, $http, uploadService) ->
         rootScope.tabName = 'relationship'
+        scope.loading = true
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.bind({school_id: stateParams.kindergarten}).query ->
             if rootScope.editingChild is undefined
@@ -181,7 +184,8 @@ angular.module('kulebaoAdmin')
               scope.child = Child.bind(school_id: stateParams.kindergarten, child_id: rootScope.editingChild.child_id).get ->
                 delete rootScope.editingChild
 
-        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query()
+        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
+          scope.loading = false
 
         scope.create = (child) ->
           child.$save ->
