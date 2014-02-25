@@ -31,7 +31,5 @@ object ConversationController extends Controller {
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
-
-
   }
 }

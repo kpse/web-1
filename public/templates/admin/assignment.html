@@ -1,0 +1,31 @@
+<div class="loading" ng-show="loading"/>
+<div class="panel panel-default" ng-controller="AssignmentCtrl">
+  <form class="form-horizontal" role="form" name="assignmentForm">
+    <div class="panel-heading">
+      <label for="title" class="control-label">作业标题</label>
+      <input id="title" name="title" ng-model="assignment.title" class="form-control" ng-maxlength="15"
+             placeholder="添加标题" required/>
+      <span class="error-field"
+            ng-show="assignmentForm.title.$dirty && assignmentForm.title.$error.required">请填写标题</span>
+      <span class="error-field" ng-show="assignmentForm.title.$dirty && assignmentForm.title.$error.maxlength">标题请不要超过15个字符</span>
+    </div>
+    <div class="panel-body">
+      <label for="content" class="control-label">作业内容</label>
+      <br/>
+      <small ng-show="assignment.content.length >= 0">还可以输入{{ 500 - news.content.length}}个字</small>
+      <span class="error-field" ng-show="assignmentForm.content.$dirty && assignmentForm.content.$error.required">请填写正文内容</span>
+      <span class="error-field" ng-show="assignmentForm.content.$dirty && assignmentForm.content.$error.maxlength">正文内容请不要超过500个字符</span>
+      <textarea id="content" name="content" ng-model="assignment.content" class="editing-content" ng-maxlength="500"
+                placeholder="添加内容" required/>
+
+    </div>
+    <div class="panel-footer">
+      <div class="issue-date">于{{assignment.timestamp | date:'yyyy年MM月dd日 HH:mm:ss'}}发布</div>
+      <div class="btn-group">
+        <button class="btn btn-default" ng-click="$hide()">取消</button>
+        <button class="btn btn-info" ng-disabled="assignmentForm.$invalid" ng-click="save(assignment)">保存</button>
+      </div>
+    </div>
+  </form>
+</div>
+</form>

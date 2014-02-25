@@ -1,10 +1,10 @@
 'use strict'
 
 assignmentService = ($resource) ->
-  $resource '/kindergarten/:school_id/assignment/:assignment_id',
+  $resource '/kindergarten/:school_id/assignment/:id',
     {
       school_id: '@school_id'
-      assignment_id: '@assignment_id'
+      id: '@id'
     }
 
 angular.module('kulebaoAdmin')

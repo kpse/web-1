@@ -19,44 +19,45 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'AssignmentsInClassCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', 'classService', 'assignmentService',
-      (scope, rootScope, stateParams, location, School, Class, Assignment) ->
+      '$location', 'schoolService', 'classService', 'assignmentService', '$modal',
+      (scope, rootScope, stateParams, location, School, Class, Assignment, Modal) ->
+        scope.current_class = parseInt(stateParams.class_id)
 
         scope.current_class = parseInt(stateParams.class_id)
 
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.bind(school_id: scope.kindergarten.school_id).query ->
-            scope.assignments = Assignment.bind(school_id: scope.kindergarten.school_id, class_id: stateParams.class_id).query ->
-              _.forEach scope.assignments, (a) ->
-                a.class_name = (_.find scope.kindergarten.classes, (c) -> c.class_id == a.class_id).name
+            scope.refresh()
 
-        scope.goDetail = (parent) ->
-          if (location.path().indexOf('/list') > 0 )
-            location.path location.path().replace(/\/list$/, '/a/' + parent.phone)
-          else
-            location.path location.path().replace(/\/parent\/\d+$/, '') + '/a/' + parent.phone
+        scope.refresh = ->
+          scope.assignments = Assignment.bind(school_id: scope.kindergarten.school_id, class_id: stateParams.class_id).query ->
+            _.forEach scope.assignments, (a) ->
+              a.class_name = (_.find scope.kindergarten.classes, (c) ->
+                c.class_id == a.class_id).name
+
+        scope.goDetail = (assignment) ->
+          rootScope.editingAssignment = angular.copy(assignment)
+          scope.currentModal = Modal
+            scope: scope
+            contentTemplate: 'templates/admin/assignment.html'
+
+        scope.$on 'refreshAssignments', ->
+          scope.refresh()
+
     ]
 
 angular.module('kulebaoAdmin')
 .controller 'AssignmentCtrl',
-    [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'parentService'
-      (scope, rootScope, stateParams, location, School, $http, Class, Message, Parent) ->
+    [ '$scope', '$rootScope',
+      (scope, rootScope) ->
+        if rootScope.editingAssignment isnt undefined
+          scope.assignment = rootScope.editingAssignment
+        else
+          scope.$hide()
 
-        scope.parent = Parent.bind(school_id: stateParams.kindergarten, parentId: stateParams.phone).get()
-        scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: stateParams.phone, sort: 'desc').query()
-        scope.newInput = 'please add comments'
+        scope.save = (assignment) ->
+          assignment.$save ->
+            scope.$hide()
+            scope.$emit 'refreshAssignments'
 
-        scope.send = (msg) ->
-          return if msg is undefined || msg is ''
-          m = new Message
-            school_id: stateParams.kindergarten
-            phone: stateParams.phone
-            content: msg
-            image: ''
-            timestamp: 0
-            sender: '老师'
-          m.$save ->
-            scope.newInput = ''
-            scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: stateParams.phone, sort: 'desc').query()
     ]

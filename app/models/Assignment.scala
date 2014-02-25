@@ -11,6 +11,33 @@ case class Assignment(id: Long, timestamp: Long, title: String, content: String,
 
 object Assignment {
 
+  def findById(id: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select * from assignment where uid={id}").on('id -> id).as(simple singleOpt)
+  }
+
+  def update(kg: Long, assignmentId: Long, assignment: Assignment) = DB.withConnection {
+    implicit c =>
+      val time = System.currentTimeMillis()
+      SQL("update assignment set `timestamp`={time}, title={title}, content={content}, " +
+        "publisher={publisher}, image={url}, class_id={class_id}" +
+        " where school_id={kg} and uid={id}")
+        .on(
+          'kg -> kg.toString,
+          'id -> assignmentId,
+          'time -> time,
+          'title -> assignment.title,
+          'content -> assignment.content,
+          'url -> assignment.icon_url,
+          'publisher -> assignment.publisher,
+          'class_id -> assignment.class_id,
+          'kg -> kg.toString
+        ).executeUpdate()
+
+      findById(assignmentId)
+  }
+
+
   val simple = {
     get[Long]("uid") ~
       get[Long]("timestamp") ~
