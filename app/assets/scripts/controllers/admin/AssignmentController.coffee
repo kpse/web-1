@@ -14,7 +14,6 @@ angular.module('kulebaoAdmin')
 
         scope.navigateTo = (c) ->
           location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')
-
     ]
 
 angular.module('kulebaoAdmin')
@@ -22,6 +21,8 @@ angular.module('kulebaoAdmin')
     [ '$scope', '$rootScope', '$stateParams',
       '$location', 'schoolService', 'classService', 'assignmentService',
       (scope, rootScope, stateParams, location, School, Class, Assignment) ->
+
+        scope.current_class = parseInt(stateParams.class_id)
 
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.bind(school_id: scope.kindergarten.school_id).query ->
@@ -34,8 +35,6 @@ angular.module('kulebaoAdmin')
             location.path location.path().replace(/\/list$/, '/a/' + parent.phone)
           else
             location.path location.path().replace(/\/parent\/\d+$/, '') + '/a/' + parent.phone
-
-
     ]
 
 angular.module('kulebaoAdmin')

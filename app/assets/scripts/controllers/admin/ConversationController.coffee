@@ -20,8 +20,10 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'ConversationsInClassCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', 'classService', 'parentService', 'conversationService'
-      (scope, rootScope, stateParams, location, School, Class, Parent, Chat) ->
+      '$location', 'schoolService', 'classService', 'parentService', 'conversationService', 'relationshipService'
+      (scope, rootScope, stateParams, location, School, Class, Parent, Chat, Relationship) ->
+
+        scope.current_class = parseInt(stateParams.class_id)
 
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query()
@@ -43,8 +45,8 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'ConversationCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'parentService'
-      (scope, rootScope, stateParams, location, School, $http, Class, Message, Parent) ->
+      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService'
+      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship) ->
 
         scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get ->
           scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone, sort: 'desc').query()
