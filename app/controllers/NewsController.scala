@@ -27,7 +27,7 @@ object NewsController extends Controller {
       "school_id" -> longNumber,
       "title" -> text,
       "content" -> text,
-      "pushlished" -> boolean
+      "published" -> boolean
     )
   )
 

@@ -25,6 +25,10 @@ angular.module('kulebaoAdmin').controller 'AddNewsCtrl',
       scope.publish = (news) ->
         news.published = true
         news.$save ->
+          $rootScope.editingNews = news
           scope.$emit 'refreshNews'
 
+      scope.$on 'refreshNews', ->
+        scope.news = $rootScope.editingNews
+        delete $rootScope.editingNews
   ]
