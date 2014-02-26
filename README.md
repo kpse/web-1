@@ -1,14 +1,9 @@
 [![Build Status](https://travis-ci.org/kulebao/web.png?branch=master)](https://travis-ci.org/kulebao/web)
 
-Run ./build p before committing please
+Run ./build p for committing please
 
 todos:
-寻找合适的国内服务器
-和push服务结合
-老师管理页面框架
-园内公告
 班级通知
-每周食谱
 学习内容
 成长档案
 每日育情
@@ -23,5 +18,8 @@ done:
 heroku部署
 CI
 Codebase
-
-
+寻找合适的国内服务器
+和push服务结合
+园内公告
+每周食谱
+老师管理页面框架
