@@ -34,11 +34,6 @@
           园内公告设置
         </a>
       </li>
-      <li class="action" ng-class="{active : kg.isSelected('parents')}">
-        <a ng-click="goParents()" class="btn btn-warning">
-          家长联系方式管理
-        </a>
-      </li>
       <li class="action" ng-class="{active : kg.isSelected('intro')}">
         <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/intro" class="btn btn-primary">
           学校简介设置
@@ -82,6 +77,11 @@
       <li class="action">
         <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/baby-status" class="btn btn-success">
           每日育情设置
+        </a>
+      </li>
+      <li class="action" ng-class="{active : kg.isSelected('parents')}">
+        <a ng-click="goParents()" class="btn btn-warning">
+          家长联系方式管理
         </a>
       </li>
     </ul>

@@ -9,10 +9,6 @@ class Config
         url: '/bulletin',
         templateUrl: 'templates/admin/bulletin_manage.html',
         controller: 'BulletinManageCtrl'
-    .state 'kindergarten.news',
-        url: '/news/:news',
-        templateUrl: 'templates/admin/news_edit.html',
-        controller: 'NewsEditCtrl'
     .state 'kindergarten.parents',
         url: '/parents',
         templateUrl: 'templates/admin/parents.html',
