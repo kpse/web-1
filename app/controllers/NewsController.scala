@@ -56,7 +56,8 @@ object NewsController extends Controller {
     tuple(
       "school_id" -> longNumber,
       "title" -> text,
-      "content" -> text
+      "content" -> text,
+      "published" -> optional(boolean)
     )
   )
 

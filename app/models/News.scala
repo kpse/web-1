@@ -11,13 +11,14 @@ case class News(news_id: Long, school_id: Long, title: String, content: String, 
 
 
 object News {
-  def create(form: (Long, String, String)) = DB.withConnection {
+  def create(form: (Long, String, String, Option[Boolean])) = DB.withConnection {
     implicit c =>
-      val createdId: Option[Long] = SQL("insert into news (school_id, title, content, update_at) values ({kg}, {title}, {content}, {timestamp})")
+      val createdId: Option[Long] = SQL("insert into news (school_id, title, content, update_at, published) values ({kg}, {title}, {content}, {timestamp}, {published})")
         .on('content -> form._3,
           'kg -> form._1.toString,
           'title -> form._2,
-          'timestamp -> System.currentTimeMillis
+          'timestamp -> System.currentTimeMillis,
+          'published -> (if (form._4.getOrElse(false)) 1 else 0)
         ).executeInsert()
       findById(form._1, createdId.getOrElse(-1))
   }

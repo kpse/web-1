@@ -19,15 +19,9 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
         news.$save admin_id: scope.adminUser.id, ->
           scope.$emit 'refreshNews'
 
-
-      scope.hidden = (news) ->
-        news.published = false
-        news.$save(school_id: scope.kindergarten.school_id, news_id: news.news_id, admin_id: scope.adminUser.id)
-
       scope.deleteNews = (news) ->
-        news.$delete(school_id: scope.kindergarten.school_id, news_id: news.news_id, admin_id: scope.adminUser.id)
-        scope.newsletters = scope.newsletters.filter (x) ->
-          x != news
+        news.$delete admin_id: scope.adminUser.id, ->
+          scope.refresh()
 
       scope.createNews =  ->
         scope.currentModal = Modal
@@ -41,12 +35,10 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
           contentTemplate: 'templates/admin/add_news.html'
 
       scope.$on 'refreshNews', ->
-        scope.loading = true
-        scope.newsletters = adminNewsService.bind(school_id: scope.kindergarten.school_id, admin_id: scope.adminUser.id).query ->
-          scope.loading = false
+        scope.refresh()
 
       scope.refresh = ->
         scope.loading = true
-        scope.newsletters = adminNewsService.bind(school_id: scope.kindergarten.school_id, admin_id: scope.adminUser.id).query ->
+        scope.newsletters = adminNewsService.bind(school_id: $stateParams.kindergarten, admin_id: scope.adminUser.id).query ->
           scope.loading = false
   ]

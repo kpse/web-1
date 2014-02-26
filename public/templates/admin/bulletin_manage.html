@@ -15,8 +15,9 @@
         <a ng-click="edit(news)">
           <p class="list-group-item-text">{{news.content.substring(0,200)}}</p>
         </a>
-        <span class="published">{{news.published ? '已发布' : '未发布'}}</span>
+        <span ng-hide="news.published" class="published pull-right">未发布</span>
         <span ng-show="news.published" class="issue-date pull-right">于{{news.timestamp | date:'yyyy年MM月dd日 HH:mm:ss'}}发布</span>
+        <div class="clearfix"></div>
       </li>
       <p ng-show="!loading && newsletters.length == 0">您还没有创建任何通知，请点击<a ng-click="createNews()">这里</a>创建</p>
     </ul>
