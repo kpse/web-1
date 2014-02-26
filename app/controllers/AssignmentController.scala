@@ -22,4 +22,14 @@ object AssignmentController extends Controller {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
+
+  def create(kg: Long) = Action(parse.json) {
+    request =>
+      request.body.validate[Assignment].map {
+        case (assignment) =>
+          Ok(Json.toJson(Assignment.create(kg, assignment)))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
 }

@@ -2,9 +2,9 @@
 
 angular.module('kulebaoAdmin')
 .controller 'AssignmentListCtrl',
-    [ '$scope', '$rootScope', '$stateParams',
-      'schoolService', 'classService', '$location'
-      (scope, rootScope, stateParams, School, Class, location) ->
+    [ '$scope', '$rootScope', '$stateParams', 'schoolService', 'classService', '$location',
+      'assignmentService', '$modal',
+      (scope, rootScope, stateParams, School, Class, location, Assignment, Modal) ->
         rootScope.tabName = 'assignment'
         scope.heading = '按班级布置作业'
 
@@ -14,6 +14,7 @@ angular.module('kulebaoAdmin')
 
         scope.navigateTo = (c) ->
           location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')
+
     ]
 
 angular.module('kulebaoAdmin')
@@ -21,13 +22,27 @@ angular.module('kulebaoAdmin')
     [ '$scope', '$rootScope', '$stateParams',
       '$location', 'schoolService', 'classService', 'assignmentService', '$modal',
       (scope, rootScope, stateParams, location, School, Class, Assignment, Modal) ->
+        scope.loading = true
         scope.current_class = parseInt(stateParams.class_id)
 
-        scope.current_class = parseInt(stateParams.class_id)
+        scope.adminUser =
+          id: 1
+          name: '学校某老师'
+
+        scope.create = ->
+          rootScope.editingAssignment = new Assignment
+            class_id: parseInt stateParams.class_id
+            school_id: parseInt stateParams.kindergarten
+            publisher: scope.adminUser.name
+          scope.currentModal = Modal
+            scope: scope
+            contentTemplate: 'templates/admin/assignment.html'
+
 
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.bind(school_id: scope.kindergarten.school_id).query ->
             scope.refresh()
+            scope.loading = false
 
         scope.refresh = ->
           scope.assignments = Assignment.bind(school_id: scope.kindergarten.school_id, class_id: stateParams.class_id).query ->
@@ -48,8 +63,8 @@ angular.module('kulebaoAdmin')
 
 angular.module('kulebaoAdmin')
 .controller 'AssignmentCtrl',
-    [ '$scope', '$rootScope',
-      (scope, rootScope) ->
+    [ '$scope', '$rootScope', '$http', 'uploadService',
+      (scope, rootScope, $http, uploadService) ->
         if rootScope.editingAssignment isnt undefined
           scope.assignment = rootScope.editingAssignment
         else
@@ -59,5 +74,16 @@ angular.module('kulebaoAdmin')
           assignment.$save ->
             scope.$hide()
             scope.$emit 'refreshAssignments'
+
+        upload = (file, callback)->
+          return callback(undefined) if file is undefined
+          $http.get('/ws/fileToken?bucket=suoqin-test').success (data)->
+            uploadService.send file, data.token, (remoteFile) ->
+              callback(remoteFile.url)
+
+        scope.uploadPic = (assignment, pic) ->
+          upload pic, (url) ->
+            scope.$apply ->
+              assignment.icon_url = url if url isnt undefined
 
     ]

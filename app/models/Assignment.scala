@@ -7,9 +7,29 @@ import anorm.SqlParser._
 import play.Logger
 import models.helper.RangerHelper.rangerQuery
 
-case class Assignment(id: Long, timestamp: Long, title: String, content: String, publisher: String, icon_url: String, class_id: Int)
+case class Assignment(id: Option[Long], timestamp: Option[Long], title: String, content: String, publisher: String, icon_url: Option[String], class_id: Int)
 
 object Assignment {
+  def create(kg: Long, assignment: Assignment) = DB.withConnection {
+    implicit c =>
+      val time = System.currentTimeMillis()
+      val assignmentId = SQL("insert into assignment (school_id, `timestamp`, title, content, " +
+        " publisher, image, class_id) " +
+        "values ({kg}, {time}, {title}, {content}, {publisher}, {url}, {class_id})")
+        .on(
+          'kg -> kg.toString,
+          'time -> time,
+          'title -> assignment.title,
+          'content -> assignment.content,
+          'url -> assignment.icon_url,
+          'publisher -> assignment.publisher,
+          'class_id -> assignment.class_id,
+          'kg -> kg.toString
+        ).executeUpdate()
+
+      findById(assignmentId)
+  }
+
 
   def findById(id: Long) = DB.withConnection {
     implicit c =>
@@ -47,7 +67,7 @@ object Assignment {
       get[String]("image") ~
       get[Int]("class_id") map {
       case id ~ t ~ title ~ content ~ publisher ~ image ~ classId =>
-        Assignment(id, t, title, content, publisher, image, classId)
+        Assignment(Some(id), Some(t), title, content, publisher, Some(image), classId)
     }
   }
 

@@ -34,6 +34,13 @@
   }
 }
 
+.image-container {
+  .assignment-image {
+    max-height: 220px;
+    max-width: 220px;
+  }
+}
+
 .select-button.active {
   background-color: #47a447;
 }
@@ -92,4 +99,10 @@
 .message-input {
   width: 636px;
   height: 77px;
+}
+
+.assignment-form  {
+  .editing-content {
+    height: 200px;
+  }
 }
