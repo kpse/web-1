@@ -18,6 +18,7 @@
     <div class="panel-footer">
       <div ng-show="news.published" class="issue-date">于{{news.timestamp | date:'yyyy年MM月dd日 HH:mm:ss'}}发布</div>
       <div ng-hide="news.published" class="issue-date">未发布</div>
+      <div class="loading" ng-show="loading"/>
       <div class="btn-group">
         <button class="btn btn-default" ng-click="$hide()">取消</button>
         <button class="btn btn-primary" ng-disabled="newsForm.$invalid" ng-hide="news.published" ng-click="publish(news)">发布</button>

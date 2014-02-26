@@ -8,8 +8,10 @@ angular.module('kulebaoAdmin')
         rootScope.tabName = 'conversation'
         scope.heading = '联系家长'
 
+        scope.loading = true
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query ->
+            scope.loading = false
             location.path(location.path() + '/class/' + scope.kindergarten.classes[0].class_id + '/list') if (location.path().indexOf('/class/') < 0)
 
         scope.navigateTo = (c) ->
@@ -22,7 +24,7 @@ angular.module('kulebaoAdmin')
     [ '$scope', '$rootScope', '$stateParams',
       '$location', 'schoolService', 'classService', 'parentService', 'conversationService', 'relationshipService'
       (scope, rootScope, stateParams, location, School, Class, Parent, Chat, Relationship) ->
-
+        scope.loading = true
         scope.current_class = parseInt(stateParams.class_id)
 
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
@@ -31,6 +33,7 @@ angular.module('kulebaoAdmin')
             _.forEach scope.relationships, (r) ->
               r.parent.messages = Chat.bind(school_id: stateParams.kindergarten, phone: r.parent.phone, most: 1, sort: 'desc').query ->
                 r.parent.lastMessage = r.parent.messages[0]
+            scope.loading = false
 
 
         scope.goDetail = (card) ->
@@ -47,9 +50,10 @@ angular.module('kulebaoAdmin')
     [ '$scope', '$rootScope', '$stateParams',
       '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService'
       (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship) ->
-
+        scope.loading = true
         scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get ->
-          scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone, sort: 'desc').query()
+          scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone, sort: 'desc').query ->
+            scope.loading = false
         scope.newInput = ''
 
         scope.send = (msg) ->

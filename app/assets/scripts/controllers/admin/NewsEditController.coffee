@@ -23,13 +23,17 @@ angular.module('kulebaoAdmin').controller 'AddNewsCtrl',
           scope.$emit 'refreshNews'
 
       scope.publish = (news) ->
+        scope.loading = true
         news.published = true
         news.$save ->
           scope.$emit 'refreshNews'
+          scope.loading = false
 
       scope.remove = (news) ->
+        scope.loading = true
         news.$delete admin_id: scope.adminUser.id, ->
           scope.$hide()
           scope.$emit 'refreshNews'
+          scope.loading = false
 
   ]
