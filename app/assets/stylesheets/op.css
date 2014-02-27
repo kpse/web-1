@@ -20,13 +20,4 @@
   min-height: 100px;
 }
 
-.loading {
-  width: 100px;
-  height: 100px;
-  background-image: url('../../images/google-loading-icon.gif');
-  background-size: 100px 100px;
-  position: absolute;
-  left: 52px;
-  bottom: 100px
-}
 
