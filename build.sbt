@@ -31,4 +31,8 @@ lesscOptions in Compile := Seq("--no-color", "--yui-compress")
 
 coffeescriptOptions := Seq("bare")
 
+scalacOptions in (Compile,doc) := Seq("-groups", "-implicits")
+
+autoAPIMappings := true
+
 

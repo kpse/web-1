@@ -11,7 +11,7 @@
 
 function build_local {
     karma start --single-run && \
-    play test
+    play pmd checkstyle findbugs test
 }
 
 function build_and_push {
