@@ -10,7 +10,7 @@ case class ChangePassword(account_name: String, old_password: String, new_passwo
 
 case class ChangePasswordResponse(error_code: Int, access_token: String)
 
-case class ResetPassword(account_name: String, authcode: String, new_password: String)
+  case class ResetPassword(account_name: String, authcode: String, new_password: String)
 
 object ChangePasswordResponse {
   def handleReset(request: ResetPassword) = DB.withConnection {

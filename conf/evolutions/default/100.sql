@@ -287,7 +287,7 @@ CREATE TABLE IF NOT EXISTS `relationmap` (
               COLLATE utf8_bin NOT NULL,
   `card_num` VARCHAR(20)  NOT NULL,
   PRIMARY KEY (`uid`),
-  UNIQUE KEY `parent_id` (`parent_id`),
+  KEY `parent_id` (`parent_id`),
   KEY `child_id` (`child_id`)
 )
   ENGINE =InnoDB
