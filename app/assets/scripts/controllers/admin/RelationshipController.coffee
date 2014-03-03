@@ -23,13 +23,19 @@ angular.module('kulebaoAdmin')
             scope.loading = false
 
         scope.newParent = ->
-          scope.currentModal = Modal scope: scope, contentTemplate: 'templates/admin/add_adult.html'
+          scope.currentModal = Modal
+            scope: scope
+            contentTemplate: 'templates/admin/add_adult.html'
 
         scope.newChild = ->
-          scope.currentModal = Modal scope: scope, contentTemplate: 'templates/admin/add_child.html'
+          scope.currentModal = Modal
+            scope: scope
+            contentTemplate: 'templates/admin/add_child.html'
 
         scope.newRelationship = ->
-          scope.currentModal = Modal scope: scope, contentTemplate: 'templates/admin/add_connection.html'
+          scope.currentModal = Modal
+            scope: scope
+            contentTemplate: 'templates/admin/add_connection.html'
 
         scope.editParent = (parent) ->
           rootScope.editingParent = parent

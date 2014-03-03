@@ -31,7 +31,7 @@ angular.module('kulebaoAdmin')
           scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query()
           scope.relationships = Relationship.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query ->
             _.forEach scope.relationships, (r) ->
-              r.parent.messages = Chat.bind(school_id: stateParams.kindergarten, phone: r.parent.phone, most: 1, sort: 'desc').query ->
+              r.parent.messages = Chat.bind(school_id: stateParams.kindergarten, phone: r.parent.phone, most: 1).query ->
                 r.parent.lastMessage = r.parent.messages[0]
             scope.loading = false
 
@@ -48,24 +48,64 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'ConversationCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService'
-      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship) ->
+      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService', '$modal'
+      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship, Modal) ->
+        scope.adminUser =
+          id: 1
+          name: '学校某老师'
+
         scope.loading = true
         scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get ->
-          scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone, sort: 'desc').query ->
+          scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone).query ->
             scope.loading = false
-        scope.newInput = ''
+            scope.message = scope.newMessage()
 
-        scope.send = (msg) ->
-          return if msg is undefined || msg is ''
-          m = new Message
+        scope.newMessage = ->
+          new Message
             school_id: stateParams.kindergarten
             phone: scope.relationship.parent.phone
-            content: msg
+            content: ''
             image: ''
             timestamp: 0
-            sender: '老师'
-          m.$save ->
-            scope.newInput = ''
-            scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone, sort: 'desc').query()
+            sender: scope.adminUser.name
+
+
+        scope.send = (msg) ->
+          return if msg.content is ''
+          msg.$save ->
+            scope.message = scope.newMessage()
+            scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone).query()
+
+        scope.messageEditing = (msg)->
+          rootScope.editingMessage = msg
+
+          scope.currentModal = Modal
+            scope: scope
+            contentTemplate: 'templates/admin/add_message.html'
+    ]
+
+angular.module('kulebaoAdmin')
+.controller 'AddMessageCtrl',
+    [ '$scope', '$rootScope', '$stateParams',
+      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService', 'uploadService'
+      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship, uploadService) ->
+        if rootScope.editingMessage is undefined
+          scope.$hide()
+        else
+          scope.message = rootScope.editingMessage
+          delete rootScope.editingParent
+
+        scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone, most: 5).query()
+        scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get()
+
+        scope.uploadPic = (message, pic) ->
+          upload pic, (url) ->
+            scope.$apply ->
+              message.image = url if url isnt undefined
+
+        upload = (file, callback)->
+          return callback(undefined) if file is undefined
+          $http.get('/ws/fileToken?bucket=suoqin-test').success (data)->
+            uploadService.send file, data.token, (remoteFile) ->
+              callback(remoteFile.url)
     ]
