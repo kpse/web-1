@@ -1,0 +1,40 @@
+<div class="panel panel-default" ng-controller="ViewMessageCtrl">
+  <form class="form-horizontal" role="form" name="messageForm">
+    <div class="panel-heading">
+      <h3>与{{relationship.child.name}}的{{relationship.relationship}}{{relationship.parent.name || '家长'}}的通讯记录</h3>
+    </div>
+
+    <div class="panel-body">
+      <div class="form-group">
+        <p id="sender" class="form-control-static">发自：{{message.sender || '家长'}}</p>
+      </div>
+      <div class="form-group">
+        <p class="form-control-static">于{{message.timestamp | date:'yyyy年MM月dd日 HH:mm:ss'}}收到</p>
+      </div>
+      <div class="form-group">
+        <label for="content" class="control-label">回复内容</label>
+        <textarea id="content" name="content" ng-model="message.content"
+                  class="viewing-content form-control message-content"
+                  ng-disabled="true"/>
+      </div>
+
+      <div class="form-group">
+        <div class="image-preview">
+          <img class="message-image" ng-src="{{message.image}}"
+               alt="照片"/>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="panel-footer">
+      <div class="loading" ng-show="loading"/>
+      <div class="btn-group">
+        <button class="btn btn-default" ng-click="$hide()">关闭</button>
+        <button class="btn btn-info" ng-show="viewOption.reply" ng-click="messageEditing(newMessage()) && $hide()">回复
+        </button>
+      </div>
+    </div>
+  </form>
+
+</div>

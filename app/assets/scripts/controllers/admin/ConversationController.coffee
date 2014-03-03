@@ -48,8 +48,8 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'ConversationCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService', '$modal'
-      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship, Modal) ->
+      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService', '$modal', '$popover', '$tooltip',
+      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship, Modal, Popover, Tooltip) ->
         scope.adminUser =
           id: 1
           name: '学校某老师'
@@ -68,6 +68,14 @@ angular.module('kulebaoAdmin')
             image: ''
             timestamp: 0
             sender: scope.adminUser.name
+
+        scope.preview = (msg, option) ->
+          rootScope.viewOption = _.extend reply: true, option
+          rootScope.currentMessage = msg
+
+          scope.currentModal = Modal
+            scope: scope
+            contentTemplate: 'templates/admin/view_message.html'
 
 
         scope.send = (msg) ->
@@ -108,4 +116,20 @@ angular.module('kulebaoAdmin')
           $http.get('/ws/fileToken?bucket=suoqin-test').success (data)->
             uploadService.send file, data.token, (remoteFile) ->
               callback(remoteFile.url)
+    ]
+
+angular.module('kulebaoAdmin')
+.controller 'ViewMessageCtrl',
+    [ '$scope', '$rootScope', '$stateParams',
+      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService',
+      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship) ->
+        if rootScope.currentMessage is undefined
+          scope.$hide()
+        else
+          scope.message = rootScope.currentMessage
+          scope.viewOption = rootScope.viewOption
+          delete rootScope.currentMessage
+
+        scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone, most: 5).query()
+        scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get()
     ]
