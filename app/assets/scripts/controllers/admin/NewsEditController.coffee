@@ -2,11 +2,9 @@
 
 angular.module('kulebaoAdmin').controller 'AddNewsCtrl',
   ['$scope', '$rootScope', '$location', 'adminNewsService',
-   '$stateParams', 'GroupMessage', 'schoolService',
-    (scope, $rootScope, $location, adminNewsService, $stateParams, GroupMessage, School) ->
-      scope.adminUser =
-        id: 1
-        name: '学校某老师'
+   '$stateParams', 'GroupMessage', 'schoolService', 'employeeService'
+    (scope, $rootScope, $location, adminNewsService, $stateParams, GroupMessage, School, Employee) ->
+      scope.adminUser = Employee.get()
 
       scope.kindergarten = School.get school_id: $stateParams.kindergarten, ->
         if $rootScope.editingNews is undefined

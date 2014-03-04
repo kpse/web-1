@@ -3,8 +3,7 @@
 angular.module('kulebaoAdmin')
 .controller 'AssignmentListCtrl',
     [ '$scope', '$rootScope', '$stateParams', 'schoolService', 'classService', '$location',
-      'assignmentService', '$modal',
-      (scope, rootScope, stateParams, School, Class, location, Assignment, Modal) ->
+      (scope, rootScope, stateParams, School, Class, location) ->
         rootScope.tabName = 'assignment'
         scope.heading = '按班级布置作业'
 
@@ -40,13 +39,14 @@ angular.module('kulebaoAdmin')
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.bind(school_id: scope.kindergarten.school_id).query ->
             scope.refresh()
-            scope.loading = false
 
         scope.refresh = ->
+          scope.loading = true
           scope.assignments = Assignment.bind(school_id: scope.kindergarten.school_id, class_id: stateParams.class_id).query ->
             _.forEach scope.assignments, (a) ->
               a.class_name = (_.find scope.kindergarten.classes, (c) ->
                 c.class_id == a.class_id).name
+            scope.loading = false
 
         scope.goDetail = (assignment) ->
           rootScope.editingAssignment = angular.copy(assignment)

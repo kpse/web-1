@@ -64,10 +64,10 @@ object Assignment {
       get[String]("title") ~
       get[String]("content") ~
       get[String]("publisher") ~
-      get[String]("image") ~
+      get[Option[String]]("image") ~
       get[Int]("class_id") map {
       case id ~ t ~ title ~ content ~ publisher ~ image ~ classId =>
-        Assignment(Some(id), Some(t), title, content, publisher, Some(image), classId)
+        Assignment(Some(id), Some(t), title, content, publisher, image, classId)
     }
   }
 

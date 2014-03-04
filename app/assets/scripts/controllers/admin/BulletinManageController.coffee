@@ -2,14 +2,12 @@
 
 angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
   ['$scope', '$rootScope', '$location', 'adminNewsService',
-   '$stateParams', 'GroupMessage', 'schoolService', '$modal'
-    (scope, $rootScope, $location, adminNewsService, $stateParams, GroupMessage, School, Modal) ->
+   '$stateParams', 'GroupMessage', 'schoolService', '$modal', 'employeeService'
+    (scope, $rootScope, $location, adminNewsService, $stateParams, GroupMessage, School, Modal, Employee) ->
       $rootScope.tabName = 'bulletin'
 
       scope.loading = true
-      scope.adminUser =
-        id: 1
-        name: '学校某老师'
+      scope.adminUser = Employee.get()
 
       scope.kindergarten = School.get school_id: $stateParams.kindergarten, ->
         scope.refresh()
