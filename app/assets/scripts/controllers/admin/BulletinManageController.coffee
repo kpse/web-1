@@ -7,10 +7,10 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
       $rootScope.tabName = 'bulletin'
 
       scope.loading = true
-      scope.adminUser = Employee.get()
 
       scope.kindergarten = School.get school_id: $stateParams.kindergarten, ->
-        scope.refresh()
+        scope.adminUser = Employee.get ->
+          scope.refresh()
 
       scope.publish = (news) ->
         news.published = true
@@ -37,6 +37,6 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
       scope.refresh = ->
         scope.loading = true
-        scope.newsletters = adminNewsService.bind(school_id: $stateParams.kindergarten, admin_id: scope.adminUser.id).query ->
+        scope.newsletters = adminNewsService.bind(school_id: $stateParams.kindergarten, admin_id: scope.adminUser.phone).query ->
           scope.loading = false
   ]

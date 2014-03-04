@@ -40,14 +40,14 @@ object NewsController extends Controller {
       } getOrElse BadRequest
   }
 
-  def adminUpdate(kg: Long, adminId: Long, newsId: Long) = update(kg, newsId)
+  def adminUpdate(kg: Long, adminId: String, newsId: Long) = update(kg, newsId)
 
-  def indexWithNonPublished(kg: Long, admin: Long) = Action {
+  def indexWithNonPublished(kg: Long, admin: String) = Action {
     val jsons = News.allIncludeNonPublished(kg)
     Ok(Json.toJson(jsons))
   }
 
-  def delete(kg: Long, adminId: Long, newsId: Long) = Action {
+  def delete(kg: Long, adminId: String, newsId: Long) = Action {
     News.delete(newsId)
     Ok("{\"status\":\"success\"}").as("application/json")
   }
@@ -61,7 +61,7 @@ object NewsController extends Controller {
     )
   )
 
-  def create(kg: Long, adminId: Long) = Action {
+  def create(kg: Long, adminId: String) = Action {
     implicit request =>
       newsCreateForm.bindFromRequest.value map {
         news =>
