@@ -17,18 +17,17 @@ object Employee {
 
   def authenticate(loginName: String, password: String) = DB.withConnection {
     implicit c =>
-      SQL("select * from employeeinfo where login_name={login} and login_password={password}")
+      SQL("select * from employeeinfo where login_name={login} and login_password={password} and status=1")
         .on(
           'login -> loginName,
           'password -> md5(password)
         ).as(simple singleOpt)
   }
 
-  def show(kg: Long, phone: String) = DB.withConnection {
+  def show(phone: String) = DB.withConnection {
     implicit c =>
-      SQL("select * from employeeinfo where school_id={kg} and phone={phone}")
+      SQL("select * from employeeinfo where status=1 and phone={phone}")
         .on(
-          'kg -> kg.toString,
           'phone -> phone
         ).as(simple singleOpt)
   }
@@ -51,12 +50,9 @@ object Employee {
     }
   }
 
-  def all(kg: Long) = DB.withConnection {
+  def all = DB.withConnection {
     implicit c =>
-      SQL("select * from employeeinfo where school_id={kg}")
-        .on(
-          'kg -> kg.toString
-        ).as(simple *)
+      SQL("select * from employeeinfo where status=1").as(simple *)
   }
 
 }

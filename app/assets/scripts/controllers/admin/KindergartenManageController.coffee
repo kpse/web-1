@@ -1,11 +1,10 @@
 class Controller
-  constructor: (scope, $rootScope, $stateParams, School, location) ->
+  constructor: (scope, $rootScope, $stateParams, School, location, Employee) ->
 
     @kindergarten = School.get school_id: $stateParams.kindergarten
 
-    @adminUser =
-      id: 1
-      name: '豆瓣老师'
+    @adminUser = Employee.get()
+
 
     @isSelected = (tab)->
       tab is $rootScope.tabName
@@ -16,4 +15,4 @@ class Controller
       else
         location.path(location.path().replace(/\/[^\/]+$/, '/list'))
 
-angular.module('kulebaoAdmin').controller 'KgManageCtrl', ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', Controller]
+angular.module('kulebaoAdmin').controller 'KgManageCtrl', ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', 'employeeService', Controller]

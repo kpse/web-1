@@ -8,11 +8,11 @@ object EmployeeController extends Controller {
 
   implicit val write = Json.writes[Employee]
 
-  def index(kg: Long) = Action {
-    Ok(Json.toJson(Employee.all(kg)))
+  def index = Action {
+    Ok(Json.toJson(Employee.all))
   }
 
-  def show(kg: Long, phone: String) = Action {
-    Ok(Json.toJson(Employee.show(kg, phone)))
+  def show(phone: String) = Action {
+    Ok(Json.toJson(Employee.show(phone)))
   }
 }

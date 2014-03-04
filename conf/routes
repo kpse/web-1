@@ -92,8 +92,8 @@ GET           /kindergarten/:kg/conversation/:phone                             
 POST          /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.create(kg: Long, phone: String, retrieve_recent_from: Option[Long])
 
 
-GET           /kindergarten/:kg/employee                                         controllers.EmployeeController.index(kg: Long)
-GET           /kindergarten/:kg/employee/:phone                                  controllers.EmployeeController.show(kg: Long, phone: String)
+GET           /employee                                                          controllers.EmployeeController.index
+GET           /employee/:phone                                                   controllers.EmployeeController.show(phone: String)
 
 
 

@@ -20,14 +20,12 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'AssignmentsInClassCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', 'classService', 'assignmentService', '$modal',
-      (scope, rootScope, stateParams, location, School, Class, Assignment, Modal) ->
+      '$location', 'schoolService', 'classService', 'assignmentService', '$modal', 'employeeService',
+      (scope, rootScope, stateParams, location, School, Class, Assignment, Modal, Employee) ->
         scope.loading = true
         scope.current_class = parseInt(stateParams.class_id)
 
-        scope.adminUser =
-          id: 1
-          name: '学校某老师'
+        scope.adminUser = Employee.get()
 
         scope.create = ->
           rootScope.editingAssignment = new Assignment

@@ -48,11 +48,11 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'ConversationCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService', '$modal', '$popover', '$tooltip',
-      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship, Modal, Popover, Tooltip) ->
-        scope.adminUser =
-          id: 1
-          name: '学校某老师'
+      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService', '$modal',
+      '$popover', '$tooltip', 'employeeService'
+      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship, Modal, Popover, Tooltip,
+       Employee) ->
+        scope.adminUser = Employee.get()
 
         scope.loading = true
         scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get ->
