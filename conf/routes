@@ -91,6 +91,12 @@ POST          /kindergarten/:kg/assignment/:assignmentId                        
 GET           /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.index(kg: Long, phone: String, from: Option[Long], to: Option[Long], most: Option[Int])
 POST          /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.create(kg: Long, phone: String, retrieve_recent_from: Option[Long])
 
+
+GET           /kindergarten/:kg/employee                                         controllers.EmployeeController.index(kg: Long)
+GET           /kindergarten/:kg/employee/:phone                                  controllers.EmployeeController.show(kg: Long, phone: String)
+
+
+
 GET           /ws/swipe                                                          controllers.WSController.call
 POST          /ws/swipe                                                          controllers.WSController.sendMessage
 

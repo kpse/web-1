@@ -6,6 +6,7 @@ import play.api.data.Forms._
 
 import models._
 import views._
+import play.Logger
 
 object Auth extends Controller {
 
@@ -16,7 +17,7 @@ object Auth extends Controller {
       "username" -> text,
       "password" -> text
     ) verifying("Invalid username or password", result => result match {
-      case (username, password) => User.authenticate(username, password).isDefined
+      case (username, password) => Employee.authenticate(username, password).isDefined
     })
   )
 
@@ -35,11 +36,15 @@ object Auth extends Controller {
     implicit request =>
       loginForm.bindFromRequest.fold(
         formWithErrors => BadRequest(html.login(formWithErrors)),
-        user =>
-          if (user._1 == "operator")
-            Redirect(routes.Application.operation).withSession("username" -> user._1)
+        user => {
+          val login = Employee.authenticate(user._1, user._2).get
+          Logger.info(login.toString)
+          if (login.login_name == "operator")
+            Redirect("/operation").withSession("username" -> login.login_name)
           else
-            Redirect(routes.Application.admin).withSession("username" -> user._1)
+            Redirect("/admin#/kindergarten/%d".format(login.school_id)).withSession("username" -> login.name)
+        }
+
       )
   }
 
