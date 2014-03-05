@@ -20,7 +20,7 @@ object SchoolIntro {
   def create(school: SchoolIntroDetail) = {
     SQL("insert into schoolinfo (school_id, province, city, name, description, logo_url, phone, update_at) values ({school_id}, '四川省', '成都', '新学校', '描述','http://www.jslfgz.com.cn/UploadFiles/xxgl/2013/4/201342395834.jpg', '13991855476', {timestamp})")
       .on('school_id -> school.school_id.toString,
-      'timestamp -> System.currentTimeMillis)
+        'timestamp -> System.currentTimeMillis)
   }
 
   def index = DB.withConnection {
@@ -37,19 +37,20 @@ object SchoolIntro {
 
   def updateExists(info: SchoolIntroDetail) = DB.withConnection {
     implicit c =>
-    val timestamp = System.currentTimeMillis
-    Logger.info(info.toString)
-    info.school_info map { intro =>
-      SQL("update schoolinfo set name={name}, " +
-        "description={description}, phone={phone}, " +
-        "logo_url={logo_url}, update_at={timestamp} where school_id={id}")
-        .on('id -> info.school_id.toString,
-          'name -> intro.name,
-          'description -> intro.desc,
-          'phone -> intro.phone,
-          'logo_url -> intro.school_logo_url,
-          'timestamp -> timestamp).executeUpdate()
-    }
+      val timestamp = System.currentTimeMillis
+      Logger.info(info.toString)
+      info.school_info map {
+        intro =>
+          SQL("update schoolinfo set name={name}, " +
+            "description={description}, phone={phone}, " +
+            "logo_url={logo_url}, update_at={timestamp} where school_id={id}")
+            .on('id -> info.school_id.toString,
+              'name -> intro.name,
+              'description -> intro.desc,
+              'phone -> intro.phone,
+              'logo_url -> intro.school_logo_url,
+              'timestamp -> timestamp).executeUpdate()
+      }
 
   }
 
@@ -63,7 +64,7 @@ object SchoolIntro {
   }
 
 
-  def update(info: SchoolIntroDetail) = DB.withConnection {
+  def updateOrCreate(info: SchoolIntroDetail) = DB.withConnection {
     implicit c =>
       val exists1 = exists(info.school_id)
       Logger.info(exists1.toString)

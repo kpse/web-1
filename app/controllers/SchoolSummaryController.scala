@@ -25,13 +25,13 @@ object SchoolSummaryController extends Controller {
       Logger.info(request.body.toString())
       request.body.validate[SchoolIntroDetail].map {
         case (detail) =>
-          Ok(Json.toJson(SchoolIntro.update(detail)))
+          Ok(Json.toJson(SchoolIntro.updateOrCreate(detail)))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
 
-  def index() = Action {
+  def index = Action {
     Ok(Json.toJson(SchoolIntro.index))
   }
 }
