@@ -87,6 +87,8 @@ POST          /kindergarten/:kg/assignment/:assignmentId                        
 GET           /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.index(kg: Long, phone: String, from: Option[Long], to: Option[Long], most: Option[Int])
 POST          /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.create(kg: Long, phone: String, retrieve_recent_from: Option[Long])
 
+GET           /kindergarten/:kg/assess/:childId                                  controllers.AssessController.index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int])
+
 
 GET           /employee                                                          controllers.EmployeeController.index
 GET           /employee/:phone                                                   controllers.EmployeeController.show(phone: String)
