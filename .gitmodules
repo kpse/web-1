@@ -1,0 +1,3 @@
+[submodule "kulebao_config"]
+	path = kulebao_config
+	url = git://bitbucket.org/kulebao/kulebao_config
