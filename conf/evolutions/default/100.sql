@@ -606,19 +606,24 @@ CREATE TABLE assess (
   uid         INT(11)          NOT NULL AUTO_INCREMENT,
   school_id   VARCHAR(20) NOT NULL,
   child_id varchar(40) NOT NULL,
-  emotion TINYINT default 3,
-  dining TINYINT default 3,
-  rest TINYINT default 3,
-  activity TINYINT default 3,
-  game TINYINT default 3,
-  exercise TINYINT default 3,
-  self_care TINYINT default 3,
-  manner TINYINT default 3,
+  emotion INT default 3,
+  dining INT default 3,
+  rest INT default 3,
+  activity INT default 3,
+  game INT default 3,
+  exercise INT default 3,
+  self_care INT default 3,
+  manner INT default 3,
   comments   TEXT NOT NULL,
   publisher VARCHAR(20) NOT NULL DEFAULT '',
   publish_at BIGINT(20) NOT NULL DEFAULT 0,
-  PRIMARY KEY (uid)
-);
+  PRIMARY KEY (uid),
+  KEY (child_id)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  COLLATE =utf8_bin
+  AUTO_INCREMENT =2;
 
 INSERT INTO assess (school_id, child_id, emotion, comments, publisher, publish_at)
 VALUES

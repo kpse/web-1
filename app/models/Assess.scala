@@ -18,14 +18,14 @@ object Assess {
       get[Long]("publish_at") ~
       get[String]("publisher") ~
       get[String]("comments") ~
-      get[Byte]("emotion") ~
-      get[Byte]("dining") ~
-      get[Byte]("rest") ~
-      get[Byte]("activity") ~
-      get[Byte]("game") ~
-      get[Byte]("exercise") ~
-      get[Byte]("self_care") ~
-      get[Byte]("manner") map {
+      get[Int]("emotion") ~
+      get[Int]("dining") ~
+      get[Int]("rest") ~
+      get[Int]("activity") ~
+      get[Int]("game") ~
+      get[Int]("exercise") ~
+      get[Int]("self_care") ~
+      get[Int]("manner") map {
       case id ~ t ~ publisher ~ comments ~ emotion ~ dining ~ rest ~ act ~ game ~ exercise ~
         selfCare ~ manner =>
         Assess(Some(id), Some(t), publisher, comments, emotion, dining, rest, act, game, exercise, selfCare, manner)
