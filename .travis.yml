@@ -1,4 +1,6 @@
 language: scala
+git:
+  submodules: false
 addons:
   firefox: "17.0"
 env:
