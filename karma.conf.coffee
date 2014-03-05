@@ -14,10 +14,12 @@ module.exports = (config) ->
 
   # list of files / patterns to load in the browser
     files: [
-      'public/javascripts/vendor/jquery-1.11.0.min.js',
-      'public/javascripts/vendor/angularjs/angular.min.js',
-      'public/javascripts/vendor/angularjs/angular-route.min.js',
-      'public/javascripts/vendor/angularjs/angular-ui-router.min.js',
+      'public/vendor/jquery/jquery.min.js',
+      'public/vendor/angular/angular.min.js',
+      'public/vendor/angular-ui-router/angular-ui-router.min.js',
+      'public/vendor/angular-route/angular-route.min.js',
+      'public/javascripts/vendor/underscore-min.js',
+      'public/vendor/**/*.js',
       'public/javascripts/vendor/**/*.js',
       'app/assets/scripts/main.coffee',
       'app/assets/scripts/admin.coffee',
@@ -27,7 +29,7 @@ module.exports = (config) ->
       'app/assets/scripts/directives/*.coffee',
       'app/assets/scripts/filters/*.coffee',
       'test/assets/config/jasmine-jquery.js',
-      'test/assets/config/angular-mocks.js',
+      'test/assets/config/angular-mocks/angular-mocks.js',
       'test/spec/**/*.coffee'
     ],
 

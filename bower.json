@@ -56,6 +56,9 @@
       "css": "dist/css/*.{min.css, map}",
       ".": "dist/js/*.min.js{,.map}"
     },
+    "angular-mocks": {
+      "../../test/assets/config": "angular-mocks.js"
+    },
     "*": {
       ".": "*.min.js{,.map}"
     }

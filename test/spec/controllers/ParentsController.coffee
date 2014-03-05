@@ -25,7 +25,7 @@ describe 'Controller: ParentsCtrl', () ->
         school_id: 93740362
         name: 'school_name'
 
-    $httpBackend.expectGET('/kindergarten/93740362/parent?')
+    $httpBackend.expectGET('/kindergarten/93740362/parent')
     .respond [
             id: 1
             name: 'name'

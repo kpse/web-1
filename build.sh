@@ -71,9 +71,13 @@ function deploy_from_prod {
     echo "Done"
 }
 
+function js_dependency {
+  grunt bower:install
+}
 
 function main {
   	case $1 in
+		js) js_dependency ;;
 		s) local_https_server ;;
 		a) all ;;
 		d) deploy ;;
