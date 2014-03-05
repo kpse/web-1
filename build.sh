@@ -10,7 +10,7 @@
 #npm install karma-phantomjs-launcher --save-dev
 
 function build_local {
-    karma start --single-run && \
+    JAVA_OPTS=-Xmx2048m karma start --single-run && \
     play pmd checkstyle findbugs test
 }
 
