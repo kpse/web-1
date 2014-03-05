@@ -1,10 +1,63 @@
 {
   "name": "kulebao",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "appPath": "app/assets/",
   "dependencies": {
-    "angular-ui-utils": "~0.0.4",
-    "angular-upload": "~1.0.4",
-    "angular-motion": "~0.3.2"
+    "jquery-ui": "~1.10.4",
+    "jquery": "~2.1.0",
+    "angular": "~1.2.14",
+    "angular-sanitize": "~1.2.14",
+    "angular-route": "~1.2.14",
+    "angular-cookies": "~1.2.14",
+    "angular-resource": "~1.2.14",
+    "angular-animate": "~1.2.14",
+    "angular-strap": "~v2.0.0",
+    "angular-bootstrap": "~0.10.0",
+    "angular-ui-router": "~0.2.8",
+    "angulartics": "~0.12.12",
+    "bootstrap": "~3.1.1"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.2.14",
+    "angular-scenario": "~1.2.14"
+  },
+  "homepage": "https://github.com/kulebao/web",
+  "authors": [
+    "Suo Qin <kpsesuo@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "exportsOverride": {
+    "angular-strap": {
+      ".": ["dist/*.min.js{,.map}", "dist/*.min.map"]
+    },
+    "angulartics": {
+      ".": "dist/*.min.js{,.map}"
+    },
+    "angular-ui-router": {
+      ".": "release/*.min.js{,.map}"
+    },
+    "jquery-ui": {
+      ".": "ui/minified/jquery-ui.min.js",
+      "css": "themes/base/minified/jquery-ui.min.css",
+      "css/images": "themes/base/minified/images/*"
+    },
+    "jquery": {
+      ".": ["dist/*.min.js{,.map}", "dist/*.min.map"]
+    },
+    "bootstrap": {
+      "fonts": "dist/fonts/*.{eot,svg,ttf,woff}",
+      "css": "dist/css/*.{min.css, map}",
+      ".": "dist/js/*.min.js{,.map}"
+    },
+    "*": {
+      ".": "*.min.js{,.map}"
+    }
   }
 }
