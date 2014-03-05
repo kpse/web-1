@@ -73,7 +73,7 @@ class AuthenticationSpec extends Specification with TestSupport {
       val phone = "13333333333"
       val user_id = "12334"
       val channel_id = "000000"
-      private val json = Json.toJson(new BindingNumber(phone, user_id, channel_id))
+      private val json = Json.toJson(new BindingNumber(phone, user_id, channel_id, None))
 
       val bindingResponse = route(FakeRequest(POST, "/receiveBindInfo.do").withJsonBody(json)).get
 

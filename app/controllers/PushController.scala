@@ -23,7 +23,7 @@ object PushController extends Controller {
   implicit val read = Json.reads[CheckInfo]
 
   def test = Action {
-    val msg = new CheckNotification(System.currentTimeMillis, 1, "1_93740362_374", "925387477040814447", "", "袋鼠")
+    val msg = new CheckNotification(System.currentTimeMillis, 1, "1_93740362_374", "925387477040814447", "", "袋鼠", 3)
     DailyLog.create(msg, CheckInfo(93740362L, "0001234569", 2, 0, "", System.currentTimeMillis))
     Ok(Json.toJson(runWithLog(msg, triggerSinglePush)))
   }
@@ -61,7 +61,8 @@ object PushController extends Controller {
   def triggerSinglePush(check: CheckNotification) = {
     val channelClient = getClient
     val request: PushUnicastMessageRequest = new PushUnicastMessageRequest
-    request.setDeviceType(new Integer(3))
+    //device_type => 1: web 2: pc 3:android 4:ios 5:wp
+    request.setDeviceType(new Integer(check.device))
     request.setUserId(check.pushid)
     request.setMessageType(new Integer(0))
     Logger.info(Json.toJson(check).toString)

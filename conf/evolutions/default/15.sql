@@ -15,6 +15,7 @@ CREATE TABLE dailylog (
   card_no varchar(20) NOT NULL,
   card_type INT DEFAULT 0,
   notice_type INT DEFAULT 0,
+  device INT DEFAULT 3,
   check_at   BIGINT(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (uid)
 );

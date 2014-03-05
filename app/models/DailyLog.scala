@@ -16,9 +16,10 @@ object DailyLog {
       get[String]("record_url") ~
       get[String]("pushid") ~
       get[Int]("notice_type") ~
-      get[String]("parent_name") map {
-      case child_id ~ timestamp ~ url ~ pushid ~ notice_type ~ name =>
-        new CheckNotification(timestamp, notice_type, child_id, pushid, url, name)
+      get[String]("parent_name") ~
+      get[Int]("device") map {
+      case child_id ~ timestamp ~ url ~ pushid ~ notice_type ~ name ~ device =>
+        new CheckNotification(timestamp, notice_type, child_id, pushid, url, name, device)
     }
   }
 
@@ -36,8 +37,8 @@ object DailyLog {
 
   def create(check: CheckNotification, request: CheckInfo) = DB.withConnection {
     implicit c =>
-      SQL("insert into dailylog (child_id, pushid, record_url, check_at, card_no, notice_type, school_id, parent_name) " +
-        "values ({child_id}, {pushid}, {url}, {check_at}, {card_no}, {notice_type}, {school_id}, {parent_name})")
+      SQL("insert into dailylog (child_id, pushid, record_url, check_at, card_no, notice_type, school_id, parent_name, device) " +
+        "values ({child_id}, {pushid}, {url}, {check_at}, {card_no}, {notice_type}, {school_id}, {parent_name}, {device})")
         .on(
           'child_id -> check.child_id,
           'pushid -> check.pushid,
@@ -46,7 +47,8 @@ object DailyLog {
           'card_no -> request.card_no,
           'notice_type -> request.notice_type,
           'school_id -> request.school_id,
-          'parent_name -> check.parent_name
+          'parent_name -> check.parent_name,
+          'device -> check.device
         ).executeInsert()
       check
   }
