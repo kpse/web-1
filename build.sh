@@ -9,12 +9,18 @@
 #sudo npm install -g PhantomJS
 #npm install karma-phantomjs-launcher --save-dev
 
+function load_env {
+  [ -f ./kulebao_config/dev_env.sh ] && source ./kulebao_config/dev_env.sh
+}
+
 function build_local {
+    load_env
     JAVA_OPTS=-Xmx2048m karma start --single-run && \
     play pmd checkstyle findbugs test
 }
 
 function build_and_push {
+    git submodule update &&
     git pull --rebase && \
     build_local && \
     git push origin master
@@ -32,6 +38,7 @@ function all {
 }
 
 function local_https_server {
+    load_env
     JAVA_OPTS=-Dhttps.port=9001 play run
 }
 
