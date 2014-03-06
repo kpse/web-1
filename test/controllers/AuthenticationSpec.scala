@@ -31,7 +31,7 @@ class AuthenticationSpec extends Specification with TestSupport {
     implicit val checkWrites = Json.writes[CheckPhone]
 
     "validate phone number for first time" in new WithApplication {
-      private val json = Json.toJson(new CheckPhone("13880498549"))
+      private val json = Json.toJson(new CheckPhone("13408654683"))
 
       val validateResponse = route(FakeRequest(POST, "/checkphonenum.do").withJsonBody(json)).get
 
