@@ -45,7 +45,7 @@ class ConversationSpec extends Specification with TestSupport {
       index.size must equalTo(0)
     }
 
-    "report empty if to the begining" in new WithApplication {
+    "report empty if to the beginning" in new WithApplication {
 
       private val index = Conversation.index(93740362L, "13408654680", None, Some(1))
 
