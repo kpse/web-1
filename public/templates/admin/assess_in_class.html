@@ -1,0 +1,32 @@
+<div class="loading" ng-show="loading" />
+<table class="table table-hover table-condensed">
+  <thead>
+  <tr class="row">
+    <th class=".col-xs-2">姓名</th>
+    <th class=".col-xs-1">情绪</th>
+    <th class=".col-xs-1">进餐</th>
+    <th class=".col-xs-1">睡觉</th>
+    <th class=".col-xs-1">集体活动</th>
+    <th class=".col-xs-1">游戏</th>
+    <th class=".col-xs-1">锻炼</th>
+    <th class=".col-xs-1">自理能力</th>
+    <th class=".col-xs-1">礼貌</th>
+    <th class=".col-xs-3">最近评价时间</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="r in relationships | filter: searchText" class="row" ng-click="goDetail(r.card)">
+    <td class=".col-xs-2">{{r.child.name}}</td>
+    <td class=".col-xs-1"> <rating value="r.child.recentStatus.emotion" max="3" readonly="true" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></td>
+    <td class=".col-xs-1">{{r.child.recentStatus.emotion}}</td>
+    <td class=".col-xs-1">{{r.child.recentStatus.emotion}}</td>
+    <td class=".col-xs-1">{{r.child.recentStatus.emotion}}</td>
+    <td class=".col-xs-1">{{r.child.recentStatus.emotion}}</td>
+    <td class=".col-xs-1">{{r.child.recentStatus.emotion}}</td>
+    <td class=".col-xs-1">{{r.child.recentStatus.emotion}}</td>
+    <td class=".col-xs-1">{{r.child.recentStatus.emotion}}</td>
+    <td class=".col-xs-3">{{r.child.recentStatus.timestamp | date:'yyyy年MM月dd日 HH:mm:ss' }}</td>
+  </tr>
+  </tbody>
+</table>
+<div class="conversation-view" ui-view></div>

@@ -79,7 +79,7 @@ function deploy_from_prod {
 }
 
 function js_dependency {
-  grunt bower:install
+  grunt
 }
 
 function main {

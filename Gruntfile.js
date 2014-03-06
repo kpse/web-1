@@ -14,12 +14,21 @@ module.exports = function (grunt) {
           bowerOptions: {}
         }
       }
+    },
+    copy: {
+      main: {
+        expand: true,
+        flatten: true,
+        src: 'public/vendor/fonts/bootstrap/*',
+        dest: 'public/vendor/css/fonts'
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-bower-task');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
   // Default task(s).
-  grunt.registerTask('default', []);
+  grunt.registerTask('default', ['bower:install','copy']);
 
 };

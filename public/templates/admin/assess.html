@@ -1,0 +1,23 @@
+<div class="loading" ng-show="loading"/>
+<h3>与{{relationship.child.name}}的{{relationship.relationship}}{{relationship.parent.name || '家长'}}的通讯记录</h3>
+<form class="form well">
+  <textarea ng-bk-focus class="message-input" type="text" ng-model="message.content" placeholder="要发送的内容.." required/>
+  <button ng-click="send(message)" class="btn btn-primary">快速回复</button>
+  <button ng-click="messageEditing(message)" class="btn btn-success">编辑回复</button>
+</form>
+<table class="table table-hover table-condensed">
+  <thead>
+  <tr class="row">
+    <th class=".col-xs-2">发言人</th>
+    <th class=".col-xs-7">通讯内容</th>
+    <th class=".col-xs-3">通讯时间</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="c in conversations | filter: searchText | orderBy:'id':true " class="row" ng-click="preview(c)">
+    <td class=".col-xs-2">{{c.sender || '家长'}}</td>
+    <td class=".col-xs-7">{{c.content.substring(0,100)}}{{(c.content.length > 100) ? '...' : ''}}</td>
+    <td class=".col-xs-3">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm:ss'}}收到</td>
+  </tr>
+  </tbody>
+</table>

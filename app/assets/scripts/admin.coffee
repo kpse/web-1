@@ -73,6 +73,24 @@ class Config
         url: '/card/:card',
         templateUrl: 'templates/admin/conversation.html',
         controller: 'ConversationCtrl'
+
+    .state 'kindergarten.assess',
+        url: '/baby-status',
+        templateUrl: 'templates/admin/search_panel.html',
+        controller: 'AssessListCtrl'
+    .state 'kindergarten.assess.class',
+        url: '/class/:class_id',
+        templateUrl: 'templates/admin/classes.html',
+        controller: 'AssessInClassCtrl'
+    .state 'kindergarten.assess.class.list',
+        url: '/list',
+        templateUrl: 'templates/admin/assess_in_class.html',
+        controller: 'AssessInClassCtrl'
+    .state 'kindergarten.assess.class.child',
+        url: '/child/:child',
+        templateUrl: 'templates/admin/assess.html',
+        controller: 'AssessCtrl'
+
     .state 'kindergarten.assignment',
         url: '/assignment',
         templateUrl: 'templates/admin/search_panel.html',
