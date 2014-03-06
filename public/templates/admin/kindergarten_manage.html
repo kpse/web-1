@@ -30,38 +30,43 @@
   <div class="row modules-list-container">
     <ul class="nav nav-tabs modules-list actions">
       <li class="action" ng-class="{active : kg.isSelected('bulletin')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/bulletin" class="btn btn-danger">
+        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/bulletin" class="btn btn-primary">
           园内公告设置
         </a>
       </li>
+      <li class="action" ng-class="{active : kg.isSelected('conversation')}">
+        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/conversation" class="btn btn-danger">
+          家园互动
+        </a>
+      </li>
+      <li class="action">
+        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/baby-status" class="btn btn-warning">
+          在园表现
+        </a>
+      </li>
+      <li class="action" ng-class="{active : kg.isSelected('relationship')}">
+        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/relationship" class="btn btn-primary">
+          幼儿园卡片管理
+        </a>
+      </li>
+      <li class="action" ng-class="{active : kg.isSelected('assignment')}">
+        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/assignment" class="btn btn-success">
+          亲子作业
+        </a>
+      </li>
       <li class="action" ng-class="{active : kg.isSelected('intro')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/intro" class="btn btn-primary">
+        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/intro" class="btn btn-danger">
           学校简介设置
         </a>
       </li>
       <li class="action" ng-class="{active : kg.isSelected('cookbook')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/cookbook" class="btn btn-success">
+        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/cookbook" class="btn btn-primary">
           每周食谱设置
         </a>
       </li>
       <li class="action" ng-class="{active : kg.isSelected('schedule')}">
         <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/schedule" class="btn btn-danger">
           学习内容设置
-        </a>
-      </li>
-      <li class="action" ng-class="{active : kg.isSelected('relationship')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/relationship" class="btn btn-success">
-          幼儿园卡片管理
-        </a>
-      </li>
-      <li class="action" ng-class="{active : kg.isSelected('conversation')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/conversation" class="btn btn-primary">
-          家园互动
-        </a>
-      </li>
-      <li class="action" ng-class="{active : kg.isSelected('assignment')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/assignment" class="btn btn-danger">
-          亲子作业
         </a>
       </li>
       <li class="action">
@@ -72,16 +77,6 @@
       <li class="action">
         <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/growing" class="btn btn-primary">
           成长档案设置
-        </a>
-      </li>
-      <li class="action">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/baby-status" class="btn btn-success">
-          每日育情设置
-        </a>
-      </li>
-      <li class="action" ng-class="{active : kg.isSelected('parents')}">
-        <a ng-click="goParents()" class="btn btn-warning">
-          家长联系方式管理
         </a>
       </li>
     </ul>
