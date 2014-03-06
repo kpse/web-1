@@ -1,5 +1,5 @@
 <div class="loading" ng-show="loading"/>
-<h3>与{{relationship.child.name}}的{{relationship.relationship}}{{relationship.parent.name || '家长'}}的通讯记录</h3>
+<h3>{{child.name}}的通讯记录</h3>
 <form class="form well">
   <textarea ng-bk-focus class="message-input" type="text" ng-model="message.content" placeholder="要发送的内容.." required/>
   <button ng-click="send(message)" class="btn btn-primary">快速回复</button>
@@ -8,16 +8,31 @@
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class=".col-xs-2">发言人</th>
-    <th class=".col-xs-7">通讯内容</th>
-    <th class=".col-xs-3">通讯时间</th>
+    <th class=".col-xs-2">姓名</th>
+    <th class=".col-xs-1">情绪</th>
+    <th class=".col-xs-1">进餐</th>
+    <th class=".col-xs-1">睡觉</th>
+    <th class=".col-xs-1">集体活动</th>
+    <th class=".col-xs-1">游戏</th>
+    <th class=".col-xs-1">锻炼</th>
+    <th class=".col-xs-1">自理能力</th>
+    <th class=".col-xs-1">礼貌</th>
+    <th class=".col-xs-1">最近评价时间</th>
+
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="c in conversations | filter: searchText | orderBy:'id':true " class="row" ng-click="preview(c)">
-    <td class=".col-xs-2">{{c.sender || '家长'}}</td>
-    <td class=".col-xs-7">{{c.content.substring(0,100)}}{{(c.content.length > 100) ? '...' : ''}}</td>
-    <td class=".col-xs-3">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm:ss'}}收到</td>
+  <tr ng-repeat="a in allAssess | filter: searchText | orderBy:'id':true " class="row" ng-click="preview(c)">
+    <td class=".col-xs-2">{{a.publisher}}</td>
+    <td class=".col-xs-1"><rating value="a.emotion" max="3" readonly="true"></rating></td>
+    <td class=".col-xs-1"><rating value="a.dining" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1"><rating value="a.rest" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1"><rating value="a.activity" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1"><rating value="a.game" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1"><rating value="a.exercise" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1"><rating value="a.self_care" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1"><rating value="a.manner" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1">{{a.timestamp | date:'yyyy年MM月dd日'}}</td>
   </tr>
   </tbody>
 </table>

@@ -35,19 +35,11 @@ angular.module('kulebaoAdmin')
                 r.child.recentStatus = r.child.status[0]
             scope.loading = false
 
-        scope.max = 3;
-        scope.isReadonly = false;
-
-        scope.hoveringOver = (value) ->
-          scope.overStar = value;
-          scope.percent = 100 * (value / scope.max)
-
-
-        scope.goDetail = (card) ->
+        scope.goDetail = (child) ->
           if (location.path().indexOf('/list') > 0 )
-            location.path location.path().replace(/\/list$/, '/card/' + card)
+            location.path location.path().replace(/\/list$/, '/child/' + child.child_id)
           else
-            location.path location.path().replace(/\/card\/\d+$/, '') + '/card/' + card
+            location.path location.path().replace(/\/child\/\d+$/, '') + '/child/' + child.child_id
 
 
     ]
@@ -55,26 +47,24 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'AssessCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService', '$modal',
+      '$location', 'schoolService', '$http', 'classService', 'assessService', 'childService', '$modal',
       '$popover', '$tooltip', 'employeeService'
-      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship, Modal, Popover, Tooltip,
+      (scope, rootScope, stateParams, location, School, $http, Class, Assess, Child, Modal, Popover, Tooltip,
        Employee) ->
         scope.adminUser = Employee.get()
 
         scope.loading = true
-        scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get ->
-          scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone).query ->
+        scope.child = Child.bind(school_id: stateParams.kindergarten, child_id: stateParams.child).get ->
+          scope.allAssess = Assess.bind(school_id: stateParams.kindergarten, child_id: stateParams.child).query ->
             scope.loading = false
             scope.message = scope.newMessage()
 
         scope.newMessage = ->
-          new Message
+          new Assess
             school_id: stateParams.kindergarten
-            phone: scope.relationship.parent.phone
-            content: ''
-            image: ''
+            child_id: scope.child.child_id
             timestamp: 0
-            sender: scope.adminUser.name
+            publisher: scope.adminUser.name
 
         scope.preview = (msg, option) ->
           rootScope.viewOption = _.extend reply: true, option
