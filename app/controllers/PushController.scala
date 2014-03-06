@@ -58,11 +58,21 @@ object PushController extends Controller {
   }
 
 
+  def deployStatus: Integer = {
+    // DeployStatus => 1: Developer 2: Production
+    Play.current.configuration.getString("ios.deployment").getOrElse("dev") match {
+      case "prod" => new Integer(2)
+      case _ => new Integer(1)
+    }
+  }
+
+
   def triggerSinglePush(check: CheckNotification) = {
     val channelClient = getClient
     val request: PushUnicastMessageRequest = new PushUnicastMessageRequest
     //device_type => 1: web 2: pc 3:android 4:ios 5:wp
     request.setDeviceType(new Integer(check.device))
+    request.setDeployStatus(deployStatus)
     request.setUserId(check.pushid)
     request.setMessageType(new Integer(0))
     Logger.info(Json.toJson(check).toString)
