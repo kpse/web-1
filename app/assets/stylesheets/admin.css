@@ -41,6 +41,10 @@
     max-height: 220px;
     max-width: 220px;
   }
+  .assess-image {
+    max-height: 180px;
+    max-width: 180px;
+  }
 }
 
 .select-button.active {
@@ -119,4 +123,9 @@
 
 .modal-content {
   width: 740px;
+}
+
+
+.rating {
+  cursor: pointer;
 }

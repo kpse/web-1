@@ -15,18 +15,18 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="r in relationships | filter: searchText" class="row" ng-click="goDetail(r.child)">
-    <td class=".col-xs-2">{{r.child.name}}</td>
-    <td class=".col-xs-1"><rating value="r.child.recentStatus.emotion" max="3" readonly="true"></rating></td>
-    <td class=".col-xs-1"><rating value="r.child.recentStatus.dining" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="r.child.recentStatus.rest" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="r.child.recentStatus.activity" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="r.child.recentStatus.game" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="r.child.recentStatus.exercise" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="r.child.recentStatus.self_care" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="r.child.recentStatus.manner" max="3" readonly="true" ></rating></td>
+  <tr ng-repeat="child in children | filter: searchText" class="row" ng-click="goDetail(child)">
+    <td class=".col-xs-2">{{child.name}}</td>
+    <td class=".col-xs-1"><rating value="child.recentStatus.emotion" max="3" readonly="true"></rating></td>
+    <td class=".col-xs-1"><rating value="child.recentStatus.dining" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1"><rating value="child.recentStatus.rest" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1"><rating value="child.recentStatus.activity" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1"><rating value="child.recentStatus.game" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1"><rating value="child.recentStatus.exercise" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1"><rating value="child.recentStatus.self_care" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1"><rating value="child.recentStatus.manner" max="3" readonly="true" ></rating></td>
 
-    <td class=".col-xs-3">{{r.child.recentStatus.timestamp | date:'yyyy年MM月dd日' }}</td>
+    <td class=".col-xs-3">{{child.recentStatus.timestamp | date:'yyyy年MM月dd日' }}</td>
   </tr>
   </tbody>
 </table>

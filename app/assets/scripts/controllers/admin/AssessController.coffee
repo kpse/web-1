@@ -22,24 +22,24 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'AssessInClassCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', 'classService', 'assessService', 'relationshipService',
-      (scope, rootScope, stateParams, location, School, Class, Assess, Relationship) ->
+      '$location', 'schoolService', 'classService', 'assessService', 'childService',
+      (scope, rootScope, stateParams, location, School, Class, Assess, Child) ->
         scope.loading = true
         scope.current_class = parseInt(stateParams.class_id)
 
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query()
-          scope.relationships = Relationship.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query ->
-            _.forEach scope.relationships, (r) ->
-              r.child.status = Assess.bind(school_id: stateParams.kindergarten, child_id: r.child.child_id, most: 1).query ->
-                r.child.recentStatus = r.child.status[0]
+          scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query ->
+            _.forEach scope.children, (c) ->
+              c.status = Assess.bind(school_id: stateParams.kindergarten, child_id: c.id, most: 1).query ->
+                c.recentStatus = c.status[0]
             scope.loading = false
 
         scope.goDetail = (child) ->
           if (location.path().indexOf('/list') > 0 )
-            location.path location.path().replace(/\/list$/, '/child/' + child.child_id)
+            location.path location.path().replace(/\/list$/, '/child/' + child.id)
           else
-            location.path location.path().replace(/\/child\/\d+$/, '') + '/child/' + child.child_id
+            location.path location.path().replace(/\/child\/\d+$/, '') + '/child/' + child.id
 
 
     ]
@@ -49,12 +49,19 @@ angular.module('kulebaoAdmin')
     [ '$scope', '$rootScope', '$stateParams',
       '$location', 'schoolService', '$http', 'classService', 'assessService', 'childService', '$modal',
       '$popover', '$tooltip', 'employeeService'
-      (scope, rootScope, stateParams, location, School, $http, Class, Assess, Child, Modal, Popover, Tooltip,
-       Employee) ->
+      (scope, rootScope, stateParams, location, School, $http, Class, Assess, Child, Modal, Popover, Tooltip, Employee) ->
         scope.adminUser = Employee.get()
 
         scope.loading = true
         scope.child = Child.bind(school_id: stateParams.kindergarten, child_id: stateParams.child).get ->
+          scope.refreshAssess()
+
+
+        scope.$on 'refreshAssess', ->
+          scope.refreshAssess()
+
+        scope.refreshAssess = ->
+          scope.loading = true
           scope.allAssess = Assess.bind(school_id: stateParams.kindergarten, child_id: stateParams.child).query ->
             scope.loading = false
             scope.message = scope.newMessage()
@@ -63,8 +70,16 @@ angular.module('kulebaoAdmin')
           new Assess
             school_id: stateParams.kindergarten
             child_id: scope.child.child_id
-            timestamp: 0
             publisher: scope.adminUser.name
+            emotion: 3
+            activity: 3
+            rest: 3
+            game: 3
+            self_care: 3
+            exercise: 3
+            manner: 3
+            dining: 3
+            comments: ''
 
         scope.preview = (msg, option) ->
           rootScope.viewOption = _.extend reply: true, option
@@ -90,9 +105,19 @@ angular.module('kulebaoAdmin')
 
         scope.create = ->
           rootScope.editingAssess = new Assess
-            child_id: parseInt stateParams.child
+            child_id: stateParams.child
             school_id: parseInt stateParams.kindergarten
             publisher: scope.adminUser.name
+            emotion: 3
+            activity: 3
+            rest: 3
+            game: 3
+            self_care: 3
+            exercise: 3
+            manner: 3
+            dining: 3
+            comments: ''
+
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/admin/add_assess.html'
@@ -109,6 +134,10 @@ angular.module('kulebaoAdmin')
           scope.assess = rootScope.editingAssess
           delete rootScope.editingAssess
 
+        scope.save = (assess)->
+          assess.$save ->
+            scope.$emit 'refreshAssess'
+            scope.$hide()
     ]
 
 angular.module('kulebaoAdmin')
