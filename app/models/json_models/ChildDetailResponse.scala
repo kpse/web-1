@@ -100,16 +100,25 @@ object Children {
         .on('child_id -> childId).as(childInformation singleOpt)
   }
 
-  def findAllInClass(kg: Long, classId: Option[Long]) = DB.withConnection {
+  def findAllInClass(kg: Long, classId: Option[Long], connected: Option[Boolean]) = DB.withConnection {
     implicit c =>
-      val sql = "select c.*, c2.class_name from childinfo c, classinfo c2 where c.class_id=c2.class_id and c.status=1 and c.school_id={kg}"
-      SQL(classId.map {
-        l => sql + "and c.class_id={classId} "
-      }.getOrElse(sql))
-        .on('classId -> classId.getOrElse(0),
-          'kg -> kg.toString).as(simple *)
+      val sql = "select c.*, c2.class_name from childinfo c, classinfo c2 where c.class_id=c2.class_id and c.status=1 and c.school_id={kg} "
+      SQL(generateSQL(sql, classId, connected))
+        .on(
+          'classId -> classId.getOrElse(0),
+          'kg -> kg.toString
+        ).as(simple *)
   }
 
+
+  def generateSQL(sql: String, classId: Option[Long], connected: Option[Boolean]): String = {
+    sql + classId.map {
+      l => " and c.class_id={classId} "
+    }.getOrElse("") + connected.map {
+      case (c) if c || c == 1 => " and child_id in (select child_id from relationmap r where r.status=1)"
+      case _ => ""
+    }.getOrElse("")
+  }
 
   def generateUpdate(update: ChildUpdate) = {
     Logger.info(update.toString)

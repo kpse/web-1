@@ -29,7 +29,7 @@ angular.module('kulebaoAdmin')
 
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query()
-          scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query ->
+          scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true).query ->
             _.forEach scope.children, (c) ->
               c.status = Assess.bind(school_id: stateParams.kindergarten, child_id: c.id, most: 1).query ->
                 c.recentStatus = c.status[0]
