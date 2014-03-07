@@ -12,8 +12,8 @@
   <tr ng-repeat="r in relationships | filter: searchText" class="row">
     <td class=".col-xs-2"><a ng-click="goDetail(r.card)">{{r.child.name}}的{{r.relationship}}</a></td>
     <td class=".col-xs-2"><a ng-click="goDetail(r.card)">{{r.parent.name}}</a></td>
-    <td class=".col-xs-7">{{r.parent.lastMessage.content}}</td>
-    <td class=".col-xs-3">{{r.parent.lastMessage.timestamp | date:'yyyy年MM月dd日 HH:mm:ss' }}</td>
+    <td class=".col-xs-7">{{r.parent.lastMessage.content || 'N/A'}}</td>
+    <td class=".col-xs-3">{{(r.parent.lastMessage.timestamp | date:'yyyy年MM月dd日 HH:mm:ss') || 'N/A'}}</td>
   </tr>
   </tbody>
 </table>

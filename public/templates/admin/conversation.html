@@ -9,15 +9,22 @@
   <thead>
   <tr class="row">
     <th class=".col-xs-2">发言人</th>
-    <th class=".col-xs-7">通讯内容</th>
-    <th class=".col-xs-3">通讯时间</th>
+    <th class=".col-xs-5">通讯内容</th>
+    <th class=".col-xs-4">图片</th>
+    <th class=".col-xs-1">通讯时间</th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="c in conversations | filter: searchText | orderBy:'id':true " class="row" ng-click="preview(c)">
     <td class=".col-xs-2">{{c.sender || '家长'}}</td>
-    <td class=".col-xs-7">{{c.content.substring(0,100)}}{{(c.content.length > 100) ? '...' : ''}}</td>
-    <td class=".col-xs-3">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm:ss'}}收到</td>
+    <td class=".col-xs-5">{{c.content.substring(0,100)}}{{(c.content.length > 100) ? '...' : ''}}</td>
+    <th class=".col-xs-4">
+      <div class="image-preview">
+        <img class="conversation-image img-responsive" ng-src="{{c.image}}"
+             alt="图片"/>
+      </div>
+    </th>
+    <td class=".col-xs-1">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm:ss'}}收到</td>
   </tr>
   </tbody>
 </table>
