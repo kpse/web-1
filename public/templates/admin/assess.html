@@ -1,10 +1,6 @@
 <div class="loading" ng-show="loading"/>
 <h3>{{child.name}}的通讯记录</h3>
-<form class="form well">
-  <textarea ng-bk-focus class="message-input" type="text" ng-model="message.content" placeholder="要发送的内容.." required/>
-  <button ng-click="send(message)" class="btn btn-primary">快速回复</button>
-  <button ng-click="messageEditing(message)" class="btn btn-success">编辑回复</button>
-</form>
+<a class="btn btn-primary pull-right adding-button" ng-show="create" ng-click="create()">添加</a>
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
@@ -22,16 +18,32 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="a in allAssess | filter: searchText | orderBy:'id':true " class="row" ng-click="preview(c)">
+  <tr ng-repeat="a in allAssess | filter: searchText | orderBy:'timestamp':true " class="row">
     <td class=".col-xs-2">{{a.publisher}}</td>
-    <td class=".col-xs-1"><rating value="a.emotion" max="3" readonly="true"></rating></td>
-    <td class=".col-xs-1"><rating value="a.dining" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="a.rest" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="a.activity" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="a.game" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="a.exercise" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="a.self_care" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="a.manner" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1">
+      <rating value="a.emotion" max="3" readonly="true"></rating>
+    </td>
+    <td class=".col-xs-1">
+      <rating value="a.dining" max="3" readonly="true"></rating>
+    </td>
+    <td class=".col-xs-1">
+      <rating value="a.rest" max="3" readonly="true"></rating>
+    </td>
+    <td class=".col-xs-1">
+      <rating value="a.activity" max="3" readonly="true"></rating>
+    </td>
+    <td class=".col-xs-1">
+      <rating value="a.game" max="3" readonly="true"></rating>
+    </td>
+    <td class=".col-xs-1">
+      <rating value="a.exercise" max="3" readonly="true"></rating>
+    </td>
+    <td class=".col-xs-1">
+      <rating value="a.self_care" max="3" readonly="true"></rating>
+    </td>
+    <td class=".col-xs-1">
+      <rating value="a.manner" max="3" readonly="true"></rating>
+    </td>
     <td class=".col-xs-1">{{a.timestamp | date:'yyyy年MM月dd日'}}</td>
   </tr>
   </tbody>

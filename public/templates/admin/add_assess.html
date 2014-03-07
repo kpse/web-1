@@ -1,0 +1,50 @@
+<div class="panel panel-default" ng-controller="NewAssessCtrl">
+    <div class="panel-heading">
+      <h3>{{child.name}}最近的表现</h3>
+    </div>
+    <div class="panel-body">
+      <label class="control-label">情绪</label>
+      <div class=".col-xs-off .col-xs-2">{{assess.publisher}}</div>
+      <div >
+        <label class="control-label">情绪</label>
+        <rating value="assess.emotion" max="3" readonly="false"></rating>
+      </div>
+      <div >
+        <label class="control-label">进餐</label>
+        <rating value="assess.dining" max="3" readonly="false"></rating>
+      </div>
+      <div >
+        <label class="control-label">睡觉</label>
+        <rating value="assess.rest" max="3" readonly="false"></rating>
+      </div>
+      <div >
+        <label class="control-label">集体活动</label>
+        <rating value="assess.activity" max="3" readonly="false"></rating>
+      </div>
+      <div >
+        <label class="control-label">游戏</label>
+        <rating value="assess.game" max="3" readonly="false"></rating>
+      </div>
+      <div >
+        <label class="control-label">锻炼</label>
+        <rating value="assess.exercise" max="3" readonly="false"></rating>
+      </div>
+      <div >
+        <label class="control-label">生活自理</label>
+        <rating value="assess.self_care" max="3" readonly="false"></rating>
+      </div>
+      <div >
+        <label class="control-label">礼貌</label>
+        <rating value="assess.manner" max="3" readonly="false"></rating>
+      </div>
+
+    </div>
+    <div class="panel-footer">
+      <div class="loading" ng-show="loading"/>
+      <div class="btn-group">
+        <button class="btn btn-default" ng-click="$hide()">取消</button>
+        <button class="btn btn-info" ng-click="save(assess)">保存</button>
+      </div>
+    </div>
+
+</div>

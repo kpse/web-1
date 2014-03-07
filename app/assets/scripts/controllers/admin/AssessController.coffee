@@ -22,7 +22,7 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'AssessInClassCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', 'classService', 'assessService', 'relationshipService'
+      '$location', 'schoolService', 'classService', 'assessService', 'relationshipService',
       (scope, rootScope, stateParams, location, School, Class, Assess, Relationship) ->
         scope.loading = true
         scope.current_class = parseInt(stateParams.class_id)
@@ -87,32 +87,28 @@ angular.module('kulebaoAdmin')
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/admin/add_message.html'
+
+        scope.create = ->
+          rootScope.editingAssess = new Assess
+            child_id: parseInt stateParams.child
+            school_id: parseInt stateParams.kindergarten
+            publisher: scope.adminUser.name
+          scope.currentModal = Modal
+            scope: scope
+            contentTemplate: 'templates/admin/add_assess.html'
     ]
 
 angular.module('kulebaoAdmin')
 .controller 'NewAssessCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService', 'uploadService'
-      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship, uploadService) ->
-        if rootScope.editingMessage is undefined
+      '$location', 'schoolService', '$http', 'classService', 'childService', 'assessService', 'uploadService'
+      (scope, rootScope, stateParams, location, School, $http, Class, Child, Assess, uploadService) ->
+        if rootScope.editingAssess is undefined
           scope.$hide()
         else
-          scope.message = rootScope.editingMessage
-          delete rootScope.editingParent
+          scope.assess = rootScope.editingAssess
+          delete rootScope.editingAssess
 
-        scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone, most: 5).query()
-        scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get()
-
-        scope.uploadPic = (message, pic) ->
-          upload pic, (url) ->
-            scope.$apply ->
-              message.image = url if url isnt undefined
-
-        upload = (file, callback)->
-          return callback(undefined) if file is undefined
-          $http.get('/ws/fileToken?bucket=suoqin-test').success (data)->
-            uploadService.send file, data.token, (remoteFile) ->
-              callback(remoteFile.url)
     ]
 
 angular.module('kulebaoAdmin')

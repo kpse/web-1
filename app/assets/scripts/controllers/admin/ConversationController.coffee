@@ -101,7 +101,7 @@ angular.module('kulebaoAdmin')
           scope.$hide()
         else
           scope.message = rootScope.editingMessage
-          delete rootScope.editingParent
+          delete rootScope.editingMessage
 
         scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone, most: 5).query()
         scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get()
