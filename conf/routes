@@ -94,6 +94,7 @@ DELETE        /kindergarten/:kg/child/:childId/assess/:assessId                 
 
 
 GET           /employee                                                          controllers.EmployeeController.index
+POST          /employee                                                          controllers.EmployeeController.create
 GET           /employee/:phone                                                   controllers.EmployeeController.show(phone: String)
 
 

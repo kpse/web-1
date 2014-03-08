@@ -14,6 +14,28 @@ case class Employee(id: String, name: String, phone: String, gender: Int, workgr
 
 
 object Employee {
+  def create(employee: Employee) = DB.withConnection {
+    implicit c =>
+      val employeeId = "3_%d".format(System.currentTimeMillis)
+      SQL("insert into employeeinfo (name, phone, gender, workgroup, workduty, picurl, birthday, school_id, login_name, login_password, update_at, employee_id) " +
+        "values ({name},{phone},{gender},{workgroup},{workduty},{portrait},{birthday},{school_id},{login_name},{login_password},{update_at}, {employee_id})")
+        .on(
+          'employee_id -> employeeId,
+          'name -> employee.name,
+          'phone -> employee.phone,
+          'gender -> employee.gender,
+          'workgroup -> employee.workgroup,
+          'workduty -> employee.workduty,
+          'portrait -> employee.portrait,
+          'birthday -> employee.birthday,
+          'school_id -> employee.school_id,
+          'login_name -> employee.login_name,
+          'login_password -> md5(employee.login_name),
+          'update_at -> System.currentTimeMillis
+        ).executeInsert()
+      show(employee.phone)
+  }
+
 
   def authenticate(loginName: String, password: String) = DB.withConnection {
     implicit c =>
