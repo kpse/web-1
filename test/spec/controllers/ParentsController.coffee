@@ -20,6 +20,11 @@ describe 'Controller: ParentsCtrl', () ->
         kindergarten: 93740362
     }
     $httpBackend = _$httpBackend_
+
+    $httpBackend.expectGET('/ws/fileToken?bucket=suoqin-test')
+    .respond
+        token: 'token'
+
     $httpBackend.expectGET('/kindergarten/93740362')
     .respond
         school_id: 93740362

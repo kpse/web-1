@@ -90,6 +90,6 @@ object WSController extends Controller {
     val putPolicy = new PutPolicy(bucket)
     putPolicy.returnBody = "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}";
     val uptoken = putPolicy.token(new Mac(ACCESS_KEY, SECRET_KEY))
-    Ok(Json.toJson(new UpToken(uptoken)))
+    Ok(Json.toJson(UpToken(uptoken)))
   }
 }
