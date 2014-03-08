@@ -14,6 +14,15 @@ case class Employee(id: String, name: String, phone: String, gender: Int, workgr
 
 
 object Employee {
+  def deleteInSchool(kg: Long, phone: String) = DB.withConnection {
+    implicit c =>
+      SQL("update employeeinfo set status=0 where phone={phone} and school_id={kg}")
+        .on(
+          'kg -> kg.toString,
+          'phone -> phone
+        ).execute()
+  }
+
   def allInSchool(kg: Long) = DB.withConnection {
     implicit c =>
       SQL("select * from employeeinfo where status=1 and school_id={kg}")

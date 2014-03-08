@@ -31,4 +31,8 @@ object EmployeeController extends Controller {
   def indexInSchool(kg: Long) = Action {
     Ok(Json.toJson(Employee.allInSchool(kg)))
   }
+
+  def deleteInSchool(kg: Long, phone: String) = Action {
+    Ok(Json.toJson(Employee.deleteInSchool(kg, phone)))
+  }
 }

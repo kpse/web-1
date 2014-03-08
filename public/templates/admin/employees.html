@@ -1,20 +1,11 @@
 <div class="panel panel-default">
-  <div class="panel-heading">{{heading}}</div>
+  <div class="panel-heading">校内教职员信息</div>
   <div class="panel-body">
     <span>检索：</span>
     <input ng-model="searchText"/>
     <span>输入内容进行查找</span>
   </div>
-  <h2>校内教职员信息</h2>
-
-  <div class="well employee-search-panel">
-    <span>检索：</span>
-    <input ng-model="searchText"/>
-
-    <div class="btn-group">
-      <button type="submit" class="btn btn-primary" ng-disabled="loading" ng-click="addEmployee()">增加老师</button>
-    </div>
-  </div>
+  <button type="submit" class="btn btn-primary pull-right adding-for-individual" ng-disabled="loading" ng-click="addEmployee()">增加</button>
   <div class="loading" ng-show="loading"/>
   <table class="table table-hover table-condensed employee-list">
     <thead>
@@ -32,9 +23,9 @@
       <td class=".col-xs-3">建设中</td>
       <td class=".col-xs-2">
         <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
-                ng-confirm-click="delete(employee)">删除
+                ng-confirm-click="delete(e)">删除
         </button>
-        <button class="btn btn-xs btn-warning" ng-click="edit(employee)">编辑
+        <button class="btn btn-xs btn-warning" ng-click="edit(e)">编辑
         </button>
       </td>
     </tr>

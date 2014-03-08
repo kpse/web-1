@@ -15,4 +15,15 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
         scope.loading = true
         scope.employees = SchoolEmployee.query school_id: $stateParams.kindergarten, ->
           scope.loading = false
+
+      scope.addEmployee = ->
+
+
+      scope.edit = (employee) ->
+
+
+      scope.delete = (employee) ->
+        employee.$delete ->
+          scope.refresh()
+
   ]
