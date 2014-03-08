@@ -125,7 +125,3 @@ GET           /images/*file                                                     
 #anglarjs template pages
 GET           /templates/*file                                                   controllers.Static.at(path="/public/templates", file)
 GET           /*college/templates/*file                                          controllers.Static.ignoreCollege(path="/public/templates", file, college)
-
-#deprecated
-GET           /kindergarten/:kg/assess/:childId                                  controllers.AssessController.index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int])
-POST          /kindergarten/:kg/assess/:childId                                  controllers.AssessController.createOrUpdate(kg: Long, childId: String)
