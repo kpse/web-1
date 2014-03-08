@@ -104,6 +104,11 @@ class Config
         templateUrl: 'templates/admin/assignment_in_class.html',
         controller: 'AssignmentsInClassCtrl'
 
+    .state 'kindergarten.employee',
+        url: '/employee',
+        templateUrl: 'templates/admin/employees.html',
+        controller: 'EmployeesListCtrl'
+
     .state('kindergarten.wip',
         url: '/wip',
         template: '<div>Sorry, we are still in Building...</div><image class="img-responsive" src="assets/images/wip.gif"></image>',

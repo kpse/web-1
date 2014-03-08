@@ -27,4 +27,8 @@ object EmployeeController extends Controller {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
+
+  def indexInSchool(kg: Long) = Action {
+    Ok(Json.toJson(Employee.allInSchool(kg)))
+  }
 }

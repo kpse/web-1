@@ -14,6 +14,14 @@ case class Employee(id: String, name: String, phone: String, gender: Int, workgr
 
 
 object Employee {
+  def allInSchool(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select * from employeeinfo where status=1 and school_id={kg}")
+        .on(
+          'kg -> kg.toString
+        ).as(simple *)
+  }
+
   def create(employee: Employee) = DB.withConnection {
     implicit c =>
       val employeeId = "3_%d".format(System.currentTimeMillis)

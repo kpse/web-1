@@ -89,9 +89,12 @@ POST          /kindergarten/:kg/conversation/:phone                             
 
 
 GET           /kindergarten/:kg/child/:childId/assess                            controllers.AssessController.index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int])
+
 POST          /kindergarten/:kg/child/:childId/assess                            controllers.AssessController.createOrUpdate(kg: Long, childId: String)
 DELETE        /kindergarten/:kg/child/:childId/assess/:assessId                  controllers.AssessController.delete(kg: Long, childId: String, assessId: Long)
 
+
+GET           /kindergarten/:kg/employee                                         controllers.EmployeeController.indexInSchool(kg: Long)
 
 GET           /employee                                                          controllers.EmployeeController.index
 POST          /employee                                                          controllers.EmployeeController.create
