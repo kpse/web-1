@@ -22,4 +22,8 @@ object AssessController extends Controller {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
+
+  def delete(kg: Long, childId: String, assessId: Long) = Action {
+    Ok(Json.toJson(Assess.delete(kg, childId, assessId)))
+  }
 }

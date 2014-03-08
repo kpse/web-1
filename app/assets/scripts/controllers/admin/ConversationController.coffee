@@ -58,9 +58,9 @@ angular.module('kulebaoAdmin')
         scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get ->
           scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone).query ->
             scope.loading = false
-            scope.message = scope.newMessage()
+            scope.message = scope.newAssess()
 
-        scope.newMessage = ->
+        scope.newAssess = ->
           new Message
             school_id: stateParams.kindergarten
             phone: scope.relationship.parent.phone
@@ -81,7 +81,7 @@ angular.module('kulebaoAdmin')
         scope.send = (msg) ->
           return if msg.content is ''
           msg.$save ->
-            scope.message = scope.newMessage()
+            scope.message = scope.newAssess()
             scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone).query()
 
         scope.messageEditing = (msg)->

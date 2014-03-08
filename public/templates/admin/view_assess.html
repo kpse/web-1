@@ -7,7 +7,7 @@
     <div class="row">
       <div class="form-group col-xs-5">
         <div class="image-preview">
-          <img class="newAssess-image img-responsive" ng-src="{{child.portrait}}"
+          <img class="assess-image img-responsive" ng-src="{{child.portrait}}"
                alt="照片"/>
         </div>
       </div>
@@ -22,49 +22,49 @@
         <tr class="row">
           <td class="control-label col-xs-5">情绪</td>
           <td>
-            <rating class="col-xs-6 rating" value="newAssess.emotion" max="3" readonly="false"></rating>
+            <rating class="col-xs-6 rating" value="assess.emotion" max="3" readonly="true"></rating>
           </td>
         </tr>
         <tr class="row">
           <td class="control-label ">进餐</td>
           <td>
-            <rating class="col-xs-6 rating" value="newAssess.dining" max="3" readonly="false"></rating>
+            <rating class="col-xs-6 rating" value="assess.dining" max="3" readonly="true"></rating>
           </td>
         </tr>
         <tr class="row">
           <td class="control-label col-xs-5">睡觉</td>
           <td>
-            <rating class="col-xs-6 rating" value="newAssess.rest" max="3" readonly="false"></rating>
+            <rating class="col-xs-6 rating" value="assess.rest" max="3" readonly="true"></rating>
           </td>
         </tr>
         <tr class="row">
           <td class="control-label col-xs-5">集体活动</td>
           <td>
-            <rating class="col-xs-6 rating" value="newAssess.activity" max="3" readonly="false"></rating>
+            <rating class="col-xs-6 rating" value="assess.activity" max="3" readonly="true"></rating>
           </td>
         </tr>
         <tr class="row">
           <td class="control-label col-xs-5">游戏</td>
           <td>
-            <rating class="col-xs-6 rating" value="newAssess.game" max="3" readonly="false"></rating>
+            <rating class="col-xs-6 rating" value="assess.game" max="3" readonly="true"></rating>
           </td>
         </tr>
         <tr class="row">
           <td class="control-label col-xs-5">锻炼</td>
           <td>
-            <rating class="col-xs-6 rating" value="newAssess.exercise" max="3" readonly="false"></rating>
+            <rating class="col-xs-6 rating" value="assess.exercise" max="3" readonly="true"></rating>
           </td>
         </tr>
         <tr class="row">
           <td class="control-label col-xs-5">生活自理</td>
           <td>
-            <rating class="col-xs-6 rating" value="newAssess.self_care" max="3" readonly="false"></rating>
+            <rating class="col-xs-6 rating" value="assess.self_care" max="3" readonly="true"></rating>
           </td>
         </tr>
         <tr class="row">
           <td class="control-label col-xs-5">礼貌</td>
           <td>
-            <rating class="col-xs-6 rating" value="newAssess.manner" max="3" readonly="false"></rating>
+            <rating class="col-xs-6 rating" value="assess.manner" max="3" readonly="true"></rating>
           </td>
         </tr>
         </tbody>
@@ -72,20 +72,20 @@
     </div>
     <div class="form-group">
       <label for="comments" class="control-label">留言</label>
-      <textarea ng-model="newAssess.comments" placeholder="有什么要对宝宝父母说的吗？" class="form-control"></textarea>
+      <textarea id="comments" ng-model="assess.comments" class="form-control" ng-disabled="true"></textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-xs-6">评价老师</label>
 
-    <p class="form-control-static col-xs-6">{{newAssess.publisher}}</p>
+    <p class="form-control-static col-xs-6">{{assess.publisher}}</p>
   </div>
   <div class="clearfix"></div>
   <div class="panel-footer">
     <div class="loading" ng-show="loading"/>
     <div class="btn-group">
-      <button class="btn btn-default" ng-click="$hide()">取消</button>
-      <button class="btn btn-info" ng-click="save(newAssess)">保存</button>
+      <button class="btn btn-primary" ng-click="$hide()">关闭</button>
+      <button class="btn btn-danger" ng-confirm-msg="你确定要删除吗?" ng-confirm-click="remove(assess)">删除</button>
     </div>
   </div>
 

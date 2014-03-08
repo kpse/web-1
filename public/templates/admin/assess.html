@@ -1,6 +1,6 @@
 <div class="loading" ng-show="loading"/>
 <h3 class="pull-left">{{child.name}}最近的评价</h3>
-<a class="btn btn-primary pull-right adding-button" ng-show="create" ng-click="create()">添加</a>
+<a class="btn btn-primary pull-right adding-button adding-for-individual" ng-show="create" ng-click="create()">添加</a>
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
@@ -18,7 +18,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="a in allAssess | filter: searchText | orderBy:'timestamp':true " class="row">
+  <tr ng-repeat="a in allAssess | filter: searchText | orderBy:'timestamp':true " class="row" ng-click="preview(a)">
     <td class=".col-xs-2">{{a.publisher}}</td>
     <td class=".col-xs-1">
       <rating value="a.emotion" max="3" readonly="true"></rating>

@@ -25,6 +25,16 @@ case class Assess(id: Option[Long], timestamp: Option[Long], publisher: String, 
 }
 
 object Assess {
+  def delete(kg: Long, childId: String, assessId: Long) = DB.withConnection {
+    implicit c =>
+      SQL("delete from assess where school_id={kg} and child_id={child_id} and uid = {uid}")
+        .on(
+          'kg -> kg.toString,
+          'child_id -> childId,
+          'uid -> assessId
+        ).execute
+  }
+
 
   def findById(id: Option[Long]) = DB.withConnection {
     implicit c =>
