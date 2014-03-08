@@ -106,12 +106,6 @@ angular.module('kulebaoAdmin')
           $scope.saving = false
           $location.path($location.path().replace(/\/[^\/]+$/, '/list'))
 
-        upload = (file, callback)->
-          return callback(undefined) if file is undefined
-          $http.get('/ws/fileToken?bucket=suoqin-test').success (data)->
-            uploadService.send file, data.token, (remoteFile) ->
-              callback(remoteFile.url)
-
         $scope.save = (parent) ->
           $scope.saving = true
           console.log 'parent changed: ' + $rootScope.parentChanged
@@ -132,7 +126,7 @@ angular.module('kulebaoAdmin')
             $location.path($location.path().replace(/\/[^\/]+$/, '/connect_child'))
 
         $scope.uploadPic = (person, pic) ->
-          upload pic, (url) ->
+          uploadService pic, (url) ->
             $scope.$apply ->
               person.portrait = url if url isnt undefined
 

@@ -126,7 +126,7 @@ angular.module('kulebaoAdmin')
 .controller 'addParentCtrl',
     ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
      'relationshipService', '$modal', 'childService', '$http', 'uploadService',
-      (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, modal, Child, $http, uploadService) ->
+      (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, modal, Child, $http, Upload) ->
         rootScope.tabName = 'relationship'
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.bind({school_id: stateParams.kindergarten}).query()
@@ -156,14 +156,8 @@ angular.module('kulebaoAdmin')
           undefined isnt _.find scope.parents, (p) ->
             (p.phone == parent.phone && p.id != parent.id)
 
-        upload = (file, callback)->
-          return callback(undefined) if file is undefined
-          $http.get('/ws/fileToken?bucket=suoqin-test').success (data)->
-            uploadService.send file, data.token, (remoteFile) ->
-              callback(remoteFile.url)
-
         scope.uploadPic = (person, pic) ->
-          upload pic, (url) ->
+          Upload pic, (url) ->
             scope.$apply ->
               person.portrait = url if url isnt undefined
     ]
@@ -172,7 +166,7 @@ angular.module('kulebaoAdmin')
 .controller 'addChildCtrl',
     ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
      'relationshipService', '$modal', 'childService', '$http', 'uploadService',
-      (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, modal, Child, $http, uploadService) ->
+      (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, modal, Child, $http, Upload) ->
         rootScope.tabName = 'relationship'
         scope.loading = true
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
@@ -198,14 +192,8 @@ angular.module('kulebaoAdmin')
             scope.$hide()
             scope.$emit 'refreshRelationship'
 
-        upload = (file, callback)->
-          return callback(undefined) if file is undefined
-          $http.get('/ws/fileToken?bucket=suoqin-test').success (data)->
-            uploadService.send file, data.token, (remoteFile) ->
-              callback(remoteFile.url)
-
         scope.uploadPic = (person, pic) ->
-          upload pic, (url) ->
+          Upload pic, (url) ->
             scope.$apply ->
               person.portrait = url if url isnt undefined
     ]

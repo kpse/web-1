@@ -3,7 +3,7 @@
 angular.module('kulebaoAdmin')
 .controller 'IntroCtrl', [ '$scope', '$rootScope', '$stateParams',
                            '$location', 'schoolService', '$http', 'uploadService', '$timeout', '$cacheFactory',
-  (scope, rootScope, stateParams, location, School, $http, uploadService, $timeout, $cacheFactory) ->
+  (scope, rootScope, stateParams, location, School, $http, Upload, $timeout, $cacheFactory) ->
     scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
       scope.school = scope.kindergarten.school_info
 
@@ -26,14 +26,8 @@ angular.module('kulebaoAdmin')
             scope.school_changed = false
           , 0, true
 
-    upload = (file, callback)->
-      return callback(undefined) if file is undefined
-      $http.get('/ws/fileToken?bucket=suoqin-test').success (data)->
-        uploadService.send file, data.token, (remoteFile) ->
-          callback(remoteFile.url)
-
     scope.uploadPic = (pic) ->
-      upload pic, (url) ->
+      Upload pic, (url) ->
         scope.$apply ->
           scope.school.school_logo_url = url if url isnt undefined
 

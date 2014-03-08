@@ -1,10 +1,10 @@
 'use strict'
 
 tokenService = ($http) ->
-  $http({method: 'GET', url:'/ws/fileToken?bucket=suoqin-test'})
+  $http({method: 'GET', url: '/ws/fileToken?bucket=suoqin-test'})
 
 
-uploadService = () ->
+qiniuService = (tokenService) ->
   send: (file, token, successCallback) ->
     data = new FormData()
     xhr = new XMLHttpRequest()
@@ -22,14 +22,23 @@ uploadService = () ->
     xhr.open "POST", "http://up.qiniu.com"
     xhr.send data
 
+uploadService = (qiniuService, $http) ->
+  (file, callback) ->
+    return callback(undefined) if file is undefined
+    $http.get('/ws/fileToken?bucket=suoqin-test').success (data)->
+      qiniuService.send file, data.token, (remoteFile) ->
+        callback(remoteFile.url)
+
 angular.module('kulebaoAdmin')
-.factory('tokenService', ['$http', tokenService])
-.factory('uploadService', uploadService)
+.factory 'tokenService', ['$http', tokenService]
+angular.module('kulebaoAdmin')
+.factory 'qiniuService', ['tokenService', qiniuService]
+angular.module('kulebaoAdmin')
+.factory 'uploadService', ['qiniuService', '$http', uploadService]
 
 
 angular.module('kulebaoAdmin').directive "fileupload", ->
   link: (scope, element, attributes) ->
-
     element.bind "change", (e) ->
       scope.$apply ->
         scope[attributes.fileupload] = e.target.files[0]

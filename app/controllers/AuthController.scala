@@ -40,9 +40,9 @@ object Auth extends Controller {
           val login = Employee.authenticate(user._1, user._2).get
           Logger.info(login.toString)
           if (login.login_name == "operator")
-            Redirect("/operation").withSession("username" -> login.login_name, "phone" -> login.phone, "name" -> login.name, "id" -> login.id)
+            Redirect("/operation").withSession("username" -> login.login_name, "phone" -> login.phone, "name" -> login.name, "id" -> login.id.getOrElse(""))
           else
-            Redirect("/admin#/kindergarten/%d".format(login.school_id)).withSession("username" -> login.name, "phone" -> login.phone, "name" -> login.name, "id" -> login.id)
+            Redirect("/admin#/kindergarten/%d".format(login.school_id)).withSession("username" -> login.name, "phone" -> login.phone, "name" -> login.name, "id" -> login.id.getOrElse(""))
         }
 
       )

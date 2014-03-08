@@ -95,7 +95,7 @@ DELETE        /kindergarten/:kg/child/:childId/assess/:assessId                 
 
 
 GET           /kindergarten/:kg/employee                                         controllers.EmployeeController.indexInSchool(kg: Long)
-DELETE           /kindergarten/:kg/employee/:phone                                         controllers.EmployeeController.deleteInSchool(kg: Long, phone: String)
+DELETE        /kindergarten/:kg/employee/:phone                                  controllers.EmployeeController.deleteInSchool(kg: Long, phone: String)
 
 GET           /employee                                                          controllers.EmployeeController.index
 POST          /employee                                                          controllers.EmployeeController.create

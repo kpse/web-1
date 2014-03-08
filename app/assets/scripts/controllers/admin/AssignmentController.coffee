@@ -62,7 +62,7 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'AssignmentCtrl',
     [ '$scope', '$rootScope', '$http', 'uploadService',
-      (scope, rootScope, $http, uploadService) ->
+      (scope, rootScope, $http, Upload) ->
         if rootScope.editingAssignment isnt undefined
           scope.assignment = rootScope.editingAssignment
         else
@@ -73,14 +73,8 @@ angular.module('kulebaoAdmin')
             scope.$hide()
             scope.$emit 'refreshAssignments'
 
-        upload = (file, callback)->
-          return callback(undefined) if file is undefined
-          $http.get('/ws/fileToken?bucket=suoqin-test').success (data)->
-            uploadService.send file, data.token, (remoteFile) ->
-              callback(remoteFile.url)
-
         scope.uploadPic = (assignment, pic) ->
-          upload pic, (url) ->
+          Upload pic, (url) ->
             scope.$apply ->
               assignment.icon_url = url if url isnt undefined
 

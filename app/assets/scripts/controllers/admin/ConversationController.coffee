@@ -96,7 +96,7 @@ angular.module('kulebaoAdmin')
 .controller 'AddMessageCtrl',
     [ '$scope', '$rootScope', '$stateParams',
       '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService', 'uploadService'
-      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship, uploadService) ->
+      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship, Upload) ->
         if rootScope.editingMessage is undefined
           scope.$hide()
         else
@@ -107,15 +107,9 @@ angular.module('kulebaoAdmin')
         scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get()
 
         scope.uploadPic = (message, pic) ->
-          upload pic, (url) ->
+          Upload pic, (url) ->
             scope.$apply ->
               message.image = url if url isnt undefined
-
-        upload = (file, callback)->
-          return callback(undefined) if file is undefined
-          $http.get('/ws/fileToken?bucket=suoqin-test').success (data)->
-            uploadService.send file, data.token, (remoteFile) ->
-              callback(remoteFile.url)
     ]
 
 angular.module('kulebaoAdmin')
