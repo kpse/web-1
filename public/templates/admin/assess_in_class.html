@@ -1,4 +1,4 @@
-<div class="loading" ng-show="loading" />
+<div class="loading" ng-show="loading"/>
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
@@ -17,16 +17,73 @@
   <tbody>
   <tr ng-repeat="child in children | filter: searchText" class="row" ng-click="goDetail(child)">
     <td class=".col-xs-2">{{child.name}}</td>
-    <td class=".col-xs-1"><rating value="child.recentStatus.emotion" max="3" readonly="true"></rating></td>
-    <td class=".col-xs-1"><rating value="child.recentStatus.dining" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="child.recentStatus.rest" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="child.recentStatus.activity" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="child.recentStatus.game" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="child.recentStatus.exercise" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="child.recentStatus.self_care" max="3" readonly="true" ></rating></td>
-    <td class=".col-xs-1"><rating value="child.recentStatus.manner" max="3" readonly="true" ></rating></td>
+    <td class=".col-xs-1">
+      <div ng-show="child.recentStatus">
+        <rating value="child.recentStatus.emotion" max="3" readonly="true"></rating>
+      </div>
+      <div ng-hide="child.recentStatus">
+        N/A
+      </div>
+    </td>
+    <td class=".col-xs-1">
+      <div ng-show="child.recentStatus">
+        <rating value="child.recentStatus.dining" max="3" readonly="true"></rating>
+      </div>
+      <div ng-hide="child.recentStatus">
+        N/A
+      </div>
+    </td>
+    </td>
+    <td class=".col-xs-1">
+      <div ng-show="child.recentStatus">
+        <rating value="child.recentStatus.rest" max="3" readonly="true"></rating>
+      </div>
+      <div ng-hide="child.recentStatus">
+        N/A
+      </div>
+    </td>
+    <td class=".col-xs-1">
+      <div ng-show="child.recentStatus">
+        <rating value="child.recentStatus.activity" max="3" readonly="true"></rating>
+      </div>
+      <div ng-hide="child.recentStatus">
+        N/A
+      </div>
+    </td>
+    <td class=".col-xs-1">
+      <div ng-show="child.recentStatus">
+        <rating value="child.recentStatus.game" max="3" readonly="true"></rating>
+      </div>
+      <div ng-hide="child.recentStatus">
+        N/A
+      </div>
+    </td>
+    <td class=".col-xs-1">
+      <div ng-show="child.recentStatus">
+        <rating value="child.recentStatus.exercise" max="3" readonly="true"></rating>
+      </div>
+      <div ng-hide="child.recentStatus">
+        N/A
+      </div>
+    </td>
+    <td class=".col-xs-1">
+      <div ng-show="child.recentStatus">
+        <rating value="child.recentStatus.self_care" max="3" readonly="true"></rating>
+      </div>
+      <div ng-hide="child.recentStatus">
+        N/A
+      </div>
+    </td>
+    <td class=".col-xs-1">
+      <div ng-show="child.recentStatus">
+        <rating value="child.recentStatus.manner" max="3" readonly="true"></rating>
+      </div>
+      <div ng-hide="child.recentStatus">
+        N/A
+      </div>
+    </td>
 
-    <td class=".col-xs-3">{{child.recentStatus.timestamp | date:'yyyy年MM月dd日' }}</td>
+    <td class=".col-xs-3">{{(child.recentStatus.timestamp | date:'yyyy年MM月dd日') || 'N/A' }}</td>
   </tr>
   </tbody>
 </table>
