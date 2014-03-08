@@ -14,7 +14,7 @@
         <ul class="dropdown-menu" role="menu">
           <li><a href="#">Action</a></li>
           <li><a href="#">Another action</a></li>
-          <li><a href="#">Something else here</a></li>
+          <li><a ng-href="/admin">去学校页面</a></li>
           <li class="divider"></li>
           <li><a class="logout-link" href="/logout">退出登陆</a></li>
         </ul>
@@ -38,6 +38,11 @@
       <li class="action" ng-class="{active : isSelected('feedback')}">
         <a ng-href="#/main/feedback" class="btn btn-warning">
           家长反馈跟踪
+        </a>
+      </li>
+      <li class="action" ng-class="{active : isSelected('principal')}">
+        <a ng-href="#/main/principal" class="btn btn-primary">
+          学校管理员信息管理
         </a>
       </li>
 
