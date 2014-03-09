@@ -35,4 +35,16 @@ object EmployeeController extends Controller {
   def deleteInSchool(kg: Long, phone: String) = Action {
     Ok(Json.toJson(Employee.deleteInSchool(kg, phone)))
   }
+
+  def createOrUpdateInSchool(kg: Long, phone: String) = Action(parse.json) {
+    request =>
+      request.body.validate[Employee].map {
+        case (existing) if existing.id.nonEmpty =>
+          Ok(Json.toJson(Employee.update(existing)))
+        case (newOne) =>
+          Ok(Json.toJson(Employee.create(newOne)))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
 }

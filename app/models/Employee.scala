@@ -16,6 +16,32 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
 
 
 object Employee {
+  def update(employee: Employee) = DB.withConnection {
+    implicit c =>
+      employee.id map {
+        employeeId =>
+          SQL("update employeeinfo set name={name}, phone={phone}, gender={gender}, workgroup={workgroup}, " +
+            " workduty={workduty}, picurl={picurl}, birthday={birthday}, school_id={school_id}, " +
+            " login_name={login_name}, update_at={update_at}, employee_id={employee_id} " +
+            " where employee_id={employee_id}")
+            .on(
+              'employee_id -> employeeId,
+              'name -> employee.name,
+              'phone -> employee.phone,
+              'gender -> employee.gender,
+              'workgroup -> employee.workgroup,
+              'workduty -> employee.workduty,
+              'picurl -> employee.portrait,
+              'birthday -> employee.birthday,
+              'school_id -> employee.school_id,
+              'login_name -> employee.login_name,
+              'update_at -> System.currentTimeMillis
+            ).execute()
+      }
+
+      show(employee.phone)
+  }
+
   def deleteInSchool(kg: Long, phone: String) = DB.withConnection {
     implicit c =>
       SQL("update employeeinfo set status=0 where phone={phone} and school_id={kg}")

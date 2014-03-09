@@ -18,9 +18,14 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
 
       scope.createEmployee = ->
         new SchoolEmployee
-          school_id: $stateParams.kindergarten
+          school_id: parseInt $stateParams.kindergarten
           birthday: '1980-01-01'
           gender: 0
+          login_password: ''
+          login_name: ''
+          workgroup: ''
+          workduty: ''
+          phone: ''
 
       scope.addEmployee = ->
         scope.employee = scope.createEmployee()
@@ -29,11 +34,20 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
           contentTemplate: 'templates/admin/add_employee.html'
 
       scope.edit = (employee) ->
+        scope.employee = employee
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/admin/add_employee.html'
 
-      scope.isDuplicated = (phone) ->
-        return false if phone is undefined || phone.length < 10
+      scope.save = (employee) ->
+        employee.$save ->
+          scope.refresh()
+          scope.currentModal.hide()
+
+      scope.isDuplicated = (employee) ->
+        return false if employee.phone is undefined || employee.phone.length < 10
         undefined isnt _.find scope.employees, (e) ->
-          e.phone == phone
+          e.phone == employee.phone && e.id != employee.id
 
       scope.delete = (employee) ->
         employee.$delete ->
