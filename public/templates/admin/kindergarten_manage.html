@@ -84,6 +84,11 @@
           教职员设置
         </a>
       </li>
+      <li class="action" ng-class="{active : kg.isSelected('classes')}">
+        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/class" class="btn btn-danger">
+          班级管理
+        </a>
+      </li>
     </ul>
 
   </div>

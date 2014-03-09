@@ -100,6 +100,10 @@ class Config
         url: '/employee',
         templateUrl: 'templates/admin/employees.html',
         controller: 'EmployeesListCtrl'
+    .state 'kindergarten.classManagement',
+        url: '/class',
+        templateUrl: 'templates/admin/classes_management.html',
+        controller: 'ClassesManagementCtrl'
 
     .state('kindergarten.wip',
         url: '/wip',

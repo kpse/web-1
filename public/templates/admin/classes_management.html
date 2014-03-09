@@ -1,0 +1,35 @@
+<div class="panel panel-default">
+  <div class="panel-heading">班级管理</div>
+  <div class="panel-body">
+    <span>检索：</span>
+    <input ng-model="searchText"/>
+    <span>输入内容进行查找</span>
+  </div>
+  <button type="submit" class="btn btn-primary pull-right adding-for-individual" ng-disabled="loading" ng-click="addClass()">增加</button>
+  <div class="loading" ng-show="loading"/>
+  <table class="table table-hover table-condensed employee-list">
+    <thead>
+    <tr class="row">
+      <th class=".col-xs-1">班级id</th>
+      <th class=".col-xs-3">班级名称</th>
+      <th class=".col-xs-3">负责老师</th>
+      <th class=".col-xs-2">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="c in classes | filter: searchText" class="row" ng-class="{editable: edit}" ng-click="edit(c)">
+      <td class=".col-xs-1">{{c.class_id}}</td>
+      <td class=".col-xs-3">{{c.name}}</td>
+      <td class=".col-xs-3">建设中</td>
+      <td class=".col-xs-2">
+        <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
+                ng-confirm-click="delete(c)">删除
+        </button>
+        <button class="btn btn-xs btn-warning" ng-click="edit(c)">编辑
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
