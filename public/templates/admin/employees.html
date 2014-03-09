@@ -18,7 +18,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="e in employees | filter: searchText" class="row">
+    <tr ng-repeat="e in employees | filter: searchText" class="row" ng-class="{editable: edit}" ng-click="edit(e)">
       <td class=".col-xs-3">{{e.login_name}}</td>
       <td class=".col-xs-3">{{e.name}}</td>
       <td class=".col-xs-3">{{e.phone}}</td>

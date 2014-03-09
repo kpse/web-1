@@ -11,7 +11,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="a in assignments | filter: searchText" class="row" ng-click="goDetail(a)">
+  <tr ng-repeat="a in assignments | filter: searchText" class="row" ng-click="goDetail(a)" ng-class="{editable: goDetail}">
     <td class=".col-xs-1">{{a.id}}</td>
     <td class=".col-xs-2">{{a.class_name}}</td>
     <td class=".col-xs-2">{{a.title}}</td>
