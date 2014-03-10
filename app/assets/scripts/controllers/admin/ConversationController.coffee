@@ -49,9 +49,9 @@ angular.module('kulebaoAdmin')
 .controller 'ConversationCtrl',
     [ '$scope', '$rootScope', '$stateParams',
       '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService', '$modal',
-      '$popover', '$tooltip', 'employeeService'
+      '$popover', '$tooltip', 'employeeService', 'uploadService',
       (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship, Modal, Popover, Tooltip,
-       Employee) ->
+       Employee, Upload) ->
         scope.adminUser = Employee.get()
 
         scope.loading = true
@@ -71,7 +71,7 @@ angular.module('kulebaoAdmin')
 
         scope.preview = (msg, option) ->
           rootScope.viewOption = _.extend reply: true, option
-          rootScope.currentMessage = msg
+          rootScope.message = msg
 
           scope.currentModal = Modal
             scope: scope
@@ -85,45 +85,14 @@ angular.module('kulebaoAdmin')
             scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone).query()
 
         scope.messageEditing = (msg)->
-          rootScope.editingMessage = msg
+          scope.message = angular.copy msg
 
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/admin/add_message.html'
-    ]
-
-angular.module('kulebaoAdmin')
-.controller 'AddMessageCtrl',
-    [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService', 'uploadService'
-      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship, Upload) ->
-        if rootScope.editingMessage is undefined
-          scope.$hide()
-        else
-          scope.message = rootScope.editingMessage
-          delete rootScope.editingMessage
-
-        scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone, most: 5).query()
-        scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get()
 
         scope.uploadPic = (message, pic) ->
           Upload pic, (url) ->
             scope.$apply ->
               message.image = url if url isnt undefined
-    ]
-
-angular.module('kulebaoAdmin')
-.controller 'ViewMessageCtrl',
-    [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', '$http', 'classService', 'conversationService', 'relationshipService',
-      (scope, rootScope, stateParams, location, School, $http, Class, Message, Relationship) ->
-        if rootScope.currentMessage is undefined
-          scope.$hide()
-        else
-          scope.message = rootScope.currentMessage
-          scope.viewOption = rootScope.viewOption
-          delete rootScope.currentMessage
-
-        scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone, most: 5).query()
-        scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get()
     ]
