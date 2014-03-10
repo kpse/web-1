@@ -138,3 +138,11 @@
 .adding-for-individual {
   margin: 20px;
 }
+
+.chat-history {
+  overflow: auto;
+  height: 250px;
+}
+.longer-history {
+  height: 450px;
+}

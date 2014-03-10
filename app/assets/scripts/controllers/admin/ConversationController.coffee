@@ -56,9 +56,13 @@ angular.module('kulebaoAdmin')
 
         scope.loading = true
         scope.relationship = Relationship.bind(school_id: stateParams.kindergarten, card: stateParams.card).get ->
+          scope.refresh()
+
+        scope.refresh = ->
+          scope.loading = true
           scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone).query ->
-            scope.loading = false
             scope.message = scope.newAssess()
+            scope.loading = false
 
         scope.newAssess = ->
           new Message
@@ -81,8 +85,7 @@ angular.module('kulebaoAdmin')
         scope.send = (msg) ->
           return if msg.content is ''
           msg.$save ->
-            scope.message = scope.newAssess()
-            scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone).query()
+            scope.refresh()
 
         scope.messageEditing = ->
           scope.message = scope.newAssess()

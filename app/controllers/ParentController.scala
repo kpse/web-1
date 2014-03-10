@@ -45,8 +45,9 @@ object ParentController extends Controller {
     request =>
       Logger.info(request.body.toString)
       request.body.validate[Parent].map {
+        case (parent) if Parent.idExists(parent.id) =>
+          Ok(Json.toJson(Parent.update2(parent)))
         case (parent) =>
-          Logger.info(parent.toString)
           Ok(Json.toJson(Parent.create(kg, parent)))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -66,10 +67,12 @@ object ParentController extends Controller {
     request =>
       Logger.info(request.body.toString)
       request.body.validate[Parent].map {
-        case (parent) if Parent.registeredWith(phone) =>
+        case (parent) if Parent.idExists(parent.id) =>
           Ok(Json.toJson(Parent.update2(parent)))
-        case (parent) =>
-          Ok(Json.toJson(Parent.create(kg, parent)))
+        case (parent) if Parent.phoneExists(phone) =>
+          Ok(Json.toJson(Parent.update2(parent)))
+        case (newParent) =>
+          Ok(Json.toJson(Parent.create(kg, newParent)))
       } getOrElse BadRequest("Detected error:" + request.body)
   }
 

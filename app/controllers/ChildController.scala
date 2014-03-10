@@ -65,6 +65,8 @@ object ChildController extends Controller {
     implicit request =>
       Logger.info(request.body.toString)
       request.body.validate[ChildInfo].map {
+        case (info) if Children.idExists(info.id) =>
+          Ok(Json.toJson(Children.update2(kg, info)))
         case (info) =>
           Ok(Json.toJson(Children.create(kg, info)))
       }.getOrElse(BadRequest)

@@ -11,13 +11,24 @@ import java.util.Date
 import play.Logger
 import models.helper.TimeHelper.any2DateTime
 
-case class Parent(id: Option[String], school_id: Long, name: String, phone: String, portrait: String, gender: Int, birthday: String)
+case class Parent(id: Option[Long], school_id: Long, name: String, phone: String, portrait: String, gender: Int, birthday: String)
 
 case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait: String, name: String, phone: String, kindergarten: School, relationship: String, child: ChildInfo, card: String)
 
 
 object Parent {
-  def registeredWith(phone: String): Boolean = DB.withConnection {
+  def idExists(id: Option[Long]): Boolean = DB.withConnection {
+    implicit c =>
+      id match {
+        case Some(uid) =>
+          SQL("select count(1) as count from parentinfo where uid={uid}")
+            .on('uid -> uid)
+            .as(get[Long]("count") single) > 0
+        case None => false
+      }
+  }
+
+  def phoneExists(phone: String): Boolean = DB.withConnection {
     implicit c =>
       SQL("select count(1) as count from parentinfo where phone={phone}")
         .on('phone -> phone)
@@ -30,14 +41,14 @@ object Parent {
       SQL("update parentinfo set name={name}, " +
         "phone={phone}, gender={gender}, company={company}, " +
         "picurl={picurl}, birthday={birthday}, " +
-        "update_at={timestamp} where parent_id={parent_id}")
+        "update_at={timestamp} where uid={uid}")
         .on('name -> parent.name,
           'phone -> parent.phone,
           'gender -> parent.gender,
           'company -> "",
           'picurl -> parent.portrait,
           'birthday -> parent.birthday,
-          'parent_id -> parent.id,
+          'uid -> parent.id,
           'timestamp -> timestamp).executeUpdate()
       info(parent.school_id, parent.id.get)
   }
@@ -117,9 +128,11 @@ object Parent {
     implicit c =>
       val timestamp = System.currentTimeMillis
       val parent_id = "2_%d".format(timestamp)
-      val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at) " +
-        "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp})")
-        .on('name -> parent.name,
+      val createdId: Option[Long] = SQL("INSERT INTO parentinfo(uid, name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at) " +
+        "VALUES ({id},{name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp})")
+        .on(
+          'id -> parent.id,
+          'name -> parent.name,
           'parent_id -> parent_id,
           'relationship -> "",
           'phone -> parent.phone,
@@ -136,8 +149,7 @@ object Parent {
         .on('accountid -> parent.phone,
           'password -> generateNewPassword(parent.phone)).executeInsert()
       Logger.info("created accountinfo %s".format(accountinfoUid))
-
-      info(parent.school_id, parent_id)
+      createdId map (info(parent.school_id, _))
 
   }
 
@@ -240,12 +252,13 @@ object Parent {
       get[Int]("class_id") ~
       get[String]("cardnum") ~
       get[String]("phone") ~
-      get[String]("classinfo.class_name") map {
+      get[String]("classinfo.class_name") ~
+      get[Long]("childinfo.uid") map {
       case id ~ k_id ~ name ~ birthday ~ gender ~ portrait ~
         schoolName ~ schoolId ~ relationship ~ childName ~
-        nick ~ childBirthday ~ childGender ~ childPortrait ~ child_id ~ classId ~ card ~ phone ~ className =>
+        nick ~ childBirthday ~ childGender ~ childPortrait ~ child_id ~ classId ~ card ~ phone ~ className ~ childUid =>
         new ParentInfo(Some(id), birthday.toDateOnly, gender.toInt, portrait, name, phone, new School(schoolId.toLong, schoolName), relationship,
-          new ChildInfo(Some(child_id), childName, nick, childBirthday.toDateOnly, childGender.toInt, childPortrait, classId, Some(className)), card)
+          new ChildInfo(Some(childUid), Some(child_id), childName, nick, childBirthday.toDateOnly, childGender.toInt, childPortrait, classId, Some(className)), card)
     }
   }
 
@@ -280,7 +293,7 @@ object Parent {
   }
 
   val simple = {
-    get[String]("parent_id") ~
+    get[Long]("uid") ~
       get[String]("school_id") ~
       get[String]("name") ~
       get[String]("phone") ~
@@ -294,11 +307,11 @@ object Parent {
 
   val simpleSql = "select * from parentinfo p where school_id={kg} and status=1 "
 
-  def info(kg: Long, parentId: String) = DB.withConnection {
+  def info(kg: Long, uid: Long) = DB.withConnection {
     implicit c =>
-      SQL(simpleSql + " and parent_id={id} ")
+      SQL(simpleSql + " and uid={id} ")
         .on('kg -> kg,
-          'id -> parentId)
+          'id -> uid)
         .as(simple singleOpt)
   }
 

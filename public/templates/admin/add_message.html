@@ -3,22 +3,24 @@
 
   <form class="form-horizontal" role="form" name="messageForm">
     <div class="panel-heading">
-      <table class="table table-hover table-condensed">
-        <thead>
-        <tr class="row">
-          <th class=".col-xs-2">发言人</th>
-          <th class=".col-xs-7">通讯内容</th>
-          <th class=".col-xs-3">通讯时间</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="c in conversations | filter: searchText " class="row" ng-click="preview(c, {reply: false})">
-          <td class=".col-xs-2">{{c.sender || '家长'}}</td>
-          <td class=".col-xs-7">{{c.content.substring(0,50)}}{{(c.content.length > 50) ? '...' : ''}}</td>
-          <td class=".col-xs-3">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm:ss'}}收到</td>
-        </tr>
-        </tbody>
-      </table>
+      <div class="chat-history">
+        <table class="table table-hover table-condensed">
+          <thead>
+          <tr class="row">
+            <th class=".col-xs-2">发言人</th>
+            <th class=".col-xs-7">通讯内容</th>
+            <th class=".col-xs-3">通讯时间</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr ng-repeat="c in conversations | filter: searchText " class="row" ng-click="preview(c, {reply: false})">
+            <td class=".col-xs-2">{{c.sender || '家长'}}</td>
+            <td class=".col-xs-7">{{c.content.substring(0,50)}}{{(c.content.length > 50) ? '...' : ''}}</td>
+            <td class=".col-xs-3">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm:ss'}}收到</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <div class="panel-body">
       <label for="content" class="control-label">回复内容</label>

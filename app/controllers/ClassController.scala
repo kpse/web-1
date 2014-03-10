@@ -20,7 +20,7 @@ object ClassController extends Controller {
       Logger.info(request.body.toString())
       request.body.validate[SchoolClass].map {
         case (classInfo) =>
-          Ok(Json.toJson(School.createClass(kg, classInfo)))
+          Ok(Json.toJson(School.updateOrCreate(classInfo)))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }

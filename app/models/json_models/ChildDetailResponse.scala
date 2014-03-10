@@ -21,11 +21,22 @@ case class ChildDetail(id: String, nick: String, icon_url: String, birthday: Lon
 
 case class ChildDetailResponse(error_code: Int, child_info: Option[ChildDetail])
 
-case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String, gender: Int, portrait: String, class_id: Int, className: Option[String])
+case class ChildInfo(id: Option[Long], child_id: Option[String], name: String, nick: String, birthday: String, gender: Int, portrait: String, class_id: Int, className: Option[String])
 
 case class ChildUpdate(nick: Option[String], birthday: Option[Long], icon_url: Option[String])
 
 object Children {
+  def idExists(id: Option[Long]): Boolean = DB.withConnection {
+    implicit c =>
+      id match {
+        case Some(uid) =>
+          SQL("select count(1) as count from childinfo where uid={uid}")
+            .on('uid -> uid)
+            .as(get[Long]("count") single) > 0
+        case None => false
+      }
+  }
+
   def update2(kg: Long, info: ChildInfo) = DB.withConnection {
     implicit c =>
       SQL("update childinfo set name={name},nick={nick},gender={gender},class_id={class_id}," +
@@ -54,9 +65,11 @@ object Children {
     implicit c =>
       val timestamp = System.currentTimeMillis
       val child_id = child.child_id.getOrElse("1_%d".format(timestamp))
-      val childUid = SQL("INSERT INTO childinfo(name, child_id, student_id, gender, classname, picurl, birthday, indate, school_id, address, stu_type, hukou, social_id, nick, status, update_at, class_id) " +
-        "VALUES ({name},{child_id},{student_id},{gender},{classname},{picurl},{birthday},{indate},{school_id},{address},{stu_type},{hukou},{social_id},{nick},{status},{timestamp},{class_id})")
-        .on('name -> child.name,
+      val childUid = SQL("INSERT INTO childinfo(uid, name, child_id, student_id, gender, classname, picurl, birthday, indate, school_id, address, stu_type, hukou, social_id, nick, status, update_at, class_id) " +
+        "VALUES ({id},{name},{child_id},{student_id},{gender},{classname},{picurl},{birthday},{indate},{school_id},{address},{stu_type},{hukou},{social_id},{nick},{status},{timestamp},{class_id})")
+        .on(
+          'id -> child.id,
+          'name -> child.name,
           'child_id -> child_id,
           'student_id -> "%d".format(timestamp).take(5),
           'gender -> child.gender,
@@ -81,7 +94,8 @@ object Children {
 
 
   val childInformation = {
-    get[String]("child_id") ~
+    get[Long]("uid") ~
+      get[String]("child_id") ~
       get[String]("name") ~
       get[String]("nick") ~
       get[String]("picurl") ~
@@ -89,8 +103,8 @@ object Children {
       get[Date]("birthday") ~
       get[Int]("childinfo.class_id") ~
       get[String]("classinfo.class_name") map {
-      case childId ~ childName ~ nick ~ icon_url ~ childGender ~ childBirthday ~ classId ~ className =>
-        new ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt, icon_url, classId, Some(className))
+      case id ~ childId ~ childName ~ nick ~ icon_url ~ childGender ~ childBirthday ~ classId ~ className =>
+        new ChildInfo(Some(id), Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt, icon_url, classId, Some(className))
     }
   }
 
