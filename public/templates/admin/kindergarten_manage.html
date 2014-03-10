@@ -1,4 +1,4 @@
-<div class="main-frame" ng-controller="KgManageCtrl as kg">
+<div class="main-frame">
 
   <div class="header">
     <div class="product-logo-container">
@@ -6,11 +6,11 @@
       <div class="rainbow-logo"></div>
     </div>
     <div class="title">
-      <h2 class="content">{{kg.kindergarten.school_info.name}} 后台管理系统</h2>
+      <h2 class="content">{{kindergarten.school_info.name}} 后台管理系统</h2>
 
       <div class="btn-group">
         <button type="button" class="btn btn-warning dropdown-toggle admin-user" data-toggle="dropdown">
-          {{kg.adminUser.name}} <span class="caret"></span>
+          {{adminUser.name}} <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
           <li><a href="#">Action</a></li>
@@ -29,63 +29,63 @@
 
   <div class="row modules-list-container">
     <ul class="nav nav-tabs modules-list actions">
-      <li class="action" ng-class="{active : kg.isSelected('bulletin')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/bulletin" class="btn btn-primary">
+      <li class="action" ng-class="{active : isSelected('bulletin')}">
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/bulletin" class="btn btn-primary">
           园内公告设置
         </a>
       </li>
-      <li class="action" ng-class="{active : kg.isSelected('conversation')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/conversation" class="btn btn-danger">
+      <li class="action" ng-class="{active : isSelected('conversation')}">
+        <a class="btn btn-danger" ng-click="goConversation()">
           家园互动
         </a>
       </li>
-      <li class="action" ng-class="{active : kg.isSelected('baby-status')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/baby-status" class="btn btn-warning">
+      <li class="action" ng-class="{active : isSelected('baby-status')}">
+        <a class="btn btn-warning" ng-click="goBabyStatus()">
           在园表现
         </a>
       </li>
-      <li class="action" ng-class="{active : kg.isSelected('relationship')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/relationship" class="btn btn-primary">
+      <li class="action" ng-class="{active : isSelected('relationship')}">
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/relationship" class="btn btn-primary">
           幼儿园卡片管理
         </a>
       </li>
-      <li class="action" ng-class="{active : kg.isSelected('assignment')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/assignment" class="btn btn-success">
+      <li class="action" ng-class="{active : isSelected('assignment')}">
+        <a class="btn btn-success" ng-click="goAssignment()">
           亲子作业
         </a>
       </li>
-      <li class="action" ng-class="{active : kg.isSelected('intro')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/intro" class="btn btn-danger">
+      <li class="action" ng-class="{active : isSelected('intro')}">
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/intro" class="btn btn-danger">
           学校简介设置
         </a>
       </li>
-      <li class="action" ng-class="{active : kg.isSelected('cookbook')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/cookbook" class="btn btn-primary">
+      <li class="action" ng-class="{active : isSelected('cookbook')}">
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/cookbook" class="btn btn-primary">
           每周食谱设置
         </a>
       </li>
-      <li class="action" ng-class="{active : kg.isSelected('schedule')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/schedule" class="btn btn-danger">
+      <li class="action" ng-class="{active : isSelected('schedule')}">
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/schedule" class="btn btn-danger">
           学习内容设置
         </a>
       </li>
       <li class="action">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/class-bulletin" class="btn btn-warning">
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/class-bulletin" class="btn btn-warning">
           班级通知设置
         </a>
       </li>
       <li class="action">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/growing" class="btn btn-primary">
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/growing" class="btn btn-primary">
           成长档案设置
         </a>
       </li>
-      <li class="action" ng-class="{active : kg.isSelected('employee')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/employee" class="btn btn-success">
+      <li class="action" ng-class="{active : isSelected('employee')}">
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/employee" class="btn btn-success">
           教职员设置
         </a>
       </li>
-      <li class="action" ng-class="{active : kg.isSelected('classes')}">
-        <a ng-href="#/kindergarten/{{kg.kindergarten.school_id}}/class" class="btn btn-danger">
+      <li class="action" ng-class="{active : isSelected('classes')}">
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/class" class="btn btn-danger">
           班级管理
         </a>
       </li>

@@ -1,18 +1,27 @@
-class Controller
-  constructor: (scope, $rootScope, $stateParams, School, location, Employee) ->
+angular.module('kulebaoAdmin').controller 'KgManageCtrl',
+  ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', 'employeeService',
+    (scope, $rootScope, $stateParams, School, location, Employee) ->
+      scope.kindergarten = School.get school_id: $stateParams.kindergarten
 
-    @kindergarten = School.get school_id: $stateParams.kindergarten
-
-    @adminUser = Employee.get()
+      scope.adminUser = Employee.get()
 
 
-    @isSelected = (tab)->
-      tab is $rootScope.tabName
+      scope.isSelected = (tab)->
+        tab is $rootScope.tabName
 
-    scope.goParents = ->
-      if location.path().indexOf("parents/class") < 0
-        location.path('/kindergarten/' + $stateParams.kindergarten + '/parents')
-      else
-        location.path(location.path().replace(/\/[^\/]+$/, '/list'))
+      goPageWithClassesTab = (pageName)->
+        if location.path().indexOf(pageName + '/class') < 0
+          location.path('/kindergarten/' + $stateParams.kindergarten + '/' + pageName)
+        else
+          location.path(location.path().replace(/\/[^\/]+$/, '/list'))
 
-angular.module('kulebaoAdmin').controller 'KgManageCtrl', ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', 'employeeService', Controller]
+      scope.goConversation = ->
+        goPageWithClassesTab('conversation')
+
+      scope.goAssignment = ->
+        goPageWithClassesTab('assignment')
+
+      scope.goBabyStatus = ->
+        goPageWithClassesTab('baby-status')
+
+  ]
