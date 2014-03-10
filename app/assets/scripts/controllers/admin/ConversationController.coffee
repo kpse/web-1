@@ -70,8 +70,8 @@ angular.module('kulebaoAdmin')
             sender: scope.adminUser.name
 
         scope.preview = (msg, option) ->
-          rootScope.viewOption = _.extend reply: true, option
-          rootScope.message = msg
+          scope.viewOption = _.extend reply: true, option
+          scope.message = msg
 
           scope.currentModal = Modal
             scope: scope
@@ -84,8 +84,8 @@ angular.module('kulebaoAdmin')
             scope.message = scope.newAssess()
             scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone).query()
 
-        scope.messageEditing = (msg)->
-          scope.message = angular.copy msg
+        scope.messageEditing = ->
+          scope.message = scope.newAssess()
 
           scope.currentModal = Modal
             scope: scope
