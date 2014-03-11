@@ -1,0 +1,44 @@
+<div class="panel-body">
+  <form class="form-horizontal row" role="form" name="newSchoolForm">
+
+    <div class="form-group">
+      <label for="school-id" class="col-sm-2 control-label">学校编号</label>
+
+      <div class="col-sm-8">
+        <input id="school-id" type="text" ng-model="school.school_id" name="id"
+               class="editing-field form-control" ng-bk-focus required/>
+        <span class="error-field" ng-show="newSchoolForm.name.$dirty && isDuplicated(school)">与已有学校名称重复！</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="school-name" class="col-sm-2 control-label">学校名称</label>
+
+      <div class="col-sm-8">
+        <input id="school-name" type="text" ng-model="school.name" name="name"
+               class="editing-field form-control" required/>
+        <span class="error-field" ng-show="newSchoolForm.name.$dirty && isDuplicated(school)">与已有学校名称重复！</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="teacher" class="col-sm-2 control-label">校长</label>
+
+      <div class="col-sm-8">
+        <select id="teacher" class="form-control class-select" ng-model="school.manager"
+                ng-options="a.id as a.name for a in admins"
+                data-style="btn-primary"></select>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <a class="btn btn-warning pull-right adding-button"
+         ng-disabled="newSchoolForm.$invalid || isDuplicated(school)"
+         ng-click="save(currentClass)">保存</a>
+      <a class="btn btn-default pull-right adding-button"
+         ng-click="$hide()">取消</a>
+    </div>
+  </form>
+</div>
+

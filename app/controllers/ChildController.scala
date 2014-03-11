@@ -66,7 +66,9 @@ object ChildController extends Controller {
       Logger.info(request.body.toString)
       request.body.validate[ChildInfo].map {
         case (info) if Children.idExists(info.id) =>
-          Ok(Json.toJson(Children.update2(kg, info)))
+          Ok(Json.toJson(Children.updateById(kg, info)))
+        case (info) if info.child_id.nonEmpty =>
+          Ok(Json.toJson(Children.updateByChildId(kg, info.child_id.get, info)))
         case (info) =>
           Ok(Json.toJson(Children.create(kg, info)))
       }.getOrElse(BadRequest)
@@ -78,7 +80,7 @@ object ChildController extends Controller {
       Logger.info(request.body.toString)
       request.body.validate[ChildInfo].map {
         case (update) =>
-          Ok(Json.toJson(Children.update2(kg, update)))
+          Ok(Json.toJson(Children.updateByChildId(kg, childId, update)))
       }.getOrElse(BadRequest)
 
   }

@@ -26,6 +26,22 @@ case class ChildInfo(id: Option[Long], child_id: Option[String], name: String, n
 case class ChildUpdate(nick: Option[String], birthday: Option[Long], icon_url: Option[String])
 
 object Children {
+  def updateById(kg: Long, info: ChildInfo) = DB.withConnection {
+    implicit c =>
+      SQL("update childinfo set name={name},nick={nick},gender={gender},class_id={class_id}," +
+        "birthday={birthday},picurl={picurl} where uid={uid}")
+        .on(
+          'name -> info.name,
+          'nick -> info.nick,
+          'gender -> info.gender,
+          'class_id -> info.class_id,
+          'birthday -> info.birthday,
+          'picurl -> info.portrait,
+          'uid -> info.id
+        ).executeUpdate
+      info
+  }
+
   def idExists(id: Option[Long]): Boolean = DB.withConnection {
     implicit c =>
       id match {
@@ -37,7 +53,7 @@ object Children {
       }
   }
 
-  def update2(kg: Long, info: ChildInfo) = DB.withConnection {
+  def updateByChildId(kg: Long, childId: String, info: ChildInfo) = DB.withConnection {
     implicit c =>
       SQL("update childinfo set name={name},nick={nick},gender={gender},class_id={class_id}," +
         "birthday={birthday},picurl={picurl} where child_id={child_id}")
@@ -48,7 +64,7 @@ object Children {
           'class_id -> info.class_id,
           'birthday -> info.birthday,
           'picurl -> info.portrait,
-          'child_id -> info.child_id.getOrElse("")
+          'child_id -> childId
         ).executeUpdate
       info
   }
