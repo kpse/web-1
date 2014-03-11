@@ -39,7 +39,7 @@ object Children {
           'picurl -> info.portrait,
           'uid -> info.id
         ).executeUpdate
-      info
+      findById(info.id.get)
   }
 
   def idExists(id: Option[Long]): Boolean = DB.withConnection {
@@ -53,20 +53,20 @@ object Children {
       }
   }
 
-  def updateByChildId(kg: Long, childId: String, info: ChildInfo) = DB.withConnection {
+  def updateByChildId(kg: Long, childId: String, child: ChildInfo) = DB.withConnection {
     implicit c =>
       SQL("update childinfo set name={name},nick={nick},gender={gender},class_id={class_id}," +
         "birthday={birthday},picurl={picurl} where child_id={child_id}")
         .on(
-          'name -> info.name,
-          'nick -> info.nick,
-          'gender -> info.gender,
-          'class_id -> info.class_id,
-          'birthday -> info.birthday,
-          'picurl -> info.portrait,
+          'name -> child.name,
+          'nick -> child.nick,
+          'gender -> child.gender,
+          'class_id -> child.class_id,
+          'birthday -> child.birthday,
+          'picurl -> child.portrait,
           'child_id -> childId
         ).executeUpdate
-      info
+      info(kg, childId)
   }
 
 
