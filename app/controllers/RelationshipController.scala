@@ -26,7 +26,7 @@ object RelationshipController extends Controller {
       val body: JsValue = request.body
       val relationship: String = (body \ "relationship").as[String]
       val phone: String = (body \ "parent" \ "phone").as[String]
-      val childId: String = (body \ "child" \ "id").as[String]
+      val childId: String = (body \ "child" \ "child_id").as[String]
       Ok(Json.toJson(Relationship.create(kg, card, relationship, phone, childId)))
   }
 

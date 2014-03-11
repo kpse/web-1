@@ -137,7 +137,7 @@ object Children {
         .on(
           'classId -> classId.getOrElse(0),
           'kg -> kg.toString
-        ).as(simple *)
+        ).as(childInformation *)
   }
 
 
