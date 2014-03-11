@@ -621,7 +621,7 @@ CREATE TABLE `employeeinfo` (
   `workduty`       VARCHAR(20)
                    COLLATE utf8_bin NOT NULL DEFAULT '',
   `picurl`         VARCHAR(128)
-                   COLLATE utf8_bin NOT NULL DEFAULT '',
+                   COLLATE utf8_bin DEFAULT '',
   `birthday`       DATE             NOT NULL DEFAULT '1800-01-01',
   `school_id`      VARCHAR(20)
                    COLLATE utf8_bin NOT NULL,
