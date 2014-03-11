@@ -60,7 +60,7 @@ object Parent {
         ).executeUpdate
   }
 
-  @deprecated
+  @deprecated(message = "try to remove", since = "2014-03-12")
   def update(parent: ParentInfo) = DB.withTransaction {
     implicit c =>
       try {
@@ -153,7 +153,7 @@ object Parent {
 
   }
 
-  @deprecated
+  @deprecated(message = "try to remove", since = "2014-03-12")
   def fullCreate(kg: Long, parent: ParentInfo) = DB.withTransaction {
     implicit c =>
       val child = parent.child

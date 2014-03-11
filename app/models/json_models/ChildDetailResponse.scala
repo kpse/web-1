@@ -69,8 +69,10 @@ object Children {
     implicit c =>
       val timestamp = System.currentTimeMillis
       val childId = child.child_id.getOrElse("1_%d".format(timestamp))
-      val childUid = SQL("INSERT INTO childinfo(name, child_id, student_id, gender, classname, picurl, birthday, indate, school_id, address, stu_type, hukou, social_id, nick, status, update_at, class_id) " +
-        "VALUES ({name},{child_id},{student_id},{gender},{classname},{picurl},{birthday},{indate},{school_id},{address},{stu_type},{hukou},{social_id},{nick},{status},{timestamp},{class_id})")
+      val childUid = SQL("INSERT INTO childinfo(name, child_id, student_id, gender, classname, picurl, birthday, " +
+        "indate, school_id, address, stu_type, hukou, social_id, nick, status, update_at, class_id) " +
+        "VALUES ({name},{child_id},{student_id},{gender},{classname},{picurl},{birthday},{indate}," +
+        "{school_id},{address},{stu_type},{hukou},{social_id},{nick},{status},{timestamp},{class_id})")
         .on(
           'name -> child.name,
           'child_id -> childId,
@@ -119,7 +121,8 @@ object Children {
 
   def findAllInClass(kg: Long, classId: Option[Long], connected: Option[Boolean]) = DB.withConnection {
     implicit c =>
-      val sql = "select c.*, c2.class_name from childinfo c, classinfo c2 where c.class_id=c2.class_id and c.status=1 and c.school_id={kg} "
+      val sql = "select c.*, c2.class_name from childinfo c, classinfo c2 " +
+        "where c.class_id=c2.class_id and c.status=1 and c.school_id={kg} "
       SQL(generateSQL(sql, classId, connected))
         .on(
           'classId -> classId.getOrElse(0),
@@ -183,14 +186,16 @@ object Children {
     implicit c =>
       SQL("select c.*, c2.class_name from childinfo c, relationmap r, parentinfo p, classinfo c2 " +
         " where c.class_id=c2.class_id and p.status=1 and c.status=1 and r.child_id = c.child_id " +
-        " and p.parent_id = r.parent_id and p.phone={phone}")
-        .on('phone -> phone).as(simple *)
+        " and p.parent_id = r.parent_id and c.school_id=c2.school_id and p.phone={phone} " +
+        "and c.school_id={kg}")
+        .on('phone -> phone, 'kg -> school.toString).as(simple *)
   }
 
   def show(schoolId: Long, phone: String, child: String): Option[ChildDetail] = DB.withConnection {
     implicit c =>
-      SQL("select c.*, c2.class_name from childinfo c, classinfo c2 where c.class_id=c2.class_id and c.child_id={child_id}")
-        .on('child_id -> child).as(simple singleOpt)
+      SQL("select c.*, c2.class_name from childinfo c, classinfo c2 where c.school_id=c2.school_id " +
+        "and c.class_id=c2.class_id and c.child_id={child_id} and c.school_id={kg}")
+        .on('child_id -> child, 'kg -> schoolId.toString).as(simple singleOpt)
   }
 
 
