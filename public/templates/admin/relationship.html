@@ -25,9 +25,9 @@
     </thead>
     <tbody>
     <div class="loading" ng-show="loading"/>
-    <tr ng-repeat="r in relationships | filter: searchText | orderBy: 'child.className' " class="row">
+    <tr ng-repeat="r in relationships | filter: searchText | orderBy: 'child.class_name' " class="row">
       <td class=".col-xs-1">{{r.card}}</td>
-      <td class=".col-xs-2">{{r.child.className}}</td>
+      <td class=".col-xs-2">{{r.child.class_name}}</td>
       <td class=".col-xs-2"><a ng-click="editChild(r.child)">{{r.child.name}}</a></td>
       <td class=".col-xs-3"><a ng-click="editParent(r.parent)">{{r.parent.name}}</a></td>
       <td class=".col-xs-4">{{r.parent.phone | phone}}</td>

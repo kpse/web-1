@@ -18,6 +18,6 @@ angular.module('kulebaoAdmin')
           scope.backToList()
 
         scope.connect = (parent, child) ->
-          parent.child = Children.bind(school_id: stateParams.kindergarten, child_id: child.id).get ->
+          parent.child = Children.bind(school_id: stateParams.kindergarten, child_id: child.child_id).get ->
             location.path(location.path().replace(/\/[^\/]+$/, '/edit_child'))
     ]

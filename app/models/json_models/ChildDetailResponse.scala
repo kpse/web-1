@@ -21,7 +21,7 @@ case class ChildDetail(id: String, nick: String, icon_url: String, birthday: Lon
 
 case class ChildDetailResponse(error_code: Int, child_info: Option[ChildDetail])
 
-case class ChildInfo(id: Option[Long], child_id: Option[String], name: String, nick: String, birthday: String, gender: Int, portrait: String, class_id: Int, className: Option[String])
+case class ChildInfo(id: Option[Long], child_id: Option[String], name: String, nick: String, birthday: String, gender: Int, portrait: String, class_id: Int, class_name: Option[String])
 
 case class ChildUpdate(nick: Option[String], birthday: Option[Long], icon_url: Option[String])
 

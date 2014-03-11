@@ -23,7 +23,7 @@ object DailyLog {
     }
   }
 
-  def all(kg: Long, parentId: String, childId: String, from: Option[Long], to: Option[Long]) = DB.withConnection {
+  def all(kg: Long, childId: String, from: Option[Long], to: Option[Long]) = DB.withConnection {
     implicit c =>
       SQL("select * from dailylog where child_id={child_id} and school_id={school_id} " + rangerQueryWithField(from, to, Some("check_at")))
         .on(

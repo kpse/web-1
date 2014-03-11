@@ -31,15 +31,15 @@ angular.module('kulebaoAdmin')
           scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query()
           scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true).query ->
             _.forEach scope.children, (c) ->
-              c.status = Assess.bind(school_id: stateParams.kindergarten, child_id: c.id, most: 1).query ->
+              c.status = Assess.bind(school_id: stateParams.kindergarten, child_id: c.child_id, most: 1).query ->
                 c.recentStatus = c.status[0]
             scope.loading = false
 
         scope.goDetail = (child) ->
           if (location.path().indexOf('/list') > 0 )
-            location.path location.path().replace(/\/list$/, '/child/' + child.id)
+            location.path location.path().replace(/\/list$/, '/child/' + child.child_id)
           else
-            location.path location.path().replace(/\/child\/\d+$/, '') + '/child/' + child.id
+            location.path location.path().replace(/\/child\/\d+$/, '') + '/child/' + child.child_id
 
 
     ]

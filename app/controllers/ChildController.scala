@@ -38,8 +38,7 @@ object ChildController extends Controller {
 
   def indexInSchool(kg: Long, classId: Option[Long], connect: Option[Boolean]) = Action {
     Children.findAllInClass(kg, classId, connect) match {
-      case Nil => BadRequest
-      case all: List[ChildDetail] => Ok(Json.toJson(all))
+      case all: List[ChildInfo] => Ok(Json.toJson(all))
     }
   }
 

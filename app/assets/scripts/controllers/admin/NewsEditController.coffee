@@ -4,16 +4,15 @@ angular.module('kulebaoAdmin').controller 'AddNewsCtrl',
   ['$scope', '$rootScope', '$location', 'adminNewsService',
    '$stateParams', 'GroupMessage', 'schoolService', 'employeeService'
     (scope, $rootScope, $location, adminNewsService, $stateParams, GroupMessage, School, Employee) ->
-      scope.adminUser = Employee.get()
-
-      scope.kindergarten = School.get school_id: $stateParams.kindergarten, ->
-        if $rootScope.editingNews is undefined
-          scope.news = new adminNewsService
-            school_id: scope.kindergarten.school_id
-            admin_id: scope.adminUser.id
-        else
-          scope.news = $rootScope.editingNews
-          delete $rootScope.editingNews
+      scope.adminUser = Employee.get ->
+        scope.kindergarten = School.get school_id: $stateParams.kindergarten, ->
+          if $rootScope.editingNews is undefined
+            scope.news = new adminNewsService
+              school_id: scope.kindergarten.school_id
+              admin_id: scope.adminUser.id
+          else
+            scope.news = $rootScope.editingNews
+            delete $rootScope.editingNews
 
       scope.save = (news) ->
         news.$save ->

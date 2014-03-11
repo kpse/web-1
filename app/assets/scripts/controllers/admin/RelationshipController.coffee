@@ -103,7 +103,7 @@ angular.module('kulebaoAdmin')
         scope.alreadyConnected = (parent, child) ->
           return false if parent is undefined || child is undefined
           undefined isnt _.find scope.relationships, (r) ->
-            r.parent.phone == parent.phone && r.child.child_id == child.id
+            r.parent.phone == parent.phone && r.child.child_id == child.child_id
 
         scope.availableChildFor = (parent) ->
           if parent is undefined

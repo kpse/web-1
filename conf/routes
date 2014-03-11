@@ -47,11 +47,7 @@ DELETE        /kindergarten/:kg/parent/:phone                                   
 GET           /kindergarten/:kg/parent/:parentId/news                            controllers.ReadingNewsController.index(kg: Long, parentId: String)
 POST          /kindergarten/:kg/parent/:parentId/news/:newsId                    controllers.ReadingNewsController.create(kg: Long, parentId: Long, newsId: Long)
 
-GET           /kindergarten/:kg/parent/:parentId/child                           controllers.ChildController.index(kg: Long, parentId: String)
-GET           /kindergarten/:kg/parent/:parentId/child/:childId                  controllers.ChildController.show(kg: Long, parentId: String, childId: String)
-POST          /kindergarten/:kg/parent/:parentId/child/:childId                  controllers.ChildController.update(kg: Long, parentId: String, childId: String)
-
-GET           /kindergarten/:kg/parent/:parentId/child/:childId/dailylog         controllers.DailyLogController.index(kg: Long, parentId: String, childId: String, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /kindergarten/:kg/child/:childId/dailylog                          controllers.DailyLogController.index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int])
 
 GET           /kindergarten/:kg/admin/:adminId/news_reading_count/:newsId        controllers.ReadingNewsController.countReading(kg: Long, adminId: Long, newsId: Long)
 
@@ -126,3 +122,8 @@ GET           /images/*file                                                     
 #anglarjs template pages
 GET           /templates/*file                                                   controllers.Static.at(path="/public/templates", file)
 GET           /*college/templates/*file                                          controllers.Static.ignoreCollege(path="/public/templates", file, college)
+
+#deprecated
+GET           /kindergarten/:kg/parent/:parentId/child                           controllers.ChildController.index(kg: Long, parentId: String)
+GET           /kindergarten/:kg/parent/:parentId/child/:childId                  controllers.ChildController.show(kg: Long, parentId: String, childId: String)
+POST          /kindergarten/:kg/parent/:parentId/child/:childId                  controllers.ChildController.update(kg: Long, parentId: String, childId: String)
