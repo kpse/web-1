@@ -39,7 +39,7 @@ object Children {
           'picurl -> info.portrait,
           'uid -> info.id
         ).executeUpdate
-      findById(info.id.get)
+      findById(kg, info.id.get)
   }
 
   def idExists(id: Option[Long]): Boolean = DB.withConnection {
@@ -70,10 +70,13 @@ object Children {
   }
 
 
-  def findById(uid: Long) = DB.withConnection {
+  def findById(kg: Long, uid: Long) = DB.withConnection {
     implicit c =>
-      SQL("select c.*, c2.class_name from childinfo c, classinfo c2 where c.class_id=c2.class_id and c.uid={uid}")
-        .on('uid -> uid).as(childInformation singleOpt)
+      SQL("select c.*, c2.class_name from childinfo c, classinfo c2 where c.class_id=c2.class_id and c.school_id={kg} and c.uid={uid}")
+        .on(
+          'uid -> uid,
+          'kg -> kg.toString
+        ).as(childInformation singleOpt)
 
   }
 
@@ -104,7 +107,7 @@ object Children {
           'timestamp -> timestamp).executeInsert()
       Logger.info("created childinfo %s".format(childUid))
       childUid map {
-        findById(_)
+        findById(kg, _)
       }
   }
 
@@ -126,8 +129,9 @@ object Children {
 
   def info(kg: Long, childId: String): Option[ChildInfo] = DB.withConnection {
     implicit c =>
-      SQL("select cd.*, ci.class_name from childinfo cd, classinfo ci where ci.class_id=cd.class_id and cd.child_id={child_id}")
-        .on('child_id -> childId).as(childInformation singleOpt)
+      SQL("select cd.*, ci.class_name from childinfo cd, classinfo ci where ci.class_id=cd.class_id " +
+        "and ci.school_id={kg} and cd.child_id={child_id}")
+        .on('child_id -> childId, 'kg -> kg.toString).as(childInformation singleOpt)
   }
 
   def findAllInClass(kg: Long, classId: Option[Long], connected: Option[Boolean]) = DB.withConnection {
@@ -194,7 +198,9 @@ object Children {
 
   def findAll(school: Long, phone: String): List[ChildDetail] = DB.withConnection {
     implicit c =>
-      SQL("select c.*, c2.class_name from childinfo c, relationmap r, parentinfo p, classinfo c2 where c.class_id=c2.class_id and p.status=1 and c.status=1 and r.child_id = c.child_id and p.parent_id = r.parent_id and p.phone={phone}")
+      SQL("select c.*, c2.class_name from childinfo c, relationmap r, parentinfo p, classinfo c2 " +
+        " where c.class_id=c2.class_id and p.status=1 and c.status=1 and r.child_id = c.child_id " +
+        " and p.parent_id = r.parent_id and p.phone={phone}")
         .on('phone -> phone).as(simple *)
   }
 

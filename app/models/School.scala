@@ -26,8 +26,8 @@ object School {
         'id -> clazz.class_id
       ).as(get[Long]("count(1)") single)
       exist match {
-        case (0) => createClass(clazz.school_id, clazz)
-        case (1) => update(clazz)
+        case (0l) => createClass(clazz.school_id, clazz)
+        case (1l) => update(clazz)
       }
       findById(clazz)
   }
