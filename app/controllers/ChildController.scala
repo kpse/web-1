@@ -15,6 +15,9 @@ object ChildController extends Controller {
   implicit val write3 = Json.writes[ChildrenResponse]
   implicit val write4 = Json.writes[ChildInfo]
 
+  implicit val read1 = Json.reads[ChildUpdate]
+  implicit val read2 = Json.reads[ChildInfo]
+
   def show(kg: Long, phone: String, childId: String) = Action {
     Children.show(kg.toLong, phone, childId) match {
       case Some(one: ChildDetail) => Ok(Json.toJson(new ChildDetailResponse(0, Some(one))))
@@ -22,12 +25,6 @@ object ChildController extends Controller {
     }
   }
 
-  def showInfo(kg: Long, childId: String) = Action {
-    Children.info(kg.toLong, childId) match {
-      case Some(one: ChildInfo) => Ok(Json.toJson(one))
-      case None => BadRequest
-    }
-  }
 
   def index(kg: Long, phone: String) = Action {
     Children.findAll(kg, phone) match {
@@ -35,14 +32,6 @@ object ChildController extends Controller {
       case all: List[ChildDetail] => Ok(Json.toJson(ChildrenResponse(0, all)))
     }
   }
-
-  def indexInSchool(kg: Long, classId: Option[Long], connect: Option[Boolean]) = Action {
-    Children.findAllInClass(kg, classId, connect) match {
-      case all: List[ChildInfo] => Ok(Json.toJson(all))
-    }
-  }
-
-  implicit val read1 = Json.reads[ChildUpdate]
 
   def update(kg: Long, phone: String, childId: String) = Action(parse.json) {
     implicit request =>
@@ -57,16 +46,27 @@ object ChildController extends Controller {
 
   }
 
-  implicit val read2 = Json.reads[ChildInfo]
 
+  //=============================================================================================
 
-  def create(kg: Long) = Action(parse.json) {
+  def indexInSchool(kg: Long, classId: Option[Long], connect: Option[Boolean]) = Action {
+    Children.findAllInClass(kg, classId, connect) match {
+      case all: List[ChildInfo] => Ok(Json.toJson(all))
+    }
+  }
+
+  def showInfo(kg: Long, childId: String) = Action {
+    Children.info(kg.toLong, childId) match {
+      case Some(one: ChildInfo) => Ok(Json.toJson(one))
+      case None => BadRequest
+    }
+  }
+
+  def createOrUpdate(kg: Long) = Action(parse.json) {
     implicit request =>
       Logger.info(request.body.toString)
       request.body.validate[ChildInfo].map {
-        case (info) if Children.idExists(info.id) =>
-          Ok(Json.toJson(Children.updateById(kg, info)))
-        case (info) if info.child_id.nonEmpty =>
+        case (info) if Children.idExists(info.child_id) =>
           Ok(Json.toJson(Children.updateByChildId(kg, info.child_id.get, info)))
         case (info) =>
           Ok(Json.toJson(Children.create(kg, info)))
@@ -78,8 +78,10 @@ object ChildController extends Controller {
     implicit request =>
       Logger.info(request.body.toString)
       request.body.validate[ChildInfo].map {
-        case (update) =>
-          Ok(Json.toJson(Children.updateByChildId(kg, childId, update)))
+        case (info) if Children.idExists(Some(childId)) =>
+          Ok(Json.toJson(Children.updateByChildId(kg, childId, info)))
+        case (info) =>
+          Ok(Json.toJson(Children.create(kg, info)))
       }.getOrElse(BadRequest)
 
   }

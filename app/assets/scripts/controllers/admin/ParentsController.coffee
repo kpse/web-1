@@ -87,7 +87,7 @@ angular.module('kulebaoAdmin')
 
         $scope.delete = (parent) ->
           $scope.parents = _.reject($scope.parents, (p) ->
-            parent.id == p.id)
+            parent.parent_id == p.parent_id)
           parent.$delete()
 
         $rootScope.parentChanged = false

@@ -45,7 +45,7 @@ object ParentController extends Controller {
     request =>
       Logger.info(request.body.toString)
       request.body.validate[Parent].map {
-        case (parent) if Parent.idExists(parent.id) =>
+        case (parent) if Parent.idExists(parent.parent_id) =>
           Ok(Json.toJson(Parent.update2(parent)))
         case (parent) =>
           Ok(Json.toJson(Parent.create(kg, parent)))
@@ -54,20 +54,11 @@ object ParentController extends Controller {
       }
   }
 
-  val parentUpdateForm = Form(
-    tuple(
-      "id" -> longNumber,
-      "name" -> text,
-      "phone" -> text,
-      "schoolId" -> text
-    )
-  )
-
   def update(kg: Long, phone: String) = Action(parse.json) {
     request =>
       Logger.info(request.body.toString)
       request.body.validate[Parent].map {
-        case (parent) if Parent.idExists(parent.id) =>
+        case (parent) if Parent.idExists(parent.parent_id) =>
           Ok(Json.toJson(Parent.update2(parent)))
         case (parent) if Parent.phoneExists(phone) =>
           Ok(Json.toJson(Parent.update2(parent)))

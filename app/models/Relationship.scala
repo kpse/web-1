@@ -20,13 +20,13 @@ object Relationship {
 
   def show(kg: Long, card: String) = DB.withConnection {
     implicit c =>
-      SQL("select r.*, p.uid from relationmap r, parentinfo p where r.parent_id=p.parent_id and card_num={card}").on('card -> card).as(simple(kg) singleOpt)
+      SQL("select * from relationmap where card_num={card}").on('card -> card).as(simple(kg) singleOpt)
   }
 
 
   def findById(kg: Long)(uid: Long) = DB.withConnection {
     implicit c =>
-      SQL("select r.*, p.uid from relationmap r, parentinfo p where r.parent_id=p.parent_id and r.uid={uid}").on('uid -> uid).as(simple(kg) singleOpt)
+      SQL("select * from relationmap where uid={uid}").on('uid -> uid).as(simple(kg) singleOpt)
   }
 
 
@@ -46,7 +46,7 @@ object Relationship {
 
 
   def simple(kg: Long) = {
-    get[Long]("parentinfo.uid") ~
+    get[String]("parent_id") ~
       get[String]("child_id") ~
       get[String]("card_num") ~
       get[String]("relationship") map {
@@ -68,7 +68,8 @@ object Relationship {
 
 
   def generateQuery(parent: Option[String], child: Option[String], classId: Option[Long]) = {
-    var sql = "select r.*, p.uid from relationmap r, childinfo c, parentinfo p where r.child_id=c.child_id and p.parent_id=r.parent_id and p.school_id={kg} and p.status=1 and r.status=1 "
+    var sql = "select r.* from relationmap r, childinfo c, parentinfo p where r.child_id=c.child_id and p.parent_id=r.parent_id" +
+      " and p.school_id={kg} and p.status=1 and r.status=1 "
     parent map {
       phone =>
         sql += " and p.phone={phone}"
