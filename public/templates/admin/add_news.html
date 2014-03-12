@@ -1,18 +1,40 @@
-<div class="panel panel-default" ng-controller="AddNewsCtrl">
+<div class="panel panel-default">
   <form class="form-horizontal" role="form" name="newsForm">
     <div class="panel-heading">
-      <label for="title" class="control-label">公告标题</label>
-      <input ng-bk-focus id="title" name="title" ng-model="news.title" class="editing-title form-control" ng-maxlength="15" placeholder="添加标题" ng-disabled="news.published" required/>
-      <span class="error-field" ng-show="newsForm.title.$dirty && newsForm.title.$error.required">请填写标题</span>
-      <span class="error-field" ng-show="newsForm.title.$dirty && newsForm.title.$error.maxlength">标题请不要超过15个字符</span>
+      <div class="form-group">
+        <label for="title" class="control-label col-xs-2">公告标题</label>
+
+        <div class="col-xs-5">
+          <input ng-bk-focus id="title" name="title" ng-model="news.title" class="form-control"
+                 ng-maxlength="15" placeholder="添加标题" ng-disabled="news.published" required/>
+          <span class="error-field" ng-show="newsForm.title.$dirty && newsForm.title.$error.required">请填写标题</span>
+          <span class="error-field"
+                ng-show="newsForm.title.$dirty && newsForm.title.$error.maxlength">标题请不要超过15个字符</span>
+        </div>
+      </div>
     </div>
     <div class="panel-body">
-      <label for="content" class="control-label">公告内容</label>
-      <br/>
-      <small ng-show="news.content.length >= 0">还可以输入{{ 500 - news.content.length}}个字</small>
-      <span class="error-field" ng-show="newsForm.content.$dirty && newsForm.content.$error.required">请填写正文内容</span>
-      <span class="error-field" ng-show="newsForm.content.$dirty && newsForm.content.$error.maxlength">正文内容请不要超过500个字符</span>
-      <textarea ng-disabled="news.published" id="content" name="content" ng-model="news.content" class="editing-content form-control" ng-maxlength="500" placeholder="添加内容" required/>
+      <div class="form-group">
+        <label for="target" class="control-label col-xs-2">通知范围</label>
+
+        <div class="col-xs-5">
+          <select id="target" class="form-control class-select" ng-model="news.class_id"
+                                      ng-options="value.class_id as value.name for (key, value) in kindergarten.classes"
+                                      data-style="btn-primary">
+            <option value="">-- 全校 --</option>
+                                      </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="content" class="control-label">公告内容</label>
+        <br/>
+        <small ng-show="news.content.length >= 0">还可以输入{{ 500 - news.content.length}}个字</small>
+        <span class="error-field" ng-show="newsForm.content.$dirty && newsForm.content.$error.required">请填写正文内容</span>
+      <span class="error-field"
+            ng-show="newsForm.content.$dirty && newsForm.content.$error.maxlength">正文内容请不要超过500个字符</span>
+        <textarea ng-disabled="news.published" id="content" name="content" ng-model="news.content"
+                  class="editing-content form-control" ng-maxlength="500" placeholder="添加内容" required/>
+      </div>
 
     </div>
     <div class="panel-footer">
@@ -21,9 +43,14 @@
       <div class="loading" ng-show="loading"/>
       <div class="btn-group">
         <button class="btn btn-default" ng-click="$hide()">取消</button>
-        <button class="btn btn-primary" ng-disabled="newsForm.$invalid" ng-hide="news.published" ng-click="publish(news)">发布</button>
-        <button class="btn btn-danger" ng-show="news.published" ng-confirm-msg="你确定要删除吗?" ng-confirm-click="remove(news)">删除</button>
-        <button class="btn btn-info" ng-disabled="newsForm.$invalid" ng-hide="news.published" ng-click="save(news)">保存</button>
+        <button class="btn btn-primary" ng-disabled="newsForm.$invalid" ng-hide="news.published"
+                ng-click="publish(news)">发布
+        </button>
+        <button class="btn btn-danger" ng-show="news.published" ng-confirm-msg="你确定要删除吗?"
+                ng-confirm-click="remove(news)">删除
+        </button>
+        <button class="btn btn-info" ng-disabled="newsForm.$invalid" ng-hide="news.published" ng-click="save(news)">保存
+        </button>
       </div>
     </div>
   </form>

@@ -27,7 +27,8 @@ object NewsController extends Controller {
       "school_id" -> longNumber,
       "title" -> text,
       "content" -> text,
-      "published" -> boolean
+      "published" -> boolean,
+      "class_id" -> optional(number)
     )
   )
 
@@ -57,7 +58,8 @@ object NewsController extends Controller {
       "school_id" -> longNumber,
       "title" -> text,
       "content" -> text,
-      "published" -> optional(boolean)
+      "published" -> optional(boolean),
+      "class_id" -> optional(number)
     )
   )
 
