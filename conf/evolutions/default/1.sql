@@ -3,6 +3,7 @@
 CREATE TABLE news (
   uid       INT(11)      NOT NULL AUTO_INCREMENT,
   school_id VARCHAR(20)  NOT NULL,
+  class_id INT(11),
   title     VARCHAR(255) NOT NULL,
   content   TEXT         NOT NULL,
   update_at BIGINT         NOT NULL DEFAULT 0,

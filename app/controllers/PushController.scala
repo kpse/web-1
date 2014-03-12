@@ -66,15 +66,24 @@ object PushController extends Controller {
     }
   }
 
+  def messageType(device: Int): Integer = {
+    // ios is using notification => 1
+    // android is using message => 0
+    device match {
+      case 3 => new Integer(0)
+      case 4 => new Integer(1)
+    }
+  }
+
 
   def triggerSinglePush(check: CheckNotification) = {
     val channelClient = getClient
     val request: PushUnicastMessageRequest = new PushUnicastMessageRequest
-    //device_type => 1: web 2: pc 3:androsd 4:ios 5:wp
+    //device_type => 1: web 2: pc 3:android 4:ios 5:wp
     request.setDeviceType(new Integer(check.device))
     request.setDeployStatus(deployStatus)
     request.setUserId(check.pushid)
-    request.setMessageType(new Integer(1))
+    request.setMessageType(messageType(check.device))
     Logger.info(Json.toJson(check).toString)
     request.setMessage(Json.toJson(check).toString)
     request.setMsgKey(check.timestamp.toString)
