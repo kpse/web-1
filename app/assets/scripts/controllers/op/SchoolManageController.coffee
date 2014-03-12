@@ -1,18 +1,14 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
-  ['$scope', '$rootScope', 'schoolService', 'classService',
-    (scope, rootScope, School, Clazz) ->
-      scope.classes = []
-      scope.kindergartens = School.query ->
-        scope.current_kindergarten = scope.kindergartens[0]
-        _.each scope.kindergartens, (kg) ->
-          kg.manager =
-            name: '空条承太郎'
-          classInSchool = Clazz.bind(school_id: kg.school_id).query ->
-            updatedClass = _.map classInSchool, (c) ->
-              c.school = kg
-              c
-            scope.classes = scope.classes.concat updatedClass
+  ['$scope', '$rootScope', 'schoolService', 'classService', '$modal'
+    (scope, rootScope, School, Clazz, Modal) ->
 
+      scope.refresh = ->
+        scope.kindergartens = School.query ->
+          _.each scope.kindergartens, (kg) ->
+            kg.manager =
+              name: '空条承太郎'
+
+      scope.refresh()
 
       rootScope.tabName = 'school'
 
@@ -22,22 +18,25 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
       scope.delete = ->
         alert('暂未实现')
 
+      scope.newSchool = ->
+        new School
+          school_id: nextId(scope.kindergartens)
+
       scope.addSchool = ->
-        newSchool = new School(school_id: 93999999)
-        newClass = new Clazz(school_id: newSchool.school_id)
-        newClass.school = newSchool
-        newClass.class_id = 111222
-        newClass.name = 'name'
-        newClass.school = newSchool.school_id
-        newSchool.$save ->
-        newClass.$save ->
-            scope.classes = scope.classes.concat newClass
+        scope.school = scope.newSchool()
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/op/add_school.html'
 
+      scope.save = (school) ->
+        school.$save ->
+          scope.refresh()
+          scope.currentModal.hide()
 
-      scope.isDuplicated = (clazz) ->
-        return false if clazz.name is undefined
-        undefined isnt _.find scope.classes, (c) ->
-          c.name == clazz.name && c.class_id != clazz.class_id
+      scope.isDuplicated = (school) ->
+        return false if school.school_id is undefined
+        undefined isnt _.find scope.kindergartens, (k) ->
+          k.school_id == school.school_id
 
       nextId = (schools)->
         1 + _.max _.map schools, (c) -> c.school_id

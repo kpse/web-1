@@ -28,5 +28,5 @@ class Config
 
 angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics'])
 angular.module('kulebaoAdmin', ['kulebaoApp', 'ui.router', 'ngResource', 'ngRoute', 'ui.bootstrap', 'ui.mask', 'angulartics', 'angulartics.google.analytics', 'ngCookies'])
-angular.module('kulebaoOp', ['kulebaoAdmin', 'kulebaoApp', 'ui.router', 'ngResource', 'ngRoute', 'ui.bootstrap', 'ui.mask', 'angulartics', 'angulartics.google.analytics', 'ngCookies'])
+angular.module('kulebaoOp', ['kulebaoAdmin', 'kulebaoApp', 'ui.router', 'ngResource', 'ngRoute', 'ui.bootstrap', 'ui.mask', 'angulartics', 'angulartics.google.analytics', 'ngCookies', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap'])
 .config ['$stateProvider', '$urlRouterProvider', Config]
