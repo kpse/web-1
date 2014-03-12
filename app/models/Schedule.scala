@@ -15,8 +15,12 @@ case class WeekSchedule(mon: DaySchedule, tue: DaySchedule, wed: DaySchedule, th
 
 case class ScheduleDetail(error_code: Int, school_id: Long, class_id: Long, schedule_id: Long, timestamp: Long, week: WeekSchedule)
 
+case class Schedule(school_id: Long, class_id: Long, week: WeekSchedule)
+
 
 object Schedule {
+  def create(kg: Long, classId: Long, schedule: Schedule) = insertNew(ScheduleDetail(0, kg, classId, 0L, 0L, schedule.week))
+
   def all(kg: Long, classId: Long) = DB.withConnection {
     implicit c =>
       SQL("select * from scheduleinfo where status=1 and school_id={school_id} and class_id={class_id} limit 1")

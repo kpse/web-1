@@ -16,6 +16,7 @@ object ScheduleController extends Controller {
   implicit val read1 = Json.reads[DaySchedule]
   implicit val read2 = Json.reads[WeekSchedule]
   implicit val read3 = Json.reads[ScheduleDetail]
+  implicit val read4 = Json.reads[Schedule]
 
   case class EmptyResult(error_code: Int)
 
@@ -50,4 +51,13 @@ object ScheduleController extends Controller {
     Ok(Json.toJson(Schedule.all(kg, classId)))
   }
 
+  def create(kg: Long, classId: Long) = Action(parse.json) {
+    implicit request =>
+      request.body.validate[Schedule].map {
+        case (s) =>
+          Ok(Json.toJson(Schedule.create(kg, classId, s)))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
 }

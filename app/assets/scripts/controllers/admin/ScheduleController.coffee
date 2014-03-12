@@ -26,8 +26,14 @@ angular.module('kulebaoAdmin')
       scope.schedule_changed = false
       scope.isEditing = false
 
-      scope.schedules = Schedule.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query ->
-        scope.schedule = scope.schedules[0]
+      scope.schedules = Schedule.query school_id: stateParams.kindergarten, class_id: stateParams.class_id, ->
+        if scope.schedules[0] isnt undefined
+          scope.schedule = angular.copy(scope.schedules[0])
+        else
+          scope.schedule = new Schedule
+            school_id: parseInt stateParams.kindergarten
+            class_id: parseInt stateParams.class_id
+
         scope.$watch 'schedule', (oldv, newv) ->
             scope.schedule_changed = true if (newv isnt oldv)
           , true
