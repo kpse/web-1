@@ -61,7 +61,7 @@ object ParentController extends Controller {
         case (parent) if Parent.idExists(parent.parent_id) =>
           Ok(Json.toJson(Parent.update2(parent)))
         case (parent) if Parent.phoneExists(phone) =>
-          Ok(Json.toJson(Parent.update2(parent)))
+          Ok(Json.toJson(Parent.updateWithPhone(parent)))
         case (newParent) =>
           Ok(Json.toJson(Parent.create(kg, newParent)))
       } getOrElse BadRequest("Detected error:" + request.body)

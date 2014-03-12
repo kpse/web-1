@@ -53,6 +53,30 @@ object Parent {
       info(parent.school_id, parent.parent_id.get)
   }
 
+  def updateWithPhone(parent: Parent) = DB.withConnection {
+    implicit c =>
+      val timestamp = System.currentTimeMillis
+      SQL("update parentinfo set name={name}, gender={gender}, company={company}, " +
+        "picurl={picurl}, birthday={birthday}, " +
+        "update_at={timestamp} where phone={phone}")
+        .on('name -> parent.name,
+          'phone -> parent.phone,
+          'gender -> parent.gender,
+          'company -> "",
+          'picurl -> parent.portrait,
+          'birthday -> parent.birthday,
+          'timestamp -> timestamp).executeUpdate()
+      findByPhone(parent.school_id)(parent.phone)
+  }
+
+  def findByPhone(kg: Long)(phone: String) = DB.withConnection {
+    implicit c =>
+      SQL(fullStructureSql + " and p.phone={phone}")
+        .on('kg -> kg,
+          'phone -> phone)
+        .as(withRelationship.singleOpt)
+  }
+
   def delete(kg: Long)(phone: String) = DB.withConnection {
     implicit c =>
       SQL("update parentinfo set status=0 where phone={phone}")
