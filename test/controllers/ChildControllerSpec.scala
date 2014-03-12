@@ -19,7 +19,7 @@ class ChildControllerSpec extends Specification with TestSupport {
 
       private val requestHeader = Json.toJson(new ChildUpdate(None, None, Some("icon_url")))
 
-      val updateResponse = route(FakeRequest(POST, "/kindergarten/93740362/parent/13408654680/child/1_93740362_374").withJsonBody(requestHeader)).get
+      val updateResponse = route(FakeRequest(POST, "/kindergarten/93740362/parent/13408654680/child/1_1394545098158").withJsonBody(requestHeader)).get
 
       status(updateResponse) must equalTo(OK)
       contentType(updateResponse) must beSome.which(_ == "application/json")
@@ -35,7 +35,7 @@ class ChildControllerSpec extends Specification with TestSupport {
 
       private val requestHeader = Json.toJson(new ChildUpdate(Some("new_nick_name"), None, None))
 
-      val updateResponse = route(FakeRequest(POST, "/kindergarten/93740362/parent/13408654680/child/1_93740362_374").withJsonBody(requestHeader)).get
+      val updateResponse = route(FakeRequest(POST, "/kindergarten/93740362/parent/13408654680/child/1_1394545098158").withJsonBody(requestHeader)).get
 
       status(updateResponse) must equalTo(OK)
       contentType(updateResponse) must beSome.which(_ == "application/json")
@@ -51,7 +51,7 @@ class ChildControllerSpec extends Specification with TestSupport {
 
       private val requestHeader = Json.toJson(new ChildUpdate(None, Some(1167580800000L), None))
 
-      val updateResponse = route(FakeRequest(POST, "/kindergarten/93740362/parent/13408654680/child/1_93740362_374").withJsonBody(requestHeader)).get
+      val updateResponse = route(FakeRequest(POST, "/kindergarten/93740362/parent/13408654680/child/1_1394545098158").withJsonBody(requestHeader)).get
 
       status(updateResponse) must equalTo(OK)
       contentType(updateResponse) must beSome.which(_ == "application/json")

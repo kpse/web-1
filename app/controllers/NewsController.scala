@@ -9,8 +9,8 @@ import play.api.data.Forms._
 object NewsController extends Controller {
   implicit val writes = Json.writes[News]
 
-  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = Action {
-    val jsons = News.allSortById(kg, from, to).take(most.getOrElse(25))
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int], classId: Option[String]) = Action {
+    val jsons = News.allSortById(kg, classId, from, to).take(most.getOrElse(25))
     Ok(Json.toJson(jsons))
   }
 

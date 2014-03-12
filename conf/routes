@@ -29,7 +29,7 @@ GET           /kindergarten/:kg/class                                           
 POST          /kindergarten/:kg/class                                            controllers.ClassController.create(kg: Long)
 POST          /kindergarten/:kg/class/:classId                                   controllers.ClassController.update(kg: Long, classId: Long)
 
-GET           /kindergarten/:kg/news                                             controllers.NewsController.index(kg: Long, from: Option[Long], to: Option[Long], most:Option[Int])
+GET           /kindergarten/:kg/news                                             controllers.NewsController.index(kg: Long, from: Option[Long], to: Option[Long], most:Option[Int], class_id: Option[String])
 GET           /kindergarten/:kg/news/:newsId                                     controllers.NewsController.show(kg: Long, newsId: Long)
 POST          /kindergarten/:kg/news/:newsId                                     controllers.NewsController.update(kg: Long, newsId: Long)
 DELETE        /kindergarten/:kg/news/:newsId                                     controllers.NewsController.deleteOne(kg: Long, newsId: Long)

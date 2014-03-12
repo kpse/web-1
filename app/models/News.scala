@@ -16,13 +16,13 @@ object News {
       val createdId: Option[Long] =
         SQL("insert into news (school_id, title, content, update_at, published, class_id) " +
           "values ({kg}, {title}, {content}, {timestamp}, {published}, {class_id})")
-        .on('content -> form._3,
-          'kg -> form._1.toString,
-          'title -> form._2,
-          'timestamp -> System.currentTimeMillis,
-          'published -> (if (form._4.getOrElse(false)) 1 else 0),
-          'class_id -> form._5
-        ).executeInsert()
+          .on('content -> form._3,
+            'kg -> form._1.toString,
+            'title -> form._2,
+            'timestamp -> System.currentTimeMillis,
+            'published -> (if (form._4.getOrElse(false)) 1 else 0),
+            'class_id -> form._5
+          ).executeInsert()
       findById(form._1, createdId.getOrElse(-1))
   }
 
@@ -66,7 +66,7 @@ object News {
       get[Long]("update_at") ~
       get[Option[Int]]("class_id") ~
       get[Int]("published") map {
-      case id ~ school_id ~ title ~ content ~ timestamp ~ classId ~ 1  =>
+      case id ~ school_id ~ title ~ content ~ timestamp ~ classId ~ 1 =>
         News(id, school_id.toLong, title, content, timestamp, true, NOTICE_TYPE_SCHOOL_INFO, classId)
       case id ~ school_id ~ title ~ content ~ timestamp ~ classId ~ 0 =>
         News(id, school_id.toLong, title, content, timestamp, false, NOTICE_TYPE_SCHOOL_INFO, classId)
@@ -82,15 +82,25 @@ object News {
         .as(simple *)
   }
 
-  def allSortById(kg: Long, from: Option[Long], to: Option[Long]): List[News] = DB.withConnection {
+  def allSortById(kg: Long, classId: Option[String], from: Option[Long], to: Option[Long]): List[News] = DB.withConnection {
     implicit c =>
-      SQL(allNewsSql + rangerQuery(from, to))
-        .on(
-          'kg -> kg.toString,
-          'from -> from,
-          'to -> to
-        )
-        .as(simple *)
+      classId match {
+        case Some(ids) =>
+          SQL(allNewsSql + " and class_id in (%s, 0) ".format(ids) + rangerQuery(from, to))
+            .on(
+              'kg -> kg.toString,
+              'from -> from,
+              'to -> to
+            ).as(simple *)
+        case None =>
+          SQL(allNewsSql + " and class_id=0 " +  rangerQuery(from, to))
+            .on(
+              'kg -> kg.toString,
+              'from -> from,
+              'to -> to
+            )
+            .as(simple *)
+      }
   }
 
   def allIncludeNonPublished(kg: Long): List[News] = DB.withConnection {
