@@ -68,7 +68,7 @@ object Assignment {
       get[Int]("class_id") ~
       get[String]("school_id") map {
       case id ~ t ~ title ~ content ~ publisher ~ image ~ classId ~ kg =>
-        Assignment(Some(id), Some(t), title, content, publisher, image, classId, Some(kg.toLong))
+        Assignment(Some(id), Some(t), title, content, publisher, Some(image.getOrElse("")), classId, Some(kg.toLong))
     }
   }
 
