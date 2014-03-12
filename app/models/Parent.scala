@@ -11,7 +11,7 @@ import java.util.Date
 import play.Logger
 import models.helper.TimeHelper.any2DateTime
 
-case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: String, gender: Int, birthday: String)
+case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: String, gender: Int, birthday: String, timestamp: Option[Long])
 
 case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait: String, name: String, phone: String, kindergarten: School, relationship: String, child: ChildInfo, card: String)
 
@@ -253,12 +253,13 @@ object Parent {
       get[Int]("class_id") ~
       get[String]("cardnum") ~
       get[String]("phone") ~
-      get[String]("classinfo.class_name") map {
+      get[String]("classinfo.class_name") ~
+      get[Long]("childinfo.update_at") map {
       case id ~ k_id ~ name ~ birthday ~ gender ~ portrait ~
         schoolName ~ schoolId ~ relationship ~ childName ~
-        nick ~ childBirthday ~ childGender ~ childPortrait ~ child_id ~ classId ~ card ~ phone ~ className =>
+        nick ~ childBirthday ~ childGender ~ childPortrait ~ child_id ~ classId ~ card ~ phone ~ className ~ childTime =>
         new ParentInfo(Some(id), birthday.toDateOnly, gender.toInt, portrait, name, phone, new School(schoolId.toLong, schoolName), relationship,
-          new ChildInfo(Some(child_id), childName, nick, childBirthday.toDateOnly, childGender.toInt, childPortrait, classId, Some(className)), card)
+          new ChildInfo(Some(child_id), childName, nick, childBirthday.toDateOnly, childGender.toInt, childPortrait, classId, Some(className), Some(childTime)), card)
     }
   }
 
@@ -299,9 +300,10 @@ object Parent {
       get[String]("phone") ~
       get[Int]("gender") ~
       get[String]("picurl") ~
-      get[Date]("birthday") map {
-      case id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday =>
-        new Parent(Some(id), kg.toLong, name, phone, portrait, gender, birthday.toDateOnly)
+      get[Date]("birthday") ~
+      get[Long]("update_at") map {
+      case id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday ~ t =>
+        new Parent(Some(id), kg.toLong, name, phone, portrait, gender, birthday.toDateOnly, Some(t))
     }
   }
 

@@ -21,7 +21,7 @@ case class ChildDetail(id: String, nick: String, icon_url: String, birthday: Lon
 
 case class ChildDetailResponse(error_code: Int, child_info: Option[ChildDetail])
 
-case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String, gender: Int, portrait: String, class_id: Int, class_name: Option[String])
+case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String, gender: Int, portrait: String, class_id: Int, class_name: Option[String], timestamp: Option[Long])
 
 case class ChildUpdate(nick: Option[String], birthday: Option[Long], icon_url: Option[String])
 
@@ -40,7 +40,7 @@ object Children {
   def updateByChildId(kg: Long, childId: String, child: ChildInfo) = DB.withConnection {
     implicit c =>
       SQL("update childinfo set name={name},nick={nick},gender={gender},class_id={class_id}," +
-        "birthday={birthday},picurl={picurl} where child_id={child_id}")
+        "birthday={birthday},picurl={picurl}, update_at={timestamp} where child_id={child_id}")
         .on(
           'name -> child.name,
           'nick -> child.nick,
@@ -48,6 +48,7 @@ object Children {
           'class_id -> child.class_id,
           'birthday -> child.birthday,
           'picurl -> child.portrait,
+          'timestamp -> System.currentTimeMillis,
           'child_id -> childId
         ).executeUpdate
       info(kg, childId)
@@ -106,9 +107,10 @@ object Children {
       get[Int]("gender") ~
       get[Date]("birthday") ~
       get[Int]("childinfo.class_id") ~
-      get[String]("classinfo.class_name") map {
-      case childId ~ childName ~ nick ~ icon_url ~ childGender ~ childBirthday ~ classId ~ className =>
-        new ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt, icon_url, classId, Some(className))
+      get[String]("classinfo.class_name") ~
+      get[Long]("childinfo.update_at") map {
+      case childId ~ childName ~ nick ~ icon_url ~ childGender ~ childBirthday ~ classId ~ className ~ t =>
+        new ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt, icon_url, classId, Some(className), Some(t))
     }
   }
 
