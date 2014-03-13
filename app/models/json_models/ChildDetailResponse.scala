@@ -124,7 +124,7 @@ object Children {
   def findAllInClass(kg: Long, classId: Option[Long], connected: Option[Boolean]) = DB.withConnection {
     implicit c =>
       val sql = "select c.*, c2.class_name from childinfo c, classinfo c2 " +
-        "where c.class_id=c2.class_id and c.status=1 and c.school_id={kg} "
+        "where c.class_id=c2.class_id and c.status=1 and c.school_id={kg} and c.school_id=c2.school_id "
       SQL(generateSQL(sql, classId, connected))
         .on(
           'classId -> classId.getOrElse(0),

@@ -80,9 +80,9 @@ angular.module('kulebaoAdmin')
 
         scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query()
 
-        scope.parents = Parent.bind(school_id: stateParams.kindergarten).query ->
+        scope.parents = Parent.query school_id: stateParams.kindergarten, ->
           scope.availableParents = scope.parents
-        scope.children = Child.bind(school_id: stateParams.kindergarten).query ->
+        scope.children = Child.query school_id: stateParams.kindergarten, ->
           scope.availableChildren = scope.children
         scope.relationship = new Relationship(school_id: stateParams.kindergarten, relationship: '妈妈')
         scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query()
