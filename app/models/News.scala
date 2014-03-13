@@ -21,7 +21,7 @@ object News {
             'title -> form._2,
             'timestamp -> System.currentTimeMillis,
             'published -> (if (form._4.getOrElse(false)) 1 else 0),
-            'class_id -> form._5
+            'class_id -> form._5.getOrElse(0)
           ).executeInsert()
       findById(form._1, createdId.getOrElse(-1))
   }
@@ -29,7 +29,8 @@ object News {
   def delete(id: Long) = DB.withConnection {
     implicit c =>
       SQL("update news set status=0 where uid={id}")
-        .on('id -> id
+        .on(
+          'id -> id
         ).execute()
   }
 
@@ -50,9 +51,10 @@ object News {
   def findById(kg: Long, id: Long) = DB.withConnection {
     implicit c =>
       SQL("select * from news where school_id={kg} and uid={id}")
-        .on('kg -> kg.toString)
-        .on('id -> id)
-        .as(simple.singleOpt)
+        .on(
+          'kg -> kg.toString,
+          'id -> id
+        ).as(simple.singleOpt)
   }
 
 
@@ -93,7 +95,7 @@ object News {
               'to -> to
             ).as(simple *)
         case None =>
-          SQL(allNewsSql + " and class_id=0 " +  rangerQuery(from, to))
+          SQL(allNewsSql + " and class_id=0 " + rangerQuery(from, to))
             .on(
               'kg -> kg.toString,
               'from -> from,
