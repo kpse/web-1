@@ -189,14 +189,14 @@ object Children {
       SQL("select c.*, c2.class_name from childinfo c, relationmap r, parentinfo p, classinfo c2 " +
         " where c.class_id=c2.class_id and p.status=1 and c.status=1 and r.child_id = c.child_id " +
         " and p.parent_id = r.parent_id and c.school_id=c2.school_id and p.phone={phone} " +
-        "and c.school_id={kg}")
+        "and c.school_id={kg} and r.status=1")
         .on('phone -> phone, 'kg -> school.toString).as(simple *)
   }
 
   def show(schoolId: Long, phone: String, child: String): Option[ChildDetail] = DB.withConnection {
     implicit c =>
       SQL("select c.*, c2.class_name from childinfo c, classinfo c2 where c.school_id=c2.school_id " +
-        "and c.class_id=c2.class_id and c.child_id={child_id} and c.school_id={kg}")
+        "and c.class_id=c2.class_id and c.child_id={child_id} and c.school_id={kg} and c.status=1")
         .on('child_id -> child, 'kg -> schoolId.toString).as(simple singleOpt)
   }
 
