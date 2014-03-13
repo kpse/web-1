@@ -20,7 +20,7 @@
         <div class="col-xs-5">
           <select id="target" class="form-control class-select" ng-model="news.class_id"
                                       ng-options="value.class_id as value.name for (key, value) in kindergarten.classes"
-                                      data-style="btn-primary">
+                                      data-style="btn-primary" ng-disabled="news.published">
             <option value="">-- 全校 --</option>
                                       </select>
         </div>
