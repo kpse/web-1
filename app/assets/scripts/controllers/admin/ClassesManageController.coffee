@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
   ['$scope', '$rootScope', '$stateParams', 'schoolService', '$modal', 'employeeService', 'schoolEmployeesService',
-   'classService',
-    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Class) ->
+   'classService', '$alert',
+    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Class, Alert) ->
       $rootScope.tabName = 'classes'
 
       scope.loading = true
@@ -51,7 +51,14 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
 
       scope.delete = (clazz) ->
         clazz.$delete ->
-          scope.refresh()
-
-
+            scope.refresh()
+          ,  ->
+            Alert
+              title: '无法删除'
+              content: '该班级中还有学生存在。'
+              placement: "top-left"
+              type: "danger"
+              show: true
+              container: '.panel-body'
+              duration: 3
   ]
