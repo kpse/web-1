@@ -16,7 +16,6 @@ angular.module('kulebaoAdmin')
             school_id: parseInt($scope.kindergarten.school_id)
             birthday: '1980-1-1'
             gender: 1
-            portrait: '/assets/images/portrait_placeholder.png'
             name: '马大帅'
             card: ''
             kindergarten: $scope.kindergarten.school_info
@@ -24,7 +23,6 @@ angular.module('kulebaoAdmin')
             child:
               birthday: '2009-1-1'
               gender: 1
-              portrait: '/assets/images/portrait_placeholder.png'
               class_id: 0
           $rootScope.parentChanged = true
           $location.path($location.path().replace(/\/[^\/]+$/, '/edit_adult'))

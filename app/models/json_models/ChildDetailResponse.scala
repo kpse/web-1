@@ -21,7 +21,7 @@ case class ChildDetail(id: String, nick: String, icon_url: String, birthday: Lon
 
 case class ChildDetailResponse(error_code: Int, child_info: Option[ChildDetail])
 
-case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String, gender: Int, portrait: String, class_id: Int, class_name: Option[String], timestamp: Option[Long])
+case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String, gender: Int, portrait: Option[String], class_id: Int, class_name: Option[String], timestamp: Option[Long])
 
 case class ChildUpdate(nick: Option[String], birthday: Option[Long], icon_url: Option[String])
 
@@ -110,7 +110,7 @@ object Children {
       get[String]("classinfo.class_name") ~
       get[Long]("childinfo.update_at") map {
       case childId ~ childName ~ nick ~ icon_url ~ childGender ~ childBirthday ~ classId ~ className ~ t =>
-        new ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt, icon_url, classId, Some(className), Some(t))
+        new ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt, Some(icon_url), classId, Some(className), Some(t))
     }
   }
 

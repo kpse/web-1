@@ -135,7 +135,6 @@ angular.module('kulebaoAdmin')
               school_id: parseInt(stateParams.kindergarten)
               birthday: '1980-1-1'
               gender: 1
-              portrait: '/assets/images/portrait_placeholder.png'
               name: '马大帅'
               kindergarten: scope.kindergarten.school_info
           else
@@ -177,7 +176,6 @@ angular.module('kulebaoAdmin')
                 nick: '宝宝小名'
                 birthday: '2009-1-1'
                 gender: 1
-                portrait: '/assets/images/portrait_placeholder.png'
                 class_id: scope.kindergarten.classes[0].class_id
                 school_id: parseInt(stateParams.kindergarten)
             else
