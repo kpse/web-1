@@ -11,6 +11,16 @@ import play.Logger
 case class Relationship(parent: Option[Parent], child: Option[ChildInfo], card: String, relationship: String)
 
 object Relationship {
+  def getCard(phone: String, childId: String) = DB.withConnection {
+    implicit c =>
+      SQL("select card_num from relationmap where status=1 and child_id={childId} " +
+        "and parent_id=(select parent_id from parentinfo where phone={phone} limit 1)")
+        .on(
+          'phone -> phone,
+          'childId -> childId
+        ).as(get[String]("card_num") singleOpt)
+  }
+
   def delete(kg: Long, card: String) = DB.withConnection {
     implicit c =>
       SQL("update relationmap set status=0 where card_num={card}")

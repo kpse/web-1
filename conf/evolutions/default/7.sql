@@ -10,6 +10,7 @@ CREATE TABLE relationmap (
   card_num VARCHAR(20)  NOT NULL DEFAULT '',
   relationship VARCHAR(20)  NOT NULL,
   status       TINYINT      NOT NULL DEFAULT 1,
+  UNIQUE (card_num),
   PRIMARY KEY (uid)
 );
 

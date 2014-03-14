@@ -87,9 +87,6 @@ angular.module('kulebaoAdmin')
         scope.relationship = new Relationship(school_id: stateParams.kindergarten, relationship: '妈妈')
         scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query()
 
-        scope.allCards = Card.bind(school_id: stateParams.kindergarten).query()
-
-
         scope.createRelationship = (relationship) ->
           relationship.$save ->
             scope.$hide()
@@ -97,8 +94,8 @@ angular.module('kulebaoAdmin')
 
         scope.isDuplicated = (card) ->
           return false if card is undefined || card.length < 10
-          undefined isnt _.find scope.allCards, (c) ->
-            c.card_id == card
+          undefined isnt _.find scope.relationships, (r) ->
+            r.card == card
 
         scope.alreadyConnected = (parent, child) ->
           return false if parent is undefined || child is undefined

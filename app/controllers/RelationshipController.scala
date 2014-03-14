@@ -27,7 +27,12 @@ object RelationshipController extends Controller {
       val relationship: String = (body \ "relationship").as[String]
       val phone: String = (body \ "parent" \ "phone").as[String]
       val childId: String = (body \ "child" \ "child_id").as[String]
-      Ok(Json.toJson(Relationship.create(kg, card, relationship, phone, childId)))
+      Relationship.getCard(phone, childId) match {
+        case Some(card: String) =>
+          Ok(Json.toJson(Relationship.show(kg, card)))
+        case None =>
+          Ok(Json.toJson(Relationship.create(kg, card, relationship, phone, childId)))
+      }
   }
 
   def show(kg: Long, card: String) = Action {
