@@ -111,6 +111,10 @@ POST          /app_package                                                      
 POST          /ws/broadcast                                                      controllers.WSController.sendBroadcastMessage
 
 GET           /ws/fileToken                                                      controllers.WSController.generateToken(bucket: String, key: Option[String])
+
+GET           /ws/verify/phone/:phone                                            controllers.SMSController.sendVerificationCode(phone: String)
+POST          /ws/verify/phone/:phone                                            controllers.SMSController.verify(phone: String)
+
 POST          /feedback                                                          controllers.FeedbackController.create
 GET           /feedback                                                          controllers.FeedbackController.index
 

@@ -47,7 +47,7 @@ object Children {
           'gender -> child.gender,
           'class_id -> child.class_id,
           'birthday -> child.birthday,
-          'picurl -> child.portrait,
+          'picurl -> child.portrait.getOrElse(""),
           'timestamp -> System.currentTimeMillis,
           'child_id -> childId
         ).executeUpdate
@@ -80,7 +80,7 @@ object Children {
           'student_id -> "%d".format(timestamp).take(5),
           'gender -> child.gender,
           'classname -> "",
-          'picurl -> child.portrait,
+          'picurl -> child.portrait.getOrElse(""),
           'birthday -> child.birthday,
           'indate -> child.birthday,
           'school_id -> kg.toString,
@@ -103,14 +103,14 @@ object Children {
       get[String]("child_id") ~
       get[String]("name") ~
       get[String]("nick") ~
-      get[String]("picurl") ~
+      get[Option[String]]("picurl") ~
       get[Int]("gender") ~
       get[Date]("birthday") ~
       get[Int]("childinfo.class_id") ~
       get[String]("classinfo.class_name") ~
       get[Long]("childinfo.update_at") map {
       case childId ~ childName ~ nick ~ icon_url ~ childGender ~ childBirthday ~ classId ~ className ~ t =>
-        new ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt, Some(icon_url), classId, Some(className), Some(t))
+        new ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt, Some(icon_url.getOrElse("")), classId, Some(className), Some(t))
     }
   }
 

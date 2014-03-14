@@ -25,7 +25,8 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
           class_id: nextId(scope.classes)
 
       nextId = (classes)->
-        23 + _.max _.map classes, (c) -> c.class_id
+        23 + _.max _.map classes, (c) ->
+          c.class_id
 
       scope.addClass = ->
         scope.currentClass = scope.createClass()
@@ -51,14 +52,14 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
 
       scope.delete = (clazz) ->
         clazz.$delete ->
-            scope.refresh()
-          ,  ->
-            Alert
-              title: '无法删除'
-              content: '该班级中还有学生存在。'
-              placement: "top-left"
-              type: "danger"
-              show: true
-              container: '.panel-body'
-              duration: 3
+          scope.refresh()
+        , ->
+          Alert
+            title: '无法删除'
+            content: '该班级中还有学生存在。'
+            placement: "top-left"
+            type: "danger"
+            show: true
+            container: '.panel-body'
+            duration: 3
   ]
