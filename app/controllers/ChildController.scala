@@ -7,6 +7,7 @@ import play.api.Logger
 import models.json_models.ChildrenResponse
 import models.json_models.ChildDetailResponse
 import models.json_models.ChildDetail
+import models.School
 
 object ChildController extends Controller {
 
@@ -66,6 +67,8 @@ object ChildController extends Controller {
     implicit request =>
       Logger.info(request.body.toString)
       request.body.validate[ChildInfo].map {
+        case (info) if ! School.classExists(kg, info.class_id) =>
+          BadRequest("class " + info.class_id + " does not exists.")
         case (info) if Children.idExists(info.child_id) =>
           Ok(Json.toJson(Children.updateByChildId(kg, info.child_id.get, info)))
         case (info) =>
@@ -78,6 +81,8 @@ object ChildController extends Controller {
     implicit request =>
       Logger.info(request.body.toString)
       request.body.validate[ChildInfo].map {
+        case (info) if ! School.classExists(kg, info.class_id) =>
+          BadRequest("class " + info.class_id + " does not exists.")
         case (info) if Children.idExists(Some(childId)) =>
           Ok(Json.toJson(Children.updateByChildId(kg, childId, info)))
         case (info) =>

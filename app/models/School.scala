@@ -11,6 +11,15 @@ case class School(school_id: Long, name: String)
 case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, manager: Option[String])
 
 object School {
+  def classExists(kg: Long, classId: Int) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from classinfo where school_id = {kg} and class_id={class_id} and status=1")
+        .on(
+          'kg -> kg.toString,
+          'class_id -> classId
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
   def hasChildrenInClass(kg: Long, classId: Long): Boolean = DB.withConnection {
     implicit c =>
       SQL("select count(1) from childinfo where school_id = {kg} and class_id={class_id} and status=1")
