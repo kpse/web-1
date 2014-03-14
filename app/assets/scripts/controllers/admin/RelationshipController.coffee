@@ -8,43 +8,69 @@ angular.module('kulebaoAdmin')
         rootScope.tabName = 'relationship'
         scope.loading = true
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.classes = Class.bind({school_id: stateParams.kindergarten}).query()
+          scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten
 
-        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
-          scope.loading = false
+          scope.refreshRelationship()
 
-        scope.parents = Parent.bind(school_id: stateParams.kindergarten).query()
-        scope.children = Child.bind(school_id: stateParams.kindergarten).query()
-        scope.relationship = scope.relationships[0]
 
-        scope.$on 'refreshRelationship', ->
+        scope.refreshRelationship = ->
           scope.loading = true
           scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
+            scope.parents = Parent.query school_id: stateParams.kindergarten
+            scope.children = Child.query school_id: stateParams.kindergarten
             scope.loading = false
 
+        scope.createParent = ->
+          new Parent
+            school_id: parseInt stateParams.kindergarten
+            birthday: '1980-1-1'
+            gender: 1
+            name: '马大帅'
+            kindergarten: scope.kindergarten.school_info
+
+        scope.createChild = ->
+          new Child
+            name: '宝宝名字'
+            nick: '宝宝小名'
+            birthday: '2009-1-1'
+            gender: 1
+            class_id: scope.kindergarten.classes[0].class_id
+            school_id: parseInt stateParams.kindergarten
+
+        scope.createRelationship = ->
+          new Relationship
+            school_id: parseInt stateParams.kindergarten
+            relationship: '妈妈'
+
         scope.newParent = ->
-          scope.currentModal = Modal
-            scope: scope
-            contentTemplate: 'templates/admin/add_adult.html'
+          scope.parents = Parent.query school_id: stateParams.kindergarten, ->
+            scope.parent = scope.createParent()
+            scope.currentModal = Modal
+              scope: scope
+              contentTemplate: 'templates/admin/add_adult.html'
 
         scope.newChild = ->
+          scope.child = scope.createChild()
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/admin/add_child.html'
 
         scope.newRelationship = ->
-          scope.currentModal = Modal
-            scope: scope
-            contentTemplate: 'templates/admin/add_connection.html'
+          scope.relationship = scope.createRelationship()
+          scope.parents = Parent.query school_id: stateParams.kindergarten, ->
+            scope.children = Child.query school_id: stateParams.kindergarten, ->
+              scope.currentModal = Modal
+                scope: scope
+                contentTemplate: 'templates/admin/add_connection.html'
 
         scope.editParent = (parent) ->
-          rootScope.editingParent = parent
+          scope.parent = parent
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/admin/add_adult.html'
 
         scope.editChild = (child) ->
-          rootScope.editingChild = child
+          scope.child = child
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/admin/add_child.html'
@@ -65,37 +91,40 @@ angular.module('kulebaoAdmin')
             alert 'error_code:' + data.error_code
 
         scope.delete = (card) ->
-          Relationship.bind(school_id: stateParams.kindergarten, card: card).delete ->
-            scope.$emit 'refreshRelationship'
-    ]
+          Relationship.delete school_id: stateParams.kindergarten, card: card, ->
+            scope.refreshRelationship()
 
-angular.module('kulebaoAdmin')
-.controller 'addRelationshipCtrl',
-    ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
-     'relationshipService', '$modal', 'childService', 'cardService',
-      (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, modal, Child, Card) ->
-        rootScope.tabName = 'relationship'
-        scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.classes = Class.bind({school_id: stateParams.kindergarten}).query()
+        scope.isPhoneDuplicated = (parent) ->
+          return false if parent.phone is undefined
+          undefined isnt _.find scope.parents, (p) ->
+            (p.phone == parent.phone && p.parent_id != parent.parent_id)
 
-        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query()
-
-        scope.parents = Parent.query school_id: stateParams.kindergarten, ->
-          scope.availableParents = scope.parents
-        scope.children = Child.query school_id: stateParams.kindergarten, ->
-          scope.availableChildren = scope.children
-        scope.relationship = new Relationship(school_id: stateParams.kindergarten, relationship: '妈妈')
-        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query()
-
-        scope.createRelationship = (relationship) ->
-          relationship.$save ->
-            scope.$hide()
-            scope.$emit 'refreshRelationship'
-
-        scope.isDuplicated = (card) ->
+        scope.isCardDuplicated = (card) ->
           return false if card is undefined || card.length < 10
           undefined isnt _.find scope.relationships, (r) ->
             r.card == card
+
+        scope.uploadPic = (person, pic) ->
+          Upload pic, (url) ->
+            scope.$apply ->
+              person.portrait = url if url isnt undefined
+
+
+        scope.saveParent = (parent) ->
+          parent.$save ->
+            scope.refreshRelationship()
+            scope.currentModal.hide()
+
+
+        scope.saveRelationship = (relationship) ->
+          relationship.$save ->
+            scope.refreshRelationship()
+            scope.currentModal.hide()
+
+        scope.saveChild = (child) ->
+          child.$save ->
+            scope.refreshRelationship()
+            scope.currentModal.hide()
 
         scope.alreadyConnected = (parent, child) ->
           return false if parent is undefined || child is undefined
@@ -115,81 +144,5 @@ angular.module('kulebaoAdmin')
           else
             _.reject scope.parents, (p) ->
               scope.alreadyConnected(p, child)
-
-
-    ]
-
-angular.module('kulebaoAdmin')
-.controller 'addParentCtrl',
-    ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
-     'relationshipService', '$modal', 'childService', '$http', 'uploadService',
-      (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, modal, Child, $http, Upload) ->
-        rootScope.tabName = 'relationship'
-        scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.classes = Class.bind({school_id: stateParams.kindergarten}).query()
-          if rootScope.editingParent is undefined
-            scope.parent = new Parent
-              school_id: parseInt(stateParams.kindergarten)
-              birthday: '1980-1-1'
-              gender: 1
-              name: '马大帅'
-              kindergarten: scope.kindergarten.school_info
-          else
-            scope.parent = Parent.bind(school_id: stateParams.kindergarten, phone: rootScope.editingParent.phone).get ->
-              delete rootScope.editingParent
-
-        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query()
-
-        scope.parents = Parent.bind(school_id: stateParams.kindergarten).query()
-
-        scope.create = (parent) ->
-          parent.$save ->
-            scope.$hide()
-            scope.$emit 'refreshRelationship'
-
-        scope.isDuplicated = (parent) ->
-          return false if parent.phone is undefined
-          undefined isnt _.find scope.parents, (p) ->
-            (p.phone == parent.phone && p.id != parent.id)
-
-        scope.uploadPic = (person, pic) ->
-          Upload pic, (url) ->
-            scope.$apply ->
-              person.portrait = url if url isnt undefined
-    ]
-
-angular.module('kulebaoAdmin')
-.controller 'addChildCtrl',
-    ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
-     'relationshipService', '$modal', 'childService', '$http', 'uploadService',
-      (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, modal, Child, $http, Upload) ->
-        rootScope.tabName = 'relationship'
-        scope.loading = true
-        scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.classes = Class.bind({school_id: stateParams.kindergarten}).query ->
-            if rootScope.editingChild is undefined
-              scope.child = new Child
-                name: '宝宝名字'
-                nick: '宝宝小名'
-                birthday: '2009-1-1'
-                gender: 1
-                class_id: scope.kindergarten.classes[0].class_id
-                school_id: parseInt(stateParams.kindergarten)
-            else
-              scope.child = Child.bind(school_id: stateParams.kindergarten, child_id: rootScope.editingChild.child_id).get ->
-                delete rootScope.editingChild
-
-        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
-          scope.loading = false
-
-        scope.create = (child) ->
-          child.$save ->
-            scope.$hide()
-            scope.$emit 'refreshRelationship'
-
-        scope.uploadPic = (person, pic) ->
-          Upload pic, (url) ->
-            scope.$apply ->
-              person.portrait = url if url isnt undefined
     ]
 

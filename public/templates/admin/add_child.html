@@ -1,4 +1,4 @@
-<div class="panel-body" ng-controller="addChildCtrl">
+<div class="panel-body">
   <form class="form-horizontal row" role="form" name="newChildForm">
     <div class="col-sm-6">
       <div class="form-group">
@@ -97,7 +97,7 @@
     <div class="col-sm-offset-6 col-sm-6">
       <div class="form-group">
         <a class="btn btn-primary pull-right adding-button" ng-disabled="newChildForm.$invalid" ng-hide="saving"
-           ng-click="create(child)">保存</a>
+           ng-click="saveChild(child)">保存</a>
 
         <div class="loading" ng-show="saving"/>
 
