@@ -17,7 +17,13 @@ object SMSController extends Controller {
     WS.url(url).withHeaders("Content-Type" -> "application/x-www-form-urlencoded;charset=UTF-8")
       .post(generate).map {
       response =>
-        Ok(response.xml)
+        Logger.info("server returns: " + response.xml.toString)
+        response.xml.map(_.text.toLong) match {
+          case List(num) if num > 0 =>
+            Ok(Json.toJson(new SuccessResponse))
+          case _ =>
+            Ok(Json.toJson(new ErrorResponse("failed")))
+        }
     }
   }
 
