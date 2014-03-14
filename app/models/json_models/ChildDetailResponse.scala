@@ -100,7 +100,7 @@ object Children {
 
 
   val childInformation = {
-      get[String]("child_id") ~
+    get[String]("child_id") ~
       get[String]("name") ~
       get[String]("nick") ~
       get[Option[String]]("picurl") ~
@@ -173,14 +173,14 @@ object Children {
   val simple = {
     get[String]("child_id") ~
       get[String]("nick") ~
-      get[String]("picurl") ~
+      get[Option[String]]("picurl") ~
       get[Date]("birthday") ~
       get[Long]("class_id") ~
       get[String]("class_name") ~
       get[Long]("update_at") ~
       get[String]("name") map {
       case id ~ nick ~ icon_url ~ birth ~ classId ~ className ~ t ~ name =>
-        new ChildDetail(id, nick, icon_url, birth.getTime, t, classId, className, name)
+        new ChildDetail(id, nick, icon_url.getOrElse(""), birth.getTime, t, classId, className, name)
     }
   }
 

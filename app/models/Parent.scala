@@ -264,7 +264,7 @@ object Parent {
       get[String]("parentinfo.name") ~
       get[Date]("parentinfo.birthday") ~
       get[Int]("parentinfo.gender") ~
-      get[String]("parentinfo.picurl") ~
+      get[Option[String]]("parentinfo.picurl") ~
       get[String]("schoolinfo.name") ~
       get[String]("parentinfo.school_id") ~
       get[String]("parentinfo.relationship") ~
@@ -272,7 +272,7 @@ object Parent {
       get[String]("nick") ~
       get[Date]("childinfo.birthday") ~
       get[Int]("childinfo.gender") ~
-      get[String]("childinfo.picurl") ~
+      get[Option[String]]("childinfo.picurl") ~
       get[String]("childinfo.child_id") ~
       get[Int]("class_id") ~
       get[String]("cardnum") ~
@@ -282,8 +282,8 @@ object Parent {
       case id ~ k_id ~ name ~ birthday ~ gender ~ portrait ~
         schoolName ~ schoolId ~ relationship ~ childName ~
         nick ~ childBirthday ~ childGender ~ childPortrait ~ child_id ~ classId ~ card ~ phone ~ className ~ childTime =>
-        new ParentInfo(Some(id), birthday.toDateOnly, gender.toInt, portrait, name, phone, new School(schoolId.toLong, schoolName), relationship,
-          new ChildInfo(Some(child_id), childName, nick, childBirthday.toDateOnly, childGender.toInt, Some(childPortrait), classId, Some(className), Some(childTime)), card)
+        new ParentInfo(Some(id), birthday.toDateOnly, gender.toInt, portrait.getOrElse(""), name, phone, new School(schoolId.toLong, schoolName), relationship,
+          new ChildInfo(Some(child_id), childName, nick, childBirthday.toDateOnly, childGender.toInt, Some(childPortrait.getOrElse("")), classId, Some(className), Some(childTime)), card)
     }
   }
 
@@ -323,11 +323,11 @@ object Parent {
       get[String]("name") ~
       get[String]("phone") ~
       get[Int]("gender") ~
-      get[String]("picurl") ~
+      get[Option[String]]("picurl") ~
       get[Date]("birthday") ~
       get[Long]("update_at") map {
       case id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday ~ t =>
-        new Parent(Some(id), kg.toLong, name, phone, Some(portrait), gender, birthday.toDateOnly, Some(t))
+        new Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t))
     }
   }
 
