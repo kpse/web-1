@@ -1,9 +1,11 @@
 package controllers
 
 import play.api.mvc.{Action, Controller}
-import models.Verification
+import models._
 import play.api.libs.ws.WS
 import play.Logger
+import play.api.libs.json.{JsError, Json}
+import play.cache.Cache
 
 object SMSController extends Controller {
   implicit val context = scala.concurrent.ExecutionContext.Implicits.global
@@ -19,8 +21,22 @@ object SMSController extends Controller {
     }
   }
 
+  implicit val write1 = Json.writes[JsonResponse]
+  implicit val read = Json.reads[Verification]
 
-  def verify(phone: String) = Action {
-    Ok
+  def verify(phone: String) = Action(parse.json) {
+    implicit request =>
+      request.body.validate[Verification].map {
+        case (v) =>
+          Verification.isMatched(v) match {
+            case true =>
+              Cache.set(phone, "", 0)
+              Ok(Json.toJson(new SuccessResponse))
+            case false => Ok(Json.toJson(new ErrorResponse("failed")))
+          }
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+
   }
 }
