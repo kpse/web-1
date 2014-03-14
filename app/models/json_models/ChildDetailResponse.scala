@@ -21,7 +21,7 @@ case class ChildDetail(id: String, nick: String, icon_url: String, birthday: Lon
 
 case class ChildDetailResponse(error_code: Int, child_info: Option[ChildDetail])
 
-case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String, gender: Int, portrait: Option[String], class_id: Int, class_name: Option[String], timestamp: Option[Long])
+case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String, gender: Int, portrait: Option[String], class_id: Int, class_name: Option[String], timestamp: Option[Long], school_id: Option[Long])
 
 case class ChildUpdate(nick: Option[String], birthday: Option[Long], icon_url: Option[String])
 
@@ -100,7 +100,8 @@ object Children {
 
 
   val childInformation = {
-    get[String]("child_id") ~
+    get[String]("school_id") ~
+      get[String]("child_id") ~
       get[String]("name") ~
       get[String]("nick") ~
       get[Option[String]]("picurl") ~
@@ -109,8 +110,10 @@ object Children {
       get[Int]("childinfo.class_id") ~
       get[String]("classinfo.class_name") ~
       get[Long]("childinfo.update_at") map {
-      case childId ~ childName ~ nick ~ icon_url ~ childGender ~ childBirthday ~ classId ~ className ~ t =>
-        new ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt, Some(icon_url.getOrElse("")), classId, Some(className), Some(t))
+      case schoolId ~ childId ~ childName ~ nick ~ icon_url ~ childGender
+        ~ childBirthday ~ classId ~ className ~ t =>
+        new ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt,
+          Some(icon_url.getOrElse("")), classId, Some(className), Some(t), Some(schoolId.toLong))
     }
   }
 

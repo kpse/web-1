@@ -3,8 +3,8 @@
 angular.module('kulebaoAdmin')
 .controller 'RelationshipCtrl',
     ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
-     'relationshipService', '$modal', 'childService', '$http'
-      (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http) ->
+     'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService',
+      (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload) ->
         rootScope.tabName = 'relationship'
         scope.loading = true
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
@@ -64,16 +64,16 @@ angular.module('kulebaoAdmin')
                 contentTemplate: 'templates/admin/add_connection.html'
 
         scope.editParent = (parent) ->
-          scope.parent = parent
-          scope.currentModal = Modal
-            scope: scope
-            contentTemplate: 'templates/admin/add_adult.html'
+          scope.parent = Parent.get school_id: stateParams.kindergarten, phone: parent.phone, ->
+            scope.currentModal = Modal
+              scope: scope
+              contentTemplate: 'templates/admin/add_adult.html'
 
         scope.editChild = (child) ->
-          scope.child = child
-          scope.currentModal = Modal
-            scope: scope
-            contentTemplate: 'templates/admin/add_child.html'
+          scope.child = Child.get school_id: stateParams.kindergarten, child_id: child.child_id, ->
+            scope.currentModal = Modal
+              scope: scope
+              contentTemplate: 'templates/admin/add_child.html'
 
 
         generateCheckingInfo = (card, name, type) ->
@@ -112,9 +112,17 @@ angular.module('kulebaoAdmin')
 
         scope.saveParent = (parent) ->
           parent.$save ->
-            scope.refreshRelationship()
-            scope.currentModal.hide()
-
+              scope.refreshRelationship()
+              scope.currentModal.hide()
+            , (msg)->
+              Alert
+                title: '创建失败'
+                content: msg.data
+                placement: "top-left"
+                type: "danger"
+                show: true
+                container: '.panel-body'
+                duration: 3
 
         scope.saveRelationship = (relationship) ->
           relationship.$save ->

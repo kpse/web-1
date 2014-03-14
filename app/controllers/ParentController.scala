@@ -4,9 +4,12 @@ import play.api.mvc._
 import play.api.libs.json.{JsError, Json}
 import play.api.data.Form
 import play.api.data.Forms._
-import models.{ParentInfo, School, Parent}
+import models._
 import models.json_models.ChildInfo
 import play.api.Logger
+import models.ParentInfo
+import scala.Some
+import models.json_models.ChildInfo
 
 object ParentController extends Controller {
 
@@ -60,16 +63,20 @@ object ParentController extends Controller {
       request.body.validate[Parent].map {
         case (parent) if Parent.idExists(parent.parent_id) =>
           Ok(Json.toJson(Parent.update2(parent)))
-        case (parent) if Parent.phoneExists(phone) =>
-          Ok(Json.toJson(Parent.updateWithPhone(parent)))
+        case (parent) if Parent.phoneExists(kg, phone) =>
+          Ok(Json.toJson(Parent.updateWithPhone(kg, parent)))
+        case (error) if Parent.existsInOtherSchool(error) =>
+          BadRequest("电话号码在其他学校已存在。")
         case (newParent) =>
           Ok(Json.toJson(Parent.create(kg, newParent)))
       } getOrElse BadRequest("Detected error:" + request.body)
   }
 
+  implicit val write5 = Json.writes[JsonResponse]
+
   def delete(kg: Long, phone: String) = Action {
     Parent.delete(kg)(phone)
-    Ok("{\"status\":\"success\"}").as("application/json")
+    Ok(Json.toJson(new SuccessResponse()))
   }
 
   def show(kg: Long, phone: String) = Action {

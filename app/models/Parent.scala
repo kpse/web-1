@@ -17,6 +17,14 @@ case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait:
 
 
 object Parent {
+  def existsInOtherSchool(parent: Parent) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) as count from parentinfo where phone={phone}")
+        .on(
+          'phone -> parent.phone
+        ).as(get[Long]("count") single) > 0
+  }
+
   def idExists(parentId: Option[String]): Boolean = DB.withConnection {
     implicit c =>
       parentId match {
@@ -28,11 +36,13 @@ object Parent {
       }
   }
 
-  def phoneExists(phone: String): Boolean = DB.withConnection {
+  def phoneExists(kg: Long, phone: String): Boolean = DB.withConnection {
     implicit c =>
-      SQL("select count(1) as count from parentinfo where phone={phone}")
-        .on('phone -> phone)
-        .as(get[Long]("count") single) > 0
+      SQL("select count(1) as count from parentinfo where phone={phone} and school_id={kg}")
+        .on(
+          'phone -> phone,
+          'kg -> kg.toString
+        ).as(get[Long]("count") single) > 0
   }
 
   def update2(parent: Parent) = DB.withConnection {
@@ -46,26 +56,28 @@ object Parent {
           'phone -> parent.phone,
           'gender -> parent.gender,
           'company -> "",
-          'picurl -> parent.portrait,
+          'picurl -> parent.portrait.getOrElse(""),
           'birthday -> parent.birthday,
           'parent_id -> parent.parent_id,
           'timestamp -> timestamp).executeUpdate()
       info(parent.school_id, parent.parent_id.get)
   }
 
-  def updateWithPhone(parent: Parent) = DB.withConnection {
+  def updateWithPhone(kg: Long, parent: Parent) = DB.withConnection {
     implicit c =>
       val timestamp = System.currentTimeMillis
       SQL("update parentinfo set name={name}, gender={gender}, company={company}, " +
         "picurl={picurl}, birthday={birthday}, " +
-        "update_at={timestamp} where phone={phone}")
+        "update_at={timestamp} where phone={phone} and school_id={kg}")
         .on('name -> parent.name,
           'phone -> parent.phone,
           'gender -> parent.gender,
           'company -> "",
-          'picurl -> parent.portrait,
+          'picurl -> parent.portrait.getOrElse(""),
           'birthday -> parent.birthday,
-          'timestamp -> timestamp).executeUpdate()
+          'timestamp -> timestamp,
+          'kg -> kg.toString
+        ).executeUpdate()
       findByPhone(parent.school_id)(parent.phone)
   }
 
@@ -162,7 +174,7 @@ object Parent {
           'phone -> parent.phone,
           'gender -> parent.gender,
           'company -> "",
-          'picurl -> parent.portrait,
+          'picurl -> parent.portrait.getOrElse(""),
           'birthday -> parent.birthday,
           'school_id -> kg.toString,
           'status -> 1,
@@ -282,8 +294,10 @@ object Parent {
       case id ~ k_id ~ name ~ birthday ~ gender ~ portrait ~
         schoolName ~ schoolId ~ relationship ~ childName ~
         nick ~ childBirthday ~ childGender ~ childPortrait ~ child_id ~ classId ~ card ~ phone ~ className ~ childTime =>
-        new ParentInfo(Some(id), birthday.toDateOnly, gender.toInt, portrait.getOrElse(""), name, phone, new School(schoolId.toLong, schoolName), relationship,
-          new ChildInfo(Some(child_id), childName, nick, childBirthday.toDateOnly, childGender.toInt, Some(childPortrait.getOrElse("")), classId, Some(className), Some(childTime)), card)
+        new ParentInfo(Some(id), birthday.toDateOnly, gender.toInt, portrait.getOrElse(""), name, phone,
+          new School(schoolId.toLong, schoolName), relationship,
+          new ChildInfo(Some(child_id), childName, nick, childBirthday.toDateOnly, childGender.toInt,
+            Some(childPortrait.getOrElse("")), classId, Some(className), Some(childTime), Some(schoolId.toLong)), card)
     }
   }
 
