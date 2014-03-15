@@ -51,10 +51,6 @@
   }
 }
 
-.select-button.active {
-  background-color: #47a447;
-}
-
 .creating-summary {
   .summary-title {
     margin-top: -10px;
@@ -77,11 +73,6 @@
 .class-select {
   max-width: 200px;
   margin-left: 4px;
-}
-
-.help-block.error,
-.error-field {
-  color: red;
 }
 
 .issue-date {

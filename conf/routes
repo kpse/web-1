@@ -102,6 +102,7 @@ GET           /kindergarten/:kg/principal                                       
 
 GET           /employee                                                          controllers.EmployeeController.index
 POST          /employee                                                          controllers.EmployeeController.create
+POST          /employee/:phone                                                   controllers.EmployeeController.updateOrCreate(phone: String)
 GET           /employee/:phone                                                   controllers.EmployeeController.show(phone: String)
 
 GET           /ws/swipe                                                          controllers.WSController.call

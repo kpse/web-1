@@ -19,16 +19,17 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="kg in kindergartens | filter: searchText" class="row">
+  <tr ng-repeat="kg in kindergartens | filter: searchText" class="row" ng-class="{editable: editSchool}" ng-click="editSchool(kg)">
     <td class=".col-xs-1">{{kg.school_id}}</td>
     <td class=".col-xs-2">{{kg.name}}</td>
-    <td class=".col-xs-3">{{kg.manager.name}}</td>
+    <td class=".col-xs-3">
+      <p ng-repeat="m in kg.managers"><a ng-click="edit(m)">{{m.detail.name}}</a></p>
+      <p ng-show="kg.managers.length == 0">还没有管理员，<a class="dropdown" ng-click="addManager(kg);$event.stopPropagation()">增加</a>一个</p>
+      </td>
 
     <td class=".col-xs-2">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
               ng-confirm-click="delete(kg)">删除
-      </button>
-      <button class="btn btn-xs btn-warning" ng-click="edit(kg)">编辑
       </button>
     </td>
   </tr>

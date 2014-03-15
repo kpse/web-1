@@ -87,3 +87,12 @@
     height: 139px;
   }
 }
+
+.help-block.error,
+.error-field {
+  color: red;
+}
+
+.select-button.active {
+  background-color: #47a447;
+}

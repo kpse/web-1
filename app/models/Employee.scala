@@ -14,13 +14,15 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
                     birthday: String, school_id: Long,
                     login_name: String, login_password: String, timestamp: Option[Long])
 
-case class Principal(employee_id: String, school_id: Long, timestamp: Long)
+case class Principal(employee_id: String, school_id: Long, phone: String, timestamp: Long)
 
 object Employee {
 
   def allPrincipal(kg: Long) = DB.withConnection {
     implicit c =>
-      SQL("select * from privilege where status=1 and school_id={kg} and `group`='principal'")
+      SQL("select p.*, e.phone from privilege p, employeeinfo e where e.employee_id=p.employee_id " +
+        "and e.status=1 and p.status=1 and p.school_id=e.school_id and p.school_id={kg} " +
+        "and `group`='principal'")
         .on(
           'kg -> kg.toString
         ).as(simplePrincipal *)
@@ -153,10 +155,11 @@ object Employee {
 
   val simplePrincipal = {
     get[String]("employee_id") ~
+    get[String]("phone") ~
       get[String]("school_id") ~
       get[Long]("update_at") map {
-      case id ~ kg ~ timestamp =>
-        Principal(id, kg.toLong, timestamp)
+      case id ~ phone ~ kg ~ timestamp =>
+        Principal(id, kg.toLong, phone, timestamp)
     }
   }
 

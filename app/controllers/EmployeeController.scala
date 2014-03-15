@@ -57,4 +57,6 @@ object EmployeeController extends Controller {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
+
+  def updateOrCreate(phone: String) = createOrUpdateInSchool(0, phone)
 }
