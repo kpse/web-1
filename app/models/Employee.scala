@@ -14,8 +14,42 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
                     birthday: String, school_id: Long,
                     login_name: String, login_password: String, timestamp: Option[Long])
 
+case class Principal(employee_id: String, school_id: Long, timestamp: Long)
 
 object Employee {
+
+  def allPrincipal(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select * from privilege where status=1 and school_id={kg} and `group`='principal'")
+        .on(
+          'kg -> kg.toString
+        ).as(simplePrincipal *)
+  }
+
+
+  def promote(employee: Employee) = DB.withConnection {
+    implicit c =>
+      SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) " +
+        "values ({school_id},{employee_id},{group},{subordinate},{promoter},{time})")
+        .on(
+          'school_id -> employee.school_id,
+          'employee_id -> employee.id,
+          'group -> "principal",
+          'subordinate -> "",
+          'promoter -> "operator",
+          'time -> System.currentTimeMillis
+        ).executeInsert()
+      show(employee.phone)
+  }
+
+  def createPrincipal(employee: Employee) = {
+    val created: Option[Employee] = create(employee)
+    created map {
+      case (admin) =>
+        promote(admin)
+    }
+  }
+
   def update(employee: Employee) = DB.withConnection {
     implicit c =>
       employee.id map {
@@ -114,6 +148,15 @@ object Employee {
       get[Long]("update_at") map {
       case id ~ name ~ phone ~ gender ~ workgroup ~ workduty ~ url ~ birthday ~ kg ~ loginName ~ loginPassword ~ timestamp =>
         Employee(Some(id), name, phone, gender, workgroup, workduty, url, birthday.toDateOnly, kg.toLong, loginName, loginPassword, Some(timestamp))
+    }
+  }
+
+  val simplePrincipal = {
+    get[String]("employee_id") ~
+      get[String]("school_id") ~
+      get[Long]("update_at") map {
+      case id ~ kg ~ timestamp =>
+        Principal(id, kg.toLong, timestamp)
     }
   }
 

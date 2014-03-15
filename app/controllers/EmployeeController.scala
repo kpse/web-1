@@ -47,4 +47,14 @@ object EmployeeController extends Controller {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
+
+  def createPrincipal(kg: Long) = Action(parse.json) {
+    request =>
+      request.body.validate[Employee].map {
+        case (employee) =>
+          Ok(Json.toJson(Employee.createPrincipal(employee)))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
 }
