@@ -17,22 +17,6 @@ class Config
         url: '/list',
         templateUrl: 'templates/admin/news_in_scope.html',
         controller: 'BulletinCtrl'
-    .state 'kindergarten.parents',
-        url: '/parents',
-        templateUrl: 'templates/admin/parents.html',
-        controller: 'ParentsCtrl'
-    .state 'kindergarten.parents.class',
-        url: '/class/:classId',
-        templateUrl: 'templates/admin/classes.html',
-        controller: 'ParentsInClassCtrl'
-    .state 'kindergarten.parents.class.list',
-        url: '/list',
-        templateUrl: 'templates/admin/list_parents.html',
-        controller: 'ParentsInClassCtrl'
-    .state 'kindergarten.parents.class.connect_child',
-        url: '/connect_child',
-        templateUrl: 'templates/admin/choose_existing_child.html',
-        controller: 'ConnectToChildCtrl'
     .state 'kindergarten.swipingcard',
         url: '/swipingcard',
         templateUrl: 'templates/admin/swipingcard.html',
@@ -112,6 +96,23 @@ class Config
         url: '/class',
         templateUrl: 'templates/admin/classes_management.html',
         controller: 'ClassesManagementCtrl'
+#deprecated
+    .state 'kindergarten.parents',
+        url: '/parents',
+        templateUrl: 'templates/admin/parents.html',
+        controller: 'ParentsCtrl'
+    .state 'kindergarten.parents.class',
+        url: '/class/:classId',
+        templateUrl: 'templates/admin/classes.html',
+        controller: 'ParentsInClassCtrl'
+    .state 'kindergarten.parents.class.list',
+        url: '/list',
+        templateUrl: 'templates/admin/list_parents.html',
+        controller: 'ParentsInClassCtrl'
+    .state 'kindergarten.parents.class.connect_child',
+        url: '/connect_child',
+        templateUrl: 'templates/admin/choose_existing_child.html',
+        controller: 'ConnectToChildCtrl'
 
     .state('kindergarten.wip',
         url: '/wip',

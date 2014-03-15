@@ -18,6 +18,7 @@ object ParentController extends Controller {
   implicit val write1 = Json.writes[ParentInfo]
   implicit val write4 = Json.writes[Parent]
 
+
   def index(kg: Long, classId: Option[Long]) = Action {
     classId match {
       case Some(id) =>
@@ -66,13 +67,14 @@ object ParentController extends Controller {
         case (parent) if Parent.phoneExists(kg, phone) =>
           Ok(Json.toJson(Parent.updateWithPhone(kg, parent)))
         case (error) if Parent.existsInOtherSchool(error) =>
-          BadRequest("电话号码在其他学校已存在。")
+          BadRequest(Json.toJson(new ErrorResponse("电话号码在其他学校已存在。")))
         case (newParent) =>
           Ok(Json.toJson(Parent.create(kg, newParent)))
       } getOrElse BadRequest("Detected error:" + request.body)
   }
 
   implicit val write5 = Json.writes[SuccessResponse]
+  implicit val write6 = Json.writes[ErrorResponse]
 
   def delete(kg: Long, phone: String) = Action {
     Parent.delete(kg)(phone)
