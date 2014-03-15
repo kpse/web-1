@@ -54,6 +54,7 @@ object SMSController extends Controller {
     implicit request =>
       request.body.validate[Verification].map {
         case (v) =>
+          Logger.info(v.toString)
           Verification.isMatched(v) match {
             case true =>
               Cache.set(phone, "", 0)
