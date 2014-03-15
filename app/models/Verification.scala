@@ -15,14 +15,14 @@ object Verification {
 
 
   def formatMessage(phone: String, code: String): String = {
-    "验证码： %s，切勿泄露给他人，如非本人操作，建议修改账号密码。%s【幼乐宝】".format(code, new DateTime(System.currentTimeMillis).toString("HH:mm:ss"))
+    "验证码：【%s】，切勿泄露给他人，如非本人操作，建议修改账号密码。自%s起，有效期10分钟。【幼乐宝】".format(code, new DateTime(System.currentTimeMillis).toString("HH:mm:ss"))
   }
 
   def generatePair(phone: String) = {
     val random = new Random(System.currentTimeMillis)
-    val code = "%04d".format(random.nextInt(9999))
+    val code = "%06d".format(random.nextInt(999999))
     Logger.info(phone + "'s code : " + code)
-    Cache.set(phone, code, 60)
+    Cache.set(phone, code, 600)
     code
   }
 
