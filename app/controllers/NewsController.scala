@@ -43,8 +43,8 @@ object NewsController extends Controller {
 
   def adminUpdate(kg: Long, adminId: String, newsId: Long) = update(kg, newsId)
 
-  def indexWithNonPublished(kg: Long, admin: String) = Action {
-    val jsons = News.allIncludeNonPublished(kg)
+  def indexWithNonPublished(kg: Long, admin: String, class_id: Option[String], restrict: Option[Boolean]) = Action {
+    val jsons = News.allIncludeNonPublished(kg, class_id, restrict.getOrElse(false))
     Ok(Json.toJson(jsons))
   }
 

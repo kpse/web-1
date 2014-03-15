@@ -7,8 +7,16 @@ class Config
         controller: 'KgManageCtrl'
     .state 'kindergarten.bulletin',
         url: '/bulletin',
-        templateUrl: 'templates/admin/bulletin_manage.html',
+        templateUrl: 'templates/admin/search_panel.html',
         controller: 'BulletinManageCtrl'
+    .state 'kindergarten.bulletin.class',
+        url: '/class/:class',
+        templateUrl: 'templates/admin/classes.html',
+        controller: 'BulletinCtrl'
+    .state 'kindergarten.bulletin.class.list',
+        url: '/list',
+        templateUrl: 'templates/admin/news_in_scope.html',
+        controller: 'BulletinCtrl'
     .state 'kindergarten.parents',
         url: '/parents',
         templateUrl: 'templates/admin/parents.html',

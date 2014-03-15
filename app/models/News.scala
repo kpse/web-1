@@ -105,11 +105,23 @@ object News {
       }
   }
 
-  def allIncludeNonPublished(kg: Long): List[News] = DB.withConnection {
+  def generateClassCondition(classId: Option[String], restrict: Boolean): String = {
+    classId match {
+      case Some(ids) if restrict =>
+        " and class_id in (%s) ".format(ids)
+      case Some(ids) =>
+        " and class_id in (%s, 0) ".format(ids)
+      case None =>
+        ""
+    }
+  }
+
+  def allIncludeNonPublished(kg: Long, classId: Option[String], restrict: Boolean): List[News] = DB.withConnection {
     implicit c =>
-      SQL("select * from news where school_id={kg} and status=1")
-        .on('kg -> kg.toString)
-        .as(simple *)
+      SQL("select * from news where school_id={kg} and status=1 " + generateClassCondition(classId, restrict))
+        .on(
+          'kg -> kg.toString
+        ).as(simple *)
   }
 
 
