@@ -20,11 +20,11 @@ object SMSController extends Controller {
     implicit request =>
       floodProtect(phone) match {
         case (code: String) =>
-          Future.successful(BadRequest("请求太频繁。"))
+          Future.successful(BadRequest(Json.toJson(new ErrorResponse("请求太频繁。"))))
         case null =>
           sendSMS(phone)
         case _ =>
-          Future.successful(BadRequest("短信发送出错。"))
+          Future.successful(BadRequest(Json.toJson(new ErrorResponse("短信发送出错。"))))
       }
 
   }
