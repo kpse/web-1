@@ -19,13 +19,14 @@ import models.JsonResponse
 
 object PushController extends Controller {
   implicit val write = Json.writes[CheckNotification]
-  implicit val write3 = Json.writes[JsonResponse]
+  implicit val write3 = Json.writes[ErrorResponse]
+  implicit val write4 = Json.writes[SuccessResponse]
   implicit val read = Json.reads[CheckInfo]
 
   def test = Action {
     val msg = new CheckNotification(System.currentTimeMillis, 1, "1_93740362_374", "925387477040814447", "", "袋鼠", 3)
     DailyLog.create(msg, CheckInfo(93740362L, "0001234569", 2, 0, "", System.currentTimeMillis))
-    Ok(Json.toJson(runWithLog(msg, triggerSinglePush)))
+    Ok(runWithLog(msg, triggerSinglePush))
   }
 
   type Trigger[A] = (A) => ChannelResponse
@@ -43,16 +44,16 @@ object PushController extends Controller {
   def runWithLog[A](msg: A, trigger: Trigger[A]) = {
     try {
       trigger(msg)
-      new SuccessResponse
+      Json.toJson(new SuccessResponse)
     }
     catch {
       case e: ChannelClientException => {
-        new ErrorResponse(e.printStackTrace.toString)
+        Json.toJson(new ErrorResponse(e.printStackTrace.toString))
       }
       case e: ChannelServerException => {
         val error = "request_id: %d, error_code: %d, error_message: %s".format(e.getRequestId, e.getErrorCode, e.getErrorMsg)
         Logger.info(error)
-        new ErrorResponse(error)
+        Json.toJson(new ErrorResponse(error))
       }
     }
   }

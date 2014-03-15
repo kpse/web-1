@@ -72,11 +72,11 @@ object ParentController extends Controller {
       } getOrElse BadRequest("Detected error:" + request.body)
   }
 
-  implicit val write5 = Json.writes[JsonResponse]
+  implicit val write5 = Json.writes[SuccessResponse]
 
   def delete(kg: Long, phone: String) = Action {
     Parent.delete(kg)(phone)
-    Ok(Json.toJson(new SuccessResponse()))
+    Ok(Json.toJson(new SuccessResponse))
   }
 
   def show(kg: Long, phone: String) = Action {

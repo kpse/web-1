@@ -114,10 +114,10 @@ angular.module('kulebaoAdmin')
           parent.$save ->
               scope.refreshRelationship()
               scope.currentModal.hide()
-            , (msg)->
+            , (res)->
               Alert
                 title: '创建失败'
-                content: msg.data
+                content: res.data.error_msg
                 placement: "top-left"
                 type: "danger"
                 show: true

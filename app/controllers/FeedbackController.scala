@@ -6,7 +6,7 @@ import models.{JsonResponse, SuccessResponse, Feedback}
 
 object FeedbackController extends Controller {
 
-  implicit val write1 = Json.writes[JsonResponse]
+  implicit val write1 = Json.writes[SuccessResponse]
   implicit val write2 = Json.writes[Feedback]
   implicit val read1 = Json.reads[Feedback]
 

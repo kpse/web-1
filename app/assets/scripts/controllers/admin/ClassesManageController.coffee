@@ -53,10 +53,10 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
       scope.delete = (clazz) ->
         clazz.$delete ->
           scope.refresh()
-        , ->
+        , (res) ->
           Alert
             title: '无法删除'
-            content: '该班级中还有学生存在。'
+            content: res.data.error_msg
             placement: "top-left"
             type: "danger"
             show: true

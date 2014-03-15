@@ -2,13 +2,16 @@ package controllers
 
 import play.api.mvc.{Action, Controller}
 import play.api.libs.json.{JsError, Json}
-import models.{JsonResponse, SchoolClass, School, ErrorResponse}
+import models._
 import play.Logger
+import models.SchoolClass
+import models.ErrorResponse
 
 object ClassController extends Controller {
 
   implicit val write1 = Json.writes[SchoolClass]
-  implicit val write2 = Json.writes[JsonResponse]
+  implicit val write2 = Json.writes[SuccessResponse]
+  implicit val write3 = Json.writes[ErrorResponse]
   implicit val read1 = Json.reads[SchoolClass]
 
   def index(kg: Long) = Action {
@@ -45,7 +48,7 @@ object ClassController extends Controller {
         BadRequest(Json.toJson(new ErrorResponse("不能删除还有学生的班级。")))
       case (false) =>
         School.removeClass(kg, classId)
-        Ok(Json.toJson("{\"error_code\":0}"))
+        Ok(Json.toJson(new SuccessResponse))
     }
 
   }
