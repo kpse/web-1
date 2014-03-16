@@ -43,7 +43,7 @@ object SMSController extends Controller {
           case List(num) if num > 0 =>
             Ok(Json.toJson(new SuccessResponse))
           case _ =>
-            Ok(Json.toJson(new ErrorResponse("failed")))
+            Ok(Json.toJson(new ErrorResponse("验证码发送失败。")))
         }
     }
   }
@@ -57,9 +57,9 @@ object SMSController extends Controller {
           Logger.info(v.toString)
           Verification.isMatched(v) match {
             case true =>
-              Cache.set(phone, "", 0)
+              Cache.remove(phone)
               Ok(Json.toJson(new SuccessResponse))
-            case false => Ok(Json.toJson(new ErrorResponse("failed")))
+            case false => Ok(Json.toJson(new ErrorResponse("验证码校验失败。")))
           }
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
