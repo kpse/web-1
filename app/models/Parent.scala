@@ -17,6 +17,24 @@ case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait:
 
 
 object Parent {
+
+  def allowToAccess(phone: String, token: Option[String], kg: Long) = DB.withConnection {
+    implicit c =>
+      Logger.info(token.toString)
+      SQL("select count(1) from parentinfo p, accountinfo a where a.accountid=p.phone " +
+        "and phone={phone} and school_id={kg} and a.pwd_change_time={token} and status=1")
+        .on(
+          'kg -> kg.toString,
+          'phone -> phone,
+          'token -> token
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
+  def canAccess(phoneNum: Option[String], token: Option[String], kg: Long)  = phoneNum.exists {
+    case (phone) if allowToAccess(phone, token, kg) => true
+    case _ => false
+  }
+
   def existsInOtherSchool(parent: Parent) = DB.withConnection {
     implicit c =>
       SQL("select count(1) as count from parentinfo where phone={phone}")

@@ -8,6 +8,7 @@ import play.api.Play.current
 import java.util.Date
 import models.helper.TimeHelper.any2DateTime
 import models.helper.MD5Helper.md5
+import play.Logger
 
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
@@ -19,6 +20,35 @@ case class Principal(employee_id: String, school_id: Long, phone: String, timest
 case class EmployeePassword(employee_id: String, school_id: Long, phone: String, old_password: String, login_name: String, new_password: String)
 
 object Employee {
+
+  def isOperator(id: String) = DB.withConnection {
+    implicit c =>
+      Logger.info(id)
+      SQL("select count(1) from privilege where `group`='operator' and employee_id={id}")
+        .on(
+          'id -> id
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
+  def isPrincipal(id: String, kg: Long) = DB.withConnection {
+    implicit c =>
+      Logger.info(id)
+      SQL("select count(1) from privilege where `group`='principal' and employee_id={id} and school_id={kg}")
+        .on(
+          'id -> id,
+          'kg -> kg
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
+
+  def canAccess(id: Option[String], schoolId: Long): Boolean = id.exists {
+    case (userId) if isOperator(userId) => true
+    case (userId) if isPrincipal(userId, schoolId) => true
+    case _ =>
+      Logger.info("employee canAccess false")
+      false
+  }
+
   def changPassword(kg: Long, phone: String, password: EmployeePassword) = DB.withConnection {
     implicit c =>
       SQL("update employeeinfo set login_password={new_password} where school_id={kg} and " +

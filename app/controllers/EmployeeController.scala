@@ -5,20 +5,21 @@ import models.{EmployeePassword, Employee}
 import play.api.libs.json.{JsError, Json}
 import play.Logger
 
-object EmployeeController extends Controller {
+object EmployeeController extends Controller with Secured {
 
   implicit val write = Json.writes[Employee]
   implicit val read1 = Json.reads[Employee]
   implicit val read2 = Json.reads[EmployeePassword]
 
-  def index = Action {
-    Ok(Json.toJson(Employee.all))
+  def index = IsLoggedIn {
+    u =>
+      _ =>
+        Ok(Json.toJson(Employee.all))
   }
 
   def show(phone: String) = Action {
     Ok(Json.toJson(Employee.show(phone)))
   }
-
 
 
   def create = Action(parse.json) {
@@ -31,8 +32,10 @@ object EmployeeController extends Controller {
       }
   }
 
-  def indexInSchool(kg: Long) = Action {
-    Ok(Json.toJson(Employee.allInSchool(kg)))
+  def indexInSchool(kg: Long) = IsLoggedIn {
+    u =>
+      _ =>
+        Ok(Json.toJson(Employee.allInSchool(kg)))
   }
 
   def deleteInSchool(kg: Long, phone: String) = Action {

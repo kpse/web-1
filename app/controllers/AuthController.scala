@@ -67,12 +67,32 @@ trait Secured {
   /**
    * Retrieve the connected user email.
    */
-  private def username(request: RequestHeader) = request.session.get("username")
+  private def username(request: RequestHeader) = {
+    request.session.get("username")
+  }
+
+  private def checkSchool(request: RequestHeader) = {
+    val user = request.session.get("username")
+    val id = request.session.get("id")
+    Logger.info(id.toString)
+    val token = request.session.get("token")
+    Logger.info(token.toString)
+    val Pattern = "/kindergarten/(\\d+)/.+".r
+    request.path match {
+      case Pattern(c) if Employee.canAccess(id, c.toLong) => user
+      case Pattern(c) if Parent.canAccess(user, token, c.toLong) => user
+      case _ => None
+    }
+
+  }
+
 
   /**
    * Redirect to login if the user in not authorized.
    */
   private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Auth.login)
+
+  private def onNotLoggedIn(request: RequestHeader) = Results.Unauthorized
 
   // --
 
@@ -80,6 +100,11 @@ trait Secured {
    * Action for authenticated users.
    */
   def IsAuthenticated(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) {
+    user =>
+      Action(request => f(user)(request))
+  }
+
+  def IsLoggedIn(f: => String => Request[AnyContent] => Result) = Security.Authenticated(checkSchool, onNotLoggedIn) {
     user =>
       Action(request => f(user)(request))
   }

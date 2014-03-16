@@ -9,7 +9,7 @@ import models.json_models.ChildDetailResponse
 import models.json_models.ChildDetail
 import models.School
 
-object ChildController extends Controller {
+object ChildController extends Controller with Secured {
 
   implicit val write1 = Json.writes[ChildDetail]
   implicit val write2 = Json.writes[ChildDetailResponse]
@@ -27,7 +27,7 @@ object ChildController extends Controller {
   }
 
 
-  def index(kg: Long, phone: String) = Action {
+  def index(kg: Long, phone: String) = IsLoggedIn { u => _=>
     Children.findAll(kg, phone) match {
       case Nil => Ok(Json.toJson(ChildrenResponse(1, List())))
       case all: List[ChildDetail] => Ok(Json.toJson(ChildrenResponse(0, all)))
@@ -50,7 +50,7 @@ object ChildController extends Controller {
 
   //=============================================================================================
 
-  def indexInSchool(kg: Long, classId: Option[Long], connect: Option[Boolean]) = Action {
+  def indexInSchool(kg: Long, classId: Option[Long], connect: Option[Boolean]) = IsLoggedIn { u => _ =>
     Children.findAllInClass(kg, classId, connect) match {
       case all: List[ChildInfo] => Ok(Json.toJson(all))
     }

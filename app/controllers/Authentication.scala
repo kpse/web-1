@@ -48,7 +48,8 @@ object Authentication extends Controller {
     request =>
       request.body.validate[BindingNumber].map {
         case (login) =>
-          Ok(Json.toJson(BindNumberResponse.handle(login)))
+          val result = BindNumberResponse.handle(login)
+          Ok(Json.toJson(result)).withSession("username" -> result.account_name, "token" -> result.access_token )
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
