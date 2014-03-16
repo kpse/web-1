@@ -16,7 +16,7 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
 
 case class Principal(employee_id: String, school_id: Long, phone: String, timestamp: Long)
 
-case class EmployeePassword(employee_id: String, school_id: Long, phone: String, login_password: String, login_name: String, new_password: String)
+case class EmployeePassword(employee_id: String, school_id: Long, phone: String, old_password: String, login_name: String, new_password: String)
 
 object Employee {
   def changPassword(kg: Long, phone: String, password: EmployeePassword) = DB.withConnection {
@@ -26,11 +26,11 @@ object Employee {
         .on(
           'phone -> phone,
           'new_password -> md5(password.new_password),
-          'old_password -> md5(password.login_password),
+          'old_password -> md5(password.old_password),
           'kg -> kg.toString,
           'login_name -> password.login_name,
           'update_at -> System.currentTimeMillis
-        ).execute()
+        ).executeUpdate()
   }
 
 

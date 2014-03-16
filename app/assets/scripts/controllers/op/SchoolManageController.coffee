@@ -62,8 +62,8 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
       scope.save = (object) ->
         if object.group
           Manager = $resource('/kindergarten/'+object.school_id+'/principal')
-          m = Manager
-          m.save object, ->
+          m = new Manager
+          m.$save object, ->
             scope.refresh()
             scope.currentModal.hide()
         else

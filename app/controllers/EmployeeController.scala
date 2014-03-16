@@ -3,6 +3,7 @@ package controllers
 import play.api.mvc.{Action, Controller}
 import models.{EmployeePassword, Employee}
 import play.api.libs.json.{JsError, Json}
+import play.Logger
 
 object EmployeeController extends Controller {
 
@@ -66,6 +67,7 @@ object EmployeeController extends Controller {
     request =>
       request.body.validate[EmployeePassword].map {
         case (employee) =>
+          Logger.info(employee.toString)
           Ok(Json.toJson(Employee.changPassword(kg, phone, employee)))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))

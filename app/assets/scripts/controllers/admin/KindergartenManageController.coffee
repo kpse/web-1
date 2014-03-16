@@ -1,6 +1,6 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', 'employeeService', 'passwordService',
-    (scope, $rootScope, $stateParams, School, location, Employee, Password) ->
+  ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', 'employeeService', 'passwordService', '$modal',
+    (scope, $rootScope, $stateParams, School, location, Employee, Password, Modal) ->
       scope.kindergarten = School.get school_id: $stateParams.kindergarten
 
       scope.adminUser = Employee.get()
@@ -25,6 +25,19 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         goPageWithClassesTab('baby-status')
 
       scope.changePassword = (user) ->
+        scope.user = angular.copy user
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/admin/change_password.html'
+
+      scope.change = (user) ->
         pw = new Password
-        pw.save user
+          school_id: user.school_id
+          phone: user.phone
+          employee_id: user.id
+          login_name: user.login_name
+          old_password: user.old_password
+          new_password: user.new_password
+        pw.$save ->
+          scope.currentModal.hide()
   ]
