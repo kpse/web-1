@@ -1,11 +1,9 @@
-class Controller
-  constructor: ($scope, $rootScope, $stateParams) ->
+angular.module('kulebaoOp').controller 'OpCtrl', ['$scope', '$rootScope', '$stateParams', 'employeeService',
+  ($scope, $rootScope, stateParams, Employee) ->
 
-    $scope.adminUser =
-        id: 99
-        name: '内务大总管'
+    $scope.adminUser = Employee.get()
 
     $scope.isSelected = (tab)->
       tab == $rootScope.tabName
 
-angular.module('kulebaoOp').controller 'OpCtrl', ['$scope', '$rootScope', '$stateParams', Controller]
+ ]

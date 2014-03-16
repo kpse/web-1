@@ -5,7 +5,7 @@
 
   <div class="btn-group">
     <button type="submit" class="btn btn-primary" ng-disabled="loading" ng-click="addSchool()">增加学校</button>
-    <button type="submit" class="btn btn-success" ng-disabled="loading" ng-click="addClass()">增加班级</button>
+    <button type="submit" class="btn btn-success" ng-show="scope.addClass" ng-click="addClass()">增加班级</button>
   </div>
 </div>
 <div class="loading" ng-show="loading"/>
@@ -23,13 +23,13 @@
     <td class=".col-xs-1">{{kg.school_id}}</td>
     <td class=".col-xs-2">{{kg.name}}</td>
     <td class=".col-xs-3">
-      <p ng-repeat="m in kg.managers"><a ng-click="edit(m)">{{m.detail.name}}</a></p>
+      <p ng-repeat="m in kg.managers"><a ng-click="edit(m);$event.stopPropagation()">{{m.detail.name}}</a></p>
       <p ng-show="kg.managers.length == 0">还没有管理员，<a class="dropdown" ng-click="addManager(kg);$event.stopPropagation()">增加</a>一个</p>
       </td>
 
     <td class=".col-xs-2">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
-              ng-confirm-click="delete(kg)">删除
+              ng-confirm-click="delete(kg);$event.stopPropagation()">删除
       </button>
     </td>
   </tr>

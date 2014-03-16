@@ -1,11 +1,11 @@
 <div class="panel-body">
-  <form class="form-horizontal row" role="form" name="newEmployeeForm">
+  <form class="form-horizontal row employee-form" role="form" name="newEmployeeForm">
 
-    <div class="col-sm-6">
+    <div class="col-sm-7">
       <div class="form-group">
-        <label for="employee-phone" class="col-sm-4 control-label">电话号码</label>
+        <label for="employee-phone" class="col-sm-2 control-label">电话号码</label>
 
-        <div class="col-sm-8">
+        <div class="col-sm-10">
           <input id="employee-phone" type="text" ng-model="employee.phone" name="phone"
                  ui-mask="{{'999-9999-9999'}}"
                  class="editing-field form-control" ng-bk-focus required/>
@@ -14,18 +14,18 @@
       </div>
 
       <div class="form-group">
-        <label for="employee-name" class="col-sm-4 control-label">老师姓名</label>
+        <label for="employee-name" class="col-sm-2 control-label">老师姓名</label>
 
-        <div class="col-sm-8">
+        <div class="col-sm-10">
           <input id="employee-name" ng-model="employee.name"
                  class="editing-field form-control" required/>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="employee-gender" class="col-sm-4 control-label">性别</label>
+        <label for="employee-gender" class="col-sm-2 control-label">性别</label>
 
-        <div class="col-sm-8">
+        <div class="col-sm-10">
           <div class="btn-group">
             <button type="button" class="btn select-button" ng-model="employee.gender" btn-radio="0">女</button>
             <button type="button" class="btn select-button" ng-model="employee.gender" btn-radio="1">男</button>
@@ -34,9 +34,9 @@
       </div>
       <div class="form-group">
 
-        <label for="employee-birthday" class="col-sm-4 control-label">生日</label>
+        <label for="employee-birthday" class="col-sm-2 control-label">生日</label>
 
-        <div class="col-sm-8">
+        <div class="col-sm-10">
           <div class="control-group input-append">
             <input type="text" class="form-control datepicker-input" ng-model="employee.birthday"
                    data-date-format="yyyy-MM-dd" data-date-type="number" data-max-date="today" data-autoclose="1"
@@ -49,7 +49,7 @@
 
     </div>
 
-    <div class="col-sm-6">
+    <div class="col-sm-5">
       <div class="form-group">
         <div class="portrait-container">
           <img class="portrait" ng-src="{{employee.portrait || '/assets/images/portrait_placeholder.png'}}"

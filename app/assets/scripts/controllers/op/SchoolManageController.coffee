@@ -20,7 +20,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           contentTemplate: 'templates/op/add_school.html'
 
       scope.edit = (employee) ->
-        scope.employee = angular.copy employee
+        scope.employee = angular.copy employee.detail
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/add_employee.html'
@@ -62,8 +62,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
       scope.save = (object) ->
         if object.group
           Manager = $resource('/kindergarten/'+object.school_id+'/principal')
-          m = new Manager
-          m.$save object, ->
+          Manager.save object, ->
             scope.refresh()
             scope.currentModal.hide()
         else
@@ -89,7 +88,6 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         Upload pic, (url) ->
           scope.$apply ->
             employee.portrait = url if url isnt undefined
-
 
   ]
 
