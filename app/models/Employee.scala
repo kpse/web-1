@@ -12,7 +12,7 @@ import models.helper.MD5Helper.md5
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
-                    login_name: String, login_password: String, timestamp: Option[Long])
+                    login_name: String, timestamp: Option[Long])
 
 case class Principal(employee_id: String, school_id: Long, phone: String, timestamp: Long)
 
@@ -162,10 +162,9 @@ object Employee {
       get[Date]("birthday") ~
       get[String]("school_id") ~
       get[String]("login_name") ~
-      get[String]("login_password") ~
       get[Long]("update_at") map {
-      case id ~ name ~ phone ~ gender ~ workgroup ~ workduty ~ url ~ birthday ~ kg ~ loginName ~ loginPassword ~ timestamp =>
-        Employee(Some(id), name, phone, gender, workgroup, workduty, url, birthday.toDateOnly, kg.toLong, loginName, loginPassword, Some(timestamp))
+      case id ~ name ~ phone ~ gender ~ workgroup ~ workduty ~ url ~ birthday ~ kg ~ loginName ~ timestamp =>
+        Employee(Some(id), name, phone, gender, workgroup, workduty, url, birthday.toDateOnly, kg.toLong, loginName, Some(timestamp))
     }
   }
 

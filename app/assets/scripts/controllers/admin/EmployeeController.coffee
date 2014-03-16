@@ -34,7 +34,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
           contentTemplate: 'templates/admin/add_employee.html'
 
       scope.edit = (employee) ->
-        scope.employee = employee
+        scope.employee = angular.copy employee
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/add_employee.html'
