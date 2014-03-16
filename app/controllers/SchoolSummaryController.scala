@@ -23,7 +23,7 @@ object SchoolSummaryController extends Controller {
   def update(kg: Long) = Action(parse.json) {
     request =>
       Logger.info(request.body.toString())
-      request.body.validate[SchoolIntroDetail].map {
+      request.body.validate[SchoolIntro].map {
         case (detail) =>
           Ok(Json.toJson(SchoolIntro.updateOrCreate(detail)))
       }.recoverTotal {

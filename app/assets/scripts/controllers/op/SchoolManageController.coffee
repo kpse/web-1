@@ -50,8 +50,14 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         alert('暂未实现')
 
       scope.newSchool = ->
+        id = nextId(scope.kindergartens)
         new School
-          school_id: nextId(scope.kindergartens)
+          school_id: id
+          phone: ''
+          timestamp: 0
+          desc: '请添加描述'
+          school_logo_url: ''
+          name: '新学校'
 
       scope.addSchool = ->
         scope.school = scope.newSchool()

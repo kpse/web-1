@@ -25,8 +25,10 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
           class_id: nextId(scope.classes)
 
       nextId = (classes)->
+        return 100 if classes.length is 0
         23 + _.max _.map classes, (c) ->
           c.class_id
+
 
       scope.addClass = ->
         scope.currentClass = scope.createClass()

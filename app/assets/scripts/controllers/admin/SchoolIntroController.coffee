@@ -22,7 +22,7 @@ angular.module('kulebaoAdmin')
       if scope.school_changed
         $cacheFactory.get('$http').removeAll();
         $timeout ->
-            scope.kindergarten.$save -> scope.school = scope.kindergarten.school_info
+            School.save scope.kindergarten.school_info, -> scope.school = scope.kindergarten.school_info
             scope.school_changed = false
           , 0, true
 
