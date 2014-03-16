@@ -14,8 +14,8 @@
         </button>
         <ul class="dropdown-menu" role="menu">
           <li><a href="#">Action</a></li>
-          <li><a href="#">Another action</a></li>
-          <li><a ng-href="/operation">去后台管理页面</a></li>
+          <li><a ng-click="changePassword(adminUser)">修改密码</a></li>
+          <li ng-show="adminUser.login_name == 'operator'"><a ng-href="/operation">去后台管理页面</a></li>
           <li class="divider"></li>
           <li><a class="logout-link" href="/logout">退出登陆</a></li>
         </ul>

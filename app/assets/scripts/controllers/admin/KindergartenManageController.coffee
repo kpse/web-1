@@ -1,6 +1,6 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', 'employeeService',
-    (scope, $rootScope, $stateParams, School, location, Employee) ->
+  ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', 'employeeService', 'passwordService',
+    (scope, $rootScope, $stateParams, School, location, Employee, Password) ->
       scope.kindergarten = School.get school_id: $stateParams.kindergarten
 
       scope.adminUser = Employee.get()
@@ -24,4 +24,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.goBabyStatus = ->
         goPageWithClassesTab('baby-status')
 
+      scope.changePassword = (user) ->
+        pw = new Password
+        pw.save user
   ]
