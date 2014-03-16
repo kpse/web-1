@@ -16,7 +16,23 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
 
 case class Principal(employee_id: String, school_id: Long, phone: String, timestamp: Long)
 
+case class EmployeePassword(employee_id: String, school_id: Long, phone: String, login_password: String, login_name: String, new_password: String)
+
 object Employee {
+  def changPassword(kg: Long, phone: String, password: EmployeePassword) = DB.withConnection {
+    implicit c =>
+      SQL("update employeeinfo set login_password={new_password} where school_id={kg} and " +
+        "phone={phone} and login_name={login_name} and login_password={old_password}")
+        .on(
+          'phone -> phone,
+          'new_password -> md5(password.new_password),
+          'old_password -> md5(password.login_password),
+          'kg -> kg.toString,
+          'login_name -> password.login_name,
+          'update_at -> System.currentTimeMillis
+        ).execute()
+  }
+
 
   def allPrincipal(kg: Long) = DB.withConnection {
     implicit c =>
@@ -72,7 +88,7 @@ object Employee {
               'school_id -> employee.school_id,
               'login_name -> employee.login_name,
               'update_at -> System.currentTimeMillis
-            ).execute()
+            ).executeUpdate()
       }
 
       show(employee.phone)
@@ -155,7 +171,7 @@ object Employee {
 
   val simplePrincipal = {
     get[String]("employee_id") ~
-    get[String]("phone") ~
+      get[String]("phone") ~
       get[String]("school_id") ~
       get[Long]("update_at") map {
       case id ~ phone ~ kg ~ timestamp =>

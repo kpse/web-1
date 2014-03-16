@@ -1,12 +1,14 @@
 package controllers
 
 import play.api.mvc.{Action, Controller}
-import models.Employee
+import models.{EmployeePassword, Employee}
 import play.api.libs.json.{JsError, Json}
 
 object EmployeeController extends Controller {
 
   implicit val write = Json.writes[Employee]
+  implicit val read1 = Json.reads[Employee]
+  implicit val read2 = Json.reads[EmployeePassword]
 
   def index = Action {
     Ok(Json.toJson(Employee.all))
@@ -16,7 +18,7 @@ object EmployeeController extends Controller {
     Ok(Json.toJson(Employee.show(phone)))
   }
 
-  implicit val read = Json.reads[Employee]
+
 
   def create = Action(parse.json) {
     request =>
@@ -59,4 +61,14 @@ object EmployeeController extends Controller {
   }
 
   def updateOrCreate(phone: String) = createOrUpdateInSchool(0, phone)
+
+  def changePassword(kg: Long, phone: String) = Action(parse.json) {
+    request =>
+      request.body.validate[EmployeePassword].map {
+        case (employee) =>
+          Ok(Json.toJson(Employee.changPassword(kg, phone, employee)))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
 }

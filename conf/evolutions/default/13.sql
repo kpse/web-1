@@ -21,6 +21,7 @@ CREATE TABLE employeeinfo (
   status      TINYINT          NOT NULL DEFAULT 1,
   update_at   BIGINT(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (uid),
+  UNIQUE KEY (login_name),
   UNIQUE KEY phone (phone)
 );
 
@@ -30,7 +31,7 @@ CREATE TABLE employeeinfo (
 
 INSERT INTO employeeinfo (uid, name, employee_id, phone, gender, workgroup, workduty, picurl, birthday, school_id, login_password, login_name)
 VALUES
-  (1, '王豫', '3_93740362_1122', '13258249821', 0, '教师组', '教师', '', '1986-06-04', '93740362', '3FDE6BB0541387E4EBDADF7C2FF31123', 'e0001'),
+    (1, '王豫', '3_93740362_1122', '13258249821', 0, '教师组', '教师', '', '1986-06-04', '93740362', '5EBE2294ECD0E0F08EAB7690D2A6EE69', 'e0001'),
   (2, '何忍', '3_93740362_3344', '13708089040', 0, '教师组', '教师', '', '1987-06-04', '93740362', '3FDE6BB0541387E4EBDADF7C2FF31123', 'e0002'),
   (3, '富贵', '3_93740362_9977', '13060003702', 1, '保安组', '员工', '', '1982-06-04', '93740362', '3FDE6BB0541387E4EBDADF7C2FF31123', 'e0003'),
   (5, '蜘蛛侠', '3_93740362_9971', '13060003722', 1, '保安组', '员工', '', '1982-06-04', '93740362', '5EBE2294ECD0E0F08EAB7690D2A6EE69', 'admin'),
