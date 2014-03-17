@@ -30,7 +30,7 @@ object BindNumberResponse {
 
   def isExpired(phone: String) = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from parentinfo where cocobabys_status=1 and status=1 and phone={phone}")
+      SQL("select count(1) from parentinfo where member_status=1 and status=1 and phone={phone}")
       .on('phone -> phone).as(get[Long]("count(1)") single) == 0l
   }
 

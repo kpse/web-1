@@ -11,7 +11,7 @@ CREATE TABLE parentinfo (
   picurl       VARCHAR(128) NOT NULL DEFAULT '',
   birthday     DATE         NOT NULL DEFAULT '1800-01-01',
   school_id    VARCHAR(20)  NOT NULL,
-  cocobabys_status       INT      NOT NULL DEFAULT 1,
+  member_status       INT      NOT NULL DEFAULT 1,
   status       INT      NOT NULL DEFAULT 1,
   update_at       BIGINT      NOT NULL DEFAULT 0,
   UNIQUE (phone),
@@ -34,7 +34,7 @@ INSERT INTO parentinfo (uid, name, parent_id, relationship, phone, gender, compa
   (10, '号码重复', '2_93740562_001', '', '11111111111', 0, '门口偶', '', '1800-01-01', '93740562'),
   (11, '号码过期', '2_93740562_002', '', '22222222222', 0, '门口偶', '', '1800-01-01', '93740562');
 
-update parentinfo set cocobabys_status=0 where phone='22222222222';
+update parentinfo set member_status=0 where phone='22222222222';
 
 # --- !Downs
 

@@ -24,6 +24,9 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.goBabyStatus = ->
         goPageWithClassesTab('baby-status')
 
+      scope.goMemberList = ->
+        goPageWithClassesTab('member')
+
       scope.changePassword = (user) ->
         scope.user = angular.copy user
         scope.currentModal = Modal

@@ -88,6 +88,19 @@ class Config
         templateUrl: 'templates/admin/assignment_in_class.html',
         controller: 'AssignmentsInClassCtrl'
 
+    .state 'kindergarten.member',
+        url: '/member',
+        templateUrl: 'templates/admin/search_panel.html',
+        controller: 'MembersListCtrl'
+    .state 'kindergarten.member.class',
+        url: '/class/:class_id',
+        templateUrl: 'templates/admin/classes.html',
+        controller: 'MembersInClassCtrl'
+    .state 'kindergarten.member.class.list',
+        url: '/list',
+        templateUrl: 'templates/admin/member_in_class.html',
+        controller: 'MembersInClassCtrl'
+
     .state 'kindergarten.employee',
         url: '/employee',
         templateUrl: 'templates/admin/employees.html',
