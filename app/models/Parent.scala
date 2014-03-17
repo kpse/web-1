@@ -11,7 +11,7 @@ import java.util.Date
 import play.Logger
 import models.helper.TimeHelper.any2DateTime
 
-case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String], gender: Int, birthday: String, timestamp: Option[Long])
+case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String], gender: Int, birthday: String, timestamp: Option[Long], cocobabys_status: Option[Int], status: Option[Int])
 
 case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait: String, name: String, phone: String, kindergarten: School, relationship: String, child: ChildInfo, card: String)
 
@@ -357,9 +357,11 @@ object Parent {
       get[Int]("gender") ~
       get[Option[String]]("picurl") ~
       get[Date]("birthday") ~
+      get[Int]("cocobabys_status") ~
+      get[Int]("status") ~
       get[Long]("update_at") map {
-      case id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday ~ t =>
-        new Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t))
+      case id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday ~ cocobabys ~ status ~ t =>
+        new Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t), Some(cocobabys), Some(status))
     }
   }
 

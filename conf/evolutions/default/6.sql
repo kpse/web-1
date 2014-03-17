@@ -11,6 +11,7 @@ CREATE TABLE parentinfo (
   picurl       VARCHAR(128) NOT NULL DEFAULT '',
   birthday     DATE         NOT NULL DEFAULT '1800-01-01',
   school_id    VARCHAR(20)  NOT NULL,
+  cocobabys_status       TINYINT      NOT NULL DEFAULT 1,
   status       TINYINT      NOT NULL DEFAULT 1,
   update_at       BIGINT      NOT NULL DEFAULT 0,
   UNIQUE (phone),
