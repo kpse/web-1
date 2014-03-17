@@ -10,11 +10,22 @@ import helper.TestSupport
 
 @RunWith(classOf[JUnitRunner])
 class NewsControllerSpec extends Specification with TestSupport {
+  def requestWithSession(method: String, url: String) = FakeRequest(method, url)
+    .withSession("username" -> "13402815317", "token" -> "1386425935574")
 
   "News" should {
-    "report less than 25 pieces by default" in new WithApplication {
+
+    "check authentication first" in new WithApplication {
 
       val newsResponse = route(FakeRequest(GET, "/kindergarten/93740362/news")).get
+
+      status(newsResponse) must equalTo(UNAUTHORIZED)
+
+    }
+
+    "report less than 25 pieces by default" in new WithApplication {
+
+      val newsResponse = route(requestWithSession(GET, "/kindergarten/93740362/news")).get
 
       status(newsResponse) must equalTo(OK)
       contentType(newsResponse) must beSome.which(_ == "application/json")
@@ -30,7 +41,7 @@ class NewsControllerSpec extends Specification with TestSupport {
 
     "accept parameter from" in new WithApplication {
 
-      val newsResponse = route(FakeRequest(GET, "/kindergarten/93740362/news?from=5")).get
+      val newsResponse = route(requestWithSession(GET, "/kindergarten/93740362/news?from=5")).get
 
       status(newsResponse) must equalTo(OK)
       contentType(newsResponse) must beSome.which(_ == "application/json")
@@ -47,7 +58,7 @@ class NewsControllerSpec extends Specification with TestSupport {
 
     "accept parameter to" in new WithApplication {
 
-      val newsResponse = route(FakeRequest(GET, "/kindergarten/93740362/news?to=5")).get
+      val newsResponse = route(requestWithSession(GET, "/kindergarten/93740362/news?to=5")).get
 
       status(newsResponse) must equalTo(OK)
       contentType(newsResponse) must beSome.which(_ == "application/json")
@@ -64,7 +75,7 @@ class NewsControllerSpec extends Specification with TestSupport {
 
     "accept parameter most" in new WithApplication {
 
-      val newsResponse = route(FakeRequest(GET, "/kindergarten/93740362/news?most=2")).get
+      val newsResponse = route(requestWithSession(GET, "/kindergarten/93740362/news?most=2")).get
 
       status(newsResponse) must equalTo(OK)
       contentType(newsResponse) must beSome.which(_ == "application/json")

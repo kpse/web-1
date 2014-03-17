@@ -3,18 +3,26 @@ package controllers
 import org.specs2.runner.JUnitRunner
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
-import play.api.test.{FakeRequest, WithApplication}
+import play.api.test.FakeRequest
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import helper.TestSupport
 
 @RunWith(classOf[JUnitRunner])
 class SchoolSummaryControllerSpec extends Specification with TestSupport {
+  def requestWithSession(method: String, url: String) = FakeRequest(method, url).withSession("id" -> "3_93740362_9971", "username" -> "admin")
 
   "SchoolSummary" should {
-    "report preview" in new WithApplication {
+    "check authentication first" in new WithApplication {
 
       val previewResponse = route(FakeRequest(GET, "/kindergarten/93740362/preview")).get
+
+      status(previewResponse) must equalTo(UNAUTHORIZED)
+
+    }
+    "report preview" in new WithApplication {
+
+      val previewResponse = route(requestWithSession(GET, "/kindergarten/93740362/preview")).get
 
       status(previewResponse) must equalTo(OK)
       contentType(previewResponse) must beSome.which(_ == "application/json")
@@ -27,7 +35,7 @@ class SchoolSummaryControllerSpec extends Specification with TestSupport {
 
     "report detail" in new WithApplication {
 
-      val detailResponse = route(FakeRequest(GET, "/kindergarten/93740362/detail")).get
+      val detailResponse = route(requestWithSession(GET, "/kindergarten/93740362/detail")).get
 
       status(detailResponse) must equalTo(OK)
       contentType(detailResponse) must beSome.which(_ == "application/json")
