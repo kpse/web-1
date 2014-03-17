@@ -13,7 +13,7 @@ import play.Logger
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
-                    login_name: String, timestamp: Option[Long])
+                    login_name: String, timestamp: Option[Long], privilege_group: Option[String])
 
 case class Principal(employee_id: String, school_id: Long, phone: String, timestamp: Long)
 
@@ -181,6 +181,12 @@ object Employee {
         ).as(simple singleOpt)
   }
 
+  def groupOf(employeeId: String, schoolId: Long): Option[String] = employeeId match {
+    case (id) if isOperator(id) => Some("operator")
+    case (id) if isPrincipal(id, schoolId) => Some("principal")
+    case _ => None
+  }
+
   val simple = {
     get[String]("employee_id") ~
       get[String]("name") ~
@@ -194,7 +200,7 @@ object Employee {
       get[String]("login_name") ~
       get[Long]("update_at") map {
       case id ~ name ~ phone ~ gender ~ workgroup ~ workduty ~ url ~ birthday ~ kg ~ loginName ~ timestamp =>
-        Employee(Some(id), name, phone, gender, workgroup, workduty, url, birthday.toDateOnly, kg.toLong, loginName, Some(timestamp))
+        Employee(Some(id), name, phone, gender, workgroup, workduty, url, birthday.toDateOnly, kg.toLong, loginName, Some(timestamp), groupOf(id, kg.toLong))
     }
   }
 

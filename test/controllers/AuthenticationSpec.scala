@@ -26,7 +26,7 @@ class AuthenticationSpec extends Specification with TestSupport {
       (response \ "error_code").as[Int] must equalTo(0)
       (response \ "account_name").as[String] must equalTo("13333333333")
       (response \ "access_token").as[String] must equalTo("13333333333")
-      (response \ "username").as[String] must be matching("测试")
+      (response \ "username").as[String] must be matching "测试"
     }
     implicit val checkWrites = Json.writes[CheckPhone]
 
@@ -73,7 +73,7 @@ class AuthenticationSpec extends Specification with TestSupport {
       val phone = "13333333333"
       val user_id = "12334"
       val channel_id = "000000"
-      private val json = Json.toJson(new BindingNumber(phone, user_id, channel_id, None))
+      private val json = Json.toJson(new BindingNumber(phone, user_id, channel_id, None, "0"))
 
       val bindingResponse = route(FakeRequest(POST, "/receiveBindInfo.do").withJsonBody(json)).get
 
@@ -84,7 +84,7 @@ class AuthenticationSpec extends Specification with TestSupport {
       (response \ "error_code").as[Int] must equalTo(0)
       (response \ "account_name").as[String] must equalTo(phone)
       (response \ "access_token").as[String] mustNotEqual empty
-      (response \ "username").as[String] must be matching("测试")
+      (response \ "username").as[String] must be matching "测试"
       (response \ "school_id").as[Long] must equalTo(93740362)
     }
 

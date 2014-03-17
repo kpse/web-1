@@ -40,7 +40,7 @@ object Auth extends Controller {
         user => {
           val login = Employee.authenticate(user._1, user._2).get
           Logger.info(login.toString)
-          if (login.login_name == "operator")
+          if (login.privilege_group == "operator")
             Redirect("/operation").withSession("username" -> login.login_name, "phone" -> login.phone, "name" -> login.name, "id" -> login.id.getOrElse(""))
           else
             Redirect("/admin#/kindergarten/%d".format(login.school_id)).withSession("username" -> login.name, "phone" -> login.phone, "name" -> login.name, "id" -> login.id.getOrElse(""))
@@ -131,6 +131,12 @@ trait Secured {
   def IsOperator(f: => String => Request[AnyContent] => Result) = Security.Authenticated(operator, onUnauthorized) {
     user =>
       Action(request => f(user)(request))
+  }
+
+  def IsOperator(b: BodyParser[play.api.libs.json.JsValue] = parse.json)
+                (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(operator, onUnauthorized) {
+    user =>
+      Action(b)(request => f(user)(request))
   }
 
 }

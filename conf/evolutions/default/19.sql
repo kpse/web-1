@@ -20,6 +20,7 @@ CREATE TABLE privilege (
 INSERT INTO privilege (school_id, employee_id, `group`, subordinate, promoter, update_at)
 VALUES
 ('0', '3_93740362_9972', 'operator','', '', 1333390313123),
+('0', '0_99999_9998', 'operator','', '', 1333390313123),
 ('93740362', '3_93740362_9971', 'principal', '', '', 1323390313123),
 ('93740362', '3_93740362_1122', 'principal', '', '', 1323390313123),
 ('93740562', '3_93740362_9978', 'teacher', '', '', 1323390313123),

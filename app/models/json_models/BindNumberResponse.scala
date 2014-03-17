@@ -7,7 +7,7 @@ import play.api.Play.current
 import java.sql.Date
 import models.helper.MD5Helper.md5
 
-case class BindingNumber(phonenum: String, user_id: String, channel_id: String, device_type: Option[String])
+case class BindingNumber(phonenum: String, user_id: String, channel_id: String, device_type: Option[String], access_token: String)
 
 case class BindNumberResponse(error_code: Int,
                               access_token: String,
@@ -29,9 +29,13 @@ object BindNumberResponse {
 
   def handle(request: BindingNumber) = DB.withConnection {
     implicit c =>
-      val firstRow = SQL("select a.*, p.name, p.school_id, s.name from accountinfo a, parentinfo p, schoolinfo s where s.school_id=p.school_id and a.accountid = p.phone and accountid={accountid}")
+      val firstRow = SQL("select a.*, p.name, p.school_id, s.name " +
+        "from accountinfo a, parentinfo p, schoolinfo s " +
+        "where s.school_id=p.school_id and a.accountid = p.phone " +
+        "and accountid={accountid} and pwd_change_time={token}")
         .on(
-          'accountid -> request.phonenum
+          'accountid -> request.phonenum,
+          'token -> request.access_token
         ).apply
       Logger.info(firstRow.toString)
       firstRow match {
