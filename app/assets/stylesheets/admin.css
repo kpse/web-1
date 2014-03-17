@@ -140,3 +140,11 @@
     margin-left: 20px;
   }
 }
+
+.form-control-static.member {
+  color: brown;
+}
+
+.member-row {
+  background-color: darkolivegreen;
+}

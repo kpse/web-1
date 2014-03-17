@@ -29,7 +29,7 @@ object Parent {
         ).as(get[Long]("count(1)") single) > 0
   }
 
-  def canAccess(phoneNum: Option[String], token: Option[String], kg: Long)  = phoneNum.exists {
+  def canAccess(phoneNum: Option[String], token: Option[String], kg: Long) = phoneNum.exists {
     case (phone) if allowToAccess(phone, token, kg) => true
     case _ => false
   }
@@ -68,7 +68,7 @@ object Parent {
       SQL("update parentinfo set name={name}, " +
         "phone={phone}, gender={gender}, company={company}, " +
         "picurl={picurl}, birthday={birthday}, " +
-        "update_at={timestamp} where parent_id={parent_id}")
+        "update_at={timestamp}, member_status={member} where parent_id={parent_id}")
         .on('name -> parent.name,
           'phone -> parent.phone,
           'gender -> parent.gender,
@@ -76,6 +76,7 @@ object Parent {
           'picurl -> parent.portrait.getOrElse(""),
           'birthday -> parent.birthday,
           'parent_id -> parent.parent_id,
+          'member -> parent.member_status.getOrElse(0),
           'timestamp -> timestamp).executeUpdate()
       info(parent.school_id, parent.parent_id.get)
   }
@@ -85,7 +86,7 @@ object Parent {
       val timestamp = System.currentTimeMillis
       SQL("update parentinfo set name={name}, gender={gender}, company={company}, " +
         "picurl={picurl}, birthday={birthday}, " +
-        "update_at={timestamp} where phone={phone} and school_id={kg}")
+        "update_at={timestamp}, member_status={member} where phone={phone} and school_id={kg}")
         .on('name -> parent.name,
           'phone -> parent.phone,
           'gender -> parent.gender,
@@ -93,6 +94,7 @@ object Parent {
           'picurl -> parent.portrait.getOrElse(""),
           'birthday -> parent.birthday,
           'timestamp -> timestamp,
+          'member -> parent.member_status.getOrElse(0),
           'kg -> kg.toString
         ).executeUpdate()
       findByPhone(parent.school_id)(parent.phone)
@@ -182,8 +184,8 @@ object Parent {
     implicit c =>
       val timestamp = System.currentTimeMillis
       val parent_id = parent.parent_id.getOrElse("2_%d_%d".format(kg, timestamp))
-      val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at) " +
-        "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp})")
+      val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status) " +
+        "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member})")
         .on(
           'name -> parent.name,
           'parent_id -> parent_id,
@@ -195,6 +197,7 @@ object Parent {
           'birthday -> parent.birthday,
           'school_id -> kg.toString,
           'status -> 1,
+          'member -> parent.member_status.getOrElse(0),
           'timestamp -> timestamp).executeInsert()
       Logger.info("created parent %s".format(createdId))
       val accountinfoUid = SQL("INSERT INTO accountinfo(accountid, password, pushid, active, pwd_change_time) " +
@@ -304,7 +307,7 @@ object Parent {
       get[Option[String]]("childinfo.picurl") ~
       get[String]("childinfo.child_id") ~
       get[Int]("class_id") ~
-      get[String]("cardnum") ~
+      get[String]("card_num") ~
       get[String]("phone") ~
       get[String]("classinfo.class_name") ~
       get[Long]("childinfo.update_at") map {
@@ -327,9 +330,9 @@ object Parent {
         .as(simple singleOpt)
   }
 
-  val fullStructureSql = "select p.*, s.name, c.*, card.cardnum, ci.class_name from parentinfo p, schoolinfo s, childinfo c, relationmap r, cardinfo card, classinfo ci " +
+  val fullStructureSql = "select p.*, s.name, c.*, ci.class_name from parentinfo p, schoolinfo s, childinfo c, relationmap r, classinfo ci " +
     "where p.school_id = s.school_id and s.school_id={kg} and p.status=1 and ci.class_id=c.class_id " +
-    "and r.child_id = c.child_id and r.parent_id = p.parent_id and card.userid = p.parent_id"
+    "and r.child_id = c.child_id and r.parent_id = p.parent_id"
 
   def all(kg: Long, classId: Option[Long]): List[ParentInfo] = DB.withConnection {
     implicit c =>
@@ -351,14 +354,14 @@ object Parent {
   val simple = {
     get[String]("parent_id") ~
       get[String]("school_id") ~
-      get[String]("name") ~
+      get[String]("parentinfo.name") ~
       get[String]("phone") ~
-      get[Int]("gender") ~
-      get[Option[String]]("picurl") ~
-      get[Date]("birthday") ~
+      get[Int]("parentinfo.gender") ~
+      get[Option[String]]("parentinfo.picurl") ~
+      get[Date]("parentinfo.birthday") ~
       get[Int]("member_status") ~
-      get[Int]("status") ~
-      get[Long]("update_at") map {
+      get[Int]("parentinfo.status") ~
+      get[Long]("parentinfo.update_at") map {
       case id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday ~ member ~ status ~ t =>
         new Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t), Some(member), Some(status))
     }
@@ -374,19 +377,25 @@ object Parent {
         .as(simple singleOpt)
   }
 
-  def simpleIndex(kg: Long) = DB.withConnection {
+  def generateMemberQuery(member: Option[Boolean]): String = member match {
+    case Some(m) => " and member_status={member}"
+    case None => ""
+  }
+
+  def simpleIndex(kg: Long, member: Option[Boolean]) = DB.withConnection {
     implicit c =>
-      SQL(simpleSql)
-        .on('kg -> kg)
+      SQL(simpleSql + generateMemberQuery(member))
+        .on('kg -> kg, 'member -> (if (member.getOrElse(false)) 1 else 0))
         .as(simple *)
   }
 
-  def indexInClass(kg: Long, classId: Long) = DB.withConnection {
+  def indexInClass(kg: Long, classId: Long, member: Option[Boolean]) = DB.withConnection {
     implicit c =>
-      SQL(fullStructureSql + " and c.class_id={class_id}")
+      SQL(fullStructureSql + " and c.class_id={class_id}" + generateMemberQuery(member))
         .on('kg -> kg,
-          'class_id -> classId)
-        .as(withRelationship *)
+          'class_id -> classId,
+          'member -> (if (member.getOrElse(false)) 1 else 0)
+        ).as(simple *)
   }
 
 }

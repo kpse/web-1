@@ -35,17 +35,15 @@ angular.module('kulebaoAdmin')
             scope.nonMembers = Parent.nonMembers school_id: stateParams.kindergarten, class_id: stateParams.class_id, ->
               scope.loading = false
 
-        scope.promote = (assignment) ->
-          scope.assignment = angular.copy(assignment)
-          scope.currentModal = Modal
-            scope: scope
-            contentTemplate: 'templates/admin/assignment.html'
+        scope.promote = (parent) ->
+          parent.member_status = 1
+          parent.$save school_id: stateParams.kindergarten, ->
+            scope.refresh()
 
-        scope.reject = (assignment) ->
-          scope.assignment = angular.copy(assignment)
-          scope.currentModal = Modal
-            scope: scope
-            contentTemplate: 'templates/admin/assignment.html'
+        scope.reject = (member) ->
+          member.member_status = 0
+          member.$save school_id: stateParams.kindergarten, ->
+            scope.refresh()
 
 
     ]

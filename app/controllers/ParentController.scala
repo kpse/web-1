@@ -19,15 +19,15 @@ object ParentController extends Controller with Secured {
   implicit val write4 = Json.writes[Parent]
 
 
-  def index(kg: Long, classId: Option[Long]) = IsLoggedIn {
+  def index(kg: Long, classId: Option[Long], member: Option[Boolean]) = IsLoggedIn {
     u => _ =>
       classId match {
         case Some(id) =>
-          val jsons = Parent.indexInClass(kg, id)
+          val jsons = Parent.indexInClass(kg, id, member)
           Logger.info(jsons.toString)
           Ok(Json.toJson(jsons))
         case None =>
-          val jsons = Parent.simpleIndex(kg)
+          val jsons = Parent.simpleIndex(kg, member)
           Logger.info(jsons.toString)
           Ok(Json.toJson(jsons))
       }

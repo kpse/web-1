@@ -44,6 +44,18 @@
           </div>
         </div>
       </div>
+      <div class="form-group">
+
+        <label for="parent-member" class="col-sm-4 control-label">会员</label>
+
+        <div class="col-sm-8">
+          <div class="control-group input-append">
+            <select class="form-control member-select" ng-model="parent.member_status"
+                    ng-options="value.id as value.desc for (key, value) in [{id: 1, desc: '已开通'}, {id: 0, desc:'未开通'}]"
+                    data-style="btn-primary"></select>
+          </div>
+        </div>
+      </div>
 
     </div>
 
