@@ -40,7 +40,7 @@ object Auth extends Controller {
         user => {
           val login = Employee.authenticate(user._1, user._2).get
           Logger.info(login.toString)
-          if (login.privilege_group == "operator")
+          if (login.privilege_group.getOrElse("").equals("operator"))
             Redirect("/operation").withSession("username" -> login.login_name, "phone" -> login.phone, "name" -> login.name, "id" -> login.id.getOrElse(""))
           else
             Redirect("/admin#/kindergarten/%d".format(login.school_id)).withSession("username" -> login.name, "phone" -> login.phone, "name" -> login.name, "id" -> login.id.getOrElse(""))
@@ -69,26 +69,23 @@ trait Secured {
    * Retrieve the connected user email.
    */
   private def username(request: RequestHeader) = {
-    request.tags.map {
-      t =>
-        Logger.info(t.toString)
-    }
     request.session.get("username")
   }
 
   private def operator(request: RequestHeader) = {
-    val id : Option[String] = request.session.get("id")
-    if (Employee.canAccess(id))
-      request.session.get("username")
-    else
-      None
+    val id: Option[String] = request.session.get("id")
+    id match {
+      case Some(op) if Employee.isOperator(op) =>
+        request.session.get("username")
+      case _ => None
+    }
+
   }
 
   private def checkSchool(request: RequestHeader) = {
     val user = request.session.get("username")
     val id = request.session.get("id")
     val token = request.session.get("token")
-    Logger.info(id.toString)
     val Pattern = "/kindergarten/(\\d+).*".r
     request.path match {
       case path if Employee.canAccess(id) => user

@@ -17,7 +17,7 @@ object EmployeeController extends Controller with Secured {
         Ok(Json.toJson(Employee.all))
   }
 
-  def show(phone: String) = IsOperator {
+  def show(phone: String) = IsAuthenticated {
     u => _ =>
       Ok(Json.toJson(Employee.show(phone)))
   }

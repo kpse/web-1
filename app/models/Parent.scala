@@ -20,7 +20,6 @@ object Parent {
 
   def allowToAccess(phone: String, token: Option[String], kg: Long) = DB.withConnection {
     implicit c =>
-      Logger.info(token.toString)
       SQL("select count(1) from parentinfo p, accountinfo a where a.accountid=p.phone " +
         "and phone={phone} and school_id={kg} and a.pwd_change_time={token} and status=1")
         .on(

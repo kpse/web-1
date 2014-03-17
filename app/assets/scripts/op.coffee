@@ -23,7 +23,7 @@ class Config
       controller: 'OpPrincipalCtrl'
 
     $urlRouterProvider.otherwise ($injector, $location) ->
-      $location.path '/main/app'
+      $location.path '/main/school'
 
 
 angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics'])

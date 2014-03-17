@@ -23,7 +23,6 @@ object Employee {
 
   def isOperator(id: String) = DB.withConnection {
     implicit c =>
-      Logger.info(id)
       SQL("select count(1) from privilege where `group`='operator' and employee_id={id}")
         .on(
           'id -> id
@@ -32,7 +31,6 @@ object Employee {
 
   def isPrincipal(id: String, kg: Long) = DB.withConnection {
     implicit c =>
-      Logger.info(id)
       SQL("select count(1) from privilege where `group`='principal' and employee_id={id} and school_id={kg}")
         .on(
           'id -> id,
@@ -44,9 +42,7 @@ object Employee {
   def canAccess(id: Option[String], schoolId: Long = 0): Boolean = id.exists {
     case (userId) if isOperator(userId) => true
     case (userId) if isPrincipal(userId, schoolId) => true
-    case _ =>
-      Logger.info("employee canAccess false")
-      false
+    case _ => false
   }
 
   def changPassword(kg: Long, phone: String, password: EmployeePassword) = DB.withConnection {
