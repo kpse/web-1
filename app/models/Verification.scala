@@ -10,12 +10,7 @@ case class Verification(phone: String, code: String)
 
 object Verification {
   def isMatched(verification: Verification) = {
-    val code = Cache.get(verification.phone)
-    if (code != null) {
-      code.equals(verification.code)
-    }
-    else false;
-
+    verification.code.equals(Cache.get(verification.phone))
   }
 
 
