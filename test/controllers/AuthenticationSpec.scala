@@ -25,7 +25,7 @@ class AuthenticationSpec extends Specification with TestSupport {
       val response: JsValue = Json.parse(contentAsString(loginResponse))
       (response \ "error_code").as[Int] must equalTo(0)
       (response \ "account_name").as[String] must equalTo("13333333333")
-      (response \ "access_token").as[String] must equalTo("13333333333")
+      (response \ "access_token").as[String] must equalTo("0")
       (response \ "username").as[String] must be matching "测试"
     }
     implicit val checkWrites = Json.writes[CheckPhone]

@@ -29,7 +29,7 @@ object MobileLoginResponse {
       val success = if (firstRow.isEmpty) 1 else 0
       val (username, account, token) = getAccountInfo(firstRow)
       val schoolName = getSchoolInfo(firstRow)
-      new MobileLoginResponse(success, username, schoolName, account, token)
+      new MobileLoginResponse(success, username, schoolName, token, account)
   }
 
   def getSchoolInfo(stream: Stream[SqlRow]) = stream match {
@@ -48,9 +48,10 @@ object MobileLoginResponse {
     case Stream(_) => DB.withConnection {
       implicit c =>
         val accountId = stream.head[String]("accountid")
+        val token = stream.head[Long]("pwd_change_time")
         val firstRow = SQL("select name from parentinfo where phone={phone}")
           .on('phone -> accountId).apply().head
-        (firstRow[String]("name"), accountId, accountId)
+        (firstRow[String]("name"), accountId, token.toString)
     }
   }
 }
