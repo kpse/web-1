@@ -2,6 +2,7 @@ package models.json_models
 
 import play.api.db.DB
 import anorm._
+import anorm.SqlParser._
 import play.api.Logger
 import play.api.Play.current
 import java.sql.Date
@@ -23,8 +24,14 @@ object BindNumberResponse {
     //device_type => 1: web 2: pc 3:android 4:ios 5:wp
     deviceType match {
       case Some(ios) if ios.equalsIgnoreCase("ios") => 4
-      case _  => 3
+      case _ => 3
     }
+  }
+
+  def isExpired(phone: String) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from parentinfo where cocobabys_status=1 and status=1 and phone={phone}")
+      .on('phone -> phone).as(get[Long]("count(1)") single) == 0l
   }
 
   def handle(request: BindingNumber) = DB.withConnection {
@@ -41,6 +48,8 @@ object BindNumberResponse {
       firstRow match {
         case row if row.isEmpty =>
           new BindNumberResponse(1, "", "", "", 0, "")
+        case row if isExpired(row(0)[String]("accountid")) =>
+          new BindNumberResponse(2, "", "", "", 0, "")
         case row if row(0)[Int]("active") == 0 =>
           val updateTime = System.currentTimeMillis
           SQL("update accountinfo set password={new_password}, pwd_change_time={timestamp}, pushid={pushid}, device={device}, active=1 where accountid={accountid}")
