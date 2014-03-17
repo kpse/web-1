@@ -41,7 +41,7 @@ object Employee {
   }
 
 
-  def canAccess(id: Option[String], schoolId: Long): Boolean = id.exists {
+  def canAccess(id: Option[String], schoolId: Long = 0): Boolean = id.exists {
     case (userId) if isOperator(userId) => true
     case (userId) if isPrincipal(userId, schoolId) => true
     case _ =>

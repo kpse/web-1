@@ -56,14 +56,14 @@ object ChildController extends Controller with Secured {
     }
   }
 
-  def showInfo(kg: Long, childId: String) = Action {
+  def showInfo(kg: Long, childId: String) = IsLoggedIn { u => _ =>
     Children.info(kg.toLong, childId) match {
       case Some(one: ChildInfo) => Ok(Json.toJson(one))
       case None => BadRequest
     }
   }
 
-  def createOrUpdate(kg: Long) = Action(parse.json) {
+  def createOrUpdate(kg: Long) = IsLoggedIn(parse.json) { u =>
     implicit request =>
       Logger.info(request.body.toString)
       request.body.validate[ChildInfo].map {
@@ -77,7 +77,7 @@ object ChildController extends Controller with Secured {
 
   }
 
-  def update2(kg: Long, childId: String) = Action(parse.json) {
+  def update2(kg: Long, childId: String) = IsLoggedIn(parse.json) { u =>
     implicit request =>
       Logger.info(request.body.toString)
       request.body.validate[ChildInfo].map {

@@ -10,7 +10,7 @@ import ExecutionContext.Implicits.global
 import play.Logger
 import models.{DailyLog, Card}
 
-object CheckInController extends Controller {
+object CheckInController extends Controller with Secured {
 
   case class CheckingInAndOutResponse(error_code: Int, error_msg: String)
 
@@ -46,11 +46,13 @@ object CheckInController extends Controller {
 
   implicit val write3 = Json.writes[Card]
 
-  def show(kg: Long, cardId: String) = Action {
-    Ok(Json.toJson(Card.show(kg, cardId)))
+  def show(kg: Long, cardId: String) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(Card.show(kg, cardId)))
   }
 
-  def index(kg: Long) = Action {
-    Ok(Json.toJson(Card.index(kg)))
+  def index(kg: Long) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(Card.index(kg)))
   }
 }

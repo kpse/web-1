@@ -11,7 +11,7 @@ import models.ParentInfo
 import scala.Some
 import models.json_models.ChildInfo
 
-object ParentController extends Controller {
+object ParentController extends Controller with Secured {
 
   implicit val write3 = Json.writes[School]
   implicit val write2 = Json.writes[ChildInfo]
@@ -19,17 +19,18 @@ object ParentController extends Controller {
   implicit val write4 = Json.writes[Parent]
 
 
-  def index(kg: Long, classId: Option[Long]) = Action {
-    classId match {
-      case Some(id) =>
-        val jsons = Parent.indexInClass(kg, id)
-        Logger.info(jsons.toString)
-        Ok(Json.toJson(jsons))
-      case None =>
-        val jsons = Parent.simpleIndex(kg)
-        Logger.info(jsons.toString)
-        Ok(Json.toJson(jsons))
-    }
+  def index(kg: Long, classId: Option[Long]) = IsLoggedIn {
+    u => _ =>
+      classId match {
+        case Some(id) =>
+          val jsons = Parent.indexInClass(kg, id)
+          Logger.info(jsons.toString)
+          Ok(Json.toJson(jsons))
+        case None =>
+          val jsons = Parent.simpleIndex(kg)
+          Logger.info(jsons.toString)
+          Ok(Json.toJson(jsons))
+      }
   }
 
   val parentForm = Form(
@@ -45,43 +46,47 @@ object ParentController extends Controller {
   implicit val read3 = Json.reads[ParentInfo]
   implicit val read4 = Json.reads[Parent]
 
-  def create(kg: Long) = Action(parse.json) {
-    request =>
-      Logger.info(request.body.toString)
-      request.body.validate[Parent].map {
-        case (parent) if Parent.idExists(parent.parent_id) =>
-          Ok(Json.toJson(Parent.update2(parent)))
-        case (parent) =>
-          Ok(Json.toJson(Parent.create(kg, parent)))
-      }.recoverTotal {
-        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-      }
+  def create(kg: Long) = IsLoggedIn(parse.json) {
+    u =>
+      request =>
+        Logger.info(request.body.toString)
+        request.body.validate[Parent].map {
+          case (parent) if Parent.idExists(parent.parent_id) =>
+            Ok(Json.toJson(Parent.update2(parent)))
+          case (parent) =>
+            Ok(Json.toJson(Parent.create(kg, parent)))
+        }.recoverTotal {
+          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        }
   }
 
-  def update(kg: Long, phone: String) = Action(parse.json) {
-    request =>
-      Logger.info(request.body.toString)
-      request.body.validate[Parent].map {
-        case (parent) if Parent.idExists(parent.parent_id) =>
-          Ok(Json.toJson(Parent.update2(parent)))
-        case (parent) if Parent.phoneExists(kg, phone) =>
-          Ok(Json.toJson(Parent.updateWithPhone(kg, parent)))
-        case (error) if Parent.existsInOtherSchool(error) =>
-          BadRequest(Json.toJson(new ErrorResponse("电话号码在其他学校已存在。")))
-        case (newParent) =>
-          Ok(Json.toJson(Parent.create(kg, newParent)))
-      } getOrElse BadRequest("Detected error:" + request.body)
+  def update(kg: Long, phone: String) = IsLoggedIn(parse.json) {
+    u =>
+      request =>
+        Logger.info(request.body.toString)
+        request.body.validate[Parent].map {
+          case (parent) if Parent.idExists(parent.parent_id) =>
+            Ok(Json.toJson(Parent.update2(parent)))
+          case (parent) if Parent.phoneExists(kg, phone) =>
+            Ok(Json.toJson(Parent.updateWithPhone(kg, parent)))
+          case (error) if Parent.existsInOtherSchool(error) =>
+            BadRequest(Json.toJson(new ErrorResponse("电话号码在其他学校已存在。")))
+          case (newParent) =>
+            Ok(Json.toJson(Parent.create(kg, newParent)))
+        } getOrElse BadRequest("Detected error:" + request.body)
   }
 
   implicit val write5 = Json.writes[SuccessResponse]
   implicit val write6 = Json.writes[ErrorResponse]
 
-  def delete(kg: Long, phone: String) = Action {
-    Parent.delete(kg)(phone)
-    Ok(Json.toJson(new SuccessResponse))
+  def delete(kg: Long, phone: String) = IsLoggedIn {
+    u => _ =>
+      Parent.delete(kg)(phone)
+      Ok(Json.toJson(new SuccessResponse))
   }
 
-  def show(kg: Long, phone: String) = Action {
-    Ok(Json.toJson(Parent.show(kg, phone)))
+  def show(kg: Long, phone: String) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(Parent.show(kg, phone)))
   }
 }

@@ -1,6 +1,7 @@
 package controllers
 
 import play.api.mvc._
+import play.api.mvc.BodyParsers.parse
 import play.api.data._
 import play.api.data.Forms._
 
@@ -68,17 +69,29 @@ trait Secured {
    * Retrieve the connected user email.
    */
   private def username(request: RequestHeader) = {
+    request.tags.map {
+      t =>
+        Logger.info(t.toString)
+    }
     request.session.get("username")
+  }
+
+  private def operator(request: RequestHeader) = {
+    val id : Option[String] = request.session.get("id")
+    if (Employee.canAccess(id))
+      request.session.get("username")
+    else
+      None
   }
 
   private def checkSchool(request: RequestHeader) = {
     val user = request.session.get("username")
     val id = request.session.get("id")
-    Logger.info(id.toString)
     val token = request.session.get("token")
-    Logger.info(token.toString)
-    val Pattern = "/kindergarten/(\\d+)/.+".r
+    Logger.info(id.toString)
+    val Pattern = "/kindergarten/(\\d+).*".r
     request.path match {
+      case path if Employee.canAccess(id) => user
       case Pattern(c) if Employee.canAccess(id, c.toLong) => user
       case Pattern(c) if Parent.canAccess(user, token, c.toLong) => user
       case _ => None
@@ -109,13 +122,15 @@ trait Secured {
       Action(request => f(user)(request))
   }
 
-  def IsOperator(f: => String => Request[AnyContent] => Result) = IsAuthenticated {
-    user => request =>
-      if (user == "operator") {
-        f(user)(request)
-      } else {
-        Results.Redirect(routes.Auth.login)
-      }
+  def IsLoggedIn(b: BodyParser[play.api.libs.json.JsValue] = parse.json)
+                (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(checkSchool, onNotLoggedIn) {
+    user =>
+      Action(b)(request => f(user)(request))
+  }
+
+  def IsOperator(f: => String => Request[AnyContent] => Result) = Security.Authenticated(operator, onUnauthorized) {
+    user =>
+      Action(request => f(user)(request))
   }
 
 }
