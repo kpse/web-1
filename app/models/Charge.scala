@@ -63,7 +63,7 @@ object Charge {
   def index(kg: Long) = DB.withConnection {
     implicit c =>
       SQL("select *, (select count(1) from parentinfo p, relationmap r " +
-        "where p.parent_id=r.parent_id and r.status=1 and member_status=1 and p.status=1) as used from chargeinfo where school_id={kg}")
+        "where p.parent_id=r.parent_id and r.status=1 and member_status=1 and p.status=1 and school_id={kg}) as used from chargeinfo where school_id={kg}")
         .on(
           'kg -> kg.toString
         ).as(simple *)
