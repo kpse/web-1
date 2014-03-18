@@ -19,13 +19,14 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'MembersInClassCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', 'classService', 'parentService', '$modal', 'employeeService',
-      (scope, rootScope, stateParams, location, School, Class, Parent, Modal, Employee) ->
+      '$location', 'schoolService', 'classService', 'parentService', '$modal', 'employeeService', 'chargeService',
+      (scope, rootScope, stateParams, location, School, Class, Parent, Modal, Employee, Charge) ->
         scope.loading = true
         scope.current_class = parseInt(stateParams.class_id)
 
         scope.adminUser = Employee.get ->
           scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
+            scope.kindergarten.charge = Charge.query school_id: stateParams.kindergarten
             scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
               scope.refresh()
 
