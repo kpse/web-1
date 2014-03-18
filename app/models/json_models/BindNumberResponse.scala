@@ -45,13 +45,13 @@ object BindNumberResponse {
           'token -> request.access_token
         ).apply
       Logger.info(firstRow.toString)
+      val updateTime = System.currentTimeMillis
       firstRow match {
         case row if row.isEmpty =>
           new BindNumberResponse(1, "", "", "", 0, "")
         case row if isExpired(row(0)[String]("accountid")) =>
           new BindNumberResponse(2, "", "", "", 0, "")
         case row if row(0)[Int]("active") == 0 =>
-          val updateTime = System.currentTimeMillis
           SQL("update accountinfo set password={new_password}, pwd_change_time={timestamp}, pushid={pushid}, device={device}, active=1 where accountid={accountid}")
             .on('accountid -> request.phonenum,
               'new_password -> generateNewPassword(request.phonenum),
@@ -62,13 +62,15 @@ object BindNumberResponse {
           Logger.info("binding: first activate..phone: %s at %s".format(request.phonenum, new Date(updateTime).toString))
           new BindNumberResponse(0, updateTime.toString, row(0)[String]("parentinfo.name"), request.phonenum, row(0)[String]("school_id").toLong, row(0)[String]("schoolinfo.name"))
         case row if row(0)[Int]("active") == 1 =>
-          SQL("update accountinfo set pushid={pushid}, device={device}, active=1 where accountid={accountid}")
+          SQL("update accountinfo set pushid={pushid}, device={device}, active=1, pwd_change_time={timestamp} " +
+            "where accountid={accountid}")
             .on('accountid -> request.phonenum,
               'pushid -> request.user_id,
+              'timestamp -> updateTime,
               'device -> convertToCode(request.device_type)
             ).executeUpdate
           Logger.info("binding: refresh token %s..phone: %s".format(request.user_id, request.phonenum))
-          new BindNumberResponse(0, row(0)[Long]("pwd_change_time").toString, row(0)[String]("parentinfo.name"), request.phonenum, row(0)[String]("school_id").toLong, row(0)[String]("schoolinfo.name"))
+          new BindNumberResponse(0, updateTime.toString, row(0)[String]("parentinfo.name"), request.phonenum, row(0)[String]("school_id").toLong, row(0)[String]("schoolinfo.name"))
       }
 
   }
