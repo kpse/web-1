@@ -12,7 +12,7 @@
   <tr ng-repeat="a in members | filter: searchText" class="row" ng-click="reject(a)" ng-class="{editable: reject}">
     <td class=".col-xs-1">{{a.phone}}</td>
     <td class=".col-xs-2">{{a.name}}</td>
-    <td class=".col-xs-2">xiaohai</td>
+    <td class=".col-xs-2">开发中</td>
   </tr>
   </tbody>
 </table>
@@ -26,10 +26,10 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="a in nonMembers | filter: searchText" class="row" ng-click="promote(a)" ng-class="{editable: promote}">
+  <tr ng-repeat="a in nonMembers | filter: searchText" class="row" ng-class="{editable: promote}" ng-click="promote(a)">
     <td class=".col-xs-1">{{a.phone}}</td>
     <td class=".col-xs-2">{{a.name}}</td>
-    <td class=".col-xs-2">xiaohai</td>
+    <td class=".col-xs-2">开发中</td>
   </tr>
   </tbody>
 </table>

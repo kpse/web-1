@@ -26,8 +26,8 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'MembersInClassCtrl',
     [ '$scope', '$rootScope', '$stateParams',
-      '$location', 'schoolService', 'classService', 'parentService', '$modal', 'employeeService', 'chargeService',
-      (scope, rootScope, stateParams, location, School, Class, Parent, Modal, Employee, Charge) ->
+      '$location', 'schoolService', 'classService', 'parentService', '$modal', 'employeeService', 'chargeService', '$alert',
+      (scope, rootScope, stateParams, location, School, Class, Parent, Modal, Employee, Charge, Alert) ->
         scope.loading = true
         scope.current_class = parseInt(stateParams.class_id)
 
@@ -43,18 +43,32 @@ angular.module('kulebaoAdmin')
           scope.loading = true
           scope.members = Parent.members school_id: stateParams.kindergarten, class_id: stateParams.class_id, ->
             scope.nonMembers = Parent.nonMembers school_id: stateParams.kindergarten, class_id: stateParams.class_id, ->
-              scope.$emit 'update_charge'
-              scope.loading = false
+              scope.kindergarten.charge = Charge.query school_id: stateParams.kindergarten, ->
+                scope.$emit 'update_charge'
+                scope.loading = false
+
+        scope.exceed = ->
+          scope.kindergarten.charge[0].used >= scope.kindergarten.charge[0].total_phone_number
 
         scope.promote = (parent) ->
-          parent.member_status = 1
-          parent.$save school_id: stateParams.kindergarten, ->
-            scope.refresh()
+            return scope.noPromotion() if scope.exceed()
+            parent.member_status = 1
+            parent.$save school_id: stateParams.kindergarten, ->
+              scope.refresh()
 
         scope.reject = (member) ->
           member.member_status = 0
           member.$save school_id: stateParams.kindergarten, ->
             scope.refresh()
 
+        scope.noPromotion = ->
+          Alert
+            title: '无法开通'
+            content: '目前开通人数已经达到上限，请联系幼乐宝管理员开通更多授权。'
+            placement: "top-left"
+            type: "danger"
+            show: true
+            container: '.panel-body'
+            duration: 3
 
     ]
