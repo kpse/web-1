@@ -102,6 +102,7 @@ GET           /kindergarten/:kg/principal                                       
 
 POST          /kindergarten/:kg/charge                                           controllers.ChargeController.update(kg: Long)
 GET           /kindergarten/:kg/charge                                           controllers.ChargeController.index(kg: Long)
+DELETE        /kindergarten/:kg/charge                                           controllers.ChargeController.delete(kg: Long)
 
 
 GET           /employee                                                          controllers.EmployeeController.index

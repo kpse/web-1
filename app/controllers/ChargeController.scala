@@ -24,6 +24,12 @@ object ChargeController extends Controller with Secured {
   def index(kg: Long) = IsAuthenticated {
     u =>
       _ =>
-        Ok(Json.toJson(Charge.index(kg)))
+        Ok(Json.toJson(Charge.createIfNotExists(kg)))
+  }
+
+  def delete(kg: Long) = IsOperator {
+    u =>
+      request =>
+        Ok(Json.toJson(Charge.delete(kg)))
   }
 }

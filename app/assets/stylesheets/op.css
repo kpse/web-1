@@ -20,4 +20,7 @@
   min-height: 100px;
 }
 
-
+.expired {
+  text-decoration: line-through;
+  color: #808080;
+}

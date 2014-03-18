@@ -21,6 +21,10 @@ class Config
       url: '/principal',
       templateUrl: 'templates/op/principal.html',
       controller: 'OpPrincipalCtrl'
+    .state 'main.charge',
+      url: '/charge',
+      templateUrl: 'templates/op/charge.html',
+      controller: 'OpChargeCtrl'
 
     $urlRouterProvider.otherwise ($injector, $location) ->
       $location.path '/main/school'
