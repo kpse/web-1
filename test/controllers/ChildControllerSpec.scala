@@ -13,13 +13,15 @@ import play.Logger
 @RunWith(classOf[JUnitRunner])
 class ChildControllerSpec extends Specification with TestSupport {
   implicit val writes = Json.writes[ChildUpdate]
+  def requestWithSession(method: String, url: String) = FakeRequest(method, url)
+    .withSession("username" -> "13402815317", "token" -> "1386425935574")
   "Child" should {
 
     "be updated with icon_url" in new WithApplication {
 
       private val requestHeader = Json.toJson(new ChildUpdate(None, None, Some("icon_url")))
 
-      val updateResponse = route(FakeRequest(POST, "/kindergarten/93740362/parent/13408654680/child/1_1394545098158").withJsonBody(requestHeader)).get
+      val updateResponse = route(requestWithSession(POST, "/kindergarten/93740362/parent/13408654680/child/1_1394545098158").withJsonBody(requestHeader)).get
 
       status(updateResponse) must equalTo(OK)
       contentType(updateResponse) must beSome.which(_ == "application/json")
@@ -35,7 +37,7 @@ class ChildControllerSpec extends Specification with TestSupport {
 
       private val requestHeader = Json.toJson(new ChildUpdate(Some("new_nick_name"), None, None))
 
-      val updateResponse = route(FakeRequest(POST, "/kindergarten/93740362/parent/13408654680/child/1_1394545098158").withJsonBody(requestHeader)).get
+      val updateResponse = route(requestWithSession(POST, "/kindergarten/93740362/parent/13408654680/child/1_1394545098158").withJsonBody(requestHeader)).get
 
       status(updateResponse) must equalTo(OK)
       contentType(updateResponse) must beSome.which(_ == "application/json")
@@ -51,7 +53,7 @@ class ChildControllerSpec extends Specification with TestSupport {
 
       private val requestHeader = Json.toJson(new ChildUpdate(None, Some(1167580800000L), None))
 
-      val updateResponse = route(FakeRequest(POST, "/kindergarten/93740362/parent/13408654680/child/1_1394545098158").withJsonBody(requestHeader)).get
+      val updateResponse = route(requestWithSession(POST, "/kindergarten/93740362/parent/13408654680/child/1_1394545098158").withJsonBody(requestHeader)).get
 
       status(updateResponse) must equalTo(OK)
       contentType(updateResponse) must beSome.which(_ == "application/json")
