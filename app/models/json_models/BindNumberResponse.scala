@@ -34,6 +34,12 @@ object BindNumberResponse {
       .on('phone -> phone).as(get[Long]("count(1)") single) == 0l
   }
 
+  def schoolExpired(kg: String) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from chargeinfo where status=1 and school_id={kg}")
+      .on('kg -> kg).as(get[Long]("count(1)") single) == 0l
+  }
+
   def handle(request: BindingNumber) = DB.withConnection {
     implicit c =>
       val firstRow = SQL("select a.*, p.name, p.school_id, s.name " +
@@ -49,7 +55,7 @@ object BindNumberResponse {
       firstRow match {
         case row if row.isEmpty =>
           new BindNumberResponse(1, "", "", "", 0, "")
-        case row if isExpired(row(0)[String]("accountid")) =>
+        case row if isExpired(row(0)[String]("accountid")) || schoolExpired(row(0)[String]("school_id")) =>
           new BindNumberResponse(2, "", "", "", 0, "")
         case row if row(0)[Int]("active") == 0 =>
           SQL("update accountinfo set password={new_password}, pwd_change_time={timestamp}, pushid={pushid}, device={device}, active=1 where accountid={accountid}")

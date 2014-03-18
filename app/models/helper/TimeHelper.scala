@@ -11,5 +11,6 @@ object TimeHelper {
 
   implicit def any2DateTime[A](date: A) = new AnyRef {
     def toDateOnly = new DateTime(date).toString(DateTimeFormat.forPattern("yyyy-MM-dd"))
+    def toMonthOnly = new DateTime(date).toString(DateTimeFormat.forPattern("yyyy-MM"))
   }
 }
