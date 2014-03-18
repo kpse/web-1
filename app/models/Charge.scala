@@ -9,7 +9,7 @@ import java.util.Date
 import models.helper.TimeHelper.any2DateTime
 import org.joda.time.DateTime
 
-case class ChargeInfo(school_id: Long, total_phone_number: Long, expire_date: String, status: Int)
+case class ChargeInfo(school_id: Long, total_phone_number: Long, expire_date: String, status: Int, used: Long)
 
 object Charge {
   def delete(kg: Long) = DB.withConnection {
@@ -62,7 +62,8 @@ object Charge {
 
   def index(kg: Long) = DB.withConnection {
     implicit c =>
-      SQL("select * from chargeinfo where school_id={kg}")
+      SQL("select *, (select count(1) from parentinfo p, relationmap r " +
+        "where p.parent_id=r.parent_id and r.status=1 and member_status=1 and p.status=1) as used from chargeinfo where school_id={kg}")
         .on(
           'kg -> kg.toString
         ).as(simple *)
@@ -72,9 +73,10 @@ object Charge {
     get[String]("school_id") ~
       get[Long]("total_phone_number") ~
       get[Date]("expire_date") ~
-      get[Int]("status") map {
-      case kg ~ count ~ expire ~ status =>
-        ChargeInfo(kg.toLong, count, expire.toMonthOnly, status)
+      get[Int]("status") ~
+      get[Long]("used") map {
+      case kg ~ count ~ expire ~ status ~ used =>
+        ChargeInfo(kg.toLong, count, expire.toMonthOnly, status, used)
     }
   }
 }
