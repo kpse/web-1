@@ -125,13 +125,13 @@ trait Secured {
       Action(b)(request => f(user)(request))
   }
 
-  def IsOperator(f: => String => Request[AnyContent] => Result) = Security.Authenticated(operator, onUnauthorized) {
+  def IsOperator(f: => String => Request[AnyContent] => Result) = Security.Authenticated(operator, onNotLoggedIn) {
     user =>
       Action(request => f(user)(request))
   }
 
   def IsOperator(b: BodyParser[play.api.libs.json.JsValue] = parse.json)
-                (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(operator, onUnauthorized) {
+                (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(operator, onNotLoggedIn) {
     user =>
       Action(b)(request => f(user)(request))
   }
