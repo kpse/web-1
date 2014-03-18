@@ -656,6 +656,24 @@ VALUES
   ('93740562', '3_93740362_9978', 'teacher', '', '', 1323390313123),
   ('93740362', '3_93740362_3344', 'teacher', '777888', '3_93740362_9971', 12314313123);
 
+CREATE TABLE chargeinfo (
+  uid        INT(11)          NOT NULL AUTO_INCREMENT,
+  school_id    VARCHAR(20)  NOT NULL,
+  total_phone_number     INT(11) NOT NULL default 0,
+  expire_date DATE             NOT NULL DEFAULT '2200-01-01',
+  status INT default 1,
+  update_at BIGINT(20)             NOT NULL DEFAULT 0,
+  PRIMARY KEY (uid)
+)
+  ENGINE =InnoDB
+  AUTO_INCREMENT =2
+  DEFAULT CHARSET =utf8
+  COLLATE =utf8_bin;
+
+INSERT INTO chargeinfo (school_id, total_phone_number, expire_date, update_at)
+VALUES
+  ('93740362', 10, '2014-03-01', 1323390313123),
+  ('93740562', 3, '2014-03-01', 1323390313123);
 
 /*!40101 SET CHARACTER_SET_CLIENT = @OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS = @OLD_CHARACTER_SET_RESULTS */;
