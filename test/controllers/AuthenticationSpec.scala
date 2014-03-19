@@ -20,7 +20,7 @@ class AuthenticationSpec extends Specification with TestSupport {
       val loginResponse = route(FakeRequest(POST, "/login.do").withJsonBody(json)).get
 
       status(loginResponse) must equalTo(OK)
-      contentType(loginResponse) must beSome.which(_ == "application/json")
+      contentType(loginResponse) must beSome("application/json")
 
       val response: JsValue = Json.parse(contentAsString(loginResponse))
       (response \ "error_code").as[Int] must equalTo(0)

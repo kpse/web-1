@@ -55,7 +55,7 @@ object Children {
     implicit c =>
       val timestamp = System.currentTimeMillis
       val childId = child.child_id.getOrElse("1_%d".format(timestamp))
-      val childUid = SQL("INSERT INTO childinfo(name, child_id, student_id, gender, classname, picurl, birthday, " +
+      val childUid : Option[Long] = SQL("INSERT INTO childinfo(name, child_id, student_id, gender, classname, picurl, birthday, " +
         "indate, school_id, address, stu_type, hukou, social_id, nick, status, update_at, class_id) " +
         "VALUES ({name},{child_id},{student_id},{gender},{classname},{picurl},{birthday},{indate}," +
         "{school_id},{address},{stu_type},{hukou},{social_id},{nick},{status},{timestamp},{class_id})")
@@ -78,8 +78,9 @@ object Children {
           'class_id -> child.class_id,
           'timestamp -> timestamp).executeInsert()
       Logger.info("created childinfo %s".format(childUid))
-      childUid map {
-        findById(kg, _)
+      childUid.flatMap {
+        c =>
+        findById(kg, c)
       }
   }
 

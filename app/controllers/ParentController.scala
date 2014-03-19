@@ -50,7 +50,9 @@ object ParentController extends Controller with Secured {
         Logger.info(request.body.toString)
         request.body.validate[Parent].map {
           case (parent) if Parent.idExists(parent.parent_id) =>
-            Ok(Json.toJson(Parent.update2(parent)))
+            Ok(Json.toJson(Parent.update(parent)))
+          case (parent) if Parent.phoneExists(kg, parent.phone) =>
+            Ok(Json.toJson(Parent.updateWithPhone(kg, parent)))
           case (parent) =>
             Ok(Json.toJson(Parent.create(kg, parent)))
         }.recoverTotal {
@@ -64,7 +66,7 @@ object ParentController extends Controller with Secured {
         Logger.info(request.body.toString)
         request.body.validate[Parent].map {
           case (parent) if Parent.idExists(parent.parent_id) =>
-            Ok(Json.toJson(Parent.update2(parent)))
+            Ok(Json.toJson(Parent.update(parent)))
           case (parent) if Parent.phoneExists(kg, phone) =>
             Ok(Json.toJson(Parent.updateWithPhone(kg, parent)))
           case (error) if Parent.existsInOtherSchool(error) =>
@@ -85,6 +87,10 @@ object ParentController extends Controller with Secured {
 
   def show(kg: Long, phone: String) = IsLoggedIn {
     u => _ =>
-      Ok(Json.toJson(Parent.show(kg, phone)))
+      val parent = Parent.show(kg, phone)
+      parent.map {
+        p => Ok(Json.toJson(p))
+      }.getOrElse(NotFound)
+
   }
 }

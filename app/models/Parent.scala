@@ -61,9 +61,33 @@ object Parent {
         ).as(get[Long]("count") single) > 0
   }
 
-  def update2(parent: Parent) = DB.withConnection {
+  def updatePushAccount(parent: Parent) = DB.withConnection {
+    implicit c =>
+      val oldPhone = oldPhoneNumber(parent)
+      if (isConflicting(parent)) throw new IllegalAccessError("电话号码已经存在。")
+      SQL("update accountinfo set accountid={phone}, " +
+        "password={password},pushid='', active=0, pwd_change_time=0 where accountid={old_phone}")
+        .on('old_phone -> oldPhone,
+          'phone -> parent.phone,
+          'password -> generateNewPassword(parent.phone)).executeUpdate()
+  }
+
+  def oldPhoneNumber(parent: Parent) = DB.withConnection {
+    implicit c =>
+      SQL("select phone from parentinfo where parent_id={parent_id}")
+        .on('parent_id -> parent.parent_id).as(get[String]("phone") single)
+  }
+
+  def isConflicting(parent: Parent) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from accountinfo where accountid={phone}")
+        .on('phone -> parent.phone).as(get[Long]("count(1)") single) > 0
+  }
+
+  def update(parent: Parent) = DB.withConnection {
     implicit c =>
       val timestamp = System.currentTimeMillis
+      updatePushAccount(parent)
       SQL("update parentinfo set name={name}, " +
         "phone={phone}, gender={gender}, company={company}, " +
         "picurl={picurl}, birthday={birthday}, " +
@@ -114,63 +138,6 @@ object Parent {
         ).executeUpdate
   }
 
-  @deprecated(message = "try to remove", since = "2014-03-12")
-  def update(parent: ParentInfo) = DB.withTransaction {
-    implicit c =>
-      try {
-        val child = parent.child
-        val timestamp = System.currentTimeMillis
-        SQL("update parentinfo set name={name}, " +
-          "relationship={relationship}, phone={phone}, " +
-          "gender={gender}, company={company}, picurl={picurl}, birthday={birthday}, " +
-          "update_at={timestamp} where uid={uid}")
-          .on('name -> parent.name,
-            'relationship -> parent.relationship,
-            'phone -> parent.phone,
-            'gender -> parent.gender,
-            'company -> "",
-            'picurl -> parent.portrait,
-            'birthday -> parent.birthday,
-            'uid -> parent.id,
-            'timestamp -> timestamp).executeUpdate()
-
-        val (childId, parentId) = SQL("select child_id, p.parent_id from relationmap r, parentinfo p where p.parent_id = r.parent_id and p.uid={uid}")
-          .on('uid -> parent.id
-          ).as((get[String]("child_id") ~ get[String]("parent_id") map {
-          case child ~ parent => (child, parent)
-          case _ => ("", "")
-        }) singleOpt).get
-        Logger.info("child: %s, parent: %s".format(childId, parentId))
-        SQL("update childinfo set name={name}, gender={gender}, " +
-          "picurl={picurl}, birthday={birthday}, indate={indate}, " +
-          "nick={nick}, update_at={timestamp}, class_id={class_id} " +
-          " where child_id={child_id}")
-          .on('name -> child.name,
-            'gender -> child.gender,
-            'picurl -> child.portrait,
-            'birthday -> child.birthday,
-            'indate -> child.birthday,
-            'nick -> child.nick,
-            'class_id -> child.class_id,
-            'child_id -> childId.toString,
-            'timestamp -> timestamp).executeUpdate()
-        SQL("update cardinfo set cardnum={cardnum} " +
-          "where userid={userid}")
-          .on('cardnum -> parent.card,
-            'userid -> parentId.toString).executeUpdate()
-        c.commit
-        findById(parent.kindergarten.school_id)(parent.id.get)
-      }
-      catch {
-        case t: Throwable =>
-          Logger.info("error %s".format(t.toString))
-          c.rollback
-          findById(parent.kindergarten.school_id)(-1)
-      }
-
-  }
-
-
   def findById(kg: Long)(id: Long) = DB.withConnection {
     implicit c =>
       SQL(fullStructureSql + " and p.uid={id}")
@@ -199,94 +166,19 @@ object Parent {
           'member -> parent.member_status.getOrElse(0),
           'timestamp -> timestamp).executeInsert()
       Logger.info("created parent %s".format(createdId))
-      val accountinfoUid = SQL("INSERT INTO accountinfo(accountid, password, pushid, active, pwd_change_time) " +
+      val accountinfoUid = createPushAccount(parent)
+      Logger.info("created accountinfo %s".format(accountinfoUid))
+      createdId.flatMap {id => info(parent.school_id, parent_id)}
+  }
+
+
+  def createPushAccount(parent: Parent): Option[Long] = DB.withConnection {
+    implicit c =>
+      if (isConflicting(parent)) throw new IllegalAccessError("电话号码已经存在。")
+      SQL("INSERT INTO accountinfo(accountid, password, pushid, active, pwd_change_time) " +
         "VALUES ({accountid},{password},'',0,0)")
         .on('accountid -> parent.phone,
           'password -> generateNewPassword(parent.phone)).executeInsert()
-      Logger.info("created accountinfo %s".format(accountinfoUid))
-      createdId map (id => info(parent.school_id, parent_id))
-
-  }
-
-  @deprecated(message = "try to remove", since = "2014-03-12")
-  def fullCreate(kg: Long, parent: ParentInfo) = DB.withTransaction {
-    implicit c =>
-      val child = parent.child
-      val timestamp = System.currentTimeMillis
-      val parent_id = "2_%d".format(timestamp)
-      try {
-        val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at) " +
-          "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp})")
-          .on('name -> parent.name,
-            'parent_id -> parent_id,
-            'relationship -> parent.relationship,
-            'phone -> parent.phone,
-            'gender -> parent.gender,
-            'company -> "",
-            'picurl -> parent.portrait,
-            'birthday -> parent.birthday,
-            'school_id -> parent.kindergarten.school_id,
-            'status -> 1,
-            'timestamp -> timestamp).executeInsert()
-        Logger.info("created parent %s".format(createdId))
-        val child_id = child.child_id.getOrElse("1_%d".format(timestamp))
-        child.child_id match {
-          case None =>
-            val childUid = SQL("INSERT INTO childinfo(name, child_id, student_id, gender, classname, picurl, birthday, indate, school_id, address, stu_type, hukou, social_id, nick, status, update_at, class_id) " +
-              "VALUES ({name},{child_id},{student_id},{gender},{classname},{picurl},{birthday},{indate},{school_id},{address},{stu_type},{hukou},{social_id},{nick},{status},{timestamp},{class_id})")
-              .on('name -> child.name,
-                'child_id -> child_id,
-                'student_id -> "%d".format(timestamp).take(5),
-                'gender -> child.gender,
-                'classname -> "水果班",
-                'picurl -> child.portrait,
-                'birthday -> child.birthday,
-                'indate -> child.birthday,
-                'school_id -> parent.kindergarten.school_id,
-                'address -> "address",
-                'stu_type -> 2,
-                'hukou -> 1,
-                'social_id -> "social_id",
-                'nick -> child.nick,
-                'status -> 1,
-                'class_id -> child.class_id,
-                'timestamp -> timestamp).executeInsert()
-            Logger.info("created childinfo %s".format(childUid))
-          case id =>
-            Logger.info("connect to exists child, child_id = %s".format(id))
-        }
-        val relationmapUid = SQL("INSERT INTO relationmap(child_id, parent_id) VALUES ({child_id},{parent_id})")
-          .on('child_id -> child_id,
-            'parent_id -> parent_id
-          ).executeInsert()
-        Logger.info("created relationmap %s".format(relationmapUid))
-        val count = SQL("select count(1) from accountinfo where accountid={accountid}")
-          .on('accountid -> parent.phone).as(get[Long]("count(1)") single)
-        Logger.info("count in accountinfo %d".format(count))
-        count match {
-          case 0 =>
-            val accountinfoUid = SQL("INSERT INTO accountinfo(accountid, password, pushid, active, pwd_change_time) " +
-              "VALUES ({accountid},{password},'',0,0)")
-              .on('accountid -> parent.phone,
-                'password -> generateNewPassword(parent.phone)).executeInsert()
-            Logger.info("created accountinfo %s".format(accountinfoUid))
-          case _ => Logger.info("phone already exists in accountinfo %s".format(parent.phone))
-        }
-        val cardinfoUid = SQL("INSERT INTO cardinfo(cardnum, userid, expiredate) " +
-          "VALUES ({cardnum}, {userid}, '2200-01-01')")
-          .on('cardnum -> parent.card,
-            'userid -> parent_id).executeInsert()
-        Logger.info("created cardinfo %s".format(cardinfoUid))
-        c.commit
-        findById(kg)(createdId.getOrElse(-1))
-      }
-      catch {
-        case t: Throwable =>
-          Logger.info("error %s".format(t.toString))
-          c.rollback
-          findById(kg)(-1)
-      }
-
   }
 
   val withRelationship = {
@@ -333,6 +225,7 @@ object Parent {
     "where p.school_id = s.school_id and s.school_id={kg} and p.status=1 and ci.class_id=c.class_id " +
     "and r.child_id = c.child_id and r.parent_id = p.parent_id"
 
+  @deprecated(message="no use anymore", since="20140320")
   def all(kg: Long, classId: Option[Long]): List[ParentInfo] = DB.withConnection {
     implicit c =>
       classId match {
