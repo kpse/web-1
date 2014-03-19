@@ -43,7 +43,7 @@ class AuthenticationSpec extends Specification with TestSupport {
     }
 
     "validate phone number for active number" in new WithApplication {
-      private val json = Json.toJson(new CheckPhone("13402815317"))
+      private val json = Json.toJson(new CheckPhone("13408654680"))
 
       val validateResponse = route(FakeRequest(POST, "/checkphonenum.do").withJsonBody(json)).get
 

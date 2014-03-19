@@ -12,7 +12,7 @@ case class CheckPhoneResponse(check_phone_result: String)
 object CheckPhoneResponse {
   def handle(request: CheckPhone) = DB.withConnection {
     implicit c =>
-      val result = SQL("select * from accountinfo where accountid={phone}")
+      val result = SQL("select active from accountinfo where accountid={phone}")
         .on('phone -> request.phonenum).as(get[Int]("active") singleOpt)
       result match {
         case Some(0) =>
