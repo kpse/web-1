@@ -2,53 +2,24 @@ package controllers
 
 import play.api.libs.json.Json
 import play.api.mvc._
-import models.json_models._
 import play.api.Logger
-import models.json_models.ChildrenResponse
-import models.json_models.ChildDetailResponse
-import models.json_models.ChildDetail
-import models.School
+import models.{Children, ChildInfo, School}
 
 object ChildController extends Controller with Secured {
 
-  implicit val write1 = Json.writes[ChildDetail]
-  implicit val write2 = Json.writes[ChildDetailResponse]
-  implicit val write3 = Json.writes[ChildrenResponse]
-  implicit val write4 = Json.writes[ChildInfo]
+  implicit val write1 = Json.writes[ChildInfo]
+  implicit val read1 = Json.reads[ChildInfo]
 
-  implicit val read1 = Json.reads[ChildUpdate]
-  implicit val read2 = Json.reads[ChildInfo]
-
-  def show(kg: Long, phone: String, childId: String) = Action {
-    Children.show(kg.toLong, phone, childId) match {
-      case Some(one: ChildDetail) => Ok(Json.toJson(new ChildDetailResponse(0, Some(one))))
-      case None => Ok(Json.toJson(new ChildDetailResponse(1, None)))
-    }
+  def show(kg: Long, phone: String, childId: String) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(Children.show(kg.toLong, phone, childId)))
   }
 
 
   def index(kg: Long, phone: String) = IsLoggedIn {
     u => _ =>
-      Children.findAll(kg, phone) match {
-        case Nil => Ok(Json.toJson(ChildrenResponse(1, List())))
-        case all: List[ChildDetail] => Ok(Json.toJson(ChildrenResponse(0, all)))
-      }
+      Ok(Json.toJson(Children.findAll(kg, phone)))
   }
-
-  def update(kg: Long, phone: String, childId: String) = IsLoggedIn(parse.json) {
-    u =>
-      implicit request =>
-        Logger.info(request.body.toString)
-        request.body.validate[ChildUpdate].map {
-          case (update) =>
-            Children.update(kg, phone, childId, update) match {
-              case Some(one: ChildDetail) => Ok(Json.toJson(new ChildDetailResponse(0, Some(one))))
-              case None => Ok(Json.toJson(new ChildDetailResponse(1, None)))
-            }
-        }.getOrElse(BadRequest)
-
-  }
-
 
   //=============================================================================================
 

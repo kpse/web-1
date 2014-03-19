@@ -2,8 +2,7 @@ package controllers
 
 import play.api.mvc.{Action, Controller}
 import play.api.libs.json.{JsValue, JsError, Json}
-import models.{Parent, Relationship}
-import models.json_models.ChildInfo
+import models.{ChildInfo, Parent, Relationship}
 import play.Logger
 
 object RelationshipController extends Controller with Secured {

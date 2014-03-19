@@ -5,11 +5,9 @@ import play.api.libs.json.{JsError, Json}
 import play.api.data.Form
 import play.api.data.Forms._
 import models._
-import models.json_models.ChildInfo
 import play.api.Logger
 import models.ParentInfo
 import scala.Some
-import models.json_models.ChildInfo
 
 object ParentController extends Controller with Secured {
 

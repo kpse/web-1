@@ -5,7 +5,6 @@ import play.api.db.DB
 import anorm._
 import anorm.SqlParser._
 import anorm.~
-import models.json_models.{Children, ChildInfo}
 import play.Logger
 
 case class Relationship(parent: Option[Parent], child: Option[ChildInfo], card: String, relationship: String)

@@ -1,4 +1,4 @@
-package models.json_models
+package models
 
 import play.api.db.DB
 import anorm._
@@ -6,24 +6,9 @@ import anorm.SqlParser._
 import play.api.Play.current
 import java.util.Date
 import play.Logger
-import models.helper.ObjectFieldHelper.any2FieldValues
 import models.helper.TimeHelper.any2DateTime
 
-case class ChildResponse(error_code: Int,
-                         username: String,
-                         school_name: String,
-                         access_token: String,
-                         account_name: String)
-
-case class ChildrenResponse(error_code: Int, children: List[ChildDetail])
-
-case class ChildDetail(id: String, nick: String, icon_url: String, birthday: Long, timestamp: Long, class_id: Long, class_name: String, name: String)
-
-case class ChildDetailResponse(error_code: Int, child_info: Option[ChildDetail])
-
 case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String, gender: Int, portrait: Option[String], class_id: Int, class_name: Option[String], timestamp: Option[Long], school_id: Option[Long])
-
-case class ChildUpdate(nick: Option[String], birthday: Option[Long], icon_url: Option[String])
 
 object Children {
   def idExists(childId: Option[String]): Boolean = DB.withConnection {
@@ -145,62 +130,20 @@ object Children {
     }.getOrElse("")
   }
 
-  def generateUpdate(update: ChildUpdate) = {
-    Logger.info(update.toString)
-    val iterable = for (
-      (k, v) <- update.fieldValues
-      if v != None
-    ) yield "%s={%s}".format(k, k)
-    val result = iterable.map(_.replace("icon_url", "picurl")).mkString(",")
-    Logger.info(result)
-    result
-  }
-
-  def update(kg: Long, phone: String, childId: String, update: ChildUpdate) = DB.withConnection {
-    implicit c =>
-      show(kg, phone, childId) flatMap {
-        r =>
-          SQL("update childinfo set " + generateUpdate(update) + " where child_id={child_id}")
-            .on('phone -> phone,
-              'nick -> update.nick.getOrElse(""),
-              'birthday -> update.birthday.getOrElse(0L).toDateOnly,
-              'picurl -> update.icon_url.getOrElse(""),
-              'child_id -> r.id
-            ).executeUpdate
-          val result = show(kg, phone, childId)
-          Logger.info(result.toString)
-          result
-      }
-  }
-
-  val simple = {
-    get[String]("child_id") ~
-      get[String]("nick") ~
-      get[Option[String]]("picurl") ~
-      get[Date]("birthday") ~
-      get[Long]("class_id") ~
-      get[String]("class_name") ~
-      get[Long]("update_at") ~
-      get[String]("name") map {
-      case id ~ nick ~ icon_url ~ birth ~ classId ~ className ~ t ~ name =>
-        new ChildDetail(id, nick, icon_url.getOrElse(""), birth.getTime, t, classId, className, name)
-    }
-  }
-
-  def findAll(school: Long, phone: String): List[ChildDetail] = DB.withConnection {
+  def findAll(school: Long, phone: String): List[ChildInfo] = DB.withConnection {
     implicit c =>
       SQL("select c.*, c2.class_name from childinfo c, relationmap r, parentinfo p, classinfo c2 " +
         " where c.class_id=c2.class_id and p.status=1 and c.status=1 and r.child_id = c.child_id " +
         " and p.parent_id = r.parent_id and c.school_id=c2.school_id and p.phone={phone} " +
         "and c.school_id={kg} and r.status=1")
-        .on('phone -> phone, 'kg -> school.toString).as(simple *)
+        .on('phone -> phone, 'kg -> school.toString).as(childInformation *)
   }
 
-  def show(schoolId: Long, phone: String, child: String): Option[ChildDetail] = DB.withConnection {
+  def show(schoolId: Long, phone: String, child: String): Option[ChildInfo] = DB.withConnection {
     implicit c =>
       SQL("select c.*, c2.class_name from childinfo c, classinfo c2 where c.school_id=c2.school_id " +
         "and c.class_id=c2.class_id and c.child_id={child_id} and c.school_id={kg} and c.status=1")
-        .on('child_id -> child, 'kg -> schoolId.toString).as(simple singleOpt)
+        .on('child_id -> child, 'kg -> schoolId.toString).as(childInformation singleOpt)
   }
 
 
