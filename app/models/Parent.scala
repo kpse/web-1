@@ -64,7 +64,7 @@ object Parent {
   def updatePushAccount(parent: Parent) = DB.withConnection {
     implicit c =>
       val oldPhone = oldPhoneNumber(parent)
-      if (isConflicting(parent)) throw new IllegalAccessError("电话号码已经存在。")
+      if (oldPhone != parent.phone && isConflicting(parent)) throw new IllegalAccessError("电话号码已经存在。")
       SQL("update accountinfo set accountid={phone}, " +
         "password={password},pushid='', active=0, pwd_change_time=0 where accountid={old_phone}")
         .on('old_phone -> oldPhone,
