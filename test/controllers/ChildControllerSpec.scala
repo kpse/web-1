@@ -12,26 +12,25 @@ import models.ChildInfo
 import play.api.db.DB
 import anorm._
 import play.api.Play.current
+import org.specs2.specification.BeforeExample
 
 @RunWith(classOf[JUnitRunner])
 class ChildControllerSpec extends Specification with TestSupport {
   implicit val writes = Json.writes[ChildInfo]
 
-  def loggedRequest(method: String, url: String) = FakeRequest(method, url)
-    .withSession("username" -> "13402815317", "token" -> "1386425935574")
+  def loggedRequest(method: String, url: String) = {
+    FakeRequest(method, url).withSession("username" -> "13402815317", "token" -> "1386425935574")
+  }
 
-  def resetChildToken() = DB.withConnection {
+  def resetChildToken = DB.withConnection {
     implicit c =>
-      SQL("update accountinfo set pwd_change_time='1386425935574' " +
+      SQL("update accountinfo set pwd_change_time=1386425935574 " +
         "where accountid='13402815317'").executeUpdate()
   }
 
-  def before = () => resetChildToken()
-
   "Child" should {
-
     "be updated with icon_url" in new WithApplication {
-
+      resetChildToken
       private val requestHeader = Json.toJson(new ChildInfo(Some("1_1394545098158"), "", "", "1999-01-02", 0, Some("url"), 777888, None, None, Some(93740362)))
 
       val updateResponse = route(loggedRequest(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
@@ -46,7 +45,7 @@ class ChildControllerSpec extends Specification with TestSupport {
     }
 
     "be updated with nick" in new WithApplication {
-
+      resetChildToken
       private val requestHeader = Json.toJson(new ChildInfo(Some("1_1394545098158"), "", "new_nick_name", "1999-01-02", 0, Some("portrait"), 777888, None, None, Some(93740362)))
 
       val updateResponse = route(loggedRequest(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
@@ -61,7 +60,7 @@ class ChildControllerSpec extends Specification with TestSupport {
     }
 
     "be updated with birthday" in new WithApplication {
-
+      resetChildToken
       private val requestHeader = Json.toJson(new ChildInfo(Some("1_1394545098158"), "", "new_nick_name", "1999-01-02", 0, Some("portrait"), 777888, None, None, Some(93740362)))
 
       val updateResponse = route(loggedRequest(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
