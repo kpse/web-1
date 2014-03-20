@@ -41,9 +41,42 @@ object School {
 
   def findById(clazz: SchoolClass) = DB.withConnection {
     implicit c =>
-      SQL("select * from classinfo where school_id = {school_id} and class_id={class_id} limit 1")
+      SQL("select c.*, employee_id from classinfo c left join (privilege p) " +
+        "on (p.school_id=c.school_id and cast(c.class_id as varchar(20)) " +
+        "and c.school_id = {school_id} and class_id={class_id}) limit 1")
         .on('school_id -> clazz.school_id.toString,
           'class_id -> clazz.class_id).as(simple singleOpt)
+  }
+
+  def updateManager(clazz: SchoolClass) = DB.withConnection {
+    implicit c =>
+      clazz.manager map {
+        manager =>
+          val exists = SQL("select count(1) from privilege where school_id={kg} and employee_id={id}").on(
+            'kg -> clazz.school_id,
+            'id -> manager
+          ).as(get[Long]("count(1)") single) > 0
+          exists match {
+            case false =>
+              SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) values " +
+                "({kg},{id},{group},{subordinate},{promoter}, {time})").on(
+                  'kg -> clazz.school_id.toString,
+                  'id -> manager,
+                  'group -> "teacher",
+                  'promoter -> "admin",
+                  'subordinate -> clazz.class_id,
+                  'time -> System.currentTimeMillis
+                ).executeInsert()
+            case true =>
+              SQL("update privilege set subordinate={class_id} where school_id={kg} and employee_id={id}").on(
+                'kg -> clazz.school_id.toString,
+                'class_id -> clazz.class_id,
+                'id -> manager
+              ).executeUpdate()
+          }
+
+      }
+
   }
 
   def updateOrCreate(clazz: SchoolClass): Option[SchoolClass] = DB.withConnection {
@@ -56,6 +89,7 @@ object School {
         case (0l) => createClass(clazz.school_id, clazz)
         case (1l) => update(clazz)
       }
+      updateManager(clazz)
       findById(clazz)
   }
 
@@ -88,16 +122,21 @@ object School {
   val simple = {
     get[Int]("class_id") ~
       get[String]("school_id") ~
-      get[String]("class_name") map {
-      case id ~ school_id ~ name =>
-        SchoolClass(school_id.toLong, Some(id), name, None)
+      get[String]("class_name") ~
+      get[Option[String]]("employee_id") map {
+      case id ~ school_id ~ name ~ manager =>
+        SchoolClass(school_id.toLong, Some(id), name, manager)
     }
   }
 
   def allClasses(kg: Long) = DB.withConnection {
     implicit c =>
-      SQL("select c.* from classinfo c, schoolinfo s where s.school_id = c.school_id and c.school_id={kg} and c.status=1")
-        .on('kg -> kg)
+      SQL("select c.*, employee_id " +
+        "from classinfo c join (schoolinfo s) " +
+        "on (s.school_id = c.school_id and c.school_id={kg} and c.status=1) " +
+        " left join (privilege p) on (p.subordinate=cast(c.class_id as varchar(20)) " +
+        "and p.school_id=c.school_id )")
+        .on('kg -> kg.toString)
         .as(simple *)
   }
 

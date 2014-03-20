@@ -64,4 +64,9 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
             show: true
             container: '.panel-body'
             duration: 3
+
+      scope.nameOf = (employee_id) ->
+        employee = _.find scope.employees, (e) ->
+          e.id == employee_id
+        employee.name if employee
   ]

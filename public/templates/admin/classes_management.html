@@ -20,7 +20,7 @@
     <tr ng-repeat="c in classes | filter: searchText" class="row" ng-class="{editable: edit}" ng-click="edit(c)">
       <td class=".col-xs-1">{{c.class_id}}</td>
       <td class=".col-xs-3">{{c.name}}</td>
-      <td class=".col-xs-3">建设中</td>
+      <td class=".col-xs-3">{{nameOf(c.manager) || 'N/A'}}</td>
       <td class=".col-xs-2">
         <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
                 ng-confirm-click="delete(c)">删除
