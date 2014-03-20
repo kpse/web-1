@@ -50,7 +50,12 @@ object Authentication extends Controller {
         case (login) =>
           Logger.info(login.toString)
           val result = BindNumberResponse.handle(login)
-          Ok(Json.toJson(result)).withSession("username" -> result.account_name, "token" -> result.access_token )
+          result match {
+            case success if success.error_code == 0 =>
+              Ok(Json.toJson(result)).withSession("username" -> result.account_name, "token" -> result.access_token)
+            case _ =>
+              Ok(Json.toJson(result))
+          }
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
@@ -77,7 +82,13 @@ object Authentication extends Controller {
     request =>
       request.body.validate[ResetPassword].map {
         case (request) =>
-          Ok(Json.toJson(ChangePasswordResponse.handleReset(request)))
+          val reset = ChangePasswordResponse.handleReset(request)
+          reset match {
+            case success if success.error_code == 0 =>
+              Ok(Json.toJson(reset)).withSession("username" -> request.account_name, "token" -> reset.access_token)
+            case _ =>
+              Ok(Json.toJson(reset))
+          }
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
@@ -87,7 +98,14 @@ object Authentication extends Controller {
     request =>
       request.body.validate[ChangePassword].map {
         case (request) =>
-          Ok(Json.toJson(ChangePasswordResponse.handle(request)))
+          val changed = ChangePasswordResponse.handle(request)
+          changed match {
+            case success if success.error_code == 0 =>
+              Ok(Json.toJson(changed)).withSession("username" -> request.account_name, "token" -> changed.access_token)
+            case _ =>
+              Ok(Json.toJson(changed))
+          }
+
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }

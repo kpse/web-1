@@ -13,7 +13,7 @@ import models.ChildInfo
 @RunWith(classOf[JUnitRunner])
 class ChildControllerSpec extends Specification with TestSupport {
   implicit val writes = Json.writes[ChildInfo]
-  def requestWithSession(method: String, url: String) = FakeRequest(method, url)
+  def loggedRequest(method: String, url: String) = FakeRequest(method, url)
     .withSession("username" -> "13402815317", "token" -> "1386425935574")
   "Child" should {
 
@@ -21,7 +21,7 @@ class ChildControllerSpec extends Specification with TestSupport {
 
       private val requestHeader = Json.toJson(new ChildInfo(Some("1_1394545098158"), "", "", "1999-01-02", 0, Some("url"), 777888, None, None, Some(93740362)))
 
-      val updateResponse = route(requestWithSession(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
+      val updateResponse = route(loggedRequest(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
 
       status(updateResponse) must equalTo(OK)
       contentType(updateResponse) must beSome.which(_ == "application/json")
@@ -36,7 +36,7 @@ class ChildControllerSpec extends Specification with TestSupport {
 
       private val requestHeader = Json.toJson(new ChildInfo(Some("1_1394545098158"), "", "new_nick_name", "1999-01-02", 0, Some("portrait"), 777888, None, None, Some(93740362)))
 
-      val updateResponse = route(requestWithSession(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
+      val updateResponse = route(loggedRequest(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
 
       status(updateResponse) must equalTo(OK)
       contentType(updateResponse) must beSome.which(_ == "application/json")
@@ -51,7 +51,7 @@ class ChildControllerSpec extends Specification with TestSupport {
 
       private val requestHeader = Json.toJson(new ChildInfo(Some("1_1394545098158"), "", "new_nick_name", "1999-01-02", 0, Some("portrait"), 777888, None, None, Some(93740362)))
 
-      val updateResponse = route(requestWithSession(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
+      val updateResponse = route(loggedRequest(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
 
       status(updateResponse) must equalTo(OK)
       contentType(updateResponse) must beSome.which(_ == "application/json")
