@@ -1,8 +1,9 @@
 'use strict'
 
 angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'schoolService', '$modal', 'employeeService', 'schoolEmployeesService', 'uploadService',
-    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Upload) ->
+  ['$scope', '$rootScope', '$stateParams', 'schoolService', '$modal', 'employeeService', 'schoolEmployeesService',
+   'uploadService', '$alert',
+    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Upload, Alert) ->
       $rootScope.tabName = 'employee'
 
       scope.loading = true
@@ -43,6 +44,15 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
         employee.$save ->
           scope.refresh()
           scope.currentModal.hide()
+        , (res) ->
+          Alert
+            title: '创建失败'
+            content: res.data.error_msg
+            placement: "top-left"
+            type: "danger"
+            show: true
+            container: '.panel-body'
+            duration: 3
 
       scope.isDuplicated = (employee) ->
         return false if employee.phone is undefined || employee.phone.length < 10

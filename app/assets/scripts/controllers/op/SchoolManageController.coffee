@@ -1,14 +1,16 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
   ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
-   '$resource',
-    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource) ->
+   '$resource', 'chargeService',
+    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge) ->
       scope.refresh = ->
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->
             kg.managers = Principal.query school_id: kg.school_id, ->
               _.map kg.managers, (p) ->
                 p.detail = Employee.get phone: p.phone
+            kg.charge = Charge.query(school_id: kg.school_id)
           scope.admins = Employee.query()
+
 
       scope.refresh()
 

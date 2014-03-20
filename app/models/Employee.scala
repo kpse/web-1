@@ -20,6 +20,22 @@ case class Principal(employee_id: String, school_id: Long, phone: String, timest
 case class EmployeePassword(employee_id: String, school_id: Long, phone: String, old_password: String, login_name: String, new_password: String)
 
 object Employee {
+  def loginNameExists(loginName: String) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from employeeinfo where login_name={login}")
+        .on(
+          'login -> loginName
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
+  def phoneExists(phone: String) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from employeeinfo where phone={phone}")
+        .on(
+          'phone -> phone
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
 
   def isOperator(id: String) = DB.withConnection {
     implicit c =>
@@ -139,7 +155,7 @@ object Employee {
 
   def create(employee: Employee) = DB.withConnection {
     implicit c =>
-      val employeeId = "3_%d".format(System.currentTimeMillis)
+      val employeeId = "3_%d_%d".format(employee.school_id, System.currentTimeMillis)
       SQL("insert into employeeinfo (name, phone, gender, workgroup, workduty, picurl, birthday, school_id, login_name, login_password, update_at, employee_id) " +
         "values ({name},{phone},{gender},{workgroup},{workduty},{portrait},{birthday},{school_id},{login_name},{login_password},{update_at}, {employee_id})")
         .on(
