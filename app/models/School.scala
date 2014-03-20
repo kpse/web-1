@@ -42,7 +42,7 @@ object School {
   def findById(clazz: SchoolClass) = DB.withConnection {
     implicit c =>
       SQL("select c.*, employee_id from classinfo c left join (privilege p) " +
-        "on (p.school_id=c.school_id and cast(c.class_id as varchar(20)) " +
+        "on (p.school_id=c.school_id and cast(c.class_id as char(10)) " +
         "and c.school_id = {school_id} and class_id={class_id}) limit 1")
         .on('school_id -> clazz.school_id.toString,
           'class_id -> clazz.class_id).as(simple singleOpt)
