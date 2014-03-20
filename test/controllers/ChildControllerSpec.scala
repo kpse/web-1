@@ -9,12 +9,25 @@ import play.api.test.Helpers._
 import helper.TestSupport
 import play.Logger
 import models.ChildInfo
+import play.api.db.DB
+import anorm._
+import play.api.Play.current
 
 @RunWith(classOf[JUnitRunner])
 class ChildControllerSpec extends Specification with TestSupport {
   implicit val writes = Json.writes[ChildInfo]
+
   def loggedRequest(method: String, url: String) = FakeRequest(method, url)
     .withSession("username" -> "13402815317", "token" -> "1386425935574")
+
+  def resetChildToken() = DB.withConnection {
+    implicit c =>
+      SQL("update accountinfo set pwd_change_time='1386425935574' " +
+        "where accountid='13402815317'").executeUpdate()
+  }
+
+  def before = () => resetChildToken()
+
   "Child" should {
 
     "be updated with icon_url" in new WithApplication {

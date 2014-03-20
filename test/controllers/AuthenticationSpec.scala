@@ -3,20 +3,34 @@ package controllers
 import org.specs2.runner.JUnitRunner
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
-import play.api.test.{FakeRequest, WithApplication}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.libs.json._
-import models.json_models.{MobileLogin, CheckPhone, BindingNumber}
+import models.json_models.BindingNumber
 import helper.TestSupport
+import play.api.db.DB
+import anorm._
+import models.json_models.MobileLogin
+import models.json_models.CheckPhone
+import models.json_models.BindingNumber
+import play.api.Play.current
 
 @RunWith(classOf[JUnitRunner])
 class AuthenticationSpec extends Specification with TestSupport {
   implicit val loginWrites = Json.writes[MobileLogin]
+  def resetParentPassword() = DB.withConnection {
+    implicit c =>
+      SQL("update accountinfo set password='5F4DCC3B5AA765D61D8327DEB882CF99' " +
+        "where accountid='13333333333'").executeUpdate()
+  }
+
+//  def before = () => resetParentPassword()
+
   "Authentication" should {
     "log mobile in" in new WithApplication {
 
       private val json = Json.toJson(new MobileLogin("13333333333", "password"))
-
+      resetParentPassword
       val loginResponse = route(FakeRequest(POST, "/login.do").withJsonBody(json)).get
 
       status(loginResponse) must equalTo(OK)
@@ -102,6 +116,19 @@ class AuthenticationSpec extends Specification with TestSupport {
       (response \ "account_name").as[String] must equalTo("")
       (response \ "access_token").as[String] must equalTo("")
       (response \ "username").as[String] must equalTo("")
+    }
+
+    "validate for expired phone number" in new WithApplication {
+
+      private val json = Json.toJson(new CheckPhone("22222222222"))
+
+      val validateResponse = route(FakeRequest(POST, "/checkphonenum.do").withJsonBody(json)).get
+
+      status(validateResponse) must equalTo(OK)
+      contentType(validateResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(validateResponse))
+      (response \ "check_phone_result").as[String] must equalTo("1101")
     }
   }
 }
