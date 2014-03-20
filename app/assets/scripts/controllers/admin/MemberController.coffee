@@ -10,7 +10,10 @@ angular.module('kulebaoAdmin')
           scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
             scope.kindergarten.classes = Class.query school_id: scope.kindergarten.school_id, ->
               scope.kindergarten.charge = Charge.query school_id: stateParams.kindergarten, ->
-                scope.heading = '全校已开通( '+ scope.kindergarten.charge[0].used + ' / ' +  scope.kindergarten.charge[0].total_phone_number + ' 人)' if scope.kindergarten.charge[0]
+                if scope.kindergarten.charge[0] && scope.kindergarten.charge[0].status==1
+                  scope.heading = '全校已开通( '+ scope.kindergarten.charge[0].used + ' / ' +  scope.kindergarten.charge[0].total_phone_number + ' 人)'
+                else
+                  scope.heading = '学校未开通手机幼乐宝服务，请与幼乐宝服务人员联系'
                 location.path(location.path() + '/class/' + scope.kindergarten.classes[0].class_id + '/list') if (location.path().indexOf('/class/') < 0)
 
         scope.$on 'update_charge', ->
