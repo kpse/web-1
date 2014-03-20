@@ -134,7 +134,7 @@ object School {
       SQL("select c.*, employee_id " +
         "from classinfo c join (schoolinfo s) " +
         "on (s.school_id = c.school_id and c.school_id={kg} and c.status=1) " +
-        " left join (privilege p) on (p.subordinate=cast(c.class_id as varchar(20)) " +
+        " left join (privilege p) on (p.subordinate=cast(c.class_id as char(10)) " +
         "and p.school_id=c.school_id )")
         .on('kg -> kg.toString)
         .as(simple *)
