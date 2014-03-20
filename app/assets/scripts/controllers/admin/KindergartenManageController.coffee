@@ -1,14 +1,13 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', 'employeeService', 'passwordService', '$modal', 'chargeService',
+  ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', 'employeeService', 'passwordService', '$modal',
+   'chargeService',
     (scope, $rootScope, $stateParams, School, location, Employee, Password, Modal, Charge) ->
-
-
       scope.adminUser = Employee.get ->
+        location.path '/kindergarten/' + scope.adminUser.school_id if scope.adminUser.school_id != parseInt $stateParams.kindergarten
         scope.kindergarten = School.get school_id: $stateParams.kindergarten, ->
           scope.kindergarten.charge = Charge.query school_id: $stateParams.kindergarten, ->
             if scope.kindergarten.charge[0] && scope.kindergarten.charge[0].status == 0
               location.path '/expired'
-
 
       scope.isSelected = (tab)->
         tab is $rootScope.tabName
