@@ -100,38 +100,43 @@ trait Secured {
   /**
    * Redirect to login if the user in not authorized.
    */
-  private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Auth.login)
+  private def redirectToLogin(request: RequestHeader) = Results.Redirect(routes.Auth.login)
 
-  private def onNotLoggedIn(request: RequestHeader) = Results.Unauthorized
+  private def forbidAccess(request: RequestHeader) = Results.Unauthorized
 
   // --
 
   /**
    * Action for authenticated users.
    */
-  def IsAuthenticated(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) {
+  def IsAuthenticated(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, redirectToLogin) {
     user =>
       Action(request => f(user)(request))
   }
 
-  def IsLoggedIn(f: => String => Request[AnyContent] => Result) = Security.Authenticated(checkSchool, onNotLoggedIn) {
+  def OperatorPage(f: => String => Request[AnyContent] => Result) = Security.Authenticated(operator, redirectToLogin) {
+    user =>
+      Action(request => f(user)(request))
+  }
+
+  def IsLoggedIn(f: => String => Request[AnyContent] => Result) = Security.Authenticated(checkSchool, forbidAccess) {
     user =>
       Action(request => f(user)(request))
   }
 
   def IsLoggedIn(b: BodyParser[play.api.libs.json.JsValue] = parse.json)
-                (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(checkSchool, onNotLoggedIn) {
+                (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(checkSchool, forbidAccess) {
     user =>
       Action(b)(request => f(user)(request))
   }
 
-  def IsOperator(f: => String => Request[AnyContent] => Result) = Security.Authenticated(operator, onNotLoggedIn) {
+  def IsOperator(f: => String => Request[AnyContent] => Result) = Security.Authenticated(operator, forbidAccess) {
     user =>
       Action(request => f(user)(request))
   }
 
   def IsOperator(b: BodyParser[play.api.libs.json.JsValue] = parse.json)
-                (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(operator, onNotLoggedIn) {
+                (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(operator, forbidAccess) {
     user =>
       Action(b)(request => f(user)(request))
   }
