@@ -20,7 +20,7 @@
   </thead>
   <tbody>
   <tr ng-repeat="kg in kindergartens | filter: searchText" class="row" ng-class="{editable: editSchool}" ng-click="editSchool(kg)">
-    <td class=".col-xs-1">{{kg.school_id}}</td>
+    <td class=".col-xs-1"><a ng-href="/admin#/kindergarten/{{kg.school_id}}" ng-click="$event.stopPropagation()">{{kg.school_id}}</a></td>
     <td class=".col-xs-2">{{kg.name}}</td>
     <td class=".col-xs-3">
       <p ng-repeat="m in kg.managers"><a ng-click="edit(m);$event.stopPropagation()">{{m.detail.name}}</a></p>

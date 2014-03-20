@@ -1,12 +1,13 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
-  ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService', '$resource',
+  ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
+   '$resource',
     (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource) ->
       scope.refresh = ->
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->
             kg.managers = Principal.query school_id: kg.school_id, ->
-               _.map kg.managers, (p) ->
-                  p.detail = Employee.get phone: p.phone
+              _.map kg.managers, (p) ->
+                p.detail = Employee.get phone: p.phone
           scope.admins = Employee.query()
 
       scope.refresh()
@@ -45,7 +46,6 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             contentTemplate: 'templates/admin/add_employee.html'
 
 
-
       scope.delete = ->
         alert('暂未实现')
 
@@ -67,7 +67,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
       scope.save = (object) ->
         if object.group
-          Manager = $resource('/kindergarten/'+object.school_id+'/principal')
+          Manager = $resource('/kindergarten/' + object.school_id + '/principal')
           Manager.save object, ->
             scope.refresh()
             scope.currentModal.hide()
