@@ -143,7 +143,11 @@ angular.module('kulebaoAdmin')
 
       $scope.sendMessage = (parent) ->
         check = generateCheckingInfo(parent)
-        $http({method: 'POST', url: '/kindergarten/' + $stateParams.kindergarten + '/check', data: check}).success (data) ->
+        $http
+          method: 'POST'
+          url: '/kindergarten/' + $stateParams.kindergarten + '/check'
+          data: check
+        .success (data) ->
           Alert
             title: '发送成功'
             content: data.error_msg

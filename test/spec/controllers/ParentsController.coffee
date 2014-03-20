@@ -1,6 +1,6 @@
 'use strict'
 
-describe 'Controller: ParentsCtrl', () ->
+describe 'Controller: ParentsCtrl', ($alert) ->
 
   # load the controller's module
   beforeEach module 'kulebaoAdmin'
@@ -18,6 +18,7 @@ describe 'Controller: ParentsCtrl', () ->
       schoolService: schoolService
       $stateParams:
         kindergarten: 93740362
+      $alert
     }
     $httpBackend = _$httpBackend_
 
@@ -32,16 +33,16 @@ describe 'Controller: ParentsCtrl', () ->
 
     $httpBackend.expectGET('/kindergarten/93740362/parent')
     .respond [
-            id: 1
-            name: 'name'
-            school_id: 1
-            phone: 123
-        ]
+      id: 1
+      name: 'name'
+      school_id: 1
+      phone: 123
+    ]
     $httpBackend.expectGET('/kindergarten/93740362/class')
-    .respond              [
-        class_id: 123
-        name: 'class_name'
-      ]
+    .respond [
+      class_id: 123
+      name: 'class_name'
+    ]
 
   it 'should attach a list of parents to the scope', () ->
     $httpBackend.flush()
