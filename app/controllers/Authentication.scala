@@ -52,7 +52,7 @@ object Authentication extends Controller {
           val result = BindNumberResponse.handle(login)
           result match {
             case success if success.error_code == 0 =>
-              Ok(Json.toJson(result)).withSession("username" -> result.account_name, "token" -> result.access_token)
+              Ok(Json.toJson(success)).withSession("username" -> success.account_name, "token" -> success.access_token)
             case _ =>
               Ok(Json.toJson(result))
           }
@@ -85,7 +85,7 @@ object Authentication extends Controller {
           val reset = ChangePasswordResponse.handleReset(request)
           reset match {
             case success if success.error_code == 0 =>
-              Ok(Json.toJson(reset)).withSession("username" -> request.account_name, "token" -> reset.access_token)
+              Ok(Json.toJson(success)).withSession("username" -> request.account_name, "token" -> success.access_token)
             case _ =>
               Ok(Json.toJson(reset))
           }
@@ -101,7 +101,7 @@ object Authentication extends Controller {
           val changed = ChangePasswordResponse.handle(request)
           changed match {
             case success if success.error_code == 0 =>
-              Ok(Json.toJson(changed)).withSession("username" -> request.account_name, "token" -> changed.access_token)
+              Ok(Json.toJson(success)).withSession("username" -> request.account_name, "token" -> success.access_token)
             case _ =>
               Ok(Json.toJson(changed))
           }

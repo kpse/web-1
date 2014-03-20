@@ -53,7 +53,7 @@ object ChangePasswordResponse {
             .on('username -> request.account_name,
               'password -> md5(request.old_password),
               'new_password -> md5(request.new_password),
-              'timestamp -> System.currentTimeMillis
+              'timestamp -> updateTime
             ).executeUpdate
           new ChangePasswordResponse(0, updateTime.toString)
         case true =>
