@@ -2,13 +2,14 @@ package controllers
 
 import play.api.mvc._
 import play.api.libs.json.Json
-import models.{SuccessResponse, News}
+import models.{NewsPreview, SuccessResponse, News}
 import play.api.data.Form
 import play.api.data.Forms._
 
 object NewsController extends Controller with Secured {
   implicit val writes = Json.writes[News]
   implicit val writes2 = Json.writes[SuccessResponse]
+  implicit val writes3 = Json.writes[NewsPreview]
 
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int], classId: Option[String]) = IsLoggedIn {
     u => _ =>
@@ -47,9 +48,9 @@ object NewsController extends Controller with Secured {
 
   def adminUpdate(kg: Long, adminId: String, newsId: Long) = update(kg, newsId)
 
-  def indexWithNonPublished(kg: Long, admin: String, class_id: Option[String], restrict: Option[Boolean]) = IsLoggedIn {
+  def indexWithNonPublished(kg: Long, admin: String, class_id: Option[String], restrict: Option[Boolean], from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn {
     u => _ =>
-      val jsons = News.allIncludeNonPublished(kg, class_id, restrict.getOrElse(false))
+      val jsons = News.allIncludeNonPublished(kg, class_id, restrict.getOrElse(false), from, to).take(most.getOrElse(25))
       Ok(Json.toJson(jsons))
   }
 
@@ -84,4 +85,11 @@ object NewsController extends Controller with Secured {
       News.delete(newsId)
       Ok(Json.toJson(new SuccessResponse))
   }
+
+  def previewNonPublished(kg: Long, adminId: String, class_id: Option[String], restrict: Option[Boolean]) =IsLoggedIn {
+    u => _ =>
+      val jsons = News.previewAllIncludeNonPublished(kg, class_id, restrict.getOrElse(false))
+      Ok(Json.toJson(jsons))
+  }
+
 }

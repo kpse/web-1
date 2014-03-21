@@ -11,3 +11,14 @@ adminNewsService = ($resource) ->
 
 angular.module('kulebaoAdmin')
 .factory('adminNewsService', ['$resource', adminNewsService])
+
+adminNewsPreview = ($resource) ->
+  $resource '/kindergarten/:school_id/admin/:admin_id/news/preview',
+    {
+      school_id: '@school_id'
+      admin_id: '@admin_id'
+    }
+
+
+angular.module('kulebaoAdmin')
+.factory('adminNewsPreview', ['$resource', adminNewsPreview])

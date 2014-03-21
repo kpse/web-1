@@ -9,8 +9,25 @@ import models.helper.RangerHelper.rangerQuery
 
 case class News(news_id: Long, school_id: Long, title: String, content: String, timestamp: Long, published: Boolean, notice_type: Int, class_id: Option[Int])
 
+case class NewsPreview(id: Long)
 
 object News {
+  val preview = {
+    get[Long]("uid") map {
+      case id =>
+        NewsPreview(id)
+    }
+  }
+
+  def previewAllIncludeNonPublished(kg: Long, classId: Option[String], restrict: Boolean) = DB.withConnection {
+    implicit c =>
+      SQL("select uid from news where school_id={kg} and status=1 " + generateClassCondition(classId, restrict))
+        .on(
+          'kg -> kg.toString
+        ).as(preview *)
+
+  }
+
   def create(form: (Long, String, String, Option[Boolean], Option[Int])) = DB.withConnection {
     implicit c =>
       val createdId: Option[Long] =
@@ -116,11 +133,13 @@ object News {
     }
   }
 
-  def allIncludeNonPublished(kg: Long, classId: Option[String], restrict: Boolean): List[News] = DB.withConnection {
+  def allIncludeNonPublished(kg: Long, classId: Option[String], restrict: Boolean, from: Option[Long], to: Option[Long]): List[News] = DB.withConnection {
     implicit c =>
-      SQL("select * from news where school_id={kg} and status=1 " + generateClassCondition(classId, restrict))
+      SQL("select * from news where school_id={kg} and status=1 " + generateClassCondition(classId, restrict) + " " + rangerQuery(from, to))
         .on(
-          'kg -> kg.toString
+          'kg -> kg.toString,
+          'from -> from,
+          'to -> to
         ).as(simple *)
   }
 

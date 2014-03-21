@@ -21,19 +21,44 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
 angular.module('kulebaoAdmin').controller 'BulletinCtrl',
   ['$scope', '$rootScope', 'adminNewsService',
-   '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService',
-    (scope, $rootScope, adminNewsService, stateParams, School, Modal, Employee, Class) ->
+   '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService', 'adminNewsPreview',
+    (scope, $rootScope, adminNewsService, stateParams, School, Modal, Employee, Class, NewsPreivew) ->
       scope.current_class = parseInt(stateParams.class)
 
-      scope.totalItems = 2000
+      scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
+      scope.itemsPerPage = 8
 
-      scope.refresh = ->
+      scope.refresh = (to)->
         scope.loading = true
-        scope.newsletters = adminNewsService.query school_id: stateParams.kindergarten, admin_id: scope.adminUser.phone, class_id: stateParams.class, restrict: true, ->
-          scope.loading = false
+        scope.preview = NewsPreivew.query
+          school_id: stateParams.kindergarten
+          admin_id: scope.adminUser.phone
+          class_id: stateParams.class
+          restrict: true, ->
+            scope.preview = scope.preview.reverse()
+            scope.totalItems = scope.preview.length
+            scope.newsletters = adminNewsService.query
+              school_id: stateParams.kindergarten
+              admin_id: scope.adminUser.phone
+              class_id: stateParams.class
+              restrict: true
+              to: to
+              most: scope.itemsPerPage, ->
+                scope.loading = false
 
+      indexRange = (page) ->
+        startIndex = (page - 1) * scope.itemsPerPage
+        scope.preview[startIndex...startIndex + scope.itemsPerPage]
+
+      scope.onSelectPage = (page) ->
+        last = indexRange(page)[0].id
+        console.log last
+        scope.refresh(last + 1)
+
+      scope.$on 'go_page_1', ->
+        scope.onSelectPage(1)
 
       scope.adminUser = Employee.get ->
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
@@ -56,7 +81,7 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
           admin_id: scope.adminUser.id
           class_id: scope.current_class
 
-      scope.create =  ->
+      scope.create = ->
         scope.news = scope.createNews()
         scope.currentModal = Modal
           scope: scope
@@ -69,13 +94,13 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
           contentTemplate: 'templates/admin/add_news.html'
 
       scope.save = (news) ->
-        news.$save admin_id: scope.adminUser.id,  ->
-          scope.refresh()
+        news.$save admin_id: scope.adminUser.id, ->
+          scope.$emit 'go_page_1'
           scope.currentModal.hide()
 
       scope.remove = (news) ->
         news.$delete admin_id: scope.adminUser.id, ->
-          scope.refresh()
+          scope.$emit 'go_page_1'
           scope.currentModal.hide()
 
       scope.nameOf = (class_id) ->
