@@ -23,8 +23,11 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
   ['$scope', '$rootScope', 'adminNewsService',
    '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService',
     (scope, $rootScope, adminNewsService, stateParams, School, Modal, Employee, Class) ->
-
       scope.current_class = parseInt(stateParams.class)
+
+      scope.totalItems = 2000
+      scope.currentPage = 1
+      scope.maxSize = 5
 
       scope.refresh = ->
         scope.loading = true
@@ -76,6 +79,7 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
           scope.currentModal.hide()
 
       scope.nameOf = (class_id) ->
+        return '全校' if class_id == 0
         clazz = _.find scope.kindergarten.classes, (c) ->
           c.class_id == class_id
         clazz.name if clazz isnt undefined
