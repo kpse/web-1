@@ -86,7 +86,7 @@ class Config
     .state 'kindergarten.assignment.class.list',
       url: '/list',
       templateUrl: 'templates/admin/assignment_in_class.html',
-      controller: 'AssignmentsInClassCtrl'
+      controller: 'AssignmentsCtrl'
 
     .state 'kindergarten.member',
       url: '/member',
