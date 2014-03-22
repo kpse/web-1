@@ -44,16 +44,14 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
             scope.totalItems = scope.preview.length
             startIndex = (page - 1) * scope.itemsPerPage
             last = scope.preview[startIndex...startIndex + scope.itemsPerPage][0].id if scope.preview.length > 0
-            console.log last
             scope.newsletters = adminNewsService.query
               school_id: stateParams.kindergarten
               admin_id: scope.adminUser.phone
               class_id: stateParams.class
               restrict: true
-              to: last + 1
+              to: last + 1 || last
               most: scope.itemsPerPage, ->
                 scope.loading = false
-                console.log scope.newsletters
 
       scope.adminUser = Employee.get ->
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
