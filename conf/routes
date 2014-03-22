@@ -35,7 +35,7 @@ GET           /kindergarten/:kg/news/:newsId                                    
 POST          /kindergarten/:kg/news/:newsId                                     controllers.NewsController.update(kg: Long, newsId: Long)
 DELETE        /kindergarten/:kg/news/:newsId                                     controllers.NewsController.deleteOne(kg: Long, newsId: Long)
 GET           /kindergarten/:kg/admin/:adminId/news                              controllers.NewsController.indexWithNonPublished(kg: Long, adminId: String, class_id: Option[String], restrict: Option[Boolean], from: Option[Long], to: Option[Long], most:Option[Int])
-GET           /kindergarten/:kg/admin/:adminId/news/preview                              controllers.NewsController.previewNonPublished(kg: Long, adminId: String, class_id: Option[String], restrict: Option[Boolean])
+GET           /kindergarten/:kg/admin/:adminId/news/preview                      controllers.NewsController.previewNonPublished(kg: Long, adminId: String, class_id: Option[String], restrict: Option[Boolean])
 POST          /kindergarten/:kg/admin/:adminId/news                              controllers.NewsController.create(kg: Long, adminId: String)
 POST          /kindergarten/:kg/admin/:adminId/news/:newsId                      controllers.NewsController.adminUpdate(kg: Long, adminId: String, newsId: Long)
 DELETE        /kindergarten/:kg/admin/:adminId/news/:newsId                      controllers.NewsController.delete(kg: Long, adminId: String, newsId: Long)

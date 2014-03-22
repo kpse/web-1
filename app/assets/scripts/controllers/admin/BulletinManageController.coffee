@@ -7,6 +7,8 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
       $rootScope.tabName = 'bulletin'
       scope.heading = '按范围发布公告'
 
+      scope.current_class = parseInt(stateParams.class)
+
       scope.loading = true
 
       scope.adminUser = Employee.get ->
@@ -23,14 +25,15 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
   ['$scope', '$rootScope', 'adminNewsService',
    '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService', 'adminNewsPreview',
     (scope, $rootScope, adminNewsService, stateParams, School, Modal, Employee, Class, NewsPreivew) ->
-      scope.current_class = parseInt(stateParams.class)
+
 
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
       scope.itemsPerPage = 8
 
-      scope.refresh = (to)->
+      scope.refresh = (page)->
+        page = page || 1
         scope.loading = true
         scope.preview = NewsPreivew.query
           school_id: stateParams.kindergarten
@@ -39,32 +42,30 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
           restrict: true, ->
             scope.preview = scope.preview.reverse()
             scope.totalItems = scope.preview.length
+            startIndex = (page - 1) * scope.itemsPerPage
+            last = scope.preview[startIndex...startIndex + scope.itemsPerPage][0].id if scope.preview.length > 0
+            console.log last
             scope.newsletters = adminNewsService.query
               school_id: stateParams.kindergarten
               admin_id: scope.adminUser.phone
               class_id: stateParams.class
               restrict: true
-              to: to
+              to: last + 1
               most: scope.itemsPerPage, ->
                 scope.loading = false
-
-      indexRange = (page) ->
-        startIndex = (page - 1) * scope.itemsPerPage
-        scope.preview[startIndex...startIndex + scope.itemsPerPage]
-
-      scope.onSelectPage = (page) ->
-        last = indexRange(page)[0].id
-        console.log last
-        scope.refresh(last + 1)
-
-      scope.$on 'go_page_1', ->
-        scope.onSelectPage(1)
+                console.log scope.newsletters
 
       scope.adminUser = Employee.get ->
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
             scope.kindergarten.classes.unshift class_id: 0, name: '全校'
             scope.refresh()
+
+      scope.onSelectPage = (page) ->
+        scope.refresh(page)
+
+      scope.$on 'go_page_1', ->
+        scope.onSelectPage()
 
       scope.publish = (news) ->
         news.published = true

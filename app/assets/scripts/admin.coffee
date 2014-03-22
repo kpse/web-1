@@ -12,7 +12,7 @@ class Config
     .state 'kindergarten.bulletin.class',
       url: '/class/:class',
       templateUrl: 'templates/admin/classes.html',
-      controller: 'BulletinCtrl'
+      controller: 'BulletinManageCtrl'
     .state 'kindergarten.bulletin.class.list',
       url: '/list',
       templateUrl: 'templates/admin/news_in_scope.html',
