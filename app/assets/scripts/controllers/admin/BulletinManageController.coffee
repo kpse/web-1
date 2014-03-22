@@ -5,7 +5,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
    '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService',
     (scope, $rootScope, location, adminNewsService, stateParams, School, Modal, Employee, Class) ->
       $rootScope.tabName = 'bulletin'
-      scope.heading = '按范围发布公告'
+      scope.heading = '全园和班级的通知公告都可以在这里发布'
 
       scope.current_class = parseInt(stateParams.class)
 

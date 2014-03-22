@@ -6,7 +6,7 @@ angular.module('kulebaoAdmin')
       'schoolService', 'classService', '$location'
       (scope, rootScope, stateParams, School, Class, location) ->
         rootScope.tabName = 'conversation'
-        scope.heading = '联系家长'
+        scope.heading = '使用该功能与家长直接对话'
 
         scope.loading = true
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->

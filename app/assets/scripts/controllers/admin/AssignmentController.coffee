@@ -5,7 +5,7 @@ angular.module('kulebaoAdmin')
     [ '$scope', '$rootScope', '$stateParams', 'schoolService', 'classService', '$location',
       (scope, rootScope, stateParams, School, Class, location) ->
         rootScope.tabName = 'assignment'
-        scope.heading = '按班级布置作业'
+        scope.heading = '孩子在家里还需要学习什么？在这里告诉家长吧'
 
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query ->

@@ -1,4 +1,4 @@
-<a class="btn btn-primary pull-right adding-button" ng-show="create" ng-disabled="inCreating" ng-click="create()">添加</a>
+<a class="btn btn-primary pull-right adding-button" ng-show="create" ng-disabled="inCreating" ng-click="create()">发布新公告</a>
 <div class="row">
   <pagination boundary-links="true" items-per-page="itemsPerPage" total-items="totalItems" page="currentPage" max-size="maxSize"
               class="pagination-sm news-pagination" on-select-page="onSelectPage(page)"
@@ -22,7 +22,7 @@
 
       <p class="list-group-item-text">{{news.content.substring(0,200)}}</p>
       <span ng-hide="news.published" class="published pull-right">未发布</span>
-      <span ng-show="news.published" class="issue-date pull-right">于{{news.timestamp | date:'yyyy年MM月dd日 HH:mm:ss'}}发布</span>
+      <span ng-show="news.published" class="issue-date pull-right">于{{news.timestamp | date:'yyyy年MM月dd日 HH:mm'}}发布</span>
       <div class="clearfix"></div>
     </li>
     <p class="no-news" ng-show="!loading && newsletters.length == 0">{{nameOf(current_class)}}还没有创建任何通知，请点击<a ng-click="create()">这里</a>创建</p>
