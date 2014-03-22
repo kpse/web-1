@@ -104,7 +104,7 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
           scope.currentModal.hide()
 
       scope.nameOf = (class_id) ->
-        return '全校' if class_id == 0
+        return '全校' if class_id == 0 || scope.kindergarten is undefined
         clazz = _.find scope.kindergarten.classes, (c) ->
           c.class_id == class_id
         clazz.name if clazz isnt undefined
