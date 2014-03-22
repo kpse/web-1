@@ -14,20 +14,22 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.isSelected = (tab)->
         tab is $rootScope.tabName
 
-      goPageWithClassesTab = (pageName)->
+      goPageWithClassesTab = (pageName, subName)->
         if location.path().indexOf(pageName + '/class') < 0
           location.path('/kindergarten/' + $stateParams.kindergarten + '/' + pageName)
+        else if subName? && location.path().indexOf('/' + subName + '/') > 0
+          location.path(location.path().replace(new RegExp('/' + subName + '/.+$',"g"), '/list'))
         else
           location.path(location.path().replace(/\/[^\/]+$/, '/list'))
 
       scope.goConversation = ->
-        goPageWithClassesTab('conversation')
+        goPageWithClassesTab('conversation', 'card')
 
       scope.goAssignment = ->
         goPageWithClassesTab('assignment')
 
       scope.goBabyStatus = ->
-        goPageWithClassesTab('baby-status')
+        goPageWithClassesTab('baby-status', 'child')
 
       scope.goMemberList = ->
         goPageWithClassesTab('member')
