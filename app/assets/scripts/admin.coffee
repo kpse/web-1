@@ -127,10 +127,16 @@ class Config
       templateUrl: 'templates/admin/choose_existing_child.html',
       controller: 'ConnectToChildCtrl'
 
+    .state 'kindergarten.welcome',
+      url: '/welcome',
+      templateUrl: 'templates/admin/welcome.html',
+      controller: 'WelcomeCtrl'
+
     .state 'expired',
       url: '/expired',
       templateUrl: 'templates/admin/expired.html',
       controller: 'ExpiredCtrl'
+
     .state 'kindergarten.wip',
       url: '/wip',
       template: '<div>Sorry, we are still in Building...</div><image class="img-responsive" src="assets/images/wip.gif"></image>',
