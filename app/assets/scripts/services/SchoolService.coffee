@@ -10,6 +10,16 @@ classService = ($resource) ->
 angular.module('kulebaoAdmin')
 .factory('classService', ['$resource', classService])
 
+classManagerService = ($resource) ->
+  $resource '/kindergarten/:school_id/class/:class_id/manager',
+    {
+      school_id: '@school_id'
+      class_id: '@class_id'
+    }
+
+angular.module('kulebaoAdmin')
+.factory('classManagerService', ['$resource', classManagerService])
+
 schoolService = ($resource) ->
   $resource '/kindergarten/:school_id',
     {

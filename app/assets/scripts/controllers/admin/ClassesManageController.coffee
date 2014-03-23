@@ -2,20 +2,26 @@
 
 angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
   ['$scope', '$rootScope', '$stateParams', 'schoolService', '$modal', 'employeeService', 'schoolEmployeesService',
-   'classService', '$alert',
-    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Class, Alert) ->
+   'classService', '$alert', 'classManagerService',
+    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Class, Alert, ClassManager) ->
       $rootScope.tabName = 'classes'
 
       scope.loading = true
 
       scope.kindergarten = School.get school_id: $stateParams.kindergarten, ->
+        employees = SchoolEmployee.query school_id: $stateParams.kindergarten, ->
+          scope.employees = _.map employees, (e) ->
+            e.value = e.name
+            e
         scope.adminUser = Employee.get ->
           scope.refresh()
-        scope.employees = SchoolEmployee.query school_id: $stateParams.kindergarten
 
       scope.refresh = ->
         scope.loading = true
         scope.classes = Class.query school_id: $stateParams.kindergarten, ->
+          _.forEach scope.classes, (c) ->
+            manager = ClassManager.query c, ->
+              c.managers = _.map manager, (m) -> m.name
           scope.loading = false
 
       scope.createClass = ->
@@ -42,8 +48,18 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
           scope: scope
           contentTemplate: 'templates/admin/add_class.html'
 
+      getManager = (m) ->
+        _.find scope.employees, (e) -> e.name == m
+
       scope.save = (clazz) ->
+        console.log clazz
+
         clazz.$save ->
+          _.forEach clazz.managers, (m) ->
+            cm = new ClassManager(getManager(m))
+            cm.class_id = clazz.class_id
+            console.log cm
+            cm.$save()
           scope.refresh()
           scope.currentModal.hide()
 

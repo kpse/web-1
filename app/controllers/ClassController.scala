@@ -12,7 +12,9 @@ object ClassController extends Controller with Secured {
   implicit val write1 = Json.writes[SchoolClass]
   implicit val write2 = Json.writes[SuccessResponse]
   implicit val write3 = Json.writes[ErrorResponse]
+  implicit val write4 = Json.writes[Employee]
   implicit val read1 = Json.reads[SchoolClass]
+  implicit val read2 = Json.reads[Employee]
 
   def index(kg: Long) = IsLoggedIn {
     u => _ =>
@@ -55,5 +57,24 @@ object ClassController extends Controller with Secured {
           Ok(Json.toJson(new SuccessResponse))
       }
 
+  }
+
+  def managers(kg: Long, classId: Long) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(School.getClassManagers(kg, classId)))
+  }
+
+  def createManager(kg: Long, classId: Long) = IsLoggedIn(parse.json) {
+    u =>
+      request =>
+        Logger.info(request.body.toString)
+        request.body.validate[Employee].map {
+          case (employee) if School.managerExists(kg, classId, employee)=>
+            Ok(Json.toJson(new SuccessResponse))
+          case (employee) =>
+            Ok(Json.toJson(School.createClassManagers(kg, classId, employee)))
+        }.recoverTotal {
+          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        }
   }
 }

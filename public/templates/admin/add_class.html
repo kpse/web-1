@@ -23,9 +23,9 @@
       <label for="teacher" class="col-sm-2 control-label">负责老师</label>
 
       <div class="col-sm-8">
-        <select id="teacher" class="form-control class-select" ng-model="currentClass.manager"
-                ng-options="e.id as e.name for e in employees"
-                data-style="btn-primary"></select>
+        <button type="button" class="btn btn-default" ng-model="currentClass.managers" data-html="1" data-multiple="1"
+                placeholder="请选择负责老师"
+                ng-click="$event.stopPropagation()" ng-options="e.name as e.name for e in employees" bs-select></button>
       </div>
     </div>
 

@@ -10,7 +10,35 @@ case class School(school_id: Long, name: String)
 
 case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, manager: Option[String])
 
+
 object School {
+  def managerExists(kg: Long, classId: Long, employee: Employee) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from privilege where school_id={kg} " +
+        "and subordinate=cast({class_id} as char(10)) and status=1 and employee_id={id}")
+        .on('kg -> kg, 'class_id -> classId, 'id -> employee.id).as(get[Long]("count(1)") single) > 0
+  }
+
+  def createClassManagers(kg: Long, classId: Long, employee: Employee) = DB.withConnection {
+    implicit c =>
+      SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) " +
+        "values ({kg}, {id}, 'teacher',{class_id}, '', {time})")
+        .on('kg -> kg.toString, 'id -> employee.id, 'class_id -> classId.toString, 'time -> System.currentTimeMillis)
+        .executeInsert()
+  }
+
+  def getClassManagers(kg: Long, classId: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select * from employeeinfo where employee_id in " +
+        "(select employee_id from privilege p, classinfo c " +
+        "where p.school_id=c.school_id and p.school_id ={kg} " +
+        "and p.subordinate=cast(c.class_id as char(10)) and c.class_id={class_id} and c.status=1 and p.status=1)")
+        .on(
+          'kg -> kg.toString,
+          'class_id -> classId
+        ).as(Employee.simple *)
+  }
+
   def classExists(kg: Long, classId: Int) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from classinfo where school_id = {kg} and class_id={class_id} and status=1")
@@ -122,20 +150,16 @@ object School {
   val simple = {
     get[Int]("class_id") ~
       get[String]("school_id") ~
-      get[String]("class_name") ~
-      get[Option[String]]("employee_id") map {
-      case id ~ school_id ~ name ~ manager =>
-        SchoolClass(school_id.toLong, Some(id), name, manager)
+      get[String]("class_name") map {
+      case id ~ school_id ~ name =>
+        SchoolClass(school_id.toLong, Some(id), name, None)
     }
   }
 
   def allClasses(kg: Long) = DB.withConnection {
     implicit c =>
-      SQL("select c.*, employee_id " +
-        "from classinfo c join (schoolinfo s) " +
-        "on (s.school_id = c.school_id and c.school_id={kg} and c.status=1) " +
-        " left join (privilege p) on (p.subordinate=cast(c.class_id as char(10)) " +
-        "and p.school_id=c.school_id )")
+      SQL("select c.* from classinfo c, schoolinfo s " +
+        "where s.school_id = c.school_id and c.school_id={kg} and c.status=1")
         .on('kg -> kg.toString)
         .as(simple *)
   }
