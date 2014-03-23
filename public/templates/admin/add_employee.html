@@ -1,11 +1,11 @@
 <div class="panel-body">
   <form class="form-horizontal row employee-form" role="form" name="newEmployeeForm">
 
-    <div class="col-sm-7">
+    <div class="col-sm-6">
       <div class="form-group">
         <label for="employee-phone" class="col-sm-2 control-label">电话号码</label>
 
-        <div class="col-sm-10">
+        <div class="col-sm-8">
           <input id="employee-phone" type="text" ng-model="employee.phone" name="phone"
                  ui-mask="{{'999-9999-9999'}}"
                  class="editing-field form-control" ng-bk-focus required/>
@@ -16,7 +16,7 @@
       <div class="form-group">
         <label for="employee-name" class="col-sm-2 control-label">老师姓名</label>
 
-        <div class="col-sm-10">
+        <div class="col-sm-8">
           <input id="employee-name" ng-model="employee.name"
                  class="editing-field form-control" required/>
         </div>
@@ -25,7 +25,7 @@
       <div class="form-group">
         <label for="employee-gender" class="col-sm-2 control-label">性别</label>
 
-        <div class="col-sm-10">
+        <div class="col-sm-8">
           <div class="btn-group">
             <button type="button" class="btn select-button" ng-model="employee.gender" btn-radio="0">女</button>
             <button type="button" class="btn select-button" ng-model="employee.gender" btn-radio="1">男</button>
@@ -36,7 +36,7 @@
 
         <label for="employee-birthday" class="col-sm-2 control-label">生日</label>
 
-        <div class="col-sm-10">
+        <div class="col-sm-8">
           <div class="control-group input-append">
             <input type="text" class="form-control datepicker-input" ng-model="employee.birthday"
                    data-date-format="yyyy-MM-dd" data-date-type="number" data-max-date="today" data-autoclose="1"
@@ -46,10 +46,18 @@
           </div>
         </div>
       </div>
+      <div class="form-group">
+        <label for="login-name" class="col-sm-2 control-label">登陆名字</label>
+
+        <div class="col-sm-8">
+          <input id="login-name" ng-model="employee.login_name"
+                 class="editing-field form-control" required/>
+        </div>
+      </div>
 
     </div>
 
-    <div class="col-sm-5">
+    <div class="col-sm-6">
       <div class="form-group">
         <div class="portrait-container">
           <img class="portrait" ng-src="{{employee.portrait || '/assets/images/portrait_placeholder.png'}}"
@@ -70,38 +78,8 @@
       </div>
     </div>
     <div class="clearfix"></div>
-    <div class="form-group">
-      <label for="login-name" class="col-sm-2 control-label">登陆名字</label>
 
-      <div class="col-sm-8">
-        <input id="login-name" ng-model="employee.login_name"
-               class="editing-field form-control"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="employee-company" class="col-sm-2 control-label">权限</label>
 
-      <div class="col-sm-8">
-        <input id="employee-company" ng-model="employee.company"
-               class="editing-field form-control"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="workgroup" class="col-sm-2 control-label">工作组</label>
-
-      <div class="col-sm-8">
-        <input id="workgroup" ng-model="employee.workgroup"
-               class="editing-field form-control"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="workduty" class="col-sm-2 control-label">工作职责</label>
-
-      <div class="col-sm-8">
-        <input id="workduty" ng-model="employee.workduty"
-               class="editing-field form-control"/>
-      </div>
-    </div>
     <div class="col-sm-offset-4 col-sm-8">
       <div class="form-group">
         <a class="btn btn-warning pull-right adding-button"
