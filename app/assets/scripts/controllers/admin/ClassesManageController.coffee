@@ -52,13 +52,10 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
         _.find scope.employees, (e) -> e.name == m
 
       scope.save = (clazz) ->
-        console.log clazz
-
         clazz.$save ->
           _.forEach clazz.managers, (m) ->
             cm = new ClassManager(getManager(m))
             cm.class_id = clazz.class_id
-            console.log cm
             cm.$save()
           scope.refresh()
           scope.currentModal.hide()
