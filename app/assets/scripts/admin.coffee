@@ -37,10 +37,28 @@ class Config
       url: '/class/:class_id',
       templateUrl: 'templates/admin/class_schedule.html',
       controller: 'ClassScheduleCtrl'
+
     .state 'kindergarten.relationship',
       url: '/relationship',
-      templateUrl: 'templates/admin/relationship.html',
+      templateUrl: 'templates/admin/search_panel.html',
+      controller: 'RelationshipMainCtrl'
+    .state 'kindergarten.relationship.types',
+      url: '/types',
+      templateUrl: 'templates/admin/relationship_types.html',
+      controller: 'RelationshipMainCtrl'
+    .state 'kindergarten.relationship.types.connected',
+      url: '/connected',
+      templateUrl: 'templates/admin/connected_relationship.html',
       controller: 'RelationshipCtrl'
+    .state 'kindergarten.relationship.types.unlindparent',
+      url: '/unlinked_parent',
+      templateUrl: 'templates/admin/unlinked_parents.html',
+      controller: 'UnconnectedParentCtrl'
+    .state 'kindergarten.relationship.types.unlindchild',
+      url: '/unlinked_child',
+      templateUrl: 'templates/admin/unlinked_children.html',
+      controller: 'UnconnectedChildCtrl'
+
     .state 'kindergarten.conversation',
       url: '/conversation',
       templateUrl: 'templates/admin/search_panel.html',

@@ -1,11 +1,41 @@
 'use strict'
 
 angular.module('kulebaoAdmin')
+.controller 'RelationshipMainCtrl',
+  ['$scope', '$rootScope', '$stateParams', '$location',
+    (scope, rootScope, stateParams, location) ->
+      rootScope.tabName = 'relationship'
+      scope.heading = '管理幼儿及家长基础档案信息'
+
+      scope.types = [
+        {
+          name: '已关联'
+          url: 'connected'
+        },
+        {
+          name: '未关联家长'
+          url: 'unlinked_parent'
+        },
+        {
+          name: '未关联小孩'
+          url: 'unlinked_child'
+        }
+      ]
+
+      scope.loading = true
+      scope.current_type = 'connected'
+
+      scope.navigateTo = (s) ->
+        rootScope.current_type = s.url
+        location.path(location.path().replace(/\/types\/.+$/, '') + '/types/' + s.url)
+
+  ]
+
+angular.module('kulebaoAdmin')
 .controller 'RelationshipCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
    'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService',
     (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload) ->
-      rootScope.tabName = 'relationship'
 
       scope.totalItems = 2000
       scope.currentPage = 1
@@ -15,7 +45,6 @@ angular.module('kulebaoAdmin')
       scope.loading = true
       scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten
-
         scope.refreshRelationship()
 
 
@@ -31,13 +60,13 @@ angular.module('kulebaoAdmin')
           school_id: parseInt stateParams.kindergarten
           birthday: '1980-1-1'
           gender: 1
-          name: '马大帅'
+          name: ''
           kindergarten: scope.kindergarten.school_info
 
       scope.createChild = ->
         new Child
-          name: '宝宝名字'
-          nick: '宝宝小名'
+          name: ''
+          nick: ''
           birthday: '2009-1-1'
           gender: 1
           class_id: scope.kindergarten.classes[0].class_id
@@ -160,3 +189,27 @@ angular.module('kulebaoAdmin')
             scope.alreadyConnected(p, child)
   ]
 
+angular.module('kulebaoAdmin')
+.controller 'UnconnectedParentCtrl',
+  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
+   'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService',
+    (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload) ->
+      scope.loading = true
+      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
+        scope.parents = Parent.query school_id: stateParams.kindergarten
+        scope.loading = false
+
+  ]
+
+angular.module('kulebaoAdmin')
+.controller 'UnconnectedChildCtrl',
+  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
+   'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService',
+    (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload) ->
+      scope.loading = true
+      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
+        scope.children = Child.query school_id: stateParams.kindergarten
+        scope.loading = false
+
+
+  ]
