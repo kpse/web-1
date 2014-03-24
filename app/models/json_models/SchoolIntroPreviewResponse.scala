@@ -7,9 +7,12 @@ import models.helper.FieldHelper._
 import play.Logger
 import anorm.~
 import scala.Some
+import models.helper.MD5Helper.md5
 import anorm.SqlParser._
 
 case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: String, school_logo_url: String, name: String)
+
+case class CreatingSchool(school_id: Long, phone: String, name: String, token: String, admin_login: String, admin_password: String, expired_time: String, total_phone_number: Long, address: String)
 
 case class SchoolIntroDetail(error_code: Option[Int], school_id: Long, school_info: Option[SchoolIntro])
 
@@ -17,6 +20,58 @@ case class SchoolIntroPreviewResponse(error_code: Int, timestamp: Long, school_i
 
 
 object SchoolIntro {
+  def adminExists(adminLogin: String) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from employeeinfo where login_name={name}").on('name -> adminLogin).as(get[Long]("count(1)") single) > 0
+  }
+
+  def idExists(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from schoolinfo where school_id={id}").on('id -> kg).as(get[Long]("count(1)") single) > 0
+  }
+
+  def adminCreate(school: CreatingSchool) = DB.withTransaction {
+    implicit c =>
+      try {
+      val time = System.currentTimeMillis
+      SQL("insert into schoolinfo (school_id, province, city, address, name, description, logo_url, phone, update_at) " +
+        " values ({school_id}, '', '', {address}, {name}, '', '', {phone}, {timestamp})")
+        .on(
+          'school_id -> school.school_id.toString,
+          'timestamp -> time,
+          'name -> school.name,
+          'address -> school.address,
+          'phone -> school.phone
+        ).executeInsert()
+      val employeeId = "3_%d_%d".format(school.school_id, time)
+      SQL("insert into employeeinfo (name, employee_id, phone, gender, workgroup, workduty, picurl, birthday, school_id, login_password, login_name) " +
+        " values ({name}, {employee_id}, {phone}, 0, '', '', '', '1980-01-01', {school_id}, {password}, {login_name})")
+        .on(
+          'school_id -> school.school_id.toString,
+          'name -> "%s校长".format(school.name),
+          'employee_id -> employeeId,
+          'login_name -> school.admin_login,
+          'password -> md5(school.admin_password),
+          'phone -> school.phone
+        ).executeInsert()
+      SQL("insert into chargeinfo (school_id, total_phone_number, expire_date, update_at) " +
+        " values ({school_id}, {total}, {expire}, {time})")
+        .on(
+          'school_id -> school.school_id.toString,
+          'total -> school.total_phone_number,
+          'expire -> school.expired_time,
+          'time -> time
+        ).executeInsert()
+        c.commit()
+      }
+      catch {
+        case t: Throwable  =>
+          Logger.info("error %s".format(t.toString))
+          c.rollback
+      }
+      detail(school.school_id)
+  }
+
   def create(schoolIntro: SchoolIntro) = {
     val time = System.currentTimeMillis
     SQL("insert into schoolinfo (school_id, province, city, name, description, logo_url, phone, update_at) " +
