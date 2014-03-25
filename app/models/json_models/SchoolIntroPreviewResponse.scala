@@ -9,10 +9,13 @@ import anorm.~
 import scala.Some
 import models.helper.MD5Helper.md5
 import anorm.SqlParser._
+import models.ChargeInfo
 
-case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: String, school_logo_url: String, name: String)
+case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: String, school_logo_url: String, name: String, token: String, address: String)
 
-case class CreatingSchool(school_id: Long, phone: String, name: String, token: String, admin_login: String, admin_password: String, expired_time: String, total_phone_number: Long, address: String)
+case class CreatingSchool(school_id: Long, phone: String, name: String, token: String, principal: PrincipalOfSchool, charge: ChargeInfo, address: String)
+
+case class PrincipalOfSchool(admin_login: String, admin_password: String)
 
 case class SchoolIntroDetail(error_code: Option[Int], school_id: Long, school_info: Option[SchoolIntro])
 
@@ -30,65 +33,66 @@ object SchoolIntro {
       SQL("select count(1) from schoolinfo where school_id={id}").on('id -> kg).as(get[Long]("count(1)") single) > 0
   }
 
-  def adminCreate(school: CreatingSchool) = DB.withTransaction {
+  def create(school: CreatingSchool) = DB.withTransaction {
     implicit c =>
       try {
-      val time = System.currentTimeMillis
-      SQL("insert into schoolinfo (school_id, province, city, address, name, description, logo_url, phone, update_at) " +
-        " values ({school_id}, '', '', {address}, {name}, '', '', {phone}, {timestamp})")
-        .on(
-          'school_id -> school.school_id.toString,
-          'timestamp -> time,
-          'name -> school.name,
-          'address -> school.address,
-          'phone -> school.phone
-        ).executeInsert()
-      val employeeId = "3_%d_%d".format(school.school_id, time)
-      SQL("insert into employeeinfo (name, employee_id, phone, gender, workgroup, workduty, picurl, birthday, school_id, login_password, login_name) " +
-        " values ({name}, {employee_id}, {phone}, 0, '', '', '', '1980-01-01', {school_id}, {password}, {login_name})")
-        .on(
-          'school_id -> school.school_id.toString,
-          'name -> "%s校长".format(school.name),
-          'employee_id -> employeeId,
-          'login_name -> school.admin_login,
-          'password -> md5(school.admin_password),
-          'phone -> school.phone
-        ).executeInsert()
-      SQL("insert into chargeinfo (school_id, total_phone_number, expire_date, update_at) " +
-        " values ({school_id}, {total}, {expire}, {time})")
-        .on(
-          'school_id -> school.school_id.toString,
-          'total -> school.total_phone_number,
-          'expire -> school.expired_time,
-          'time -> time
-        ).executeInsert()
+        val time = System.currentTimeMillis
+        SQL("insert into schoolinfo (school_id, province, city, address, name, description, logo_url, phone, update_at, token) " +
+          " values ({school_id}, '', '', {address}, {name}, '', '', {phone}, {timestamp}, {token})")
+          .on(
+            'school_id -> school.school_id.toString,
+            'timestamp -> time,
+            'name -> school.name,
+            'address -> school.address,
+            'phone -> school.phone,
+            'token -> school.token
+          ).executeInsert()
+        val employeeId = "3_%d_%d".format(school.school_id, time)
+        SQL("insert into employeeinfo (name, employee_id, phone, gender, workgroup, workduty, picurl, birthday, school_id, login_password, login_name) " +
+          " values ({name}, {employee_id}, {phone}, 0, '', '', '', '1980-01-01', {school_id}, {password}, {login_name})")
+          .on(
+            'school_id -> school.school_id.toString,
+            'name -> "%s校长".format(school.name),
+            'employee_id -> employeeId,
+            'login_name -> school.principal.admin_login,
+            'password -> md5(school.principal.admin_password),
+            'phone -> school.phone
+          ).executeInsert()
+        SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) " +
+          "values ({school_id},{employee_id},{group},{subordinate},{promoter},{time})")
+          .on(
+            'school_id -> school.school_id.toString,
+            'employee_id -> employeeId,
+            'group -> "principal",
+            'subordinate -> "",
+            'promoter -> "operator",
+            'time -> time
+          ).executeInsert()
+        SQL("insert into chargeinfo (school_id, total_phone_number, expire_date, update_at) " +
+          " values ({school_id}, {total}, {expire}, {time})")
+          .on(
+            'school_id -> school.school_id.toString,
+            'total -> school.charge.total_phone_number,
+            'expire -> school.charge.expire_date,
+            'time -> time
+          ).executeInsert()
+        SQL("insert into classinfo (school_id, class_id, class_name) " +
+          " values ({school_id}, 1, '默认班级')")
+          .on(
+            'school_id -> school.school_id.toString
+          ).executeInsert()
         c.commit()
       }
       catch {
-        case t: Throwable  =>
+        case t: Throwable =>
           Logger.info("error %s".format(t.toString))
           c.rollback
       }
       detail(school.school_id)
   }
 
-  def create(schoolIntro: SchoolIntro) = {
-    val time = System.currentTimeMillis
-    SQL("insert into schoolinfo (school_id, province, city, name, description, logo_url, phone, update_at) " +
-      " values ({school_id}, '四川省', '成都', {name}, {desc}, {url}, {phone}, {timestamp})")
-      .on(
-        'school_id -> schoolIntro.school_id.toString,
-        'timestamp -> time,
-        'name -> schoolIntro.name,
-        'desc -> schoolIntro.desc,
-        'url -> schoolIntro.school_logo_url,
-        'phone -> schoolIntro.phone
-      )
-  }
-
-
   def defaultSchoolIntro(name: String, schoolId: Long, time: Long): SchoolIntro = {
-    new SchoolIntro(schoolId, "13991855476", time, "描述", "http://www.jslfgz.com.cn/UploadFiles/xxgl/2013/4/201342395834.jpg", name)
+    new SchoolIntro(schoolId, "13991855476", time, "描述", "http://www.jslfgz.com.cn/UploadFiles/xxgl/2013/4/201342395834.jpg", name, "token", "成都")
   }
 
   def index = DB.withConnection {
@@ -110,12 +114,14 @@ object SchoolIntro {
 
       SQL("update schoolinfo set name={name}, " +
         "description={description}, phone={phone}, " +
-        "logo_url={logo_url}, update_at={timestamp} where school_id={id}")
+        "logo_url={logo_url}, update_at={timestamp}, token={token}, address={address} where school_id={id}")
         .on('id -> info.school_id.toString,
           'name -> info.name,
           'description -> info.desc,
           'phone -> info.phone,
           'logo_url -> info.school_logo_url,
+          'token -> info.token,
+          'address -> info.address,
           'timestamp -> timestamp).executeUpdate()
 
   }
@@ -129,29 +135,17 @@ object SchoolIntro {
       else new SchoolIntroPreviewResponse(0, timestamp(result.head), schoolId(result.head))
   }
 
-
-  def updateOrCreate(info: SchoolIntro) = DB.withConnection {
-    implicit c =>
-      val exists = schoolExists(info.school_id)
-      Logger.info(exists.toString)
-      exists match {
-        case false =>
-          create(info).executeInsert()
-        case _ =>
-          updateExists(info)
-      }
-      detail(info.school_id)
-  }
-
   val sample = {
     get[String]("school_id") ~
       get[String]("phone") ~
       get[Long]("update_at") ~
       get[String]("description") ~
       get[String]("logo_url") ~
-      get[String]("name") map {
-      case id ~ phone ~ timestamp ~ desc ~ logoUrl ~ name =>
-        SchoolIntro(id.toLong, phone, timestamp, desc, logoUrl, name)
+      get[String]("name") ~
+      get[String]("token") ~
+      get[String]("address") map {
+      case id ~ phone ~ timestamp ~ desc ~ logoUrl ~ name ~ token ~ address =>
+        SchoolIntro(id.toLong, phone, timestamp, desc, logoUrl, name, token, address)
     }
 
   }
@@ -159,13 +153,7 @@ object SchoolIntro {
 
   def detail(kg: Long) = DB.withConnection {
     implicit c =>
-      val result = SQL("select * from schoolinfo where school_id={school_id}")
-        .on('school_id -> kg.toString).apply()
-
-      if (result.isEmpty) new SchoolIntroDetail(Some(1), 0, None)
-      else {
-        val row = result.head
-        new SchoolIntroDetail(Some(0), schoolId(row), Some(new SchoolIntro(schoolId(row), phone(row), timestamp(row), desc(row), logoUrl(row), name(row))))
-      }
+      SQL("select * from schoolinfo where school_id={school_id}")
+        .on('school_id -> kg.toString).as(sample singleOpt)
   }
 }

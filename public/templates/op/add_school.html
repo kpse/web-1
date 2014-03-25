@@ -22,20 +22,85 @@
     </div>
 
     <div class="form-group">
-      <label for="teacher" class="col-sm-2 control-label">校长</label>
+      <label for="school-phone" class="col-sm-2 control-label">学校电话</label>
 
       <div class="col-sm-8">
-        <select id="teacher" class="form-control class-select" ng-model="school.managers"
-                ng-options="a.id as a.name for a in admins"
-                data-style="btn-primary"></select>
+        <input id="school-phone" type="text" ng-model="school.phone" name="phone"
+               class="editing-field form-control" required/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="school-token" class="col-sm-2 control-label">验证码</label>
+
+      <div class="col-sm-8">
+        <input id="school-token" type="text" ng-model="school.token" name="token"
+               class="editing-field form-control" required/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="admin-name" class="col-sm-2 control-label">校长登录名</label>
+
+      <div class="col-sm-8">
+        <input id="admin-name" type="text" ng-model="school.principal.admin_login" name="adminLogin"
+               class="editing-field form-control" required/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="admin-password" class="col-sm-2 control-label">密码</label>
+
+      <div class="col-sm-8">
+        <input id="admin-password" type="password" ng-model="school.principal.admin_password" name="adminPassword"
+               class="editing-field form-control" ng-minlength="6" required/>
+        <span class="error-field" ng-show="newSchoolForm.adminPassword.$dirty && newSchoolForm.adminPassword.$error.required">请给出登陆密码</span>
+        <span class="error-field" ng-show="newSchoolForm.adminPassword.$dirty && newSchoolForm.adminPassword.$error.minlength">密码至少6位</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="admin-password-confirm" class="col-sm-2 control-label">重复密码</label>
+
+      <div class="col-sm-8">
+        <input id="admin-password-confirm" type="password" ng-model="school.principal.admin_password_confirm" name="adminPasswordConfirm"
+               class="editing-field form-control" ng-minlength="6" required/>
+        <span class="error-field" ng-show="newSchoolForm.adminPasswordConfirm.$dirty && school.principal.admin_password != school.principal.admin_password_confirm">两次输入不一致。</span>
+        <span class="error-field" ng-show="newSchoolForm.adminPasswordConfirm.$dirty && newSchoolForm.adminPasswordConfirm.$error.required">请再次填写密码</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="expire-date" class="col-sm-2 control-label">过期时间</label>
+
+      <div class="col-sm-8">
+        <input id="expire-date" type="date" ng-model="school.charge.expire_date" name="expireDate"
+               class="editing-field form-control" required/>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label for="total_number" class="col-sm-2 control-label">授权账号个数</label>
+
+      <div class="col-sm-8">
+        <input id="total_number" type="number" ng-model="school.charge.total_phone_number" name="total_phone_number"
+               class="editing-field form-control" required/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="address" class="col-sm-2 control-label">学校地址</label>
+
+      <div class="col-sm-8">
+        <input id="address" type="text" ng-model="school.address" name="address"
+               class="editing-field form-control" required/>
       </div>
     </div>
 
 
     <div class="form-group">
       <a class="btn btn-warning pull-right adding-button"
-         ng-disabled="newSchoolForm.$invalid || isSchoolDuplicated(school)"
-         ng-click="save(school)">保存</a>
+         ng-disabled="newSchoolForm.$invalid || isSchoolDuplicated(school) || school.admin_password != school.admin_password_confirm"
+         ng-click="saveSchool(school)">保存</a>
       <a class="btn btn-default pull-right adding-button"
          ng-click="$hide()">取消</a>
     </div>

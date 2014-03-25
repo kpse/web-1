@@ -76,7 +76,7 @@ object Charge {
       get[Int]("status") ~
       get[Long]("used") map {
       case kg ~ count ~ expire ~ status ~ used =>
-        ChargeInfo(kg.toLong, count, expire.toMonthOnly, status, used)
+        ChargeInfo(kg.toLong, count, expire.toDateOnly, status, used)
     }
   }
 }

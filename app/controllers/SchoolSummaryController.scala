@@ -6,7 +6,7 @@ import models.json_models._
 import play.Logger
 import models.json_models.SchoolIntroPreviewResponse
 import models.json_models.SchoolIntroDetail
-import models.ErrorResponse
+import models.{Employee, ChargeInfo, ErrorResponse}
 
 object SchoolSummaryController extends Controller with Secured {
   implicit val writes1 = Json.writes[SchoolIntroPreviewResponse]
@@ -15,7 +15,9 @@ object SchoolSummaryController extends Controller with Secured {
   implicit val writes4 = Json.writes[ErrorResponse]
   implicit val read1 = Json.reads[SchoolIntro]
   implicit val read2 = Json.reads[SchoolIntroDetail]
-  implicit val read3 = Json.reads[CreatingSchool]
+  implicit val read4 = Json.reads[PrincipalOfSchool]
+  implicit val read5 = Json.reads[ChargeInfo]
+  implicit val read6 = Json.reads[CreatingSchool]
 
   def preview(kg: Long) = IsLoggedIn {
     u => _ =>
@@ -24,7 +26,10 @@ object SchoolSummaryController extends Controller with Secured {
 
   def detail(kg: Long) = IsLoggedIn {
     u => _ =>
-      Ok(Json.toJson(SchoolIntro.detail(kg)))
+      SchoolIntro.detail(kg).map {
+        case school =>
+          Ok(Json.toJson(school))
+      }.getOrElse(NotFound)
   }
 
   def update(kg: Long) = IsLoggedIn(parse.json) {
@@ -32,8 +37,9 @@ object SchoolSummaryController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString())
         request.body.validate[SchoolIntro].map {
-          case (detail) =>
-            Ok(Json.toJson(SchoolIntro.updateOrCreate(detail)))
+          case (detail) if SchoolIntro.schoolExists(detail.school_id) =>
+            Ok(Json.toJson(SchoolIntro.updateExists(detail)))
+          case _ => NotFound
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
         }
@@ -49,12 +55,14 @@ object SchoolSummaryController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString())
         request.body.validate[CreatingSchool].map {
-          case (detail) if !SchoolIntro.idExists(detail.school_id) && !SchoolIntro.adminExists(detail.admin_login) =>
-            Ok(Json.toJson(SchoolIntro.adminCreate(detail)))
-          case (detail) if SchoolIntro.idExists(detail.school_id)  =>
+          case (detail) if Employee.phoneExists(detail.phone) =>
+            BadRequest(Json.toJson(new ErrorResponse("校长手机号已经存在。")))
+          case (detail) if SchoolIntro.idExists(detail.school_id) =>
             BadRequest(Json.toJson(new ErrorResponse("学校ID已经存在。")))
-          case (detail) if SchoolIntro.adminExists(detail.admin_login) =>
-            BadRequest(Json.toJson(new ErrorResponse("校长登录名已经存在")))
+          case (detail) if SchoolIntro.adminExists(detail.principal.admin_login) =>
+            BadRequest(Json.toJson(new ErrorResponse("校长登录名已经存在。")))
+          case (detail) =>
+            Ok(Json.toJson(SchoolIntro.create(detail)))
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
         }

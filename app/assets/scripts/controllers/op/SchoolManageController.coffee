@@ -1,14 +1,14 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
   ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
-   '$resource', 'chargeService',
-    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge) ->
+   '$resource', 'chargeService', 'adminCreatingService', '$alert',
+    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert) ->
       scope.refresh = ->
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->
             kg.managers = Principal.query school_id: kg.school_id, ->
               _.map kg.managers, (p) ->
                 p.detail = Employee.get phone: p.phone
-            kg.charge = Charge.query(school_id: kg.school_id)
+            kg.charge = Charge.query school_id: kg.school_id
           scope.admins = Employee.query()
 
 
@@ -17,10 +17,21 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
       rootScope.tabName = 'school'
 
       scope.editSchool = (kg) ->
-        scope.school = angular.copy kg
-        scope.currentModal = Modal
-          scope: scope
-          contentTemplate: 'templates/op/add_school.html'
+        kg.charges = Charge.query school_id: kg.school_id, ->
+          kg.charge = kg.charges[0]
+          kg.principal =
+            admin_login: kg.managers[0].detail.login_name
+          scope.school = angular.copy kg
+          scope.currentModal = Modal
+            scope: scope
+            contentTemplate: 'templates/op/edit_school.html'
+
+      scope.endEditing = (kg) ->
+        School.save kg, ->
+            scope.refresh()
+            scope.currentModal.hide()
+          , (res) ->
+            handleError res
 
       scope.edit = (employee) ->
         scope.employee = angular.copy employee.detail
@@ -55,17 +66,43 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         id = nextId(scope.kindergartens)
         new School
           school_id: id
-          phone: ''
-          timestamp: 0
-          desc: '请添加描述'
-          school_logo_url: ''
+          phone: '12121311131'
           name: '新学校'
+          token: '1'
+          address: '四川省某个地区'
+          principal:
+            admin_login: 'admin' + id
+            admin_password: '',
+          charge:
+            school_id: id
+            expire_date: '2015-01-01'
+            total_phone_number: 0
+            status: 1
+            used: 0
+
 
       scope.addSchool = ->
         scope.school = scope.newSchool()
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/op/add_school.html'
+
+      handleError = (res) ->
+        Alert
+          title: '无法保存学校信息'
+          content: res.data.error_msg
+          placement: "top-left"
+          type: "danger"
+          show: true
+          container: '.panel-body'
+          duration: 3
+
+      scope.saveSchool = (school) ->
+        AdminCreating.save school, ->
+            scope.refresh()
+            scope.currentModal.hide()
+          , (res) ->
+            handleError res
 
       scope.save = (object) ->
         if object.group

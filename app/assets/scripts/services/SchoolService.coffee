@@ -31,3 +31,9 @@ schoolService = ($resource) ->
 
 angular.module('kulebaoAdmin')
 .factory('schoolService', ['$resource', schoolService])
+
+adminCreatingService = ($resource) ->
+  $resource '/kindergarten'
+
+angular.module('kulebaoAdmin')
+.factory('adminCreatingService', ['$resource', adminCreatingService])
