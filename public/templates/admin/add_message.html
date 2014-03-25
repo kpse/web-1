@@ -48,10 +48,10 @@
           <label for="message-pic" class="control-label">上传图像</label>
 
           <input type="file" id="message-pic" fileupload="pic"/>
-          <button class="btn btn-success btn-xs" ng-disabled="pic === undefined || pic.size > 200000"
+          <button class="btn btn-success btn-xs" ng-disabled="pic === undefined || pic.size > 2048000"
                   ng-click="uploadPic(message, pic)">上传图像
           </button>
-          <span ng-class="{error : pic.size > 200000}" class="help-block">图片大小请不要超过200k</span>
+          <span ng-class="{error : pic.size > 2048000}" class="help-block">图片大小请不要超过2m</span>
         </div>
       </div>
     </div>
