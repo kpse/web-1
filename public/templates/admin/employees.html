@@ -13,7 +13,6 @@
       <th class=".col-xs-3">登录名</th>
       <th class=".col-xs-3">老师姓名</th>
       <th class=".col-xs-3">手机号</th>
-      <th class=".col-xs-3">权限</th>
       <th class=".col-xs-2">操作</th>
     </tr>
     </thead>
@@ -22,12 +21,9 @@
       <td class=".col-xs-3">{{e.login_name}}</td>
       <td class=".col-xs-3">{{e.name}}</td>
       <td class=".col-xs-3">{{e.phone}}</td>
-      <td class=".col-xs-3">建设中</td>
       <td class=".col-xs-2">
         <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
-                ng-confirm-click="delete(e)">删除
-        </button>
-        <button class="btn btn-xs btn-warning" ng-click="edit(e)">编辑
+                ng-confirm-click="delete(e);$event.stopPropagation()">删除
         </button>
       </td>
     </tr>
