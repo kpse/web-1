@@ -2,8 +2,9 @@
 
 angular.module('kulebaoAdmin')
 .controller 'RelationshipMainCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location',
-    (scope, rootScope, stateParams, location) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
+   'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService',
+    (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload) ->
       rootScope.tabName = 'relationship'
       scope.heading = '管理幼儿及家长基础档案信息'
 
@@ -29,31 +30,10 @@ angular.module('kulebaoAdmin')
         rootScope.current_type = s.url
         location.path(location.path().replace(/\/types\/.+$/, '') + '/types/' + s.url)
 
-  ]
-
-angular.module('kulebaoAdmin')
-.controller 'RelationshipCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
-   'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService',
-    (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload) ->
-
-      scope.totalItems = 2000
-      scope.currentPage = 1
-      scope.maxSize = 5
-
-
       scope.loading = true
       scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten
         scope.refreshRelationship()
-
-
-      scope.refreshRelationship = ->
-        scope.loading = true
-        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
-          scope.parents = Parent.query school_id: stateParams.kindergarten
-          scope.children = Child.query school_id: stateParams.kindergarten
-          scope.loading = false
 
       scope.createParent = ->
         new Parent
@@ -109,25 +89,6 @@ angular.module('kulebaoAdmin')
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/admin/add_child.html'
-
-
-      generateCheckingInfo = (card, name, type) ->
-        school_id: parseInt(stateParams.kindergarten)
-        card_no: card
-        card_type: 2
-        notice_type: type
-        record_url: 'http://suoqin-test.u.qiniudn.com/FoUJaV4r5L0bM0414mGWEIuCLEdL'
-        parent: name
-        timestamp: new Date().getTime()
-
-      scope.sendMessage = (relationship, type) ->
-        check = generateCheckingInfo(relationship.card, relationship.parent.name, type)
-        $http({method: 'POST', url: '/kindergarten/' + stateParams.kindergarten + '/check', data: check}).success (data) ->
-          alert 'error_code:' + data.error_code
-
-      scope.delete = (card) ->
-        Relationship.delete school_id: stateParams.kindergarten, card: card, ->
-          scope.refreshRelationship()
 
       scope.isPhoneDuplicated = (parent) ->
         return false if parent.phone is undefined
@@ -187,6 +148,57 @@ angular.module('kulebaoAdmin')
         else
           _.reject scope.parents, (p) ->
             scope.alreadyConnected(p, child)
+
+      scope.refreshRelationship = ->
+        scope.loading = true
+        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
+          scope.parents = Parent.query school_id: stateParams.kindergarten
+          scope.children = Child.query school_id: stateParams.kindergarten
+          scope.loading = false
+
+
+  ]
+
+angular.module('kulebaoAdmin')
+.controller 'RelationshipCtrl',
+  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
+   'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService',
+    (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload) ->
+      scope.totalItems = 2000
+      scope.currentPage = 1
+      scope.maxSize = 5
+
+
+      scope.loading = true
+      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
+        scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten
+        scope.refreshRelationship()
+
+
+      scope.refreshRelationship = ->
+        scope.loading = true
+        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
+          scope.parents = Parent.query school_id: stateParams.kindergarten
+          scope.children = Child.query school_id: stateParams.kindergarten
+          scope.loading = false
+
+      generateCheckingInfo = (card, name, type) ->
+        school_id: parseInt(stateParams.kindergarten)
+        card_no: card
+        card_type: 2
+        notice_type: type
+        record_url: 'http://suoqin-test.u.qiniudn.com/FoUJaV4r5L0bM0414mGWEIuCLEdL'
+        parent: name
+        timestamp: new Date().getTime()
+
+      scope.sendMessage = (relationship, type) ->
+        check = generateCheckingInfo(relationship.card, relationship.parent.name, type)
+        $http({method: 'POST', url: '/kindergarten/' + stateParams.kindergarten + '/check', data: check}).success (data) ->
+          alert 'error_code:' + data.error_code
+
+      scope.delete = (card) ->
+        Relationship.delete school_id: stateParams.kindergarten, card: card, ->
+          scope.refreshRelationship()
   ]
 
 angular.module('kulebaoAdmin')
