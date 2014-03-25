@@ -11,7 +11,7 @@ import models.helper.MD5Helper.md5
 import anorm.SqlParser._
 import models.ChargeInfo
 
-case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: String, school_logo_url: String, name: String, token: String, address: String)
+case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: String, school_logo_url: String, name: String, token: Option[String], address: Option[String])
 
 case class CreatingSchool(school_id: Long, phone: String, name: String, token: String, principal: PrincipalOfSchool, charge: ChargeInfo, address: String)
 
@@ -91,10 +91,6 @@ object SchoolIntro {
       detail(school.school_id)
   }
 
-  def defaultSchoolIntro(name: String, schoolId: Long, time: Long): SchoolIntro = {
-    new SchoolIntro(schoolId, "13991855476", time, "描述", "http://www.jslfgz.com.cn/UploadFiles/xxgl/2013/4/201342395834.jpg", name, "token", "成都")
-  }
-
   def index = DB.withConnection {
     implicit c =>
       SQL("select * from schoolinfo").as(sample *)
@@ -142,8 +138,8 @@ object SchoolIntro {
       get[String]("description") ~
       get[String]("logo_url") ~
       get[String]("name") ~
-      get[String]("token") ~
-      get[String]("address") map {
+      get[Option[String]]("token") ~
+      get[Option[String]]("address") map {
       case id ~ phone ~ timestamp ~ desc ~ logoUrl ~ name ~ token ~ address =>
         SchoolIntro(id.toLong, phone, timestamp, desc, logoUrl, name, token, address)
     }
