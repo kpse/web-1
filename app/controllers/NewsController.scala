@@ -58,7 +58,7 @@ object NewsController extends Controller with Secured {
   def delete(kg: Long, adminId: String, newsId: Long) = IsLoggedIn {
     u => _ =>
       News.delete(newsId)
-      Ok("{\"status\":\"success\"}").as("application/json")
+      Ok(Json.toJson(new SuccessResponse))
   }
 
   val newsCreateForm = Form(
