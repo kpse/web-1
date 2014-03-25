@@ -5,7 +5,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.adminUser = Employee.get ->
         if (scope.adminUser.school_id != parseInt $stateParams.kindergarten) &&
             (scope.adminUser.privilege_group != 'operator')
-          location.path '/kindergarten/' + scope.adminUser.school_id
+          location.path '/kindergarten/' + scope.adminUser.school_id + '/welcome'
         scope.kindergarten = School.get school_id: $stateParams.kindergarten, ->
           scope.kindergarten.charge = Charge.query school_id: $stateParams.kindergarten, ->
             if scope.kindergarten.charge[0] && scope.kindergarten.charge[0].status == 0

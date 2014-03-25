@@ -55,9 +55,20 @@ object Employee {
   }
 
 
+  def isTeacher(id: String, kg: Long) = DB.withConnection {
+    implicit c =>
+      Logger.info("isTeacher %s %d".format(id, kg))
+      SQL("select count(1) from employeeinfo where employee_id={id} and school_id={kg} and status=1")
+        .on(
+          'id -> id,
+          'kg -> kg.toString
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
   def canAccess(id: Option[String], schoolId: Long = 0): Boolean = id.exists {
     case (userId) if isOperator(userId) => true
     case (userId) if isPrincipal(userId, schoolId) => true
+    case (userId) if isTeacher(userId, schoolId) => true
     case _ => false
   }
 
