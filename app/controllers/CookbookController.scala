@@ -42,4 +42,17 @@ object CookbookController extends Controller with Secured {
         }
 
   }
+
+  def create(kg: Long) = IsLoggedIn(parse.json) {
+    u =>
+      implicit request =>
+        request.body.validate[CookbookDetail].map {
+          case (detail) =>
+            Ok(Json.toJson(CookBook.insertNew(detail)))
+        }.recoverTotal {
+          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        }
+
+  }
+
 }

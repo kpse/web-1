@@ -83,23 +83,14 @@
         <textarea ng-model="cookbook.week.fri.breakfast" ng-disabled="!isEditing"
                   class="editing-title form-control" required maxlength="40"/>
         <label class="control-label">午餐</label>
-        <textarea ng-model="cookbook.week.thu.lunch" ng-disabled="!isEditing"
+        <textarea ng-model="cookbook.week.fri.lunch" ng-disabled="!isEditing"
                   class="editing-title form-control" required maxlength="40"/>
         <label class="control-label">加餐</label>
-        <textarea ng-model="cookbook.week.thu.extra" ng-disabled="!isEditing"
+        <textarea ng-model="cookbook.week.fri.extra" ng-disabled="!isEditing"
                   class="editing-title form-control" maxlength="40"/>
         <label class="control-label">晚餐</label>
-        <textarea ng-model="cookbook.week.thu.dinner" ng-disabled="!isEditing"
+        <textarea ng-model="cookbook.week.fri.dinner" ng-disabled="!isEditing"
                   class="editing-title form-control" required maxlength="40"/>
-      </div>
-
-
-      <div class="form-group col-sm-12" ng-show="false">
-        <label for="extra-tip" class="control-label">备注</label>
-
-        <textarea id="extra-tip" ng-model="cookbook.extra_tip" ng-disabled="!isEditing"
-                  class="editing-content form-control"
-                  required/>
       </div>
     </form>
   </div>

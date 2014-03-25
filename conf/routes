@@ -71,6 +71,7 @@ GET           /kindergarten/:kg/cookbook                                        
 GET           /kindergarten/:kg/cookbook/preview                                 controllers.CookbookController.preview(kg: Long)
 GET           /kindergarten/:kg/cookbook/:cookbookId                             controllers.CookbookController.show(kg: Long, cookbookId: Long)
 POST          /kindergarten/:kg/cookbook/:cookbookId                             controllers.CookbookController.update(kg: Long, cookbookId: Long)
+POST          /kindergarten/:kg/cookbook                             controllers.CookbookController.create(kg: Long)
 
 
 POST          /kindergarten/:kg/check                                            controllers.PushController.forwardSwipe(kg: Long)

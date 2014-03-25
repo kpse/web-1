@@ -2,7 +2,7 @@
 
 angular.module('kulebaoAdmin')
 .controller 'CookbookCtrl', [ '$scope', '$rootScope', '$stateParams',
-                           '$location', 'schoolService', '$http', 'cookbookService', '$timeout',
+                              '$location', 'schoolService', '$http', 'cookbookService', '$timeout',
   (scope, rootScope, stateParams, location, School, $http, Cookbook, $timeout) ->
     rootScope.tabName = 'cookbook'
     scope.cookbook_changed = false
@@ -12,17 +12,18 @@ angular.module('kulebaoAdmin')
 
     scope.cookbooks = Cookbook.bind(school_id: stateParams.kindergarten).query ->
       scope.cookbook = scope.cookbooks[0]
+      if !scope.cookbook?
+        scope.cookbook = new Cookbook
+          school_id: parseInt stateParams.kindergarten
       scope.$watch 'cookbook', (oldv, newv) ->
-          scope.cookbook_changed = true if newv isnt oldv
-        , true
+        scope.cookbook_changed = true if newv isnt oldv
+      , true
 
     scope.toggleEditing = (e) ->
       e.stopPropagation()
       scope.isEditing = !scope.isEditing
       console.log 'scope.cookbook changed: ' + scope.cookbook_changed
       if scope.cookbook_changed
-        $timeout ->
-            scope.cookbook.$save()
-            scope.cookbook_changed = false
-          , 0, true
+        scope.cookbook.$save()
+        scope.cookbook_changed = false
 ]

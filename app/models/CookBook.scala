@@ -13,7 +13,7 @@ case class DayCookbook(breakfast: String, lunch: String, dinner: String, extra: 
 
 case class WeekCookbook(mon: DayCookbook, tue: DayCookbook, wed: DayCookbook, thu: DayCookbook, fri: DayCookbook)
 
-case class CookbookDetail(error_code: Int, school_id: Long, cookbook_id: Long, timestamp: Long, extra_tip: String, week: WeekCookbook)
+case class CookbookDetail(error_code: Option[Int], school_id: Long, cookbook_id: Option[Long], timestamp: Option[Long], week: WeekCookbook)
 
 
 object CookBook {
@@ -25,6 +25,7 @@ object CookBook {
             'cookbook_id -> cookbook.cookbook_id
           ).executeUpdate
 
+        val time = System.currentTimeMillis
         val newId: Option[Long] = SQL("insert into cookbookinfo set school_id={school_id}, cookbook_id={cookbook_id}, extra_tip={extra_tip}," +
           "timestamp={timestamp}, status=1, mon_breakfast={mon_breakfast}, mon_lunch={mon_lunch}, mon_dinner={mon_dinner}, mon_extra={mon_extra}, " +
           "tue_breakfast={tue_breakfast}, tue_lunch={tue_lunch}, tue_dinner={tue_dinner}, tue_extra={tue_extra}, " +
@@ -32,9 +33,9 @@ object CookBook {
           "thu_breakfast={thu_breakfast}, thu_lunch={thu_lunch}, thu_dinner={thu_dinner}, thu_extra={thu_extra}, " +
           "fri_breakfast={fri_breakfast}, fri_lunch={fri_lunch}, fri_dinner={fri_dinner}, fri_extra={fri_extra}")
           .on('school_id -> cookbook.school_id.toString,
-            'cookbook_id -> (cookbook.cookbook_id + 1),
-            'extra_tip -> cookbook.extra_tip,
-            'timestamp -> System.currentTimeMillis,
+            'cookbook_id -> (cookbook.cookbook_id.getOrElse(23)),
+            'extra_tip -> "",
+            'timestamp -> time,
             'mon_breakfast -> cookbook.week.mon.breakfast,
             'mon_lunch -> cookbook.week.mon.lunch,
             'mon_dinner -> cookbook.week.mon.dinner,
@@ -136,7 +137,7 @@ object CookBook {
           new DayCookbook(wed_breakfast, wed_lunch, wed_dinner, wed_extra),
           new DayCookbook(thu_breakfast, thu_lunch, thu_dinner, thu_extra),
           new DayCookbook(fri_breakfast, fri_lunch, fri_dinner, fri_extra))
-        CookbookDetail(0, school_id.toLong, cookbook, timestamp, extra_tip, weekCookbook)
+        CookbookDetail(Some(0), school_id.toLong, Some(cookbook), Some(timestamp), weekCookbook)
     }
   }
 
