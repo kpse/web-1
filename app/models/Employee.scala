@@ -57,7 +57,6 @@ object Employee {
 
   def isTeacher(id: String, kg: Long) = DB.withConnection {
     implicit c =>
-      Logger.info("isTeacher %s %d".format(id, kg))
       SQL("select count(1) from employeeinfo where employee_id={id} and school_id={kg} and status=1")
         .on(
           'id -> id,

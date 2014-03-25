@@ -28,7 +28,7 @@ object SchoolSummaryController extends Controller with Secured {
     u => _ =>
       SchoolIntro.detail(kg).map {
         case school =>
-          Ok(Json.toJson(school))
+          Ok(Json.toJson(new SchoolIntroDetail(Some(0), kg, Some(school))))
       }.getOrElse(NotFound)
   }
 
@@ -66,5 +66,13 @@ object SchoolSummaryController extends Controller with Secured {
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
         }
+  }
+
+  def show(kg: Long) = IsLoggedIn {
+    u => _ =>
+      SchoolIntro.detail(kg).map {
+        case school =>
+          Ok(Json.toJson(school))
+      }.getOrElse(NotFound)
   }
 }
