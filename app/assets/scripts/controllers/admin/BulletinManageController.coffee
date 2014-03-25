@@ -23,8 +23,8 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
 angular.module('kulebaoAdmin').controller 'BulletinCtrl',
   ['$scope', '$rootScope', 'adminNewsService',
-   '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService', 'adminNewsPreview',
-    (scope, $rootScope, adminNewsService, stateParams, School, Modal, Employee, Class, NewsPreivew) ->
+   '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService', 'adminNewsPreview', 'uploadService',
+    (scope, $rootScope, adminNewsService, stateParams, School, Modal, Employee, Class, NewsPreivew, Upload) ->
 
 
       scope.totalItems = 0
@@ -107,4 +107,9 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
         clazz = _.find scope.kindergarten.classes, (c) ->
           c.class_id == class_id
         clazz.name if clazz isnt undefined
+
+      scope.uploadPic = (news, pic) ->
+        Upload pic, (url) ->
+          scope.$apply ->
+            news.image = url if url isnt undefined
   ]

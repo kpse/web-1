@@ -40,6 +40,9 @@
     max-height: 110px;
     max-width: 110px;
   }
+  .news-image {
+    max-height: 200px;
+  }
 }
 
 .creating-summary {
@@ -70,10 +73,8 @@
   color: blue;
 }
 
-
-
 .admin-user {
- background-color: rgb(197, 120, 58);
+  background-color: rgb(197, 120, 58);
 }
 
 .connection.portrait-container {
@@ -93,8 +94,14 @@
   height: 77px;
 }
 
-.assignment-form  {
+.assignment-form {
   .editing-content {
+    height: 200px;
+  }
+}
+
+.news-content {
+  .editing-content.form-control {
     height: 200px;
   }
 }
@@ -106,7 +113,6 @@
 .message-content.viewing-content {
   height: 200px;
 }
-
 
 .rating,
 .editable {
@@ -121,16 +127,18 @@
   overflow: auto;
   height: 250px;
 }
+
 .longer-history {
   height: 450px;
 }
 
-.panel-body{
+.panel-body {
   .alert.top-left {
     margin-top: 300px;
     margin-left: 300px;
   }
 }
+
 .news-list {
   .news-item {
     margin-left: 14px;

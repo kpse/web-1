@@ -7,7 +7,7 @@ import anorm.~
 import play.api.Play.current
 import models.helper.RangerHelper.rangerQuery
 
-case class News(news_id: Long, school_id: Long, title: String, content: String, timestamp: Long, published: Boolean, notice_type: Int, class_id: Option[Int])
+case class News(news_id: Long, school_id: Long, title: String, content: String, timestamp: Long, published: Boolean, notice_type: Int, class_id: Option[Int], image: Option[String])
 
 case class NewsPreview(id: Long)
 
@@ -28,17 +28,18 @@ object News {
 
   }
 
-  def create(form: (Long, String, String, Option[Boolean], Option[Int])) = DB.withConnection {
+  def create(form: (Long, String, String, Option[Boolean], Option[Int], Option[String])) = DB.withConnection {
     implicit c =>
       val createdId: Option[Long] =
-        SQL("insert into news (school_id, title, content, update_at, published, class_id) " +
-          "values ({kg}, {title}, {content}, {timestamp}, {published}, {class_id})")
+        SQL("insert into news (school_id, title, content, update_at, published, class_id, image) " +
+          "values ({kg}, {title}, {content}, {timestamp}, {published}, {class_id}, {image})")
           .on('content -> form._3,
             'kg -> form._1.toString,
             'title -> form._2,
             'timestamp -> System.currentTimeMillis,
             'published -> (if (form._4.getOrElse(false)) 1 else 0),
-            'class_id -> form._5.getOrElse(0)
+            'class_id -> form._5.getOrElse(0),
+            'image -> form._6.getOrElse("")
           ).executeInsert()
       findById(form._1, createdId.getOrElse(-1))
   }
@@ -51,16 +52,17 @@ object News {
         ).execute()
   }
 
-  def update(form: (Long, Long, String, String, Boolean, Option[Int]), kg: Long) = DB.withConnection {
+  def update(form: (Long, Long, String, String, Boolean, Option[Int], Option[String]), kg: Long) = DB.withConnection {
     implicit c =>
       SQL("update news set content={content}, published={published}, title={title}, " +
-        "update_at={timestamp}, class_id={class_id} where uid={id}")
+        "update_at={timestamp}, class_id={class_id}, image={image} where uid={id}")
         .on('content -> form._4,
           'title -> form._3,
           'id -> form._1,
           'published -> (if (form._5) 1 else 0),
           'timestamp -> System.currentTimeMillis,
-          'class_id -> form._6
+          'class_id -> form._6,
+          'image -> form._7
         ).executeUpdate()
       findById(kg, form._1)
   }
@@ -84,11 +86,12 @@ object News {
       get[String]("content") ~
       get[Long]("update_at") ~
       get[Option[Int]]("class_id") ~
-      get[Int]("published") map {
-      case id ~ school_id ~ title ~ content ~ timestamp ~ classId ~ 1 =>
-        News(id, school_id.toLong, title, content, timestamp, true, NOTICE_TYPE_SCHOOL_INFO, classId)
-      case id ~ school_id ~ title ~ content ~ timestamp ~ classId ~ 0 =>
-        News(id, school_id.toLong, title, content, timestamp, false, NOTICE_TYPE_SCHOOL_INFO, classId)
+      get[Int]("published") ~
+      get[Option[String]]("image") map {
+      case id ~ school_id ~ title ~ content ~ timestamp ~ classId ~ 1 ~ image =>
+        News(id, school_id.toLong, title, content, timestamp, true, NOTICE_TYPE_SCHOOL_INFO, classId, Some(image.getOrElse("")))
+      case id ~ school_id ~ title ~ content ~ timestamp ~ classId ~ 0 ~ image =>
+        News(id, school_id.toLong, title, content, timestamp, false, NOTICE_TYPE_SCHOOL_INFO, classId, Some(image.getOrElse("")))
     }
   }
 

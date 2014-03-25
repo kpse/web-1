@@ -6,6 +6,7 @@ CREATE TABLE news (
   class_id INT(11) NOT NULL DEFAULT 0,
   title     VARCHAR(255) NOT NULL,
   content   TEXT         NOT NULL,
+  image   VARCHAR(255),
   update_at BIGINT         NOT NULL DEFAULT 0,
   published INT          NOT NULL DEFAULT 0,
   status    INT          NOT NULL DEFAULT 1,
@@ -34,6 +35,8 @@ INSERT INTO news (uid, school_id, title, content, update_at, published) VALUES
   (7, '93740362', '通知3',
    '恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击恐怖分子袭击',
    1387353641, 0);
+
+update news set image='http://www.jslfgz.com.cn/UploadFiles/xxgl/2013/4/201342395834.jpg' where uid=7;
 
 # --- !Downs
 
