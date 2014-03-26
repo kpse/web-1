@@ -280,7 +280,7 @@ object Parent {
     implicit c =>
       connected.map {
         case false =>
-          SQL("select * from parentinfo where parent_id not in (select parent_id from relationmap where status=1 and school_id={kg})")
+          SQL("select * from parentinfo where school_id={kg} and parent_id not in (select parent_id from relationmap where status=1 and school_id={kg})")
             .on('kg -> kg).as(simple *)
 
       }.getOrElse(SQL(simpleSql + generateMemberQuery(member))

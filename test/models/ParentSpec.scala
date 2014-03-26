@@ -9,10 +9,31 @@ class ParentSpec extends Specification with TestSupport {
   "Parent" should {
     "report index" in new WithApplication {
 
-      private val index = Parent.simpleIndex(93740362, None)
+      private val index = Parent.simpleIndex(93740362, None, None)
 
       index.size must greaterThan(5)
       index(0).parent_id must beSome("2_93740362_123")
+      index(1).member_status must beSome(1)
+
+    }
+
+    "report parents in class" in new WithApplication {
+
+      private val index = Parent.indexInClass(93740362, 777666, None)
+
+      index.size must lessThan(5)
+      index(0).parent_id must beSome("2_93740362_792")
+      index(1).member_status must beSome(1)
+
+    }
+
+    "report parents who has no connection" in new WithApplication {
+
+      private val index = Parent.simpleIndex(93740362, None, Some(false))
+
+      index.size must lessThan(5)
+      index(1).parent_id must beSome("2_93740362_999")
+      index(0).member_status must beSome(1)
       index(1).member_status must beSome(1)
 
     }
