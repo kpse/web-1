@@ -126,8 +126,8 @@ object Children {
     sql + classId.map {
       l => " and c.class_id={classId} "
     }.getOrElse("") + connected.map {
-      case (c) if c || c == 1 => " and child_id in (select child_id from relationmap r where r.status=1)"
-      case _ => ""
+      case true => " and child_id in (select child_id from relationmap r where r.status=1)"
+      case false => " and child_id not in (select child_id from relationmap r where r.status=1)"
     }.getOrElse("")
   }
 

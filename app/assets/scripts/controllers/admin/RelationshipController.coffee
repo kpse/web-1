@@ -197,7 +197,7 @@ angular.module('kulebaoAdmin')
 
       scope.refreshChildren = ->
         scope.loading = true
-        scope.children = Child.query school_id: stateParams.kindergarten, ->
+        scope.children = Child.query school_id: stateParams.kindergarten, connected: false, ->
           scope.loading = false
 
   ]
