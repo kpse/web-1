@@ -168,7 +168,9 @@ object Parent {
       Logger.info("created parent %s".format(createdId))
       val accountinfoUid = createPushAccount(parent)
       Logger.info("created accountinfo %s".format(accountinfoUid))
-      createdId.flatMap {id => info(parent.school_id, parent_id)}
+      createdId.flatMap {
+        id => info(parent.school_id, parent_id)
+      }
   }
 
 
@@ -225,7 +227,7 @@ object Parent {
     "where p.school_id = s.school_id and s.school_id={kg} and p.status=1 and ci.class_id=c.class_id " +
     "and r.child_id = c.child_id and r.parent_id = p.parent_id"
 
-  @deprecated(message="no use anymore", since="20140320")
+  @deprecated(message = "no use anymore", since = "20140320")
   def all(kg: Long, classId: Option[Long]): List[ParentInfo] = DB.withConnection {
     implicit c =>
       classId match {
@@ -274,11 +276,16 @@ object Parent {
     case None => ""
   }
 
-  def simpleIndex(kg: Long, member: Option[Boolean]) = DB.withConnection {
+  def simpleIndex(kg: Long, member: Option[Boolean], connected: Option[Boolean]) = DB.withConnection {
     implicit c =>
-      SQL(simpleSql + generateMemberQuery(member))
+      connected.map {
+        case false =>
+          SQL("select * from parentinfo where parent_id not in (select parent_id from relationmap where status=1 and school_id={kg})")
+            .on('kg -> kg).as(simple *)
+
+      }.getOrElse(SQL(simpleSql + generateMemberQuery(member))
         .on('kg -> kg, 'member -> (if (member.getOrElse(false)) 1 else 0))
-        .as(simple *)
+        .as(simple *))
   }
 
   def indexInClass(kg: Long, classId: Long, member: Option[Boolean]) = DB.withConnection {
