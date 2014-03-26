@@ -1,5 +1,5 @@
 <ul class="nav nav-tabs">
-  <li ng-repeat="type in types" ng-class="{active: {{type.url == current_type}}}">
+  <li ng-repeat="type in types" ng-class="{active: {{type.url == getCurrentType()}}}">
     <a ng-click="navigateTo(type)">{{type.name}}</a>
   </li>
 </ul>

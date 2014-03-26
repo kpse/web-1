@@ -42,22 +42,20 @@ class Config
       url: '/relationship',
       templateUrl: 'templates/admin/search_panel.html',
       controller: 'RelationshipMainCtrl'
-    .state 'kindergarten.relationship.types',
-      url: '/types',
-      templateUrl: 'templates/admin/relationship_types.html',
-      controller: 'RelationshipMainCtrl'
-    .state 'kindergarten.relationship.types.connected',
-      url: '/connected',
-      templateUrl: 'templates/admin/connected_relationship.html',
-      controller: 'RelationshipCtrl'
-    .state 'kindergarten.relationship.types.unlindparent',
-      url: '/unlinked_parent',
-      templateUrl: 'templates/admin/unlinked_parents.html',
-      controller: 'UnconnectedParentCtrl'
-    .state 'kindergarten.relationship.types.unlindchild',
-      url: '/unlinked_child',
-      templateUrl: 'templates/admin/unlinked_children.html',
-      controller: 'UnconnectedChildCtrl'
+    .state 'kindergarten.relationship.type',
+      url: '/type/:type'
+      templateUrl: (stateParams) ->
+        'templates/admin/' + stateParams.type + '_relationship.html'
+      controllerProvider: ($stateParams) ->
+        $stateParams.type + "Ctrl"
+    .state 'kindergarten.relationship.type.class',
+      url: '/class/:class_id',
+      templateUrl: 'templates/admin/classes.html',
+      controller: 'ConnectedInClassCtrl'
+    .state 'kindergarten.relationship.type.class.list',
+      url: '/list',
+      templateUrl: 'templates/admin/relationship.html',
+      controller: 'ConnectedRelationshipCtrl'
 
     .state 'kindergarten.conversation',
       url: '/conversation',
