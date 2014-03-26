@@ -23,6 +23,14 @@ class ChildControllerSpec extends Specification with TestSupport {
   }
 
   "Child" should {
+    "check authentication first" in new WithApplication {
+
+      val childResponse = route(FakeRequest(GET, "/kindergarten/93740362/child/1_1394545098158")).get
+
+      status(childResponse) must equalTo(UNAUTHORIZED)
+
+    }
+
     "be updated with icon_url" in new WithApplication {
       private val requestHeader = Json.toJson(new ChildInfo(Some("1_1394545098158"), "", "", "1999-01-02", 0, Some("url"), 777888, None, None, Some(93740362)))
 
