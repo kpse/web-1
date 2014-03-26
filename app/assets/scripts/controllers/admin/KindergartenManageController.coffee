@@ -34,6 +34,9 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.goMemberList = ->
         goPageWithClassesTab('member')
 
+      scope.goRelationshipManagement = ->
+        goPageWithClassesTab('relationship/type/connected')
+
       scope.changePassword = (user) ->
         scope.user = angular.copy user
         scope.currentModal = Modal

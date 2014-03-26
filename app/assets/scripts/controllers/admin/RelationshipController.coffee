@@ -24,12 +24,6 @@ angular.module('kulebaoAdmin')
       ]
 
       scope.loading = true
-
-      scope.navigateTo = (s) ->
-        rootScope.current_type = s.url
-        location.path(location.path().replace(/\/type\/.+$/, '') + '/type/' + s.url)
-
-      scope.loading = true
       scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten
 
@@ -158,6 +152,9 @@ angular.module('kulebaoAdmin')
       scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
           location.path(location.path() + '/class/' + scope.kindergarten.classes[0].class_id + '/list') if (location.path().indexOf('/class/') < 0)
+
+      scope.navigateTo = (s) ->
+        location.path(location.path().replace(/\/type\/.+$/, '') + '/type/' + s.url) if stateParams.type != s.url
   ]
 
 angular.module('kulebaoAdmin')
@@ -178,7 +175,8 @@ angular.module('kulebaoAdmin')
         scope.parents = Parent.query school_id: stateParams.kindergarten, connected: false, ->
           scope.loading = false
 
-
+      scope.navigateTo = (s) ->
+        location.path(location.path().replace(/\/type\/.+$/, '') + '/type/' + s.url) if stateParams.type != s.url
   ]
 
 angular.module('kulebaoAdmin')
@@ -200,14 +198,15 @@ angular.module('kulebaoAdmin')
         scope.children = Child.query school_id: stateParams.kindergarten, connected: false, ->
           scope.loading = false
 
+      scope.navigateTo = (s) ->
+        location.path(location.path().replace(/\/type\/.+$/, '') + '/type/' + s.url) if stateParams.type != s.url
   ]
 
 angular.module('kulebaoAdmin')
 .controller 'ConnectedInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', 'classService', 'parentService', 'conversationService', 'relationshipService',
-    'childService',
-    (scope, rootScope, stateParams, location, School, Class, Parent, Chat, Relationship, Child) ->
+    (scope, rootScope, stateParams, location, School, Class, Parent, Chat, Relationship) ->
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.loading = true
@@ -225,8 +224,7 @@ angular.module('kulebaoAdmin')
 .controller 'ConnectedRelationshipCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', 'classService', 'parentService', 'conversationService', 'relationshipService',
-    'childService',
-    (scope, rootScope, stateParams, location, School, Class, Parent, Chat, Relationship, Child) ->
+    (scope, rootScope, stateParams, location, School, Class, Parent, Chat, Relationship) ->
       scope.loading = true
       scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten
