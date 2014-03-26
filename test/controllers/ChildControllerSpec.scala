@@ -22,15 +22,8 @@ class ChildControllerSpec extends Specification with TestSupport {
     FakeRequest(method, url).withSession("username" -> "13402815317", "token" -> "1386425935574")
   }
 
-  def resetChildToken = DB.withConnection {
-    implicit c =>
-      SQL("update accountinfo set pwd_change_time=1386425935574 " +
-        "where accountid='13402815317'").executeUpdate()
-  }
-
   "Child" should {
     "be updated with icon_url" in new WithApplication {
-      resetChildToken
       private val requestHeader = Json.toJson(new ChildInfo(Some("1_1394545098158"), "", "", "1999-01-02", 0, Some("url"), 777888, None, None, Some(93740362)))
 
       val updateResponse = route(loggedRequest(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
@@ -45,7 +38,6 @@ class ChildControllerSpec extends Specification with TestSupport {
     }
 
     "be updated with nick" in new WithApplication {
-      resetChildToken
       private val requestHeader = Json.toJson(new ChildInfo(Some("1_1394545098158"), "", "new_nick_name", "1999-01-02", 0, Some("portrait"), 777888, None, None, Some(93740362)))
 
       val updateResponse = route(loggedRequest(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
@@ -60,7 +52,6 @@ class ChildControllerSpec extends Specification with TestSupport {
     }
 
     "be updated with birthday" in new WithApplication {
-      resetChildToken
       private val requestHeader = Json.toJson(new ChildInfo(Some("1_1394545098158"), "", "new_nick_name", "1999-01-02", 0, Some("portrait"), 777888, None, None, Some(93740362)))
 
       val updateResponse = route(loggedRequest(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get

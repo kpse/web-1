@@ -18,19 +18,11 @@ import play.api.Play.current
 @RunWith(classOf[JUnitRunner])
 class AuthenticationSpec extends Specification with TestSupport {
   implicit val loginWrites = Json.writes[MobileLogin]
-  def resetParentPassword() = DB.withConnection {
-    implicit c =>
-      SQL("update accountinfo set password='5F4DCC3B5AA765D61D8327DEB882CF99' " +
-        "where accountid='13333333333'").executeUpdate()
-  }
-
-//  def before = () => resetParentPassword()
 
   "Authentication" should {
     "log mobile in" in new WithApplication {
 
       private val json = Json.toJson(new MobileLogin("13333333333", "password"))
-      resetParentPassword
       val loginResponse = route(FakeRequest(POST, "/login.do").withJsonBody(json)).get
 
       status(loginResponse) must equalTo(OK)
