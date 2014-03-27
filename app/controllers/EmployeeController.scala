@@ -91,4 +91,9 @@ object EmployeeController extends Controller with Secured {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
         }
   }
+
+  def showInSchool(kg: Long, phone: String) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(Employee.show(phone)))
+  }
 }

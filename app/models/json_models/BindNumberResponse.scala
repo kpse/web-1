@@ -31,14 +31,15 @@ object BindNumberResponse {
 
   def isExpired(phone: String) = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from parentinfo where member_status=1 and status=1 and phone={phone}")
-        .on('phone -> phone).as(get[Long]("count(1)") single) == 0l
+      SQL("select count(1) from parentinfo where member_status=0 and status=1 and phone={phone}")
+        .on('phone -> phone).as(get[Long]("count(1)") single) > 0
   }
 
-  def schoolExpired(kg: Long) = DB.withConnection {
+  def schoolExpired(phone: String) = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from chargeinfo where status=1 and school_id={kg}")
-        .on('kg -> kg.toString).as(get[Long]("count(1)") single) == 0l
+      SQL("select count(1) from chargeinfo c, parentinfo p " +
+        "where c.school_id=p.school_id and p.phone={phone} and c.status=0 and p.status=1")
+        .on('phone -> phone).as(get[Long]("count(1)") single) > 0
   }
 
 
@@ -46,7 +47,8 @@ object BindNumberResponse {
     implicit c =>
       SQL("select count(1) " +
         "from accountinfo a, parentinfo p, chargeinfo c " +
-        "where c.school_id=p.school_id and a.accountid = p.phone and p.status=1 and c.status=1" +
+        "where c.school_id=p.school_id and a.accountid = p.phone " +
+        "and p.status=1 and c.status=1 and member_status=1" +
         "and accountid={accountid}")
         .on(
           'accountid -> phone
@@ -70,7 +72,7 @@ object BindNumberResponse {
       val row = SQL("select a.*, p.name, p.school_id, s.name " +
         "from accountinfo a, parentinfo p, schoolinfo s, chargeinfo c " +
         "where s.school_id=p.school_id and a.accountid = p.phone and c.school_id=p.school_id " +
-        "and c.status=1 and p.status=1 " +
+        "and c.status=1 and p.status=1 and member_status=1" +
         "and accountid={accountid} and pwd_change_time={token}")
         .on(
           'accountid -> request.phonenum,
@@ -80,10 +82,10 @@ object BindNumberResponse {
       row match {
         case None if wrongToken(request.phonenum) =>
           new BindNumberResponse(3, "", "", "", 0, "")
+        case None if isExpired(request.phonenum) || schoolExpired(request.phonenum) =>
+          new BindNumberResponse(2, "", "", "", 0, "")
         case None =>
           new BindNumberResponse(1, "", "", "", 0, "")
-        case Some(r) if isExpired(r.account_name) || schoolExpired(r.school_id) =>
-          new BindNumberResponse(2, "", "", "", 0, "")
         case Some(r) =>
           updateTokenAfterBinding(request, updateTime)
           r

@@ -11,7 +11,7 @@ class BindNumberResponseSpec extends Specification with TestSupport {
       private val response = BindNumberResponse.handle(new BindingNumber("13279491366", "123", "", Some("android"), "1386849160798"))
 
       response.error_code must equalTo(0)
-
+      response.access_token must not equalTo "0"
     }
 
     "success when info is inactive" in new WithApplication {
@@ -23,7 +23,7 @@ class BindNumberResponseSpec extends Specification with TestSupport {
 
     }
 
-    "fail when number is invalid" in new WithApplication {
+    "fail with 1 when number is invalid" in new WithApplication {
 
       private val response = BindNumberResponse.handle(new BindingNumber("987654321", "123", "", Some("android"), "1386849160798"))
 
@@ -31,15 +31,15 @@ class BindNumberResponseSpec extends Specification with TestSupport {
 
     }
 
-    "fail when token is invalid" in new WithApplication {
+    "fail with 3 when token is invalid" in new WithApplication {
 
       private val response = BindNumberResponse.handle(new BindingNumber("13402815317", "123", "", Some("android"), "0"))
 
-      response.error_code must equalTo(1)
+      response.error_code must equalTo(3)
 
     }
 
-    "fail when number is expired" in new WithApplication {
+    "fail with 2 when number is expired" in new WithApplication {
 
       private val response = BindNumberResponse.handle(new BindingNumber("22222222222", "123", "", Some("android"), "2"))
 
@@ -47,7 +47,7 @@ class BindNumberResponseSpec extends Specification with TestSupport {
 
     }
 
-    "fail when school is expired" in new WithApplication {
+    "fail with 2 when school is expired" in new WithApplication {
 
       private val response = BindNumberResponse.handle(new BindingNumber("22222222223", "123", "", Some("android"), "5"))
 
