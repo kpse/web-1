@@ -8,40 +8,43 @@ import models.json_models.MobileLogin
 import models.json_models.BindingNumber
 import models.{AppUpgradeResponse, AppPackage}
 import play.api.Logger
+import helper.JsonLogger._
 
 object Authentication extends Controller {
 
-  implicit val loginReads = Json.reads[MobileLogin]
-  implicit val resultWrites = Json.writes[MobileLoginResponse]
+  implicit val r1 = Json.reads[ChangePassword]
+  implicit val r2 = Json.reads[ResetPassword]
+  implicit val r3 = Json.reads[BindingNumber]
+  implicit val r4 = Json.reads[MobileLogin]
+  implicit val r5 = Json.reads[CheckPhone]
 
+  implicit val w1 = Json.writes[MobileLoginResponse]
+  implicit val w2 = Json.writes[CheckPhoneResponse]
+  implicit val w3 = Json.writes[BindNumberResponse]
+  implicit val w4 = Json.writes[ChangePasswordResponse]
 
   def login = Action(parse.json) {
     request =>
       request.body.validate[MobileLogin].map {
         case (login) =>
           val result = MobileLoginResponse.handle(login)
-          Ok(Json.toJson(result))
+          Ok(loggedJson(result))
       }.recoverTotal {
-        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        e => BadRequest("Detected error:" + loggedErrorJson(e))
       }
   }
 
-  implicit val checkReads = Json.reads[CheckPhone]
-  implicit val checkPhoneResultWrites = Json.writes[CheckPhoneResponse]
 
   def validateNumber = Action(parse.json) {
     request =>
       request.body.validate[CheckPhone].map {
         case (phone) =>
-          Ok(Json.toJson(CheckPhoneResponse.handle(phone)))
+          Ok(loggedJson(CheckPhoneResponse.handle(phone)))
       }.recoverTotal {
-        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        e => BadRequest("Detected error:" + loggedErrorJson(e))
       }
 
   }
-
-  implicit val bindingRead = Json.reads[BindingNumber]
-  implicit val bindResultWrites = Json.writes[BindNumberResponse]
 
 
   def bindNumber = Action(parse.json) {
@@ -52,12 +55,12 @@ object Authentication extends Controller {
           val result = BindNumberResponse.handle(login)
           result match {
             case success if success.error_code == 0 =>
-              Ok(Json.toJson(success)).withSession("username" -> success.account_name, "token" -> success.access_token)
+              Ok(loggedJson(success)).withSession("username" -> success.account_name, "token" -> success.access_token)
             case _ =>
-              Ok(Json.toJson(result))
+              Ok(loggedJson(result))
           }
       }.recoverTotal {
-        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        e => BadRequest("Detected error:" + loggedErrorJson(e))
       }
   }
 
@@ -73,10 +76,6 @@ object Authentication extends Controller {
     } getOrElse BadRequest
   }
 
-  implicit val read1 = Json.reads[ChangePassword]
-  implicit val read2 = Json.reads[ResetPassword]
-  implicit val write3 = Json.writes[ChangePasswordResponse]
-
 
   def resetPassword = Action(parse.json) {
     request =>
@@ -85,12 +84,12 @@ object Authentication extends Controller {
           val reset = ChangePasswordResponse.handleReset(request)
           reset match {
             case success if success.error_code == 0 =>
-              Ok(Json.toJson(success)).withSession("username" -> request.account_name, "token" -> success.access_token)
+              Ok(loggedJson(success)).withSession("username" -> request.account_name, "token" -> success.access_token)
             case _ =>
-              Ok(Json.toJson(reset))
+              Ok(loggedJson(reset))
           }
       }.recoverTotal {
-        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        e => BadRequest("Detected error:" + loggedErrorJson(e))
       }
   }
 
@@ -101,13 +100,13 @@ object Authentication extends Controller {
           val changed = ChangePasswordResponse.handle(request)
           changed match {
             case success if success.error_code == 0 =>
-              Ok(Json.toJson(success)).withSession("username" -> request.account_name, "token" -> success.access_token)
+              Ok(loggedJson(success)).withSession("username" -> request.account_name, "token" -> success.access_token)
             case _ =>
-              Ok(Json.toJson(changed))
+              Ok(loggedJson(changed))
           }
 
       }.recoverTotal {
-        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        e => BadRequest("Detected error:" + loggedErrorJson(e))
       }
   }
 }

@@ -75,7 +75,7 @@ object BindNumberResponse {
               'timestamp -> updateTime,
               'device -> convertToCode(request.device_type)
             ).executeUpdate
-          Logger.info("binding: refresh token %s..phone: %s".format(request.user_id, request.phonenum))
+          Logger.info("binding: refresh token of pushid %s..phone: %s".format(request.user_id, request.phonenum))
           new BindNumberResponse(0, updateTime.toString, row(0)[String]("parentinfo.name"), request.phonenum, row(0)[String]("school_id").toLong, row(0)[String]("schoolinfo.name"))
       }
 
