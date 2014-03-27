@@ -115,3 +115,12 @@
 
   }
 }
+
+
+.modal-body
+{
+  max-height: 650px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  overflow:auto;
+}
