@@ -66,6 +66,7 @@ GET           /kindergarten/:kg/child                                           
 GET           /kindergarten/:kg/child/:childId                                   controllers.ChildController.showInfo(kg: Long, childId: String)
 POST          /kindergarten/:kg/child                                            controllers.ChildController.createOrUpdate(kg: Long)
 POST          /kindergarten/:kg/child/:childId                                   controllers.ChildController.update2(kg: Long, childId: String)
+DELETE        /kindergarten/:kg/child/:childId                                   controllers.ChildController.delete(kg: Long, childId: String)
 
 GET           /kindergarten/:kg/cookbook                                         controllers.CookbookController.index(kg: Long)
 GET           /kindergarten/:kg/cookbook/preview                                 controllers.CookbookController.preview(kg: Long)

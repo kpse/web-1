@@ -11,6 +11,16 @@ import models.helper.TimeHelper.any2DateTime
 case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String, gender: Int, portrait: Option[String], class_id: Int, class_name: Option[String], timestamp: Option[Long], school_id: Option[Long])
 
 object Children {
+  def delete(kg: Long, childId: String) = DB.withConnection {
+    implicit c =>
+      SQL("update childinfo set status=0, update_at={timestamp}  where child_id={child_id} and school_id={kg}")
+        .on(
+          'child_id -> childId,
+          'kg -> kg.toString,
+          'timestamp -> System.currentTimeMillis
+        ).executeUpdate
+  }
+
   def idExists(childId: Option[String]): Boolean = DB.withConnection {
     implicit c =>
       childId match {
@@ -55,7 +65,7 @@ object Children {
     implicit c =>
       val timestamp = System.currentTimeMillis
       val childId = child.child_id.getOrElse("1_%d".format(timestamp))
-      val childUid : Option[Long] = SQL("INSERT INTO childinfo(name, child_id, student_id, gender, classname, picurl, birthday, " +
+      val childUid: Option[Long] = SQL("INSERT INTO childinfo(name, child_id, student_id, gender, classname, picurl, birthday, " +
         "indate, school_id, address, stu_type, hukou, social_id, nick, status, update_at, class_id) " +
         "VALUES ({name},{child_id},{student_id},{gender},{classname},{picurl},{birthday},{indate}," +
         "{school_id},{address},{stu_type},{hukou},{social_id},{nick},{status},{timestamp},{class_id})")
@@ -80,7 +90,7 @@ object Children {
       Logger.info("created childinfo %s".format(childUid))
       childUid.flatMap {
         c =>
-        findById(kg, c)
+          findById(kg, c)
       }
   }
 

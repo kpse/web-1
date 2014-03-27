@@ -67,4 +67,10 @@ object ChildController extends Controller with Secured {
         }.getOrElse(BadRequest)
 
   }
+
+  def delete(kg: Long, childId: String) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(Children.delete(kg, childId)))
+  }
+
 }

@@ -17,13 +17,12 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="parent in parents | filter: searchText" class="row" ng-class="{'member-row': parent.member_status}">
+  <tr ng-repeat="parent in parents | filter: searchText" class="row" ng-class="{'member-row': parent.member_status, 'editable': editParent}" ng-click="editParent(parent)">
     <td class=".col-xs-1">{{parent.id}}</td>
     <td class=".col-xs-3">{{parent.name}}</td>
     <td class=".col-xs-4">{{parent.phone | phone}}</td>
 
     <td class=".col-xs-2">
-      <button class="btn btn-xs btn-warning" ng-click="startEditing(parent)">编辑</button>
       <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
               ng-confirm-click="delete(parent)">删除 </button>
 

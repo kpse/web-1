@@ -33,6 +33,7 @@ angular.module('kulebaoAdmin')
           birthday: '1980-1-1'
           gender: 1
           name: ''
+          member_status: 0
           kindergarten: scope.kindergarten
 
       scope.createChild = ->
@@ -177,6 +178,10 @@ angular.module('kulebaoAdmin')
 
       scope.navigateTo = (s) ->
         location.path(location.path().replace(/\/type\/.+$/, '') + '/type/' + s.url) if stateParams.type != s.url
+
+      scope.delete = (parent) ->
+        Parent.delete school_id: stateParams.kindergarten, phone: parent.phone, ->
+          scope.refreshParents()
   ]
 
 angular.module('kulebaoAdmin')
@@ -200,6 +205,10 @@ angular.module('kulebaoAdmin')
 
       scope.navigateTo = (s) ->
         location.path(location.path().replace(/\/type\/.+$/, '') + '/type/' + s.url) if stateParams.type != s.url
+
+      scope.delete = (child) ->
+        Child.delete school_id: stateParams.kindergarten, child_id: child.child_id, ->
+          scope.refreshChildren()
   ]
 
 angular.module('kulebaoAdmin')
