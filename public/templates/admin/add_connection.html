@@ -40,8 +40,9 @@
           <label for="parent" class="col-sm-4 control-label">家长</label>
 
           <div class="col-sm-8">
-            <select class="form-control parent-select" ng-model="relationship.parent"
+            <select ng-hide="relationship.parent" class="form-control parent-select" ng-model="relationship.parent"
                     ng-options="p.name for p in availableParentFor(relationship.child)" required></select>
+            <p class="form-control-static" ng-show="relationship.parent">{{relationship.parent.name}}</p>
           </div>
 
         </div>
@@ -58,8 +59,9 @@
           <label for="child" class="col-sm-4 control-label">宝宝</label>
 
           <div class="col-sm-8">
-            <select class="form-control child-select" ng-model="relationship.child"
+            <select ng-hide="relationship.child" class="form-control child-select" ng-model="relationship.child"
                     ng-options="c.name group by c.class_name for c in availableChildFor(relationship.parent)" required></select>
+            <p class="form-control-static" ng-show="relationship.child">{{relationship.child.name}}</p>
           </div>
           <p ng-show="alreadyConnected(relationship.parent, relationship.child)" class="error-field">关系已经创建！</p>
 

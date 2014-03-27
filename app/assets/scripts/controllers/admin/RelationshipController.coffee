@@ -45,14 +45,17 @@ angular.module('kulebaoAdmin')
           class_id: scope.kindergarten.classes[0].class_id
           school_id: parseInt stateParams.kindergarten
 
-      scope.createRelationship = ->
+      scope.createRelationship = (child, parent)->
         new Relationship
           school_id: parseInt stateParams.kindergarten
           relationship: '妈妈'
+          child: child
+          parent: parent
 
-      scope.newParent = ->
+      scope.newParent = (saveHook)->
         scope.parents = Parent.query school_id: stateParams.kindergarten, ->
           scope.parent = scope.createParent()
+          scope.parent.saveHook = saveHook
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/admin/add_adult.html'
@@ -63,8 +66,8 @@ angular.module('kulebaoAdmin')
           scope: scope
           contentTemplate: 'templates/admin/add_child.html'
 
-      scope.newRelationship = ->
-        scope.relationship = scope.createRelationship()
+      scope.newRelationship = (child, parent)->
+        scope.relationship = scope.createRelationship(child, parent)
         scope.parents = Parent.query school_id: stateParams.kindergarten, ->
           scope.children = Child.query school_id: stateParams.kindergarten, ->
             scope.currentModal = Modal
@@ -100,9 +103,11 @@ angular.module('kulebaoAdmin')
 
 
       scope.saveParent = (parent) ->
+        saveHook = parent.saveHook
         parent.$save ->
           scope.$broadcast 'refreshing'
           scope.currentModal.hide()
+          saveHook(parent) if saveHook?()
         , (res)->
           Alert
             title: '创建失败'
@@ -141,6 +146,20 @@ angular.module('kulebaoAdmin')
         else
           _.reject scope.parents, (p) ->
             scope.alreadyConnected(p, child)
+
+      scope.createParentFor = (child) ->
+        child.$save ->
+          scope.$broadcast 'refreshing'
+          scope.currentModal.hide()
+          scope.newParent (parent)->
+            scope.connectToExists child, parent
+
+      scope.connectToExists = (child, parent) ->
+        child.$save ->
+          scope.$broadcast 'refreshing'
+          scope.currentModal.hide()
+          scope.newRelationship child, parent
+
   ]
 
 angular.module('kulebaoAdmin')
