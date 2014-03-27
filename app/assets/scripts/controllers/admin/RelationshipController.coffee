@@ -67,6 +67,7 @@ angular.module('kulebaoAdmin')
           contentTemplate: 'templates/admin/add_child.html'
 
       scope.newRelationship = (child, parent)->
+        console.log 'newRelationship'
         scope.relationship = scope.createRelationship(child, parent)
         scope.parents = Parent.query school_id: stateParams.kindergarten, ->
           scope.children = Child.query school_id: stateParams.kindergarten, ->
@@ -101,32 +102,36 @@ angular.module('kulebaoAdmin')
           scope.$apply ->
             person.portrait = url if url isnt undefined
 
+      handleError = (obj, res) ->
+        Alert
+          title: '创建'+obj+'失败'
+          content: res.data.error_msg
+          placement: "top-left"
+          type: "danger"
+          show: true
+          container: '.panel-body'
+          duration: 3
 
       scope.saveParent = (parent) ->
         saveHook = parent.saveHook
         parent.$save ->
           scope.$broadcast 'refreshing'
           scope.currentModal.hide()
-          saveHook(parent) if saveHook?()
-        , (res)->
-          Alert
-            title: '创建失败'
-            content: res.data.error_msg
-            placement: "top-left"
-            type: "danger"
-            show: true
-            container: '.panel-body'
-            duration: 3
+          saveHook(parent) if typeof saveHook == 'function'
+        , (res) -> handleError('家长', res)
+
 
       scope.saveRelationship = (relationship) ->
         relationship.$save ->
           scope.$broadcast 'refreshing'
           scope.currentModal.hide()
+        , (res) -> handleError('关系', res)
 
       scope.saveChild = (child) ->
         child.$save ->
           scope.$broadcast 'refreshing'
           scope.currentModal.hide()
+        , (res) -> handleError('关系', res)
 
       scope.alreadyConnected = (parent, child) ->
         return false if parent is undefined || child is undefined
@@ -152,7 +157,8 @@ angular.module('kulebaoAdmin')
           scope.$broadcast 'refreshing'
           scope.currentModal.hide()
           scope.newParent (parent)->
-            scope.connectToExists child, parent
+            console.log 'invoking'
+            scope.newRelationship child, parent
 
       scope.connectToExists = (child, parent) ->
         child.$save ->

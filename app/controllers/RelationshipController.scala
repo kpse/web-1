@@ -2,7 +2,7 @@ package controllers
 
 import play.api.mvc.{Action, Controller}
 import play.api.libs.json.{JsValue, JsError, Json}
-import models.{ChildInfo, Parent, Relationship}
+import models.{ErrorResponse, ChildInfo, Parent, Relationship}
 import play.Logger
 
 object RelationshipController extends Controller with Secured {
@@ -10,6 +10,7 @@ object RelationshipController extends Controller with Secured {
   implicit val write1 = Json.writes[ChildInfo]
   implicit val write2 = Json.writes[Parent]
   implicit val write3 = Json.writes[Relationship]
+  implicit val write4 = Json.writes[ErrorResponse]
   implicit val read1 = Json.reads[ChildInfo]
   implicit val read2 = Json.reads[Parent]
   implicit val read3 = Json.reads[Relationship]
@@ -29,8 +30,10 @@ object RelationshipController extends Controller with Secured {
         val phone: String = (body \ "parent" \ "phone").as[String]
         val childId: String = (body \ "child" \ "child_id").as[String]
         Relationship.getCard(phone, childId) match {
-          case Some(card: String) =>
-            Ok(Json.toJson(Relationship.show(kg, card)))
+          case Some(c: String) =>
+            Ok(Json.toJson(Relationship.show(kg, c)))
+          case None if Relationship.cardExists(card)=>
+            BadRequest(Json.toJson(ErrorResponse("卡号已存在，请检查并重新输入。")))
           case None =>
             Ok(Json.toJson(Relationship.create(kg, card, relationship, phone, childId)))
         }

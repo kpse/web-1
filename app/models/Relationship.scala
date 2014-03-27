@@ -10,6 +10,12 @@ import play.Logger
 case class Relationship(parent: Option[Parent], child: Option[ChildInfo], card: String, relationship: String)
 
 object Relationship {
+  def cardExists(card: String) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from relationmap where status=1 and card_num={card}")
+        .on('card -> card).as(get[Long]("count(1)") single) > 0
+  }
+
   def getCard(phone: String, childId: String) = DB.withConnection {
     implicit c =>
       SQL("select card_num from relationmap where status=1 and child_id={childId} " +
