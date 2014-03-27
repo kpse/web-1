@@ -5,8 +5,9 @@ import anorm._
 import anorm.SqlParser._
 import play.api.Logger
 import play.api.Play.current
-import java.sql.Date
 import models.helper.MD5Helper.md5
+import anorm.~
+import scala.Some
 
 case class BindingNumber(phonenum: String, user_id: String, channel_id: String, device_type: Option[String], access_token: String)
 
@@ -31,53 +32,72 @@ object BindNumberResponse {
   def isExpired(phone: String) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from parentinfo where member_status=1 and status=1 and phone={phone}")
-      .on('phone -> phone).as(get[Long]("count(1)") single) == 0l
+        .on('phone -> phone).as(get[Long]("count(1)") single) == 0l
   }
 
-  def schoolExpired(kg: String) = DB.withConnection {
+  def schoolExpired(kg: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from chargeinfo where status=1 and school_id={kg}")
-      .on('kg -> kg).as(get[Long]("count(1)") single) == 0l
+        .on('kg -> kg.toString).as(get[Long]("count(1)") single) == 0l
+  }
+
+
+  def wrongToken(phone: String): Boolean = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) " +
+        "from accountinfo a, parentinfo p, chargeinfo c " +
+        "where c.school_id=p.school_id and a.accountid = p.phone and p.status=1 and c.status=1" +
+        "and accountid={accountid}")
+        .on(
+          'accountid -> phone
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
+  def response(updateTime: String) = {
+    get[String]("accountid") ~
+      get[String]("parentinfo.name") ~
+      get[String]("school_id") ~
+      get[String]("schoolinfo.name") ~
+      get[Int]("active") map {
+      case accountid ~ parent ~ schoolId ~ schoolName ~ active =>
+        new BindNumberResponse(0, updateTime, parent, accountid, schoolId.toLong, schoolName)
+    }
   }
 
   def handle(request: BindingNumber) = DB.withConnection {
     implicit c =>
-      val firstRow = SQL("select a.*, p.name, p.school_id, s.name " +
-        "from accountinfo a, parentinfo p, schoolinfo s " +
-        "where s.school_id=p.school_id and a.accountid = p.phone " +
+      val updateTime = System.currentTimeMillis
+      val row = SQL("select a.*, p.name, p.school_id, s.name " +
+        "from accountinfo a, parentinfo p, schoolinfo s, chargeinfo c " +
+        "where s.school_id=p.school_id and a.accountid = p.phone and c.school_id=p.school_id " +
+        "and c.status=1 and p.status=1 " +
         "and accountid={accountid} and pwd_change_time={token}")
         .on(
           'accountid -> request.phonenum,
-          'token -> request.access_token
-        ).apply
-      Logger.info(firstRow.toString)
-      val updateTime = System.currentTimeMillis
-      firstRow match {
-        case row if row.isEmpty =>
+          'token -> request.access_token.toLong
+        ).as(response(updateTime.toString) singleOpt)
+      Logger.info(row.toString)
+      row match {
+        case None if wrongToken(request.phonenum) =>
+          new BindNumberResponse(3, "", "", "", 0, "")
+        case None =>
           new BindNumberResponse(1, "", "", "", 0, "")
-        case row if isExpired(row(0)[String]("accountid")) || schoolExpired(row(0)[String]("school_id")) =>
+        case Some(r) if isExpired(r.account_name) || schoolExpired(r.school_id) =>
           new BindNumberResponse(2, "", "", "", 0, "")
-        case row if row(0)[Int]("active") == 0 =>
-          SQL("update accountinfo set password={new_password}, pwd_change_time={timestamp}, pushid={pushid}, device={device}, active=1 where accountid={accountid}")
-            .on('accountid -> request.phonenum,
-              'new_password -> generateNewPassword(request.phonenum),
-              'pushid -> request.user_id,
-              'timestamp -> updateTime,
-              'device -> convertToCode(request.device_type)
-            ).executeUpdate
-          Logger.info("binding: first activate..phone: %s at %s".format(request.phonenum, new Date(updateTime).toString))
-          new BindNumberResponse(0, updateTime.toString, row(0)[String]("parentinfo.name"), request.phonenum, row(0)[String]("school_id").toLong, row(0)[String]("schoolinfo.name"))
-        case row if row(0)[Int]("active") == 1 =>
-          SQL("update accountinfo set pushid={pushid}, device={device}, active=1, pwd_change_time={timestamp} " +
-            "where accountid={accountid}")
-            .on('accountid -> request.phonenum,
-              'pushid -> request.user_id,
-              'timestamp -> updateTime,
-              'device -> convertToCode(request.device_type)
-            ).executeUpdate
-          Logger.info("binding: refresh token of pushid %s..phone: %s".format(request.user_id, request.phonenum))
-          new BindNumberResponse(0, updateTime.toString, row(0)[String]("parentinfo.name"), request.phonenum, row(0)[String]("school_id").toLong, row(0)[String]("schoolinfo.name"))
+        case Some(r) =>
+          updateTokenAfterBinding(request, updateTime)
+          r
       }
+  }
 
+  def updateTokenAfterBinding(request: BindingNumber, updateTime: Long) = DB.withConnection {
+    implicit c =>
+      SQL("update accountinfo set pushid={pushid}, device={device}, active=1, pwd_change_time={timestamp} " +
+        "where accountid={accountid}")
+        .on('accountid -> request.phonenum,
+          'pushid -> request.user_id,
+          'timestamp -> updateTime,
+          'device -> convertToCode(request.device_type)
+        ).executeUpdate
   }
 }
