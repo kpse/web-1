@@ -276,16 +276,22 @@ object Parent {
     case None => ""
   }
 
+  def included(connected: Boolean): String = connected match {
+    case true => ""
+    case false => " not "
+  }
+
   def simpleIndex(kg: Long, member: Option[Boolean], connected: Option[Boolean]) = DB.withConnection {
     implicit c =>
-      connected.map {
-        case false =>
-          SQL("select * from parentinfo where school_id={kg} and parent_id not in (select parent_id from relationmap where status=1 and school_id={kg})")
+      connected match {
+        case Some(connection) =>
+          SQL(simpleSql + "and parent_id " + included(connection) + " in (select parent_id from relationmap where status=1 and school_id={kg})")
             .on('kg -> kg).as(simple *)
-
-      }.getOrElse(SQL(simpleSql + generateMemberQuery(member))
-        .on('kg -> kg, 'member -> (if (member.getOrElse(false)) 1 else 0))
-        .as(simple *))
+        case _ =>
+          SQL(simpleSql + generateMemberQuery(member))
+            .on('kg -> kg, 'member -> (if (member.getOrElse(false)) 1 else 0))
+            .as(simple *)
+      }
   }
 
   def indexInClass(kg: Long, classId: Long, member: Option[Boolean]) = DB.withConnection {

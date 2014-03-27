@@ -1,19 +1,15 @@
 package controllers
 
+import _root_.helper.TestSupport
 import org.specs2.runner.JUnitRunner
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.libs.json._
-import models.json_models.BindingNumber
-import helper.TestSupport
-import play.api.db.DB
-import anorm._
 import models.json_models.MobileLogin
 import models.json_models.CheckPhone
 import models.json_models.BindingNumber
-import play.api.Play.current
 
 @RunWith(classOf[JUnitRunner])
 class AuthenticationSpec extends Specification with TestSupport {

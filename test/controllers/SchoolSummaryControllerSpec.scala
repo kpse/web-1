@@ -1,12 +1,12 @@
 package controllers
 
+import _root_.helper.TestSupport
 import org.specs2.runner.JUnitRunner
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import play.api.test.FakeRequest
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
-import helper.TestSupport
 
 @RunWith(classOf[JUnitRunner])
 class SchoolSummaryControllerSpec extends Specification with TestSupport {
