@@ -22,11 +22,17 @@ object Authentication extends Controller {
   implicit val w2 = Json.writes[CheckPhoneResponse]
   implicit val w3 = Json.writes[BindNumberResponse]
   implicit val w4 = Json.writes[ChangePasswordResponse]
+  implicit val w5 = Json.writes[MobileLogin]
+  implicit val w6 = Json.writes[CheckPhone]
+  implicit val w7 = Json.writes[BindingNumber]
+  implicit val w8 = Json.writes[ChangePassword]
+  implicit val w9 = Json.writes[ResetPassword]
 
   def login = Action(parse.json) {
     request =>
       request.body.validate[MobileLogin].map {
         case (login) =>
+          loggedJson(login)
           val result = MobileLoginResponse.handle(login)
           Ok(loggedJson(result))
       }.recoverTotal {
@@ -39,6 +45,7 @@ object Authentication extends Controller {
     request =>
       request.body.validate[CheckPhone].map {
         case (phone) =>
+          loggedJson(phone)
           Ok(loggedJson(CheckPhoneResponse.handle(phone)))
       }.recoverTotal {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
@@ -81,6 +88,7 @@ object Authentication extends Controller {
     request =>
       request.body.validate[ResetPassword].map {
         case (request) =>
+          loggedJson(request)
           val reset = ChangePasswordResponse.handleReset(request)
           reset match {
             case success if success.error_code == 0 =>
@@ -97,6 +105,7 @@ object Authentication extends Controller {
     request =>
       request.body.validate[ChangePassword].map {
         case (request) =>
+          loggedJson(request)
           val changed = ChangePasswordResponse.handle(request)
           changed match {
             case success if success.error_code == 0 =>
