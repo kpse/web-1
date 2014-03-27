@@ -33,7 +33,7 @@ class BindNumberResponseSpec extends Specification with TestSupport {
 
     "fail with 3 when token is invalid" in new WithApplication {
 
-      private val response = BindNumberResponse.handle(new BindingNumber("13402815317", "123", "", Some("android"), "0"))
+      private val response = BindNumberResponse.handle(new BindingNumber("13408654683", "123", "", Some("android"), "999"))
 
       response.error_code must equalTo(3)
 
