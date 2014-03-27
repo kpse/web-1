@@ -13,10 +13,7 @@
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav">
-
-          </ul>
+        <div class="collapse navbar-collapse col-sm-12" id="bs-example-navbar-collapse-1">
           <form class="navbar-form navbar-left" role="search">
             <div class="form-group">
               <input type="text" class="form-control" placeholder="Search" ng-model="searchText">
@@ -24,7 +21,7 @@
             <button type="button" class="btn btn-warning dropdown-toggle admin-user" data-toggle="dropdown">
               {{adminUser.name}} <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu" role="menu">
+            <ul class="dropdown-menu user-menu" role="menu">
               <li><a ng-href="#/kindergarten/{{kindergarten.school_id}}/welcome">欢迎页面</a></li>
               <li><a ng-click="changePassword(adminUser)">修改密码</a></li>
               <li ng-show="adminUser.privilege_group == 'operator'"><a ng-href="/operation">去后台管理页面</a></li>
@@ -32,9 +29,10 @@
               <li><a class="logout-link" href="/logout">退出登陆</a></li>
             </ul>
           </form>
-
-        </div><!-- /.navbar-collapse -->
-      </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container-fluid -->
     </nav>
   </div>
 
@@ -107,5 +105,12 @@
     </ul>
 
   </div>
-  <div class="module-view  col-sm-10" ui-view></div>
+  <div class="col-sm-10">
+    <!--<ol class="breadcrumb">-->
+      <!--<li><a href="#">Home</a></li>-->
+      <!--<li><a href="#">Library</a></li>-->
+      <!--<li class="active">Data</li>-->
+    <!--</ol>-->
+    <div class="module-view" ui-view></div>
+  </div>
 </div>
