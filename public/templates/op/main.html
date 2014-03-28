@@ -4,27 +4,38 @@
       <div class="product-logo"></div>
       <div class="rainbow-logo"></div>
     </div>
-    <div class="title">
-      <h2 class="content">幼乐宝 后台管理</h2>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">幼乐宝 后台管理</a>
+        </div>
 
-      <div class="btn-group">
-        <button type="button" class="btn btn-warning dropdown-toggle admin-user" data-toggle="dropdown">
-          {{adminUser.name}} <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu">
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Another action</a></li>
-          <li><a ng-href="/admin">去学校页面</a></li>
-          <li class="divider"></li>
-          <li><a class="logout-link" href="/logout">退出登陆</a></li>
-        </ul>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse col-sm-12" id="bs-example-navbar-collapse-1">
+          <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search" ng-model="searchText">
+            </div>
+            <button type="button" class="btn btn-warning dropdown-toggle admin-user" data-toggle="dropdown">
+              {{adminUser.name}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu user-menu" role="menu">
+              <li><a ng-click="changePassword(adminUser)">修改密码</a></li>
+              <li><a ng-href="/admin">去学校页面</a></li>
+              <li class="divider"></li>
+              <li><a class="logout-link" href="/logout">退出登陆</a></li>
+            </ul>
+          </form>
+        </div>
+        <!-- /.navbar-collapse -->
       </div>
-
-    </div>
+      <!-- /.container-fluid -->
+    </nav>
   </div>
 
-  <div class="row modules-list-container">
-    <ul class="nav nav-tabs modules-list actions">
+  <div class="row modules-list-container col-sm-2">
+    <ul class="nav nav-pills nav-stacked modules-list actions">
       <li class="action" ng-class="{active : isSelected('school')}">
         <a ng-href="#/main/school" class="btn btn-danger">
           学校管理
@@ -42,7 +53,7 @@
       </li>
       <li class="action" ng-class="{active : isSelected('principal')}">
         <a ng-href="#/main/principal" class="btn btn-primary">
-          学校管理员信息管理
+          校长信息
         </a>
       </li>
       <li class="action" ng-class="{active : isSelected('charge')}">
@@ -53,5 +64,7 @@
     </ul>
 
   </div>
-  <div class="module-view" ui-view></div>
+  <div class="col-sm-10">
+    <div class="module-view" ui-view></div>
+  </div>
 </div>
