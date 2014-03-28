@@ -155,11 +155,21 @@ object Employee {
         ).execute()
   }
 
-  def allInSchool(kg: Long) = DB.withConnection {
+  def generatePhoneQuery(phones: Option[String]): String = {
+    phones match {
+      case Some(phone) =>
+        " and phone in (" + phone + ") "
+      case None =>
+        " "
+    }
+  }
+
+  def allInSchool(kg: Long, phone: Option[String]) = DB.withConnection {
     implicit c =>
-      SQL("select * from employeeinfo where status=1 and school_id={kg}")
+      SQL("select * from employeeinfo where status=1 and school_id={kg} " + generatePhoneQuery(phone))
         .on(
-          'kg -> kg.toString
+          'kg -> kg.toString,
+          'phone -> phone
         ).as(simple *)
   }
 

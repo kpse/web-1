@@ -39,10 +39,10 @@ object EmployeeController extends Controller with Secured {
         }
   }
 
-  def indexInSchool(kg: Long) = IsLoggedIn {
+  def indexInSchool(kg: Long, phone: Option[String]) = IsLoggedIn {
     u =>
       _ =>
-        Ok(Json.toJson(Employee.allInSchool(kg)))
+        Ok(Json.toJson(Employee.allInSchool(kg, phone)))
   }
 
   def deleteInSchool(kg: Long, phone: String) = IsOperator {

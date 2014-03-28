@@ -98,7 +98,7 @@ POST          /kindergarten/:kg/child/:childId/assess                           
 DELETE        /kindergarten/:kg/child/:childId/assess/:assessId                  controllers.AssessController.delete(kg: Long, childId: String, assessId: Long)
 
 
-GET           /kindergarten/:kg/employee                                         controllers.EmployeeController.indexInSchool(kg: Long)
+GET           /kindergarten/:kg/employee                                         controllers.EmployeeController.indexInSchool(kg: Long, phone: Option[String])
 GET           /kindergarten/:kg/employee/:phone                                  controllers.EmployeeController.showInSchool(kg: Long, phone: String)
 DELETE        /kindergarten/:kg/employee/:phone                                  controllers.EmployeeController.deleteInSchool(kg: Long, phone: String)
 POST          /kindergarten/:kg/employee/:phone                                  controllers.EmployeeController.createOrUpdateInSchool(kg: Long, phone: String)
