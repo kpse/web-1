@@ -152,6 +152,10 @@ class Config
       url: '/expired',
       templateUrl: 'templates/admin/expired.html',
       controller: 'ExpiredCtrl'
+    .state 'notFound',
+      url: '/404',
+      templateUrl: 'templates/admin/404.html',
+      controller: 'ExpiredCtrl'
 
     .state 'kindergarten.wip',
       url: '/wip',
