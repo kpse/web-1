@@ -61,10 +61,10 @@ angular.module('kulebaoAdmin')
         scope.refresh = ->
           scope.loading = true
           scope.conversations = Message.bind(school_id: stateParams.kindergarten, phone: scope.relationship.parent.phone).query ->
-            scope.message = scope.newAssess()
+            scope.message = scope.newMessage()
             scope.loading = false
 
-        scope.newAssess = ->
+        scope.newMessage = ->
           new Message
             school_id: stateParams.kindergarten
             phone: scope.relationship.parent.phone
@@ -72,6 +72,7 @@ angular.module('kulebaoAdmin')
             image: ''
             timestamp: 0
             sender: scope.adminUser.name
+            sender_id: scope.adminUser.phone
 
         scope.preview = (msg, option) ->
           scope.viewOption = _.extend reply: true, option
@@ -88,7 +89,7 @@ angular.module('kulebaoAdmin')
             scope.refresh()
 
         scope.messageEditing = ->
-          scope.message = scope.newAssess()
+          scope.message = scope.newMessage()
 
           scope.currentModal = Modal
             scope: scope
