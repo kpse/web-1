@@ -156,6 +156,10 @@ class Config
       url: '/404',
       templateUrl: 'templates/admin/404.html',
       controller: 'ExpiredCtrl'
+    .state 'unAuthenticated',
+      url: '/401',
+      templateUrl: 'templates/admin/401.html',
+      controller: 'ExpiredCtrl'
 
     .state 'kindergarten.wip',
       url: '/wip',
