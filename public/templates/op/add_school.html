@@ -5,7 +5,7 @@
       <label for="school-id" class="col-sm-2 control-label">学校编号</label>
 
       <div class="col-sm-8">
-        <input id="school-id" type="text" ng-model="school.school_id" name="id"
+        <input id="school-id" type="number" ng-model="school.school_id" name="id"
                class="editing-field form-control" ng-bk-focus required/>
         <span class="error-field" ng-show="newSchoolForm.id.$dirty && isSchoolDuplicated(school, 'school_id')">与已有学校ID重复！</span>
       </div>
