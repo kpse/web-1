@@ -131,7 +131,7 @@ angular.module('kulebaoAdmin')
         child.$save ->
           scope.$broadcast 'refreshing'
           scope.currentModal.hide()
-        , (res) -> handleError('关系', res)
+        , (res) -> handleError('小孩', res)
 
       scope.alreadyConnected = (parent, child) ->
         return false if parent is undefined || child is undefined
