@@ -12,35 +12,34 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
           scope.kindergarten.charge = Charge.query school_id: $stateParams.kindergarten, ->
             if scope.kindergarten.charge[0] && scope.kindergarten.charge[0].status == 0
               location.path '/expired'
-
         , (res) ->
-          location.path('/' + res.status)
+          location.path '/' + res.status
 
       scope.isSelected = (tab)->
         tab is $rootScope.tabName
 
       goPageWithClassesTab = (pageName, subName)->
         if location.path().indexOf(pageName + '/class') < 0
-          location.path('/kindergarten/' + $stateParams.kindergarten + '/' + pageName)
+          location.path '/kindergarten/' + $stateParams.kindergarten + '/' + pageName
         else if subName? && location.path().indexOf('/' + subName + '/') > 0
-          location.path(location.path().replace(new RegExp('/' + subName + '/.+$',"g"), '/list'))
+          location.path location.path().replace(new RegExp('/' + subName + '/.+$',"g"), '/list')
         else
-          location.path(location.path().replace(/\/[^\/]+$/, '/list'))
+          location.path location.path().replace(/\/[^\/]+$/, '/list')
 
       scope.goConversation = ->
-        goPageWithClassesTab('conversation', 'card')
+        goPageWithClassesTab 'conversation', 'card'
 
       scope.goAssignment = ->
-        goPageWithClassesTab('assignment')
+        goPageWithClassesTab 'assignment'
 
       scope.goBabyStatus = ->
-        goPageWithClassesTab('baby-status', 'child')
+        goPageWithClassesTab 'baby-status', 'child'
 
       scope.goMemberList = ->
-        goPageWithClassesTab('member')
+        goPageWithClassesTab 'member'
 
       scope.goRelationshipManagement = ->
-        goPageWithClassesTab('relationship/type/connected')
+        goPageWithClassesTab 'relationship/type/connected'
 
       scope.changePassword = (user) ->
         scope.user = angular.copy user
