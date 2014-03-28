@@ -60,6 +60,7 @@ angular.module('kulebaoAdmin')
             scope: scope
             keyboard: false
             placement: 'center'
+            backdrop: 'static'
             contentTemplate: 'templates/admin/add_adult.html'
 
       scope.newChild = ->
@@ -68,6 +69,7 @@ angular.module('kulebaoAdmin')
           scope: scope
           keyboard: false
           placement: 'center'
+          backdrop: 'static'
           contentTemplate: 'templates/admin/add_child.html'
 
       scope.newRelationship = (child, parent)->
@@ -79,6 +81,7 @@ angular.module('kulebaoAdmin')
               scope: scope
               keyboard: false
               placement: 'center'
+              backdrop: 'static'
               contentTemplate: 'templates/admin/add_connection.html'
 
       scope.editParent = (parent) ->
