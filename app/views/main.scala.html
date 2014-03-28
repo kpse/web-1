@@ -1,5 +1,7 @@
 @(appName: String)(scripts: Html)(styling: Html)(content: Html)
 
+@import controllers.VersionedAssets._
+
 <!DOCTYPE html>
 <!--[if IE 8]>
 <html class="no-js lt-ie9" lang="en" ng-app=" @appName"> <![endif]-->
@@ -8,33 +10,33 @@
 
   <head>
     <title>Welcome to Kulebao</title>
-    <link rel="stylesheet" media="screen" href="@routes.Assets.at("vendor/css/jquery-ui/jquery-ui.min.css")">
-    <link rel="stylesheet" media="screen" href="@routes.Assets.at("vendor/css/bootstrap/bootstrap.min.css")">
-    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/common.css")">
-    <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("vendor/css/jquery-ui/jquery-ui.min.css")">
+    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("vendor/css/bootstrap/bootstrap.min.css")">
+    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/common.css")">
+    <link rel="shortcut icon" type="image/png" href="@routes.VersionedAssets.at("images/favicon.png")">
     @styling
   </head>
   <body class="main-body">
     @content
-    <script src="@routes.Assets.at("vendor/jquery/jquery.min.js")" type="text/javascript"></script>
-    <script src="@routes.Assets.at("vendor/jquery-ui/jquery-ui.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/jquery/jquery.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/jquery-ui/jquery-ui.min.js")" type="text/javascript"></script>
 
-    <script src="@routes.Assets.at("javascripts/vendor/underscore-min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("javascripts/vendor/underscore-min.js")" type="text/javascript"></script>
 
-    <script src="@routes.Assets.at("vendor/angular/angular.min.js")" type="text/javascript"></script>
-    <script src="@routes.Assets.at("vendor/angular-ui-router/angular-ui-router.min.js")" type="text/javascript"></script>
-    <script src="@routes.Assets.at("vendor/angular-resource/angular-resource.min.js")" type="text/javascript"></script>
-    <script src="@routes.Assets.at("vendor/angular-route/angular-route.min.js")" type="text/javascript"></script>
-    <script src="@routes.Assets.at("vendor/angular-bootstrap/ui-bootstrap-tpls.min.js")" type="text/javascript"></script>
-    <script src="@routes.Assets.at("vendor/angular-cookies/angular-cookies.min.js")" type="text/javascript"></script>
-    <script src="@routes.Assets.at("vendor/angular-animate/angular-animate.min.js")" type="text/javascript"></script>
-    <script src="@routes.Assets.at("vendor/angular-sanitize/angular-sanitize.min.js")" type="text/javascript"></script>
-    <script src="@routes.Assets.at("vendor/angular-strap/angular-strap.min.js")" type="text/javascript"></script>
-    <script src="@routes.Assets.at("vendor/angular-strap/angular-strap.tpl.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/angular/angular.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/angular-ui-router/angular-ui-router.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/angular-resource/angular-resource.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/angular-route/angular-route.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/angular-bootstrap/ui-bootstrap-tpls.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/angular-cookies/angular-cookies.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/angular-animate/angular-animate.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/angular-sanitize/angular-sanitize.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/angular-strap/angular-strap.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/angular-strap/angular-strap.tpl.min.js")" type="text/javascript"></script>
 
-    <script src="@routes.Assets.at("vendor/bootstrap/bootstrap.min.js")" type="text/javascript"></script>
-    <script src="@routes.Assets.at("vendor/angulartics/angulartics.min.js")" type="text/javascript"></script>
-    <script src="@routes.Assets.at("vendor/angulartics/angulartics-ga.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/bootstrap/bootstrap.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/angulartics/angulartics.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("vendor/angulartics/angulartics-ga.min.js")" type="text/javascript"></script>
 
     @scripts
     <script>

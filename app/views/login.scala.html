@@ -1,10 +1,11 @@
 @(form: Form[(String, String)])(implicit flash: Flash)
     @styling = {
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
-        <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/login.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.VersionedAssets.at("images/favicon.png")">
+        <link rel="stylesheet" type="text/css" media="screen" href="@routes.VersionedAssets.at("stylesheets/login.css")">
     }
     @scripts = {}
 @main("")(scripts)(styling) {
+
     <header>
         <a href="@routes.Application.admin" id="admin" class="main-entry">学校管理</a>
         <a href="@routes.Application.operation" id="operation" class="main-entry">系统管理</a>
