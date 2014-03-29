@@ -111,7 +111,7 @@ object School {
     implicit c =>
       val exist = SQL("select count(1) from classinfo where school_id={kg} and class_id={id}").on(
         'kg -> clazz.school_id,
-        'id -> clazz.class_id
+        'id -> clazz.class_id.getOrElse(-1)
       ).as(get[Long]("count(1)") single)
       exist match {
         case (0l) => createClass(clazz.school_id, clazz)
@@ -123,29 +123,31 @@ object School {
 
   def update(clazz: SchoolClass) = DB.withConnection {
     implicit c =>
-      SQL("update classinfo set class_name={name} where school_id={school_id} and class_id={class_id}")
+      val time = System.currentTimeMillis
+      SQL("update classinfo set class_name={name}, update_at={time}" +
+        "where school_id={school_id} and class_id={class_id}")
         .on('school_id -> clazz.school_id.toString,
           'class_id -> clazz.class_id,
-          'name -> clazz.name).executeUpdate()
+          'name -> clazz.name,
+          'time -> time).executeUpdate()
 
   }
 
   def generateClassId(kg: Long): Int = DB.withConnection {
     implicit c =>
       SQL("select max(class_id) as max from classinfo where school_id = {school_id}")
-        .on('school_id -> kg.toString).as(get[Int]("max") single)
+        .on('school_id -> kg.toString).as(get[Int]("max") single) + 3
   }
 
 
   def createClass(kg: Long, classInfo: SchoolClass) = DB.withConnection {
     implicit c =>
       val time = System.currentTimeMillis
-      val insert = SQL("insert into classinfo (school_id, class_id, class_name, status, update_at) " +
-        "values ({kg}, {class_id}, {name}, {status}, {time})")
+      val insert = SQL("insert into classinfo (school_id, class_id, class_name, update_at) " +
+        "values ({kg}, {class_id}, {name}, {time})")
         .on('kg -> kg.toString,
           'class_id -> classInfo.class_id.getOrElse(generateClassId(kg)),
           'name -> classInfo.name,
-          'status -> 1,
           'time -> time).executeInsert()
       SQL("select * from classinfo where uid={uid}")
         .on('uid -> insert).as(simple single)

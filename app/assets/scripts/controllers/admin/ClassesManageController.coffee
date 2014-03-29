@@ -28,13 +28,6 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
         new Class
           school_id: parseInt $stateParams.kindergarten
           name: ''
-          class_id: nextId(scope.classes)
-
-      nextId = (classes)->
-        return 100 if classes.length is 0
-        23 + _.max _.map classes, (c) ->
-          c.class_id
-
 
       scope.addClass = ->
         scope.currentClass = scope.createClass()
