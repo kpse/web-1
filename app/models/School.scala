@@ -139,10 +139,14 @@ object School {
 
   def createClass(kg: Long, classInfo: SchoolClass) = DB.withConnection {
     implicit c =>
-      val insert = SQL("insert into classinfo (school_id, class_id, class_name) values ({kg}, {class_id}, {name})")
+      val time = System.currentTimeMillis
+      val insert = SQL("insert into classinfo (school_id, class_id, class_name, status, update_at) " +
+        "values ({kg}, {class_id}, {name}, {status}, {time})")
         .on('kg -> kg.toString,
           'class_id -> classInfo.class_id.getOrElse(generateClassId(kg)),
-          'name -> classInfo.name).executeInsert()
+          'name -> classInfo.name,
+          'status -> 1,
+          'time -> time).executeInsert()
       SQL("select * from classinfo where uid={uid}")
         .on('uid -> insert).as(simple single)
   }
