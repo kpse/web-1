@@ -25,6 +25,10 @@ class Config
       url: '/charge',
       templateUrl: 'templates/op/charge.html',
       controller: 'OpChargeCtrl'
+    .state 'main.verification_code',
+      url: '/verification_code',
+      templateUrl: 'templates/op/verification_code.html',
+      controller: 'OpVerificationCtrl'
 
     $urlRouterProvider.otherwise ($injector, $location) ->
       $location.path '/main/school'

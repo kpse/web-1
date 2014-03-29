@@ -8,7 +8,7 @@ import play.api.libs.json.{JsError, Json}
 import play.cache.Cache
 import scala.concurrent.{Future, Promise}
 
-object SMSController extends Controller {
+object SMSController extends Controller with Secured {
   implicit val context = scala.concurrent.ExecutionContext.Implicits.global
   implicit val write1 = Json.writes[SuccessResponse]
   implicit val write2 = Json.writes[ErrorResponse]
@@ -48,8 +48,6 @@ object SMSController extends Controller {
     }
   }
 
-
-
   def verify(phone: String) = Action(parse.json) {
     implicit request =>
       request.body.validate[Verification].map {
@@ -65,5 +63,10 @@ object SMSController extends Controller {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
 
+  }
+
+  def checkVerificationCode = IsOperator {
+    u => _ =>
+      Ok(Json.toJson(List[String]()))
   }
 }
