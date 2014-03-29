@@ -45,8 +45,9 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
         _.find scope.employees, (e) -> e.name == m
 
       scope.save = (clazz) ->
+        managers = clazz.managers
         clazz.$save ->
-          _.forEach clazz.managers, (m) ->
+          _.forEach managers, (m) ->
             cm = new ClassManager(getManager(m))
             cm.class_id = clazz.class_id
             cm.$save()

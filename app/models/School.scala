@@ -114,11 +114,14 @@ object School {
         'id -> clazz.class_id.getOrElse(-1)
       ).as(get[Long]("count(1)") single)
       exist match {
-        case (0l) => createClass(clazz.school_id, clazz)
-        case (1l) => update(clazz)
+        case (0l) =>
+          updateManager(clazz)
+          createClass(clazz.school_id, clazz)
+        case (1l) =>
+          update(clazz)
+          findById(clazz)
       }
-      updateManager(clazz)
-      findById(clazz)
+
   }
 
   def update(clazz: SchoolClass) = DB.withConnection {
@@ -150,7 +153,7 @@ object School {
           'name -> classInfo.name,
           'time -> time).executeInsert()
       SQL("select * from classinfo where uid={uid}")
-        .on('uid -> insert).as(simple single)
+        .on('uid -> insert).as(simple singleOpt)
   }
 
   val simple = {
