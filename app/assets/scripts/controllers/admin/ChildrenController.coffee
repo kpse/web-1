@@ -1,23 +1,29 @@
 'use strict'
 
+
 angular.module('kulebaoAdmin')
-.controller 'ConnectToChildCtrl',
-    ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService', 'childService',
-      (scope, rootScope, stateParams, location, School, Class, Parent, Children) ->
-        rootScope.tabName = 'parents'
-        scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.class = stateParams.classId
+.controller 'unconnectedChildCtrl',
+  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
+   'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService',
+    (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload) ->
+      scope.current_type = 'unconnectedChild'
 
-        scope.backToList = () ->
-          location.path(location.path().replace(/\/[^\/]+$/, '/list'))
+      scope.loading = true
+      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
+        scope.refreshChildren()
 
-        if rootScope.parent isnt undefined
-          scope.parent = rootScope.parent
-          scope.children = Children.bind(school_id: stateParams.kindergarten).query()
-        else
-          scope.backToList()
+      scope.$on 'refreshing', ->
+        scope.refreshChildren()
 
-        scope.connect = (parent, child) ->
-          parent.child = Children.bind(school_id: stateParams.kindergarten, child_id: child.child_id).get ->
-            location.path(location.path().replace(/\/[^\/]+$/, '/edit_child'))
-    ]
+      scope.refreshChildren = ->
+        scope.loading = true
+        scope.children = Child.query school_id: stateParams.kindergarten, connected: false, ->
+          scope.loading = false
+
+      scope.navigateTo = (s) ->
+        location.path(location.path().replace(/\/type\/.+$/, '') + '/type/' + s.url) if stateParams.type != s.url
+
+      scope.delete = (child) ->
+        Child.delete school_id: stateParams.kindergarten, child_id: child.child_id, ->
+          scope.refreshChildren()
+  ]

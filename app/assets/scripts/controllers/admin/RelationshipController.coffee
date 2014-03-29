@@ -193,59 +193,6 @@ angular.module('kulebaoAdmin')
   ]
 
 angular.module('kulebaoAdmin')
-.controller 'unconnectedParentCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
-    (scope, rootScope, stateParams, location, School, Class, Parent) ->
-      scope.current_type = 'unconnectedParent'
-
-      scope.loading = true
-      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-        scope.refreshParents()
-
-      scope.$on 'refreshing', ->
-        scope.refreshParents()
-
-      scope.refreshParents = ->
-        scope.loading = true
-        scope.parents = Parent.query school_id: stateParams.kindergarten, connected: false, ->
-          scope.loading = false
-
-      scope.navigateTo = (s) ->
-        location.path(location.path().replace(/\/type\/.+$/, '') + '/type/' + s.url) if stateParams.type != s.url
-
-      scope.delete = (parent) ->
-        Parent.delete school_id: stateParams.kindergarten, phone: parent.phone, ->
-          scope.refreshParents()
-  ]
-
-angular.module('kulebaoAdmin')
-.controller 'unconnectedChildCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
-   'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService',
-    (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload) ->
-      scope.current_type = 'unconnectedChild'
-
-      scope.loading = true
-      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-        scope.refreshChildren()
-
-      scope.$on 'refreshing', ->
-        scope.refreshChildren()
-
-      scope.refreshChildren = ->
-        scope.loading = true
-        scope.children = Child.query school_id: stateParams.kindergarten, connected: false, ->
-          scope.loading = false
-
-      scope.navigateTo = (s) ->
-        location.path(location.path().replace(/\/type\/.+$/, '') + '/type/' + s.url) if stateParams.type != s.url
-
-      scope.delete = (child) ->
-        Child.delete school_id: stateParams.kindergarten, child_id: child.child_id, ->
-          scope.refreshChildren()
-  ]
-
-angular.module('kulebaoAdmin')
 .controller 'ConnectedInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', 'classService', 'parentService', 'conversationService', 'relationshipService',
