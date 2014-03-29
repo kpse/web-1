@@ -12,7 +12,7 @@ describe 'Controller: ParentsCtrl', ($alert) ->
   # Initialize the controller and a mock scope
   beforeEach inject ($controller, $rootScope, classService, schoolService, _$httpBackend_) ->
     scope = $rootScope.$new()
-    ParentsCtrl = $controller 'ParentsInClassCtrl', {
+    ParentsCtrl = $controller 'unconnectedParentCtrl', {
       $scope: scope
       classService: classService
       schoolService: schoolService
@@ -22,27 +22,19 @@ describe 'Controller: ParentsCtrl', ($alert) ->
     }
     $httpBackend = _$httpBackend_
 
-    $httpBackend.expectGET('/ws/fileToken?bucket=suoqin-test')
-    .respond
-        token: 'token'
-
     $httpBackend.expectGET('/kindergarten/93740362')
     .respond
         school_id: 93740362
         name: 'school_name'
 
-    $httpBackend.expectGET('/kindergarten/93740362/parent')
+    $httpBackend.expectGET('/kindergarten/93740362/parent?connected=false')
     .respond [
       id: 1
       name: 'name'
       school_id: 1
       phone: 123
     ]
-    $httpBackend.expectGET('/kindergarten/93740362/class')
-    .respond [
-      class_id: 123
-      name: 'class_name'
-    ]
+
 
   it 'should attach a list of parents to the scope', () ->
     $httpBackend.flush()
