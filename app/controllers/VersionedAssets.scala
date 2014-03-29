@@ -21,7 +21,6 @@ object VersionedAsset {
 
     def unbind(key: String, value: VersionedAsset) = {
       val resourceName = Option(value.path + "/" + value.file).map(name => if (name.startsWith("/")) name else ("/" + name)).get
-      Logger.info("unbind: " + resourceName)
       val modified = Play.resource(resourceName).flatMap {
         resource =>
           resource.getProtocol match {
