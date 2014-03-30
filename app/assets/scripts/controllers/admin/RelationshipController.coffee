@@ -66,6 +66,7 @@ angular.module('kulebaoAdmin')
             contentTemplate: 'templates/admin/add_adult.html'
 
       scope.newChild = ->
+        scope.nickFollowing = true
         scope.child = scope.createChild()
         scope.currentModal = Modal
           scope: scope
@@ -93,6 +94,7 @@ angular.module('kulebaoAdmin')
             contentTemplate: 'templates/admin/add_adult.html'
 
       scope.editChild = (child) ->
+        scope.nickFollowing = true
         scope.child = Child.get school_id: stateParams.kindergarten, child_id: child.child_id, ->
           scope.currentModal = Modal
             scope: scope
@@ -175,6 +177,13 @@ angular.module('kulebaoAdmin')
           scope.$broadcast 'refreshing'
           scope.currentModal.hide()
           scope.newRelationship child, parent
+
+
+      scope.nameChanging = ->
+        scope.child.nick = scope.child.name if scope.nickFollowing && scope.child.name && scope.child.name.length < 5
+
+      scope.stopFollowing = ->
+        scope.nickFollowing = false
 
   ]
 
