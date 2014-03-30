@@ -126,13 +126,12 @@ object School {
 
   def update(clazz: SchoolClass) = DB.withConnection {
     implicit c =>
-      val time = System.currentTimeMillis
-      SQL("update classinfo set class_name={name}, update_at={time}" +
+      SQL("update classinfo set class_name={name}, update_at={time} " +
         "where school_id={school_id} and class_id={class_id}")
         .on('school_id -> clazz.school_id.toString,
           'class_id -> clazz.class_id,
           'name -> clazz.name,
-          'time -> time).executeUpdate()
+          'time -> System.currentTimeMillis).executeUpdate()
 
   }
 
