@@ -19,11 +19,11 @@ CREATE TABLE assess (
   manner Int default 3,
   comments   TEXT NOT NULL,
   publisher VARCHAR(20) NOT NULL DEFAULT '',
-  publish_at BIGINT(20) NOT NULL DEFAULT 0,
+  update_at BIGINT(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (uid)
 );
 
-INSERT INTO assess (school_id, child_id, emotion, comments, publisher, publish_at)
+INSERT INTO assess (school_id, child_id, emotion, comments, publisher, update_at)
 VALUES
 ('93740362', '1_93740362_374', 1, '我没说什么。', '马老师', 1333390313123),
 ('93740362', '1_93740362_374', 2,  '总的来说，不认识', '朱老师', 1323390313123),

@@ -79,12 +79,12 @@ object Assess {
 
   def create(assess: Assess, kg: Long, childId: String): Option[Long] = DB.withConnection {
     implicit c =>
-      SQL("insert into assess (school_id, child_id, publish_at, publisher, comments, " +
+      SQL("insert into assess (school_id, child_id, update_at, publisher, comments, " +
         "emotion, dining, rest, activity, game, exercise, self_care, manner) " +
-        "values ({school_id}, {child_id}, {publish_at}, {publisher}, {comments}, {emotion}, {dining}, " +
+        "values ({school_id}, {child_id}, {update_at}, {publisher}, {comments}, {emotion}, {dining}, " +
         "{rest}, {activity}, {game}, {exercise}, {self_care}, {manner})")
         .on(
-          'publish_at -> System.currentTimeMillis,
+          'update_at -> System.currentTimeMillis,
           'publisher -> assess.publisher,
           'comments -> assess.comments,
           'school_id -> kg.toString,
@@ -104,7 +104,7 @@ object Assess {
     get[Long]("uid") ~
       get[String]("child_id") ~
       get[String]("school_id") ~
-      get[Long]("publish_at") ~
+      get[Long]("update_at") ~
       get[String]("publisher") ~
       get[String]("comments") ~
       get[Int]("emotion") ~

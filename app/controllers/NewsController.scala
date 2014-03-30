@@ -13,7 +13,7 @@ object NewsController extends Controller with Secured {
 
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int], classId: Option[String]) = IsLoggedIn {
     u => _ =>
-      val jsons = News.allSortById(kg, classId, from, to).take(most.getOrElse(25))
+      val jsons = News.allSorted(kg, classId, from, to).take(most.getOrElse(25))
       Ok(Json.toJson(jsons))
   }
 

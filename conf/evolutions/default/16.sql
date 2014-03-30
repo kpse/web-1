@@ -13,11 +13,11 @@ CREATE TABLE conversation (
   image TEXT DEFAULT '',
   sender VARCHAR(20) NOT NULL DEFAULT '',
   sender_id VARCHAR(16) NOT NULL DEFAULT '',
-  timestamp BIGINT(20) NOT NULL DEFAULT 0,
+  update_at BIGINT(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (uid)
 );
 
-INSERT INTO conversation (school_id, phone, content, image, sender, timestamp, sender_id)
+INSERT INTO conversation (school_id, phone, content, image, sender, update_at, sender_id)
 VALUES
 ('93740362', '13408654680', '老师你好。', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '', 12312313123, ''),
 ('93740362', '13408654680', '家长你好。', 'http://suoqin-test.u.qiniudn.com/Fget0Tx492DJofAy-ZeUg1SANJ4X', '老师A', 12313313123, '13258249821'),

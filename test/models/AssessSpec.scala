@@ -6,14 +6,14 @@ import org.specs2.mutable.Specification
 class AssessSpec extends Specification with TestSupport {
 
   "Assess" should {
-    "report index" in new WithApplication {
+    "report index ordered by timestamp by default" in new WithApplication {
 
       private val index = Assess.all(93740362L, "1_93740362_374", None, None)
 
       index.size must equalTo(2)
       index(0).child_id must equalTo("1_93740362_374")
-      index(0).id must equalTo(Some(2))
-      index(0).id must greaterThan(index(1).id)
+      index(0).id must equalTo(Some(1))
+      index(0).timestamp must greaterThan(index(1).timestamp)
 
     }
 

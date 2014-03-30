@@ -6,14 +6,14 @@ import org.specs2.mutable.Specification
 class ConversationSpec extends Specification with TestSupport {
 
   "Conversation" should {
-    "report index and ordered in desc" in new WithApplication {
+    "report index and ordered by timestamp in desc" in new WithApplication {
 
       private val index = Conversation.index(93740362L, "13408654680", None, None)
 
       index.size must equalTo(3)
       index(0).phone must equalTo("13408654680")
       index(0).id must equalTo(Some(3))
-      index(0).id must greaterThan(index(2).id)
+      index(0).timestamp must greaterThan(index(2).timestamp)
 
     }
 

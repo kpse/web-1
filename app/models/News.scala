@@ -104,7 +104,7 @@ object News {
         .as(simple *)
   }
 
-  def allSortById(kg: Long, classId: Option[String], from: Option[Long], to: Option[Long]): List[News] = DB.withConnection {
+  def allSorted(kg: Long, classId: Option[String], from: Option[Long], to: Option[Long]): List[News] = DB.withConnection {
     implicit c =>
       classId match {
         case Some(ids) =>

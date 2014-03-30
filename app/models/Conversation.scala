@@ -11,7 +11,7 @@ case class Conversation(phone: String, timestamp: Long, id: Option[Long], conten
 object Conversation {
   val simple = {
     get[String]("phone") ~
-      get[Long]("timestamp") ~
+      get[Long]("update_at") ~
       get[Long]("uid") ~
       get[String]("content") ~
       get[Option[String]]("image") ~
@@ -25,15 +25,15 @@ object Conversation {
   def create(kg: Long, conversation: Conversation) = DB.withConnection {
     implicit c =>
       val time = System.currentTimeMillis
-      val id = SQL("INSERT INTO conversation (school_id, phone, content, image, sender, timestamp, sender_id) values" +
-        "({kg}, {phone}, {content}, {image}, {sender}, {timestamp}, {sender_id})").on(
+      val id = SQL("INSERT INTO conversation (school_id, phone, content, image, sender, update_at, sender_id) values" +
+        "({kg}, {phone}, {content}, {image}, {sender}, {update_at}, {sender_id})").on(
           'kg -> kg.toString,
           'phone -> conversation.phone,
           'content -> conversation.content,
           'image -> conversation.image,
           'sender -> conversation.sender,
           'sender_id -> conversation.sender_id,
-          'timestamp -> time
+          'update_at -> time
         ).executeInsert()
       Conversation(conversation.phone, time, id, conversation.content, conversation.image, conversation.sender, conversation.sender_id)
   }
