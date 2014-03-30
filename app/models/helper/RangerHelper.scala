@@ -16,7 +16,14 @@ object RangerHelper {
   }
 
   def rangerQuery(from: Option[Long], to: Option[Long]) = {
-    rangerQueryWithField(from, to, None)
+    //if from or to is a timestamp , it should be bigger than 1388534400000
+    (from.getOrElse(0L) + to.getOrElse(0L) > 1388534400000L) match{
+      case true =>
+        rangerQueryWithField(from, to, Some("update_at"))
+      case false =>
+        rangerQueryWithField(from, to, None)
+    }
+
   }
 
   def rangerQueryWithField(from: Option[Long], to: Option[Long], field: Option[String]) = {
