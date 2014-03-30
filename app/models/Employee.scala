@@ -189,7 +189,7 @@ object Employee {
           'birthday -> employee.birthday,
           'school_id -> employee.school_id,
           'login_name -> employee.login_name,
-          'login_password -> md5(employee.login_name),
+          'login_password -> md5(employee.phone),
           'update_at -> System.currentTimeMillis
         ).executeInsert()
       show(employee.phone)
