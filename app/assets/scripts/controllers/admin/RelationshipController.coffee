@@ -113,11 +113,10 @@ angular.module('kulebaoAdmin')
 
       handleError = (obj, res) ->
         Alert
-          title: '创建'+obj+'失败'
+          title: '保存'+obj+'失败'
           content: res.data.error_msg
           placement: "top-left"
           type: "danger"
-          show: true
           container: '.panel-body'
           duration: 3
 
