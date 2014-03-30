@@ -73,9 +73,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         new School
           school_id: id
           phone: '12121311131'
-          name: '新学校'
+          name: '短名字'
           token: '1'
           address: '四川省某个地区'
+          full_name: '新学校全名'
           principal:
             admin_login: 'admin' + id
             admin_password: '',
@@ -127,7 +128,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
       scope.isSchoolDuplicated = (school, field) ->
         return false if school[field] is undefined
         undefined isnt _.find scope.kindergartens, (k) ->
-          k[field] == school[field]
+          k[field] == school[field] && k.school_id isnt k.school_id
 
       nextId = (schools)->
         13 + _.max _.map schools, (c) ->

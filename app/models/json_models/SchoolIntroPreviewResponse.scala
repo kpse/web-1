@@ -11,9 +11,9 @@ import models.helper.MD5Helper.md5
 import anorm.SqlParser._
 import models.ChargeInfo
 
-case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: String, school_logo_url: String, name: String, token: Option[String], address: Option[String])
+case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: String, school_logo_url: String, name: String, token: Option[String], address: Option[String], full_name: Option[String])
 
-case class CreatingSchool(school_id: Long, phone: String, name: String, token: String, principal: PrincipalOfSchool, charge: ChargeInfo, address: String)
+case class CreatingSchool(school_id: Long, phone: String, name: String, token: String, principal: PrincipalOfSchool, charge: ChargeInfo, address: String, full_name: Option[String])
 
 case class PrincipalOfSchool(admin_login: String, admin_password: String)
 
@@ -37,15 +37,16 @@ object SchoolIntro {
     implicit c =>
       try {
         val time = System.currentTimeMillis
-        SQL("insert into schoolinfo (school_id, province, city, address, name, description, logo_url, phone, update_at, token) " +
-          " values ({school_id}, '', '', {address}, {name}, '', '', {phone}, {timestamp}, {token})")
+        SQL("insert into schoolinfo (school_id, province, city, address, name, description, logo_url, phone, update_at, token, full_name) " +
+          " values ({school_id}, '', '', {address}, {name}, '', '', {phone}, {timestamp}, {token}, {full_name})")
           .on(
             'school_id -> school.school_id.toString,
             'timestamp -> time,
             'name -> school.name,
             'address -> school.address,
             'phone -> school.phone,
-            'token -> school.token
+            'token -> school.token,
+            'full_name -> school.full_name
           ).executeInsert()
         val employeeId = "3_%d_%d".format(school.school_id, time)
         SQL("insert into employeeinfo (name, employee_id, phone, gender, workgroup, workduty, picurl, birthday, school_id, login_password, login_name) " +
@@ -103,6 +104,11 @@ object SchoolIntro {
         .as(get[Long]("count(1)") single) > 0
   }
 
+  def generateFullNameSql(fullName: Option[String]): String = {
+    fullName.map(f => " ,full_name={full_name} ").getOrElse("")
+
+  }
+
   def updateExists(info: SchoolIntro) = DB.withConnection {
     implicit c =>
       val timestamp = System.currentTimeMillis
@@ -110,7 +116,9 @@ object SchoolIntro {
 
       SQL("update schoolinfo set name={name}, " +
         "description={description}, phone={phone}, " +
-        "logo_url={logo_url}, update_at={timestamp}, token={token}, address={address} where school_id={id}")
+        "logo_url={logo_url}, update_at={timestamp}, token={token}, address={address} " +
+        generateFullNameSql(info.full_name) +
+        "where school_id={id}")
         .on('id -> info.school_id.toString,
           'name -> info.name,
           'description -> info.desc,
@@ -118,6 +126,7 @@ object SchoolIntro {
           'logo_url -> info.school_logo_url,
           'token -> info.token,
           'address -> info.address,
+          'full_name -> info.full_name,
           'timestamp -> timestamp).executeUpdate()
 
   }
@@ -138,10 +147,11 @@ object SchoolIntro {
       get[String]("description") ~
       get[String]("logo_url") ~
       get[String]("name") ~
+      get[String]("full_name") ~
       get[Option[String]]("token") ~
       get[Option[String]]("address") map {
-      case id ~ phone ~ timestamp ~ desc ~ logoUrl ~ name ~ token ~ address =>
-        SchoolIntro(id.toLong, phone, timestamp, desc, logoUrl, name, token, address)
+      case id ~ phone ~ timestamp ~ desc ~ logoUrl ~ name ~ fullName ~ token ~ address =>
+        SchoolIntro(id.toLong, phone, timestamp, desc, logoUrl, name, token, address, Some(fullName))
     }
 
   }

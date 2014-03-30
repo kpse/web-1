@@ -12,8 +12,9 @@
 <table class="table table-hover table-condensed schools-list">
   <thead>
   <tr class="row">
-    <th class=".col-xs-3">学校编号</th>
-    <th class=".col-xs-3">学校名字</th>
+    <th class=".col-xs-1">学校编号</th>
+    <th class=".col-xs-2">学校全名</th>
+    <th class=".col-xs-2">显示名称</th>
     <th class=".col-xs-3">管理员</th>
     <th class=".col-xs-2">操作</th>
   </tr>
@@ -21,6 +22,7 @@
   <tbody>
   <tr ng-repeat="kg in kindergartens | filter: searchText" class="row" ng-class="{editable: editSchool, expired: kg.charge[0].status==0}" ng-click="editSchool(kg)">
     <td class=".col-xs-1"><a ng-href="/admin#/kindergarten/{{kg.school_id}}" ng-click="$event.stopPropagation()">{{kg.school_id}}</a></td>
+    <td class=".col-xs-2">{{kg.full_name}}</td>
     <td class=".col-xs-2">{{kg.name}}</td>
     <td class=".col-xs-3">
       <p ng-repeat="m in kg.managers"><a ng-click="edit(m);$event.stopPropagation()">{{m.detail.name}}</a></p>
