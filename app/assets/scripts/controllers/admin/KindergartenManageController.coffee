@@ -26,6 +26,9 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         else
           location.path location.path().replace(/\/[^\/]+$/, '/list')
 
+      scope.goBulletin = ->
+        goPageWithClassesTab 'bulletin'
+
       scope.goConversation = ->
         goPageWithClassesTab 'conversation', 'card'
 
