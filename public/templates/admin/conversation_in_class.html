@@ -4,7 +4,7 @@
   <tr class="row">
     <th class=".col-xs-2">关系</th>
     <th class=".col-xs-2">家长姓名</th>
-    <th class=".col-xs-7">最后一条信息内容</th>
+    <th class=".col-xs-3">最后一条信息内容</th>
     <th class=".col-xs-3">最近联系时间</th>
   </tr>
   </thead>
@@ -12,7 +12,13 @@
   <tr ng-repeat="r in relationships | filter: searchText" class="row" ng-class="{editable: goDetail}" ng-click="goDetail(r.card)">
     <td class=".col-xs-2">{{r.child.name}}的{{r.relationship}}</td>
     <td class=".col-xs-2">{{r.parent.name}}</td>
-    <td class=".col-xs-7">{{r.parent.lastMessage.content || 'N/A'}}</td>
+    <td class=".col-xs-4" ng-show="r.parent.lastMessage.content">{{r.parent.lastMessage.content.substring(0,100)}}{{(r.parent.lastMessage.content.length > 100) ? '...' : ''}}</td>
+    <th class=".col-xs-4" ng-show="r.parent.lastMessage.image && !r.parent.lastMessage.content">
+      <div class="image-preview">
+        <img class="conversation-image img-responsive" ng-src="{{r.parent.lastMessage.image}}"
+             alt=""/>
+      </div>
+    </th>
     <td class=".col-xs-3">{{(r.parent.lastMessage.timestamp | date:'yyyy年MM月dd日 HH:mm') || 'N/A'}}</td>
   </tr>
   </tbody>

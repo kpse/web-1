@@ -27,13 +27,13 @@
       <br/>
       <small ng-show="message.content.length >= 0">还可以输入{{ 500 - message.content.length}}个字</small>
       <span class="error-field"
-            ng-show="messageForm.content.$dirty && messageForm.content.$error.required">请填写回复内容</span>
+            ng-show="messageForm.content.$dirty && messageForm.content.$error.required && message.image">请填写回复内容</span>
       <span class="error-field"
             ng-show="messageForm.content.$dirty && messageForm.content.$error.maxlength">回复内容请不要超过500个字符</span>
       <textarea id="content" name="content" ng-model="message.content"
                 class="editing-content form-control message-content" ng-maxlength="500"
                 placeholder="对{{relationship.child.name}}的{{relationship.relationship}}{{relationship.parent.name || '家长'}}说。。。"
-                required/>
+                ng-required="message.image == ''"/>
 
 
       <div class="col-sm-12">

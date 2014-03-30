@@ -84,9 +84,19 @@ angular.module('kulebaoAdmin')
 
 
         scope.send = (msg) ->
-          return if msg.content is ''
-          msg.$save ->
-            scope.refresh()
+          if msg.image
+            imageMsg = angular.copy msg
+            imageMsg.content = ''
+            msg.image = ''
+            imageMsg.$save ->
+              if msg.content
+                msg.$save ->
+                  scope.refresh()
+              else
+                scope.refresh()
+          else
+            msg.$save ->
+              scope.refresh()
 
         scope.messageEditing = ->
           scope.message = scope.newMessage()
