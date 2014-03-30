@@ -49,6 +49,8 @@ object ParentController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString)
         request.body.validate[Parent].map {
+          case (error) if newParentIsAMember(error) && Charge.limitExceed(kg) =>
+            BadRequest(Json.toJson(new ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))
           case (error) if Parent.existsInOtherSchool(kg, error) =>
             BadRequest(Json.toJson(new ErrorResponse("此号码已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998")))
           case (parent) if Parent.idExists(parent.parent_id) =>
@@ -62,11 +64,18 @@ object ParentController extends Controller with Secured {
         }
   }
 
+
+  def newParentIsAMember(parent: Parent): Boolean = {
+    parent.member_status.getOrElse(0) == 1
+  }
+
   def update(kg: Long, phone: String) = IsLoggedIn(parse.json) {
     u =>
       request =>
         Logger.info(request.body.toString)
         request.body.validate[Parent].map {
+          case (error) if newParentIsAMember(error) && Charge.limitExceed(kg) =>
+            BadRequest(Json.toJson(new ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))
           case (error) if Parent.existsInOtherSchool(kg, error) =>
             BadRequest(Json.toJson(new ErrorResponse("此号码已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998")))
           case (parent) if Parent.idExists(parent.parent_id) =>

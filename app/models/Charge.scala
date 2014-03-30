@@ -12,6 +12,17 @@ import org.joda.time.DateTime
 case class ChargeInfo(school_id: Long, total_phone_number: Long, expire_date: String, status: Int, used: Long)
 
 object Charge {
+
+  def limitExceed(kg: Long): Boolean = DB.withConnection {
+    implicit c =>
+      SQL("select ((select count(distinct p.phone) from parentinfo p, relationmap r " +
+        "where p.parent_id=r.parent_id and r.status=1 and member_status=1 and p.status=1 and school_id={kg}) >= total_phone_number) as exceed " +
+        "from chargeinfo where school_id={kg}")
+        .on(
+          'kg -> kg.toString
+        ).as(get[Boolean]("exceed") single)
+  }
+
   def delete(kg: Long) = DB.withConnection {
     implicit c =>
 
