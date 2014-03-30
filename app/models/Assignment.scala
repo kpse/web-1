@@ -13,7 +13,7 @@ object Assignment {
   def create(kg: Long, assignment: Assignment) = DB.withConnection {
     implicit c =>
       val time = System.currentTimeMillis
-      val assignmentId: Option[Long] = SQL("insert into assignment (school_id, `timestamp`, title, content, " +
+      val assignmentId: Option[Long] = SQL("insert into assignment (school_id, update_at, title, content, " +
         " publisher, image, class_id) " +
         "values ({kg}, {time}, {title}, {content}, {publisher}, {url}, {class_id})")
         .on(
@@ -39,7 +39,7 @@ object Assignment {
   def update(kg: Long, assignmentId: Long, assignment: Assignment) = DB.withConnection {
     implicit c =>
       val time = System.currentTimeMillis()
-      SQL("update assignment set `timestamp`={time}, title={title}, content={content}, " +
+      SQL("update assignment set update_at={time}, title={title}, content={content}, " +
         "publisher={publisher}, image={url}, class_id={class_id}" +
         " where school_id={kg} and uid={id}")
         .on(
@@ -60,7 +60,7 @@ object Assignment {
 
   val simple = {
     get[Long]("uid") ~
-      get[Long]("timestamp") ~
+      get[Long]("update_at") ~
       get[String]("title") ~
       get[String]("content") ~
       get[String]("publisher") ~
