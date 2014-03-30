@@ -10,7 +10,6 @@
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class=".col-xs-1">#</th>
     <th class=".col-xs-3">小孩姓名</th>
     <th class=".col-xs-4">班级</th>
     <th class=".col-xs-2">操作</th>
@@ -18,7 +17,6 @@
   </thead>
   <tbody>
   <tr ng-repeat="child in children | filter: searchText" class="row" ng-class="{'member-row': false, 'editable': editChild}" ng-click="editChild(child)">
-    <td class=".col-xs-1">{{child.child_id}}</td>
     <td class=".col-xs-3">{{child.name}}</td>
     <td class=".col-xs-4">{{child.class_name}}</td>
 
