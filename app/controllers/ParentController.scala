@@ -49,6 +49,8 @@ object ParentController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString)
         request.body.validate[Parent].map {
+          case (error) if Parent.existsInOtherSchool(error) =>
+            BadRequest(Json.toJson(new ErrorResponse("此号码已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998")))
           case (parent) if Parent.idExists(parent.parent_id) =>
             Ok(Json.toJson(Parent.update(parent)))
           case (parent) if Parent.phoneExists(kg, parent.phone) =>
@@ -65,12 +67,12 @@ object ParentController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString)
         request.body.validate[Parent].map {
+          case (error) if Parent.existsInOtherSchool(error) =>
+            BadRequest(Json.toJson(new ErrorResponse("此号码已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998")))
           case (parent) if Parent.idExists(parent.parent_id) =>
             Ok(Json.toJson(Parent.update(parent)))
           case (parent) if Parent.phoneExists(kg, phone) =>
             Ok(Json.toJson(Parent.updateWithPhone(kg, parent)))
-          case (error) if Parent.existsInOtherSchool(error) =>
-            BadRequest(Json.toJson(new ErrorResponse("电话号码在其他学校已存在。")))
           case (newParent) =>
             Ok(Json.toJson(Parent.create(kg, newParent)))
         } getOrElse BadRequest("Detected error:" + request.body)
