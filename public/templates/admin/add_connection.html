@@ -42,6 +42,7 @@
           <div class="col-sm-8">
             <select ng-hide="relationship.fix_parent" class="form-control parent-select" ng-model="relationship.parent"
                     ng-options="p.name for p in availableParentFor(relationship.child)" required></select>
+
             <p class="form-control-static" ng-show="relationship.fix_parent">{{relationship.parent.name}}</p>
           </div>
 
@@ -60,24 +61,27 @@
 
           <div class="col-sm-8">
             <select ng-hide="relationship.fix_child" class="form-control child-select" ng-model="relationship.child"
-                    ng-options="c.name group by c.class_name for c in availableChildFor(relationship.parent)" required></select>
+                    ng-options="c.name group by c.class_name for c in availableChildFor(relationship.parent)"
+                    required></select>
+
             <p class="form-control-static" ng-show="relationship.fix_child">{{relationship.child.name}}</p>
           </div>
           <p ng-show="alreadyConnected(relationship.parent, relationship.child)" class="error-field">关系已经创建！</p>
 
         </div>
 
-
       </div>
     </div>
 
     <div class="col-sm-offset-6 col-sm-6">
       <div class="form-group">
-        <a class="btn btn-primary pull-right adding-button"
-           ng-disabled="newRelationshipForm.$invalid || isCardDuplicated(relationship.card) || alreadyConnected(relationship.parent, relationship.child)"
-           ng-click="saveRelationship(relationship)">关联</a>
-        <a class="btn btn-default pull-right adding-button"
-           ng-click="$hide()">取消</a>
+        <div class="btn-group pull-right">
+          <a class="btn btn-primary adding-button"
+             ng-disabled="newRelationshipForm.$invalid || isCardDuplicated(relationship.card) || alreadyConnected(relationship.parent, relationship.child)"
+             ng-click="saveRelationship(relationship)">关联</a>
+          <a class="btn btn-default adding-button"
+             ng-click="$hide()">取消</a>
+        </div>
       </div>
     </div>
   </form>
