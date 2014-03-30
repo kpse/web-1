@@ -33,12 +33,13 @@ object Parent {
     case _ => false
   }
 
-  def existsInOtherSchool(parent: Parent) = DB.withConnection {
+  def existsInOtherSchool(kg: Long, parent: Parent) = DB.withConnection {
     implicit c =>
-      SQL("select count(1) as count from parentinfo where phone={phone}")
+      SQL("select count(1) from parentinfo where phone={phone} and school_id <> {kg}")
         .on(
-          'phone -> parent.phone
-        ).as(get[Long]("count") single) > 0
+          'phone -> parent.phone,
+          'kg -> kg
+        ).as(get[Long]("count(1)") single) > 0
   }
 
   def idExists(parentId: Option[String]): Boolean = DB.withConnection {
