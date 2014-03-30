@@ -51,6 +51,8 @@ angular.module('kulebaoAdmin')
           relationship: '妈妈'
           child: child
           parent: parent
+          fix_child: child?
+          fix_parent: parent?
 
       scope.newParent = (saveHook)->
         scope.parents = Parent.query school_id: stateParams.kindergarten, ->
