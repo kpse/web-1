@@ -4,7 +4,6 @@ import play.api.mvc.PathBindable
 import play.api.Play
 import Play.current
 import java.io.File
-import play.Logger
 
 object VersionedAssets {
   def at(file: VersionedAsset) = Assets.at(file.path, file.file)
@@ -25,7 +24,6 @@ object VersionedAsset {
         resource =>
           resource.getProtocol match {
             case file if file == "file" => {
-              Logger.info(new File(resource.toURI).lastModified().toString)
               Some(new File(resource.toURI).lastModified())
             }
             case _ => None
