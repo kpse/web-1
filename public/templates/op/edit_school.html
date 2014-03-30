@@ -25,7 +25,8 @@
 
       <div class="col-sm-8">
         <input id="school-name" type="text" ng-model="school.name" name="name"
-               class="editing-field form-control" required/>
+               class="editing-field form-control" required ng-maxlength="8"/>
+        <span class="error-field" ng-show="editSchoolForm.name.$error.maxlength">学校显示名称不能超过8个字符</span>
       </div>
     </div>
 
