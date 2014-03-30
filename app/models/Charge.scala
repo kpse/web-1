@@ -15,12 +15,12 @@ object Charge {
 
   def limitExceed(kg: Long): Boolean = DB.withConnection {
     implicit c =>
-      SQL("select ((select count(distinct p.phone) from parentinfo p, relationmap r " +
-        "where p.parent_id=r.parent_id and r.status=1 and member_status=1 and p.status=1 and school_id={kg}) >= total_phone_number) as exceed " +
+      SQL("select ( total_phone_number - (select count(distinct p.phone) from parentinfo p, relationmap r " +
+        "where p.parent_id=r.parent_id and r.status=1 and member_status=1 and p.status=1 and school_id={kg})) as exceed " +
         "from chargeinfo where school_id={kg}")
         .on(
           'kg -> kg.toString
-        ).as(get[Boolean]("exceed") single)
+        ).as(get[Long]("exceed") single) <= 0
   }
 
   def delete(kg: Long) = DB.withConnection {
