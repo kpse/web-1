@@ -224,9 +224,10 @@ object Parent {
         .as(simple singleOpt)
   }
 
-  val fullStructureSql = "select p.*, s.name, c.*, ci.class_name from parentinfo p, schoolinfo s, childinfo c, relationmap r, classinfo ci " +
+  val fullStructureSql = "select p.*, s.name, c.*, ci.class_name " +
+    "from parentinfo p, schoolinfo s, childinfo c, relationmap r, classinfo ci " +
     "where p.school_id = s.school_id and s.school_id={kg} and p.status=1 and ci.class_id=c.class_id " +
-    "and r.child_id = c.child_id and r.parent_id = p.parent_id"
+    "and r.child_id = c.child_id and r.parent_id = p.parent_id and s.school_id = ci.school_id "
 
   @deprecated(message = "no use anymore", since = "20140320")
   def all(kg: Long, classId: Option[Long]): List[ParentInfo] = DB.withConnection {
@@ -273,7 +274,7 @@ object Parent {
   }
 
   def generateMemberQuery(member: Option[Boolean]): String = member match {
-    case Some(m) => " and member_status={member}"
+    case Some(m) => " and member_status={member} "
     case None => ""
   }
 
@@ -297,7 +298,7 @@ object Parent {
 
   def indexInClass(kg: Long, classId: Long, member: Option[Boolean]) = DB.withConnection {
     implicit c =>
-      SQL(fullStructureSql + " and c.class_id={class_id}" + generateMemberQuery(member))
+      SQL(fullStructureSql + " and c.class_id={class_id} " + generateMemberQuery(member))
         .on('kg -> kg,
           'class_id -> classId,
           'member -> (if (member.getOrElse(false)) 1 else 0)
