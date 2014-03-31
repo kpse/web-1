@@ -11,7 +11,7 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
       $rootScope.tabName = 'app'
 
       $scope.doUpload = (pic) ->
-        $scope.saving = true
+        $scope.uploading = true
         uploadService pic, (url) ->
           $scope.$apply ->
             $scope.app.url = url
@@ -20,7 +20,7 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
               $scope.lastApp = appPackageService.latest ->
                 $scope.app = new appPackageService
                   version_code: $scope.lastApp.version_code + 1
-                $scope.saving = false
+                $scope.uploading = false
 
       $scope.cleanFields = ->
         $scope.app = new appPackageService

@@ -31,12 +31,16 @@
   }
 }
 
-.loading {
+.loading,
+.uploading {
   width: 55px;
   height: 55px;
   background-image: url('../../images/loading.gif');
   background-size: 55px 55px;
   margin-left: 200px;
+}
+.uploading{
+  margin: 0;
 }
 
 .product-logo-container {

@@ -111,9 +111,11 @@ angular.module('kulebaoAdmin')
           r.card == card
 
       scope.uploadPic = (person, pic) ->
+        scope.uploading = true
         Upload pic, (url) ->
           scope.$apply ->
             person.portrait = url if url isnt undefined
+            scope.uploading = false
 
       handleError = (obj, res) ->
         Alert
