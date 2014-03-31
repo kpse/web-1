@@ -11,7 +11,7 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
 
 case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String, pushid: String, record_url: String, parent_name: String, device: Int, aps: Option[IOSField])
 
-case class IOSField(alert: String, Sound: String, Badge: Int)
+case class IOSField(alert: String, sound: String = "", badge: Int = 1)
 
 object CheckingMessage {
 
@@ -20,9 +20,9 @@ object CheckingMessage {
   def convert(request: CheckInfo): List[CheckNotification] = DB.withConnection {
     implicit c =>
       def generateNotice(childName: String): IOSField = {
-        IOSField("您的孩子%s已经于%s打卡%s".format(childName,
+        IOSField("您的孩子 %s 已于 %s 打卡%s。".format(childName,
           new DateTime(request.timestamp).toString("HH:mm:ss"),
-          if (request.notice_type==0) "入园" else "离园"), "", 0)
+          if (request.notice_type==0) "入园" else "离开幼儿园"))
       }
       val simple = {
         get[String]("child_id") ~
