@@ -29,6 +29,14 @@ class Config
       url: '/verification_code',
       templateUrl: 'templates/op/verification_code.html',
       controller: 'OpVerificationCtrl'
+    .state 'main.phone_management',
+      url: '/phone_management',
+      templateUrl: 'templates/op/manage_by_phone.html',
+      controller: 'OpPhoneManagementCtrl'
+    .state 'main.phone_management.phone',
+      url: '/phone/:phone',
+      templateUrl: 'templates/admin/adult_manage.html',
+      controller: 'OpShowPhoneCtrl'
 
     $urlRouterProvider.otherwise ($injector, $location) ->
       $location.path '/main/school'
