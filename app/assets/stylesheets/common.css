@@ -147,3 +147,37 @@
 .control-label.highlight {
   color: red;
 }
+
+
+.portrait-container {
+  margin-left: 100px;
+  vertical-align: middle;
+  .portrait {
+    max-height: 220px;
+    max-width: 180px;
+  }
+  .portrait-preview {
+    max-height: 110px;
+    max-width: 90px;
+  }
+}
+
+.image-container,
+.image-preview {
+  .assignment-image,
+  .message-image {
+    max-height: 220px;
+    max-width: 220px;
+  }
+  .assess-image {
+    max-height: 180px;
+    max-width: 180px;
+  }
+  .conversation-image {
+    max-height: 110px;
+    max-width: 110px;
+  }
+  .news-image {
+    max-height: 200px;
+  }
+}
