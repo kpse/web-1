@@ -28,9 +28,10 @@ class SchoolSummaryControllerSpec extends Specification with TestSupport {
       contentType(previewResponse) must beSome.which(_ == "application/json")
 
       val response: JsValue = Json.parse(contentAsString(previewResponse))
-      (response \ "error_code").as[Int] must equalTo(0)
-      (response \ "school_id").as[Long] must equalTo(93740362)
-      (response \ "timestamp").as[Long] must greaterThan(0L)
+      val first = response(0)
+      (first \ "error_code").as[Int] must equalTo(0)
+      (first \ "school_id").as[Long] must equalTo(93740362)
+      (first \ "timestamp").as[Long] must greaterThan(0L)
     }
 
     "report detail" in new WithApplication {

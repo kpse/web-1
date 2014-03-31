@@ -3,7 +3,6 @@ package models.json_models
 import play.api.db.DB
 import anorm._
 import play.api.Play.current
-import models.helper.FieldHelper._
 import play.Logger
 import anorm.~
 import scala.Some
@@ -131,13 +130,18 @@ object SchoolIntro {
 
   }
 
+  val previewSimple = {
+    get[String]("school_id") ~
+      get[Long]("update_at") map {
+      case school_id ~ timestamp =>
+        SchoolIntroPreviewResponse(0, timestamp, school_id.toLong)
+    }
+  }
+
   def preview(kg: Long) = DB.withConnection {
     implicit c =>
-      val result = SQL("select update_at, school_id from schoolinfo where school_id={school_id}")
-        .on('school_id -> kg.toString).apply()
-
-      if (result.isEmpty) new SchoolIntroPreviewResponse(1, 0, 0)
-      else new SchoolIntroPreviewResponse(0, timestamp(result.head), schoolId(result.head))
+      SQL("select update_at, school_id from schoolinfo where school_id={school_id}")
+        .on('school_id -> kg.toString).as(previewSimple *)
   }
 
   val sample = {
