@@ -119,7 +119,7 @@ angular.module('kulebaoAdmin')
 
       handleError = (obj, res) ->
         Alert
-          title: '保存'+obj+'失败'
+          title: '保存' + obj + '失败'
           content: res.data.error_msg
           placement: "top-left"
           type: "danger"
@@ -132,20 +132,23 @@ angular.module('kulebaoAdmin')
           scope.$broadcast 'refreshing'
           scope.currentModal.hide()
           saveHook(parent) if typeof saveHook == 'function'
-        , (res) -> handleError('家长', res)
+        , (res) ->
+          handleError('家长', res)
 
 
       scope.saveRelationship = (relationship) ->
         relationship.$save ->
           scope.$broadcast 'refreshing'
           scope.currentModal.hide()
-        , (res) -> handleError('关系', res)
+        , (res) ->
+          handleError('关系', res)
 
       scope.saveChild = (child) ->
         child.$save ->
           scope.$broadcast 'refreshing'
           scope.currentModal.hide()
-        , (res) -> handleError('小孩', res)
+        , (res) ->
+          handleError('小孩', res)
 
       scope.alreadyConnected = (parent, child) ->
         return false if parent is undefined || child is undefined
@@ -226,7 +229,8 @@ angular.module('kulebaoAdmin')
 .controller 'ConnectedRelationshipCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', 'classService', 'parentService', 'conversationService', 'relationshipService',
-    (scope, rootScope, stateParams, location, School, Class, Parent, Chat, Relationship) ->
+    '$http',
+    (scope, rootScope, stateParams, location, School, Class, Parent, Chat, Relationship, $http) ->
       scope.loading = true
       scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten
