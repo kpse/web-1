@@ -117,6 +117,9 @@ POST          /employee                                                         
 POST          /employee/:phone                                                   controllers.EmployeeController.updateOrCreate(phone: String)
 GET           /employee/:phone                                                   controllers.EmployeeController.show(phone: String)
 
+GET           /phone/:phone                                                      controllers.PhoneManagementController.show(phone: String)
+DELETE        /phone/:phone                                                      controllers.PhoneManagementController.delete(phone: String)
+
 GET           /ws/swipe                                                          controllers.WSController.call
 POST          /ws/swipe                                                          controllers.WSController.sendMessage
 

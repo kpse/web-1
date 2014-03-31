@@ -10,12 +10,26 @@ import java.util.Date
 import play.Logger
 import models.helper.TimeHelper.any2DateTime
 
-case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String], gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int])
+case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String], gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int], company: Option[String] = None)
 
 case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait: String, name: String, phone: String, kindergarten: School, relationship: String, child: ChildInfo, card: String)
 
 
 object Parent {
+  def permanentRemove(phone: String) = DB.withConnection {
+    implicit c =>
+      SQL("delete from relationmap where parent_id in (select parent_id from parentinfo where phone={phone})").on('phone -> phone).execute()
+      SQL("delete from parentinfo where phone={phone}").on('phone -> phone).execute()
+      SQL("delete from accountinfo where accountid={phone}").on('phone -> phone).execute()
+  }
+
+
+  def phoneSearch(phone: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from parentinfo p where p.phone={phone}")
+        .on('phone -> phone)
+        .as(simple singleOpt)
+  }
 
   def allowToAccess(phone: String, token: Option[String], kg: Long) = DB.withConnection {
     implicit c =>
@@ -35,10 +49,11 @@ object Parent {
 
   def existsInOtherSchool(kg: Long, parent: Parent) = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from parentinfo where phone={phone} and school_id <> {kg}")
+      SQL("select count(1) from parentinfo where phone={phone} and school_id <> {kg} and parent_id <> {parent_id}")
         .on(
           'phone -> parent.phone,
-          'kg -> kg
+          'kg -> kg,
+          'parent_id -> parent.parent_id
         ).as(get[Long]("count(1)") single) > 0
   }
 
@@ -92,11 +107,12 @@ object Parent {
       SQL("update parentinfo set name={name}, " +
         "phone={phone}, gender={gender}, company={company}, " +
         "picurl={picurl}, birthday={birthday}, " +
-        "update_at={timestamp}, member_status={member} where parent_id={parent_id}")
+        "update_at={timestamp}, member_status={member}, school_id={kg} where parent_id={parent_id}")
         .on('name -> parent.name,
           'phone -> parent.phone,
           'gender -> parent.gender,
-          'company -> "",
+          'company -> parent.company,
+          'kg -> parent.school_id.toString,
           'picurl -> parent.portrait.getOrElse(""),
           'birthday -> parent.birthday,
           'parent_id -> parent.parent_id,
@@ -114,7 +130,7 @@ object Parent {
         .on('name -> parent.name,
           'phone -> parent.phone,
           'gender -> parent.gender,
-          'company -> "",
+          'company -> parent.company,
           'picurl -> parent.portrait.getOrElse(""),
           'birthday -> parent.birthday,
           'timestamp -> timestamp,
@@ -159,7 +175,7 @@ object Parent {
           'relationship -> "",
           'phone -> parent.phone,
           'gender -> parent.gender,
-          'company -> "",
+          'company -> parent.company,
           'picurl -> parent.portrait.getOrElse(""),
           'birthday -> parent.birthday,
           'school_id -> kg.toString,
@@ -257,9 +273,10 @@ object Parent {
       get[Date]("parentinfo.birthday") ~
       get[Int]("member_status") ~
       get[Int]("parentinfo.status") ~
+      get[String]("parentinfo.company") ~
       get[Long]("parentinfo.update_at") map {
-      case id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday ~ member ~ status ~ t =>
-        new Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t), Some(member), Some(status))
+      case id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday ~ member ~ status ~ company ~ t =>
+        new Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t), Some(member), Some(status), Some(company))
     }
   }
 

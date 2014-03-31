@@ -1,0 +1,14 @@
+<h2>永久删除电话号码（供测试用）</h2>
+<div class="well phone-deleting-panel">
+  <span>输入要删除的号码：</span>
+  <input ng-model="phone"/>
+  <button class="btn btn-primary"
+          ng-click="query(phone)">查询
+  </button>
+  <div ui-view></div>
+  <button class="btn btn-danger" ng-confirm-msg="你确定要删除吗?"
+          ng-confirm-click="delete(phone)">删除
+  </button>
+
+</div>
+
