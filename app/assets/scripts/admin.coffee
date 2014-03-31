@@ -35,6 +35,10 @@ class Config
       controller: 'ScheduleCtrl'
     .state 'kindergarten.schedule.class',
       url: '/class/:class_id',
+      templateUrl: 'templates/admin/classes.html',
+      controller: 'ScheduleCtrl'
+    .state 'kindergarten.schedule.class.list',
+      url: '/list',
       templateUrl: 'templates/admin/class_schedule.html',
       controller: 'ClassScheduleCtrl'
 
