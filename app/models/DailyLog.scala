@@ -19,7 +19,7 @@ object DailyLog {
       get[String]("parent_name") ~
       get[Int]("device") map {
       case child_id ~ timestamp ~ url ~ pushid ~ notice_type ~ name ~ device =>
-        new CheckNotification(timestamp, notice_type, child_id, pushid, url, name, device)
+        new CheckNotification(timestamp, notice_type, child_id, pushid, url, name, device, None)
     }
   }
 

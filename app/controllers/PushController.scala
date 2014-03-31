@@ -8,23 +8,22 @@ import com.baidu.yun.channel.exception.{ChannelServerException, ChannelClientExc
 import play.Logger
 import play.api.mvc._
 import play.api.libs.json.{JsError, Json}
-import models.json_models.CheckingMessage
+import models.json_models.{IOSField, CheckingMessage, CheckInfo, CheckNotification}
 import scala.Predef._
 import models._
 import play.api.Play
-import models.json_models.CheckInfo
 import scala.Some
-import models.json_models.CheckNotification
 import models.JsonResponse
 
 object PushController extends Controller {
-  implicit val write = Json.writes[CheckNotification]
+  implicit val write = Json.writes[IOSField]
+  implicit val write1 = Json.writes[CheckNotification]
   implicit val write3 = Json.writes[ErrorResponse]
   implicit val write4 = Json.writes[SuccessResponse]
   implicit val read = Json.reads[CheckInfo]
 
   def test = Action {
-    val msg = new CheckNotification(System.currentTimeMillis, 1, "1_93740362_374", "925387477040814447", "", "袋鼠", 3)
+    val msg = new CheckNotification(System.currentTimeMillis, 1, "1_93740362_374", "925387477040814447", "", "袋鼠", 3, None)
     DailyLog.create(msg, CheckInfo(93740362L, "0001234569", 2, 0, "", System.currentTimeMillis))
     Ok(runWithLog(msg, triggerSinglePush))
   }

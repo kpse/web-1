@@ -16,7 +16,9 @@ object CheckInController extends Controller with Secured {
 
   implicit val read = Json.reads[CheckInfo]
   implicit val write1 = Json.writes[CheckingInAndOutResponse]
-  implicit val write2 = Json.writes[CheckNotification]
+  implicit val write2 = Json.writes[IOSField]
+  implicit val write3 = Json.writes[CheckNotification]
+  implicit val write4 = Json.writes[Card]
 
   @deprecated(message = "delegate to Baidu BAE server no more", since = "2014-02-10")
   def create(kg: Long) = Action.async(parse.json) {
@@ -44,7 +46,7 @@ object CheckInController extends Controller with Secured {
       })
   }
 
-  implicit val write3 = Json.writes[Card]
+
 
   def show(kg: Long, cardId: String) = IsLoggedIn {
     u => _ =>
