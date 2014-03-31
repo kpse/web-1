@@ -19,8 +19,7 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'AssignmentsInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'schoolService', 'classService', 'assignmentService', '$modal', 'employeeService', 'uploadService',
-    (scope, rootScope, stateParams, location, School, Class, Assignment, Modal, Employee, Upload) ->
+    (scope, rootScope, stateParams) ->
       scope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
   ]
@@ -64,8 +63,10 @@ angular.module('kulebaoAdmin')
           scope.currentModal.hide()
 
       scope.uploadPic = (assignment, pic) ->
+        scope.uploading = true
         Upload pic, (url) ->
           scope.$apply ->
             assignment.icon_url = url if url isnt undefined
+            scope.uploading = false
 
   ]

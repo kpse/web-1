@@ -64,9 +64,11 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
           scope.refresh()
 
       scope.uploadPic = (employee, pic) ->
+        scope.uploading = true
         Upload pic, (url) ->
           scope.$apply ->
             employee.portrait = url if url isnt undefined
+            scope.uploading = false
 
 
   ]

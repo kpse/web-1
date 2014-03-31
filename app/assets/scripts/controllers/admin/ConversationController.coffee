@@ -106,7 +106,9 @@ angular.module('kulebaoAdmin')
             contentTemplate: 'templates/admin/add_message.html'
 
         scope.uploadPic = (message, pic) ->
+          scope.uploading = true
           Upload pic, (url) ->
             scope.$apply ->
               message.image = url if url isnt undefined
+              scope.uploading = false
     ]

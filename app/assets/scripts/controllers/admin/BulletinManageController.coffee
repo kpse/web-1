@@ -109,7 +109,9 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
         clazz.name if clazz isnt undefined
 
       scope.uploadPic = (news, pic) ->
+        scope.uploading = true
         Upload pic, (url) ->
           scope.$apply ->
             news.image = url if url isnt undefined
+            scope.uploading = false
   ]
