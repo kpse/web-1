@@ -6,6 +6,7 @@ import models._
 import models.DaySchedule
 import models.SchedulePreviewResponse
 import models.WeekSchedule
+import helper.JsonLogger.loggedJson
 
 object ScheduleController extends Controller with Secured {
   implicit val write1 = Json.writes[SchedulePreviewResponse]
@@ -24,10 +25,7 @@ object ScheduleController extends Controller with Secured {
 
   def preview(kg: Long, classId: Long) = IsLoggedIn {
     u => _ =>
-      Schedule.preview(kg, classId) match {
-        case Nil => Ok(Json.toJson(EmptyResult(1)))
-        case List(r) => Ok(Json.toJson(List(r)))
-      }
+      Ok(loggedJson(Schedule.preview(kg, classId)))
   }
 
   def show(kg: Long, classId: Long, scheduleId: Long) = IsLoggedIn {
