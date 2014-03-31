@@ -21,8 +21,8 @@
           <label for="relationship" class="col-sm-4 control-label">关系</label>
 
           <div class="col-sm-8">
-            <select class="form-control relationship-select" ng-model="relationship.relationship"
-                    ng-options="r for r in ['妈妈', '爸爸', '奶奶', '爷爷']" required></select>
+            <input type="text" class="form-control relationship-select" ng-model="relationship.relationship"
+                   ng-options="r for r in ['妈妈', '爸爸', '奶奶', '爷爷', '姥姥', '姥爷']" placeholder="与宝宝关系" bs-typeahead required>
           </div>
         </div>
       </div>
