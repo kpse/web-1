@@ -24,7 +24,6 @@ object PushController extends Controller {
 
   def test = Action {
     val msg = new CheckNotification(System.currentTimeMillis, 1, "1_93740362_374", "925387477040814447", "", "袋鼠", 3, None)
-    DailyLog.create(msg, CheckInfo(93740362L, "0001234569", 2, 0, "", System.currentTimeMillis))
     Ok(runWithLog(msg, triggerSinglePush))
   }
 
@@ -133,10 +132,10 @@ object PushController extends Controller {
       request.body.validate[CheckInfo].map {
         case (check) =>
           val messages = CheckingMessage.convert(check)
+          DailyLog.create(messages, check)
           Logger.info("messages : " + messages)
           messages map {
             m =>
-              DailyLog.create(m, check)
               createSwipeMessage(m)
           }
           Ok(Json.toJson(new SuccessResponse))

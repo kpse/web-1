@@ -7,8 +7,7 @@ import models.json_models.{IOSField, CheckNotification}
 
 object DailyLogController extends Controller with Secured {
 
-  implicit val write1 = Json.writes[IOSField]
-  implicit val write2 = Json.writes[CheckNotification]
+  implicit val write2 = Json.writes[DailyLog]
 
   def index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn {
     u => _ =>

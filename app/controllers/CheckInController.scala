@@ -28,7 +28,6 @@ object CheckInController extends Controller with Secured {
         case (check) =>
           CheckingMessage.convert(check).map {
             c =>
-              DailyLog.create(c, check)
               val url = "http://djcwebtest.duapp.com/forwardswipe.do"
               val json = Json.toJson(c)
               Logger.info("json sent to push server: %s".format(json.toString))

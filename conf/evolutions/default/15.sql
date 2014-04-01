@@ -10,12 +10,10 @@ CREATE TABLE dailylog (
   school_id   VARCHAR(20) NOT NULL,
   child_id varchar(40) NOT NULL,
   parent_name VARCHAR(20) NOT NULL,
-  pushid   varchar(20) NOT NULL,
   record_url TEXT DEFAULT '',
   card_no varchar(20) NOT NULL,
   card_type INT DEFAULT 0,
   notice_type INT DEFAULT 0,
-  device INT DEFAULT 3,
   check_at   BIGINT(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (uid)
 );

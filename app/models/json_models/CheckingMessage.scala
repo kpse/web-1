@@ -6,6 +6,7 @@ import play.api.Play.current
 import anorm.SqlParser._
 import anorm.~
 import org.joda.time.DateTime
+import models.DailyLog
 
 case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long)
 
