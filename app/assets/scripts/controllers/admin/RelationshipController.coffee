@@ -184,6 +184,12 @@ angular.module('kulebaoAdmin')
           scope.currentModal.hide()
           scope.newRelationship child, parent
 
+      scope.connectToChild = (parent) ->
+        parent.$save ->
+          scope.$broadcast 'refreshing'
+          scope.currentModal.hide()
+          scope.newRelationship undefined, parent
+
 
       scope.nameChanging = ->
         scope.child.nick = scope.child.name if scope.nickFollowing && scope.child.name && scope.child.name.length < 5
