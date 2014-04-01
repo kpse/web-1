@@ -56,12 +56,12 @@ object EmployeeController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString)
         request.body.validate[Employee].map {
+          case (existing) if Employee.idExists(existing.id) =>
+            Ok(loggedJson(Employee.update(existing)))
           case (employee) if Employee.phoneExists(employee.phone) && employee.id.isEmpty =>
             BadRequest(loggedJson(ErrorResponse("老师的电话重复，请检查输入。")))
           case (employee) if Employee.loginNameExists(employee.login_name) && employee.id.isEmpty =>
             BadRequest(loggedJson(ErrorResponse(employee.login_name + "已占用，建议用学校拼音缩写加数字来组织登录名。")))
-          case (existing) if existing.id.nonEmpty =>
-            Ok(loggedJson(Employee.update(existing)))
           case (newOne) =>
             Ok(loggedJson(Employee.create(newOne)))
         }.recoverTotal {

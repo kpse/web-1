@@ -20,6 +20,18 @@ case class Principal(employee_id: String, school_id: Long, phone: String, timest
 case class EmployeePassword(employee_id: String, school_id: Long, phone: String, old_password: String, login_name: String, new_password: String)
 
 object Employee {
+  def idExists(employeeId: Option[String]): Boolean = DB.withConnection {
+    implicit c =>
+      employeeId match {
+        case Some(id) =>
+          SQL("select count(1) from employeeinfo where employee_id={employee_id}")
+            .on('employee_id -> id)
+            .as(get[Long]("count(1)") single) > 0
+        case None => false
+      }
+  }
+
+
   def loginNameExists(loginName: String) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from employeeinfo where login_name={login}")
