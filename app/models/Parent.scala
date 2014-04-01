@@ -273,10 +273,10 @@ object Parent {
       get[Date]("parentinfo.birthday") ~
       get[Int]("member_status") ~
       get[Int]("parentinfo.status") ~
-      get[String]("parentinfo.company") ~
+      get[Option[String]]("parentinfo.company") ~
       get[Long]("parentinfo.update_at") map {
       case id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday ~ member ~ status ~ company ~ t =>
-        new Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t), Some(member), Some(status), Some(company))
+        new Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t), Some(member), Some(status), company)
     }
   }
 
