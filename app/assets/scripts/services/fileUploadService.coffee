@@ -1,7 +1,7 @@
 'use strict'
 
 tokenService = ($http) ->
-  $http({method: 'GET', url: '/ws/fileToken?bucket=suoqin-test'})
+  $http({method: 'GET', url: '/ws/fileToken?bucket=kulebao-prod'})
 
 
 qiniuService = (tokenService) ->
@@ -12,7 +12,7 @@ qiniuService = (tokenService) ->
     xhr.onloadend = (e) ->
       response = JSON.parse(e.currentTarget.response)
       successCallback({
-        url: "http://suoqin-test.u.qiniudn.com/" + response.hash
+        url: "http://kulebao-prod.qiniudn.com/" + response.hash
         size: response.size
       })
 
@@ -25,7 +25,7 @@ qiniuService = (tokenService) ->
 uploadService = (qiniuService, $http) ->
   (file, callback) ->
     return callback(undefined) if file is undefined
-    $http.get('/ws/fileToken?bucket=suoqin-test').success (data)->
+    $http.get('/ws/fileToken?bucket=kulebao-prod').success (data)->
       qiniuService.send file, data.token, (remoteFile) ->
         callback(remoteFile.url)
 
