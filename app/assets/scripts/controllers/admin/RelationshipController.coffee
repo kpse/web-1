@@ -46,6 +46,7 @@ angular.module('kulebaoAdmin')
           school_id: parseInt stateParams.kindergarten
 
       scope.createRelationship = (child, parent)->
+        parent.validRelationships = {0: ['妈妈', '奶奶', '姥姥'], 1: ['爸爸', '爷爷', '姥爷']}[parent.gender] if parent?
         new Relationship
           school_id: parseInt stateParams.kindergarten
           relationship: '妈妈'
@@ -76,9 +77,9 @@ angular.module('kulebaoAdmin')
           contentTemplate: 'templates/admin/add_child.html'
 
       scope.newRelationship = (child, parent)->
-        console.log 'newRelationship'
         scope.relationship = scope.createRelationship(child, parent)
         scope.parents = Parent.query school_id: stateParams.kindergarten, ->
+          _.forEach scope.parents, (p) -> p.validRelationships = {0: ['妈妈', '奶奶', '姥姥'], 1: ['爸爸', '爷爷', '姥爷']}[p.gender]
           scope.children = Child.query school_id: stateParams.kindergarten, ->
             scope.currentModal = Modal
               scope: scope
@@ -189,6 +190,10 @@ angular.module('kulebaoAdmin')
 
       scope.stopFollowing = ->
         scope.nickFollowing = false
+
+      scope.parentChange = (r) ->
+        if !_.contains r.parent.validRelationships, r.relationship
+          r.relationship = r.parent.validRelationships[0]
 
   ]
 

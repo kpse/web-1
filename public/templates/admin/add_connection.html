@@ -22,7 +22,7 @@
 
           <div class="col-sm-8">
             <input type="text" class="form-control relationship-select" ng-model="relationship.relationship"
-                   ng-options="r for r in ['妈妈', '爸爸', '奶奶', '爷爷', '姥姥', '姥爷']" placeholder="与宝宝关系" bs-typeahead required>
+                   ng-options="r for r in relationship.parent.validRelationships" placeholder="与宝宝关系" bs-typeahead required>
           </div>
         </div>
       </div>
@@ -41,7 +41,7 @@
 
           <div class="col-sm-8">
             <select ng-hide="relationship.fix_parent" class="form-control parent-select" ng-model="relationship.parent"
-                    ng-options="p.name for p in availableParentFor(relationship.child)" required></select>
+                    ng-options="p.name for p in availableParentFor(relationship.child)" required ng-change="parentChange(relationship)"></select>
 
             <p class="form-control-static" ng-show="relationship.fix_parent">{{relationship.parent.name}}</p>
           </div>
