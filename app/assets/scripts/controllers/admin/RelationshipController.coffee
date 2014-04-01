@@ -45,11 +45,17 @@ angular.module('kulebaoAdmin')
           class_id: scope.kindergarten.classes[0].class_id
           school_id: parseInt stateParams.kindergarten
 
+      recommand = (parent) ->
+        if parent.validRelationships?
+          parent.validRelationships[0]
+        else
+          '妈妈'
+
       scope.createRelationship = (child, parent)->
         parent.validRelationships = {0: ['妈妈', '奶奶', '姥姥'], 1: ['爸爸', '爷爷', '姥爷']}[parent.gender] if parent?
         new Relationship
           school_id: parseInt stateParams.kindergarten
-          relationship: '妈妈'
+          relationship: recommand(parent)
           child: child
           parent: parent
           fix_child: child?
