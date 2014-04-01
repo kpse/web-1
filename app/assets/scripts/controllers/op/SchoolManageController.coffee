@@ -87,6 +87,9 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             status: 1
             used: 0
 
+      scope.idChange = (school)->
+        school.principal.admin_login = 'admin' + school.school_id
+        school.charge.school_id = school.school_id
 
       scope.addSchool = ->
         scope.school = scope.newSchool()

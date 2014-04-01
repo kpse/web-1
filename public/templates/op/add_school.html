@@ -6,7 +6,7 @@
 
       <div class="col-sm-8">
         <input id="school-id" type="number" ng-model="school.school_id" name="id"
-               class="editing-field form-control" ng-bk-focus required/>
+               class="editing-field form-control" ng-bk-focus required ng-change="idChange(school)"/>
         <span class="error-field" ng-show="newSchoolForm.id.$dirty && isSchoolDuplicated(school, 'school_id')">与已有学校ID重复！</span>
       </div>
     </div>
