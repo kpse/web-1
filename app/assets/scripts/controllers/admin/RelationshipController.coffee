@@ -46,7 +46,7 @@ angular.module('kulebaoAdmin')
           school_id: parseInt stateParams.kindergarten
 
       recommand = (parent) ->
-        if parent.validRelationships?
+        if parent? && parent.validRelationships?
           parent.validRelationships[0]
         else
           '妈妈'
