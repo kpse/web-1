@@ -12,7 +12,7 @@ qiniuService = (tokenService) ->
     xhr.onloadend = (e) ->
       response = JSON.parse(e.currentTarget.response)
       successCallback({
-        url: "http://kulebao-prod.qiniudn.com/" + response.hash
+        url: "https://dn-kulebao.qbox.me/" + response.hash
         size: response.size
       })
 
