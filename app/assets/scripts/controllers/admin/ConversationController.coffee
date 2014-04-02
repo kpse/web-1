@@ -99,8 +99,6 @@ angular.module('kulebaoAdmin')
               scope.refresh()
 
         scope.messageEditing = ->
-          scope.message = scope.newMessage()
-
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/admin/add_message.html'
