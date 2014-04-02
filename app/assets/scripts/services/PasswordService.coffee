@@ -7,5 +7,14 @@ passwordService = ($resource) ->
       phone: '@phone'
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebaoApp')
 .factory('passwordService', ['$resource', passwordService])
+
+passwordTokenService = ($resource) ->
+  $resource '/ws/verify/phone/:phone',
+    {
+      phone: '@phone'
+    }
+
+angular.module('kulebaoApp')
+.factory('passwordTokenService', ['$resource', passwordTokenService])

@@ -1,10 +1,11 @@
 package controllers
 
-import play.api.mvc.Controller
-import models.{ErrorResponse, EmployeePassword, Employee}
+import play.api.mvc.{Action, Controller}
+import models.{EmployeeResetPassword, ErrorResponse, EmployeePassword, Employee}
 import play.api.libs.json.{JsError, Json}
 import play.Logger
 import helper.JsonLogger._
+import play.cache.Cache
 
 object EmployeeController extends Controller with Secured {
 
@@ -12,6 +13,7 @@ object EmployeeController extends Controller with Secured {
   implicit val write1 = Json.writes[ErrorResponse]
   implicit val read1 = Json.reads[Employee]
   implicit val read2 = Json.reads[EmployeePassword]
+  implicit val read3 = Json.reads[EmployeeResetPassword]
 
   def index = IsOperator {
     u =>
@@ -98,5 +100,24 @@ object EmployeeController extends Controller with Secured {
   def showInSchool(kg: Long, phone: String) = IsLoggedIn {
     u => _ =>
       Ok(loggedJson(Employee.show(phone)))
+  }
+
+  def check(phone: String) = Action {
+    Employee.show(phone).map {
+      e =>
+        Ok(loggedJson(e))
+    }.getOrElse(NotFound(Json.toJson(new ErrorResponse("我们的系统没有记录您的手机，请重新检查输入。"))))
+  }
+
+  def resetPassword(phone: String) = Action(parse.json) {
+    request =>
+      Logger.info(request.body.toString())
+      request.body.validate[EmployeeResetPassword].map {
+        case (password) if Employee.isMatched(password) =>
+          Cache.remove(phone)
+          Ok(loggedJson(Employee.resetPassword(password)))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + loggedErrorJson(e))
+      }
   }
 }

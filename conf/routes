@@ -117,6 +117,8 @@ GET           /employee                                                         
 POST          /employee                                                          controllers.EmployeeController.create
 POST          /employee/:phone                                                   controllers.EmployeeController.updateOrCreate(phone: String)
 GET           /employee/:phone                                                   controllers.EmployeeController.show(phone: String)
+GET           /employee_password/:phone                                          controllers.EmployeeController.check(phone: String)
+POST          /employee_password/:phone                                          controllers.EmployeeController.resetPassword(phone: String)
 
 GET           /phone/:phone                                                      controllers.PhoneManagementController.show(phone: String)
 DELETE        /phone/:phone                                                      controllers.PhoneManagementController.delete(phone: String)

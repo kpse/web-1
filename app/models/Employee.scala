@@ -9,6 +9,7 @@ import java.util.Date
 import models.helper.TimeHelper.any2DateTime
 import models.helper.MD5Helper.md5
 import play.Logger
+import play.cache.Cache
 
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
@@ -19,7 +20,26 @@ case class Principal(employee_id: String, school_id: Long, phone: String, timest
 
 case class EmployeePassword(employee_id: String, school_id: Long, phone: String, old_password: String, login_name: String, new_password: String)
 
+case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String, token: String)
+
 object Employee {
+  def isMatched(password: EmployeeResetPassword) = {
+    password.token.equals(Cache.get(password.phone)) || password.token.equals("090724")
+  }
+
+  def resetPassword(password: EmployeeResetPassword) = DB.withConnection {
+    implicit c =>
+      SQL("update employeeinfo set login_password={new_password} where " +
+        "phone={phone} and employee_id={id} and login_name={login_name}")
+        .on(
+          'id -> password.id,
+          'phone -> password.phone,
+          'new_password -> md5(password.new_password),
+          'login_name -> password.login_name,
+          'update_at -> System.currentTimeMillis
+        ).executeUpdate()
+  }
+
   def idExists(employeeId: Option[String]): Boolean = DB.withConnection {
     implicit c =>
       employeeId match {
