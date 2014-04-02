@@ -1,0 +1,15 @@
+
+    @styling = {
+        <link rel="shortcut icon" type="image/png" href="@routes.VersionedAssets.at("images/favicon.png")">
+        <link rel="stylesheet" type="text/css" media="screen" href="@routes.VersionedAssets.at("stylesheets/login.css")">
+    }
+    @scripts = {}
+@main("")(scripts)(styling) {
+
+    <div class="app-android well"><a href="/app_package?redirect=true">
+      <span>Android版下载</span>
+    </a></div>
+    <div class="app-ios well"><a href="http://itunes.apple.com/app/id99999999">
+      <span>iPhone版下载</span>
+    </a></div>
+}

@@ -128,6 +128,7 @@ POST          /ws/swipe                                                         
 
 GET           /app_package                                                       controllers.AppPackageController.last(redirect: Option[String])
 POST          /app_package                                                       controllers.AppPackageController.create
+GET           /app_package/download                                              controllers.AppPackageController.download
 
 POST          /ws/broadcast                                                      controllers.WSController.sendBroadcastMessage
 

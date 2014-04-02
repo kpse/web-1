@@ -48,4 +48,8 @@ object AppPackageController extends Controller {
     } getOrElse BadRequest
 
   }
+
+  def download = Action {
+    Ok(views.html.download())
+  }
 }
