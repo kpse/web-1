@@ -21,4 +21,8 @@ object Application extends Controller with Secured {
       _ =>
         Ok(views.html.operation())
   }
+
+  def forgotten = Action {
+    Ok(views.html.forgotten())
+  }
 }

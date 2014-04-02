@@ -16,6 +16,11 @@ class Config
         templateUrl: 'templates/news.html',
         controller: 'NewsCtrl'
       )
+    .state('forgotten',
+        url: '/password',
+        templateUrl: 'templates/forgotten_password.html',
+        controller: 'ForgottenCtrl'
+      )
 
     .state('kindergarten.wip',
         url: '/wip',
@@ -24,9 +29,6 @@ class Config
       )
 
     $urlRouterProvider.otherwise ($injector, $location) ->
-      path = $location.path()
-      if path.indexOf("kindergarten", 0) < 0
-      then $location.path '/kindergarten/93740362'
-      else $location.path path.replace /(kindergarten\/[^\/]+)\/.+$/g, '$1/wip'
+      $location.path '/password'
 
 angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics']).config ['$stateProvider', '$urlRouterProvider', Config]
