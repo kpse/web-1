@@ -41,7 +41,7 @@ object AppPackageController extends Controller {
     redirect.map {
       case "true" =>
         AppPackage.latest map {
-          case pkg if pkg.url.startsWith("http://kulebao-prod.u.qiniudn.com/") =>
+          case pkg if pkg.url.startsWith("https://") =>
             Redirect(pkg.url)
         } getOrElse BadRequest
       case _ => Ok(Json.toJson(AppPackage.latest))
