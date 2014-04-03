@@ -15,7 +15,7 @@ function load_env {
 
 function build_local {
     load_env
-    JAVA_OPTS=-Xmx2048m karma start --single-run && \
+    JAVA_OPTS=-Xmx3072m karma start --single-run && \
     play pmd checkstyle findbugs test
 }
 
