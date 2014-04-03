@@ -23,7 +23,7 @@ object CheckingMessage {
       def generateNotice(childName: String): IOSField = {
         IOSField("您的孩子 %s 已于 %s 打卡%s。".format(childName,
           new DateTime(request.timestamp).toString("HH:mm:ss"),
-          if (request.notice_type==0) "入园" else "离开幼儿园"))
+          if (request.notice_type==1) "入园" else "离开幼儿园"))
       }
       val simple = {
         get[String]("child_id") ~
