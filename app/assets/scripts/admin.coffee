@@ -157,7 +157,7 @@ class Config
       controller: 'DefaultCtrl'
 
     $urlRouterProvider.otherwise ($injector, $location) ->
-      $location.path '/default'
+      $location.path '/default' if $location.path().indexOf('#/kindergarten/') < 0
 
 
 angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics'])
