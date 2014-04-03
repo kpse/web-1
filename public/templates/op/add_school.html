@@ -33,12 +33,12 @@
 
 
     <div class="form-group">
-      <label for="school-phone" class="col-sm-2 control-label">学校电话</label>
+      <label for="school-cell-phone" class="col-sm-2 control-label">校长手机号</label>
 
       <div class="col-sm-8">
-        <input id="school-phone" type="text" ng-model="school.phone" name="phone"
-               class="editing-field form-control" required ng-pattern="/^(\d{11}|0\d{2,3}\-\d{8})$/"/>
-        <span class="error-field" ng-show="newSchoolForm.phone.$error.pattern">错误的电话，请用座机010-88886666或者手机格式1398886666</span>
+        <input id="school-cell-phone" type="text" ng-model="school.phone" name="phone"
+               class="editing-field form-control" required ng-pattern="/^\d{11}$/"/>
+        <span class="error-field" ng-show="newSchoolForm.phone.$error.pattern">错误的手机号码，应该是11位数字</span>
       </div>
     </div>
 

@@ -23,7 +23,7 @@
           <label for="school-phone" class="control-label">学校联系电话</label>
 
           <input id="school-phone" ng-model="kindergarten.phone" ng-disabled="!isEditing" name="phone"
-                 class="editing-title form-control" required ng-pattern="/^(\d{11}|0\d{2,3}\-\d{8})$/"/>
+                 class="editing-title form-control" required ng-pattern="/^(\d{11}|0\d{2,3}\-\d{7,8})$/"/>
           <span class="error-field" ng-show="schoolIntro.phone.$error.pattern">错误的电话，请用座机010-88886666或者手机格式1398886666</span>
         </div>
       </div>
