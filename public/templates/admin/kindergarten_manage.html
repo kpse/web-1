@@ -1,25 +1,20 @@
 <div class="main-frame">
 
-  <div class="header">
-    <div class="product-logo-container">
-      <div class="product-logo"></div>
-      <div class="rainbow-logo"></div>
-    </div>
-    <nav class="navbar navbar-default" role="navigation">
+  <div class="header row">
+
+    <nav class="navbar navbar-default pull-right col-sm-5" role="navigation">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">{{kindergarten.name}} 学校管理系统</a>
+          <a class="navbar-brand" href="#">{{kindergarten.name}}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse col-sm-12" id="bs-example-navbar-collapse-1">
-          <form class="navbar-form navbar-left" role="search">
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="Search" ng-model="searchText">
-            </div>
-            <button type="button" class="btn btn-warning dropdown-toggle admin-user" data-toggle="dropdown">
-              {{adminUser.name}} <span class="caret"></span>
+        <div class="collapse navbar-collapse col-sm-8" id="bs-example-navbar-collapse-1">
+          <form class="navbar-form navbar-right row" role="search">
+            <h4 class="col-sm-6">您好， {{adminUser.name}}</h4>
+            <button type="button" class="btn btn-warning dropdown-toggle admin-user col-sm-4" data-toggle="dropdown">
+            个人中心<span class="caret"></span>
             </button>
             <ul class="dropdown-menu user-menu" role="menu">
               <li><a ng-href="#/kindergarten/{{kindergarten.school_id}}/welcome">欢迎页面</a></li>
@@ -39,67 +34,60 @@
   <div class="row modules-list-container col-sm-2">
     <ul class="nav nav-pills nav-stacked modules-list actions">
       <li class="action" ng-class="{active : isSelected('bulletin')}">
-        <a ng-click="goBulletin()" class="btn">
-          园内公告
+        <a ng-click="goBulletin()" class="btn news">
+          <span>园内公告</span>
         </a>
       </li>
       <li class="action" ng-class="{active : isSelected('conversation')}">
-        <a class="btn" ng-click="goConversation()">
-          家园互动
+        <a class="btn conversation" ng-click="goConversation()">
+          <span>家园互动</span>
         </a>
       </li>
       <li class="action" ng-class="{active : isSelected('baby-status')}">
-        <a class="btn" ng-click="goBabyStatus()">
-          在园表现
+        <a class="btn assess" ng-click="goBabyStatus()">
+          <span>在园表现</span>
         </a>
       </li>
       <li class="action" ng-class="{active : isSelected('relationship')}">
-        <a class="btn" ng-click="goRelationshipManagement()">
-          幼儿园档案管理
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Separated link</a></li>
-          </ul>
+        <a class="btn relationship" ng-click="goRelationshipManagement()">
+          <span>幼儿园档案管理</span>
         </a>
 
       </li>
       <li class="action" ng-class="{active : isSelected('assignment')}">
-        <a class="btn" ng-click="goAssignment()">
-          亲子作业
+        <a class="btn assignment" ng-click="goAssignment()">
+          <span>亲子作业</span>
         </a>
       </li>
       <li class="action" ng-class="{active : isSelected('intro')}">
-        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/intro" class="btn">
-          幼儿园简介
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/intro" class="btn intro">
+          <span>幼儿园简介</span>
         </a>
       </li>
       <li class="action" ng-class="{active : isSelected('cookbook')}">
-        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/cookbook" class="btn">
-          每周食谱
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/cookbook" class="btn cookbook">
+          <span>每周食谱</span>
         </a>
       </li>
       <li class="action" ng-class="{active : isSelected('schedule')}">
-        <a ng-click="goSchedule()" class="btn">
-          课程表
+        <a ng-click="goSchedule()" class="btn schedule">
+          <span>课程表</span>
         </a>
       </li>
       <li class="action" ng-class="{active : isSelected('employee')}">
-        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/employee" class="btn">
-          教职员设置
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/employee" class="btn employee">
+          <span>教职员设置</span>
         </a>
       </li>
       <li class="action" ng-class="{active : isSelected('classes')}">
-        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/class" class="btn">
-          班级管理
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/class" class="btn classes">
+          <span>班级管理</span>
         </a>
       </li>
 
       <li class="action" ng-class="{active : isSelected('member')}">
-        <a ng-click="goMemberList()" class="btn">
-          开通手机号管理
+        <a ng-click="goMemberList()" class="btn member">
+          <span>开通手机号管理</span>
         </a>
       </li>
     </ul>

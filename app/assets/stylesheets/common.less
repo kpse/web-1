@@ -39,7 +39,8 @@
   background-size: 55px 55px;
   margin-left: 200px;
 }
-.uploading{
+
+.uploading {
   margin: 0;
 }
 
@@ -71,9 +72,10 @@
 }
 
 .header {
-  width: 970px;
-  height: 124px;
-  margin-left: -15px;
+  width: 1200px;
+  height: 121px;
+  margin-left: -30px;
+  background: #f8f8f8 url(../../images/header-bg.png) no-repeat;
   .title {
     float: left;
     width: 571px;
@@ -123,12 +125,16 @@
   overflow: auto;
 }
 
-.navbar-form {
-  width: 500px;
+.navbar {
+  background-color: #e0dfe4;
+   border: none;
+  .navbar-form {
+    width: 322px;
+  }
 }
 
 .user-menu {
-  margin-left: 192px;
+  right: 100px;
 }
 
 .action {
@@ -139,15 +145,14 @@
 }
 
 .alert.am-fade {
-    .close {
-      display: none;
-    }
+  .close {
+    display: none;
+  }
 }
 
 .control-label.highlight {
   color: red;
 }
-
 
 .portrait-container {
   margin-left: 100px;
@@ -200,6 +205,95 @@
     opacity: .5;
     &.ng-leave-active {
       opacity: 0;
+    }
+  }
+}
+
+.modules-list-container {
+  background: #f8f8f8 url(../../images/tabs-bg.png) no-repeat;;
+  .modules-list {
+    .btn {
+      span {
+        display: none;
+      }
+      height: 37px;
+    }
+    .member {
+      background: #34393D url(../../images/member.png) no-repeat;;
+      background-size: 100%;
+      &:hover {
+        background: #34393D url(../../images/member-action.png) no-repeat;;
+      }
+    }
+    .news {
+      background: #34393D url(../../images/news.png) no-repeat;;
+      background-size: 100%;
+      &:hover {
+        background: #34393D url(../../images/news-action.png) no-repeat;;
+      }
+    }
+    .conversation {
+      background: #34393D url(../../images/conversation.png) no-repeat;;
+      background-size: 100%;
+      &:hover {
+        background: #34393D url(../../images/conversation-action.png) no-repeat;;
+      }
+    }
+    .assess {
+      background: #34393D url(../../images/assess.png) no-repeat;;
+      background-size: 100%;
+      &:hover {
+        background: #34393D url(../../images/assess-action.png) no-repeat;;
+      }
+    }
+    .relationship {
+      background: #34393D url(../../images/relationship.png) no-repeat;;
+      background-size: 100%;
+      &:hover {
+        background: #34393D url(../../images/relationship-action.png) no-repeat;;
+      }
+    }
+    .assignment {
+      background: #34393D url(../../images/assignment.png) no-repeat;;
+      background-size: 100%;
+      &:hover {
+        background: #34393D url(../../images/assignment-action.png) no-repeat;;
+      }
+    }
+    .intro {
+      background: #34393D url(../../images/intro.png) no-repeat;;
+      background-size: 100%;
+      &:hover {
+        background: #34393D url(../../images/intro-action.png) no-repeat;;
+      }
+    }
+    .cookbook {
+      background: #34393D url(../../images/cookbook.png) no-repeat;;
+      background-size: 100%;
+      &:hover {
+        background: #34393D url(../../images/cookbook-action.png) no-repeat;;
+      }
+    }
+    .schedule {
+      background: #34393D url(../../images/schedule.png) no-repeat;;
+      background-size: 100%;
+      &:hover {
+        background: #34393D url(../../images/schedule-action.png) no-repeat;;
+      }
+    }
+    .employee {
+      background: #34393D url(../../images/employee.png) no-repeat;;
+      background-size: 100%;
+      &:hover {
+        background: #34393D url(../../images/employee-action.png) no-repeat;;
+      }
+    }
+    .classes {
+      background: #34393D url(../../images/class.png) no-repeat;;
+      background-size: 100%;
+      &:hover {
+        background: #34393D url(../../images/class-action.png) no-repeat;;
+      }
     }
   }
 }
