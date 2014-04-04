@@ -30,7 +30,7 @@
       </td>
 
     <td class=".col-xs-2">
-      <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
+      <button class="btn btn-xs btn-danger" ng-confirm-msg="这个操作将彻底删除{{kg.name}}的所有数据，确定继续?"
               ng-confirm-click="delete(kg);$event.stopPropagation()">删除
       </button>
     </td>

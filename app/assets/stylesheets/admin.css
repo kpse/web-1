@@ -82,11 +82,6 @@
   height: 200px;
 }
 
-.rating,
-.editable {
-  cursor: pointer;
-}
-
 .adding-for-individual {
   margin: 20px;
 }

@@ -31,10 +31,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
       scope.endEditing = (kg) ->
         School.save kg, ->
-            scope.refresh()
-            scope.currentModal.hide()
-          , (res) ->
-            handleError res
+          scope.refresh()
+          scope.currentModal.hide()
+        , (res) ->
+          handleError res
 
       scope.edit = (employee) ->
         scope.employee = angular.copy employee.detail
@@ -65,8 +65,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             contentTemplate: 'templates/admin/add_employee.html'
 
 
-      scope.delete = ->
-        alert('暂未实现')
+      scope.delete = (kg)->
+        kg.$delete ->
+          scope.refresh()
+
 
       scope.newSchool = ->
         id = nextId(scope.kindergartens)
@@ -112,10 +114,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
       scope.saveSchool = (school) ->
         AdminCreating.save school, ->
-            scope.refresh()
-            scope.currentModal.hide()
-          , (res) ->
-            handleError res
+          scope.refresh()
+          scope.currentModal.hide()
+        , (res) ->
+          handleError res
 
       scope.save = (object) ->
         if object.group
@@ -143,9 +145,11 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           e.phone == employee.phone && e.id != employee.id
 
       scope.uploadPic = (employee, pic) ->
+        scope.uploading = true
         Upload pic, (url) ->
           scope.$apply ->
             employee.portrait = url if url isnt undefined
+            scope.uploading = false
 
   ]
 
