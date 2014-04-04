@@ -1,16 +1,15 @@
 <div class="main-frame">
 
   <div class="header row">
-
-    <nav class="navbar navbar-default pull-right col-sm-5" role="navigation">
-      <div class="container-fluid">
+    <nav class="navbar navbar-default pull-right" role="navigation">
+      <div class="container-fluid col-sm-6">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
           <a class="navbar-brand" href="#">{{kindergarten.name}}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse col-sm-8" id="bs-example-navbar-collapse-1">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <form class="navbar-form navbar-right row" role="search">
             <h4 class="col-sm-6">您好， {{adminUser.name}}</h4>
             <button type="button" class="btn btn-warning dropdown-toggle admin-user col-sm-4" data-toggle="dropdown">
@@ -18,14 +17,20 @@
             </button>
             <ul class="dropdown-menu user-menu" role="menu">
               <li><a ng-href="#/kindergarten/{{kindergarten.school_id}}/welcome">欢迎页面</a></li>
+              <li><a ng-click="edit(adminUser)">修改个人信息</a></li>
               <li><a ng-click="changePassword(adminUser)">修改密码</a></li>
               <li ng-show="adminUser.privilege_group == 'operator'"><a ng-href="/operation">去后台管理页面</a></li>
               <li class="divider"></li>
               <li><a class="logout-link" href="/logout">退出登陆</a></li>
             </ul>
+
           </form>
         </div>
         <!-- /.navbar-collapse -->
+      </div>
+      <div class="admin-user-portrait-container editable col-sm-6" ng-click="edit(adminUser)" >
+        <img class="portrait img-responsive" ng-src="{{adminUser.portrait || '/assets/images/portrait_placeholder.png' }}"
+             alt="照片"/>
       </div>
       <!-- /.container-fluid -->
     </nav>

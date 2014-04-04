@@ -1,7 +1,7 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
   ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', 'employeeService', 'passwordService', '$modal',
-   'chargeService',
-    (scope, $rootScope, $stateParams, School, location, Employee, Password, Modal, Charge) ->
+   'chargeService', 'uploadService',
+    (scope, $rootScope, $stateParams, School, location, Employee, Password, Modal, Charge, Upload) ->
       scope.adminUser = Employee.get ->
         if (scope.adminUser.privilege_group isnt 'operator')
           location.path '/kindergarten/' + scope.adminUser.school_id + '/welcome'
@@ -61,4 +61,22 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
           new_password: user.new_password
         pw.$save ->
           scope.currentModal.hide()
+
+      scope.edit = (user) ->
+        scope.employee = angular.copy user
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/admin/add_employee.html'
+
+      scope.save = (user) ->
+        user.$save ->
+          scope.adminUser = Employee.get()
+          scope.currentModal.hide()
+
+      scope.uploadPic = (employee, pic) ->
+        scope.uploading = true
+        Upload pic, (url) ->
+          scope.$apply ->
+            employee.portrait = url if url isnt undefined
+            scope.uploading = false
   ]
