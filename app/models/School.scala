@@ -5,6 +5,7 @@ import anorm._
 import anorm.SqlParser._
 import anorm.~
 import play.api.Play.current
+import play.Logger
 
 case class School(school_id: Long, name: String)
 
@@ -12,6 +13,35 @@ case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, man
 
 
 object School {
+  def delete(kg: Long) = DB.withTransaction {
+    implicit c =>
+
+      try {
+        SQL("delete from accountinfo where accountid in (select phone from parentinfo where school_id={kg})")
+          .on('kg -> kg.toString).execute()
+        SQL("delete from relationmap where child_id in (select child_id from childinfo where school_id={kg})")
+          .on('kg -> kg.toString).execute()
+        SQL("delete from relationmap where parent_id in (select parent_id from parentinfo where school_id={kg})")
+          .on('kg -> kg.toString).execute()
+
+        List("classinfo", "childinfo", "parentinfo", "news",
+          "scheduleinfo", "cookbookinfo", "schoolinfo", "employeeinfo", "dailylog", "conversation",
+          "assignment", "assess", "privilege", "chargeinfo").map {
+          table =>
+            SQL("delete from " + table + " where school_id={kg}")
+              .on('kg -> kg.toString).execute()
+        }
+        c.commit
+      }
+      catch {
+        case t: Throwable =>
+          Logger.info("error %s".format(t.toString))
+          c.rollback
+      }
+
+
+  }
+
   def managerExists(kg: Long, classId: Long, employee: Employee) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from privilege where school_id={kg} " +

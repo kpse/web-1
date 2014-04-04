@@ -6,13 +6,21 @@ import models.json_models._
 import play.Logger
 import models.json_models.SchoolIntroPreviewResponse
 import models.json_models.SchoolIntroDetail
-import models.{Employee, ChargeInfo, ErrorResponse}
+import models._
+import models.ChargeInfo
+import models.json_models.SchoolIntroPreviewResponse
+import models.json_models.PrincipalOfSchool
+import models.json_models.CreatingSchool
+import scala.Some
+import models.ErrorResponse
+import models.json_models.SchoolIntroDetail
 
 object SchoolSummaryController extends Controller with Secured {
   implicit val writes1 = Json.writes[SchoolIntroPreviewResponse]
   implicit val writes2 = Json.writes[SchoolIntro]
   implicit val writes3 = Json.writes[SchoolIntroDetail]
   implicit val writes4 = Json.writes[ErrorResponse]
+  implicit val writes5 = Json.writes[SuccessResponse]
   implicit val read1 = Json.reads[SchoolIntro]
   implicit val read2 = Json.reads[SchoolIntroDetail]
   implicit val read4 = Json.reads[PrincipalOfSchool]
@@ -74,5 +82,11 @@ object SchoolSummaryController extends Controller with Secured {
         case school =>
           Ok(Json.toJson(school))
       }.getOrElse(NotFound)
+  }
+
+  def delete(kg: Long) = IsOperator {
+    u => request =>
+      School.delete(kg)
+      Ok(Json.toJson(new SuccessResponse))
   }
 }
