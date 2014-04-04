@@ -39,7 +39,7 @@ function all {
 
 function local_https_server {
     load_env
-    JAVA_OPTS=-Dhttps.port=9001 play run
+    JAVA_OPTS="-Dhttps.port=9001 -Xmx3072m" play run
 }
 
 function deploy_prod {
