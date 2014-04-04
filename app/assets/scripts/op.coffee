@@ -1,5 +1,12 @@
-class Config
-  constructor: ($stateProvider, $urlRouterProvider) ->
+angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics'])
+angular.module('kulebaoAdmin',
+  ['kulebaoApp', 'ui.router', 'ngResource', 'ngRoute', 'ui.bootstrap', 'ui.mask', 'angulartics',
+   'angulartics.google.analytics', 'ngCookies'])
+angular.module('kulebaoOp',
+  ['kulebaoAdmin', 'kulebaoApp', 'ui.router', 'ngResource', 'ngRoute', 'ui.bootstrap', 'ui.mask', 'angulartics',
+   'angulartics.google.analytics', 'ngCookies', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap'])
+.config ['$stateProvider', '$urlRouterProvider',
+  ($stateProvider, $urlRouterProvider) ->
     $stateProvider
     .state 'main',
       url: '/main',
@@ -42,7 +49,11 @@ class Config
       $location.path '/main/school'
 
 
-angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics'])
-angular.module('kulebaoAdmin', ['kulebaoApp', 'ui.router', 'ngResource', 'ngRoute', 'ui.bootstrap', 'ui.mask', 'angulartics', 'angulartics.google.analytics', 'ngCookies'])
-angular.module('kulebaoOp', ['kulebaoAdmin', 'kulebaoApp', 'ui.router', 'ngResource', 'ngRoute', 'ui.bootstrap', 'ui.mask', 'angulartics', 'angulartics.google.analytics', 'ngCookies', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap'])
-.config ['$stateProvider', '$urlRouterProvider', Config]
+]
+
+
+angular.module("kulebaoOp").config ($modalProvider) ->
+  angular.extend $modalProvider.defaults,
+    animation: 'am-fade'
+    placement: 'center'
+    backdrop: 'static'

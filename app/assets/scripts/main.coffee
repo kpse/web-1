@@ -39,3 +39,9 @@ angular.module('kulebaoApp',
       $location.path '/password'
 
 ]
+
+angular.module("kulebaoApp").config ($modalProvider) ->
+  angular.extend $modalProvider.defaults,
+      animation: 'am-fade'
+      placement: 'center'
+      backdrop: 'static'

@@ -1,5 +1,10 @@
-class Config
-  constructor: ($stateProvider, $urlRouterProvider) ->
+angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics'])
+angular.module('kulebaoAdmin',
+  ['kulebaoApp', 'ui.router', 'ngResource', 'ngRoute', 'ui.bootstrap', 'ui.mask', 'angulartics',
+   'angulartics.google.analytics', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap', 'mgcrea.ngStrap.helpers.dimensions',
+   'ngCookies'])
+.config ['$stateProvider', '$urlRouterProvider',
+  ($stateProvider, $urlRouterProvider) ->
     $stateProvider
     .state 'kindergarten',
       url: '/kindergarten/:kindergarten',
@@ -160,9 +165,10 @@ class Config
       $location.path '/default' if $location.path().indexOf('#/kindergarten/') < 0
 
 
-angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics'])
-angular.module('kulebaoAdmin',
-  ['kulebaoApp', 'ui.router', 'ngResource', 'ngRoute', 'ui.bootstrap', 'ui.mask', 'angulartics',
-   'angulartics.google.analytics', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap', 'mgcrea.ngStrap.helpers.dimensions',
-   'ngCookies'])
-.config ['$stateProvider', '$urlRouterProvider', Config]
+]
+
+angular.module("kulebaoAdmin").config ($modalProvider) ->
+  angular.extend $modalProvider.defaults,
+    animation: 'am-fade'
+    placement: 'center'
+    backdrop: 'static'

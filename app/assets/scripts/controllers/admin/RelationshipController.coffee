@@ -67,9 +67,6 @@ angular.module('kulebaoAdmin')
           scope.parent.saveHook = saveHook
           scope.currentModal = Modal
             scope: scope
-            keyboard: false
-            placement: 'center'
-            backdrop: 'static'
             contentTemplate: 'templates/admin/add_adult.html'
 
       scope.newChild = ->
@@ -77,9 +74,6 @@ angular.module('kulebaoAdmin')
         scope.child = scope.createChild()
         scope.currentModal = Modal
           scope: scope
-          keyboard: false
-          placement: 'center'
-          backdrop: 'static'
           contentTemplate: 'templates/admin/add_child.html'
 
       scope.newRelationship = (child, parent)->
@@ -89,9 +83,6 @@ angular.module('kulebaoAdmin')
           scope.children = Child.query school_id: stateParams.kindergarten, ->
             scope.currentModal = Modal
               scope: scope
-              keyboard: false
-              placement: 'center'
-              backdrop: 'static'
               contentTemplate: 'templates/admin/add_connection.html'
 
       scope.editParent = (parent) ->

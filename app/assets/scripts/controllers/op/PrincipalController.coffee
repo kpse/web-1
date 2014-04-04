@@ -14,9 +14,6 @@ angular.module('kulebaoOp').controller 'OpPrincipalCtrl',
         scope.employee = angular.copy employee
         scope.currentModal = Modal
           scope: scope
-          keyboard: false
-          placement: 'center'
-          backdrop: 'static'
           contentTemplate: 'templates/admin/add_employee.html'
 
       scope.delete = (employee) ->

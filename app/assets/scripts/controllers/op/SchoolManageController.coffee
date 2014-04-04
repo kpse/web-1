@@ -24,9 +24,6 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           scope.school = angular.copy kg
           scope.currentModal = Modal
             scope: scope
-            keyboard: false
-            placement: 'center'
-            backdrop: 'static'
             contentTemplate: 'templates/op/edit_school.html'
 
       scope.endEditing = (kg) ->
@@ -40,9 +37,6 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         scope.employee = angular.copy employee.detail
         scope.currentModal = Modal
           scope: scope
-          keyboard: false
-          placement: 'center'
-          backdrop: 'static'
           contentTemplate: 'templates/admin/add_employee.html'
 
       scope.createPrincipal = (school) ->
@@ -97,9 +91,6 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         scope.school = scope.newSchool()
         scope.currentModal = Modal
           scope: scope
-          keyboard: false
-          placement: 'center'
-          backdrop: 'static'
           contentTemplate: 'templates/op/add_school.html'
 
       handleError = (res) ->
