@@ -14,16 +14,38 @@
     <link rel="shortcut icon" type="image/png" href="@routes.VersionedAssets.at("images/favicon.png")">
   </head>
 
-  <body><ul class="app-download">
-    <li class="app-download-android">
-      <a href="/app_package?redirect=true">
-        <span>Android版下载</span>
-      </a>
-    </li>
-    <li class="app-download-iphone">
-      <a href="https://itunes.apple.com/us/app/you-le-baoios/id854211863?ls=1&mt=8">
-        <span>iPhone版下载</span>
-      </a>
-    </li>
-  </ul></body>
+  <body>
+    <div id="header">
+      <div class="row">
+        <div class="logo col-lg-3 pull-left">
+          <a href="#"><img src="@routes.VersionedAssets.at("images/logo.jpg")" alt="幼乐宝"/></a>
+        </div>
+        <div class="topbtn col-lg-3 pull-right"><a href="/login" class="login-entry"><span class="content">幼儿园管理入口</span></a>
+        </div>
+      </div>
+    </div>
+    <ul class="app-download">
+      <li class="app-download-android">
+        <a href="/app_package?redirect=true">
+          <span>Android版下载</span>
+        </a>
+      </li>
+      <li class="app-download-iphone">
+        <a href="https://itunes.apple.com/us/app/you-le-baoios/id854211863?ls=1&mt=8">
+          <span>iPhone版下载</span>
+        </a>
+      </li>
+    </ul>
+    <div class="service-phone ui-grid-container">
+      <p>
+        <span class="service-phone-title">客服电话：</span>
+        <span class="service-phone-number">4009-984-998（全国免费电话）</span>
+        <span class="service-phone-number">028-69190987(公司电话)</span>
+      </p>
+    </div>
+    <div class="footer">
+      <p>版权信息：成都库乐宝信息技术有限公司 All rights reserved. 许可证：蜀ICP备14002494号</p>
+      <p>增值业务许可：xxxxxxxxxxxxxxxxxxxxxxxx</p>
+    </div>
+  </body>
 </html>
