@@ -10,3 +10,48 @@
     display: none;
   }
 }
+
+.image-intro {
+  width: 1090;
+}
+
+#qr-code {
+  z-index: 300;
+  position: absolute;
+  left: 10px;
+  top: 100px;
+}
+
+.app-download {
+  width: 630px;
+  margin: 0 auto;
+  li {
+    display: inline;
+    width: 296px;
+    margin-top: 38px;
+    a {
+      display: inline-block;
+      height: 45px;
+      line-height: 45px;
+      padding-left: 60px;
+      vertical-align: middle;
+      span {
+        font-size: 28px;
+        color: #000;
+        line-height: 45px;
+        border-left: 1px solid #e1e1e1;
+        vertical-align: middle;
+        padding-left: 31px;
+      }
+    }
+    &.app-download-android a {
+      background: url(../../images/fn-icon-android.jpg) no-repeat left center;
+    }
+    &.app-download-iphone {
+      margin-left: 38px;
+      a {
+        background: url(../../images/fn-icon-iphone.jpg) no-repeat left center;
+      }
+    }
+  }
+}

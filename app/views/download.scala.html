@@ -1,15 +1,29 @@
+@import controllers.VersionedAssets._
 
-    @styling = {
-        <link rel="shortcut icon" type="image/png" href="@routes.VersionedAssets.at("images/favicon.png")">
-        <link rel="stylesheet" type="text/css" media="screen" href="@routes.VersionedAssets.at("stylesheets/login.css")">
-    }
-    @scripts = {}
-@main("")(scripts)(styling) {
 
-    <div class="app-android well"><a href="/app_package?redirect=true">
-      <span>Android版下载</span>
-    </a></div>
-    <div class="app-ios well"><a href="https://itunes.apple.com/us/app/you-le-baoios/id854211863?ls=1&mt=8">
-      <span>iPhone版下载</span>
-    </a></div>
-}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>欢迎访问幼乐宝</title>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/main.css")">
+    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("vendor/css/jquery-ui/jquery-ui.min.css")">
+    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("vendor/css/bootstrap/bootstrap.min.css")">
+    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/common.css")">
+    <link rel="shortcut icon" type="image/png" href="@routes.VersionedAssets.at("images/favicon.png")">
+  </head>
+
+  <body><ul class="app-download">
+    <li class="app-download-android">
+      <a href="/app_package?redirect=true">
+        <span>Android版下载</span>
+      </a>
+    </li>
+    <li class="app-download-iphone">
+      <a href="https://itunes.apple.com/us/app/you-le-baoios/id854211863?ls=1&mt=8">
+        <span>iPhone版下载</span>
+      </a>
+    </li>
+  </ul></body>
+</html>
