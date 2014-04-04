@@ -1,51 +1,20 @@
-@import controllers.VersionedAssets._
+@scripts = {
+}
+@styling = {
+}
 
+@staticMain("幼乐宝客户端下载")(scripts)(styling) {
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>欢迎访问幼乐宝</title>
-    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
-    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/main.css")">
-    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("vendor/css/jquery-ui/jquery-ui.min.css")">
-    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("vendor/css/bootstrap/bootstrap.min.css")">
-    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/common.css")">
-    <link rel="shortcut icon" type="image/png" href="@routes.VersionedAssets.at("images/favicon.png")">
-  </head>
-
-  <body>
-    <div id="header">
-      <div class="row">
-        <div class="logo col-lg-3 pull-left">
-          <a href="#"><img src="@routes.VersionedAssets.at("images/logo.jpg")" alt="幼乐宝"/></a>
-        </div>
-        <div class="topbtn col-lg-3 pull-right"><a href="/login" class="login-entry"><span class="content">幼儿园管理入口</span></a>
-        </div>
-      </div>
-    </div>
-    <ul class="app-download">
-      <li class="app-download-android">
-        <a href="/app_package?redirect=true">
-          <span>Android版下载</span>
-        </a>
-      </li>
-      <li class="app-download-iphone">
-        <a href="https://itunes.apple.com/us/app/you-le-baoios/id854211863?ls=1&mt=8">
-          <span>iPhone版下载</span>
-        </a>
-      </li>
-    </ul>
-    <div class="service-phone ui-grid-container">
-      <p>
-        <span class="service-phone-title">客服电话：</span>
-        <span class="service-phone-number">4009-984-998（全国免费电话）</span>
-        <span class="service-phone-number">028-69190987(公司电话)</span>
-      </p>
-    </div>
-    <div class="footer">
-      <p>版权信息：成都库乐宝信息技术有限公司 All rights reserved. 许可证：蜀ICP备14002494号</p>
-      <p>增值业务许可：xxxxxxxxxxxxxxxxxxxxxxxx</p>
-    </div>
-  </body>
-</html>
+  <ul class="app-download">
+    <li class="app-download-android">
+      <a href="/app_package?redirect=true">
+        <span>Android版下载</span>
+      </a>
+    </li>
+    <li class="app-download-iphone">
+      <a href="https://itunes.apple.com/us/app/you-le-baoios/id854211863?ls=1&mt=8">
+        <span>iPhone版下载</span>
+      </a>
+    </li>
+  </ul>
+}
