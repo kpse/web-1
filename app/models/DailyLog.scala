@@ -50,6 +50,7 @@ object DailyLog {
               'school_id -> request.school_id,
               'parent_name -> x.parent_name
             ).executeInsert()
+        case _ => None
       }
   }
 

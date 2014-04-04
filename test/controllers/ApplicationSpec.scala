@@ -27,23 +27,33 @@ class ApplicationSpec extends Specification with TestSupport {
     "render the page" in new WithApplication {
       val sessionCookie = Session.encodeAsCookie(Session(Map("username" -> "admin")))
 
-      val home = route(FakeRequest(GET, "/").withHeaders(play.api.http.HeaderNames.COOKIE -> Cookies.encode(Seq(sessionCookie)))).get
+      val home = route(FakeRequest(GET, "/admin").withHeaders(play.api.http.HeaderNames.COOKIE -> Cookies.encode(Seq(sessionCookie)))).get
 
-      status(home) must equalTo(SEE_OTHER)
+      status(home) must equalTo(OK)
+      contentType(home) must beSome("text/html")
     }
 
     "redirecting while no cookie" in new WithApplication {
-      val login = route(FakeRequest(GET, "/")).get
+      val login = route(FakeRequest(GET, "/admin")).get
 
       status(login) must equalTo(SEE_OTHER)
       contentType(login) must beNone
     }
 
     "render the login page" in new WithApplication{
-      val login = route(FakeRequest(GET, "/")).get
+      val login = route(FakeRequest(GET, "/login")).get
 
-      status(login) must equalTo(SEE_OTHER)
-      contentType(login) must beNone
+      status(login) must equalTo(OK)
+      contentType(login) must beSome("text/html")
     }
+
+    "render the index page" in new WithApplication{
+      val index = route(FakeRequest(GET, "/")).get
+
+      status(index) must equalTo(OK)
+      contentType(index) must beSome("text/html")
+
+    }
+
   }
 }
