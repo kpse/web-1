@@ -133,7 +133,7 @@
 .navbar {
   background-color: #e0dfe4;
   border: none;
-  right:91px;
+  right:0;
   .navbar-form.navbar-right {
     width: 322px;
     margin-right: -58px;
@@ -216,9 +216,16 @@
   }
 }
 
+.hoverBkImage(@x) {background: e(%("#34393D url(../../images/%s-active.png) no-repeat", @x));background-size: 100%;}
+.bkImage(@x) {background: e(%("#34393D url(../../images/%s.png) no-repeat", @x));background-size: 100%;}
+
 .modules-list-container {
   background: #f8f8f8 url(../../images/tabs-bg.png) no-repeat;;
   .modules-list {
+    .action {
+      display: block;
+    }
+
     .btn {
       span {
         display: none;
@@ -226,82 +233,106 @@
       height: 37px;
     }
     .member {
-      background: #34393D url(../../images/member.png) no-repeat;;
-      background-size: 100%;
+      .bkImage(member);
       &:hover {
-        background: #34393D url(../../images/member-action.png) no-repeat;;
+        .hoverBkImage(member);
       }
     }
     .news {
-      background: #34393D url(../../images/news.png) no-repeat;;
-      background-size: 100%;
+      .bkImage(news);
       &:hover {
-        background: #34393D url(../../images/news-action.png) no-repeat;;
+        .hoverBkImage(news);
       }
     }
     .conversation {
-      background: #34393D url(../../images/conversation.png) no-repeat;;
-      background-size: 100%;
+      .bkImage(conversation);
       &:hover {
-        background: #34393D url(../../images/conversation-action.png) no-repeat;;
+        .hoverBkImage(conversation);
       }
     }
     .assess {
-      background: #34393D url(../../images/assess.png) no-repeat;;
-      background-size: 100%;
+      .bkImage(assess);
       &:hover {
-        background: #34393D url(../../images/assess-action.png) no-repeat;;
+        .hoverBkImage(assess);
       }
     }
     .relationship {
-      background: #34393D url(../../images/relationship.png) no-repeat;;
-      background-size: 100%;
+      .bkImage(relationship);
       &:hover {
-        background: #34393D url(../../images/relationship-action.png) no-repeat;;
+        .hoverBkImage(relationship);
       }
     }
     .assignment {
-      background: #34393D url(../../images/assignment.png) no-repeat;;
-      background-size: 100%;
+      .bkImage(assignment);
       &:hover {
-        background: #34393D url(../../images/assignment-action.png) no-repeat;;
+        .hoverBkImage(assignment);
       }
     }
     .intro {
-      background: #34393D url(../../images/intro.png) no-repeat;;
-      background-size: 100%;
+      .bkImage(intro);
       &:hover {
-        background: #34393D url(../../images/intro-action.png) no-repeat;;
+        .hoverBkImage(intro);
       }
     }
+
     .cookbook {
-      background: #34393D url(../../images/cookbook.png) no-repeat;;
-      background-size: 100%;
+      .bkImage(cookbook);
       &:hover {
-        background: #34393D url(../../images/cookbook-action.png) no-repeat;;
+        .hoverBkImage(cookbook);
       }
     }
     .schedule {
-      background: #34393D url(../../images/schedule.png) no-repeat;;
-      background-size: 100%;
+      .bkImage(schedule);
       &:hover {
-        background: #34393D url(../../images/schedule-action.png) no-repeat;;
+        .hoverBkImage(schedule);
       }
     }
     .employee {
-      background: #34393D url(../../images/employee.png) no-repeat;;
-      background-size: 100%;
+      .bkImage(employee);
       &:hover {
-        background: #34393D url(../../images/employee-action.png) no-repeat;;
+        .hoverBkImage(employee);
       }
     }
+
     .classes {
-      background: #34393D url(../../images/class.png) no-repeat;;
-      background-size: 100%;
+      .bkImage(class);
       &:hover {
-        background: #34393D url(../../images/class-action.png) no-repeat;;
+        .hoverBkImage(class);
       }
     }
+  }
+  .active .classes {
+    .hoverBkImage(class);
+  }
+  .active .member {
+    .hoverBkImage(member);
+  }
+  .active .employee {
+    .hoverBkImage(employee);
+  }
+  .active .schedule {
+    .hoverBkImage(schedule);
+  }
+  .active .cookbook {
+    .hoverBkImage(cookbook);
+  }
+  .active .intro {
+    .hoverBkImage(intro);
+  }
+  .active .assignment {
+    .hoverBkImage(assignment);
+  }
+  .active .relationship {
+    .hoverBkImage(relationship);
+  }
+  .active .assess {
+    .hoverBkImage(assess);
+  }
+  .active .conversation {
+    .hoverBkImage(conversation);
+  }
+  .active .news {
+    .hoverBkImage(news);
   }
 }
 
