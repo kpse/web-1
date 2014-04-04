@@ -4,10 +4,8 @@ import play.api.mvc._
 
 object Application extends Controller with Secured {
 
-  def index = IsAuthenticated {
-    username =>
-      _ =>
-        Redirect(routes.Application.admin)
+  def index = Action {
+        Ok(views.html.index())
   }
 
   def admin = IsAuthenticated {
