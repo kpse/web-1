@@ -1,6 +1,6 @@
 angular.module('kulebaoOp').controller 'OpCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'employeeService', 'passwordService', '$modal',
-    (scope, $rootScope, stateParams, Employee, Password, Modal) ->
+  ['$scope', '$rootScope', '$stateParams', 'employeeService', 'passwordService', '$modal', '$alert'
+    (scope, $rootScope, stateParams, Employee, Password, Modal, Alert) ->
       scope.adminUser = Employee.get()
 
       scope.isSelected = (tab)->
@@ -21,7 +21,17 @@ angular.module('kulebaoOp').controller 'OpCtrl',
           old_password: user.old_password
           new_password: user.new_password
         pw.$save ->
+          Alert
+            title: '密码修改成功'
+            content: ''
+            type: 'success'
           scope.currentModal.hide()
+        , (res) ->
+          Alert
+            title: '密码修改失败'
+            content: res.data.error_msg
+            container: '.change-password-form'
+
 
       scope.edit = (user) ->
         scope.employee = angular.copy user

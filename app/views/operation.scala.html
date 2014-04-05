@@ -29,7 +29,10 @@
 }
 @styling = {
   <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/op.css")">
+  <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/angular-motion.min.css")">
+  <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/bootstrap-additions.min.css")">
+  <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/libraries.min.css")">
 }
 @main("kulebaoOp")(scripts)(styling) {
-  <div ui-view></div>
+  <div class="main-view" ui-view></div>
 }

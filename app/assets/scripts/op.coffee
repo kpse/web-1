@@ -51,9 +51,17 @@ angular.module('kulebaoOp',
 
 ]
 
-
 angular.module("kulebaoOp").config ($modalProvider) ->
   angular.extend $modalProvider.defaults,
     animation: 'am-fade'
     placement: 'center'
     backdrop: 'static'
+
+angular.module("kulebaoOp").config ($alertProvider) ->
+  angular.extend $alertProvider.defaults,
+    animation: 'am-fade-and-slide-top'
+    placement: 'top'
+    type: "danger"
+    show: true
+    container: '.main-view'
+    duration: 3

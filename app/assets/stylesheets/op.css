@@ -1,12 +1,5 @@
 @import "btnUpload.less";
 
-.upload-form,
-.old-version,
-.schools-list,
-.schools-search-panel {
-  width: 750px;
-}
-
 .long-url {
   overflow-wrap: break-word;
 }

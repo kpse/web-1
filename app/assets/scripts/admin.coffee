@@ -172,3 +172,12 @@ angular.module("kulebaoAdmin").config ($modalProvider) ->
     animation: 'am-fade'
     placement: 'center'
     backdrop: 'static'
+
+angular.module("kulebaoAdmin").config ($alertProvider) ->
+  angular.extend $alertProvider.defaults,
+    animation: 'am-fade-and-slide-top'
+    placement: 'top'
+    type: "danger"
+    show: true
+    container: '.main-view'
+    duration: 3

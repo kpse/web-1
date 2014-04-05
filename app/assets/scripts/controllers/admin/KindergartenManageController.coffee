@@ -1,7 +1,7 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
   ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', 'employeeService', 'passwordService', '$modal',
-   'chargeService', 'uploadService',
-    (scope, $rootScope, $stateParams, School, location, Employee, Password, Modal, Charge, Upload) ->
+   'chargeService', 'uploadService', '$alert',
+    (scope, $rootScope, $stateParams, School, location, Employee, Password, Modal, Charge, Upload, Alert) ->
       scope.adminUser = Employee.get ->
         if (scope.adminUser.privilege_group isnt 'operator')
           location.path '/kindergarten/' + scope.adminUser.school_id + '/welcome'
@@ -60,7 +60,17 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
           old_password: user.old_password
           new_password: user.new_password
         pw.$save ->
+          Alert
+            title: '密码修改成功'
+            content: ''
+            type: 'success'
           scope.currentModal.hide()
+        , (res) ->
+          Alert
+            title: '密码修改失败'
+            content: res.data.error_msg
+            container: '.change-password-form'
+
 
       scope.edit = (user) ->
         scope.employee = angular.copy user

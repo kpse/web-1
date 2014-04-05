@@ -4,8 +4,8 @@
 angular.module('kulebaoAdmin')
 .controller 'unconnectedChildCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
-   'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService',
-    (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload) ->
+   'relationshipService', '$modal', 'childService'
+    (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child) ->
       scope.current_type = 'unconnectedChild'
 
       scope.loading = true
