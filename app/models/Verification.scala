@@ -5,14 +5,14 @@ import org.joda.time.DateTime
 import scala.util.Random
 import play.cache.Cache
 import play.Logger
+import models.CheatCode.validate
 
 case class Verification(phone: String, code: String)
 
 object Verification {
   def isMatched(verification: Verification) = {
-    verification.code.equals(Cache.get(verification.phone)) || verification.code.equals("090724")
+    verification.code.equals(Cache.get(verification.phone)) || validate(verification.code)
   }
-
 
   def formatMessage(phone: String, code: String): String = {
     "验证码：【%s】，切勿泄露给他人，如非本人操作，建议修改账号密码。自%s起，有效期10分钟。【幼乐宝】".format(code, new DateTime(System.currentTimeMillis).toString("HH:mm:ss"))

@@ -6,6 +6,7 @@ import play.api.Play.current
 import play.api.Logger
 import models.helper.MD5Helper.md5
 import play.cache.Cache
+import models.CheatCode.validate
 
 case class ChangePassword(account_name: String, old_password: String, new_password: String)
 
@@ -36,7 +37,7 @@ object ChangePasswordResponse {
 
 
   def isValidCode(code: ResetPassword): Boolean = {
-    code.authcode.equals(Cache.get(code.account_name)) || code.authcode.equals("090724")
+    code.authcode.equals(Cache.get(code.account_name)) || validate(code.authcode)
   }
 
   def handle(request: ChangePassword) = DB.withConnection {
