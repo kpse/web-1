@@ -2,10 +2,9 @@ package controllers
 
 import play.api.mvc.{Action, Controller}
 import models.{EmployeeResetPassword, ErrorResponse, EmployeePassword, Employee}
-import play.api.libs.json.{JsError, Json}
+import play.api.libs.json.Json
 import play.Logger
 import helper.JsonLogger._
-import play.cache.Cache
 
 object EmployeeController extends Controller with Secured {
 
@@ -115,8 +114,7 @@ object EmployeeController extends Controller with Secured {
     request =>
       Logger.info(request.body.toString())
       request.body.validate[EmployeeResetPassword].map {
-        case (password) if Employee.isMatched(password) =>
-          Cache.remove(phone)
+        case (password) =>
           Ok(loggedJson(Employee.resetPassword(password)))
       }.recoverTotal {
         e => BadRequest("Detected error:" + loggedErrorJson(e))

@@ -20,15 +20,11 @@ case class Principal(employee_id: String, school_id: Long, phone: String, timest
 
 case class EmployeePassword(employee_id: String, school_id: Long, phone: String, old_password: String, login_name: String, new_password: String)
 
-case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String, token: String)
+case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String)
 
 object Employee {
   def oldPasswordMatch(password: EmployeePassword) = {
     authenticate(password.login_name, password.old_password).nonEmpty
-  }
-
-  def isMatched(password: EmployeeResetPassword) = {
-    password.token.equals(Cache.get(password.phone)) || password.token.equals("090724")
   }
 
   def resetPassword(password: EmployeeResetPassword) = DB.withConnection {
