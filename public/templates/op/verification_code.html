@@ -1,0 +1,21 @@
+<h2>管理万能验证码</h2>
+<div class="well cheat-code-management-panel">
+  <form class="form-horizontal row" role="form" name="form">
+    <div class="form-group col-sm-5"><label for="code" class="form-control-static">当前验证码</label>
+      <input id="code" name="code" class="form-control" ng-model="code.code" ng-pattern="/^\d{6}$/" ng-disabled="!editing" required placeholder="无验证码"/>
+      <span class="error-field" ng-show="form.code.$dirty && form.code.$error.pattern">验证码应为6位数字</span></div>
+    <div class="form-group col-sm-12">
+      <button class="btn btn-primary"
+              ng-click="edit(code)" ng-hide="editing">设置
+      </button>
+      <button class="btn btn-primary"
+              ng-click="save(code)" ng-show="editing" ng-disabled="form.$invalid">保存
+      </button>
+      <button class="btn btn-danger"
+              ng-click="delete(code)" ng-hide="editing">删除
+      </button>
+    </div>
+  </form>
+
+</div>
+
