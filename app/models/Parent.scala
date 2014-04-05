@@ -82,10 +82,9 @@ object Parent {
       val oldPhone = oldPhoneNumber(parent)
       if (oldPhone != parent.phone && isConflicting(parent)) throw new IllegalAccessError("电话号码已经存在。")
       SQL("update accountinfo set accountid={phone}, " +
-        "password={password},pushid='', active=0, pwd_change_time=0 where accountid={old_phone}")
+        " active=0, pwd_change_time=0 where accountid={old_phone}")
         .on('old_phone -> oldPhone,
-          'phone -> parent.phone,
-          'password -> generateNewPassword(parent.phone)).executeUpdate()
+          'phone -> parent.phone).executeUpdate()
   }
 
   def oldPhoneNumber(parent: Parent) = DB.withConnection {

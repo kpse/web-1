@@ -17,7 +17,7 @@ object Charge {
     implicit c =>
       SQL("select ( total_phone_number - (select count(distinct p.phone) from parentinfo p, relationmap r " +
         "where p.parent_id=r.parent_id and r.status=1 and member_status=1 and p.status=1 and school_id={kg})) as exceed " +
-        "from chargeinfo where school_id={kg}")
+        "from chargeinfo where school_id={kg} and status=1")
         .on(
           'kg -> kg.toString
         ).as(get[Long]("exceed") single) <= 0
