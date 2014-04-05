@@ -1,6 +1,6 @@
 angular.module('kulebaoOp').controller 'OpCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'employeeService', 'passwordService', '$modal', '$alert'
-    (scope, $rootScope, stateParams, Employee, Password, Modal, Alert) ->
+  ['$scope', '$rootScope', '$stateParams', 'employeeService', 'passwordService', '$modal', '$alert', 'uploadService'
+    (scope, $rootScope, stateParams, Employee, Password, Modal, Alert, Upload) ->
       scope.adminUser = Employee.get()
 
       scope.isSelected = (tab)->
@@ -43,4 +43,11 @@ angular.module('kulebaoOp').controller 'OpCtrl',
         user.$save ->
           scope.adminUser = Employee.get()
           scope.currentModal.hide()
+
+      scope.uploadPic = (employee, pic) ->
+        scope.uploading = true
+        Upload pic, (url) ->
+          scope.$apply ->
+            employee.portrait = url if url isnt undefined
+            scope.uploading = false
   ]
