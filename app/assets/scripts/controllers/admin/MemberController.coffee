@@ -44,20 +44,22 @@ angular.module('kulebaoAdmin')
         _.find scope.kindergarten.classes, (c) ->
           c.class_id == scope.current_class
 
+      generateDetail = (people) ->
+        _.forEach people, (m) ->
+          m.relationships = Relationship.bind(school_id: stateParams.kindergarten).query parent: m.phone, ->
+            m.children = _.map m.relationships, (r) -> r.child.name
+
       scope.refresh = ->
         scope.loading = true
         scope.members = Parent.members school_id: stateParams.kindergarten, class_id: stateParams.class_id, ->
-          _.forEach scope.members, (m) ->
-            m.relationships = Relationship.bind(school_id: stateParams.kindergarten).query parent: m.phone, ->
-              m.children = _.map m.relationships, (r) -> r.child.name
+          generateDetail(scope.members)
           scope.nonMembers = Parent.nonMembers school_id: stateParams.kindergarten, class_id: stateParams.class_id, ->
-            _.forEach scope.nonMembers, (m) ->
-              m.relationships = Relationship.bind(school_id: stateParams.kindergarten).query parent: m.phone, ->
-                m.children = _.map m.relationships, (r) -> r.child.name
+            generateDetail(scope.nonMembers)
             scope.kindergarten.charge = Charge.query school_id: stateParams.kindergarten, ->
               scope.$emit 'update_charge'
               scope.loading = false
-
+              scope.membersInClass = _.uniq scope.members, (m) -> m.parent_id
+              scope.nonMembersInClass = _.uniq scope.nonMembers, (m) -> m.parent_id
       scope.exceed = ->
         scope.kindergarten.charge[0].used >= scope.kindergarten.charge[0].total_phone_number
 
@@ -76,10 +78,6 @@ angular.module('kulebaoAdmin')
         Alert
           title: '无法开通'
           content: '目前开通人数已经达到上限，请联系幼乐宝管理员开通更多授权。'
-          placement: "top-left"
-          type: "danger"
-          show: true
           container: '.panel-body'
-          duration: 3
 
   ]

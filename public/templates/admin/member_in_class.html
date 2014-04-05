@@ -1,5 +1,5 @@
 <div class="loading" ng-show="loading"/>
-<h3>已开通的手机列表 {{currentClass().name}}共{{members.length}}人</h3>
+<h3>已开通的手机列表 {{currentClass().name}}共{{membersInClass.length}}人</h3>
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
@@ -9,14 +9,14 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="a in members | filter: searchText" class="row" ng-click="reject(a)" ng-class="{editable: reject}">
+  <tr ng-repeat="a in membersInClass | filter: searchText" class="row" ng-click="reject(a)" ng-class="{editable: reject}">
     <td class=".col-xs-1">{{a.phone}}</td>
     <td class=".col-xs-2">{{a.name}}</td>
     <td class=".col-xs-2">{{a.children.join(',')}}</td>
   </tr>
   </tbody>
 </table>
-<h3 ng-hide="nonMembers.length == 0">未开通的手机列表({{nonMembers.length}}人)</h3>
+<h3 ng-hide="nonMembers.length == 0">未开通的手机列表({{nonMembersInClass.length}}人)</h3>
 <table ng-hide="nonMembers.length == 0" class="table table-hover table-condensed">
   <thead>
   <tr class="row">
@@ -26,7 +26,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="a in nonMembers | filter: searchText" class="row" ng-class="{editable: promote}" ng-click="promote(a)">
+  <tr ng-repeat="a in nonMembersInClass | filter: searchText" class="row" ng-class="{editable: promote}" ng-click="promote(a)">
     <td class=".col-xs-1">{{a.phone}}</td>
     <td class=".col-xs-2">{{a.name}}</td>
     <td class=".col-xs-2">{{a.children.join(',')}}</td>
