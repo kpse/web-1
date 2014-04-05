@@ -2,7 +2,7 @@ package controllers
 
 import play.api.mvc._
 import helper.JsonLogger._
-import models.{ErrorResponse, CheatCode}
+import models.{SuccessResponse, ErrorResponse, CheatCode}
 import play.cache.Cache
 import play.api.libs.json.Json
 
@@ -10,6 +10,7 @@ object CheatingController extends Controller with Secured {
   implicit val reads = Json.reads[CheatCode]
   implicit val writes = Json.writes[CheatCode]
   implicit val writes2 = Json.writes[ErrorResponse]
+  implicit val writes3 = Json.writes[SuccessResponse]
 
   val cheatCodeKey = "verification"
 
@@ -22,6 +23,14 @@ object CheatingController extends Controller with Secured {
           case _ =>
             Ok(loggedJson(new CheatCode("")))
         }
+
+  }
+
+  def delete = OperatorPage {
+    username =>
+      _ =>
+        Cache.remove(cheatCodeKey)
+        Ok(loggedJson(new SuccessResponse))
 
   }
 
