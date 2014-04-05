@@ -92,9 +92,16 @@ object BindNumberResponse {
       }
   }
 
+  def generatePushId(number: BindingNumber): String = number.user_id match {
+    case x if x.nonEmpty =>
+      " pushid={pushid}, "
+    case _ =>
+      " "
+  }
+
   def updateTokenAfterBinding(request: BindingNumber, updateTime: Long) = DB.withConnection {
     implicit c =>
-      SQL("update accountinfo set pushid={pushid}, device={device}, active=1, " +
+      SQL("update accountinfo set " + generatePushId(request) + " device={device}, active=1, " +
         "pwd_change_time={timestamp} where accountid={accountid}")
         .on('accountid -> request.phonenum,
           'pushid -> request.user_id,

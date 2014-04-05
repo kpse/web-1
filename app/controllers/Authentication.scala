@@ -64,7 +64,7 @@ object Authentication extends Controller {
             case success if success.error_code == 0 =>
               Ok(loggedJson(success)).withSession("username" -> success.account_name, "token" -> success.access_token)
             case _ =>
-              Ok(loggedJson(result))
+              Ok(loggedJson(result)).withNewSession
           }
       }.recoverTotal {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
@@ -94,7 +94,7 @@ object Authentication extends Controller {
             case success if success.error_code == 0 =>
               Ok(loggedJson(success)).withSession("username" -> request.account_name, "token" -> success.access_token)
             case _ =>
-              Ok(loggedJson(reset))
+              Ok(loggedJson(reset)).withNewSession
           }
       }.recoverTotal {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
@@ -111,7 +111,7 @@ object Authentication extends Controller {
             case success if success.error_code == 0 =>
               Ok(loggedJson(success)).withSession("username" -> request.account_name, "token" -> success.access_token)
             case _ =>
-              Ok(loggedJson(changed))
+              Ok(loggedJson(changed)).withNewSession
           }
 
       }.recoverTotal {
