@@ -1,0 +1,79 @@
+body {
+  width: 340px;
+}
+
+.login-entry {
+  display: none;
+}
+
+.app-download {
+  width: 100%;
+  margin-left: -10px;
+
+  li {
+    list-style: none;
+    a {
+      margin-top: 50px;
+      display: block;
+      height: 45px;
+      line-height: 45px;
+      padding-left: 60px;
+      vertical-align: middle;
+      span {
+        font-size: 28px;
+        color: #000;
+        line-height: 45px;
+        vertical-align: middle;
+      }
+    }
+    &.app-download-android a {
+      background: url(../../images/fn-icon-android.jpg) no-repeat left center;
+    }
+    &.app-download-iphone {
+      a {
+        background: url(../../images/fn-icon-iphone.jpg) no-repeat left center;
+      }
+    }
+  }
+
+}
+
+.service-phone {
+  float: none;
+  width: 328px;
+  margin-top: 40px;
+  .service-phone-number {
+    width: 328px;
+    background: url(images/fn-icon-phone.png) no-repeat center;
+    .service-phone-line {
+      height: 1px;
+      background: #ccc;
+      width: 328px;
+      margin-top: 41px;
+    }
+  }
+  p {
+    margin-top: 25px;
+    text-align: center;
+    span {
+      font-size: 24px;
+    }
+    .service-phone-title {
+      color: #acacac;
+    }
+    .service-phone-number {
+      color: #666666;
+    }
+  }
+}
+
+.footer {
+  background: #f1f1f1;
+  padding-top: 45px;
+  padding-bottom: 40px;
+  p {
+    color: #777777;
+    font-size: 12px;
+    text-wrap: word;
+  }
+}
