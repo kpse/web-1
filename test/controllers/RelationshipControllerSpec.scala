@@ -5,14 +5,14 @@ import org.specs2.runner.JUnitRunner
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import play.api.test.FakeRequest
-import play.api.libs.json.{JsArray, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import models.{Parent, Relationship, ChildInfo}
 
 @RunWith(classOf[JUnitRunner])
 class RelationshipControllerSpec extends Specification with TestSupport {
   def loggedRequest(method: String, url: String) = {
-    FakeRequest(method, url).withSession("username" -> "13402815317", "token" -> "1386425935574")
+    FakeRequest(method, url).withSession("username" -> "13408654680", "token" -> "1386849160798")
   }
 
   "Relationship" should {

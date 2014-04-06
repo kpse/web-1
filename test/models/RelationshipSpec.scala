@@ -18,7 +18,7 @@ class RelationshipSpec extends Specification with TestSupport {
 
       private val index = Relationship.index(93740362, Some("13408654681"), None, None)
 
-      index.size must beGreaterThan(2)
+      index.size must beGreaterThan(1)
       index(0).parent.get.phone must equalTo("13408654681")
       index(1).parent.get.phone must equalTo("13408654681")
 
