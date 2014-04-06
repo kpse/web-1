@@ -83,7 +83,7 @@ GET           /kindergarten/:kg/card                                            
 
 GET           /kindergarten/:kg/relationship                                     controllers.RelationshipController.index(kg: Long, parent: Option[String], child: Option[String], class_id: Option[Long])
 GET           /kindergarten/:kg/relationship/:card                               controllers.RelationshipController.show(kg: Long, card: String)
-POST          /kindergarten/:kg/relationship/:card                               controllers.RelationshipController.create(kg: Long, card: String)
+POST          /kindergarten/:kg/relationship/:card                               controllers.RelationshipController.createOrUpdate(kg: Long, card: String)
 DELETE        /kindergarten/:kg/relationship/:card                               controllers.RelationshipController.delete(kg: Long, card: String)
 
 GET           /kindergarten/:kg/assignment                                       controllers.AssignmentController.index(kg: Long, class_id: Option[String], from: Option[Long], to: Option[Long], most: Option[Int])

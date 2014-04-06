@@ -10,6 +10,23 @@ import play.Logger
 case class Relationship(parent: Option[Parent], child: Option[ChildInfo], card: String, relationship: String)
 
 object Relationship {
+
+  def update(kg: Long, card: String, relationship: String, phone: String, childId: String) = DB.withConnection {
+    implicit c =>
+      SQL("update relationmap set child_id={child_id}, " +
+        "parent_id=(select parent_id from parentinfo where phone={phone} and school_id={kg}), " +
+        "relationship={relationship} " +
+        "where card_num={card}")
+        .on(
+          'phone -> phone,
+          'child_id -> childId,
+          'relationship -> relationship,
+          'kg -> kg.toString,
+          'card -> card
+        ).executeUpdate()
+      show(kg, card)
+  }
+
   def cardExists(card: String) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from relationmap where status=1 and card_num={card}")
@@ -18,17 +35,19 @@ object Relationship {
 
   def getCard(phone: String, childId: String) = DB.withConnection {
     implicit c =>
-      SQL("select card_num from relationmap where status=1 and child_id={childId} " +
+      val option = SQL("select card_num from relationmap where status=1 and child_id={childId} " +
         "and parent_id=(select parent_id from parentinfo where phone={phone} limit 1)")
         .on(
           'phone -> phone,
           'childId -> childId
         ).as(get[String]("card_num") singleOpt)
+      Logger.info(option.toString)
+      option
   }
 
   def delete(kg: Long, card: String) = DB.withConnection {
     implicit c =>
-      SQL("update relationmap set status=0 where card_num={card}")
+      SQL("delete relationmap where card_num={card}")
         .on('card -> card
         ).executeUpdate
   }
@@ -47,13 +66,13 @@ object Relationship {
 
   def create(kg: Long, card: String, relationship: String, phone: String, childId: String) = DB.withConnection {
     implicit c =>
-      Logger.info(relationship.toString)
       val id: Option[Long] = SQL("insert into relationmap (child_id, parent_id, card_num, relationship) VALUES" +
-        " ({child_id}, (select parent_id from parentinfo where phone={phone}), {card}, {relationship})")
+        " ({child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg}), {card}, {relationship})")
         .on(
           'phone -> phone,
           'child_id -> childId,
           'relationship -> relationship,
+          'kg -> kg.toString,
           'card -> card
         ).executeInsert()
       findById(kg)(id.getOrElse(-1))

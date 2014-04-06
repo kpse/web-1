@@ -2,8 +2,11 @@ package controllers
 
 import play.api.mvc.{Action, Controller}
 import play.api.libs.json.{JsValue, JsError, Json}
-import models.{ErrorResponse, ChildInfo, Parent, Relationship}
+import models._
 import play.Logger
+import models.ErrorResponse
+import models.ChildInfo
+import helper.JsonLogger._
 
 object RelationshipController extends Controller with Secured {
 
@@ -21,7 +24,7 @@ object RelationshipController extends Controller with Secured {
   }
 
 
-  def create(kg: Long, card: String) = IsLoggedIn(parse.json) {
+  def createOrUpdate(kg: Long, card: String) = IsAuthenticated(parse.json) {
     u =>
       implicit request =>
         Logger.info(request.body.toString)
@@ -29,12 +32,17 @@ object RelationshipController extends Controller with Secured {
         val relationship: String = (body \ "relationship").as[String]
         val phone: String = (body \ "parent" \ "phone").as[String]
         val childId: String = (body \ "child" \ "child_id").as[String]
-        Relationship.getCard(phone, childId) match {
-          case Some(c: String) =>
-            Ok(Json.toJson(Relationship.show(kg, c)))
-          case None if Relationship.cardExists(card)=>
-            BadRequest(Json.toJson(ErrorResponse("卡号已存在，请检查并重新输入。")))
-          case None =>
+
+        Relationship.cardExists(card) match {
+          case true if !Parent.phoneExists(kg, phone) =>
+            BadRequest(loggedJson(new ErrorResponse("本校记录中找不到对应的家长信息。")))
+          case true if !Children.idExists(Some(childId)) =>
+            BadRequest(loggedJson(new ErrorResponse("本校记录中找不到该小孩信息。")))
+          case true if !Relationship.getCard(phone, childId).equals(Some(card)) =>
+            BadRequest(loggedJson(new ErrorResponse("此对家长和小孩已经创建过关系了。")))
+          case true =>
+            Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId)))
+          case false =>
             Ok(Json.toJson(Relationship.create(kg, card, relationship, phone, childId)))
         }
   }

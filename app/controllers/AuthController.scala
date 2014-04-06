@@ -113,6 +113,11 @@ trait Secured {
     user =>
       Action(request => f(user)(request))
   }
+  def IsAuthenticated(b: BodyParser[play.api.libs.json.JsValue] = parse.json)
+                     (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(username, redirectToLogin) {
+    user =>
+      Action(b)(request => f(user)(request))
+  }
 
   def OperatorPage(b: BodyParser[play.api.libs.json.JsValue] = parse.json)
                   (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(operator, redirectToLogin) {
