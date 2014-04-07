@@ -8,12 +8,14 @@ import java.util.Date
 import play.Logger
 import models.helper.TimeHelper.any2DateTime
 
-case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String, gender: Int, portrait: Option[String], class_id: Int, class_name: Option[String], timestamp: Option[Long], school_id: Option[Long])
+case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String,
+                     gender: Int, portrait: Option[String], class_id: Int, class_name: Option[String],
+                     timestamp: Option[Long], school_id: Option[Long], address: Option[String])
 
 object Children {
   def delete(kg: Long, childId: String) = DB.withConnection {
     implicit c =>
-      SQL("update childinfo set status=0, update_at={timestamp}  where child_id={child_id} and school_id={kg}")
+      SQL("update childinfo set status=0, update_at={timestamp} where child_id={child_id} and school_id={kg}")
         .on(
           'child_id -> childId,
           'kg -> kg.toString,
@@ -32,18 +34,32 @@ object Children {
       }
   }
 
+  def optionalFields(child: ChildInfo): String = {
+    var result = ""
+    child.portrait.map {
+      _ =>
+        result += " , picurl={picurl} "
+    }
+    child.address.map {
+      _ =>
+        result += " , address={address} "
+    }
+    result
+  }
+
   def updateByChildId(kg: Long, childId: String, child: ChildInfo) = DB.withConnection {
     implicit c =>
       SQL("update childinfo set name={name},nick={nick},gender={gender},class_id={class_id}," +
-        "birthday={birthday},picurl={picurl}, update_at={timestamp} where child_id={child_id}")
+        "birthday={birthday}, update_at={timestamp} " + optionalFields(child) + " where child_id={child_id}")
         .on(
           'name -> child.name,
           'nick -> child.nick,
           'gender -> child.gender,
           'class_id -> child.class_id,
           'birthday -> child.birthday,
-          'picurl -> child.portrait.getOrElse(""),
           'timestamp -> System.currentTimeMillis,
+          'picurl -> child.portrait,
+          'address -> child.address,
           'child_id -> childId
         ).executeUpdate
       info(kg, childId)
@@ -79,7 +95,7 @@ object Children {
           'birthday -> child.birthday,
           'indate -> child.birthday,
           'school_id -> kg.toString,
-          'address -> "address",
+          'address -> child.address,
           'stu_type -> 2,
           'hukou -> 1,
           'social_id -> "social_id",
@@ -105,11 +121,12 @@ object Children {
       get[Date]("birthday") ~
       get[Int]("childinfo.class_id") ~
       get[String]("classinfo.class_name") ~
+      get[Option[String]]("childinfo.address") ~
       get[Long]("childinfo.update_at") map {
       case schoolId ~ childId ~ childName ~ nick ~ icon_url ~ childGender
-        ~ childBirthday ~ classId ~ className ~ t =>
+        ~ childBirthday ~ classId ~ className ~ address ~ t =>
         new ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt,
-          Some(icon_url.getOrElse("")), classId, Some(className), Some(t), Some(schoolId.toLong))
+          Some(icon_url.getOrElse("")), classId, Some(className), Some(t), Some(schoolId.toLong), address)
     }
   }
 

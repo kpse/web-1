@@ -218,15 +218,16 @@ object Parent {
       get[Int]("class_id") ~
       get[String]("card_num") ~
       get[String]("phone") ~
+      get[Option[String]]("address") ~
       get[String]("classinfo.class_name") ~
       get[Long]("childinfo.update_at") map {
       case id ~ k_id ~ name ~ birthday ~ gender ~ portrait ~
         schoolName ~ schoolId ~ relationship ~ childName ~
-        nick ~ childBirthday ~ childGender ~ childPortrait ~ child_id ~ classId ~ card ~ phone ~ className ~ childTime =>
+        nick ~ childBirthday ~ childGender ~ childPortrait ~ child_id ~ classId ~ card ~ phone ~ address ~ className ~ childTime =>
         new ParentInfo(Some(id), birthday.toDateOnly, gender.toInt, portrait.getOrElse(""), name, phone,
           new School(schoolId.toLong, schoolName), relationship,
           new ChildInfo(Some(child_id), childName, nick, childBirthday.toDateOnly, childGender.toInt,
-            Some(childPortrait.getOrElse("")), classId, Some(className), Some(childTime), Some(schoolId.toLong)), card)
+            Some(childPortrait.getOrElse("")), classId, Some(className), Some(childTime), Some(schoolId.toLong), address), card)
     }
   }
 
