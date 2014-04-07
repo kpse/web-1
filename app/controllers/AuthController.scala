@@ -43,7 +43,7 @@ object Auth extends Controller {
           if (login.privilege_group.getOrElse("").equals("operator"))
             Redirect("/operation").withSession("username" -> login.login_name, "phone" -> login.phone, "name" -> login.name, "id" -> login.id.getOrElse(""))
           else
-            Redirect("/admin#/kindergarten/%d".format(login.school_id)).withSession("username" -> login.name, "phone" -> login.phone, "name" -> login.name, "id" -> login.id.getOrElse(""))
+            Redirect("/admin#/kindergarten/%d".format(login.school_id)).withSession("username" -> login.login_name, "phone" -> login.phone, "name" -> login.name, "id" -> login.id.getOrElse(""))
         }
 
       )

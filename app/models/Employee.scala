@@ -23,6 +23,16 @@ case class EmployeePassword(employee_id: String, school_id: Long, phone: String,
 case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String)
 
 object Employee {
+  def phoneChanged(employee: Employee): Boolean = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from employeeinfo where employee_id={id} and school_id={kg} and phone={phone}")
+        .on(
+          'id -> employee.id,
+          'phone -> employee.phone,
+          'kg -> employee.school_id.toString
+        ).as(get[Long]("count(1)") single) == 0
+  }
+
   def oldPasswordMatch(password: EmployeePassword) = {
     authenticate(password.login_name, password.old_password).nonEmpty
   }

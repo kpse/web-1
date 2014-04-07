@@ -52,11 +52,14 @@ object EmployeeController extends Controller with Secured {
       Ok(Json.toJson(Employee.deleteInSchool(kg, phone)))
   }
 
-  def createOrUpdateInSchool(kg: Long, phone: String) = IsLoggedIn(parse.json) {
+  def createOrUpdateInSchool(kg: Long, phone: String) = IsAuthenticated(parse.json) {
     u =>
       request =>
         Logger.info(request.body.toString)
         request.body.validate[Employee].map {
+          case (me) if request.session.get("id").equals(me.id) =>
+            Logger.info("operator change himself/herself")
+            Ok(loggedJson(Employee.update(me))).withSession(request.session + ("phone" -> me.phone) + ("username" -> me.login_name) + ("name" -> me.name))
           case (existing) if Employee.idExists(existing.id) =>
             Ok(loggedJson(Employee.update(existing)))
           case (employee) if Employee.phoneExists(employee.phone) && employee.id.isEmpty =>
