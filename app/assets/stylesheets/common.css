@@ -151,7 +151,7 @@
   }
 }
 
-.alert.am-fade {
+.alert.alert-dismissable {
   .close {
     display: none;
   }
