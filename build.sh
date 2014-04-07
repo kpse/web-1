@@ -78,6 +78,9 @@ function deploy_from_prod {
     echo "Done"
 }
 
+function build_deploy_prod {
+  build_and_push && deploy_from_prod
+}
 function js_dependency {
   grunt
 }
@@ -90,6 +93,7 @@ function main {
 		d) deploy ;;
 		d2) deploy_from_prod ;;
 		prod) deploy_prod ;;
+		bp) build_deploy_prod ;;
 		p) build_and_push ;;
 		b) build_local ;;
 		*) build_local ;;
