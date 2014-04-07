@@ -1,32 +1,43 @@
 'use strict'
 
 tokenService = ($http) ->
-  $http({method: 'GET', url: '/ws/fileToken?bucket=kulebao-prod'})
+  token: (file, remoteDir) ->
+    $http.get('/ws/fileToken?bucket=kulebao-prod&key=' + remoteDir + file.name )
 
 
 qiniuService = (tokenService) ->
-  send: (file, token, successCallback) ->
+  send: (file, remoteDir, token, successCallback) ->
     data = new FormData()
     xhr = new XMLHttpRequest()
 
     xhr.onloadend = (e) ->
       response = JSON.parse(e.currentTarget.response)
       successCallback({
-        url: "https://dn-kulebao.qbox.me/" + response.hash
+        url: "https://dn-kulebao.qbox.me/" + generateRemotefileName(remoteDir, response.name)
         size: response.size
       })
 
     # Send to server, where we can then access it with $_FILES['file].
     data.append "file", file
     data.append "token", token
+    data.append "key", remoteDir + file.name
     xhr.open "POST", "http://up.qiniu.com"
     xhr.send data
 
-uploadService = (qiniuService, $http) ->
-  (file, callback) ->
+generateRemoteDir = (user)->
+  return '' if user is undefined
+  '/' + user + '/'
+
+generateRemotefileName = (remoteDir, fileName)->
+  return fileName if remoteDir is ''
+  '@' + remoteDir + fileName
+
+uploadService = (qiniuService, tokenService) ->
+  (file, callback, user) ->
     return callback(undefined) if file is undefined
-    $http.get('/ws/fileToken?bucket=kulebao-prod').success (data)->
-      qiniuService.send file, data.token, (remoteFile) ->
+    remoteDir = generateRemoteDir user
+    tokenService.token(file, remoteDir).success (data)->
+      qiniuService.send file, remoteDir, data.token, (remoteFile) ->
         callback(remoteFile.url)
 
 angular.module('kulebaoAdmin')
@@ -34,7 +45,7 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .factory 'qiniuService', ['tokenService', qiniuService]
 angular.module('kulebaoAdmin')
-.factory 'uploadService', ['qiniuService', '$http', uploadService]
+.factory 'uploadService', ['qiniuService', 'tokenService', uploadService]
 
 
 angular.module('kulebaoAdmin').directive "fileupload", ->

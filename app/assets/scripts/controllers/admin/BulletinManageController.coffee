@@ -25,8 +25,6 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
   ['$scope', '$rootScope', 'adminNewsService',
    '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService', 'adminNewsPreview', 'uploadService',
     (scope, $rootScope, adminNewsService, stateParams, School, Modal, Employee, Class, NewsPreivew, Upload) ->
-
-
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
@@ -114,4 +112,5 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
           scope.$apply ->
             news.image = url if url isnt undefined
             scope.uploading = false
+        , scope.adminUser.id
   ]

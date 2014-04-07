@@ -69,6 +69,6 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
           scope.$apply ->
             employee.portrait = url if url isnt undefined
             scope.uploading = false
-
+        , scope.adminUser.id
 
   ]

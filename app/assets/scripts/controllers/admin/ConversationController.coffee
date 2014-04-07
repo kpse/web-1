@@ -109,4 +109,5 @@ angular.module('kulebaoAdmin')
             scope.$apply ->
               message.image = url if url isnt undefined
               scope.uploading = false
+          , scope.adminUser.id
     ]

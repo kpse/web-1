@@ -89,4 +89,5 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
           scope.$apply ->
             employee.portrait = url if url isnt undefined
             scope.uploading = false
+        , scope.adminUser.id
   ]

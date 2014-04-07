@@ -3,10 +3,12 @@
 angular.module('kulebaoAdmin')
 .controller 'RelationshipMainCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
-   'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService', '$timeout'
-    (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload, $timeout) ->
+   'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService', 'employeeService'
+    (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload, Employee) ->
       rootScope.tabName = 'relationship'
       scope.heading = '管理幼儿及家长基础档案信息'
+
+      scope.adminUser = Employee.get()
 
       scope.types = [
         {
@@ -114,6 +116,7 @@ angular.module('kulebaoAdmin')
           scope.$apply ->
             person.portrait = url if url isnt undefined
             scope.uploading = false
+        , scope.adminUser.id
 
       handleError = (obj, res) ->
         Alert

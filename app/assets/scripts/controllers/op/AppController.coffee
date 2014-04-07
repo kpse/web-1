@@ -1,9 +1,8 @@
 angular.module('kulebaoOp').controller 'OpAppCtrl',
-  ['$scope', '$rootScope',
-   '$stateParams', '$http',
-   'uploadService', 'appPackageService', '$timeout',
+  ['$scope', '$rootScope', '$stateParams', '$http', 'uploadService', 'appPackageService', 'employeeService',
+    ($scope, $rootScope, $stateParams, $http, remoteFileSetter, appPackageService, Employee) ->
+      $scope.adminUser = Employee.get()
 
-    ($scope, $rootScope, $stateParams, $http, uploadService, appPackageService, timeout) ->
       $scope.lastApp = appPackageService.latest(->
         $scope.app.version_code = $scope.lastApp.version_code + 1)
       $scope.app = new appPackageService
@@ -12,7 +11,7 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
 
       $scope.doUpload = (pic) ->
         $scope.uploading = true
-        uploadService pic, (url) ->
+        remoteFileSetter pic, (url) ->
           $scope.$apply ->
             $scope.app.url = url
             console.log $scope.app
@@ -21,6 +20,7 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
                 $scope.app = new appPackageService
                   version_code: $scope.lastApp.version_code + 1
                 $scope.uploading = false
+        , $scope.adminUser.id
 
       $scope.cleanFields = ->
         $scope.app = new appPackageService

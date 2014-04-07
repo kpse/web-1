@@ -2,14 +2,15 @@
 
 angular.module('kulebaoAdmin')
 .controller 'IntroCtrl', [ '$scope', '$rootScope', '$stateParams',
-                           '$location', 'schoolService', '$http', 'uploadService', '$timeout', '$cacheFactory',
-  (scope, rootScope, stateParams, location, School, $http, Upload, $timeout, $cacheFactory) ->
+                           '$location', 'schoolService', '$http', 'uploadService', '$timeout', '$cacheFactory', 'employeeService'
+  (scope, rootScope, stateParams, location, School, $http, Upload, $timeout, $cacheFactory, Employee) ->
     rootScope.tabName = 'intro'
 
-    scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-      scope.$watch 'kindergarten', (oldv, newv) ->
-        scope.school_changed = true if newv isnt oldv
-      , true
+    scope.adminUser = Employee.get ->
+      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
+        scope.$watch 'kindergarten', (oldv, newv) ->
+          scope.school_changed = true if newv isnt oldv
+        , true
 
     scope.school_changed = false
     scope.isEditing = false
@@ -30,5 +31,6 @@ angular.module('kulebaoAdmin')
         scope.$apply ->
           scope.kindergarten.school_logo_url = url if url isnt undefined
           scope.uploading = false
+      , scope.adminUser.id
 
 ]

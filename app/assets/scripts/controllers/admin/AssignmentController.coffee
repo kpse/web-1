@@ -68,5 +68,6 @@ angular.module('kulebaoAdmin')
           scope.$apply ->
             assignment.icon_url = url if url isnt undefined
             scope.uploading = false
+        , scope.adminUser.id
 
   ]
