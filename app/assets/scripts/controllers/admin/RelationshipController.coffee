@@ -25,9 +25,15 @@ angular.module('kulebaoAdmin')
         }
       ]
 
+      scope.refresh = ->
+        scope.loading = true
+        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
+          scope.loading = false
+
       scope.loading = true
       scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-        scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten
+        scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
+          scope.refresh()
 
       scope.createParent = ->
         new Parent
@@ -140,6 +146,7 @@ angular.module('kulebaoAdmin')
       scope.saveRelationship = (relationship) ->
         relationship.$save ->
           scope.$broadcast 'refreshing'
+          scope.refresh()
           scope.currentModal.hide()
         , (res) ->
           handleError('关系', res)
