@@ -1,5 +1,10 @@
 body {
-  width: 340px;
+  font-family: sans-serif;
+  font-size: 1em;
+  max-width: 100%;
+  min-width: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 .login-entry {
@@ -7,9 +12,7 @@ body {
 }
 
 .app-download {
-  width: 100%;
   margin-left: -10px;
-
   li {
     list-style: none;
     a {
