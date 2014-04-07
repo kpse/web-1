@@ -10,7 +10,7 @@ import models.helper.TimeHelper.any2DateTime
 
 case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String,
                      gender: Int, portrait: Option[String], class_id: Int, class_name: Option[String],
-                     timestamp: Option[Long], school_id: Option[Long], address: Option[String])
+                     timestamp: Option[Long], school_id: Option[Long], address: Option[String] = None)
 
 object Children {
   def delete(kg: Long, childId: String) = DB.withConnection {
