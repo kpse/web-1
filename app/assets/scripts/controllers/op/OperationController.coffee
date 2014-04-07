@@ -41,7 +41,7 @@ angular.module('kulebaoOp').controller 'OpCtrl',
 
       scope.save = (user) ->
         user.$save ->
-          scope.adminUser = Employee.get()
+          scope.adminUser = user
           scope.currentModal.hide()
 
       scope.uploadPic = (employee, pic) ->

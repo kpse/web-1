@@ -20,9 +20,9 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         if location.path().indexOf(pageName + '/class') < 0
           location.path '/kindergarten/' + $stateParams.kindergarten + '/' + pageName
         else if subName? && location.path().indexOf('/' + subName + '/') > 0
-          location.path location.path().replace(new RegExp('/' + subName + '/.+$',"g"), '/list')
+          location.path location.path().replace new RegExp('/' + subName + '/.+$',"g"), '/list'
         else
-          location.path location.path().replace(/\/[^\/]+$/, '/list')
+          location.path location.path().replace /\/[^\/]+$/, '/list'
 
       scope.goBulletin = ->
         goPageWithClassesTab 'bulletin'
@@ -80,7 +80,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
 
       scope.save = (user) ->
         user.$save ->
-          scope.adminUser = Employee.get()
+          scope.adminUser = user
           scope.currentModal.hide()
 
       scope.uploadPic = (employee, pic) ->

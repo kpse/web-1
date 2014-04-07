@@ -35,7 +35,6 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
         scope.loading = true
         scope.preview = NewsPreivew.query
           school_id: stateParams.kindergarten
-          admin_id: scope.adminUser.phone
           class_id: stateParams.class
           restrict: true, ->
             scope.preview = scope.preview.reverse()
@@ -44,7 +43,6 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
             last = scope.preview[startIndex...startIndex + scope.itemsPerPage][0].id if scope.preview.length > 0
             scope.newsletters = adminNewsService.query
               school_id: stateParams.kindergarten
-              admin_id: scope.adminUser.phone
               class_id: stateParams.class
               restrict: true
               to: last + 1 || last
@@ -65,17 +63,16 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
 
       scope.publish = (news) ->
         news.published = true
-        news.$save admin_id: scope.adminUser.id, ->
+        news.$save ->
           scope.refresh()
 
       scope.deleteNews = (news) ->
-        news.$delete admin_id: scope.adminUser.id, ->
+        news.$delete ->
           scope.refresh()
 
       scope.createNews = ->
         new adminNewsService
           school_id: scope.kindergarten.school_id
-          admin_id: scope.adminUser.id
           class_id: scope.current_class
 
       scope.create = ->
@@ -91,12 +88,12 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
           contentTemplate: 'templates/admin/add_news.html'
 
       scope.save = (news) ->
-        news.$save admin_id: scope.adminUser.id, ->
+        news.$save ->
           scope.$emit 'go_page_1'
           scope.currentModal.hide()
 
       scope.remove = (news) ->
-        news.$delete admin_id: scope.adminUser.id, ->
+        news.$delete ->
           scope.$emit 'go_page_1'
           scope.currentModal.hide()
 

@@ -6,7 +6,8 @@ angular.module('kulebaoAdmin').controller 'DefaultCtrl',
           location.path('/kindergarten/' + scope.kindergarten.school_id + '/welcome')
         , (res) ->
           location.path('/' + res.status)
-
+      , (res) ->
+        location.path('/' + res.status)
   ]
 
 angular.module('kulebaoAdmin').controller 'ExpiredCtrl',
