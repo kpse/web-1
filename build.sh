@@ -15,7 +15,7 @@ function load_env {
 
 function build_local {
     load_env
-    JAVA_OPTS=-Xmx3072m karma start --single-run && \
+    JAVA_OPTS=-Xmx3g karma start --single-run && \
     play pmd checkstyle findbugs test
 }
 
@@ -26,27 +26,22 @@ function build_and_push {
     git push origin master
 }
 
-function deploy {
+function deploy_heroku {
     build_local && \
-    git push heroku master
-}
-
-function all {
-    build_local && \
-    git push origin master && \
     git push heroku master
 }
 
 function local_https_server {
     load_env
-    JAVA_OPTS="-Dhttps.port=9001 -Xmx3072m" play run
+    JAVA_OPTS="-Dhttps.port=9001 -Xmx3g" play run
 }
 
 function deploy_prod {
+    echo ".... start to deploy on env $1 ..."
     now=$(date +"%s")
     srcFilename="$(pwd)/target/universal/kulebao-1.0-SNAPSHOT.zip"
     destFilename="kulebao-1.0-SNAPSHOT.$now.zip"
-    destServer="kulebao@115.28.7.205"
+    destServer="kulebao@$1"
     destPath="$destServer:~/$destFilename"
     play dist && \
     scp $srcFilename $destPath && \
@@ -61,25 +56,8 @@ function deploy_prod {
 }
 
 
-function deploy_from_prod {
-    now=$(date +"%s")
-    srcFilename="$(pwd)/target/universal/kulebao-1.0-SNAPSHOT.zip"
-    destFilename="kulebao-1.0-SNAPSHOT.$now.zip"
-    play dist && \
-    cp $srcFilename ~/$destFilename
-    unzip -x $destFilename -d /var/play/$now/ && \
-    rm /var/play/kulebao && \
-    ln -s /var/play/$now/kulebao-1.0-SNAPSHOT/ /var/play/kulebao && \
-    echo coco999 | sudo -S service kulebao restart  && \
-    echo coco999 | sudo -S /usr/sbin/nginx -s reload
-
-    retvalue=$?
-    echo "Return value: $retvalue"
-    echo "Done"
-}
-
-function build_deploy_prod {
-  build_and_push && deploy_from_prod
+function build_deploy_stage {
+  build_and_push && deploy_prod stage.cocobabys.com
 }
 function js_dependency {
   grunt
@@ -89,11 +67,10 @@ function main {
   	case $1 in
 		js) js_dependency ;;
 		s) local_https_server ;;
-		a) all ;;
-		d) deploy ;;
-		d2) deploy_from_prod ;;
-		prod) deploy_prod ;;
-		bp) build_deploy_prod ;;
+		a) build_deploy_stage ;;
+		heroku) deploy_heroku ;;
+		prod) deploy_prod cocobabys.com ;;
+		d) deploy_prod stage.cocobabys.com ;;
 		p) build_and_push ;;
 		b) build_local ;;
 		*) build_local ;;
