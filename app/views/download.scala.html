@@ -5,17 +5,21 @@
 }
 
 @staticMain("幼乐宝客户端下载")(scripts)(styling) {
-
+  <img class="hero img-responsive" src="@routes.VersionedAssets.at("images/phonebanner.jpg")"></img>
+  <p class="title">按照操作系统选择</p>
   <ul class="app-download">
-    <li class="app-download-android">
-      <a href="/app_package?redirect=true">
-        <span>Android版下载</span>
-      </a>
-    </li>
     <li class="app-download-iphone">
       <a href="https://itunes.apple.com/us/app/you-le-baoios/id854211863?ls=1&mt=8">
-        <span>iPhone版下载</span>
+        <span>iPhone版</span>
+        <span class="pull-right download">免费下载</span>
+      </a>
+    </li>
+    <li class="app-download-android">
+      <a href="/app_package?redirect=true">
+        <span>Android版</span>
+        <span class="pull-right download">免费下载</span>
       </a>
     </li>
   </ul>
+  <p class="tips">如使用微信，微博等应用扫描二维码，需要用第三方浏览器打开本页，点击即可下载</p>
 }
