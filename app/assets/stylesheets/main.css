@@ -3,6 +3,7 @@
   width: 164px;
   height: 56px;
   display: block;
+  margin-right: 320px;
   &:hover {
     background-image: url('../../images/btn1.png');
   }

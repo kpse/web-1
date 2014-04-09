@@ -4,13 +4,14 @@
 }
 @styling = {
   <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/jquery.jslides.css")">
+  <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/index.css")">
 }
 
 @staticMain("欢迎访问幼乐宝")(scripts)(styling) {
   <div id="full-screen-slider"><div id="slides">
-    <li> <img class="img-responsive" src="@routes.VersionedAssets.at("images/1.jpg")"></li>
-    <li> <img class="img-responsive" src="@routes.VersionedAssets.at("images/2.jpg")"></li>
-    <li> <img class="img-responsive" src="@routes.VersionedAssets.at("images/3.jpg")"></li>
+    <li> <img class="hero" src="@routes.VersionedAssets.at("images/hero-1.jpg")"></li>
+    <li> <img class="hero" src="@routes.VersionedAssets.at("images/hero-2.jpg")"></li>
+    <li> <img class="hero" src="@routes.VersionedAssets.at("images/hero-3.jpg")"></li>
   </div>
   </div>
 
@@ -33,7 +34,7 @@
     </li>
   </ul>
 
-  <div class="image-intro "><img src="images/b1.png"></div>
+  <div class="image-intro "><img src="images/b1.jpg"></div>
   <div class="image-intro "><img src="images/b2.png"></div>
   <div class="image-intro "><img src="images/b3.png"></div>
   <div class="image-intro "><img src="images/b4.png"></div>

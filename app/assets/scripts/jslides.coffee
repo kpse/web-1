@@ -1,7 +1,7 @@
 $ ->
   $("#slides").slidesjs
     width: 940
-    height: 310
+    height: 451
     navigation: false
     play:
       effect: "slide"
