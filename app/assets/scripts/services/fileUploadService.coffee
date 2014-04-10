@@ -2,7 +2,7 @@
 
 tokenService = ($http) ->
   token: (file, remoteDir) ->
-    $http.get('/ws/fileToken?bucket=kulebao-prod&key=' + remoteDir + file.name )
+    $http.get '/ws/fileToken?bucket=kulebao-prod&key=' + encodeURIComponent remoteDir + file.name
 
 
 qiniuService = (tokenService) ->
@@ -13,14 +13,14 @@ qiniuService = (tokenService) ->
     xhr.onloadend = (e) ->
       response = JSON.parse(e.currentTarget.response)
       successCallback({
-        url: "https://dn-kulebao.qbox.me/" + generateRemotefileName(remoteDir, response.name)
+        url: "https://dn-kulebao.qbox.me/" + generateRemotefileName remoteDir, response.name
         size: response.size
       })
 
     # Send to server, where we can then access it with $_FILES['file].
     data.append "file", file
     data.append "token", token
-    data.append "key", remoteDir + file.name
+    data.append "key", encodeURIComponent remoteDir + file.name
     xhr.open "POST", "http://up.qiniu.com"
     xhr.send data
 
@@ -30,7 +30,7 @@ generateRemoteDir = (user)->
 
 generateRemotefileName = (remoteDir, fileName)->
   return fileName if remoteDir is ''
-  '@' + remoteDir + fileName
+  encodeURIComponent encodeURIComponent remoteDir + fileName
 
 uploadService = (qiniuService, tokenService) ->
   (file, callback, user) ->

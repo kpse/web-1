@@ -10,6 +10,7 @@ import scala.Some
 import play.api.{Play, Logger}
 import com.qiniu.api.rs.PutPolicy
 import com.qiniu.api.auth.digest.Mac
+import java.net.URLEncoder
 ;
 
 object WSController extends Controller {
@@ -90,7 +91,9 @@ object WSController extends Controller {
     val putPolicy = new PutPolicy(bucket)
     key map {
       k =>
-        putPolicy.scope = bucket + ":" + k
+        val encodedKey = URLEncoder.encode(k, "UTF-8")
+        Logger.info("key = %s".format(encodedKey))
+        putPolicy.scope = bucket + ":" + encodedKey
 
     }
     putPolicy.returnBody = "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"
