@@ -100,8 +100,7 @@
 
 .news-list {
   .news-item {
-    margin-left: 14px;
-    max-width: 800px;
+    margin: 0 14px;
   }
   .no-news {
     margin-left: 20px;
