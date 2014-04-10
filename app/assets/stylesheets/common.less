@@ -11,10 +11,6 @@
   }
 }
 
-.panel {
-  max-width: 800px;
-}
-
 .main-frame {
   margin-left: 30px;
   .btn-primary {
@@ -72,7 +68,6 @@
 }
 
 .header {
-  width: 1200px;
   height: 121px;
   margin-left: -30px;
   background: #f8f8f8 url(../../images/header-bg.png) no-repeat;
@@ -216,18 +211,19 @@
   }
 }
 
-.hoverBkImage(@x, @y) {
-  background: e(%("#34393D url(../../images/left-btns.png) no-repeat %spx %spx", @x - 224, @y));
+.hoverBkImage(@x) {
+  background: e(%("#34393D url(../../images/left-btns.png) no-repeat -239px %spx", @x));
 }
 
-.bkImage(@x, @y) {
-  background: e(%("#34393D url(../../images/left-btns.png) no-repeat %spx %spx", @x , @y));
+.bkImage(@x) {
+  background: e(%("#34393D url(../../images/left-btns.png) no-repeat -15px %spx", @x));
 }
 
 .modules-list-container {
   background: #f8f8f8 url(../../images/tabs-bg.png) no-repeat;
   min-width: 252px;
   max-width: 252px;
+  margin-left: -30px;
   .modules-list {
     .action {
       display: block;
@@ -238,123 +234,128 @@
         display: none;
       }
       min-height: 47px;
-      min-width: 225px;
-      width: 225px;
+      min-width: 223px;
+      width: 223px;
     }
 
     .news {
-      .bkImage(-14, -86);
+      .bkImage(-86);
       &:hover {
-        .hoverBkImage(-14, -86);
+        .hoverBkImage(-86);
       }
     }
     .conversation {
-      .bkImage(-14, -136);
+      .bkImage(-136);
       &:hover {
-        .hoverBkImage(-14, -136);
+        .hoverBkImage(-136);
       }
     }
     .assess {
-      .bkImage(-14, -186);
+      .bkImage(-186);
       &:hover {
-        .hoverBkImage(-14, -186);
+        .hoverBkImage(-186);
       }
     }
     .cookbook {
-      .bkImage(-14, -236);
+      .bkImage(-236);
       &:hover {
-        .hoverBkImage(-14, -236);
+        .hoverBkImage(-236);
       }
     }
     .schedule {
-      .bkImage(-14, -284);
+      .bkImage(-284);
       &:hover {
-        .hoverBkImage(-14, -284);
+        .hoverBkImage(-284);
       }
     }
     .assignment {
-      .bkImage(-14, -334);
+      .bkImage(-334);
       &:hover {
-        .hoverBkImage(-14, -334);
+        .hoverBkImage(-334);
       }
     }
 
     .placeholder {
-      .bkImage(-14, -379);
+      .bkImage(-379);
     }
 
     .relationship {
-      .bkImage(-14, -428);
+      .bkImage(-428);
       &:hover {
-        .hoverBkImage(-14, -428);
+        .hoverBkImage(-428);
       }
     }
 
     .member {
-      .bkImage(-14, -478);
+      .bkImage(-478);
       &:hover {
-        .hoverBkImage(-14, -478);
+        .hoverBkImage(-478);
       }
     }
 
     .classes {
-      .bkImage(-14, -526);
+      .bkImage(-526);
       &:hover {
-        .hoverBkImage(-14, -526);
+        .hoverBkImage(-526);
       }
     }
 
     .employee {
-      .bkImage(-14, -576);
+      .bkImage(-576);
       &:hover {
-        .hoverBkImage(-14, -576);
+        .hoverBkImage(-576);
       }
     }
 
     .intro {
-      .bkImage(-14, -626);
+      .bkImage(-626);
       &:hover {
-        .hoverBkImage(-14, -626);
+        .hoverBkImage(-626);
       }
     }
   }
   .active .news {
-    .hoverBkImage(-14, -86);
+    .hoverBkImage(-86);
   }
   .active .conversation {
-    .hoverBkImage(-14, -136);
+    .hoverBkImage(-136);
   }
   .active .assess {
-    .hoverBkImage(-14, -186);
+    .hoverBkImage(-186);
   }
   .active .cookbook {
-    .hoverBkImage(-14, -236);
+    .hoverBkImage(-236);
   }
   .active .schedule {
-    .hoverBkImage(-14, -284);
+    .hoverBkImage(-284);
   }
   .active .assignment {
-    .hoverBkImage(-14, -334);
+    .hoverBkImage(-334);
   }
   .active .relationship {
-    .hoverBkImage(-14, -428);
+    .hoverBkImage(-428);
   }
   .active .member {
-    .hoverBkImage(-14, -478);
+    .hoverBkImage(-478);
   }
   .active .classes {
-    .hoverBkImage(-14, -526);
+    .hoverBkImage(-526);
   }
   .active .employee {
-    .hoverBkImage(-14, -576);
+    .hoverBkImage(-576);
   }
   .active .intro {
-    .hoverBkImage(-14, -626);
+    .hoverBkImage(-626);
   }
 }
 
 body.main-body {
   margin: 0;
   padding: 0;
+  .module-view {
+    margin-top: -20px;
+  }
 }
+
+
 
