@@ -58,13 +58,12 @@ p.note {
   height: 639px;
   margin: 0 auto;
   background: url(../../images/login-full-bg.png) no-repeat;
-//  background-size: 1920px 1200px;
   position: relative;
 
   .login-form {
     position: absolute;
-    top: 213px;
-    left: 616px;
+    top: 184px;
+    left: 538px;
     width: 468px;
     height: 280px;
     background: transparent url(../../images/login-form-bg.png) no-repeat 44px top;
