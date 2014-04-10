@@ -51,12 +51,12 @@
       <div class="form-group news-content">
         <label for="content" class="control-label">公告内容</label>
         <br/>
-        <small ng-show="news.content.length >= 0">还可以输入{{ 500 - news.content.length}}个字</small>
+        <small ng-show="news.content.length >= 0">还可以输入{{ 2000 - news.content.length}}个字</small>
         <span class="error-field" ng-show="newsForm.content.$dirty && newsForm.content.$error.required">请填写正文内容</span>
       <span class="error-field"
-            ng-show="newsForm.content.$dirty && newsForm.content.$error.maxlength">正文内容请不要超过500个字符</span>
+            ng-show="newsForm.content.$dirty && newsForm.content.$error.maxlength">正文内容请不要超过2000个字符</span>
         <textarea ng-disabled="news.published" id="content" name="content" ng-model="news.content"
-                  class="editing-content form-control" ng-maxlength="500" placeholder="添加内容" required/>
+                  class="editing-content form-control" ng-maxlength="2000" placeholder="添加内容" required/>
       </div>
 
     </div>
