@@ -89,15 +89,20 @@ object WSController extends Controller {
     val SECRET_KEY = Play.current.configuration.getString("oss.sk").getOrElse("")
     Logger.info("ACCESS_KEY = %s, SECRET_KEY = %s".format(ACCESS_KEY, SECRET_KEY))
     val putPolicy = new PutPolicy(bucket)
-    key map {
-      k =>
-        val encodedKey = URLEncoder.encode(k, "UTF-8")
-        Logger.info("key = %s".format(encodedKey))
-        putPolicy.scope = bucket + ":" + encodedKey
-
-    }
+    key.map{ k=> putPolicy.scope = bucket + ":" + k}
     putPolicy.returnBody = "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"
     val uptoken = putPolicy.token(new Mac(ACCESS_KEY, SECRET_KEY))
     Ok(Json.toJson(UpToken(uptoken)))
   }
+
+  def generateEncodeToken(bucket: String, key: Option[String]) =
+    key match {
+      case Some(s) =>
+        val encodedKey = URLEncoder.encode(s, "UTF-8")
+        Logger.info("key = %s".format(encodedKey))
+        generateToken(bucket, Some(encodedKey))
+      case None =>
+        generateToken(bucket, None)
+    }
+
 }

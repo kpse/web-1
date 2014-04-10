@@ -2,7 +2,7 @@
 
 tokenService = ($http) ->
   token: (file, remoteDir) ->
-    $http.get '/ws/fileToken?bucket=kulebao-prod&key=' + encodeURIComponent remoteDir + file.name
+    $http.get '/ws/safe_file_token?bucket=kulebao-prod&key=' + encodeURIComponent remoteDir + file.name
 
 
 qiniuService = (tokenService) ->

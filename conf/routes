@@ -134,6 +134,7 @@ GET           /app_package/download                                             
 POST          /ws/broadcast                                                      controllers.WSController.sendBroadcastMessage
 
 GET           /ws/fileToken                                                      controllers.WSController.generateToken(bucket: String, key: Option[String])
+GET           /ws/safe_file_token                                                controllers.WSController.generateEncodeToken(bucket: String, key: Option[String])
 
 GET           /ws/verify/phone                                                   controllers.SMSController.checkVerificationCode
 GET           /ws/verify/phone/:phone                                            controllers.SMSController.sendVerificationCode(phone: String)
