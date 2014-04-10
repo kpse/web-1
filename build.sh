@@ -52,7 +52,7 @@ function deploy_prod {
 
     retvalue=$?
     echo "Return value: $retvalue"
-    echo "Done"
+    echo "Done deployment $1"
 }
 
 
