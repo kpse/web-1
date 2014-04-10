@@ -212,7 +212,7 @@ CREATE TABLE `childinfo` (
   `birthday` date NOT NULL DEFAULT '1800-01-01',
   `indate` date NOT NULL DEFAULT '1800-01-01',
   `school_id` varchar(20) COLLATE utf8_bin NOT NULL,
-  `address` varchar(200) COLLATE utf8_bin NOT NULL DEFAULT '',
+  `address` varchar(200) COLLATE utf8_bin DEFAULT '',
   `stu_type` tinyint(4) NOT NULL DEFAULT '2',
   `hukou` tinyint(4) NOT NULL DEFAULT '2',
   `social_id` varchar(20) COLLATE utf8_bin NOT NULL DEFAULT '',
