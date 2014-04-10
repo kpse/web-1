@@ -53,22 +53,6 @@
           <span>在园表现</span>
         </a>
       </li>
-      <li class="action" ng-class="{active : isSelected('relationship')}">
-        <a class="btn relationship" ng-click="goRelationshipManagement()">
-          <span>幼儿园档案管理</span>
-        </a>
-
-      </li>
-      <li class="action" ng-class="{active : isSelected('assignment')}">
-        <a class="btn assignment" ng-click="goAssignment()">
-          <span>亲子作业</span>
-        </a>
-      </li>
-      <li class="action" ng-class="{active : isSelected('intro')}">
-        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/intro" class="btn intro">
-          <span>幼儿园简介</span>
-        </a>
-      </li>
       <li class="action" ng-class="{active : isSelected('cookbook')}">
         <a ng-href="#/kindergarten/{{kindergarten.school_id}}/cookbook" class="btn cookbook">
           <span>每周食谱</span>
@@ -79,9 +63,26 @@
           <span>课程表</span>
         </a>
       </li>
-      <li class="action" ng-class="{active : isSelected('employee')}">
-        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/employee" class="btn employee">
-          <span>教职员设置</span>
+      <li class="action" ng-class="{active : isSelected('assignment')}">
+        <a class="btn assignment" ng-click="goAssignment()">
+          <span>亲子作业</span>
+        </a>
+      </li>
+
+      <li class="action">
+        <a class="btn placeholder" >
+          <span>placeholder</span>
+        </a>
+      </li>
+
+      <li class="action" ng-class="{active : isSelected('relationship')}">
+        <a class="btn relationship" ng-click="goRelationshipManagement()">
+          <span>幼儿园档案管理</span>
+        </a>
+      </li>
+      <li class="action" ng-class="{active : isSelected('member')}">
+        <a ng-click="goMemberList()" class="btn member">
+          <span>开通手机号管理</span>
         </a>
       </li>
       <li class="action" ng-class="{active : isSelected('classes')}">
@@ -89,12 +90,21 @@
           <span>班级管理</span>
         </a>
       </li>
-
-      <li class="action" ng-class="{active : isSelected('member')}">
-        <a ng-click="goMemberList()" class="btn member">
-          <span>开通手机号管理</span>
+      <li class="action" ng-class="{active : isSelected('employee')}">
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/employee" class="btn employee">
+          <span>教职员设置</span>
         </a>
       </li>
+      <li class="action" ng-class="{active : isSelected('intro')}">
+        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/intro" class="btn intro">
+          <span>幼儿园简介</span>
+        </a>
+      </li>
+
+
+
+
+
     </ul>
 
   </div>

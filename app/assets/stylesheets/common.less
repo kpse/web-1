@@ -133,7 +133,7 @@
 .navbar {
   background-color: #e0dfe4;
   border: none;
-  right:0;
+  right: 0;
   .navbar-form.navbar-right {
     width: 322px;
     margin-right: -58px;
@@ -216,11 +216,18 @@
   }
 }
 
-.hoverBkImage(@x) {background: e(%("#34393D url(../../images/%s-active.png) no-repeat", @x));background-size: 100%;}
-.bkImage(@x) {background: e(%("#34393D url(../../images/%s.png) no-repeat", @x));background-size: 100%;}
+.hoverBkImage(@x, @y) {
+  background: e(%("#34393D url(../../images/left-btns.png) no-repeat %spx %spx", @x - 224, @y));
+}
+
+.bkImage(@x, @y) {
+  background: e(%("#34393D url(../../images/left-btns.png) no-repeat %spx %spx", @x , @y));
+}
 
 .modules-list-container {
-  background: #f8f8f8 url(../../images/tabs-bg.png) no-repeat;;
+  background: #f8f8f8 url(../../images/tabs-bg.png) no-repeat;
+  min-width: 252px;
+  max-width: 252px;
   .modules-list {
     .action {
       display: block;
@@ -230,109 +237,119 @@
       span {
         display: none;
       }
-      height: 37px;
+      min-height: 47px;
+      min-width: 225px;
+      width: 225px;
     }
-    .member {
-      .bkImage(member);
-      &:hover {
-        .hoverBkImage(member);
-      }
-    }
+
     .news {
-      .bkImage(news);
+      .bkImage(-14, -86);
       &:hover {
-        .hoverBkImage(news);
+        .hoverBkImage(-14, -86);
       }
     }
     .conversation {
-      .bkImage(conversation);
+      .bkImage(-14, -136);
       &:hover {
-        .hoverBkImage(conversation);
+        .hoverBkImage(-14, -136);
       }
     }
     .assess {
-      .bkImage(assess);
+      .bkImage(-14, -186);
       &:hover {
-        .hoverBkImage(assess);
+        .hoverBkImage(-14, -186);
       }
     }
-    .relationship {
-      .bkImage(relationship);
-      &:hover {
-        .hoverBkImage(relationship);
-      }
-    }
-    .assignment {
-      .bkImage(assignment);
-      &:hover {
-        .hoverBkImage(assignment);
-      }
-    }
-    .intro {
-      .bkImage(intro);
-      &:hover {
-        .hoverBkImage(intro);
-      }
-    }
-
     .cookbook {
-      .bkImage(cookbook);
+      .bkImage(-14, -236);
       &:hover {
-        .hoverBkImage(cookbook);
+        .hoverBkImage(-14, -236);
       }
     }
     .schedule {
-      .bkImage(schedule);
+      .bkImage(-14, -284);
       &:hover {
-        .hoverBkImage(schedule);
+        .hoverBkImage(-14, -284);
       }
     }
-    .employee {
-      .bkImage(employee);
+    .assignment {
+      .bkImage(-14, -334);
       &:hover {
-        .hoverBkImage(employee);
+        .hoverBkImage(-14, -334);
+      }
+    }
+
+    .placeholder {
+      .bkImage(-14, -379);
+    }
+
+    .relationship {
+      .bkImage(-14, -428);
+      &:hover {
+        .hoverBkImage(-14, -428);
+      }
+    }
+
+    .member {
+      .bkImage(-14, -478);
+      &:hover {
+        .hoverBkImage(-14, -478);
       }
     }
 
     .classes {
-      .bkImage(class);
+      .bkImage(-14, -526);
       &:hover {
-        .hoverBkImage(class);
+        .hoverBkImage(-14, -526);
+      }
+    }
+
+    .employee {
+      .bkImage(-14, -576);
+      &:hover {
+        .hoverBkImage(-14, -576);
+      }
+    }
+
+    .intro {
+      .bkImage(-14, -626);
+      &:hover {
+        .hoverBkImage(-14, -626);
       }
     }
   }
-  .active .classes {
-    .hoverBkImage(class);
-  }
-  .active .member {
-    .hoverBkImage(member);
-  }
-  .active .employee {
-    .hoverBkImage(employee);
-  }
-  .active .schedule {
-    .hoverBkImage(schedule);
-  }
-  .active .cookbook {
-    .hoverBkImage(cookbook);
-  }
-  .active .intro {
-    .hoverBkImage(intro);
-  }
-  .active .assignment {
-    .hoverBkImage(assignment);
-  }
-  .active .relationship {
-    .hoverBkImage(relationship);
-  }
-  .active .assess {
-    .hoverBkImage(assess);
+  .active .news {
+    .hoverBkImage(-14, -86);
   }
   .active .conversation {
-    .hoverBkImage(conversation);
+    .hoverBkImage(-14, -136);
   }
-  .active .news {
-    .hoverBkImage(news);
+  .active .assess {
+    .hoverBkImage(-14, -186);
+  }
+  .active .cookbook {
+    .hoverBkImage(-14, -236);
+  }
+  .active .schedule {
+    .hoverBkImage(-14, -284);
+  }
+  .active .assignment {
+    .hoverBkImage(-14, -334);
+  }
+  .active .relationship {
+    .hoverBkImage(-14, -428);
+  }
+  .active .member {
+    .hoverBkImage(-14, -478);
+  }
+  .active .classes {
+    .hoverBkImage(-14, -526);
+  }
+  .active .employee {
+    .hoverBkImage(-14, -576);
+  }
+  .active .intro {
+    .hoverBkImage(-14, -626);
   }
 }
 
