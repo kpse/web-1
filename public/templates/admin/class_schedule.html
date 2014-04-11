@@ -4,7 +4,7 @@
           ng-click="toggleEditing($event)">更新
   </button>
 </div>
-<span class="issue-date">保存于{{schedule.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</span>
+<span class="issue-date" ng-show="schedule.timestamp">保存于{{schedule.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</span>
 <form name="scheduleForm" class="form-horizontal">
 
   <div class="form-group col-sm-offset-1 col-sm-5">
