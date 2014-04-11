@@ -18,7 +18,7 @@ object Auth extends Controller {
     tuple(
       "username" -> text,
       "password" -> text
-    ) verifying("Invalid username or password", result => result match {
+    ) verifying("无效的用户名或密码。", result => result match {
       case (username, password) => Employee.authenticate(username, password).isDefined
     })
   )
@@ -62,7 +62,7 @@ object Auth extends Controller {
    */
   def logout = Action {
     Redirect(routes.Auth.login).withNewSession.flashing(
-      "success" -> "You've been logged out"
+      "success" -> "你已经成功退出登陆。"
     )
   }
 
