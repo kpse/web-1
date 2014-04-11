@@ -32,7 +32,7 @@ class AuthenticationSpec extends Specification with TestSupport {
     }
     implicit val checkWrites = Json.writes[CheckPhone]
 
-    "validate phone number for first time" in new WithApplication {
+    "phone number is ok even for nonactive" in new WithApplication {
       private val json = Json.toJson(new CheckPhone("13408654683"))
 
       val validateResponse = route(FakeRequest(POST, "/checkphonenum.do").withJsonBody(json)).get
@@ -41,7 +41,7 @@ class AuthenticationSpec extends Specification with TestSupport {
       contentType(validateResponse) must beSome.which(_ == "application/json")
 
       val response: JsValue = Json.parse(contentAsString(validateResponse))
-      (response \ "check_phone_result").as[String] must equalTo("1101")
+      (response \ "check_phone_result").as[String] must equalTo("1102")
     }
 
     "validate phone number for active number" in new WithApplication {
