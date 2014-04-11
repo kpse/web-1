@@ -30,53 +30,24 @@
 }
 
 .qr-code-box {
-  background-color: white;
   z-index: 300;
   position: absolute;
   top: 100px;
   left: 100px;
-  color: green;
-  .scan-me {
-    margin-left: 5px;
+  .qr-code {
+    width: 143px;
+    height: 143px;
+    background: transparent url(../../images/homepage-qr.png) no-repeat;
   }
-  .app-download {
-    width: 150px;
-    margin: 0;
+  .download-link {
+    width: 143px;
+    height: 50px;
 
-    li {
-      display: block;
-      margin-top: -17px;
-      margin-left: -40px;
-      border: none;
-      height: 33px;
-      a {
-        display: inline-block;
-        line-height: 12px;
-        width: 50px;
-        height: 50px;
-
-        span {
-          font-size: 17px;
-          color: #000;
-          line-height: 12px;
-          display: inline-block;
-          margin: 19px 0 0 -22px;
-          width: 150px;
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-
-      }
-      &.app-download-android a {
-        background: transparent url(../../images/fn-icon-android.jpg) no-repeat left center;
-        background-size: 64%;
-      }
-      &.app-download-iphone a {
-        background: transparent url(../../images/fn-icon-iphone.jpg) no-repeat left center;
-        background-size: 64%;
-      }
-
+    &.android {
+      background: transparent url(../../images/homepage-qr.png) no-repeat 0 -165px;
+    }
+    &.iphone {
+      background: transparent url(../../images/homepage-qr.png) no-repeat  0 -214px;
     }
   }
 }
