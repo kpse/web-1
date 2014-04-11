@@ -16,10 +16,6 @@ object CheckPhoneResponse {
         "where p.phone=a.accountid and p.member_status=1 and p.status=1 and accountid={phone}")
         .on('phone -> request.phonenum).as(get[Int]("active") singleOpt)
       result match {
-        case Some(0) =>
-          //todo: quick fix of number expire issue
-          //new CheckPhoneResponse("1101")
-          new CheckPhoneResponse("1102")
         case Some(x) =>
           new CheckPhoneResponse("1102")
         case None =>
