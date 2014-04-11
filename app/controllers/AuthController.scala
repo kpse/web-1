@@ -8,6 +8,7 @@ import play.api.data.Forms._
 import models._
 import views._
 import play.Logger
+import scala.Some
 
 object Auth extends Controller {
 
@@ -27,7 +28,14 @@ object Auth extends Controller {
    */
   def login = Action {
     implicit request =>
-      Ok(html.login(loginForm))
+      Logger.info(request.session.data.toString)
+      request.session.get("id").map {
+        case op if Employee.isOperator(op) =>
+          Redirect("/operation")
+        case admin =>
+          Redirect("/admin")
+      }.getOrElse(Ok(html.login(loginForm)))
+
   }
 
   /**
@@ -113,6 +121,7 @@ trait Secured {
     user =>
       Action(request => f(user)(request))
   }
+
   def IsAuthenticated(b: BodyParser[play.api.libs.json.JsValue] = parse.json)
                      (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(username, redirectToLogin) {
     user =>

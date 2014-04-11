@@ -5,7 +5,7 @@ import play.api.mvc._
 object Application extends Controller with Secured {
 
   def index = Action {
-        Ok(views.html.index())
+    Ok(views.html.index())
   }
 
   def admin = IsAuthenticated {
