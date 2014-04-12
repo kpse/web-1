@@ -77,10 +77,30 @@ object Parent {
         ).as(get[Long]("count") single) > 0
   }
 
-  def updatePushAccount(parent: Parent) = DB.withConnection {
+  def updateConversationRecord(oldPhone: String, parent: Parent) = DB.withConnection {
+    implicit c =>
+      SQL("update conversation set phone={phone} where phone={old_phone}")
+        .on('old_phone -> oldPhone,
+          'phone -> parent.phone).executeUpdate()
+  }
+
+  def updateRelatedPhone(parent: Parent) = DB.withConnection {
     implicit c =>
       val oldPhone = oldPhoneNumber(parent)
-      if (oldPhone != parent.phone && isConflicting(parent)) throw new IllegalAccessError("电话号码已经存在。")
+      oldPhone match {
+        case conflicting if oldPhone != parent.phone && isConflicting(parent) =>
+          throw new IllegalAccessError("电话号码已经存在。")
+        case conflicting if oldPhone != parent.phone && isConflictingInConversation(parent) =>
+          throw new IllegalAccessError("电话号码已经存在。")
+        case old =>
+          updatePushAccount(old, parent)
+          updateConversationRecord(old, parent)
+      }
+  }
+
+
+  def updatePushAccount(oldPhone: String, parent: Parent): Int = DB.withConnection {
+    implicit c =>
       SQL("update accountinfo set accountid={phone}, " +
         " active=0, pwd_change_time=0 where accountid={old_phone}")
         .on('old_phone -> oldPhone,
@@ -99,10 +119,17 @@ object Parent {
         .on('phone -> parent.phone).as(get[Long]("count(1)") single) > 0
   }
 
+  def isConflictingInConversation(parent: Parent) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from conversation where phone={phone}")
+        .on('phone -> parent.phone).as(get[Long]("count(1)") single) > 0
+  }
+
+
   def update(parent: Parent) = DB.withConnection {
     implicit c =>
       val timestamp = System.currentTimeMillis
-      updatePushAccount(parent)
+      updateRelatedPhone(parent)
       SQL("update parentinfo set name={name}, " +
         "phone={phone}, gender={gender}, company={company}, " +
         "picurl={picurl}, birthday={birthday}, " +
