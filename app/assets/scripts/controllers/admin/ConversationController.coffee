@@ -76,7 +76,7 @@ angular.module('kulebaoAdmin')
 
         scope.preview = (msg, option) ->
           scope.viewOption = _.extend reply: true, option
-          scope.message = msg
+          scope.viewing_message = msg
 
           scope.currentModal = Modal
             scope: scope
