@@ -8,7 +8,39 @@
 }
 @styling = {
   <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/main.css")">
+  <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/forgotten_password.css")">
 }
+
 @main("kulebaoApp")(scripts)(styling) {
-  <div ui-view></div>
+  <div class="static-container">
+    <div class="header">
+      <div class="row">
+        <div class="logo col-lg-offset-2 col-lg-2">
+          <img class="" src="@routes.VersionedAssets.at("images/logo.jpg")" alt="幼乐宝"/>
+        </div>
+        <div class="login-link col-lg-offset-4 col-lg-2"><a href="/login" class="login-entry"><span class="content">
+          幼儿园管理入口</span>
+        </a>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="main">
+      <div ui-view class="forgotten-view"></div>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="service-phone ui-grid-container">
+      <p>
+        <span class="service-phone-content service-phone-title">客服电话：</span>
+        <span class="service-phone-content service-phone-number">4009-984-998（全国免费电话）</span>
+        <span class="service-phone-content service-phone-number">028-69190987(公司电话)</span>
+      </p>
+    </div>
+    <div class="clearfix"></div>
+    <div class="footer">
+      <p>版权信息：成都库乐宝信息技术有限公司 All rights reserved. </p>
+      <p>许可证：蜀ICP备14002494号</p>
+    </div>
+  </div>
 }
