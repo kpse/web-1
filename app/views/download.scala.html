@@ -1,7 +1,8 @@
 @scripts = {
 }
 @styling = {
-  <link rel="stylesheet" media="all and (max-width: 1080px)" href="@routes.VersionedAssets.at("stylesheets/mobile-download.css")">
+  <link rel="stylesheet" media="screen and (max-width: 1080px)" href="@routes.VersionedAssets.at("stylesheets/mobile-download.css")">
+  <link rel="stylesheet" media="screen and (min-width: 1081px)" href="@routes.VersionedAssets.at("stylesheets/download.css")">
 }
 
 @staticMain("幼乐宝客户端下载")(scripts)(styling) {
