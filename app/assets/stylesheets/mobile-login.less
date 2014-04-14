@@ -8,27 +8,38 @@
 @import 'libs/_theme.less';
 
 // ----------------------- MAIN STYLES
-body {
+body.main-body {
   color: @mainColor;
   font: @defaultFont;
   -webkit-font-smoothing: antialised;
   -webkit-user-select: none;
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  .login-container {
+    position: relative;
+    min-height:100%;
+    padding: 0 15px 68px 0;
+    .logo {
+      margin: 0;
+    }
+
   .footer {
     background-color: #fff;
     p {
       margin: 0 auto;
       display: block;
       height: 80px;
-      width: 330px;
+      width: 100%;
       background: #d3d3d3;
       padding-top: 13px;
-      position: fixed;
+      position: absolute;
       bottom: 0;
     }
   }
-  .logo {
-    margin: 0;
   }
+
 
   a {
     color: darkred;
@@ -57,6 +68,7 @@ body {
   }
 
   .main-login {
+    padding-bottom: 80px;
     .login-form {
       .form-group {
         padding: 12px;
