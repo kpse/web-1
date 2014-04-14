@@ -106,8 +106,21 @@
   float: right;
 }
 
-.modal-content {
-  width: 740px;
+.main-body {
+  .modal.center .modal-dialog {
+    max-width: 1000px;
+    max-height: 1000px;
+    width: 60%;
+    height: 60%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .main-body {
+    .modal.center .modal-dialog {
+      position: relative;
+    }
+  }
 }
 
 .employee-form {
@@ -209,142 +222,146 @@
   }
 }
 
-.hoverBkImage(@x) {
-  background: e(%("#34393D url(../../images/left-btns.png) no-repeat -239px %spx", @x));
-}
+@media screen and (min-width: 768px) {
 
-.bkImage(@x) {
-  background: e(%("#34393D url(../../images/left-btns.png) no-repeat -15px %spx", @x));
-}
+  .hoverBkImage(@x) {
+    background: e(%("#34393D url(../../images/left-btns.png) no-repeat -239px %spx", @x));
+  }
 
-.modules-list-container {
-  background: #f8f8f8 url(../../images/tabs-bg.png) no-repeat;
-  min-width: 252px;
-  max-width: 252px;
-  margin-left: -30px;
-  .modules-list {
-    .action {
-      display: block;
-    }
+  .bkImage(@x) {
+    background: e(%("#34393D url(../../images/left-btns.png) no-repeat -15px %spx", @x));
+  }
 
-    .btn {
-      span {
-        display: none;
+  .modules-list-container {
+    background: #f8f8f8 url(../../images/tabs-bg.png) no-repeat;
+    min-width: 252px;
+    max-width: 252px;
+    margin-left: -30px;
+    .modules-list {
+      .action {
+        display: block;
       }
-      min-height: 47px;
-      min-width: 223px;
-      width: 223px;
-    }
 
-    .news {
-      .bkImage(-86);
-      &:hover {
-        .hoverBkImage(-86);
+      .btn {
+        span {
+          display: none;
+        }
+        min-height: 47px;
+        min-width: 223px;
+        width: 223px;
       }
-    }
-    .conversation {
-      .bkImage(-136);
-      &:hover {
-        .hoverBkImage(-136);
-      }
-    }
-    .assess {
-      .bkImage(-186);
-      &:hover {
-        .hoverBkImage(-186);
-      }
-    }
-    .cookbook {
-      .bkImage(-236);
-      &:hover {
-        .hoverBkImage(-236);
-      }
-    }
-    .schedule {
-      .bkImage(-284);
-      &:hover {
-        .hoverBkImage(-284);
-      }
-    }
-    .assignment {
-      .bkImage(-334);
-      &:hover {
-        .hoverBkImage(-334);
-      }
-    }
 
-    .placeholder {
-      .bkImage(-379);
-    }
+      .news {
+        .bkImage(-86);
+        &:hover {
+          .hoverBkImage(-86);
+        }
+      }
+      .conversation {
+        .bkImage(-136);
+        &:hover {
+          .hoverBkImage(-136);
+        }
+      }
+      .assess {
+        .bkImage(-186);
+        &:hover {
+          .hoverBkImage(-186);
+        }
+      }
+      .cookbook {
+        .bkImage(-236);
+        &:hover {
+          .hoverBkImage(-236);
+        }
+      }
+      .schedule {
+        .bkImage(-284);
+        &:hover {
+          .hoverBkImage(-284);
+        }
+      }
+      .assignment {
+        .bkImage(-334);
+        &:hover {
+          .hoverBkImage(-334);
+        }
+      }
 
-    .relationship {
-      .bkImage(-428);
-      &:hover {
-        .hoverBkImage(-428);
+      .placeholder {
+        .bkImage(-379);
+      }
+
+      .relationship {
+        .bkImage(-428);
+        &:hover {
+          .hoverBkImage(-428);
+        }
+      }
+
+      .member {
+        .bkImage(-478);
+        &:hover {
+          .hoverBkImage(-478);
+        }
+      }
+
+      .classes {
+        .bkImage(-526);
+        &:hover {
+          .hoverBkImage(-526);
+        }
+      }
+
+      .employee {
+        .bkImage(-576);
+        &:hover {
+          .hoverBkImage(-576);
+        }
+      }
+
+      .intro {
+        .bkImage(-626);
+        &:hover {
+          .hoverBkImage(-626);
+        }
       }
     }
-
-    .member {
-      .bkImage(-478);
-      &:hover {
-        .hoverBkImage(-478);
-      }
+    .active .news {
+      .hoverBkImage(-86);
     }
-
-    .classes {
-      .bkImage(-526);
-      &:hover {
-        .hoverBkImage(-526);
-      }
+    .active .conversation {
+      .hoverBkImage(-136);
     }
-
-    .employee {
-      .bkImage(-576);
-      &:hover {
-        .hoverBkImage(-576);
-      }
+    .active .assess {
+      .hoverBkImage(-186);
     }
-
-    .intro {
-      .bkImage(-626);
-      &:hover {
-        .hoverBkImage(-626);
-      }
+    .active .cookbook {
+      .hoverBkImage(-236);
+    }
+    .active .schedule {
+      .hoverBkImage(-284);
+    }
+    .active .assignment {
+      .hoverBkImage(-334);
+    }
+    .active .relationship {
+      .hoverBkImage(-428);
+    }
+    .active .member {
+      .hoverBkImage(-478);
+    }
+    .active .classes {
+      .hoverBkImage(-526);
+    }
+    .active .employee {
+      .hoverBkImage(-576);
+    }
+    .active .intro {
+      .hoverBkImage(-626);
     }
   }
-  .active .news {
-    .hoverBkImage(-86);
-  }
-  .active .conversation {
-    .hoverBkImage(-136);
-  }
-  .active .assess {
-    .hoverBkImage(-186);
-  }
-  .active .cookbook {
-    .hoverBkImage(-236);
-  }
-  .active .schedule {
-    .hoverBkImage(-284);
-  }
-  .active .assignment {
-    .hoverBkImage(-334);
-  }
-  .active .relationship {
-    .hoverBkImage(-428);
-  }
-  .active .member {
-    .hoverBkImage(-478);
-  }
-  .active .classes {
-    .hoverBkImage(-526);
-  }
-  .active .employee {
-    .hoverBkImage(-576);
-  }
-  .active .intro {
-    .hoverBkImage(-626);
-  }
+
 }
 
 body.main-body {
@@ -355,5 +372,23 @@ body.main-body {
   }
 }
 
+@media screen and (max-width: 768px) {
+  .navbar {
+    margin-top: -78px;
+    .admin-features {
+      display: block;
+    }
+  }
+
+  .modules-list-container {
+    margin-top: 150px;
+    .btn.placeholder {
+      display: none;
+    }
+  }
+  .module-view-container {
+    margin-top: 50px;
+  }
+}
 
 
