@@ -1,8 +1,9 @@
 @(form: Form[(String, String)])(implicit flash: Flash)
   @styling = {
     <link rel="shortcut icon" type="image/png" href="@routes.VersionedAssets.at("images/favicon.png")">
-    <link rel="stylesheet" type="text/css" media="screen" href="@routes.VersionedAssets.at("stylesheets/login.css")">
     <link rel="stylesheet" type="text/css" media="screen" href="@routes.VersionedAssets.at("stylesheets/main.css")">
+    <link rel="stylesheet" type="text/css" media="screen and (min-width: 769px)" href="@routes.VersionedAssets.at("stylesheets/login.css")">
+    <link rel="stylesheet" type="text/css" media="screen and (max-width: 768px)" href="@routes.VersionedAssets.at("stylesheets/mobile-login.css")">
   }
   @scripts = {}
 @main("")(scripts)(styling) {
