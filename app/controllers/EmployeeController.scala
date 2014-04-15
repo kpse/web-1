@@ -56,10 +56,13 @@ object EmployeeController extends Controller with Secured {
     u =>
       request =>
         Logger.info(request.body.toString)
+        val userId = request.session.get("id")
         request.body.validate[Employee].map {
-          case (me) if request.session.get("id").equals(me.id) =>
-            Logger.info("operator change himself/herself")
+          case (me) if userId.equals(me.id) =>
+            Logger.info("employee %s changes himself/herself".format(request.session.get("username")))
             Ok(loggedJson(Employee.update(me))).withSession(request.session + ("phone" -> me.phone) + ("username" -> me.login_name) + ("name" -> me.name))
+          case (other) if !(userId.equals(other.id) || Employee.isSuperUser(userId.getOrElse(""), kg)) =>
+            Unauthorized(loggedJson(ErrorResponse("您无权修改其他老师的信息。")))
           case (existing) if Employee.idExists(existing.id) =>
             Ok(loggedJson(Employee.update(existing)))
           case (employee) if Employee.phoneExists(employee.phone) && employee.id.isEmpty =>

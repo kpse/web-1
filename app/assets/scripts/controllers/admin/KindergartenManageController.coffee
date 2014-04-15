@@ -90,4 +90,8 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
             employee.portrait = url if url isnt undefined
             scope.uploading = false
         , scope.adminUser.id
+
+      scope.showingUp = (user) ->
+        undefined isnt _.find ['principal', 'operator'], (u) -> user.privilege_group == u
+
   ]

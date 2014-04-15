@@ -46,13 +46,10 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
           scope.currentModal.hide()
         , (res) ->
           Alert
-            title: '创建失败'
+            title: '老师信息保存失败'
             content: res.data.error_msg
             placement: "top-left"
-            type: "danger"
-            show: true
             container: '.panel-body'
-            duration: 3
 
       scope.isDuplicated = (employee) ->
         return false if employee.phone is undefined || employee.phone.length < 10

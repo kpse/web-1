@@ -23,6 +23,8 @@ case class EmployeePassword(employee_id: String, school_id: Long, phone: String,
 case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String)
 
 object Employee {
+  def isSuperUser(id: String, kg: Long) = isPrincipal(id, kg) || isOperator(id)
+
   def phoneChanged(employee: Employee): Boolean = DB.withConnection {
     implicit c =>
       SQL("select count(1) from employeeinfo where employee_id={id} and school_id={kg} and phone={phone}")
