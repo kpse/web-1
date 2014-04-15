@@ -1,403 +1,421 @@
-.newsletters {
-  max-width: 700px;
-  .read-true p {
-    color: gainsboro;
-  }
-  .read-false p {
-    color: blue;
-  }
-  .read-flag {
-    margin-left: 150px;
-  }
-}
-
-.main-frame {
-  margin-left: 30px;
-  .btn-primary {
-    background-color: rgb(5, 104, 244);
-  }
-  .btn-danger {
-    background-color: rgb(214, 73, 40);
-  }
-  .btn-warning {
-    background-color: rgb(254, 185, 0);
-  }
-  .btn-success {
-    background-color: rgb(28, 150, 75);
-  }
-}
-
-.loading,
-.uploading {
-  width: 55px;
-  height: 55px;
-  background-image: url('../../images/loading.gif');
-  background-size: 55px 55px;
-  margin-left: 200px;
-}
-
-.uploading {
-  margin: 0;
-}
-
-.product-logo-container {
-  float: left;
-  width: 240px;
-  height: 124px;
-  .product-logo {
-    width: 179px;
-    height: 124px;
-    background-image: url('../../images/logo.png');
-    background-size: 179px 124px;
-    margin-left: 14px;
-    position: absolute;
-    z-index: 20;
-  }
-  .rainbow-logo {
-    width: 163px;
-    height: 100px;
-    background: url('../../images/rainbow2.png') no-repeat 0 0;
-    background-size: 146px 74px;
-    margin-left: 90px;
-    position: absolute;
-    z-index: 10;
-  }
-
-}
-
-.header {
-  height: 121px;
-  margin-left: -30px;
-  background: #e0dfe4 url(../../images/header-bg.png) no-repeat;
-  .title {
-    float: left;
-    width: 571px;
-    height: 124px;
-    color: rgb(103, 77, 52);
-    margin-left: 20px;
-  }
-  .app-qr-code {
-    float: right;
-    width: 139px;
-    height: 139px;
-  }
-  .admin-user-portrait-container {
-    .portrait {
-      height: 121px;
-    }
-  }
-}
-
-.help-block.error,
-.error-field {
-  color: red;
-}
-
-.select-button.active {
-  background-color: #47a447;
-}
-
-.datepicker-input {
-  width: 100%;
-}
-
-.datepicker-button {
-  margin: -34px 0 0 0;
-  float: right;
-}
-
 .main-body {
-  .modal.center .modal-dialog {
-    max-width: 1000px;
-    max-height: 1000px;
-    width: 85%;
-    height: 85%;
-    .modal-content {
-      max-height: 760px;
-      height: 100%;
-      .modal-body {
-        overflow-y: scroll;
-        height: 100%;
+
+  .main-view {
+    max-width: 1200px;
+    max-height: 860px;
+    margin: auto auto;
+
+    .newsletters {
+      max-width: 700px;
+      .read-true p {
+        color: gainsboro;
+      }
+      .read-false p {
+        color: blue;
+      }
+      .read-flag {
+        margin-left: 150px;
       }
     }
 
-  }
-
-}
-
-@media screen and (max-width: 768px) {
-  .main-body {
-
-    .modal.center .modal-dialog {
-      width: 100%;
-      height: 100%;
-      .modal-body {
-        top: 3px;
-        left: 0;
+    .main-frame {
+      margin-left: 30px;
+      .btn-primary {
+        background-color: rgb(5, 104, 244);
+      }
+      .btn-danger {
+        background-color: rgb(214, 73, 40);
+      }
+      .btn-warning {
+        background-color: rgb(254, 185, 0);
+      }
+      .btn-success {
+        background-color: rgb(28, 150, 75);
       }
     }
-  }
-}
 
-.employee-form {
-  .editing-field {
-
-  }
-}
-
-.navbar {
-  background-color: #e0dfe4;
-  border: none;
-  right: 0;
-  .navbar-form.navbar-right {
-    width: 322px;
-    margin-right: -58px;
-  }
-}
-
-.user-menu {
-  right: 100px;
-}
-
-.action {
-  min-width: 125px;
-  .btn {
-    background-color: wheat;
-  }
-}
-
-.alert.alert-dismissable {
-  .close {
-    display: none;
-  }
-}
-
-.control-label.highlight {
-  color: red;
-}
-
-.portrait-container {
-  margin-left: 100px;
-  vertical-align: middle;
-  .portrait {
-    max-height: 220px;
-    max-width: 180px;
-  }
-  .portrait-preview {
-    max-height: 110px;
-    max-width: 90px;
-  }
-}
-
-.image-container,
-.image-preview {
-  .assignment-image,
-  .message-image {
-    max-height: 220px;
-    max-width: 220px;
-  }
-  .assess-image {
-    max-height: 180px;
-    max-width: 180px;
-  }
-  .conversation-image {
-    max-height: 110px;
-    max-width: 110px;
-  }
-  .news-image {
-    max-height: 200px;
-  }
-}
-
-.rating,
-.editable {
-  cursor: pointer;
-}
-
-.modal-backdrop.am-fade {
-  opacity: .5;
-  transition: opacity .15s linear;
-  &.ng-enter {
-    opacity: 0;
-    &.ng-enter-active {
-      opacity: .5;
+    .loading,
+    .uploading {
+      width: 55px;
+      height: 55px;
+      background-image: url('../../images/loading.gif');
+      background-size: 55px 55px;
+      margin-left: 200px;
     }
-  }
-  &.ng-leave {
-    opacity: .5;
-    &.ng-leave-active {
-      opacity: 0;
+
+    .uploading {
+      margin: 0;
     }
-  }
-}
 
-@media screen and (min-width: 768px) {
-
-  .hoverBkImage(@x) {
-    background: e(%("#34393D url(../../images/left-btns.png) no-repeat -239px %spx", @x));
-  }
-
-  .bkImage(@x) {
-    background: e(%("#34393D url(../../images/left-btns.png) no-repeat -15px %spx", @x));
-  }
-
-  .modules-list-container {
-    background: #f8f8f8 url(../../images/tabs-bg.png) no-repeat;
-    min-width: 252px;
-    max-width: 252px;
-    margin-left: -30px;
-    .modules-list {
-      .action {
-        display: block;
+    .product-logo-container {
+      float: left;
+      width: 240px;
+      height: 124px;
+      .product-logo {
+        width: 179px;
+        height: 124px;
+        background-image: url('../../images/logo.png');
+        background-size: 179px 124px;
+        margin-left: 14px;
+        position: absolute;
+        z-index: 20;
+      }
+      .rainbow-logo {
+        width: 163px;
+        height: 100px;
+        background: url('../../images/rainbow2.png') no-repeat 0 0;
+        background-size: 146px 74px;
+        margin-left: 90px;
+        position: absolute;
+        z-index: 10;
       }
 
-      .btn {
-        span {
-          display: none;
+    }
+
+    .header {
+      height: 121px;
+      margin-left: -30px;
+      background: #e0dfe4 url(../../images/header-bg.png) no-repeat;
+      .title {
+        float: left;
+        width: 571px;
+        height: 124px;
+        color: rgb(103, 77, 52);
+        margin-left: 20px;
+      }
+      .app-qr-code {
+        float: right;
+        width: 139px;
+        height: 139px;
+      }
+      .admin-user-portrait-container {
+        .portrait {
+          height: 121px;
         }
-        min-height: 47px;
-        min-width: 223px;
-        width: 223px;
+      }
+    }
+
+    .help-block.error,
+    .error-field {
+      color: red;
+    }
+
+    .select-button.active {
+      background-color: #47a447;
+    }
+
+    .datepicker-input {
+      width: 100%;
+    }
+
+    .datepicker-button {
+      margin: -34px 0 0 0;
+      float: right;
+    }
+
+    .main-body {
+      .modal.center .modal-dialog {
+        max-width: 1000px;
+        max-height: 1000px;
+        width: 85%;
+        height: 85%;
+        .modal-content {
+          max-height: 760px;
+          height: 100%;
+          .modal-body {
+            overflow-y: scroll;
+            height: 100%;
+          }
+        }
+
       }
 
-      .news {
-        .bkImage(-86);
-        &:hover {
+    }
+
+    @media screen and (max-width: 768px) {
+      .main-body {
+
+        .modal.center .modal-dialog {
+          width: 100%;
+          height: 100%;
+          .modal-body {
+            top: 3px;
+            left: 0;
+          }
+        }
+      }
+    }
+
+    .employee-form {
+      .editing-field {
+
+      }
+    }
+
+    .navbar {
+      background-color: #e0dfe4;
+      border: none;
+      right: 0;
+      .navbar-form.navbar-right {
+        width: 322px;
+        margin-right: -58px;
+      }
+    }
+
+    .user-menu {
+      right: 100px;
+    }
+
+    .action {
+      min-width: 125px;
+      .btn {
+        background-color: wheat;
+      }
+    }
+
+    .alert.alert-dismissable {
+      .close {
+        display: none;
+      }
+    }
+
+    .control-label.highlight {
+      color: red;
+    }
+
+    .portrait-container {
+      margin-left: 100px;
+      vertical-align: middle;
+      .portrait {
+        max-height: 220px;
+        max-width: 180px;
+      }
+      .portrait-preview {
+        max-height: 110px;
+        max-width: 90px;
+      }
+    }
+
+    .image-container,
+    .image-preview {
+      .assignment-image,
+      .message-image {
+        max-height: 220px;
+        max-width: 220px;
+      }
+      .assess-image {
+        max-height: 180px;
+        max-width: 180px;
+      }
+      .conversation-image {
+        max-height: 110px;
+        max-width: 110px;
+      }
+      .news-image {
+        max-height: 200px;
+      }
+    }
+
+    .rating,
+    .editable {
+      cursor: pointer;
+    }
+
+    .modal-backdrop.am-fade {
+      opacity: .5;
+      transition: opacity .15s linear;
+      &.ng-enter {
+        opacity: 0;
+        &.ng-enter-active {
+          opacity: .5;
+        }
+      }
+      &.ng-leave {
+        opacity: .5;
+        &.ng-leave-active {
+          opacity: 0;
+        }
+      }
+    }
+
+    @media screen and (min-width: 768px) {
+
+      .hoverBkImage(@x) {
+        background: e(%("#34393D url(../../images/left-btns.png) no-repeat -239px %spx", @x));
+      }
+
+      .bkImage(@x) {
+        background: e(%("#34393D url(../../images/left-btns.png) no-repeat -15px %spx", @x));
+      }
+
+
+      .module-view-container {
+        float: right;
+        width: 963px;
+        height: 739px;
+        margin: -20px -15px 0 0;
+      }
+
+      .modules-list-container {
+        background: #f8f8f8 url(../../images/tabs-bg.png) no-repeat;
+        min-width: 252px;
+        max-width: 252px;
+        margin-left: -30px;
+        height: 739px;
+        .modules-list {
+          .action {
+            display: block;
+          }
+
+          .btn {
+            span {
+              display: none;
+            }
+            min-height: 47px;
+            min-width: 223px;
+            width: 223px;
+          }
+
+          .news {
+            .bkImage(-86);
+            &:hover {
+              .hoverBkImage(-86);
+            }
+          }
+          .conversation {
+            .bkImage(-136);
+            &:hover {
+              .hoverBkImage(-136);
+            }
+          }
+          .assess {
+            .bkImage(-186);
+            &:hover {
+              .hoverBkImage(-186);
+            }
+          }
+          .cookbook {
+            .bkImage(-236);
+            &:hover {
+              .hoverBkImage(-236);
+            }
+          }
+          .schedule {
+            .bkImage(-285);
+            &:hover {
+              .hoverBkImage(-285);
+            }
+          }
+          .assignment {
+            .bkImage(-334);
+            &:hover {
+              .hoverBkImage(-334);
+            }
+          }
+
+          .placeholder {
+            .bkImage(-380);
+          }
+
+          .relationship {
+            .bkImage(-428);
+            &:hover {
+              .hoverBkImage(-428);
+            }
+          }
+
+          .member {
+            .bkImage(-478);
+            &:hover {
+              .hoverBkImage(-478);
+            }
+          }
+
+          .classes {
+            .bkImage(-527);
+            &:hover {
+              .hoverBkImage(-527);
+            }
+          }
+
+          .employee {
+            .bkImage(-576);
+            &:hover {
+              .hoverBkImage(-576);
+            }
+          }
+
+          .intro {
+            .bkImage(-626);
+            &:hover {
+              .hoverBkImage(-626);
+            }
+          }
+        }
+        .active .news {
           .hoverBkImage(-86);
         }
-      }
-      .conversation {
-        .bkImage(-136);
-        &:hover {
+        .active .conversation {
           .hoverBkImage(-136);
         }
-      }
-      .assess {
-        .bkImage(-186);
-        &:hover {
+        .active .assess {
           .hoverBkImage(-186);
         }
-      }
-      .cookbook {
-        .bkImage(-236);
-        &:hover {
+        .active .cookbook {
           .hoverBkImage(-236);
         }
-      }
-      .schedule {
-        .bkImage(-285);
-        &:hover {
+        .active .schedule {
           .hoverBkImage(-285);
         }
-      }
-      .assignment {
-        .bkImage(-334);
-        &:hover {
+        .active .assignment {
           .hoverBkImage(-334);
         }
-      }
-
-      .placeholder {
-        .bkImage(-379);
-      }
-
-      .relationship {
-        .bkImage(-428);
-        &:hover {
+        .active .relationship {
           .hoverBkImage(-428);
         }
-      }
-
-      .member {
-        .bkImage(-478);
-        &:hover {
+        .active .member {
           .hoverBkImage(-478);
         }
-      }
-
-      .classes {
-        .bkImage(-527);
-        &:hover {
+        .active .classes {
           .hoverBkImage(-527);
         }
-      }
-
-      .employee {
-        .bkImage(-576);
-        &:hover {
+        .active .employee {
           .hoverBkImage(-576);
         }
-      }
-
-      .intro {
-        .bkImage(-626);
-        &:hover {
+        .active .intro {
           .hoverBkImage(-626);
         }
       }
-    }
-    .active .news {
-      .hoverBkImage(-86);
-    }
-    .active .conversation {
-      .hoverBkImage(-136);
-    }
-    .active .assess {
-      .hoverBkImage(-186);
-    }
-    .active .cookbook {
-      .hoverBkImage(-236);
-    }
-    .active .schedule {
-      .hoverBkImage(-285);
-    }
-    .active .assignment {
-      .hoverBkImage(-334);
-    }
-    .active .relationship {
-      .hoverBkImage(-428);
-    }
-    .active .member {
-      .hoverBkImage(-478);
-    }
-    .active .classes {
-      .hoverBkImage(-527);
-    }
-    .active .employee {
-      .hoverBkImage(-576);
-    }
-    .active .intro {
-      .hoverBkImage(-626);
-    }
-  }
 
-}
-
-body.main-body {
-  margin: 0;
-  padding: 0;
-  .module-view {
-    margin-top: -20px;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .navbar {
-    margin-top: -78px;
-    .admin-features {
-      display: block;
     }
-  }
 
-  .modules-list-container {
-    margin-top: 150px;
-    .btn.placeholder {
-      display: none;
+    body.main-body {
+      margin: 0;
+      padding: 0;
+      .module-view {
+        margin-top: -20px;
+      }
     }
-  }
 
-  .module-view-container {
-    margin-top: 50px;
+    @media screen and (max-width: 768px) {
+      .navbar {
+        margin-top: -78px;
+        .admin-features {
+          display: block;
+        }
+      }
+
+      .modules-list-container {
+        margin-top: 150px;
+        .btn.placeholder {
+          display: none;
+        }
+      }
+
+      .module-view-container {
+        margin-top: 50px;
+      }
+    }
   }
 }
 
