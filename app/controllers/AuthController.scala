@@ -90,6 +90,22 @@ trait Secured {
 
   }
 
+  private def principal(request: RequestHeader) = {
+    val user = request.session.get("username")
+    val id: Option[String] = request.session.get("id")
+    id match {
+      case Some(op) =>
+        val Pattern = "/kindergarten/(\\d+).*".r
+        request.path match {
+          case path if Employee.canAccess(id) => user
+          case Pattern(c) if Employee.isPrincipal(op, c.toLong) => user
+          case _ => None
+        }
+      case _ => None
+    }
+
+  }
+
   private def checkSchool(request: RequestHeader) = {
     val user = request.session.get("username")
     val id = request.session.get("id")
@@ -157,6 +173,17 @@ trait Secured {
 
   def IsOperator(b: BodyParser[play.api.libs.json.JsValue] = parse.json)
                 (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(operator, forbidAccess) {
+    user =>
+      Action(b)(request => f(user)(request))
+  }
+
+  def IsPrincipal(f: => String => Request[AnyContent] => Result) = Security.Authenticated(principal, forbidAccess) {
+    user =>
+      Action(request => f(user)(request))
+  }
+
+  def IsPrincipal(b: BodyParser[play.api.libs.json.JsValue] = parse.json)
+                (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(principal, forbidAccess) {
     user =>
       Action(b)(request => f(user)(request))
   }

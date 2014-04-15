@@ -194,7 +194,7 @@ object Employee {
         .on(
           'kg -> kg.toString,
           'phone -> phone
-        ).execute()
+        ).executeUpdate()
   }
 
   def generatePhoneQuery(phones: Option[String]): String = {

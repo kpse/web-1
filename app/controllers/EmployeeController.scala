@@ -47,7 +47,7 @@ object EmployeeController extends Controller with Secured {
         Ok(Json.toJson(Employee.allInSchool(kg, phone)))
   }
 
-  def deleteInSchool(kg: Long, phone: String) = IsOperator {
+  def deleteInSchool(kg: Long, phone: String) = IsPrincipal {
     u => _ =>
       Ok(Json.toJson(Employee.deleteInSchool(kg, phone)))
   }
