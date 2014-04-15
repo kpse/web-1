@@ -25,7 +25,7 @@
       <td class=".col-xs-3">{{e.phone}}</td>
       <td class=".col-xs-2">
         <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
-                ng-confirm-click="delete(e);$event.stopPropagation()">删除
+                ng-confirm-click="delete(e);$event.stopPropagation()" ng-show="adminUser && deletable(adminUser)">删除
         </button>
       </td>
     </tr>

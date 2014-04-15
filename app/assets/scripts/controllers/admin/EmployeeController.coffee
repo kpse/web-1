@@ -71,4 +71,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
             scope.uploading = false
         , scope.adminUser.id
 
+      scope.deletable = (user)->
+        undefined isnt _.find ['principal', 'operator'], (u) -> user.privilege_group == u
+
   ]
