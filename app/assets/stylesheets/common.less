@@ -1,4 +1,6 @@
 .main-body {
+  margin: 0;
+  padding: 0;
 
   .main-view {
     max-width: 1200px;
@@ -88,67 +90,13 @@
         width: 139px;
         height: 139px;
       }
+
       .admin-user-portrait-container {
         .portrait {
-          height: 121px;
+          max-height: 121px;
+          max-width: 121px;
+          float: right;
         }
-      }
-    }
-
-    .help-block.error,
-    .error-field {
-      color: red;
-    }
-
-    .select-button.active {
-      background-color: #47a447;
-    }
-
-    .datepicker-input {
-      width: 100%;
-    }
-
-    .datepicker-button {
-      margin: -34px 0 0 0;
-      float: right;
-    }
-
-    .main-body {
-      .modal.center .modal-dialog {
-        max-width: 1000px;
-        max-height: 1000px;
-        width: 85%;
-        height: 85%;
-        .modal-content {
-          max-height: 760px;
-          height: 100%;
-          .modal-body {
-            overflow-y: scroll;
-            height: 100%;
-          }
-        }
-
-      }
-
-    }
-
-    @media screen and (max-width: 768px) {
-      .main-body {
-
-        .modal.center .modal-dialog {
-          width: 100%;
-          height: 100%;
-          .modal-body {
-            top: 3px;
-            left: 0;
-          }
-        }
-      }
-    }
-
-    .employee-form {
-      .editing-field {
-
       }
     }
 
@@ -158,12 +106,11 @@
       right: 0;
       .navbar-form.navbar-right {
         width: 322px;
-        margin-right: -58px;
       }
     }
 
     .user-menu {
-      right: 100px;
+      right: 40px;
     }
 
     .action {
@@ -181,19 +128,6 @@
 
     .control-label.highlight {
       color: red;
-    }
-
-    .portrait-container {
-      margin-left: 100px;
-      vertical-align: middle;
-      .portrait {
-        max-height: 220px;
-        max-width: 180px;
-      }
-      .portrait-preview {
-        max-height: 110px;
-        max-width: 90px;
-      }
     }
 
     .image-container,
@@ -253,7 +187,9 @@
         float: right;
         width: 963px;
         height: 739px;
-        margin: -20px -15px 0 0;
+        top: 121px;
+        position: absolute;
+        margin-left: 222px;
       }
 
       .modules-list-container {
@@ -389,14 +325,6 @@
 
     }
 
-    body.main-body {
-      margin: 0;
-      padding: 0;
-      .module-view {
-        margin-top: -20px;
-      }
-    }
-
     @media screen and (max-width: 768px) {
       .navbar {
         margin-top: -78px;
@@ -414,6 +342,65 @@
 
       .module-view-container {
         margin-top: 50px;
+      }
+    }
+  }
+
+  .modal.center .modal-dialog {
+    max-width: 1000px;
+    max-height: 1000px;
+    width: 85%;
+    height: 85%;
+    .modal-content {
+      max-height: 760px;
+      height: 100%;
+      .modal-body {
+        overflow-y: scroll;
+        height: 100%;
+        .help-block.error,
+        .error-field {
+          color: red;
+        }
+
+        .select-button.active {
+          background-color: #47a447;
+        }
+
+        .datepicker-input {
+          width: 100%;
+        }
+
+        .datepicker-button {
+          margin: -34px 0 0 0;
+          float: right;
+        }
+
+        .portrait-container {
+          margin-left: 100px;
+          vertical-align: middle;
+          .portrait {
+            max-height: 220px;
+            max-width: 180px;
+          }
+          .portrait-preview {
+            max-height: 110px;
+            max-width: 90px;
+          }
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .main-body {
+
+      .modal.center .modal-dialog {
+        width: 100%;
+        height: 100%;
+        .modal-body {
+          top: 3px;
+          left: 0;
+        }
       }
     }
   }
