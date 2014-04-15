@@ -285,9 +285,9 @@
         }
       }
       .schedule {
-        .bkImage(-284);
+        .bkImage(-285);
         &:hover {
-          .hoverBkImage(-284);
+          .hoverBkImage(-285);
         }
       }
       .assignment {
@@ -316,9 +316,9 @@
       }
 
       .classes {
-        .bkImage(-526);
+        .bkImage(-527);
         &:hover {
-          .hoverBkImage(-526);
+          .hoverBkImage(-527);
         }
       }
 
@@ -349,7 +349,7 @@
       .hoverBkImage(-236);
     }
     .active .schedule {
-      .hoverBkImage(-284);
+      .hoverBkImage(-285);
     }
     .active .assignment {
       .hoverBkImage(-334);
@@ -361,7 +361,7 @@
       .hoverBkImage(-478);
     }
     .active .classes {
-      .hoverBkImage(-526);
+      .hoverBkImage(-527);
     }
     .active .employee {
       .hoverBkImage(-576);
