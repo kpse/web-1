@@ -1,11 +1,11 @@
 .main-body {
   margin: 0;
-  padding: 0;
+  padding: 0 0;
 
   .main-view {
     max-width: 1200px;
     max-height: 860px;
-    margin: auto auto;
+    margin: 0 auto;
 
     .newsletters {
       max-width: 700px;
@@ -78,6 +78,10 @@
       height: 121px;
       margin-left: -30px;
       background: #e0dfe4 url(../../images/header-bg.png) no-repeat;
+      -moz-border-radius-topleft: 15px;
+      -moz-border-radius-topright: 15px;
+      -webkit-border-top-left-radius: 15px;
+      -webkit-border-top-right-radius: 15px;
       .title {
         float: left;
         width: 571px;
