@@ -11,7 +11,7 @@ import play.api.test.Helpers._
 @RunWith(classOf[JUnitRunner])
 class NewsControllerSpec extends Specification with TestSupport {
   def loggedRequest(method: String, url: String) = {
-    FakeRequest(method, url).withSession("username" -> "13402815317", "token" -> "1386425935574")
+    FakeRequest(method, url).withSession("username" -> "13408654680", "token" -> "1386849160798")
   }
   "News" should {
     "check authentication first" in new WithApplication {
