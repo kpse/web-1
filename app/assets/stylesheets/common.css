@@ -107,7 +107,7 @@
     .navbar {
       background-color: #e0dfe4;
       border: none;
-      right: 0;
+      right: 24px;
       .navbar-form.navbar-right {
         width: 322px;
       }
