@@ -61,11 +61,11 @@
       }
     }
     &.app-download-android a {
-      background: url(../../images/fn-icon-android.jpg) no-repeat left center;
+      background: url(/assets/images/fn-icon-android.jpg) no-repeat left center;
     }
     &.app-download-iphone {
       a {
-        background: url(../../images/fn-icon-iphone.jpg) no-repeat left center;
+        background: url(/assets/images/fn-icon-iphone.jpg) no-repeat left center;
       }
     }
   }

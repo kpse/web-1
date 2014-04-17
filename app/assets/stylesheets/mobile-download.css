@@ -29,7 +29,7 @@ body {
       height: 65px;
       width: 100%;
       .arrow {
-        background: #303537 url(../../images/prompting_arrow.png) no-repeat top right;
+        background: #303537 url(/assets/images/prompting_arrow.png) no-repeat top right;
         background-size: 65px 65px;
         height: 65px;
         width: 65px;
@@ -88,11 +88,11 @@ body {
           }
         }
         &.app-download-android a {
-          background: url(../../images/fn-icon-android.jpg) no-repeat left center;
+          background: url(/assets/images/fn-icon-android.jpg) no-repeat left center;
         }
         &.app-download-iphone {
           a {
-            background: url(../../images/fn-icon-iphone.jpg) no-repeat left center;
+            background: url(/assets/images/fn-icon-iphone.jpg) no-repeat left center;
           }
         }
       }
