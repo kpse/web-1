@@ -16,10 +16,6 @@
   vertical-align: middle;
 }
 
-.tips {
-  display: none;
-}
-
 .login-entry {
   background-image: url('../../images/btn.png');
   width: 164px;
