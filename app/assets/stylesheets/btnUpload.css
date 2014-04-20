@@ -18,15 +18,3 @@
     cursor: pointer;
   }
 }
-
-// Fix for IE 6
-* html .btn-upload {
-  line-height: 24px;
-  margin: 1px -3px 0 0;
-}
-
-// Fix for IE 7
-* + html .btn-upload {
-  padding: 2px 15px;
-  margin: 1px 0 0 0;
-}
