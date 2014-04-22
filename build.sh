@@ -59,8 +59,23 @@ function deploy_prod {
 function build_deploy_stage {
   build_and_push && deploy_prod stage.cocobabys.com
 }
+
 function js_dependency {
   grunt
+}
+
+function usage {
+  echo Usage:
+  echo ======================
+  echo s for start local development server at 9000 port
+  echo a for git pull/local build/git push/deploy to stage
+  echo d for deploy to stage.cocobabys.com
+  echo p for git pull/local build/git push
+  echo b for local build
+  echo js for update javascript dependency
+  echo heroku for deploy to heroku
+  echo none of the above will trigger local build only
+  echo ======================
 }
 
 function main {
@@ -73,6 +88,7 @@ function main {
 		d) deploy_prod stage.cocobabys.com ;;
 		p) build_and_push ;;
 		b) build_local ;;
+		h) usage ;;
 		*) build_local ;;
 	esac
 }
