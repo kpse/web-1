@@ -121,34 +121,3 @@
 .child-creating-menu {
   margin: -25px 0 0 127px
 }
-
-@media screen and (max-width: 768px) {
-  .main-body {
-    .main-view {
-      .main-frame {
-        margin: 0;
-      }
-      .header {
-        background: #e0dfe4 none;
-        .admin-user-portrait-container {
-          margin-top: -83px;
-        }
-        .admin-user-info-container {
-          min-height: 110px;
-        }
-        .admin-features {
-          min-height: 110px;
-          .navbar-form {
-            border: none;
-          }
-        }
-
-      }
-      .modules-list-container {
-        margin: 10px 0 0 0;
-        padding: 0;
-        width: 100%;
-      }
-    }
-  }
-}
