@@ -226,7 +226,12 @@
 }
 
 @media screen and (max-width: 768px) {
+  html {
+    overflow-x: hidden;
+  }
+
   .main-body {
+    overflow-x: hidden;
     .main-view {
       .main-frame {
         margin: 0;
@@ -260,6 +265,9 @@
         top: 3px;
         left: 0;
       }
+    }
+    .message-input {
+      width: 100%;
     }
   }
 }
