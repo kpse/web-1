@@ -3,11 +3,12 @@ package controllers
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.Logger
-import models.{Children, ChildInfo, School}
+import models.{ErrorResponse, Children, ChildInfo, School}
 
 object ChildController extends Controller with Secured {
 
   implicit val write1 = Json.writes[ChildInfo]
+  implicit val write2 = Json.writes[ErrorResponse]
   implicit val read1 = Json.reads[ChildInfo]
 
   def show(kg: Long, phone: String, childId: String) = IsLoggedIn {
@@ -45,6 +46,8 @@ object ChildController extends Controller with Secured {
         request.body.validate[ChildInfo].map {
           case (info) if !School.classExists(kg, info.class_id) =>
             BadRequest("class " + info.class_id + " does not exists.")
+          case (info) if !Children.idExists(info.child_id) && info.status == Some(0)  =>
+            Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
           case (info) if Children.idExists(info.child_id) =>
             Ok(Json.toJson(Children.updateByChildId(kg, info.child_id.get, info)))
           case (info) =>
@@ -60,6 +63,8 @@ object ChildController extends Controller with Secured {
         request.body.validate[ChildInfo].map {
           case (info) if !School.classExists(kg, info.class_id) =>
             BadRequest("class " + info.class_id + " does not exists.")
+          case (info) if !Children.idExists(info.child_id) && info.status == Some(0)  =>
+            Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
           case (info) if Children.idExists(Some(childId)) =>
             Ok(Json.toJson(Children.updateByChildId(kg, childId, info)))
           case (info) =>
