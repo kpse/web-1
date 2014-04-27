@@ -18,7 +18,7 @@ object Auth extends Controller {
     tuple(
       "username" -> text,
       "password" -> text
-    ) verifying("无效的用户名或密码。", result => result match {
+    ) verifying("无效的用户名或密码。", _ match {
       case (username, password) => Employee.authenticate(username, password).isDefined
     })
   )
@@ -28,13 +28,13 @@ object Auth extends Controller {
    */
   def login = Action {
     implicit request =>
-      Logger.info(request.session.data.toString)
-      request.session.get("id").map {
+      Logger.info(request.session.data.toString())
+      request.session.get("id").fold(Ok(html.login(loginForm)))({
         case op if Employee.isOperator(op) =>
           Redirect("/operation")
         case admin =>
           Redirect("/admin")
-      }.getOrElse(Ok(html.login(loginForm)))
+      })
 
   }
 
