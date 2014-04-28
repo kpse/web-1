@@ -21,6 +21,10 @@ object Children {
           'kg -> kg.toString,
           'timestamp -> System.currentTimeMillis
         ).executeUpdate
+      SQL("update relationmap set status=0 where child_id={child_id}")
+        .on(
+          'child_id -> childId
+        ).executeUpdate
   }
 
   def idExists(childId: Option[String]): Boolean = DB.withConnection {
