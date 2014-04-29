@@ -1,5 +1,5 @@
 angular.module('kulebaoOp').controller 'OpAppCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$http', 'uploadService', 'appPackageService', 'employeeService',
+  ['$scope', '$rootScope', '$stateParams', '$http', 'appUploadService', 'appPackageService', 'employeeService',
     ($scope, $rootScope, $stateParams, $http, remoteFileSetter, appPackageService, Employee) ->
       $scope.adminUser = Employee.get()
 
