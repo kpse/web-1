@@ -4,6 +4,10 @@ tokenService = ($http) ->
   token: (file, remoteDir) ->
     $http.get '/ws/safe_file_token?bucket=kulebao-prod&key=' + encodeURIComponent remoteDir + file.name
 
+rawFileTokenService = ($http) ->
+  token: (file) ->
+    $http.get '/ws/fileToken?bucket=kulebao-prod&key=' + file.name
+
 
 qiniuService = (tokenService) ->
   send: (file, remoteDir, token, successCallback) ->
@@ -13,7 +17,7 @@ qiniuService = (tokenService) ->
     xhr.onloadend = (e) ->
       response = JSON.parse(e.currentTarget.response)
       successCallback({
-        url: "https://dn-kulebao.qbox.me/" + generateRemotefileName remoteDir, response.name
+        url: "https://dn-kulebao.qbox.me/" + generateRemoteFileName remoteDir, response.name
         size: response.size
       })
 
@@ -24,11 +28,30 @@ qiniuService = (tokenService) ->
     xhr.open "POST", "http://up.qiniu.com"
     xhr.send data
 
+qiniuRawFileService = (tokenService) ->
+  send: (file, remoteDir, token, successCallback) ->
+    data = new FormData()
+    xhr = new XMLHttpRequest()
+
+    xhr.onloadend = (e) ->
+      response = JSON.parse(e.currentTarget.response)
+      successCallback({
+        url: "https://dn-kulebao.qbox.me/" + remoteDir + response.name
+        size: response.size
+      })
+
+    # Send to server, where we can then access it with $_FILES['file].
+    data.append "file", file
+    data.append "token", token
+    data.append "key", file.name
+    xhr.open "POST", "http://up.qiniu.com"
+    xhr.send data
+
 generateRemoteDir = (user)->
   return '' if user is undefined
   '/' + user + '/'
 
-generateRemotefileName = (remoteDir, fileName)->
+generateRemoteFileName = (remoteDir, fileName)->
   return fileName if remoteDir is ''
   encodeURIComponent encodeURIComponent remoteDir + fileName
 
@@ -43,9 +66,15 @@ uploadService = (qiniuService, tokenService) ->
 angular.module('kulebaoAdmin')
 .factory 'tokenService', ['$http', tokenService]
 angular.module('kulebaoAdmin')
+.factory 'rawFileTokenService', ['$http', rawFileTokenService]
+angular.module('kulebaoAdmin')
 .factory 'qiniuService', ['tokenService', qiniuService]
 angular.module('kulebaoAdmin')
+.factory 'qiniuRawFileService', ['rawFileTokenService', qiniuRawFileService]
+angular.module('kulebaoAdmin')
 .factory 'uploadService', ['qiniuService', 'tokenService', uploadService]
+angular.module('kulebaoAdmin')
+.factory 'appUploadService', ['qiniuRawFileService', 'rawFileTokenService', uploadService]
 
 
 angular.module('kulebaoAdmin').directive "fileupload", ->
