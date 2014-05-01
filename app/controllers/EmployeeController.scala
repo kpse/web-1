@@ -63,14 +63,12 @@ object EmployeeController extends Controller with Secured {
             Ok(loggedJson(Employee.update(me))).withSession(request.session + ("phone" -> me.phone) + ("username" -> me.login_name) + ("name" -> me.name))
           case (other) if !(userId.equals(other.id) || Employee.isSuperUser(userId.getOrElse(""), kg)) =>
             Unauthorized(loggedJson(ErrorResponse("您无权修改其他老师的信息。")))
-          case (existing) if Employee.idExists(existing.id) =>
-            Ok(loggedJson(Employee.update(existing)))
-          case (phoneDuplicate) if !Employee.idExists(phoneDuplicate.id) && Employee.phoneExists(phoneDuplicate.phone)=>
+          case (phoneDuplicate) if Employee.phoneExists(phoneDuplicate.phone) && !Employee.idExists(phoneDuplicate.id) =>
             BadRequest(loggedJson(ErrorResponse("已有老师使用此电话%s，请检查输入。".format(phoneDuplicate.phone))))
-          case (employee) if Employee.phoneExists(employee.phone) && employee.id.isEmpty =>
-            BadRequest(loggedJson(ErrorResponse("老师的电话重复，请检查输入。")))
           case (employee) if Employee.loginNameExists(employee.login_name) && employee.id.isEmpty =>
             BadRequest(loggedJson(ErrorResponse(employee.login_name + "已占用，建议用学校拼音缩写加数字来组织登录名。")))
+          case (existing) if Employee.idExists(existing.id) =>
+            Ok(loggedJson(Employee.update(existing)))
           case (newOne) =>
             Ok(loggedJson(Employee.create(newOne)))
         }.recoverTotal {
