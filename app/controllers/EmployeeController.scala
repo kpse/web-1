@@ -65,6 +65,8 @@ object EmployeeController extends Controller with Secured {
             Unauthorized(loggedJson(ErrorResponse("您无权修改其他老师的信息。")))
           case (existing) if Employee.idExists(existing.id) =>
             Ok(loggedJson(Employee.update(existing)))
+          case (phoneDuplicate) if !Employee.idExists(phoneDuplicate.id) && Employee.phoneExists(phoneDuplicate.phone)=>
+            BadRequest(loggedJson(ErrorResponse("已有老师使用此电话%s，请检查输入。".format(phoneDuplicate.phone))))
           case (employee) if Employee.phoneExists(employee.phone) && employee.id.isEmpty =>
             BadRequest(loggedJson(ErrorResponse("老师的电话重复，请检查输入。")))
           case (employee) if Employee.loginNameExists(employee.login_name) && employee.id.isEmpty =>
