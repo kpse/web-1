@@ -6,7 +6,7 @@ import models.json_models._
 import models.json_models.CheckPhoneResponse
 import models.json_models.MobileLogin
 import models.json_models.BindingNumber
-import models.{AppUpgradeResponse, AppPackage}
+import models.{Employee, AppUpgradeResponse, AppPackage}
 import play.api.Logger
 import helper.JsonLogger._
 
@@ -27,14 +27,19 @@ object Authentication extends Controller {
   implicit val w7 = Json.writes[BindingNumber]
   implicit val w8 = Json.writes[ChangePassword]
   implicit val w9 = Json.writes[ResetPassword]
+  implicit val w10 = Json.writes[Employee]
 
   def login = Action(parse.json) {
     request =>
       request.body.validate[MobileLogin].map {
+        case (teacherLogin) if Employee.loginNameExists(teacherLogin.account_name) =>
+          loggedJson(teacherLogin)
+          Employee.authenticate(teacherLogin.account_name, teacherLogin.password).fold(Forbidden("无效的用户名或密码。").withNewSession)({
+            case (employee) => Ok(loggedJson(employee)).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
+          })
         case (login) =>
           loggedJson(login)
-          val result = MobileLoginResponse.handle(login)
-          Ok(loggedJson(result))
+          Ok(loggedJson(MobileLoginResponse.handle(login)))
       }.recoverTotal {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
       }

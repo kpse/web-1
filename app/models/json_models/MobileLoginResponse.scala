@@ -2,9 +2,7 @@ package models.json_models
 
 import play.api.db.DB
 import anorm._
-import java.security.MessageDigest
 import play.api.Play.current
-import org.apache.commons.codec.digest.DigestUtils
 import models.helper.MD5Helper.md5
 
 case class MobileLogin(account_name: String, password: String)
