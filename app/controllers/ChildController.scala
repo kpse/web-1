@@ -24,9 +24,9 @@ object ChildController extends Controller with Secured {
 
   //=============================================================================================
 
-  def indexInSchool(kg: Long, classId: Option[Long], connect: Option[Boolean]) = IsLoggedIn {
+  def indexInSchool(kg: Long, classIds: Option[String], connect: Option[Boolean]) = IsLoggedIn {
     u => _ =>
-      Children.findAllInClass(kg, classId, connect) match {
+      Children.findAllInClass(kg, classIds, connect) match {
         case all: List[ChildInfo] => Ok(Json.toJson(all))
       }
   }

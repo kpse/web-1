@@ -64,7 +64,7 @@ GET           /kindergarten/:kg/class/:classId/schedule/:scheduleId             
 POST          /kindergarten/:kg/class/:classId/schedule/:scheduleId              controllers.ScheduleController.update(kg: Long, classId: Long, scheduleId: Long)
 POST          /kindergarten/:kg/class/:classId/schedule                          controllers.ScheduleController.create(kg: Long, classId: Long)
 
-GET           /kindergarten/:kg/child                                            controllers.ChildController.indexInSchool(kg: Long, class_id: Option[Long], connected: Option[Boolean])
+GET           /kindergarten/:kg/child                                            controllers.ChildController.indexInSchool(kg: Long, class_id: Option[String], connected: Option[Boolean])
 GET           /kindergarten/:kg/child/:childId                                   controllers.ChildController.showInfo(kg: Long, childId: String)
 POST          /kindergarten/:kg/child                                            controllers.ChildController.createOrUpdate(kg: Long)
 POST          /kindergarten/:kg/child/:childId                                   controllers.ChildController.update2(kg: Long, childId: String)
@@ -105,6 +105,8 @@ GET           /kindergarten/:kg/employee/:phone                                 
 DELETE        /kindergarten/:kg/employee/:phone                                  controllers.EmployeeController.deleteInSchool(kg: Long, phone: String)
 POST          /kindergarten/:kg/employee/:phone                                  controllers.EmployeeController.createOrUpdateInSchool(kg: Long, phone: String)
 POST          /kindergarten/:kg/employee/:phone/password                         controllers.EmployeeController.changePassword(kg: Long, phone: String)
+
+GET           /kindergarten/:kg/employee/:phone/class                            controllers.EmployeeController.managedClass(kg: Long, phone: String)
 
 POST          /kindergarten/:kg/principal                                        controllers.EmployeeController.createPrincipal(kg: Long)
 GET           /kindergarten/:kg/principal                                        controllers.PrivilegeController.index(kg: Long)

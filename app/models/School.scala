@@ -9,7 +9,7 @@ import play.Logger
 
 case class School(school_id: Long, name: String)
 
-case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, manager: Option[String])
+case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, managers: List[String])
 
 
 object School {
@@ -96,43 +96,31 @@ object School {
         ).execute()
   }
 
-
-  def findById(clazz: SchoolClass) = DB.withConnection {
+  def findClass(kg: Long, id: Option[Int]) = DB.withConnection {
     implicit c =>
-      SQL("select c.*, employee_id from classinfo c left join (privilege p) " +
-        "on (p.school_id=c.school_id and cast(c.class_id as char(10)) " +
-        "and c.school_id = {school_id} and class_id={class_id}) limit 1")
-        .on('school_id -> clazz.school_id.toString,
-          'class_id -> clazz.class_id).as(simple singleOpt)
+      SQL("select * from classinfo where " +
+        " school_id = {school_id} and class_id={class_id}")
+        .on('school_id -> kg.toString,
+          'class_id -> id).as(simple singleOpt)
   }
 
   def updateManager(clazz: SchoolClass) = DB.withConnection {
     implicit c =>
-      clazz.manager map {
+      Logger.info(clazz.toString)
+      SQL("delete from privilege where school_id={kg} and subordinate={class}")
+        .on('kg -> clazz.school_id.toString, 'class -> clazz.class_id.getOrElse(-1).toString).execute()
+      clazz.managers map {
         manager =>
-          val exists = SQL("select count(1) from privilege where school_id={kg} and employee_id={id}").on(
-            'kg -> clazz.school_id,
-            'id -> manager
-          ).as(get[Long]("count(1)") single) > 0
-          exists match {
-            case false =>
-              SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) values " +
-                "({kg},{id},{group},{subordinate},{promoter}, {time})").on(
-                  'kg -> clazz.school_id.toString,
-                  'id -> manager,
-                  'group -> "teacher",
-                  'promoter -> "admin",
-                  'subordinate -> clazz.class_id,
-                  'time -> System.currentTimeMillis
-                ).executeInsert()
-            case true =>
-              SQL("update privilege set subordinate={class_id} where school_id={kg} and employee_id={id}").on(
-                'kg -> clazz.school_id.toString,
-                'class_id -> clazz.class_id,
-                'id -> manager
-              ).executeUpdate()
-          }
-
+          Logger.info(Employee.findByName(clazz.school_id, manager).toString)
+          SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) values " +
+            "({kg},{id},{group},{subordinate},{promoter}, {time})").on(
+              'kg -> clazz.school_id.toString,
+              'id -> Employee.findByName(clazz.school_id, manager).get.id,
+              'group -> "teacher",
+              'promoter -> "admin",
+              'subordinate -> clazz.class_id.getOrElse("").toString,
+              'time -> System.currentTimeMillis
+            ).executeInsert()
       }
 
   }
@@ -143,13 +131,15 @@ object School {
         'kg -> clazz.school_id,
         'id -> clazz.class_id.getOrElse(-1)
       ).as(get[Long]("count(1)") single)
+
+      Logger.info("exist is %s".format(exist))
+      updateManager(clazz)
       exist match {
-        case (0l) =>
-          updateManager(clazz)
+        case 0 =>
           createClass(clazz.school_id, clazz)
-        case (1l) =>
+        case _ =>
           update(clazz)
-          findById(clazz)
+          findClass(clazz.school_id, clazz.class_id)
       }
 
   }
@@ -190,7 +180,7 @@ object School {
       get[String]("school_id") ~
       get[String]("class_name") map {
       case id ~ school_id ~ name =>
-        SchoolClass(school_id.toLong, Some(id), name, None)
+        SchoolClass(school_id.toLong, Some(id), name, List())
     }
   }
 

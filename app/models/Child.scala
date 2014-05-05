@@ -141,25 +141,27 @@ object Children {
         .on('child_id -> childId, 'kg -> kg.toString).as(childInformation singleOpt)
   }
 
-  def findAllInClass(kg: Long, classId: Option[Long], connected: Option[Boolean]) = DB.withConnection {
+  def findAllInClass(kg: Long, classIds: Option[String], connected: Option[Boolean]) = DB.withConnection {
     implicit c =>
       val sql = "select c.*, c2.class_name from childinfo c, classinfo c2 " +
         "where c.class_id=c2.class_id and c.status=1 and c.school_id={kg} and c.school_id=c2.school_id "
-      SQL(generateSQL(sql, classId, connected))
+      val l: String = generateSQL(sql, classIds, connected)
+      Logger.info(l)
+      SQL(l)
         .on(
-          'classId -> classId.getOrElse(0),
+          'classId -> classIds,
           'kg -> kg.toString
         ).as(childInformation *)
   }
 
 
-  def generateSQL(sql: String, classId: Option[Long], connected: Option[Boolean]): String = {
-    sql + classId.map {
-      l => " and c.class_id={classId} "
-    }.getOrElse("") + connected.map {
+  def generateSQL(sql: String, classIds: Option[String], connected: Option[Boolean]): String = {
+    sql +
+      classIds.fold("")(l => " and c.class_id in (%s) ".format(classIds.getOrElse(0))) +
+      connected.fold("")({
       case true => " and child_id in (select child_id from relationmap r where r.status=1)"
       case false => " and child_id not in (select child_id from relationmap r where r.status=1)"
-    }.getOrElse("")
+    })
   }
 
   def findAll(school: Long, phone: String): List[ChildInfo] = DB.withConnection {
