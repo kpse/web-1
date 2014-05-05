@@ -96,14 +96,12 @@ object School {
         ).execute()
   }
 
-
-  def findById(clazz: SchoolClass) = DB.withConnection {
+  def findClass(kg: Long, id: Option[Int]) = DB.withConnection {
     implicit c =>
-      SQL("select c.*, employee_id from classinfo c left join (privilege p) " +
-        "on (p.school_id=c.school_id and cast(c.class_id as char(10)) " +
-        "and c.school_id = {school_id} and class_id={class_id}) limit 1")
-        .on('school_id -> clazz.school_id.toString,
-          'class_id -> clazz.class_id).as(simple singleOpt)
+      SQL("select * from classinfo where " +
+        " school_id = {school_id} and class_id={class_id}")
+        .on('school_id -> kg.toString,
+          'class_id -> id).as(simple singleOpt)
   }
 
   def updateManager(clazz: SchoolClass) = DB.withConnection {
@@ -149,7 +147,7 @@ object School {
           createClass(clazz.school_id, clazz)
         case (1l) =>
           update(clazz)
-          findById(clazz)
+          findClass(clazz.school_id, clazz.class_id)
       }
 
   }

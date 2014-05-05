@@ -23,6 +23,20 @@ case class EmployeePassword(employee_id: String, school_id: Long, phone: String,
 case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String)
 
 object Employee {
+  def managedClass(kg: Long, employee: Employee) = DB.withConnection {
+    implicit c =>
+      val classes: List[String] = SQL("select subordinate from privilege where employee_id={id} and school_id={kg}")
+        .on(
+          'id -> employee.id,
+          'kg -> kg
+        ).as(get[String]("subordinate") *)
+      Logger.info(classes.toString)
+      classes map {
+        c =>
+          School.findClass(kg, Some(Integer.parseInt(c)))
+      }
+  }
+
   def isSuperUser(id: String, kg: Long) = isPrincipal(id, kg) || isOperator(id)
 
   def phoneChanged(employee: Employee): Boolean = DB.withConnection {

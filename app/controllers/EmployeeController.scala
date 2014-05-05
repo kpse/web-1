@@ -1,15 +1,21 @@
 package controllers
 
 import play.api.mvc.{Action, Controller}
-import models.{EmployeeResetPassword, ErrorResponse, EmployeePassword, Employee}
+import models._
 import play.api.libs.json.Json
 import play.Logger
-import helper.JsonLogger._
+import controllers.helper.JsonLogger._
+import play.api.db.DB
+import anorm._
+import models.EmployeePassword
+import models.EmployeeResetPassword
+import models.ErrorResponse
 
 object EmployeeController extends Controller with Secured {
 
   implicit val write = Json.writes[Employee]
   implicit val write1 = Json.writes[ErrorResponse]
+  implicit val write2 = Json.writes[SchoolClass]
   implicit val read1 = Json.reads[Employee]
   implicit val read2 = Json.reads[EmployeePassword]
   implicit val read3 = Json.reads[EmployeeResetPassword]
@@ -124,4 +130,17 @@ object EmployeeController extends Controller with Secured {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
       }
   }
+
+  def managedClass(kg: Long, phone: String) = IsAuthenticated {
+    username =>
+      _ =>
+        Employee.show(phone).fold(Ok(loggedJson(List[SchoolClass]())))({
+          case (principal) if Employee.isSuperUser(principal.id.getOrElse(""), kg) =>
+            Ok(loggedJson(School.allClasses(kg)))
+          case teacher =>
+            Logger.info(teacher.toString)
+            Ok(loggedJson(Employee.managedClass(kg, teacher)))
+        })
+  }
+
 }
