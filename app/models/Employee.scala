@@ -23,6 +23,15 @@ case class EmployeePassword(employee_id: String, school_id: Long, phone: String,
 case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String)
 
 object Employee {
+  def findByName(kg: Long, name: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from employeeinfo where name={name} and school_id={kg} and status=1")
+        .on(
+          'name -> name,
+          'kg -> kg.toString
+        ).as(simple singleOpt)
+  }
+
   def managedClass(kg: Long, employee: Employee) = DB.withConnection {
     implicit c =>
       val classes: List[String] = SQL("select subordinate from privilege where employee_id={id} and school_id={kg}")
