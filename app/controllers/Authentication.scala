@@ -32,14 +32,10 @@ object Authentication extends Controller {
   def login = Action(parse.json) {
     request =>
       request.body.validate[MobileLogin].map {
-        case (teacherLogin) if Employee.loginNameExists(teacherLogin.account_name) =>
-          loggedJson(teacherLogin)
-          Employee.authenticate(teacherLogin.account_name, teacherLogin.password).fold(Forbidden("无效的用户名或密码。").withNewSession)({
-            case (employee) => Ok(loggedJson(employee)).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
-          })
         case (login) =>
           loggedJson(login)
-          Ok(loggedJson(MobileLoginResponse.handle(login)))
+          val result = MobileLoginResponse.handle(login)
+          Ok(loggedJson(result))
       }.recoverTotal {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
       }
@@ -119,6 +115,19 @@ object Authentication extends Controller {
               Ok(loggedJson(changed)).withNewSession
           }
 
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + loggedErrorJson(e))
+      }
+  }
+
+  def employeeLogin() = Action(parse.json) {
+    request =>
+      request.body.validate[MobileLogin].map {
+        case (teacherLogin) =>
+          loggedJson(teacherLogin)
+          Employee.authenticate(teacherLogin.account_name, teacherLogin.password).fold(Forbidden("无效的用户名或密码。").withNewSession)({
+            case (employee) => Ok(loggedJson(employee)).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
+          })
       }.recoverTotal {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
       }
