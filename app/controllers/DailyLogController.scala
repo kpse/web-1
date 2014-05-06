@@ -13,4 +13,10 @@ object DailyLogController extends Controller with Secured {
     u => _ =>
       Ok(Json.toJson(DailyLog.all(kg, childId, from, to).take(most.getOrElse(25))))
   }
+
+  def indexInClasses(kg: Long, classIds: String) = IsAuthenticated {
+    u=>
+      _=>
+      Ok(Json.toJson(DailyLog.lastCheckInClasses(kg, classIds)))
+  }
 }

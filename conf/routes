@@ -56,6 +56,7 @@ GET           /kindergarten/:kg/parent/:parentId/news                           
 POST          /kindergarten/:kg/parent/:parentId/news/:newsId                    controllers.ReadingNewsController.create(kg: Long, parentId: Long, newsId: Long)
 
 GET           /kindergarten/:kg/child/:childId/dailylog                          controllers.DailyLogController.index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /kindergarten/:kg/dailylog                                         controllers.DailyLogController.indexInClasses(kg: Long, class_id: String)
 
 GET           /kindergarten/:kg/admin/:adminId/news_reading_count/:newsId        controllers.ReadingNewsController.countReading(kg: Long, adminId: Long, newsId: Long)
 

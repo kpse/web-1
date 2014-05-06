@@ -31,12 +31,12 @@ object School {
             SQL("delete from " + table + " where school_id={kg}")
               .on('kg -> kg.toString).execute()
         }
-        c.commit
+        c.commit()
       }
       catch {
         case t: Throwable =>
           Logger.info("error %s".format(t.toString))
-          c.rollback
+          c.rollback()
       }
 
 
