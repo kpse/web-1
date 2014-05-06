@@ -124,7 +124,12 @@ trait Secured {
   /**
    * Redirect to login if the user in not authorized.
    */
-  private def redirectToLogin(request: RequestHeader) = Results.Redirect(routes.Auth.login)
+  private def redirectToLogin(request: RequestHeader) = {
+    request.headers.get("source").fold(Results.Redirect(routes.Auth.login))({
+      case _ => forbidAccess(request)
+    })
+
+  }
 
   private def forbidAccess(request: RequestHeader) = Results.Unauthorized
 
