@@ -118,7 +118,7 @@ object School {
               'id -> Employee.findByName(clazz.school_id, manager).get.id,
               'group -> "teacher",
               'promoter -> "admin",
-              'subordinate -> clazz.class_id.getOrElse("").toString,
+              'subordinate -> clazz.class_id.getOrElse(0).toString,
               'time -> System.currentTimeMillis
             ).executeInsert()
       }
@@ -133,11 +133,11 @@ object School {
       ).as(get[Long]("count(1)") single)
 
       Logger.info("exist is %s".format(exist))
-      updateManager(clazz)
       exist match {
         case 0 =>
           createClass(clazz.school_id, clazz)
         case _ =>
+          updateManager(clazz)
           update(clazz)
           findClass(clazz.school_id, clazz.class_id)
       }
