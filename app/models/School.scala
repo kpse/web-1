@@ -9,7 +9,7 @@ import play.Logger
 
 case class School(school_id: Long, name: String)
 
-case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, managers: List[String])
+case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, managers: Option[List[String]] = Some(List[String]()))
 
 
 object School {
@@ -109,7 +109,7 @@ object School {
       Logger.info(clazz.toString)
       SQL("delete from privilege where school_id={kg} and subordinate={class}")
         .on('kg -> clazz.school_id.toString, 'class -> clazz.class_id.getOrElse(-1).toString).execute()
-      clazz.managers map {
+      clazz.managers.getOrElse(List()) map {
         manager =>
           Logger.info(Employee.findByName(clazz.school_id, manager).toString)
           SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) values " +
@@ -180,7 +180,7 @@ object School {
       get[String]("school_id") ~
       get[String]("class_name") map {
       case id ~ school_id ~ name =>
-        SchoolClass(school_id.toLong, Some(id), name, List())
+        SchoolClass(school_id.toLong, Some(id), name)
     }
   }
 
