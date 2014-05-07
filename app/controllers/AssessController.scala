@@ -2,10 +2,12 @@ package controllers
 
 import play.api.mvc.{Action, Controller}
 import play.api.libs.json.{JsError, Json}
-import models.Assess
+import models.{JsonResponse, SuccessResponse, ErrorResponse, Assess}
 
 object AssessController extends Controller with Secured {
   implicit val write = Json.writes[Assess]
+  implicit val write1 = Json.writes[SuccessResponse]
+  implicit val write2 = Json.writes[ErrorResponse]
 
   def index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn {
     u => _ =>
@@ -28,5 +30,22 @@ object AssessController extends Controller with Secured {
   def delete(kg: Long, childId: String, assessId: Long) = IsLoggedIn {
     u => _ =>
       Ok(Json.toJson(Assess.delete(kg, childId, assessId)))
+  }
+
+  def batchCreate(kg: Long) = IsAuthenticated(parse.json) {
+    u =>
+      request =>
+        request.body.validate[List[Assess]].map {
+          case (assessments) =>
+            Assess.batchCreate(kg, assessments).isEmpty match {
+              case true =>
+                Ok(Json.toJson(ErrorResponse("批量创建评价失败。")))
+              case false =>
+                Ok(Json.toJson(new SuccessResponse))
+            }
+
+        }.recoverTotal {
+          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        }
   }
 }

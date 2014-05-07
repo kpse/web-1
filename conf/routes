@@ -100,6 +100,7 @@ GET           /kindergarten/:kg/child/:childId/assess                           
 
 POST          /kindergarten/:kg/child/:childId/assess                            controllers.AssessController.createOrUpdate(kg: Long, childId: String)
 DELETE        /kindergarten/:kg/child/:childId/assess/:assessId                  controllers.AssessController.delete(kg: Long, childId: String, assessId: Long)
+POST          /kindergarten/:kg/assessments                                      controllers.AssessController.batchCreate(kg: Long)
 
 
 GET           /kindergarten/:kg/employee                                         controllers.EmployeeController.indexInSchool(kg: Long, phone: Option[String])

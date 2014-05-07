@@ -25,6 +25,23 @@ case class Assess(id: Option[Long], timestamp: Option[Long], publisher: String, 
 }
 
 object Assess {
+  def batchCreate(kg: Long, assessments: List[Assess]) = DB.withTransaction {
+    implicit c =>
+      try {
+        val result = assessments map {
+          a =>
+            createOrUpdate(kg, a.child_id, a)
+        }
+        c.commit()
+        result
+      }
+      catch {
+        case e: Throwable => c.rollback()
+          ErrorResponse(e.getLocalizedMessage)
+          List[Assess]()
+      }
+  }
+
   def delete(kg: Long, childId: String, assessId: Long) = DB.withConnection {
     implicit c =>
       SQL("delete from assess where school_id={kg} and child_id={child_id} and uid = {uid}")
@@ -64,7 +81,7 @@ object Assess {
       Some(assess)
   }
 
-  def createOrUpdate(kg: Long, childId: String, assess: Assess) = {
+  def createOrUpdate(kg: Long, childId: String, assess: Assess) : Option[Assess] = {
     assess.id match {
       case Some(id) if assess.exists =>
         update(assess, kg, childId)
