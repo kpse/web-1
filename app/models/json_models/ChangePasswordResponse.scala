@@ -15,6 +15,23 @@ case class ChangePasswordResponse(error_code: Int, access_token: String)
 case class ResetPassword(account_name: String, authcode: String, new_password: String)
 
 object ChangePasswordResponse {
+  def handleEmployeeReset(request: ResetPassword) = DB.withConnection {
+    implicit c =>
+      request.authcode match {
+        case code if isValidCode(request) =>
+          val updateTime = System.currentTimeMillis
+          SQL("update employeeinfo set login_password={new_password}, update_at={timestamp} where login_name={username}")
+            .on('username -> request.account_name,
+              'new_password -> md5(request.new_password),
+              'timestamp -> updateTime
+            ).executeUpdate
+          cleanCache(request.account_name)
+          new ChangePasswordResponse(0, updateTime.toString)
+        case code if !isValidCode(request) => new ChangePasswordResponse(1232, "验证码错误。")
+        case _ => new ChangePasswordResponse(1, "未知错误。")
+      }
+  }
+
 
   def cleanCache(phone: String) = Cache.remove(phone)
 
@@ -46,7 +63,7 @@ object ChangePasswordResponse {
         .on('username -> request.account_name,
           'password -> md5(request.old_password)
         ).apply()
-      Logger.info(firstRow.toString)
+      Logger.info(firstRow.toString())
       firstRow.isEmpty match {
         case false =>
           val updateTime = System.currentTimeMillis

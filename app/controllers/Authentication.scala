@@ -108,7 +108,7 @@ object Authentication extends Controller {
     request =>
       request.body.validate[ChangePassword].map {
         case (tooSimple) if !PasswordHelper.isValid(tooSimple.new_password) =>
-          BadRequest(loggedJson(ErrorResponse("新密码应为6位到16位数字+字母。")))
+          BadRequest(loggedJson(ErrorResponse(PasswordHelper.ErrorMessage)))
         case (request) =>
           loggedJson(request)
           val changed = ChangePasswordResponse.handle(request)
@@ -132,6 +132,28 @@ object Authentication extends Controller {
           Employee.authenticate(teacherLogin.account_name, teacherLogin.password).fold(Forbidden("无效的用户名或密码。").withNewSession)({
             case (employee) => Ok(loggedJson(employee)).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
           })
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + loggedErrorJson(e))
+      }
+  }
+
+  def employeeResetPassword() = Action(parse.json) {
+    request =>
+      request.body.validate[ResetPassword].map {
+        case (nonExists) if !Employee.loginNameExists(nonExists.account_name) =>
+          BadRequest(loggedJson(ErrorResponse("不存在登录名为%s的老师。".format(nonExists.account_name))))
+        case (nonExists) if !PasswordHelper.isValid(nonExists.new_password) =>
+          BadRequest(loggedJson(ErrorResponse(PasswordHelper.ErrorMessage)))
+        case (request) =>
+          loggedJson(request)
+          ChangePasswordResponse.handleEmployeeReset(request) match {
+            case success if success.error_code == 0 =>
+              Employee.authenticate(request.account_name, request.new_password).fold(Ok(loggedJson(success)).withNewSession)({
+                case employee =>
+                  Ok(loggedJson(success)).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
+              })
+            case other => Ok(loggedJson(other)).withNewSession
+          }
       }.recoverTotal {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
       }
