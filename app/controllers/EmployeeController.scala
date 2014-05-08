@@ -102,6 +102,8 @@ object EmployeeController extends Controller with Secured {
         request.body.validate[EmployeePassword].map {
           case (employee) if !Employee.oldPasswordMatch(employee) =>
             BadRequest(loggedJson(new ErrorResponse("旧密码错误。")))
+          case (employee) if !Employee.matchPasswordRule(employee) =>
+            BadRequest(loggedJson(new ErrorResponse("新密码应为6位到16位数字+字母。")))
           case (employee) =>
             Logger.info(employee.toString)
             Ok(loggedJson(Employee.changPassword(kg, phone, employee)))
