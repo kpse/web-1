@@ -24,6 +24,14 @@ case class EmployeePassword(employee_id: String, school_id: Long, phone: String,
 case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String)
 
 object Employee {
+  def getPhoneByLoginName(loginName: String): String = DB.withConnection {
+    implicit c =>
+      SQL("select phone from employeeinfo where login_name={name} and status=1")
+        .on(
+          'name -> loginName
+        ).as(get[String]("phone") singleOpt).getOrElse("")
+  }
+
   def matchPasswordRule(password: EmployeePassword) = PasswordHelper.isValid(password.new_password)
 
   def findByName(kg: Long, name: String) = DB.withConnection {

@@ -20,7 +20,7 @@ POST          /resetpwd.do                                                      
 POST          /changepwd.do                                                      controllers.Authentication.changePassword
 GET           /upgrade                                                           controllers.Authentication.app(version: Long)
 POST          /employee_login.do                                                 controllers.Authentication.employeeLogin
-POST        /employee_resetpwd.do        controllers.Authentication.employeeResetPassword
+POST          /employee_resetpwd.do                                              controllers.Authentication.employeeResetPassword
 
 GET           /kindergarten/:kg                                                  controllers.SchoolSummaryController.show(kg: Long)
 GET           /kindergarten/:kg/detail                                           controllers.SchoolSummaryController.detail(kg: Long)
