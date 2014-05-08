@@ -6,9 +6,10 @@ import models.json_models._
 import models.json_models.CheckPhoneResponse
 import models.json_models.MobileLogin
 import models.json_models.BindingNumber
-import models.{Employee, AppUpgradeResponse, AppPackage}
+import models.{ErrorResponse, Employee, AppUpgradeResponse, AppPackage}
 import play.api.Logger
 import helper.JsonLogger._
+import models.helper.PasswordHelper
 
 object Authentication extends Controller {
 
@@ -28,6 +29,7 @@ object Authentication extends Controller {
   implicit val w8 = Json.writes[ChangePassword]
   implicit val w9 = Json.writes[ResetPassword]
   implicit val w10 = Json.writes[Employee]
+  implicit val w11 = Json.writes[ErrorResponse]
 
   def login = Action(parse.json) {
     request =>
@@ -105,6 +107,8 @@ object Authentication extends Controller {
   def changePassword = Action(parse.json) {
     request =>
       request.body.validate[ChangePassword].map {
+        case (tooSimple) if !PasswordHelper.isValid(tooSimple.new_password) =>
+          BadRequest(loggedJson(ErrorResponse("新密码应为6位到16位数字+字母。")))
         case (request) =>
           loggedJson(request)
           val changed = ChangePasswordResponse.handle(request)

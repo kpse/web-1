@@ -10,6 +10,7 @@ import models.helper.TimeHelper.any2DateTime
 import models.helper.MD5Helper.md5
 import play.Logger
 import play.cache.Cache
+import models.helper.PasswordHelper
 
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
@@ -23,7 +24,7 @@ case class EmployeePassword(employee_id: String, school_id: Long, phone: String,
 case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String)
 
 object Employee {
-  def matchPasswordRule(password: EmployeePassword) = password.new_password.matches("^\\w{6,16}$")
+  def matchPasswordRule(password: EmployeePassword) = PasswordHelper.isValid(password.new_password)
 
   def findByName(kg: Long, name: String) = DB.withConnection {
     implicit c =>

@@ -10,6 +10,7 @@ import anorm._
 import models.EmployeePassword
 import models.EmployeeResetPassword
 import models.ErrorResponse
+import models.helper.PasswordHelper
 
 object EmployeeController extends Controller with Secured {
 
@@ -102,7 +103,7 @@ object EmployeeController extends Controller with Secured {
         request.body.validate[EmployeePassword].map {
           case (employee) if !Employee.oldPasswordMatch(employee) =>
             BadRequest(loggedJson(new ErrorResponse("旧密码错误。")))
-          case (employee) if !Employee.matchPasswordRule(employee) =>
+          case (employee) if !PasswordHelper.isValid(employee.new_password) =>
             BadRequest(loggedJson(new ErrorResponse("新密码应为6位到16位数字+字母。")))
           case (employee) =>
             Logger.info(employee.toString)
