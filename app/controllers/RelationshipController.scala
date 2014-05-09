@@ -40,11 +40,11 @@ object RelationshipController extends Controller with Secured {
         val existingCard = Relationship.getCard(phone, childId)
         Relationship.cardExists(card) match {
           case true if !Parent.phoneExists(kg, phone) =>
-            BadRequest(loggedJson(new ErrorResponse("本校记录中找不到对应的家长信息。")))
+            BadRequest(loggedJson(ErrorResponse("本校记录中找不到对应的家长信息。")))
           case true if !Children.idExists(Some(childId)) =>
-            BadRequest(loggedJson(new ErrorResponse("本校记录中找不到该小孩信息。")))
+            BadRequest(loggedJson(ErrorResponse("本校记录中找不到该小孩信息。")))
           case false if existingCard.nonEmpty && !existingCard.equals(Some(card)) =>
-            BadRequest(loggedJson(new ErrorResponse("此对家长和小孩已经创建过关系了。")))
+            BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。")))
           case true =>
             Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId)))
           case false =>

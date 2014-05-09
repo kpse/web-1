@@ -117,7 +117,7 @@ object EmployeeController extends Controller with Secured {
   }
 
   def check(phone: String) = Action {
-    Employee.show(phone).fold(NotFound(Json.toJson(new ErrorResponse("我们的系统没有记录您的手机，请重新检查输入。"))))(e =>
+    Employee.show(phone).fold(NotFound(Json.toJson(ErrorResponse("我们的系统没有记录您的手机，请重新检查输入。"))))(e =>
       Ok(loggedJson(e)))
   }
 
