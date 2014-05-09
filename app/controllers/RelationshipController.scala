@@ -27,7 +27,7 @@ object RelationshipController extends Controller with Secured {
   def createOrUpdate(kg: Long, card: String) = IsAuthenticated(parse.json) {
     u =>
       implicit request =>
-        Logger.info(request.body.toString)
+        Logger.info(request.body.toString())
         val body: JsValue = request.body
         val relationship: String = (body \ "relationship").as[String]
         val phone: String = (body \ "parent" \ "phone").as[String]

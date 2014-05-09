@@ -30,7 +30,7 @@ object CheckInController extends Controller with Secured {
             c =>
               val url = "http://djcwebtest.duapp.com/forwardswipe.do"
               val json = Json.toJson(c)
-              Logger.info("json sent to push server: %s".format(json.toString))
+              Logger.info("json sent to push server: %s".format(json.toString()))
               WS.url(url).post(json).map {
                 response =>
                   Ok(response.json)

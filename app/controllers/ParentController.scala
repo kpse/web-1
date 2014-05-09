@@ -22,11 +22,11 @@ object ParentController extends Controller with Secured {
       classId match {
         case Some(id) =>
           val jsons = Parent.indexInClass(kg, id, member)
-          Logger.info(jsons.toString)
+          Logger.info(jsons.toString())
           Ok(Json.toJson(jsons))
         case None =>
           val jsons = Parent.simpleIndex(kg, member, connected)
-          Logger.info(jsons.toString)
+          Logger.info(jsons.toString())
           Ok(Json.toJson(jsons))
       }
   }
@@ -47,7 +47,7 @@ object ParentController extends Controller with Secured {
   def create(kg: Long) = IsLoggedIn(parse.json) {
     u =>
       request =>
-        Logger.info(request.body.toString)
+        Logger.info(request.body.toString())
         request.body.validate[Parent].map {
           case (error) if newParentIsAMember(error) && Charge.limitExceed(kg) =>
             BadRequest(Json.toJson(ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))
@@ -74,7 +74,7 @@ object ParentController extends Controller with Secured {
   def update(kg: Long, phone: String) = IsLoggedIn(parse.json) {
     u =>
       request =>
-        Logger.info(request.body.toString)
+        Logger.info(request.body.toString())
         request.body.validate[Parent].map {
           case (error) if newParentIsAMember(error) && Charge.limitExceed(kg) =>
             BadRequest(Json.toJson(ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))

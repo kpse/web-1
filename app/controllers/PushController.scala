@@ -46,7 +46,7 @@ object PushController extends Controller {
     }
     catch {
       case e: ChannelClientException => {
-        Json.toJson(ErrorResponse(e.printStackTrace.toString))
+        Json.toJson(ErrorResponse(e.printStackTrace().toString))
       }
       case e: ChannelServerException => {
         val error = "request_id: %d, error_code: %d, error_message: %s".format(e.getRequestId, e.getErrorCode, e.getErrorMsg)
@@ -83,8 +83,8 @@ object PushController extends Controller {
     request.setDeployStatus(deployStatus)
     request.setUserId(check.pushid)
     request.setMessageType(messageType(check.device))
-    Logger.info(Json.toJson(check).toString)
-    request.setMessage(Json.toJson(check).toString)
+    Logger.info(Json.toJson(check).toString())
+    request.setMessage(Json.toJson(check).toString())
     request.setMsgKey(check.timestamp.toString)
     val response: PushUnicastMessageResponse = channelClient.pushUnicastMessage(request)
     Logger.info("push amount : " + response.getSuccessAmount)
