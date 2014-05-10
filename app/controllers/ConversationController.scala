@@ -1,7 +1,7 @@
 package controllers
 
-import play.api.mvc.{Action, Controller}
-import models.{News, Conversation}
+import play.api.mvc.Controller
+import models.Conversation
 import play.api.libs.json.{JsError, Json}
 import play.Logger
 
