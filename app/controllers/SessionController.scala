@@ -2,7 +2,7 @@ package controllers
 
 import play.api.mvc.Controller
 import play.api.libs.json.{JsError, Json}
-import models.{MediaContent, Sender, ChatSession}
+import models.{DailyLog, MediaContent, Sender, ChatSession}
 import play.Logger
 
 object SessionController extends Controller with Secured {
@@ -38,4 +38,9 @@ object SessionController extends Controller with Secured {
         }
   }
 
+  def indexInClasses(kg: Long, classIds: String) = IsAuthenticated {
+    u =>
+      _ =>
+        Ok(Json.toJson(ChatSession.lastMessageInClasses(kg, classIds)))
+  }
 }

@@ -19,7 +19,6 @@ object DailyLog {
 
   def lastCheckInClasses(kg: Long, classes: String) = DB.withConnection {
     implicit c =>
-      Logger.info(DateTime.now().toLocalDate.toDateTimeAtStartOfDay.toInstant.getMillis.toString)
       SQL("SELECT * FROM dailylog d, " +
         " (SELECT MAX(check_at) last_check, child_id FROM `dailylog` WHERE school_id={kg} AND "+ generateClassQuery(classes) +
         "  AND check_at > {today} GROUP BY child_id) a " +

@@ -93,6 +93,7 @@ GET           /kindergarten/:kg/assignment                                      
 POST          /kindergarten/:kg/assignment                                       controllers.AssignmentController.create(kg: Long)
 POST          /kindergarten/:kg/assignment/:assignmentId                         controllers.AssignmentController.update(kg: Long, assignmentId: Long)
 
+GET           /kindergarten/:kg/session                                          controllers.SessionController.indexInClasses(kg: Long, class_id: String)
 GET           /kindergarten/:kg/session/:topicId                                 controllers.SessionController.index(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int])
 POST          /kindergarten/:kg/session/:topicId                                 controllers.SessionController.create(kg: Long, topicId: String, retrieve_recent_from: Option[Long])
 

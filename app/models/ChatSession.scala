@@ -7,6 +7,7 @@ import play.api.db.DB
 import models.helper.RangerHelper._
 import anorm.~
 import scala.Some
+import org.joda.time.DateTime
 
 case class ChatSession(topic: String, timestamp: Option[Long], id: Option[Long], content: String, media: MediaContent, sender: Sender)
 
@@ -16,6 +17,20 @@ case class MediaContent(url: String, `type`: Option[String] = Some("image"))
 
 
 object ChatSession {
+
+  def generateClassQuery(classes: String): String = "class_id in (%s)".format(classes)
+
+  def lastMessageInClasses(kg: Long, classes: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from sessionlog s," +
+        "(select session_id, MAX(update_at) last from sessionlog where " +
+        "session_id in (select child_id from childinfo where " + generateClassQuery(classes) + " and school_id={kg} and status=1) " +
+        "group by session_id) a where a.last=s.update_at")
+        .on(
+          'kg -> kg.toString
+        ).as(simple *)
+  }
+
   val simple = {
     get[String]("session_id") ~
       get[Long]("update_at") ~
