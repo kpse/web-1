@@ -93,9 +93,6 @@ GET           /kindergarten/:kg/assignment                                      
 POST          /kindergarten/:kg/assignment                                       controllers.AssignmentController.create(kg: Long)
 POST          /kindergarten/:kg/assignment/:assignmentId                         controllers.AssignmentController.update(kg: Long, assignmentId: Long)
 
-GET           /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.index(kg: Long, phone: String, from: Option[Long], to: Option[Long], most: Option[Int])
-POST          /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.create(kg: Long, phone: String, retrieve_recent_from: Option[Long])
-
 GET           /kindergarten/:kg/session/:topicId                                 controllers.SessionController.index(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int])
 POST          /kindergarten/:kg/session/:topicId                                 controllers.SessionController.create(kg: Long, topicId: String, retrieve_recent_from: Option[Long])
 
@@ -169,3 +166,6 @@ GET           /*college/templates/*file                                         
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                           controllers.ChildController.index(kg: Long, parentId: String)
 GET           /kindergarten/:kg/parent/:parentId/child/:childId                  controllers.ChildController.show(kg: Long, parentId: String, childId: String)
+
+GET           /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.index(kg: Long, phone: String, from: Option[Long], to: Option[Long], most: Option[Int])
+POST          /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.create(kg: Long, phone: String, retrieve_recent_from: Option[Long])
