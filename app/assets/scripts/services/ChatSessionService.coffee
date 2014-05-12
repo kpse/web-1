@@ -9,3 +9,14 @@ chatSessionService = ($resource) ->
 
 angular.module('kulebaoAdmin')
 .factory('chatSessionService', ['$resource', chatSessionService])
+
+senderService = ($resource) ->
+  $resource '/kindergarten/:school_id/sender/:id',
+    {
+      school_id: '@school_id'
+      sender_id: '@sender.id'
+      type: '@sender.type'
+    }
+
+angular.module('kulebaoAdmin')
+.factory('senderService', ['$resource', senderService])
