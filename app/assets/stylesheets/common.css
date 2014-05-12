@@ -2,7 +2,8 @@
   margin: 0;
   padding: 0;
 
-  .main-view {
+  .main-view,
+  .modal {
     max-width: 1200px;
     max-height: 860px;
     margin: 0 auto;
