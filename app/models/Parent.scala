@@ -188,6 +188,13 @@ object Parent {
           'id -> id)
         .as(withRelationship.singleOpt)
   }
+  def findById(kg: Long, id: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from parentinfo where school_id={kg} and parent_id={id} and status=1")
+        .on('kg -> kg.toString,
+          'id -> id)
+        .as(simple singleOpt)
+  }
 
   def create(kg: Long, parent: Parent) = DB.withConnection {
     implicit c =>
