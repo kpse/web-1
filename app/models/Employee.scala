@@ -26,7 +26,7 @@ case class EmployeeResetPassword(id: String, school_id: Long, phone: String, log
 object Employee {
   def findById(kg: Long, id: String) = DB.withConnection {
     implicit c =>
-      SQL("select * from employeeinfo where employee_id={id} and school_id={kg} and status=1")
+      SQL("select * from employeeinfo where employee_id={id} and status=1 and school_id in ({kg}, '0')")
         .on(
           'id -> id,
           'kg -> kg.toString
