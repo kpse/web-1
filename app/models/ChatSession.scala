@@ -17,6 +17,14 @@ case class MediaContent(url: String, `type`: Option[String] = Some("image"))
 
 
 object ChatSession {
+  def retrieveSender(kg: Long, senderId: Option[String]): Sender = {
+    senderId.fold(Sender(""))({
+      case phone if Employee.phoneExists(phone) =>
+        Sender(Employee.show(phone).get.id.get)
+      case phone if Parent.phoneSearch(phone).isDefined =>
+        Sender(Parent.phoneSearch(phone).get.parent_id.get, Some("p"))
+    })
+  }
 
   def generateClassQuery(classes: String): String = "class_id in (%s)".format(classes)
 
