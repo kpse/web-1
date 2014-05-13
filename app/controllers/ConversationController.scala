@@ -17,15 +17,7 @@ object ConversationController extends Controller with Secured {
 
   def index(kg: Long, phone: String, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn {
     u => _ =>
-      val allRelationships: List[Relationship] = Relationship.index(kg, Some(phone), None, None)
-      val all: List[ChatSession] = allRelationships.flatMap {
-        case r: Relationship =>
-          r.child.fold(List[ChatSession]())({
-            case child =>
-              ChatSession.index(kg, child.child_id.getOrElse("0"), from, to).take(most.getOrElse(25))
-          })
-      }
-      Ok(Json.toJson(all))
+      Ok(Json.toJson(Conversation.newIndex(kg, phone, from, to, most)))
   }
 
   implicit val read = Json.reads[Conversation]
@@ -45,7 +37,13 @@ object ConversationController extends Controller with Secured {
                       MediaContent(conversation.image.getOrElse("")), ChatSession.retrieveSender(kg, conversation.sender_id)))
                 }
             }
-            Ok(loggedJson(SuccessResponse("成功创建%d条信息".format(allRelationships.size))))
+            retrieveRecentFrom match {
+              case Some(from) =>
+                Ok(loggedJson(Conversation.newIndex(kg, phone, Some(from), None, Some(25))))
+              case _ =>
+                Ok(loggedJson(SuccessResponse("成功创建%d条信息".format(allRelationships.size))))
+            }
+
           case _ => BadRequest("该号码系统未能识别。")
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
