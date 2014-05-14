@@ -17,6 +17,7 @@
              alt=""/>
       </div>
     </th>
+    <td class=".col-xs-4" ng-show="!c.lastMessage">N/A</td>
     <td class=".col-xs-3">{{(c.lastMessage.timestamp | date:'yyyy年MM月dd日 HH:mm') || 'N/A'}}</td>
   </tr>
   </tbody>
