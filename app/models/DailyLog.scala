@@ -8,10 +8,27 @@ import models.json_models.CheckNotification
 import models.json_models.CheckInfo
 import play.api.Play.current
 import models.helper.RangerHelper.rangerQueryWithField
+import org.joda.time.DateTime
+import play.Logger
 
 case class DailyLog(timestamp: Long, notice_type: Int, child_id: String, record_url: String, parent_name: String)
 
 object DailyLog {
+
+  def generateClassQuery(classes: String) = " child_id IN ( SELECT child_id FROM childinfo WHERE school_id={kg} AND class_id IN (%s)) ".format(classes)
+
+  def lastCheckInClasses(kg: Long, classes: String) = DB.withConnection {
+    implicit c =>
+      SQL("SELECT * FROM dailylog d, " +
+        " (SELECT MAX(check_at) last_check, child_id FROM `dailylog` WHERE school_id={kg} AND "+ generateClassQuery(classes) +
+        "  AND check_at > {today} GROUP BY child_id) a " +
+        " WHERE d.child_id=a.child_id AND d.check_at=a.last_check ")
+        .on(
+          'kg -> kg.toString,
+          'today -> DateTime.now().toLocalDate.toDateTimeAtStartOfDay.toInstant.getMillis
+        ).as(simple *)
+  }
+
   val simple = {
     get[String]("child_id") ~
       get[Long]("check_at") ~

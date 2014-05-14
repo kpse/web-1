@@ -5,11 +5,10 @@ import models._
 import play.api.libs.json.Json
 import play.Logger
 import controllers.helper.JsonLogger._
-import play.api.db.DB
-import anorm._
 import models.EmployeePassword
 import models.EmployeeResetPassword
 import models.ErrorResponse
+import models.helper.PasswordHelper
 
 object EmployeeController extends Controller with Secured {
 
@@ -101,7 +100,9 @@ object EmployeeController extends Controller with Secured {
         Logger.info(request.body.toString())
         request.body.validate[EmployeePassword].map {
           case (employee) if !Employee.oldPasswordMatch(employee) =>
-            BadRequest(loggedJson(new ErrorResponse("旧密码错误。")))
+            BadRequest(loggedJson(ErrorResponse("旧密码错误。")))
+          case (employee) if !PasswordHelper.isValid(employee.new_password) =>
+            BadRequest(loggedJson(ErrorResponse(PasswordHelper.ErrorMessage)))
           case (employee) =>
             Logger.info(employee.toString)
             Ok(loggedJson(Employee.changPassword(kg, phone, employee)))
@@ -116,7 +117,7 @@ object EmployeeController extends Controller with Secured {
   }
 
   def check(phone: String) = Action {
-    Employee.show(phone).fold(NotFound(Json.toJson(new ErrorResponse("我们的系统没有记录您的手机，请重新检查输入。"))))(e =>
+    Employee.show(phone).fold(NotFound(Json.toJson(ErrorResponse("我们的系统没有记录您的手机，请重新检查输入。"))))(e =>
       Ok(loggedJson(e)))
   }
 

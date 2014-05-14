@@ -22,11 +22,11 @@ object ParentController extends Controller with Secured {
       classId match {
         case Some(id) =>
           val jsons = Parent.indexInClass(kg, id, member)
-          Logger.info(jsons.toString)
+          Logger.info(jsons.toString())
           Ok(Json.toJson(jsons))
         case None =>
           val jsons = Parent.simpleIndex(kg, member, connected)
-          Logger.info(jsons.toString)
+          Logger.info(jsons.toString())
           Ok(Json.toJson(jsons))
       }
   }
@@ -47,12 +47,12 @@ object ParentController extends Controller with Secured {
   def create(kg: Long) = IsLoggedIn(parse.json) {
     u =>
       request =>
-        Logger.info(request.body.toString)
+        Logger.info(request.body.toString())
         request.body.validate[Parent].map {
           case (error) if newParentIsAMember(error) && Charge.limitExceed(kg) =>
-            BadRequest(Json.toJson(new ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))
+            BadRequest(Json.toJson(ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))
           case (error) if Parent.existsInOtherSchool(kg, error) =>
-            BadRequest(Json.toJson(new ErrorResponse("此号码已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998")))
+            BadRequest(Json.toJson(ErrorResponse("此号码已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998")))
           case (parent) if Parent.idExists(parent.parent_id) =>
             Ok(Json.toJson(Parent.update(parent)))
           case (parent) if !Parent.idExists(parent.parent_id) && parent.status == Some(0) =>
@@ -74,12 +74,12 @@ object ParentController extends Controller with Secured {
   def update(kg: Long, phone: String) = IsLoggedIn(parse.json) {
     u =>
       request =>
-        Logger.info(request.body.toString)
+        Logger.info(request.body.toString())
         request.body.validate[Parent].map {
           case (error) if newParentIsAMember(error) && Charge.limitExceed(kg) =>
-            BadRequest(Json.toJson(new ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))
+            BadRequest(Json.toJson(ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))
           case (error) if Parent.existsInOtherSchool(kg, error) =>
-            BadRequest(Json.toJson(new ErrorResponse("此号码已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998")))
+            BadRequest(Json.toJson(ErrorResponse("此号码已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998")))
           case (parent) if !Parent.idExists(parent.parent_id) && parent.status == Some(0) =>
             Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
           case (parent) if Parent.idExists(parent.parent_id) =>

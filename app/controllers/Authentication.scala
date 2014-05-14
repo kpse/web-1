@@ -6,9 +6,10 @@ import models.json_models._
 import models.json_models.CheckPhoneResponse
 import models.json_models.MobileLogin
 import models.json_models.BindingNumber
-import models.{Employee, AppUpgradeResponse, AppPackage}
+import models.{ErrorResponse, Employee, AppUpgradeResponse, AppPackage}
 import play.api.Logger
 import helper.JsonLogger._
+import models.helper.PasswordHelper
 
 object Authentication extends Controller {
 
@@ -28,6 +29,7 @@ object Authentication extends Controller {
   implicit val w8 = Json.writes[ChangePassword]
   implicit val w9 = Json.writes[ResetPassword]
   implicit val w10 = Json.writes[Employee]
+  implicit val w11 = Json.writes[ErrorResponse]
 
   def login = Action(parse.json) {
     request =>
@@ -105,6 +107,8 @@ object Authentication extends Controller {
   def changePassword = Action(parse.json) {
     request =>
       request.body.validate[ChangePassword].map {
+        case (tooSimple) if !PasswordHelper.isValid(tooSimple.new_password) =>
+          BadRequest(loggedJson(ErrorResponse(PasswordHelper.ErrorMessage)))
         case (request) =>
           loggedJson(request)
           val changed = ChangePasswordResponse.handle(request)
@@ -128,6 +132,28 @@ object Authentication extends Controller {
           Employee.authenticate(teacherLogin.account_name, teacherLogin.password).fold(Forbidden("无效的用户名或密码。").withNewSession)({
             case (employee) => Ok(loggedJson(employee)).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
           })
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + loggedErrorJson(e))
+      }
+  }
+
+  def employeeResetPassword() = Action(parse.json) {
+    request =>
+      request.body.validate[ResetPassword].map {
+        case (nonExists) if !Employee.loginNameExists(nonExists.account_name) =>
+          BadRequest(loggedJson(ErrorResponse("不存在登录名为%s的老师。".format(nonExists.account_name))))
+        case (nonExists) if !PasswordHelper.isValid(nonExists.new_password) =>
+          BadRequest(loggedJson(ErrorResponse(PasswordHelper.ErrorMessage)))
+        case (request) =>
+          loggedJson(request)
+          ChangePasswordResponse.handleEmployeeReset(request) match {
+            case success if success.error_code == 0 =>
+              Employee.authenticate(request.account_name, request.new_password).fold(Ok(loggedJson(success)).withNewSession)({
+                case employee =>
+                  Ok(loggedJson(success)).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
+              })
+            case other => Ok(loggedJson(other)).withNewSession
+          }
       }.recoverTotal {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
       }

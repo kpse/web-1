@@ -42,7 +42,7 @@ object CheatingController extends Controller with Secured {
             Cache.set(cheatCodeKey, code.code)
             Ok(loggedJson(code))
           case _ =>
-            BadRequest(loggedJson(new ErrorResponse("验证码必须是6位数字。")))
+            BadRequest(loggedJson(ErrorResponse("验证码必须是6位数字。")))
         }.recoverTotal {
           e => BadRequest("Detected error:" + loggedErrorJson(e))
         }

@@ -79,7 +79,7 @@ angular.module('kulebaoAdmin',
       templateUrl: 'templates/admin/conversation_in_class.html',
       controller: 'ConversationsInClassCtrl'
     .state 'kindergarten.conversation.class.relationship',
-      url: '/card/:card',
+      url: '/child/:child_id',
       templateUrl: 'templates/admin/conversation.html',
       controller: 'ConversationCtrl'
 

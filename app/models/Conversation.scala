@@ -5,10 +5,42 @@ import play.api.db.DB
 import anorm._
 import anorm.SqlParser._
 import models.helper.RangerHelper._
+import anorm.~
+import scala.Some
 
 case class Conversation(phone: String, timestamp: Long, id: Option[Long], content: String, image: Option[String], sender: Option[String], sender_id: Option[String])
 
 object Conversation {
+  def retrieveSender(kg: Long, sender: Sender) = {
+    sender.`type` match {
+      case Some("t") =>
+        Employee.findById(kg, sender.id).fold(("", "")) {
+          case employee => (employee.name, employee.phone)
+        }
+      case Some("p") =>
+        Parent.findById(kg, sender.id).fold(("", "")) {
+          case parent => ("", parent.phone)
+        }
+      case other => ("", "")
+    }
+  }
+
+  def newIndex(kg: Long, phone: String, from: Option[Long], to: Option[Long], most: Option[Int]) = {
+    Relationship.index(kg, Some(phone), None, None).flatMap {
+      case r: Relationship =>
+        r.child.fold(List[ChatSession]())({
+          case child =>
+            ChatSession.index(kg, child.child_id.getOrElse("0"), from, to).take(most.getOrElse(25))
+        })
+    }.take(most.getOrElse(25)).map {
+      case session =>
+        val sender = Conversation.retrieveSender(kg, session.sender)
+        Conversation(phone, session.timestamp.getOrElse(0), session.id, session.content, Some(session.media.url), Some(sender._1), Some(sender._2))
+    }.sortBy(_.id)
+
+  }
+
+  @Deprecated
   val simple = {
     get[String]("phone") ~
       get[Long]("update_at") ~
@@ -22,6 +54,7 @@ object Conversation {
     }
   }
 
+  @Deprecated
   def create(kg: Long, conversation: Conversation) = DB.withConnection {
     implicit c =>
       val time = System.currentTimeMillis
@@ -38,6 +71,7 @@ object Conversation {
       Conversation(conversation.phone, time, id, conversation.content, conversation.image, conversation.sender, conversation.sender_id)
   }
 
+  @Deprecated
   def index(kg: Long, phone: String, from: Option[Long], to: Option[Long]) = DB.withConnection {
     implicit c =>
       SQL("select * from conversation where school_id={kg} and phone={phone} " +

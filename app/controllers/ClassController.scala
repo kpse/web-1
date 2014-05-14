@@ -51,7 +51,7 @@ object ClassController extends Controller with Secured {
     u => _ =>
       School.hasChildrenInClass(kg, classId) match {
         case (true) =>
-          BadRequest(Json.toJson(new ErrorResponse("不能删除还有学生的班级。")))
+          BadRequest(Json.toJson(ErrorResponse("不能删除还有学生的班级。")))
         case (false) =>
           School.removeClass(kg, classId)
           Ok(Json.toJson(new SuccessResponse))
@@ -67,7 +67,7 @@ object ClassController extends Controller with Secured {
   def createManager(kg: Long, classId: Long) = IsLoggedIn(parse.json) {
     u =>
       request =>
-        Logger.info(request.body.toString)
+        Logger.info(request.body.toString())
         request.body.validate[Employee].map {
           case (employee) if School.managerExists(kg, classId, employee)=>
             Ok(Json.toJson(new SuccessResponse))

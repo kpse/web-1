@@ -10,6 +10,7 @@ import models.helper.TimeHelper.any2DateTime
 import models.helper.MD5Helper.md5
 import play.Logger
 import play.cache.Cache
+import models.helper.PasswordHelper
 
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
@@ -23,6 +24,25 @@ case class EmployeePassword(employee_id: String, school_id: Long, phone: String,
 case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String)
 
 object Employee {
+  def findById(kg: Long, id: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from employeeinfo where employee_id={id} and status=1 and school_id in ({kg}, '0')")
+        .on(
+          'id -> id,
+          'kg -> kg.toString
+        ).as(simple singleOpt)
+  }
+
+  def getPhoneByLoginName(loginName: String): String = DB.withConnection {
+    implicit c =>
+      SQL("select phone from employeeinfo where login_name={name} and status=1")
+        .on(
+          'name -> loginName
+        ).as(get[String]("phone") singleOpt).getOrElse("")
+  }
+
+  def matchPasswordRule(password: EmployeePassword) = PasswordHelper.isValid(password.new_password)
+
   def findByName(kg: Long, name: String) = DB.withConnection {
     implicit c =>
       SQL("select * from employeeinfo where name={name} and school_id={kg} and status=1")

@@ -86,7 +86,7 @@ object SchoolIntro {
       catch {
         case t: Throwable =>
           Logger.info("error %s".format(t.toString))
-          c.rollback
+          c.rollback()
       }
       detail(school.school_id)
   }

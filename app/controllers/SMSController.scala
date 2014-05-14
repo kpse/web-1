@@ -20,11 +20,11 @@ object SMSController extends Controller with Secured {
     implicit request =>
       floodProtect(phone) match {
         case (code: String) =>
-          Future.successful(BadRequest(Json.toJson(new ErrorResponse("请求太频繁。"))))
+          Future.successful(BadRequest(Json.toJson(ErrorResponse("请求太频繁。"))))
         case null =>
           sendSMS(phone)
         case _ =>
-          Future.successful(BadRequest(Json.toJson(new ErrorResponse("短信发送出错。"))))
+          Future.successful(BadRequest(Json.toJson(ErrorResponse("短信发送出错。"))))
       }
 
   }
@@ -34,7 +34,7 @@ object SMSController extends Controller with Secured {
 
     val url = "http://mb345.com:999/ws/LinkWS.asmx/Send2"
     val generate = Verification.generate(phone)
-    Logger.info(generate.toString)
+    Logger.info(generate.toString())
     WS.url(url).withHeaders("Content-Type" -> "application/x-www-form-urlencoded;charset=UTF-8")
       .post(generate).map {
       response =>
@@ -43,7 +43,7 @@ object SMSController extends Controller with Secured {
           case List(num) if num > 0 =>
             Ok(Json.toJson(new SuccessResponse))
           case _ =>
-            Ok(Json.toJson(new ErrorResponse("验证码发送失败。")))
+            Ok(Json.toJson(ErrorResponse("验证码发送失败。")))
         }
     }
   }
@@ -57,7 +57,7 @@ object SMSController extends Controller with Secured {
             case true =>
               Cache.remove(phone)
               Ok(Json.toJson(new SuccessResponse))
-            case false => Ok(Json.toJson(new ErrorResponse("验证码校验失败。")))
+            case false => Ok(Json.toJson(ErrorResponse("验证码校验失败。")))
           }
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))

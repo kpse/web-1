@@ -20,6 +20,7 @@ POST          /resetpwd.do                                                      
 POST          /changepwd.do                                                      controllers.Authentication.changePassword
 GET           /upgrade                                                           controllers.Authentication.app(version: Long)
 POST          /employee_login.do                                                 controllers.Authentication.employeeLogin
+POST          /employee_resetpwd.do                                              controllers.Authentication.employeeResetPassword
 
 GET           /kindergarten/:kg                                                  controllers.SchoolSummaryController.show(kg: Long)
 GET           /kindergarten/:kg/detail                                           controllers.SchoolSummaryController.detail(kg: Long)
@@ -56,6 +57,7 @@ GET           /kindergarten/:kg/parent/:parentId/news                           
 POST          /kindergarten/:kg/parent/:parentId/news/:newsId                    controllers.ReadingNewsController.create(kg: Long, parentId: Long, newsId: Long)
 
 GET           /kindergarten/:kg/child/:childId/dailylog                          controllers.DailyLogController.index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /kindergarten/:kg/dailylog                                         controllers.DailyLogController.indexInClasses(kg: Long, class_id: String)
 
 GET           /kindergarten/:kg/admin/:adminId/news_reading_count/:newsId        controllers.ReadingNewsController.countReading(kg: Long, adminId: Long, newsId: Long)
 
@@ -91,14 +93,16 @@ GET           /kindergarten/:kg/assignment                                      
 POST          /kindergarten/:kg/assignment                                       controllers.AssignmentController.create(kg: Long)
 POST          /kindergarten/:kg/assignment/:assignmentId                         controllers.AssignmentController.update(kg: Long, assignmentId: Long)
 
-GET           /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.index(kg: Long, phone: String, from: Option[Long], to: Option[Long], most: Option[Int])
-POST          /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.create(kg: Long, phone: String, retrieve_recent_from: Option[Long])
-
+GET           /kindergarten/:kg/session                                          controllers.SessionController.indexInClasses(kg: Long, class_id: String)
+GET           /kindergarten/:kg/session/:topicId                                 controllers.SessionController.index(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int])
+POST          /kindergarten/:kg/session/:topicId                                 controllers.SessionController.create(kg: Long, topicId: String, retrieve_recent_from: Option[Long])
+GET           /kindergarten/:kg/sender/:senderId                                 controllers.SessionController.senderDetail(kg: Long, senderId: String, type: String)
 
 GET           /kindergarten/:kg/child/:childId/assess                            controllers.AssessController.index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int])
 
 POST          /kindergarten/:kg/child/:childId/assess                            controllers.AssessController.createOrUpdate(kg: Long, childId: String)
 DELETE        /kindergarten/:kg/child/:childId/assess/:assessId                  controllers.AssessController.delete(kg: Long, childId: String, assessId: Long)
+POST          /kindergarten/:kg/assessments                                      controllers.AssessController.batchCreate(kg: Long)
 
 
 GET           /kindergarten/:kg/employee                                         controllers.EmployeeController.indexInSchool(kg: Long, phone: Option[String])
@@ -164,3 +168,6 @@ GET           /*college/templates/*file                                         
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                           controllers.ChildController.index(kg: Long, parentId: String)
 GET           /kindergarten/:kg/parent/:parentId/child/:childId                  controllers.ChildController.show(kg: Long, parentId: String, childId: String)
+
+GET           /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.index(kg: Long, phone: String, from: Option[Long], to: Option[Long], most: Option[Int])
+POST          /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.create(kg: Long, phone: String, retrieve_recent_from: Option[Long])

@@ -1,5 +1,5 @@
 <div class="panel panel-default add-message-panel">
-  <h3>与{{relationship.child.name}}的{{relationship.relationship}}{{relationship.parent.name || '家长'}}的通讯记录</h3>
+  <h3>与{{child.name}}的家长的通讯记录</h3>
 
   <form class="form-horizontal" role="form" name="messageForm">
     <div class="panel-heading">
@@ -14,7 +14,7 @@
           </thead>
           <tbody>
           <tr ng-repeat="c in conversations | filter: searchText " class="row" ng-click="preview(c, {reply: false})">
-            <td class=".col-xs-2">{{c.sender || '家长'}}</td>
+            <td class=".col-xs-2">{{c.sender.name}}</td>
             <td class=".col-xs-7">{{c.content.substring(0,50)}}{{(c.content.length > 50) ? '...' : ''}}</td>
             <td class=".col-xs-3">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}收到</td>
           </tr>
@@ -27,19 +27,19 @@
       <br/>
       <small ng-show="message.content.length >= 0">还可以输入{{ 500 - message.content.length}}个字</small>
       <span class="error-field"
-            ng-show="messageForm.content.$dirty && messageForm.content.$error.required && message.image">请填写回复内容</span>
+            ng-show="messageForm.content.$dirty && messageForm.content.$error.required && message.media.url">请填写回复内容</span>
       <span class="error-field"
             ng-show="messageForm.content.$dirty && messageForm.content.$error.maxlength">回复内容请不要超过500个字符</span>
       <textarea id="content" name="content" ng-model="message.content"
                 class="editing-content form-control message-content" ng-maxlength="500"
-                placeholder="对{{relationship.child.name}}的{{relationship.relationship}}{{relationship.parent.name || '家长'}}说。。。"
-                ng-required="message.image == ''"/>
+                placeholder="对{{relationship.child.name}}的家长说。。。"
+                ng-required="message.media.url == ''"/>
 
 
       <div class="col-sm-12">
         <div class="form-group col-sm-6">
           <div class="image-preview">
-            <img class="message-image" ng-src="{{message.image}}"
+            <img class="message-image" ng-src="{{message.media.url}}"
                  alt="照片"/>
           </div>
         </div>

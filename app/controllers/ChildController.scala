@@ -42,7 +42,7 @@ object ChildController extends Controller with Secured {
   def createOrUpdate(kg: Long) = IsLoggedIn(parse.json) {
     u =>
       implicit request =>
-        Logger.info(request.body.toString)
+        Logger.info(request.body.toString())
         request.body.validate[ChildInfo].map {
           case (info) if !School.classExists(kg, info.class_id) =>
             BadRequest("class " + info.class_id + " does not exists.")
@@ -59,7 +59,7 @@ object ChildController extends Controller with Secured {
   def update2(kg: Long, childId: String) = IsLoggedIn(parse.json) {
     u =>
       implicit request =>
-        Logger.info(request.body.toString)
+        Logger.info(request.body.toString())
         request.body.validate[ChildInfo].map {
           case (info) if !School.classExists(kg, info.class_id) =>
             BadRequest("class " + info.class_id + " does not exists.")
