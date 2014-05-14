@@ -22,8 +22,9 @@ object WeiXinController extends Controller {
   def handleMessage(seq: NodeSeq) = {
     val from = seq \ "FromUserName"
     val to = seq \ "ToUserName"
-    val userInfo = Await.result(Await.result(queryUserInfo(to.text), 5 second), 5 seconds)
-    newMessage(PCData(from.text), PCData(to.text), PCData("你好，%s".format((userInfo \ "nickname").as[String])))
+//    val userInfo = Await.result(Await.result(queryUserInfo(to.text), 5 second), 5 seconds)
+//    newMessage(PCData(from.text), PCData(to.text), PCData("你好，%s".format((userInfo \ "nickname").as[String])))
+    newMessage(PCData(from.text), PCData(to.text), PCData("用户你好。"))
   }
 
   def newMessage(from: PCData, to: PCData, content: PCData) = <xml>
@@ -47,8 +48,9 @@ object WeiXinController extends Controller {
   def handleClicking(seq: NodeSeq) = {
     val from = seq \ "FromUserName"
     val to = seq \ "ToUserName"
-    val userInfo = Await.result(Await.result(queryUserInfo(to.text), 5 second), 5 seconds)
-    newMessage(PCData(from.text), PCData(to.text), PCData("谢谢点击，%s".format((userInfo \ "nickname").as[String])))
+//    val userInfo = Await.result(Await.result(queryUserInfo(to.text), 5 second), 5 seconds)
+//    newMessage(PCData(from.text), PCData(to.text), PCData("谢谢点击，%s".format((userInfo \ "nickname").as[String])))
+    newMessage(PCData(from.text), PCData(to.text), PCData("谢谢您的点击测试。"))
   }
 
   def handle = Action(parse.xml) {
