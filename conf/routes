@@ -168,6 +168,7 @@ GET           /*college/templates/*file                                         
 #weixin api
 
 GET           /api/weixin/entry                                                  controllers.WeiXinController.entry(signature: String, timestamp: Long, nonce: String, echostr: String)
+POST           /api/weixin/entry                                                  controllers.WeiXinController.handle
 
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                           controllers.ChildController.index(kg: Long, parentId: String)
