@@ -8,6 +8,7 @@ import models.helper.RangerHelper._
 import anorm.~
 import scala.Some
 import org.joda.time.DateTime
+import play.Logger
 
 case class ChatSession(topic: String, timestamp: Option[Long], id: Option[Long], content: String, media: MediaContent, sender: Sender)
 
@@ -17,13 +18,14 @@ case class MediaContent(url: String, `type`: Option[String] = Some("image"))
 
 
 object ChatSession {
-  def retrieveSender(kg: Long, senderId: Option[String]): Sender = {
-    senderId.fold(Sender(""))({
-      case phone if Employee.phoneExists(phone) =>
-        Sender(Employee.show(phone).get.id.get)
-      case phone if Parent.phoneSearch(phone).isDefined =>
-        Sender(Parent.phoneSearch(phone).get.parent_id.get, Some("p"))
-    })
+  def retrieveSender(kg: Long, conversation: Conversation): Sender = {
+    conversation.sender match {
+      case Some(phone) if phone.isEmpty =>
+        Sender(Parent.phoneSearch(conversation.phone).get.parent_id.get, Some("p"))
+      case Some(name) if Employee.phoneExists(conversation.sender_id.getOrElse("0")) =>
+        Sender(Employee.show(conversation.sender_id.getOrElse("0")).get.id.get)
+      case _ => Sender("3_0_0")
+    }
   }
 
   def generateClassQuery(classes: String): String = "class_id in (%s)".format(classes)
