@@ -116,7 +116,7 @@ object WeiXinController extends Controller {
     }
   }
 
-  def handleSubscribe(seq: NodeSeq) = {
+  def onSubscribe(seq: NodeSeq) = {
     val from = seq \ "FromUserName"
     val to = seq \ "ToUserName"
     newMessage(PCData(to.text), PCData(from.text), PCData("谢谢您关注库乐宝公司公司账号，我们的产品地址是https://cocobabys.com"))
@@ -129,7 +129,7 @@ object WeiXinController extends Controller {
         case message if (message \ "MsgType").text.equals("text") =>
           Ok(handleMessage(message))
         case subscribe if (subscribe \ "MsgType").text.equals("event") && (subscribe \ "Event").text.equals("subscribe") =>
-          Ok(handleSubscribe(subscribe))
+          Ok(onSubscribe(subscribe))
         case clicking if (clicking \ "MsgType").text.equals("event") =>
           Ok(handleClicking(clicking))
         case _ =>
