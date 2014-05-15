@@ -1003,6 +1003,23 @@ CREATE TABLE `schoolinfo` (
   COLLATE =utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+
+CREATE TABLE sessionlog (
+  uid         INT(11)          NOT NULL AUTO_INCREMENT,
+  school_id   VARCHAR(20) NOT NULL,
+  session_id varchar(40) NOT NULL,
+  content   TEXT NOT NULL,
+  media_url TEXT DEFAULT '',
+  media_type VARCHAR(10) DEFAULT 'image',
+  sender VARCHAR(40) NOT NULL DEFAULT '',
+  sender_type CHAR(1) NOT NULL DEFAULT 't',
+  update_at BIGINT(20) NOT NULL DEFAULT 0,
+  PRIMARY KEY (uid)
+)
+  ENGINE =InnoDB
+  AUTO_INCREMENT =3
+  DEFAULT CHARSET =utf8
+  COLLATE =utf8_bin;
 --
 -- Dumping data for table `schoolinfo`
 --
