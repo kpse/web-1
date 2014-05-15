@@ -108,7 +108,7 @@ object WeiXinController extends Controller {
     val key = (seq \ "EventKey").text
     key match {
       case "V1001_INTRO" =>
-        IntroMessage(PCData(from.text), PCData(to.text))
+        IntroMessage(PCData(to.text), PCData(from.text))
       case "V1001_GOOD" =>
         newMessage(PCData(to.text), PCData(from.text), PCData("谢谢你的赞，我们会继续努力的。"))
       case _ =>
