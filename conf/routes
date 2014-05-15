@@ -165,6 +165,11 @@ GET           /images/*file                                                     
 GET           /templates/*file                                                   controllers.Static.at(path="/public/templates", file)
 GET           /*college/templates/*file                                          controllers.Static.ignoreCollege(path="/public/templates", file, college)
 
+#weixin api
+
+GET           /api/weixin/entry                                                  controllers.WeiXinController.entry(signature: String, timestamp: Long, nonce: String, echostr: String)
+POST           /api/weixin/entry                                                  controllers.WeiXinController.handle
+
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                           controllers.ChildController.index(kg: Long, parentId: String)
 GET           /kindergarten/:kg/parent/:parentId/child/:childId                  controllers.ChildController.show(kg: Long, parentId: String, childId: String)

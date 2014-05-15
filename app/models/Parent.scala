@@ -16,6 +16,14 @@ case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait:
 
 
 object Parent {
+
+  def hasDuplicatedPhoneWithOtherParent(parent: Parent): Boolean = {
+    parent.parent_id.isDefined &&
+      !phoneSearch(parent.phone).map {
+        case p => p.parent_id.getOrElse("")
+      }.equals(parent.parent_id)
+  }
+
   def permanentRemove(phone: String) = DB.withConnection {
     implicit c =>
       SQL("delete from relationmap where parent_id in (select parent_id from parentinfo where phone={phone})").on('phone -> phone).execute()
@@ -49,11 +57,10 @@ object Parent {
 
   def existsInOtherSchool(kg: Long, parent: Parent) = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from parentinfo where phone={phone} and school_id <> {kg} and parent_id <> {parent_id}")
+      SQL("select count(1) from parentinfo where phone={phone} and school_id <> {kg}")
         .on(
           'phone -> parent.phone,
-          'kg -> kg,
-          'parent_id -> parent.parent_id
+          'kg -> kg
         ).as(get[Long]("count(1)") single) > 0
   }
 
@@ -188,6 +195,7 @@ object Parent {
           'id -> id)
         .as(withRelationship.singleOpt)
   }
+
   def findById(kg: Long, id: String) = DB.withConnection {
     implicit c =>
       SQL("select * from parentinfo where school_id={kg} and parent_id={id} and status=1")
@@ -196,30 +204,39 @@ object Parent {
         .as(simple singleOpt)
   }
 
-  def create(kg: Long, parent: Parent) = DB.withConnection {
+  def create(kg: Long, parent: Parent) = DB.withTransaction {
     implicit c =>
       val timestamp = System.currentTimeMillis
       val parent_id = parent.parent_id.getOrElse("2_%d_%d".format(kg, timestamp))
-      val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status) " +
-        "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member})")
-        .on(
-          'name -> parent.name,
-          'parent_id -> parent_id,
-          'relationship -> "",
-          'phone -> parent.phone,
-          'gender -> parent.gender,
-          'company -> parent.company,
-          'picurl -> parent.portrait.getOrElse(""),
-          'birthday -> parent.birthday,
-          'school_id -> kg.toString,
-          'status -> 1,
-          'member -> parent.member_status.getOrElse(0),
-          'timestamp -> timestamp).executeInsert()
-      Logger.info("created parent %s".format(createdId))
-      val accountinfoUid = createPushAccount(parent)
-      Logger.info("created accountinfo %s".format(accountinfoUid))
-      createdId.flatMap {
-        id => info(parent.school_id, parent_id)
+      try {
+        val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status) " +
+          "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member})")
+          .on(
+            'name -> parent.name,
+            'parent_id -> parent_id,
+            'relationship -> "",
+            'phone -> parent.phone,
+            'gender -> parent.gender,
+            'company -> parent.company,
+            'picurl -> parent.portrait.getOrElse(""),
+            'birthday -> parent.birthday,
+            'school_id -> kg.toString,
+            'status -> 1,
+            'member -> parent.member_status.getOrElse(0),
+            'timestamp -> timestamp).executeInsert()
+        Logger.info("created parent %s".format(createdId))
+        val accountinfoUid = createPushAccount(parent)
+        Logger.info("created accountinfo %s".format(accountinfoUid))
+        c.commit()
+        createdId.flatMap {
+          id => info(parent.school_id, parent_id)
+        }
+      }
+      catch {
+        case e: Throwable =>
+          Logger.info(e.getLocalizedMessage)
+          c.rollback()
+          None
       }
   }
 
