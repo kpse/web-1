@@ -68,7 +68,7 @@ object WeiXinController extends Controller {
           {PCData("成都库乐宝信息技术有限公司位于成都市高新区天府软件园旁，是一家专业从事幼教行业移动互联网应用的高新技术企业，拥有多项自主知识产权及产品，行业经验及技术能力均处于国内领先地位。")}
         </Description>
         <PicUrl>
-          {PCData("http://kulebao-prod.qiniudn.com/11.jpg")}
+          {PCData("http://kulebao-prod.qiniudn.com/logo_320.png")}
         </PicUrl>
         <Url>
           {PCData("http://www.cocobabys.com")}
@@ -76,7 +76,7 @@ object WeiXinController extends Controller {
       </item>
       <item>
         <Title>
-          {PCData("幼乐宝的重要性")}
+          {PCData("幼乐宝的移动APP上线啦！")}
         </Title>
         <Description>
           {PCData(
