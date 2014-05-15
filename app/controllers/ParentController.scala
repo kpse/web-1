@@ -11,11 +11,12 @@ import scala.Some
 
 object ParentController extends Controller with Secured {
 
-  implicit val write3 = Json.writes[School]
   implicit val write2 = Json.writes[ChildInfo]
+  implicit val write3 = Json.writes[School]
   implicit val write1 = Json.writes[ParentInfo]
   implicit val write4 = Json.writes[Parent]
-
+  implicit val write5 = Json.writes[SuccessResponse]
+  implicit val write6 = Json.writes[ErrorResponse]
 
   def index(kg: Long, classId: Option[Long], member: Option[Boolean], connected: Option[Boolean]) = IsLoggedIn {
     u => _ =>
@@ -49,18 +50,8 @@ object ParentController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString())
         request.body.validate[Parent].map {
-          case (error) if newParentIsAMember(error) && Charge.limitExceed(kg) =>
-            BadRequest(Json.toJson(ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))
-          case (error) if Parent.existsInOtherSchool(kg, error) =>
-            BadRequest(Json.toJson(ErrorResponse("此号码已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998")))
-          case (parent) if Parent.idExists(parent.parent_id) =>
-            Ok(Json.toJson(Parent.update(parent)))
-          case (parent) if !Parent.idExists(parent.parent_id) && parent.status == Some(0) =>
-            Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
-          case (parent) if Parent.phoneExists(kg, parent.phone) =>
-            Ok(Json.toJson(Parent.updateWithPhone(kg, parent)))
-          case (parent) =>
-            Ok(Json.toJson(Parent.create(kg, parent)))
+          case (phone) =>
+            handleCreateOrUpdate(kg, phone)
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
         }
@@ -76,23 +67,35 @@ object ParentController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString())
         request.body.validate[Parent].map {
-          case (error) if newParentIsAMember(error) && Charge.limitExceed(kg) =>
-            BadRequest(Json.toJson(ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))
-          case (error) if Parent.existsInOtherSchool(kg, error) =>
-            BadRequest(Json.toJson(ErrorResponse("此号码已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998")))
-          case (parent) if !Parent.idExists(parent.parent_id) && parent.status == Some(0) =>
-            Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
-          case (parent) if Parent.idExists(parent.parent_id) =>
-            Ok(Json.toJson(Parent.update(parent)))
-          case (parent) if Parent.phoneExists(kg, phone) =>
-            Ok(Json.toJson(Parent.updateWithPhone(kg, parent)))
-          case (newParent) =>
-            Ok(Json.toJson(Parent.create(kg, newParent)))
-        } getOrElse BadRequest("Detected error:" + request.body)
+          case (error) if phone.equals(error.phone) =>
+            BadRequest(Json.toJson(ErrorResponse("与url中电话号码不匹配。")))
+          case (phone) =>
+            handleCreateOrUpdate(kg, phone)
+        }.recoverTotal {
+          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        }
   }
 
-  implicit val write5 = Json.writes[SuccessResponse]
-  implicit val write6 = Json.writes[ErrorResponse]
+  def handleCreateOrUpdate(kg: Long, parent: Parent) = parent match {
+    case (error) if kg != error.school_id =>
+      BadRequest(Json.toJson(ErrorResponse("请求的学校不正确。")))
+    case (error) if newParentIsAMember(error) && Charge.limitExceed(kg) =>
+      BadRequest(Json.toJson(ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))
+    case (error) if Parent.existsInOtherSchool(kg, error) =>
+      BadRequest(Json.toJson(ErrorResponse("手机号码‘%s’已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998".format(error.phone))))
+    case (error) if Parent.hasDuplicatedPhoneWithOtherParent(error) =>
+      BadRequest(Json.toJson(ErrorResponse("手机号码‘%s’已经存在，请检查输入信息是否正确".format(error.phone))))
+    case (parent) if !Parent.idExists(parent.parent_id) && parent.status == Some(0) =>
+      Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
+    case (parent) if Parent.idExists(parent.parent_id) =>
+      Logger.info("update?")
+      Ok(Json.toJson(Parent.update(parent)))
+    case (parent) if Parent.phoneExists(kg, parent.phone) =>
+      Ok(Json.toJson(Parent.updateWithPhone(kg, parent)))
+    case (newParent) =>
+      Logger.info("new?")
+      Ok(Json.toJson(Parent.create(kg, newParent)))
+  }
 
   def delete(kg: Long, phone: String) = IsLoggedIn {
     u => _ =>

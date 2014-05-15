@@ -16,6 +16,14 @@ case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait:
 
 
 object Parent {
+
+  def hasDuplicatedPhoneWithOtherParent(parent: Parent): Boolean = {
+    parent.parent_id.isDefined &&
+      !phoneSearch(parent.phone).map {
+        case p => p.parent_id.getOrElse("")
+      }.equals(parent.parent_id)
+  }
+
   def permanentRemove(phone: String) = DB.withConnection {
     implicit c =>
       SQL("delete from relationmap where parent_id in (select parent_id from parentinfo where phone={phone})").on('phone -> phone).execute()
@@ -49,11 +57,10 @@ object Parent {
 
   def existsInOtherSchool(kg: Long, parent: Parent) = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from parentinfo where phone={phone} and school_id <> {kg} and parent_id <> {parent_id}")
+      SQL("select count(1) from parentinfo where phone={phone} and school_id <> {kg}")
         .on(
           'phone -> parent.phone,
-          'kg -> kg,
-          'parent_id -> parent.parent_id
+          'kg -> kg
         ).as(get[Long]("count(1)") single) > 0
   }
 
@@ -188,6 +195,7 @@ object Parent {
           'id -> id)
         .as(withRelationship.singleOpt)
   }
+
   def findById(kg: Long, id: String) = DB.withConnection {
     implicit c =>
       SQL("select * from parentinfo where school_id={kg} and parent_id={id} and status=1")
@@ -225,7 +233,7 @@ object Parent {
         }
       }
       catch {
-        case e : Throwable =>
+        case e: Throwable =>
           Logger.info(e.getLocalizedMessage)
           c.rollback()
           None
