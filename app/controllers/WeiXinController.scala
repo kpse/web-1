@@ -71,7 +71,7 @@ object WeiXinController extends Controller {
           {PCData("http://kulebao-prod.qiniudn.com/logo_320.png")}
         </PicUrl>
         <Url>
-          {PCData("http://www.cocobabys.com")}
+          {PCData("https://cocobabys.com")}
         </Url>
       </item>
       <item>

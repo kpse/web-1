@@ -67,7 +67,7 @@ object ParentController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString())
         request.body.validate[Parent].map {
-          case (error) if phone.equals(error.phone) =>
+          case (error) if !phone.equals(error.phone) =>
             BadRequest(Json.toJson(ErrorResponse("与url中电话号码不匹配。")))
           case (phone) =>
             handleCreateOrUpdate(kg, phone)
@@ -88,12 +88,10 @@ object ParentController extends Controller with Secured {
     case (parent) if !Parent.idExists(parent.parent_id) && parent.status == Some(0) =>
       Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
     case (parent) if Parent.idExists(parent.parent_id) =>
-      Logger.info("update?")
       Ok(Json.toJson(Parent.update(parent)))
     case (parent) if Parent.phoneExists(kg, parent.phone) =>
       Ok(Json.toJson(Parent.updateWithPhone(kg, parent)))
     case (newParent) =>
-      Logger.info("new?")
       Ok(Json.toJson(Parent.create(kg, newParent)))
   }
 
