@@ -71,7 +71,7 @@ object WeiXinController extends Controller {
           {PCData("http://kulebao-prod.qiniudn.com/logo_320.png")}
         </PicUrl>
         <Url>
-          {PCData("https://cocobabys.com")}
+          {PCData("http://cocobabys.com")}
         </Url>
       </item>
       <item>
@@ -110,9 +110,9 @@ object WeiXinController extends Controller {
       case "V1001_INTRO" =>
         IntroMessage(PCData(to.text), PCData(from.text))
       case "V1001_GOOD" =>
-        newMessage(PCData(to.text), PCData(from.text), PCData("谢谢你的赞，我们会继续努力的。"))
+        newMessage(PCData(to.text), PCData(from.text), PCData("谢谢你的支持，我们会继续努力的。"))
       case _ =>
-        newMessage(PCData(to.text), PCData(from.text), PCData("谢谢您的点击测试。"))
+        newMessage(PCData(to.text), PCData(from.text), PCData("用户您好，我们是库乐宝产品团队。欢迎使用我们的产品幼乐宝，使用过程中有任何问题，欢迎在这里留言或拨打免费电话4009-984-998。我们的产品地址是 https://cocobabys.com"))
     }
   }
 
