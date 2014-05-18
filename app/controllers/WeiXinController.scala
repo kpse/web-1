@@ -2,11 +2,11 @@ package controllers
 
 import play.api.mvc.{Action, Controller}
 import play.Logger
-import play.api.libs.json.{Json, JsValue, JsObject}
+import play.api.libs.json.JsObject
 import play.api.libs.ws.WS
 import play.api.Play
 import play.cache.Cache
-import scala.concurrent.{ExecutionContext, Promise, Future, Await}
+import scala.concurrent.{ExecutionContext, Promise, Future}
 import scala.concurrent.duration._
 import ExecutionContext.Implicits.global
 
@@ -126,16 +126,28 @@ object WeiXinController extends Controller {
     request =>
       Logger.info(request.body.toString())
       request.body match {
-        case message if (message \ "MsgType").text.equals("text") =>
+        case message if isText(message) =>
           Ok(handleMessage(message))
-        case subscribe if (subscribe \ "MsgType").text.equals("event") && (subscribe \ "Event").text.equals("subscribe") =>
+        case subscribe if isSubscribeNotification(subscribe) =>
           Ok(onSubscribe(subscribe))
-        case clicking if (clicking \ "MsgType").text.equals("event") =>
+        case clicking if isClickingEvent(clicking) =>
           Ok(handleClicking(clicking))
         case _ =>
           Ok("")
       }
 
+  }
+
+  def isClickingEvent(clicking: NodeSeq): Boolean = {
+    (clicking \ "MsgType").text.equals("event")
+  }
+
+  def isSubscribeNotification(subscribe: NodeSeq): Boolean = {
+    (subscribe \ "MsgType").text.equals("event") && (subscribe \ "Event").text.equals("subscribe")
+  }
+
+  def isText(message: NodeSeq): Boolean = {
+    (message \ "MsgType").text.equals("text")
   }
 
   def getToken: Future[String] = {
