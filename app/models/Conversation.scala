@@ -35,7 +35,7 @@ object Conversation {
     }.take(most.getOrElse(25)).map {
       case session =>
         val sender = Conversation.retrieveSender(kg, session.sender)
-        Conversation(phone, session.timestamp.getOrElse(0), session.id, session.content, Some(session.media.url), Some(sender._1), Some(sender._2))
+        Conversation(phone, session.timestamp.getOrElse(0), session.id, session.content, Some(session.media.getOrElse(MediaContent("")).url), Some(sender._1), Some(sender._2))
     }.sortBy(_.id)
 
   }
