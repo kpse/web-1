@@ -7,9 +7,6 @@ import play.api.db.DB
 import models.helper.RangerHelper._
 import anorm.~
 import scala.Some
-import org.joda.time.DateTime
-import play.Logger
-import java.util.regex.Pattern
 
 case class ChatSession(topic: String, timestamp: Option[Long], id: Option[Long], content: String, media: Option[MediaContent] = Some(MediaContent("")), sender: Sender, medium: Option[List[MediaContent]] = Some(List[MediaContent]()))
 
@@ -59,7 +56,7 @@ object ChatSession {
     case emptyString if emptyString.isEmpty =>
       Some(List[MediaContent]())
     case multi =>
-      Some(multi.split("  ").toList.map(MediaContent(_)))
+      Some(multi.split(urlSeparator).toList.map(MediaContent(_)))
   }
 
   def simple(forHistory: Option[String] = None) = {
@@ -92,23 +89,44 @@ object ChatSession {
 
     }
   }
+  val urlSeparator = "  "
+
+  def joinMediumUrls(medium: List[MediaContent]): String = medium.map(_.url).mkString(urlSeparator)
 
   def create(kg: Long, session: ChatSession) = DB.withConnection {
     implicit c =>
       val time = System.currentTimeMillis
-      val media = session.media.getOrElse(MediaContent(""))
-      val id = SQL("INSERT INTO sessionlog (school_id, session_id, content, media_url, media_type, sender, update_at, sender_type) values" +
-        "({kg}, {id}, {content}, {url}, {media_type}, {sender}, {update_at}, {sender_type})").on(
-          'kg -> kg.toString,
-          'id -> session.topic,
-          'content -> session.content,
-          'url -> media.url,
-          'media_type -> media.`type`,
-          'sender -> session.sender.id,
-          'sender_type -> session.sender.`type`,
-          'update_at -> time
-        ).executeInsert()
-      ChatSession(session.topic, Some(time), id, session.content, session.media, session.sender)
+
+      val medium = session.medium
+      val stmt: String = "INSERT INTO sessionlog (school_id, session_id, content, media_url, media_type, sender, update_at, sender_type) VALUES" +
+        "({kg}, {id}, {content}, {url}, {media_type}, {sender}, {update_at}, {sender_type})"
+      medium match {
+        case many if many.nonEmpty =>
+          val id = SQL(stmt).on(
+            'kg -> kg.toString,
+            'id -> session.topic,
+            'content -> session.content,
+            'url -> joinMediumUrls(many.get),
+            'media_type -> "image",
+            'sender -> session.sender.id,
+            'sender_type -> session.sender.`type`,
+            'update_at -> time
+          ).executeInsert()
+          ChatSession(session.topic, Some(time), id, session.content, None, session.sender, many)
+        case _ =>
+          val media = session.media.getOrElse(MediaContent(""))
+          val id = SQL(stmt).on(
+            'kg -> kg.toString,
+            'id -> session.topic,
+            'content -> session.content,
+            'url -> media.url,
+            'media_type -> media.`type`,
+            'sender -> session.sender.id,
+            'sender_type -> session.sender.`type`,
+            'update_at -> time
+          ).executeInsert()
+          ChatSession(session.topic, Some(time), id, session.content, session.media, session.sender)
+      }
   }
 
   def index(kg: Long, sessionId: String, from: Option[Long], to: Option[Long]) = DB.withConnection {
