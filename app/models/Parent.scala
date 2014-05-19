@@ -18,7 +18,7 @@ case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait:
 object Parent {
 
   def hasDuplicatedPhoneWithOtherParent(parent: Parent): Boolean = {
-    parent.parent_id.isDefined &&
+    idExists(parent.parent_id) &&
       !phoneSearch(parent.phone).map {
         case p => p.parent_id.getOrElse("")
       }.equals(parent.parent_id)
