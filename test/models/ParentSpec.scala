@@ -78,8 +78,8 @@ class ParentSpec extends Specification with TestSupport {
     }
 
     "throw exception when phone already exists in push account" in new WithApplication {
-      val existsPhone = "13402815318"
-      Parent.update(new Parent(Some("2_93740362_123"), 93740362, "", existsPhone, None, 0, "1990-01-01", Some(0), Some(1), Some(1))) must throwA(new IllegalAccessError("电话号码已经存在。"))
+      val existingPhone = "13402815318"
+      Parent.update(new Parent(Some("2_93740362_123"), 93740362, "", existingPhone, None, 0, "1990-01-01", Some(0), Some(1), Some(1))) must throwA(new IllegalAccessError("Phone number %s is existing in accountinfo".format(existingPhone)))
     }
   }
 }

@@ -96,9 +96,9 @@ object Parent {
       val oldPhone = oldPhoneNumber(parent)
       oldPhone match {
         case conflicting if oldPhone != parent.phone && isConflicting(parent) =>
-          throw new IllegalAccessError("电话号码已经存在。")
+          throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(conflicting))
         case conflicting if oldPhone != parent.phone && isConflictingInConversation(parent) =>
-          throw new IllegalAccessError("电话号码已经存在。")
+          throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(conflicting))
         case old =>
           updatePushAccount(old, parent)
           updateConversationRecord(old, parent)
@@ -245,7 +245,7 @@ object Parent {
 
   def createPushAccount(parent: Parent): Option[Long] = DB.withConnection {
     implicit c =>
-      if (isConflicting(parent)) throw new IllegalAccessError("电话号码已经存在。")
+      if (isConflicting(parent)) throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
       SQL("INSERT INTO accountinfo(accountid, password, pushid, active, pwd_change_time) " +
         "VALUES ({accountid},{password},'',0,0)")
         .on('accountid -> parent.phone,
