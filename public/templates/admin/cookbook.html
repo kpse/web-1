@@ -21,7 +21,7 @@
                   class="editing-title form-control" required maxlength="40"/>
         <label class="control-label">午餐</label>
         <textarea ng-model="cookbook.week.mon.lunch" ng-disabled="!isEditing"
-                  class="editing-title form-control" required/>
+                  class="editing-title form-control" required maxlength="40"/>
         <label class="control-label">加餐</label>
         <textarea ng-model="cookbook.week.mon.extra" ng-disabled="!isEditing"
                   class="editing-title form-control" maxlength="40"/>
@@ -71,7 +71,7 @@
                   class="editing-title form-control" required maxlength="40"/>
         <label class="control-label">加餐</label>
         <textarea ng-model="cookbook.week.thu.extra" ng-disabled="!isEditing"
-                  class="editing-title form-control" required maxlength="40"/>
+                  class="editing-title form-control" maxlength="40"/>
         <label class="control-label">晚餐</label>
         <textarea ng-model="cookbook.week.thu.dinner" ng-disabled="!isEditing"
                   class="editing-title form-control" required maxlength="40"/>

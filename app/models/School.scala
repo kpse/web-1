@@ -146,7 +146,7 @@ object School {
 
   def update(clazz: SchoolClass) = DB.withConnection {
     implicit c =>
-      SQL("update classinfo set class_name={name}, update_at={time} " +
+      SQL("update classinfo set class_name={name}, update_at={time}, status=1 " +
         "where school_id={school_id} and class_id={class_id}")
         .on('school_id -> clazz.school_id.toString,
           'class_id -> clazz.class_id,

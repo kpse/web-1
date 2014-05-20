@@ -48,6 +48,10 @@ object Children {
       _ =>
         result += " , address={address} "
     }
+    child.status.map {
+      _ =>
+        result += " , status={status} "
+    }
     result
   }
 
@@ -64,6 +68,7 @@ object Children {
           'timestamp -> System.currentTimeMillis,
           'picurl -> child.portrait,
           'address -> child.address,
+          'status -> child.status,
           'child_id -> childId
         ).executeUpdate
       info(kg, childId)
@@ -159,9 +164,13 @@ object Children {
     sql +
       classIds.fold("")(l => " and c.class_id in (%s) ".format(classIds.getOrElse(0))) +
       connected.fold("")({
-      case true => " and child_id in (select child_id from relationmap r where r.status=1)"
-      case false => " and child_id not in (select child_id from relationmap r where r.status=1)"
-    })
+        case true => " and child_id in " + childWithEnabledParents
+        case false => " and child_id not in " + childWithEnabledParents
+      })
+  }
+
+  def childWithEnabledParents: String = {
+    " (select child_id from relationmap r, parentinfo p where p.parent_id=r.parent_id  and p.status=1 and r.status=1 and p.school_id={kg}) "
   }
 
   def findAll(school: Long, phone: String): List[ChildInfo] = DB.withConnection {
