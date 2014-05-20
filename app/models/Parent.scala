@@ -96,9 +96,9 @@ object Parent {
       val oldPhone = oldPhoneNumber(parent)
       oldPhone match {
         case conflicting if oldPhone != parent.phone && isConflicting(parent) =>
-          throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(conflicting))
+          throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
         case conflicting if oldPhone != parent.phone && isConflictingInConversation(parent) =>
-          throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(conflicting))
+          throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
         case old =>
           updatePushAccount(old, parent)
           updateConversationRecord(old, parent)
