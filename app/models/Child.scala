@@ -48,6 +48,10 @@ object Children {
       _ =>
         result += " , address={address} "
     }
+    child.status.map {
+      _ =>
+        result += " , status={status} "
+    }
     result
   }
 
@@ -64,6 +68,7 @@ object Children {
           'timestamp -> System.currentTimeMillis,
           'picurl -> child.portrait,
           'address -> child.address,
+          'status -> child.status,
           'child_id -> childId
         ).executeUpdate
       info(kg, childId)
