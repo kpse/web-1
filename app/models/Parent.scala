@@ -19,9 +19,9 @@ object Parent {
 
   def hasDuplicatedPhoneWithOtherParent(parent: Parent): Boolean = {
     idExists(parent.parent_id) &&
-      !phoneSearch(parent.phone).map {
+      !phoneSearch(parent.phone).fold("")({
         case p => p.parent_id.getOrElse("")
-      }.equals(parent.parent_id)
+      }).equals(parent.parent_id.get)
   }
 
   def permanentRemove(phone: String) = DB.withConnection {
