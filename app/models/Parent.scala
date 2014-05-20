@@ -140,7 +140,7 @@ object Parent {
       SQL("update parentinfo set name={name}, " +
         "phone={phone}, gender={gender}, company={company}, " +
         "picurl={picurl}, birthday={birthday}, " +
-        "update_at={timestamp}, member_status={member}, school_id={kg} where parent_id={parent_id}")
+        "update_at={timestamp}, member_status={member}, status={status}, school_id={kg} where parent_id={parent_id}")
         .on('name -> parent.name,
           'phone -> parent.phone,
           'gender -> parent.gender,
@@ -150,6 +150,7 @@ object Parent {
           'birthday -> parent.birthday,
           'parent_id -> parent.parent_id,
           'member -> parent.member_status.getOrElse(0),
+          'status -> parent.status.getOrElse(1),
           'timestamp -> timestamp).executeUpdate()
       info(parent.school_id, parent.parent_id.get)
   }
@@ -159,7 +160,7 @@ object Parent {
       val timestamp = System.currentTimeMillis
       SQL("update parentinfo set name={name}, gender={gender}, company={company}, " +
         "picurl={picurl}, birthday={birthday}, " +
-        "update_at={timestamp}, member_status={member} where phone={phone} and school_id={kg}")
+        "update_at={timestamp}, member_status={member}, status={status} where phone={phone} and school_id={kg}")
         .on('name -> parent.name,
           'phone -> parent.phone,
           'gender -> parent.gender,
@@ -168,6 +169,7 @@ object Parent {
           'birthday -> parent.birthday,
           'timestamp -> timestamp,
           'member -> parent.member_status.getOrElse(0),
+          'status -> parent.status.getOrElse(1),
           'kg -> kg.toString
         ).executeUpdate()
       findByPhone(parent.school_id)(parent.phone)
