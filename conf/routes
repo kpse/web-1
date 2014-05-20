@@ -100,6 +100,9 @@ GET           /kindergarten/:kg/session/:topicId                                
 POST          /kindergarten/:kg/session/:topicId                                 controllers.SessionController.create(kg: Long, topicId: String, retrieve_recent_from: Option[Long])
 GET           /kindergarten/:kg/sender/:senderId                                 controllers.SessionController.senderDetail(kg: Long, senderId: String, type: String)
 
+GET           /kindergarten/:kg/session/:topicId/reader/:readerId                controllers.ReaderController.lastRead(kg: Long, topicId: String, readerId: String)
+POST          /kindergarten/:kg/session/:topicId/reader/:readerId                controllers.ReaderController.markRead(kg: Long, topicId: String, readerId: String)
+
 GET           /kindergarten/:kg/child/:childId/assess                            controllers.AssessController.index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int])
 
 POST          /kindergarten/:kg/child/:childId/assess                            controllers.AssessController.createOrUpdate(kg: Long, childId: String)
