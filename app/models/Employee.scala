@@ -15,7 +15,7 @@ import models.helper.PasswordHelper
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
-                    login_name: String, timestamp: Option[Long], privilege_group: Option[String])
+                    login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int]=Some(1))
 
 case class Principal(employee_id: String, school_id: Long, phone: String, timestamp: Long)
 
@@ -59,7 +59,7 @@ object Employee {
           'id -> employee.id,
           'kg -> kg
         ).as(get[String]("subordinate") *)
-      Logger.info(classes.toString)
+      Logger.info(classes.toString())
       classes map {
         c =>
           School.findClass(kg, Some(Integer.parseInt(c)))
@@ -213,7 +213,7 @@ object Employee {
         employeeId =>
           SQL("update employeeinfo set name={name}, phone={phone}, gender={gender}, workgroup={workgroup}, " +
             " workduty={workduty}, picurl={picurl}, birthday={birthday}, school_id={school_id}, " +
-            " login_name={login_name}, update_at={update_at}, employee_id={employee_id} " +
+            " login_name={login_name}, update_at={update_at}, employee_id={employee_id}, status={status} " +
             " where employee_id={employee_id}")
             .on(
               'employee_id -> employeeId,
@@ -226,6 +226,7 @@ object Employee {
               'birthday -> employee.birthday,
               'school_id -> employee.school_id,
               'login_name -> employee.login_name,
+              'status -> employee.status.getOrElse(1),
               'update_at -> System.currentTimeMillis
             ).executeUpdate()
       }
