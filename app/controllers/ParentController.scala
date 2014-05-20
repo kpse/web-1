@@ -85,6 +85,8 @@ object ParentController extends Controller with Secured {
       BadRequest(Json.toJson(ErrorResponse("手机号码‘%s’已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998".format(error.phone))))
     case (error) if Parent.hasDuplicatedPhoneWithOtherParent(error) =>
       BadRequest(Json.toJson(ErrorResponse("手机号码‘%s’已经存在，请检查输入信息是否正确".format(error.phone))))
+    case (error) if Parent.phoneExists(kg, error.phone) && error.parent_id.isDefined && !Parent.idExists(error.parent_id) =>
+      BadRequest(Json.toJson(ErrorResponse("手机号码‘%s’已经存在，请检查输入信息是否正确".format(error.phone))))
     case (parent) if !Parent.idExists(parent.parent_id) && parent.status == Some(0) =>
       Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
     case (parent) if Parent.idExists(parent.parent_id) =>
