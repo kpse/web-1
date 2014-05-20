@@ -357,11 +357,11 @@ object Parent {
     implicit c =>
       connected match {
         case Some(connection) =>
-          SQL(simpleSql + "and parent_id " + included(connection) + " in (select parent_id from relationmap where status=1 and school_id={kg})")
-            .on('kg -> kg).as(simple *)
+          SQL(simpleSql + "and parent_id " + included(connection) + " in (select parent_id from relationmap r, childinfo c where r.child_id=c.child_id and r.status=1 and c.status=1 and c.school_id={kg})")
+            .on('kg -> kg.toString).as(simple *)
         case _ =>
           SQL(simpleSql + generateMemberQuery(member))
-            .on('kg -> kg, 'member -> (if (member.getOrElse(false)) 1 else 0))
+            .on('kg -> kg.toString, 'member -> (if (member.getOrElse(false)) 1 else 0))
             .as(simple *)
       }
   }
