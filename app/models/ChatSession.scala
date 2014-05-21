@@ -7,6 +7,7 @@ import play.api.db.DB
 import models.helper.RangerHelper._
 import anorm.~
 import scala.Some
+import play.Logger
 
 case class ChatSession(topic: String, timestamp: Option[Long], id: Option[Long], content: String, media: Option[MediaContent] = Some(MediaContent("")), sender: Sender, medium: Option[List[MediaContent]] = Some(List[MediaContent]()))
 
@@ -18,6 +19,7 @@ case class MediaContent(url: String, `type`: Option[String] = Some("image"))
 object ChatSession {
   def history(kg: Long, topicId: String, from: Option[Long], to: Option[Long]) = DB.withConnection {
     implicit c =>
+      Logger.info("h_%s".format(topicId))
       SQL("select * from sessionlog where school_id={kg} and session_id={id} " +
         rangerQuery(from, to))
         .on(
@@ -25,7 +27,7 @@ object ChatSession {
           'id -> "h_%s".format(topicId),
           'from -> from,
           'to -> to
-        ).as(simple(Some("forHistory")) *)
+        ).as(simple(Some("^h_")) *)
   }
 
 
@@ -59,7 +61,7 @@ object ChatSession {
       Some(multi.split(urlSeparator).toList.map(MediaContent(_)))
   }
 
-  def simple(forHistory: Option[String] = None) = {
+  def simple(prefix: Option[String] = None) = {
     get[String]("session_id") ~
       get[Long]("update_at") ~
       get[Long]("uid") ~
@@ -68,32 +70,18 @@ object ChatSession {
       get[String]("media_type") ~
       get[String]("sender") ~
       get[String]("sender_type") map {
-      case topic ~ t ~ id ~ content ~ urls ~ mediaType ~ sender ~ senderType if forHistory.isDefined =>
-        ChatSession(topic, Some(t), Some(id), content, None, Sender(sender, Some(senderType)), splitMedium(urls, mediaType))
+      case topic ~ t ~ id ~ content ~ urls ~ mediaType ~ sender ~ senderType if prefix.isDefined =>
+        ChatSession(topic.replaceFirst(prefix.get, ""), Some(t), Some(id), content, None, Sender(sender, Some(senderType)), splitMedium(urls, mediaType))
       case topic ~ t ~ id ~ content ~ url ~ mediaType ~ sender ~ senderType =>
         ChatSession(topic, Some(t), Some(id), content, Some(MediaContent(url, Some(mediaType))), Sender(sender, Some(senderType)))
     }
   }
 
-  val simpleHistory = {
-    get[String]("session_id") ~
-      get[Long]("update_at") ~
-      get[Long]("uid") ~
-      get[String]("content") ~
-      get[String]("media_url") ~
-      get[String]("media_type") ~
-      get[String]("sender") ~
-      get[String]("sender_type") map {
-      case topic ~ t ~ id ~ content ~ urls ~ mediaType ~ sender ~ senderType =>
-        ChatSession(topic, Some(t), Some(id), content, None, Sender(sender, Some(senderType)), splitMedium(urls, mediaType))
-
-    }
-  }
   val urlSeparator = "  "
 
   def joinMediumUrls(medium: List[MediaContent]): String = medium.map(_.url).mkString(urlSeparator)
 
-  def create(kg: Long, session: ChatSession) = DB.withConnection {
+  def create(kg: Long, session: ChatSession, originId: String) = DB.withConnection {
     implicit c =>
       val time = System.currentTimeMillis
 
@@ -112,7 +100,7 @@ object ChatSession {
             'sender_type -> session.sender.`type`,
             'update_at -> time
           ).executeInsert()
-          ChatSession(session.topic, Some(time), id, session.content, None, session.sender, many)
+          ChatSession(originId, Some(time), id, session.content, None, session.sender, many)
         case _ =>
           val media = session.media.getOrElse(MediaContent(""))
           val id = SQL(stmt).on(
@@ -125,7 +113,7 @@ object ChatSession {
             'sender_type -> session.sender.`type`,
             'update_at -> time
           ).executeInsert()
-          ChatSession(session.topic, Some(time), id, session.content, session.media, session.sender)
+          ChatSession(originId, Some(time), id, session.content, session.media, session.sender)
       }
   }
 

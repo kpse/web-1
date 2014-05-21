@@ -33,8 +33,9 @@ object ConversationController extends Controller with Secured {
               case r: Relationship =>
                 r.child.map {
                   case child =>
-                    ChatSession.create(kg, ChatSession(child.child_id.getOrElse(""), None, None, conversation.content,
-                      Some(MediaContent(conversation.image.getOrElse(""))), ChatSession.retrieveSender(kg, conversation)))
+                    val topic: String = child.child_id.getOrElse("")
+                    ChatSession.create(kg, ChatSession(topic, None, None, conversation.content,
+                      Some(MediaContent(conversation.image.getOrElse(""))), ChatSession.retrieveSender(kg, conversation)), topic)
                 }
             }
             retrieveRecentFrom match {
