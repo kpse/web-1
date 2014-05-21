@@ -70,5 +70,5 @@ object SessionController extends Controller with Secured {
       Ok(Json.toJson(ChatSession.history(kg, topicId, from, to).take(most.getOrElse(25)).sortBy(_.id)))
   }
 
-  def createHistory(kg: Long, topicId: String, retrieveRecentFrom: Option[Long]) = create(kg, topicId, retrieveRecentFrom)
+  def createHistory(kg: Long, topicId: String, retrieveRecentFrom: Option[Long]) = create(kg, "h_%s".format(topicId), retrieveRecentFrom)
 }
