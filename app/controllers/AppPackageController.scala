@@ -30,22 +30,22 @@ object AppPackageController extends Controller {
 
   def create = Action {
     implicit request =>
-      appCreateForm.bindFromRequest.value map {
-        app =>
+      appCreateForm.bindFromRequest.value.fold(BadRequest(""))({
+        case app =>
           val created = AppPackage.create(app)
           Ok(Json.toJson(created))
-      } getOrElse BadRequest
+      })
   }
 
   def last(redirect: Option[String]) = Action {
-    redirect.map {
+    redirect.fold(BadRequest(""))({
       case "true" =>
-        AppPackage.latest map {
+        AppPackage.latest.fold(BadRequest(""))({
           case pkg if pkg.url.startsWith("https://") =>
             Redirect(pkg.url)
-        } getOrElse BadRequest
+        })
       case _ => Ok(Json.toJson(AppPackage.latest))
-    } getOrElse BadRequest
+    })
 
   }
 

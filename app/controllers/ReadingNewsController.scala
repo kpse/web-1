@@ -19,11 +19,11 @@ object ReadingNewsController extends Controller {
 
   def create(kg: Long, parentId: Long, newId: Long) = Action {
     implicit request =>
-      newsReadForm.bindFromRequest.value map {
+      newsReadForm.bindFromRequest.value.fold(BadRequest(""))({
         news =>
           ReadNews.markRead(news)
           Ok("{\"error_code\":0}").as("application/json")
-      } getOrElse BadRequest
+      })
   }
 
   def index(kg: Long, parentId: String) = Action {

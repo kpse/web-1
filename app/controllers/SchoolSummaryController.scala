@@ -4,8 +4,6 @@ import play.api.mvc._
 import play.api.libs.json.{JsError, Json}
 import models.json_models._
 import play.Logger
-import models.json_models.SchoolIntroPreviewResponse
-import models.json_models.SchoolIntroDetail
 import models._
 import models.ChargeInfo
 import models.json_models.SchoolIntroPreviewResponse
@@ -34,10 +32,10 @@ object SchoolSummaryController extends Controller with Secured {
 
   def detail(kg: Long) = IsLoggedIn {
     u => _ =>
-      SchoolIntro.detail(kg).map {
+      SchoolIntro.detail(kg).fold(NotFound(""))({
         case school =>
           Ok(Json.toJson(new SchoolIntroDetail(Some(0), kg, Some(school))))
-      }.getOrElse(NotFound)
+      })
   }
 
   def update(kg: Long) = IsLoggedIn(parse.json) {
@@ -78,10 +76,10 @@ object SchoolSummaryController extends Controller with Secured {
 
   def show(kg: Long) = IsLoggedIn {
     u => _ =>
-      SchoolIntro.detail(kg).map {
+      SchoolIntro.detail(kg).fold(NotFound(""))({
         case school =>
           Ok(Json.toJson(school))
-      }.getOrElse(NotFound)
+      })
   }
 
   def delete(kg: Long) = IsOperator {

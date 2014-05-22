@@ -105,10 +105,8 @@ object ParentController extends Controller with Secured {
 
   def show(kg: Long, phone: String) = IsLoggedIn {
     u => _ =>
-      val parent = Parent.show(kg, phone)
-      parent.map {
-        p => Ok(Json.toJson(p))
-      }.getOrElse(NotFound)
-
+      Parent.show(kg, phone).fold(NotFound(""))({
+        case p => Ok(Json.toJson(p))
+      })
   }
 }

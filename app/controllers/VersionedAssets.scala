@@ -29,7 +29,7 @@ object VersionedAsset {
             case _ => None
           }
       }
-      modified.map(value.file + "?" + value.versionParam + "=" + _).getOrElse(value.file)
+      modified.fold(value.file)(value.file + "?" + value.versionParam + "=" + _)
     }
   }
 
