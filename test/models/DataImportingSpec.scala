@@ -14,7 +14,6 @@ import scala.concurrent.{Future, Await, ExecutionContext}
 import ExecutionContext.Implicits.global
 import play.api.Play.current
 import play.api.libs.ws.WS.WSRequestHolder
-import play.Logger
 
 /**
  * add your integration spec here.
@@ -58,7 +57,7 @@ class DataImportingSpec extends Specification with TestSupport {
 
       waitForWSCall(allRequests("/data/school.txt").filter(_.trim.nonEmpty).map(createOnServer(schoolCreatingUrl)))
 
-      waitForWSCall(allRequests("/data/class.txt").filter(_.trim.nonEmpty).map(createOnServer(classCreatingUrl)), Some(60))
+      waitForWSCall(allRequests("/data/class.txt").filter(_.trim.nonEmpty).map(createOnServer(classCreatingUrl)), Some(30))
 
       waitForWSCall(allRequests("/data/student.txt").filter(_.trim.nonEmpty).map(createOnServer(childCreatingUrl)), Some(60))
 
@@ -66,7 +65,6 @@ class DataImportingSpec extends Specification with TestSupport {
 
       waitForWSCall(allRequests("/data/relationship.txt").filter(_.trim.nonEmpty).foldLeft(List[Future[Response]]()) {
         (arr: List[Future[Response]], line: String) =>
-          Logger.info(arr.toString())
           arr ::: List(createOnServer(relationshipCreatingUrl.format(schoolId, arr.size))(line))
       }.toIterator, Some(60))
 
@@ -79,25 +77,25 @@ class DataImportingSpec extends Specification with TestSupport {
       private val classResponse: Response = waitForSingleWSCall(wsCall(classCheckingUrl).get())
 
       classResponse.status must equalTo(200)
-      Json.parse(classResponse.body).as[List[SchoolClass]].size must beEqualTo(35)
+      Json.parse(classResponse.body).as[List[SchoolClass]].size must beEqualTo(27)
       (Json.parse(classResponse.body)(0) \ "school_id").as[Long] must beEqualTo(schoolId)
 
       private val childrenResponse: Response = waitForSingleWSCall(wsCall(childCheckingUrl).get())
 
       childrenResponse.status must equalTo(200)
-      Json.parse(childrenResponse.body).as[List[ChildInfo]].size must beEqualTo(22)
+      Json.parse(childrenResponse.body).as[List[ChildInfo]].size must beEqualTo(703)
       (Json.parse(childrenResponse.body)(0) \ "school_id").as[Long] must beEqualTo(schoolId)
 
       private val parentRes: Response = waitForSingleWSCall(wsCall(parentCheckingUrl).get())
 
       parentRes.status must equalTo(200)
-      Json.parse(parentRes.body).as[List[Parent]].size must beEqualTo(54)
+      Json.parse(parentRes.body).as[List[Parent]].size must beEqualTo(773)
       (Json.parse(parentRes.body)(0) \ "school_id").as[Long] must beEqualTo(schoolId)
 
       private val relationshipRes: Response = waitForSingleWSCall(wsCall(relationshipCheckingUrl).get())
 
       relationshipRes.status must equalTo(200)
-      Json.parse(relationshipRes.body).as[List[Relationship]].size must beEqualTo(53)
+      Json.parse(relationshipRes.body).as[List[Relationship]].size must beEqualTo(784)
 
       private val relationshipSingleRes: Response = waitForSingleWSCall(wsCall(relationshipSingleCheckingUrl).get())
 

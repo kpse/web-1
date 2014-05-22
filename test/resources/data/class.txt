@@ -1,105 +1,81 @@
-{"school_id":%d,"class_id":1,"name":"苹果班"}
+{"school_id":%d,"class_id":1,"name":"朵1班"}
 
 
-{"school_id":%d,"class_id":2,"name":"芒果班"}
+{"school_id":%d,"class_id":2,"name":"朵2班"}
 
 
-{"school_id":%d,"class_id":3,"name":"杨桃班"}
+{"school_id":%d,"class_id":3,"name":"朵3班"}
 
 
-{"school_id":%d,"class_id":4,"name":"樱桃班"}
+{"school_id":%d,"class_id":4,"name":"朵4班"}
 
 
-{"school_id":%d,"class_id":5,"name":"荔枝班"}
+{"school_id":%d,"class_id":5,"name":"朵5班"}
 
 
-{"school_id":%d,"class_id":6,"name":"柠檬班"}
+{"school_id":%d,"class_id":6,"name":"朵6班"}
 
 
-{"school_id":%d,"class_id":7,"name":"蜜桃班"}
+{"school_id":%d,"class_id":7,"name":"朵7班"}
 
 
-{"school_id":%d,"class_id":8,"name":"草莓班"}
+{"school_id":%d,"class_id":8,"name":"果1班"}
 
 
-{"school_id":%d,"class_id":9,"name":"葡萄班"}
+{"school_id":%d,"class_id":9,"name":"果2班"}
 
 
-{"school_id":%d,"class_id":10,"name":"菠萝班"}
+{"school_id":%d,"class_id":10,"name":"果3班"}
 
 
-{"school_id":%d,"class_id":11,"name":"椰果班"}
+{"school_id":%d,"class_id":11,"name":"果4班"}
 
 
-{"school_id":%d,"class_id":12,"name":"西瓜班"}
+{"school_id":%d,"class_id":12,"name":"果5班"}
 
 
-{"school_id":%d,"class_id":13,"name":"香蕉班"}
+{"school_id":%d,"class_id":13,"name":"果6班"}
 
 
-{"school_id":%d,"class_id":14,"name":"香橙班"}
+{"school_id":%d,"class_id":14,"name":"果7班"}
 
 
-{"school_id":%d,"class_id":35,"name":"中一班"}
+{"school_id":%d,"class_id":15,"name":"苗1班"}
 
 
-{"school_id":%d,"class_id":36,"name":"苗苗一班"}
+{"school_id":%d,"class_id":16,"name":"苗2班"}
 
 
-{"school_id":%d,"class_id":37,"name":"小一班"}
+{"school_id":%d,"class_id":17,"name":"苗3班"}
 
 
-{"school_id":%d,"class_id":38,"name":"小二班"}
+{"school_id":%d,"class_id":18,"name":"苗4班"}
 
 
-{"school_id":%d,"class_id":19,"name":"亲子班"}
+{"school_id":%d,"class_id":19,"name":"苗5班"}
 
 
-{"school_id":%d,"class_id":34,"name":"要退名单"}
+{"school_id":%d,"class_id":20,"name":"苗6班"}
 
 
-{"school_id":%d,"class_id":39,"name":"中一班"}
+{"school_id":%d,"class_id":21,"name":"苗7班"}
 
 
-{"school_id":%d,"class_id":40,"name":"中二班"}
+{"school_id":%d,"class_id":22,"name":"豆豆二班"}
 
 
-{"school_id":%d,"class_id":41,"name":"中三班"}
+{"school_id":%d,"class_id":23,"name":"学前班"}
 
 
-{"school_id":%d,"class_id":42,"name":"大一班"}
+{"school_id":%d,"class_id":24,"name":"大班"}
 
 
-{"school_id":%d,"class_id":43,"name":"大二班"}
+{"school_id":%d,"class_id":25,"name":"中1班"}
 
 
-{"school_id":%d,"class_id":44,"name":"大三班"}
+{"school_id":%d,"class_id":26,"name":"中2班"}
 
 
-{"school_id":%d,"class_id":45,"name":"大四班"}
-
-
-{"school_id":%d,"class_id":28,"name":"蒙氏1班"}
-
-
-{"school_id":%d,"class_id":29,"name":"待定"}
-
-
-{"school_id":%d,"class_id":30,"name":"蜜枣班"}
-
-
-{"school_id":%d,"class_id":31,"name":"香梨班"}
-
-
-{"school_id":%d,"class_id":32,"name":"红枣班"}
-
-
-{"school_id":%d,"class_id":33,"name":"蜜桔班"}
-
-
-{"school_id":%d,"class_id":46,"name":"1"}
-
-
-{"school_id":%d,"class_id":47,"name":"小一班（邢玉宁）"}
+{"school_id":%d,"class_id":27,"name":"小班"}
 
 
