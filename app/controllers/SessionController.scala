@@ -8,6 +8,7 @@ import models.MediaContent
 import models.Sender
 import scala.Some
 import controllers.helper.JsonLogger.loggedJson
+import java.io.Serializable
 
 object SessionController extends Controller with Secured {
 
@@ -73,4 +74,21 @@ object SessionController extends Controller with Secured {
   }
 
   def createHistory(kg: Long, topicId: String, retrieveRecentFrom: Option[Long]) = create(kg, "h_%s".format(topicId), retrieveRecentFrom)
+
+  def batchCreate(kg: Long, childIds: String) = IsAuthenticated(parse.json) {
+    u =>
+      request =>
+        Logger.info(request.body.toString())
+        request.body.validate[ChatSession].map {
+          case (message) =>
+            val messages = childIds.split(",").map {
+              case sessionId =>
+                val revisedId = "h_%s".format(sessionId)
+                ChatSession.create(kg, reviseTopic(revisedId, message), sessionId)
+            }
+            Ok(Json.toJson(messages))
+        }.recoverTotal {
+          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        }
+  }
 }
