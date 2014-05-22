@@ -158,7 +158,7 @@ object School {
   def generateClassId(kg: Long): Int = DB.withConnection {
     implicit c =>
       SQL("select max(class_id) as max from classinfo where school_id = {school_id}")
-        .on('school_id -> kg.toString).as(get[Int]("max") single) + 3
+        .on('school_id -> kg.toString).as(get[Int]("max") singleOpt).getOrElse(999) + 1
   }
 
 

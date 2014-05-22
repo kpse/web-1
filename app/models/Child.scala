@@ -78,7 +78,7 @@ object Children {
   def findById(kg: Long, uid: Long) = DB.withConnection {
     implicit c =>
       SQL("select c.*, c2.class_name from childinfo c, classinfo c2 where c.class_id=c2.class_id " +
-        "and c.school_id={kg} and c2.school_id=c.school_id and c.uid={uid}")
+        "and c.school_id={kg} and c2.school_id=c.school_id and c.uid={uid} LIMIT 1")
         .on(
           'uid -> uid,
           'kg -> kg.toString
@@ -115,6 +115,7 @@ object Children {
       Logger.info("created childinfo %s".format(childUid))
       childUid.flatMap {
         c =>
+          Logger.info("finding child %d".format(c))
           findById(kg, c)
       }
   }

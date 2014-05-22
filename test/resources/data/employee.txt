@@ -1,0 +1,9 @@
+{"school_id":%d,"id":"3_%d_1","name":"江春花","gender":1,"phone":"12678765678","workgroup":"办公室英语","workduty":"员工","birthday":"1985-08-02","login_name":"%d1"}
+
+
+{"school_id":%d,"id":"3_%d_2","name":"吴荣琼","gender":0,"phone":"12678765672","workgroup":"办公室英语","workduty":"员工","birthday":"1985-08-02","login_name":"%d2"}
+
+
+{"school_id":%d,"id":"3_%d_3","name":"骆凤英","gender":0,"phone":"12678765698","workgroup":"办公室英语","workduty":"员工","birthday":"1985-08-02","login_name":"%d3"}
+
+
