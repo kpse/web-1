@@ -32,6 +32,7 @@ class DataImportingSpec extends Specification with TestSupport {
   implicit val read1 = Json.reads[SchoolClass]
   implicit val read2 = Json.reads[Parent]
   implicit val read3 = Json.reads[Relationship]
+  implicit val read4 = Json.reads[Employee]
 
 
   "Application" should {
@@ -54,6 +55,8 @@ class DataImportingSpec extends Specification with TestSupport {
       val relationshipCheckingUrl = "http://localhost:19001/kindergarten/%d/relationship".format(schoolId)
       val relationshipSingleCheckingUrl = "http://localhost:19001/kindergarten/%d/relationship/0000000011".format(schoolId)
 
+      val employeeCreatingUrl = "http://localhost:19001/kindergarten/%d/employee".format(schoolId)
+      val employeeCheckingUrl = "http://localhost:19001/kindergarten/%d/employee".format(schoolId)
 
       waitForWSCall(allRequests("/data/school.txt").filter(_.trim.nonEmpty).map(createOnServer(schoolCreatingUrl)))
 
@@ -68,6 +71,7 @@ class DataImportingSpec extends Specification with TestSupport {
           arr ::: List(createOnServer(relationshipCreatingUrl.format(schoolId, arr.size))(line))
       }.toIterator, Some(60))
 
+      waitForWSCall(allRequests("/data/employee.txt").filter(_.trim.nonEmpty).map(createOnServer(employeeCreatingUrl)))
 
       private val schoolResponse: Response = waitForSingleWSCall(wsCall(schoolCheckingUrl).get())
 
@@ -101,6 +105,12 @@ class DataImportingSpec extends Specification with TestSupport {
 
       relationshipSingleRes.status must equalTo(200)
       Json.parse(relationshipSingleRes.body).as[Relationship].card must beEqualTo("0000000011")
+
+      private val employeeRes: Response = waitForSingleWSCall(wsCall(employeeCheckingUrl).get())
+
+      employeeRes.status must equalTo(200)
+      Json.parse(employeeRes.body).as[List[Employee]].size must beEqualTo(1)
+      (Json.parse(employeeRes.body)(0) \ "school_id").as[Long] must beEqualTo(schoolId)
 
 
       def createOnServer(url: String): (String) => Future[Response] = {
