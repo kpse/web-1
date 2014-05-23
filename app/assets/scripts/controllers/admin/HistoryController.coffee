@@ -101,7 +101,7 @@ angular.module('kulebaoAdmin')
 
         scope.currentModal = Modal
           scope: scope
-          contentTemplate: 'templates/admin/view_message.html'
+          contentTemplate: 'templates/admin/view_history_record.html'
 
 
       scope.send = (msg) ->
@@ -123,6 +123,10 @@ angular.module('kulebaoAdmin')
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/add_history_record.html'
+
+      scope.messageDeleting = (message) ->
+        message.$delete ->
+          scope.currentModal.hide()
 
       scope.uploadPic = (message, pic) ->
         scope.uploading = true

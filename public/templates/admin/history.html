@@ -1,4 +1,4 @@
-<div class="loading" ng-show="loading"/>
+<div class="loading" ng-show="loading"></div>
 <h3>{{child.name}}小朋友的成长记录</h3>
 <form class="form well">
     <button ng-click="messageEditing(message)" class="btn btn-success">添加记录</button>
@@ -7,8 +7,8 @@
 <div class="chat-history longer-history"><table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class=".col-xs-2">发言人</th>
-    <th class=".col-xs-5">通讯内容</th>
+    <th class=".col-xs-2">记录人</th>
+    <th class=".col-xs-5">文字内容</th>
     <th class=".col-xs-4">图片</th>
     <th class=".col-xs-1">通讯时间</th>
   </tr>
@@ -19,11 +19,12 @@
     <td class=".col-xs-5">{{c.content.substring(0,100)}}{{(c.content.length > 100) ? '...' : ''}}</td>
     <th class=".col-xs-4">
       <div class="image-preview">
-        <img class="conversation-image img-responsive" ng-src="{{c.media.url}}"
-             alt="图片"/>
+        <img class="conversation-image img-responsive" ng-show="c.medium[0]" ng-src="{{c.medium[0].url}}"
+             alt="{{c.medium[0].type}}"/>
+          <div ng-show="!c.medium[0]">N/A</div>
       </div>
     </th>
-    <td class=".col-xs-1">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}收到</td>
+    <td class=".col-xs-1">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</td>
   </tr>
   </tbody>
 </table>

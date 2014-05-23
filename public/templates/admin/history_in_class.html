@@ -1,9 +1,9 @@
-<div class="loading" ng-show="loading" />
+<div class="loading" ng-show="loading" ></div>
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
     <th class=".col-xs-2">小孩姓名</th>
-    <th class=".col-xs-3">上一条记录内容</th>
+    <th class=".col-xs-3">文字内容</th>
     <th class=".col-xs-3">图片</th>
     <th class=".col-xs-3">最后记录时间</th>
   </tr>
@@ -15,7 +15,8 @@
     <th class=".col-xs-4" ng-show="c.lastMessage.medium[0]">
       <div class="image-preview">
         <img class="conversation-image img-responsive" ng-src="{{c.lastMessage.medium[0].url}}"
-             alt=""/>
+             alt="c.lastMessage.medium[0].type"/>
+          <div ng-show="!c.lastMessage.medium[0]">N/A</div>
       </div>
     </th>
     <td class=".col-xs-4" ng-show="!c.lastMessage.content">N/A</td>

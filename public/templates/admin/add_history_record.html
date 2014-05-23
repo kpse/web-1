@@ -7,16 +7,16 @@
         <table class="table table-hover table-condensed">
           <thead>
           <tr class="row">
-            <th class=".col-xs-2">发言人</th>
-            <th class=".col-xs-7">通讯内容</th>
-            <th class=".col-xs-3">通讯时间</th>
+            <th class=".col-xs-2">记录人</th>
+            <th class=".col-xs-7">文字内容</th>
+            <th class=".col-xs-3">记录时间</th>
           </tr>
           </thead>
           <tbody>
           <tr ng-repeat="c in conversations | filter: searchText " class="row" ng-click="preview(c, {reply: false})">
             <td class=".col-xs-2">{{c.sender.name}}</td>
             <td class=".col-xs-7">{{c.content.substring(0,50)}}{{(c.content.length > 50) ? '...' : ''}}</td>
-            <td class=".col-xs-3">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}收到</td>
+            <td class=".col-xs-3">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</td>
           </tr>
           </tbody>
         </table>
@@ -33,14 +33,14 @@
       <textarea id="content" name="content" ng-model="message.content"
                 class="editing-content form-control message-content" ng-maxlength="500"
                 placeholder="对{{relationship.child.name}}的家长说。。。"
-                ng-required="message.media.url == ''"/>
+                ng-required="message.media.url == ''"></textarea>
 
 
       <div class="col-sm-12">
         <div class="form-group col-sm-6">
-          <div class="image-preview">
-            <img class="message-image" ng-src="{{message.media.url}}"
-                 alt="照片"/>
+          <div class="image-preview" ng-repeat="m in message.medium">
+            <img class="message-image" ng-src="{{m.url}}"
+                 alt="{{m.type}}"/>
           </div>
         </div>
 
@@ -52,7 +52,7 @@
                   ng-click="uploadPic(message, pic)">上传图像
           </button>
           <span ng-class="{error : pic.size > 2048000}" class="help-block">图片大小请不要超过2m</span>
-          <div class="uploading" ng-show="uploading"/>
+          <div class="uploading" ng-show="uploading"></div>
         </div>
       </div>
     </div>
@@ -60,7 +60,7 @@
       <div class="loading" ng-show="loading"/>
       <div class="btn-group">
         <button class="btn btn-default" ng-click="$hide()">取消</button>
-        <button class="btn btn-info" ng-disabled="messageForm.$invalid || uploading" ng-click="send(message) && $hide()">发送
+        <button class="btn btn-info" ng-disabled="messageForm.$invalid || uploading" ng-click="send(message) && $hide()">添加记录
         </button>
       </div>
     </div>
