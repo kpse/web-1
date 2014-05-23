@@ -28,7 +28,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         goPageWithClassesTab 'bulletin'
 
       scope.goConversation = ->
-        goPageWithClassesTab 'conversation', 'card'
+        goPageWithClassesTab 'conversation', 'child'
 
       scope.goAssignment = ->
         goPageWithClassesTab 'assignment'
@@ -44,6 +44,11 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
 
       scope.goSchedule = ->
         goPageWithClassesTab 'schedule'
+
+      scope.goHistory = ->
+        goPageWithClassesTab 'history', 'child'
+
+
 
       scope.changePassword = (user) ->
         scope.user = angular.copy user

@@ -20,3 +20,15 @@ senderService = ($resource) ->
 
 angular.module('kulebaoAdmin')
 .factory('senderService', ['$resource', senderService])
+
+
+
+historyService = ($resource) ->
+  $resource '/kindergarten/:school_id/history/:topic',
+    {
+      school_id: '@school_id'
+      topic: '@child_id'
+    }
+
+angular.module('kulebaoAdmin')
+.factory('historyService', ['$resource', historyService])

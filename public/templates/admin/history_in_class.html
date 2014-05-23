@@ -1,0 +1,27 @@
+<div class="loading" ng-show="loading" />
+<table class="table table-hover table-condensed">
+  <thead>
+  <tr class="row">
+    <th class=".col-xs-2">小孩姓名</th>
+    <th class=".col-xs-3">上一条记录内容</th>
+    <th class=".col-xs-3">图片</th>
+    <th class=".col-xs-3">最后记录时间</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="c in children | filter: searchText" class="row" ng-class="{editable: goDetail, new: !c.lastMessage.isRead}" ng-click="goDetail(c)">
+    <td class=".col-xs-2">{{c.name}}<span ng-cloak ng-show="c.lastMessage && !c.lastMessage.isRead" class="new-flag label label-danger">New</span></td>
+    <td class=".col-xs-4" ng-show="c.lastMessage.content">{{c.lastMessage.content.substring(0,100)}}{{(c.lastMessage.content.length > 100) ? '...' : ''}}</td>
+    <th class=".col-xs-4" ng-show="c.lastMessage.medium[0]">
+      <div class="image-preview">
+        <img class="conversation-image img-responsive" ng-src="{{c.lastMessage.medium[0].url}}"
+             alt=""/>
+      </div>
+    </th>
+    <td class=".col-xs-4" ng-show="!c.lastMessage.content">N/A</td>
+    <td class=".col-xs-4" ng-show="!c.lastMessage.medium">N/A</td>
+    <td class=".col-xs-3">{{(c.lastMessage.timestamp | date:'yyyy年MM月dd日 HH:mm') || 'N/A'}}</td>
+  </tr>
+  </tbody>
+</table>
+<div class="conversation-view" ui-view></div>

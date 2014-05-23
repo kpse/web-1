@@ -1,0 +1,69 @@
+<div class="panel panel-default add-message-panel">
+  <h3>{{child.name}}小朋友的精彩瞬间</h3>
+
+  <form class="form-horizontal" role="form" name="messageForm">
+    <div class="panel-heading">
+      <div class="chat-history">
+        <table class="table table-hover table-condensed">
+          <thead>
+          <tr class="row">
+            <th class=".col-xs-2">发言人</th>
+            <th class=".col-xs-7">通讯内容</th>
+            <th class=".col-xs-3">通讯时间</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr ng-repeat="c in conversations | filter: searchText " class="row" ng-click="preview(c, {reply: false})">
+            <td class=".col-xs-2">{{c.sender.name}}</td>
+            <td class=".col-xs-7">{{c.content.substring(0,50)}}{{(c.content.length > 50) ? '...' : ''}}</td>
+            <td class=".col-xs-3">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}收到</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel-body">
+      <label for="content" class="control-label">回复内容</label>
+      <br/>
+      <small ng-show="message.content.length >= 0">还可以输入{{ 500 - message.content.length}}个字</small>
+      <span class="error-field"
+            ng-show="messageForm.content.$dirty && messageForm.content.$error.required && message.media.url">请填写回复内容</span>
+      <span class="error-field"
+            ng-show="messageForm.content.$dirty && messageForm.content.$error.maxlength">回复内容请不要超过500个字符</span>
+      <textarea id="content" name="content" ng-model="message.content"
+                class="editing-content form-control message-content" ng-maxlength="500"
+                placeholder="对{{relationship.child.name}}的家长说。。。"
+                ng-required="message.media.url == ''"/>
+
+
+      <div class="col-sm-12">
+        <div class="form-group col-sm-6">
+          <div class="image-preview">
+            <img class="message-image" ng-src="{{message.media.url}}"
+                 alt="照片"/>
+          </div>
+        </div>
+
+        <div class="form-group col-sm-6">
+          <label for="message-pic" class="control-label">上传图像</label>
+
+          <input type="file" id="message-pic" fileupload="pic"/>
+          <button class="btn btn-success btn-xs" ng-disabled="pic === undefined || pic.size > 2048000"
+                  ng-click="uploadPic(message, pic)">上传图像
+          </button>
+          <span ng-class="{error : pic.size > 2048000}" class="help-block">图片大小请不要超过2m</span>
+          <div class="uploading" ng-show="uploading"/>
+        </div>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <div class="loading" ng-show="loading"/>
+      <div class="btn-group">
+        <button class="btn btn-default" ng-click="$hide()">取消</button>
+        <button class="btn btn-info" ng-disabled="messageForm.$invalid || uploading" ng-click="send(message) && $hide()">发送
+        </button>
+      </div>
+    </div>
+  </form>
+
+</div>

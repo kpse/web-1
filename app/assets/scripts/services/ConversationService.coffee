@@ -9,3 +9,4 @@ conversationService = ($resource) ->
 
 angular.module('kulebaoAdmin')
 .factory('conversationService', ['$resource', conversationService])
+
