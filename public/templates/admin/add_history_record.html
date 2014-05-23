@@ -32,7 +32,7 @@
             ng-show="messageForm.content.$dirty && messageForm.content.$error.maxlength">回复内容请不要超过500个字符</span>
       <textarea id="content" name="content" ng-model="message.content"
                 class="editing-content form-control message-content" ng-maxlength="500"
-                placeholder="对{{relationship.child.name}}的家长说。。。"
+                placeholder="对{{child.name}}的祝福。。。"
                 ng-required="message.media.url == ''"></textarea>
 
 
@@ -48,10 +48,11 @@
           <label for="message-pic" class="control-label">上传图像</label>
 
           <input type="file" id="message-pic" fileupload="pic"/>
-          <button class="btn btn-success btn-xs" ng-disabled="pic === undefined || pic.size > 2048000"
+          <button class="btn btn-success btn-xs" ng-disabled="pic === undefined || pic.size > 2048000 || message.medium.length > 8"
                   ng-click="uploadPic(message, this)">{{message.medium.length==0 ? '添加图像' : '继续添加图像'}}
           </button>
           <span ng-class="{error : pic.size > 2048000}" class="help-block">图片大小请不要超过2m</span>
+          <span ng-class="{error : message.medium.length > 8}" class="help-block">最多支持9张图片</span>
           <div class="uploading" ng-show="uploading"></div>
         </div>
       </div>
@@ -60,7 +61,7 @@
       <div class="loading" ng-show="loading"/>
       <div class="btn-group">
         <button class="btn btn-default" ng-click="$hide()">取消</button>
-        <button class="btn btn-info" ng-disabled="messageForm.$invalid || uploading" ng-click="send(message) && $hide()">添加记录
+        <button class="btn btn-info" ng-disabled="messageForm.$invalid || uploading || (!message.content && message.medium.length==0)" ng-click="send(message) && $hide()">添加记录
         </button>
       </div>
     </div>
