@@ -13,7 +13,7 @@
     <td class=".col-xs-4" ng-show="c.lastMessage.content">{{c.lastMessage.content.substring(0,100)}}{{(c.lastMessage.content.length > 100) ? '...' : ''}}</td>
     <th class=".col-xs-4" ng-show="c.lastMessage.media.url && !c.lastMessage.content">
       <div class="image-preview">
-        <img class="conversation-image img-responsive" ng-src="{{c.lastMessage.media.url}}"
+        <img class="conversation-image img-responsive" ng-src="{{c.lastMessage.media.url}}?imageView/2/w/110/q/50"
              alt=""/>
       </div>
     </th>

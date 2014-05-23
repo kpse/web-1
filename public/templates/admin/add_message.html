@@ -33,13 +33,13 @@
       <textarea id="content" name="content" ng-model="message.content"
                 class="editing-content form-control message-content" ng-maxlength="500"
                 placeholder="对{{relationship.child.name}}的家长说。。。"
-                ng-required="message.media.url == ''"/>
+                ng-required="message.media.url == ''"></textarea>
 
 
       <div class="col-sm-12">
         <div class="form-group col-sm-6">
           <div class="image-preview">
-            <img class="message-image" ng-src="{{message.media.url}}"
+            <img class="message-image" ng-src="{{message.media.url}}?imageView/2/w/220/q/50"
                  alt="照片"/>
           </div>
         </div>
