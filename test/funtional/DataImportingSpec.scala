@@ -1,4 +1,4 @@
-package models
+package funtional
 
 import _root_.helper.TestSupport
 import org.specs2.mutable._
@@ -6,14 +6,18 @@ import org.specs2.runner._
 import org.junit.runner._
 
 import play.api.test._
-import play.api.libs.ws.{Response, WS}
 import play.api.Play
 import play.api.libs.json.Json
 import scala.io.Source
-import scala.concurrent.{Future, Await, ExecutionContext}
-import ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import play.api.Play.current
-import play.api.libs.ws.WS.WSRequestHolder
+import models._
+import play.api.libs.ws.Response
+import models.SchoolClass
+import scala.Some
+import models.ChildInfo
+import funtional.WSHelper._
+
 
 /**
  * add your integration spec here.
@@ -121,17 +125,5 @@ class DataImportingSpec extends Specification with TestSupport {
 
     }
 
-  }
-
-  def waitForWSCall(futures: Iterator[Future[Response]], timeout: Option[Long] = Some(1)) = {
-    Await.result(Future.sequence(futures), scala.concurrent.duration.Duration.apply(timeout.getOrElse(1L), "second"))
-  }
-
-  def waitForSingleWSCall(future: Future[Response], timeout: Option[Long] = Some(1)) = {
-    Await.result(future, scala.concurrent.duration.Duration.apply(timeout.getOrElse(1L), "second"))
-  }
-
-  def wsCall(url: String): WSRequestHolder = {
-    WS.url(url).withHeaders("Cookie" -> "PLAY_SESSION=\"7c635912fbbe211b27e4fe5ede182e2ed01d97d5-username=operator&phone=13060003723&name=%E8%B6%85%E4%BA%BA&id=3_93740362_9972\"")
   }
 }
