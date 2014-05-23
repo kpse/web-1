@@ -105,17 +105,6 @@ angular.module('kulebaoAdmin')
 
 
       scope.send = (msg) ->
-        if msg.media.url
-          imageMsg = angular.copy msg
-          imageMsg.content = ''
-          msg.media.url = ''
-          imageMsg.$save ->
-            if msg.content
-              msg.$save ->
-                scope.refresh()
-            else
-              scope.refresh()
-        else
           msg.$save ->
             scope.refresh()
 
@@ -129,11 +118,14 @@ angular.module('kulebaoAdmin')
           scope.refresh()
           scope.currentModal.hide()
 
-      scope.uploadPic = (message, pic) ->
+      scope.uploadPic = (message, thatScope) ->
         scope.uploading = true
-        Upload pic, (url) ->
+        Upload thatScope.pic, (url) ->
           scope.$apply ->
-            message.media.url = url if url isnt undefined
+            message.medium.push url : url, type: 'image' if url isnt undefined
             scope.uploading = false
+            thatScope.pic = undefined
+          angular.forEach angular.element("input[type='file']"), (elem)->
+            angular.element(elem).val(null)
         , scope.adminUser.id
   ]

@@ -28,7 +28,7 @@ historyService = ($resource) ->
   $resource '/kindergarten/:school_id/history/:topic/record/:rid',
     {
       school_id: '@school_id'
-      topic: '@child_id'
+      topic: '@topic'
       rid: '@id'
     }
 
