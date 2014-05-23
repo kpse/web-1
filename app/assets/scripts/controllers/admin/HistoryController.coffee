@@ -126,6 +126,7 @@ angular.module('kulebaoAdmin')
 
       scope.messageDeleting = (message) ->
         message.$delete ->
+          scope.refresh()
           scope.currentModal.hide()
 
       scope.uploadPic = (message, pic) ->

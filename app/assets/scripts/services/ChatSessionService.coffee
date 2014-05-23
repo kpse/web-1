@@ -1,10 +1,11 @@
 'use strict'
 
 chatSessionService = ($resource) ->
-  $resource '/kindergarten/:school_id/session/:topic',
+  $resource '/kindergarten/:school_id/session/:topic/record/:rid',
     {
       school_id: '@school_id'
       topic: '@topic'
+      rid: '@id'
     }
 
 angular.module('kulebaoAdmin')
@@ -24,10 +25,11 @@ angular.module('kulebaoAdmin')
 
 
 historyService = ($resource) ->
-  $resource '/kindergarten/:school_id/history/:topic',
+  $resource '/kindergarten/:school_id/history/:topic/record/:rid',
     {
       school_id: '@school_id'
       topic: '@child_id'
+      rid: '@id'
     }
 
 angular.module('kulebaoAdmin')

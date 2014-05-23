@@ -22,6 +22,7 @@ object SessionController extends Controller with Secured {
   implicit val write3 = Json.writes[Employee]
   implicit val write4 = Json.writes[Parent]
   implicit val write5 = Json.writes[ErrorResponse]
+  implicit val write6 = Json.writes[SuccessResponse]
 
   def index(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int]) = IsAuthenticated {
     u => _ =>
@@ -90,5 +91,13 @@ object SessionController extends Controller with Secured {
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
         }
+  }
+
+  def deleteHistory(kg: Long, topicId: String, id: Long) = delete(kg, "h_%s".format(topicId), id)
+
+  def delete(kg: Long, topicId: String, id: Long) = IsAuthenticated {
+    u => _ =>
+      ChatSession.delete(kg, topicId, id)
+      Ok(Json.toJson(new SuccessResponse))
   }
 }

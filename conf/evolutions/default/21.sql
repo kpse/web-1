@@ -14,6 +14,7 @@ CREATE TABLE sessionlog (
   media_type VARCHAR(200) DEFAULT 'image',
   sender VARCHAR(40) NOT NULL DEFAULT '',
   sender_type CHAR(1) NOT NULL DEFAULT 't',
+  status INT default 1,
   update_at BIGINT(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (uid)
 );

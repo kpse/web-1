@@ -17,10 +17,21 @@ case class MediaContent(url: String, `type`: Option[String] = Some("image"))
 
 
 object ChatSession {
+  def delete(kg: Long, topicId: String, id: Long) = DB.withConnection {
+    implicit c =>
+      SQL("update sessionlog set status=0 where school_id={kg} and session_id={topic} and uid={uid}")
+      .on(
+          'kg -> kg.toString,
+          'topic -> topicId,
+          'uid -> id
+        ).executeUpdate()
+  }
+
+
   def history(kg: Long, topicId: String, from: Option[Long], to: Option[Long]) = DB.withConnection {
     implicit c =>
       Logger.info("h_%s".format(topicId))
-      SQL("select * from sessionlog where school_id={kg} and session_id={id} " +
+      SQL("select * from sessionlog where status=1 and school_id={kg} and session_id={id} " +
         rangerQuery(from, to))
         .on(
           'kg -> kg.toString,
@@ -46,7 +57,7 @@ object ChatSession {
   def lastMessageInClasses(kg: Long, classes: String) = DB.withConnection {
     implicit c =>
       SQL("select * from sessionlog s," +
-        "(select session_id, MAX(update_at) last from sessionlog where " +
+        "(select session_id, MAX(update_at) last from sessionlog where status=1 and " +
         "session_id in (select child_id from childinfo where " + generateClassQuery(classes) + " and school_id={kg} and status=1) " +
         "group by session_id) a where a.last=s.update_at")
         .on(
@@ -119,7 +130,7 @@ object ChatSession {
 
   def index(kg: Long, sessionId: String, from: Option[Long], to: Option[Long]) = DB.withConnection {
     implicit c =>
-      SQL("select * from sessionlog where school_id={kg} and session_id={id} " +
+      SQL("select * from sessionlog where status=1 and school_id={kg} and session_id={id} " +
         rangerQuery(from, to))
         .on(
           'kg -> kg.toString,
