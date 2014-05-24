@@ -12,7 +12,7 @@
   </tr>
   </thead>
   <tbody>
-  <div class="loading" ng-show="loading"/>
+  <div class="loading" ng-show="loading"></div>
   <tr ng-repeat="r in relationships | filter: searchText | orderBy: 'child.class_name' " class="row">
     <td class=".col-xs-1">{{r.card}}</td>
     <td class=".col-xs-2">{{r.child.class_name}}</td>
