@@ -40,6 +40,7 @@ qiniuRawFileService = (tokenService) ->
         size: response.size
       })
 
+
     # Send to server, where we can then access it with $_FILES['file].
     data.append "file", file
     data.append "token", token

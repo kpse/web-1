@@ -1,6 +1,6 @@
 package controllers
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import play.api.Logger
 import models.{ErrorResponse, Children, ChildInfo, School}
@@ -46,13 +46,15 @@ object ChildController extends Controller with Secured {
         request.body.validate[ChildInfo].map {
           case (info) if !School.classExists(kg, info.class_id) =>
             BadRequest("class " + info.class_id + " does not exists.")
-          case (info) if !Children.idExists(info.child_id) && info.status == Some(0)  =>
+          case (info) if !Children.idExists(info.child_id) && info.status == Some(0) =>
             Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
           case (info) if Children.idExists(info.child_id) =>
             Ok(Json.toJson(Children.updateByChildId(kg, info.child_id.get, info)))
           case (info) =>
             Ok(Json.toJson(Children.create(kg, info)))
-        }.getOrElse(BadRequest)
+        }.recoverTotal {
+          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        }
 
   }
 
@@ -63,13 +65,15 @@ object ChildController extends Controller with Secured {
         request.body.validate[ChildInfo].map {
           case (info) if !School.classExists(kg, info.class_id) =>
             BadRequest("class " + info.class_id + " does not exists.")
-          case (info) if !Children.idExists(info.child_id) && info.status == Some(0)  =>
+          case (info) if !Children.idExists(info.child_id) && info.status == Some(0) =>
             Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
           case (info) if Children.idExists(Some(childId)) =>
             Ok(Json.toJson(Children.updateByChildId(kg, childId, info)))
           case (info) =>
             Ok(Json.toJson(Children.create(kg, info)))
-        }.getOrElse(BadRequest)
+        }.recoverTotal {
+          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        }
 
   }
 

@@ -14,6 +14,7 @@ CREATE TABLE sessionlog (
   media_type VARCHAR(200) DEFAULT 'image',
   sender VARCHAR(40) NOT NULL DEFAULT '',
   sender_type CHAR(1) NOT NULL DEFAULT 't',
+  status INT default 1,
   update_at BIGINT(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (uid)
 );
@@ -25,7 +26,9 @@ VALUES
 ('93740362', '1_93740362_9982', '娃他妈，怎么回事。', '', '2_93740362_790', 312314313123, 'p'),
 ('93740362', 'h_1_93740362_9982', '小孩历史测试无图片', '', '2_93740362_790', 312314313133, 'p'),
 ('93740362', 'h_1_93740362_9982', '小孩历史测试一张图片', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '2_93740362_790', 312314313143, 'p'),
-('93740362', 'h_1_93740362_9982', '小孩历史测试三张图片', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '2_93740362_790', 312314313143, 'p');
+('93740362', 'h_1_93740362_9982', '小孩历史测试三张图片', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '2_93740362_790', 312314313143, 'p'),
+('93740362', 'h_1_93740362_9982', '小孩历史测试五张图片', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '2_93740362_790', 312314343143, 'p'),
+('93740362', 'h_1_93740362_9982', '小孩历史测试九张图片', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK  http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '2_93740362_790', 312314383143, 'p');
 
 
 # --- !Downs

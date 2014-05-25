@@ -17,7 +17,7 @@
 
       <div class="form-group col-sm-6">
         <div class="image-container">
-          <img class="news-image img-responsive" ng-src="{{news.image}}"
+          <img class="news-image img-responsive" ng-src="{{news.image}}?imageView/2/h/220/q/50"
                alt="图片"/></div>
       </div>
 
@@ -64,7 +64,7 @@
     <div class="panel-footer">
       <div ng-show="news.published" class="issue-date">于{{news.timestamp | date:'yyyy年MM月dd日 HH:mm'}}发布</div>
       <div ng-hide="news.published" class="issue-date">未发布</div>
-      <div class="loading" ng-show="loading"/>
+      <div class="loading" ng-show="loading"></div>
       <div class="btn-group">
         <button class="btn btn-default" ng-click="$hide()">{{ news.published ? '关闭' : '取消' }}</button>
         <button class="btn btn-primary" ng-disabled="newsForm.$invalid || uploading" ng-hide="news.published"

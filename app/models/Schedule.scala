@@ -61,13 +61,13 @@ object Schedule {
             'thu_pm -> schedule.week.thu.pm,
             'fri_pm -> schedule.week.fri.pm
           ).executeInsert()
-        c.commit
+        c.commit()
         findById(newId.get)
       }
       catch {
         case t: Throwable =>
           Logger.info("error %s".format(t.toString))
-          c.rollback
+          c.rollback()
           findById(-1)
       }
 

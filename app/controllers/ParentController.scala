@@ -22,13 +22,9 @@ object ParentController extends Controller with Secured {
     u => _ =>
       classId match {
         case Some(id) =>
-          val jsons = Parent.indexInClass(kg, id, member)
-          Logger.info(jsons.toString())
-          Ok(Json.toJson(jsons))
+          Ok(Json.toJson(Parent.indexInClass(kg, id, member)))
         case None =>
-          val jsons = Parent.simpleIndex(kg, member, connected)
-          Logger.info(jsons.toString())
-          Ok(Json.toJson(jsons))
+          Ok(Json.toJson(Parent.simpleIndex(kg, member, connected)))
       }
   }
 
@@ -69,8 +65,8 @@ object ParentController extends Controller with Secured {
         request.body.validate[Parent].map {
           case (error) if !phone.equals(error.phone) =>
             BadRequest(Json.toJson(ErrorResponse("与url中电话号码不匹配。")))
-          case (phone) =>
-            handleCreateOrUpdate(kg, phone)
+          case (parent) =>
+            handleCreateOrUpdate(kg, parent)
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
         }
@@ -105,10 +101,8 @@ object ParentController extends Controller with Secured {
 
   def show(kg: Long, phone: String) = IsLoggedIn {
     u => _ =>
-      val parent = Parent.show(kg, phone)
-      parent.map {
-        p => Ok(Json.toJson(p))
-      }.getOrElse(NotFound)
-
+      Parent.show(kg, phone).fold(NotFound(""))({
+        case p => Ok(Json.toJson(p))
+      })
   }
 }

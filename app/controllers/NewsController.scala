@@ -19,10 +19,8 @@ object NewsController extends Controller with Secured {
 
   def show(kg: Long, newsId: Long) = IsLoggedIn {
     u => _ =>
-      News.findById(kg, newsId).map {
-        news =>
-          Ok(Json.toJson(news))
-      }.getOrElse(NotFound)
+      News.findById(kg, newsId).fold(NotFound(""))(news =>
+        Ok(Json.toJson(news)))
   }
 
   val newsForm = Form(
@@ -40,11 +38,11 @@ object NewsController extends Controller with Secured {
   def update(kg: Long, newsId: Long) = IsLoggedIn {
     u =>
       implicit request =>
-        newsForm.bindFromRequest.value map {
+        newsForm.bindFromRequest.value.fold(BadRequest(""))({
           news =>
             val updated = News.update(news, kg)
             Ok(Json.toJson(updated))
-        } getOrElse BadRequest
+        })
   }
 
   def adminUpdate(kg: Long, adminId: String, newsId: Long) = update(kg, newsId)
@@ -75,11 +73,11 @@ object NewsController extends Controller with Secured {
   def create(kg: Long, adminId: String) = IsLoggedIn {
     u =>
       implicit request =>
-        newsCreateForm.bindFromRequest.value map {
+        newsCreateForm.bindFromRequest.value.fold(BadRequest(""))({
           news =>
             val created = News.create(news)
             Ok(Json.toJson(created))
-        } getOrElse BadRequest
+        })
   }
 
   def deleteOne(kg: Long, newsId: Long) = IsLoggedIn {

@@ -78,10 +78,27 @@ angular.module('kulebaoAdmin',
       url: '/list',
       templateUrl: 'templates/admin/conversation_in_class.html',
       controller: 'ConversationsInClassCtrl'
-    .state 'kindergarten.conversation.class.relationship',
+    .state 'kindergarten.conversation.class.child',
       url: '/child/:child_id',
       templateUrl: 'templates/admin/conversation.html',
       controller: 'ConversationCtrl'
+
+    .state 'kindergarten.history',
+      url: '/history',
+      templateUrl: 'templates/admin/search_panel.html',
+      controller: 'HistoryListCtrl'
+    .state 'kindergarten.history.class',
+      url: '/class/:class_id',
+      templateUrl: 'templates/admin/classes.html',
+      controller: 'HistoryInClassCtrl'
+    .state 'kindergarten.history.class.list',
+      url: '/list',
+      templateUrl: 'templates/admin/history_in_class.html',
+      controller: 'HistoryInClassCtrl'
+    .state 'kindergarten.history.class.child',
+      url: '/child/:child_id',
+      templateUrl: 'templates/admin/history.html',
+      controller: 'HistoryCtrl'
 
     .state 'kindergarten.assess',
       url: '/baby-status',

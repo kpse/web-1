@@ -1,10 +1,11 @@
 'use strict'
 
 chatSessionService = ($resource) ->
-  $resource '/kindergarten/:school_id/session/:topic',
+  $resource '/kindergarten/:school_id/session/:topic/record/:rid',
     {
       school_id: '@school_id'
       topic: '@topic'
+      rid: '@id'
     }
 
 angular.module('kulebaoAdmin')
@@ -20,3 +21,16 @@ senderService = ($resource) ->
 
 angular.module('kulebaoAdmin')
 .factory('senderService', ['$resource', senderService])
+
+
+
+historyService = ($resource) ->
+  $resource '/kindergarten/:school_id/history/:topic/record/:rid',
+    {
+      school_id: '@school_id'
+      topic: '@topic'
+      rid: '@id'
+    }
+
+angular.module('kulebaoAdmin')
+.factory('historyService', ['$resource', historyService])

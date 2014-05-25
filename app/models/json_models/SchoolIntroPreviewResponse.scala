@@ -104,7 +104,7 @@ object SchoolIntro {
   }
 
   def generateFullNameSql(fullName: Option[String]): String = {
-    fullName.map(f => " ,full_name={full_name} ").getOrElse("")
+    fullName.fold("")(f => " ,full_name={full_name} ")
 
   }
 

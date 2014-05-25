@@ -29,7 +29,7 @@ object ChargeController extends Controller with Secured {
 
   def delete(kg: Long) = IsOperator {
     u =>
-      request =>
+      _ =>
         Ok(Json.toJson(Charge.delete(kg)))
   }
 }

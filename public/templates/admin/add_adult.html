@@ -97,7 +97,7 @@
         <div class="btn-group dropup pull-right">
           <a class="btn btn-success adding-button dropdown-toggle"
              data-toggle="dropdown"
-             ng-disabled="newAdultForm.$invalid || isPhoneDuplicated(parent) || uploading">保存</a>
+             ng-disabled="!newAdultForm.$dirty || newAdultForm.$invalid || isPhoneDuplicated(parent) || uploading">保存</a>
           <ul class="dropdown-menu parent-creating-menu" role="menu">
             <li><a ng-click="saveParent(parent)">仅保存</a></li>
             <li><a ng-click="connectToChild(parent)">关联到小孩</a></li>

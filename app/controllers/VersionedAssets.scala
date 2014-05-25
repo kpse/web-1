@@ -19,7 +19,7 @@ object VersionedAsset {
     }
 
     def unbind(key: String, value: VersionedAsset) = {
-      val resourceName = Option(value.path + "/" + value.file).map(name => if (name.startsWith("/")) name else ("/" + name)).get
+      val resourceName = Option(value.path + "/" + value.file).map(name => if (name.startsWith("/")) name else "/" + name).get
       val modified = Play.resource(resourceName).flatMap {
         resource =>
           resource.getProtocol match {
@@ -29,7 +29,7 @@ object VersionedAsset {
             case _ => None
           }
       }
-      modified.map(value.file + "?" + value.versionParam + "=" + _).getOrElse(value.file)
+      modified.fold(value.file)(value.file + "?" + value.versionParam + "=" + _)
     }
   }
 
