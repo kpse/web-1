@@ -57,13 +57,13 @@ object CookBook {
             'fri_dinner -> cookbook.week.fri.dinner,
             'fri_extra -> cookbook.week.fri.extra
           ).executeInsert()
-        c.commit
+        c.commit()
         findById(newId.get)
       }
       catch {
         case t: Throwable  =>
           Logger.info("error %s".format(t.toString))
-          c.rollback
+          c.rollback()
           findById(-1)
       }
 

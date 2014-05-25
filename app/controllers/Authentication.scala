@@ -90,12 +90,12 @@ object Authentication extends Controller {
   def resetPassword = Action(parse.json) {
     request =>
       request.body.validate[ResetPassword].map {
-        case (request) =>
-          loggedJson(request)
-          val reset = ChangePasswordResponse.handleReset(request)
+        case (r) =>
+          loggedJson(r)
+          val reset = ChangePasswordResponse.handleReset(r)
           reset match {
             case success if success.error_code == 0 =>
-              Ok(loggedJson(success)).withSession("username" -> request.account_name, "token" -> success.access_token)
+              Ok(loggedJson(success)).withSession("username" -> r.account_name, "token" -> success.access_token)
             case _ =>
               Ok(loggedJson(reset)).withNewSession
           }
@@ -109,12 +109,12 @@ object Authentication extends Controller {
       request.body.validate[ChangePassword].map {
         case (tooSimple) if !PasswordHelper.isValid(tooSimple.new_password) =>
           BadRequest(loggedJson(ErrorResponse(PasswordHelper.ErrorMessage)))
-        case (request) =>
-          loggedJson(request)
-          val changed = ChangePasswordResponse.handle(request)
+        case (r) =>
+          loggedJson(r)
+          val changed = ChangePasswordResponse.handle(r)
           changed match {
             case success if success.error_code == 0 =>
-              Ok(loggedJson(success)).withSession("username" -> request.account_name, "token" -> success.access_token)
+              Ok(loggedJson(success)).withSession("username" -> r.account_name, "token" -> success.access_token)
             case _ =>
               Ok(loggedJson(changed)).withNewSession
           }
@@ -144,11 +144,11 @@ object Authentication extends Controller {
           BadRequest(loggedJson(ErrorResponse("不存在登录名为%s的老师。".format(nonExists.account_name))))
         case (nonExists) if !PasswordHelper.isValid(nonExists.new_password) =>
           BadRequest(loggedJson(ErrorResponse(PasswordHelper.ErrorMessage)))
-        case (request) =>
-          loggedJson(request)
-          ChangePasswordResponse.handleEmployeeReset(request) match {
+        case (r) =>
+          loggedJson(r)
+          ChangePasswordResponse.handleEmployeeReset(r) match {
             case success if success.error_code == 0 =>
-              Employee.authenticate(request.account_name, request.new_password).fold(Ok(loggedJson(success)).withNewSession)({
+              Employee.authenticate(r.account_name, r.new_password).fold(Ok(loggedJson(success)).withNewSession)({
                 case employee =>
                   Ok(loggedJson(success)).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
               })

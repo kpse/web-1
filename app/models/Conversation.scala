@@ -10,6 +10,7 @@ import scala.Some
 
 case class Conversation(phone: String, timestamp: Long, id: Option[Long], content: String, image: Option[String], sender: Option[String], sender_id: Option[String])
 
+@Deprecated
 object Conversation {
   def retrieveSender(kg: Long, sender: Sender) = {
     sender.`type` match {
