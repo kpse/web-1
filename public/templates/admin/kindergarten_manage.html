@@ -69,7 +69,7 @@
         </a>
       </li>
 
-        <li class="action" ng-class="{active : isSelected('history')}">
+        <li class="action" ng-class="{active : isSelected('history')}" ng-show="operatorOnly(adminUser)">
             <a class="btn history" ng-click="goHistory()">
                 <span>成长历史</span>
             </a>
