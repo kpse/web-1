@@ -99,4 +99,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.showingUp = (user) ->
         undefined isnt _.find ['principal', 'operator'], (u) -> user.privilege_group == u
 
+      scope.operatorOnly = (user) ->
+        user.privilege_group == 'operator'
+
   ]
