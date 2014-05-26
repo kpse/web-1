@@ -60,7 +60,7 @@ object ChatSession {
     implicit c =>
       Logger.info("h_%s".format(topicId))
       SQL("select * from sessionlog where status=1 and school_id={kg} and session_id={id} " +
-        rangerQuery(from, to) + generateMonthQuery(month))
+        generateMonthQuery(month) + rangerQuery(from, to))
         .on(
           'kg -> kg.toString,
           'id -> "h_%s".format(topicId),
