@@ -93,9 +93,12 @@ GET           /kindergarten/:kg/assignment                                      
 POST          /kindergarten/:kg/assignment                                       controllers.AssignmentController.create(kg: Long)
 POST          /kindergarten/:kg/assignment/:assignmentId                         controllers.AssignmentController.update(kg: Long, assignmentId: Long)
 
-GET           /kindergarten/:kg/history/:topicId/record                          controllers.SessionController.history(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /kindergarten/:kg/history/:topicId/record                          controllers.SessionController.history(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String])
 DELETE        /kindergarten/:kg/history/:topicId/record/:id                      controllers.SessionController.deleteHistory(kg: Long, topicId: String, id: Long)
 POST          /kindergarten/:kg/history/:topicId/record                          controllers.SessionController.createHistory(kg: Long, topicId: String, retrieve_recent_from: Option[Long])
+GET           /kindergarten/:kg/history/:topicId/statistics                          controllers.SessionController.statistics(kg: Long, topicId: String, year: String)
+
+
 GET           /kindergarten/:kg/session/:topicId/record                          controllers.SessionController.index(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int])
 DELETE        /kindergarten/:kg/session/:topicId/record/:id                      controllers.SessionController.delete(kg: Long, topicId: String, id: Long)
 POST          /kindergarten/:kg/session/:topicId/record                          controllers.SessionController.create(kg: Long, topicId: String, retrieve_recent_from: Option[Long])
