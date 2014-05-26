@@ -3,8 +3,8 @@
 angular.module('kulebaoAdmin')
 .controller 'ConversationsListCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    'schoolService', 'classService', '$location'
-    (scope, rootScope, stateParams, School, Class, location) ->
+    'schoolService', 'classService', '$location', 'imageCompressService',
+    (scope, rootScope, stateParams, School, Class, location, Compress) ->
       rootScope.tabName = 'conversation'
       scope.heading = '使用该功能与家长直接对话'
 
@@ -16,6 +16,9 @@ angular.module('kulebaoAdmin')
 
       scope.navigateTo = (c) ->
         location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')
+
+      scope.compress = (url, width, height) ->
+        Compress.compress(url, width, height)
 
   ]
 

@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
   ['$scope', '$rootScope', '$location', 'adminNewsService',
-   '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService',
-    (scope, $rootScope, location, adminNewsService, stateParams, School, Modal, Employee, Class) ->
+   '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService', 'imageCompressService',
+    (scope, $rootScope, location, adminNewsService, stateParams, School, Modal, Employee, Class, Compress) ->
       $rootScope.tabName = 'bulletin'
       scope.heading = '全园和班级的通知公告都可以在这里发布'
 
@@ -19,6 +19,9 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
       scope.navigateTo = (s) ->
         location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + s.class_id + '/list')
+
+      scope.compress = (url, width, height) ->
+        Compress.compress(url, width, height)
   ]
 
 angular.module('kulebaoAdmin').controller 'BulletinCtrl',
