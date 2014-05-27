@@ -8,6 +8,7 @@ import models.helper.RangerHelper._
 import anorm.~
 import scala.Some
 import play.Logger
+import play.api.Play
 
 case class ChatSession(topic: String, timestamp: Option[Long], id: Option[Long], content: String, media: Option[MediaContent] = Some(MediaContent("")), sender: Sender, medium: Option[List[MediaContent]] = Some(List[MediaContent]()))
 
@@ -18,12 +19,20 @@ case class MediaContent(url: String, `type`: Option[String] = Some("image"))
 case class SessionInMonth(month: String, count: Long)
 
 object ChatSession {
+
+  def adaptLocalDB(sql: String): String = Play.current.configuration.getString("db.default.driver") match {
+    case Some("org.h2.Driver") =>
+      sql.replaceAll( """DATE_FORMAT\(\(from_unixtime\(update_at / 1000\)\), '%Y%m'\)""", "FORMATDATETIME(DATEADD('SECOND', update_at/1000, DATE '1970-01-01'), 'YMM')")
+        .replaceAll( """DATE_FORMAT\(\(FROM_UNIXTIME\(update_at / 1000\)\), '%Y'\)""", "FORMATDATETIME(DATEADD('SECOND', update_at/1000, DATE '1970-01-01'), 'Y')")
+    case other => sql
+  }
+
   def groupByMonth(kg: Long, topic: String, year: String) = DB.withConnection {
     implicit c =>
-//      todo: how can we compatible the sql between mysql and h2 ?
-      SQL("SELECT DATE_FORMAT((from_unixtime(update_at / 1000)), '%Y%m') month, count(1) FROM sessionlog " +
-        " where session_id={topic} AND school_id={kg} AND DATE_FORMAT( (FROM_UNIXTIME( update_at /1000 ) ) ,  '%Y') = {year} " +
-        " GROUP BY DATE_FORMAT((from_unixtime(update_at / 1000)), '%Y%m')")
+      val groupSql: String = "SELECT DATE_FORMAT((from_unixtime(update_at / 1000)), '%Y%m') month, count(1) FROM sessionlog " +
+        " where session_id={topic} AND school_id={kg} AND DATE_FORMAT((FROM_UNIXTIME(update_at / 1000)), '%Y') = {year} " +
+        " GROUP BY DATE_FORMAT((from_unixtime(update_at / 1000)), '%Y%m')"
+      SQL(adaptLocalDB(groupSql))
         .on(
           'kg -> kg.toString,
           'topic -> topic,
@@ -52,7 +61,7 @@ object ChatSession {
 
   def generateMonthQuery(month: Option[String]): String = month match {
     case Some(m) =>
-      " and DATE_FORMAT((from_unixtime(update_at / 1000)), '%Y%m')={month} "
+      adaptLocalDB(" and DATE_FORMAT((from_unixtime(update_at / 1000)), '%Y%m')={month} ")
     case None => ""
   }
 
