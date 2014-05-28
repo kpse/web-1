@@ -23,8 +23,8 @@
     <td class=".col-xs-5" ng-show="!c.content">N/A</td>
     <th class=".col-xs-4">
       <div class="image-preview">
-        <img class="conversation-image img-responsive" ng-src="{{c.media.url}}?imageView/2/w/110/q/50"
-             alt="c.media.type"/>
+        <img class="conversation-image img-responsive" ng-src="{{compress(c.media.url, 110)}}"
+             alt="{{c.media.type}}"/>
       </div>
     </th>
     <td class=".col-xs-1">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}收到</td>

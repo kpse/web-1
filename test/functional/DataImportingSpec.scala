@@ -1,4 +1,4 @@
-package funtional
+package functional
 
 import _root_.helper.TestSupport
 import org.specs2.mutable._
@@ -16,7 +16,7 @@ import play.api.libs.ws.Response
 import models.SchoolClass
 import scala.Some
 import models.ChildInfo
-import funtional.WSHelper._
+import functional.WSHelper._
 
 
 /**
@@ -115,6 +115,14 @@ class DataImportingSpec extends Specification with TestSupport {
       employeeRes.status must equalTo(200)
       Json.parse(employeeRes.body).as[List[Employee]].size must beEqualTo(1)
       (Json.parse(employeeRes.body)(0) \ "school_id").as[Long] must beEqualTo(schoolId)
+
+      val relationshipCheckingUrl2 = "http://localhost:19001/kindergarten/%d/relationship?parent=18647879092".format(schoolId)
+
+      private val relationshipforOneParent: Response = waitForSingleWSCall(wsCall(relationshipCheckingUrl2).get())
+
+      relationshipforOneParent.status must equalTo(200)
+      Json.parse(relationshipforOneParent.body).as[List[Relationship]].size must beEqualTo(1)
+      Json.parse(relationshipforOneParent.body)(0).as[Relationship].child.get.name must beEqualTo("李家昊")
 
 
       def createOnServer(url: String): (String) => Future[Response] = {

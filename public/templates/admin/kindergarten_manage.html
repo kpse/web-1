@@ -13,13 +13,14 @@
           <form class="navbar-form navbar-right row" role="search">
             <h4 class="col-sm-6">您好， {{adminUser.name}}</h4>
             <button type="button" class="btn btn-warning dropdown-toggle admin-user" data-toggle="dropdown">
-            个人中心<span class="caret"></span>
+              个人中心<span class="caret"></span>
             </button>
             <ul class="dropdown-menu user-menu" role="menu">
               <li><a ng-href="#/kindergarten/{{kindergarten.school_id}}/welcome">欢迎页面</a></li>
               <li><a ng-click="edit(adminUser)">修改个人信息</a></li>
               <li><a ng-click="changePassword(adminUser)">修改密码</a></li>
-              <li ng-show="adminUser.privilege_group == 'operator'"><a ng-href="/operation">去后台管理页面</a></li>
+              <li ng-show="adminUser.privilege_group == 'operator'"><a ng-href="/operation">去后台管理页面</a>
+              </li>
               <li class="divider"></li>
               <li><a class="logout-link" href="/logout">退出登陆</a></li>
             </ul>
@@ -28,8 +29,9 @@
         </div>
         <!-- /.navbar-collapse -->
       </div>
-      <div class="admin-user-portrait-container editable col-sm-2" ng-click="edit(adminUser)" >
-        <img class="portrait img-responsive" ng-src="{{adminUser.portrait || '/assets/images/portrait_placeholder.png' }}"
+      <div class="admin-user-portrait-container editable col-sm-2" ng-click="edit(adminUser)">
+        <img class="portrait img-responsive"
+             ng-src="{{adminUser.portrait || '/assets/images/portrait_placeholder.png' }}"
              alt="照片"/>
       </div>
       <!-- /.container-fluid -->
@@ -69,14 +71,14 @@
         </a>
       </li>
 
-        <li class="action" ng-class="{active : isSelected('history')}" ng-show="operatorOnly(adminUser)">
-            <a class="btn history" ng-click="goHistory()">
-                <span>成长历史</span>
-            </a>
-        </li>
+      <li class="action" ng-class="{active : isSelected('history')}" ng-show="operatorOnly(adminUser)">
+        <a class="btn history" ng-click="goHistory()">
+          <span>成长历史</span>
+        </a>
+      </li>
 
       <li class="action">
-        <a class="btn placeholder" >
+        <a class="btn placeholder">
           <span>placeholder</span>
         </a>
       </li>
@@ -106,9 +108,6 @@
           <span>幼儿园简介</span>
         </a>
       </li>
-
-
-
 
 
     </ul>

@@ -3,8 +3,8 @@
 angular.module('kulebaoAdmin')
 .controller 'HistoryListCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    'schoolService', 'classService', '$location'
-    (scope, rootScope, stateParams, School, Class, location) ->
+    'schoolService', 'classService', '$location', 'imageCompressService',
+    (scope, rootScope, stateParams, School, Class, location, Compress) ->
       rootScope.tabName = 'history'
       scope.heading = '记录小朋友成长的各种瞬间'
 
@@ -17,6 +17,8 @@ angular.module('kulebaoAdmin')
       scope.navigateTo = (c) ->
         location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')
 
+      scope.compress = (url, width, height) ->
+        Compress.compress(url, width, height)
   ]
 
 angular.module('kulebaoAdmin')

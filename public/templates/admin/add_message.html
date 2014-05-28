@@ -39,7 +39,7 @@
       <div class="col-sm-12">
         <div class="form-group col-sm-6">
           <div class="image-preview">
-            <img class="message-image" ng-src="{{message.media.url}}?imageView/2/w/220/q/50"
+            <img class="message-image" ng-src="{{compress(message.media.url, 220)}}"
                  alt="照片"/>
           </div>
         </div>
@@ -52,7 +52,7 @@
                   ng-click="uploadPic(message, pic)">上传图像
           </button>
           <span ng-class="{error : pic.size > 2048000}" class="help-block">图片大小请不要超过2m</span>
-          <div class="uploading" ng-show="uploading"/>
+          <div class="uploading" ng-show="uploading"></div>
         </div>
       </div>
     </div>

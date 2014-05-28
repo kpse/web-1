@@ -12,7 +12,7 @@ class ChatSessionSpec extends Specification with TestSupport {
 
       index.size must equalTo(3)
       index(0).topic must equalTo("1_93740362_9982")
-      index(0).id must equalTo(Some(3))
+      index(0).id must equalTo(Some(4))
       index(0).timestamp must greaterThan(index(2).timestamp)
 
     }
@@ -21,26 +21,26 @@ class ChatSessionSpec extends Specification with TestSupport {
 
       private val index = ChatSession.index(93740362L, "1_93740362_9982", Some(1), None)
 
-      index.size must equalTo(2)
+      index.size must equalTo(3)
       index(0).topic must equalTo("1_93740362_9982")
-      index(0).id must equalTo(Some(3))
+      index(0).id must equalTo(Some(4))
       index(0).id must greaterThan(index(1).id)
 
     }
 
     "report index with to" in new WithApplication {
 
-      private val index = ChatSession.index(93740362L, "1_93740362_9982", None, Some(3))
+      private val index = ChatSession.index(93740362L, "1_93740362_9982", None, Some(4))
 
       index.size must equalTo(2)
       index(0).topic must equalTo("1_93740362_9982")
-      index(0).id must equalTo(Some(2))
+      index(0).id must equalTo(Some(3))
       index(0).id must greaterThan(index(1).id)
 
     }
     "report empty if from the end" in new WithApplication {
 
-      private val index = ChatSession.index(93740362L, "1_93740362_9982", Some(3), None)
+      private val index = ChatSession.index(93740362L, "1_93740362_9982", Some(4), None)
 
       index.size must equalTo(0)
     }

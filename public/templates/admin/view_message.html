@@ -15,13 +15,13 @@
         <label for="content" class="control-label">回复内容</label>
         <textarea id="content" name="content" ng-model="viewing_message.content"
                   class="viewing-content form-control message-content"
-                  ng-disabled="true"/>
+                  ng-disabled="true"></textarea>
       </div>
 
       <div class="form-group">
         <div class="image-preview">
-          <img class="message-image" ng-src="{{viewing_message.media.url}}?imageView/2/w/220/q/50"
-               alt="照片"/>
+          <img class="message-image" ng-src="{{compress(viewing_message.media.url, 220)}}"
+               alt="{{viewing_message.media.type}}"/>
         </div>
       </div>
 

@@ -8,6 +8,7 @@ import models.helper.RangerHelper._
 import anorm.~
 import scala.Some
 import play.Logger
+import play.api.Play
 
 case class ChatSession(topic: String, timestamp: Option[Long], id: Option[Long], content: String, media: Option[MediaContent] = Some(MediaContent("")), sender: Sender, medium: Option[List[MediaContent]] = Some(List[MediaContent]()))
 
@@ -15,12 +16,42 @@ case class Sender(id: String, `type`: Option[String] = Some("t"))
 
 case class MediaContent(url: String, `type`: Option[String] = Some("image"))
 
+case class SessionInMonth(month: String, count: Long)
 
 object ChatSession {
+
+  def adaptLocalDB(sql: String): String = Play.current.configuration.getString("db.default.driver") match {
+    case Some("org.h2.Driver") =>
+      sql.replaceAll( """DATE_FORMAT\(\(from_unixtime\(update_at / 1000\)\), '%Y%m'\)""", "FORMATDATETIME(DATEADD('SECOND', update_at/1000, DATE '1970-01-01'), 'YMM')")
+        .replaceAll( """DATE_FORMAT\(\(FROM_UNIXTIME\(update_at / 1000\)\), '%Y'\)""", "FORMATDATETIME(DATEADD('SECOND', update_at/1000, DATE '1970-01-01'), 'Y')")
+    case other => sql
+  }
+
+  def groupByMonth(kg: Long, topic: String, year: String) = DB.withConnection {
+    implicit c =>
+      val groupSql: String = "SELECT DATE_FORMAT((from_unixtime(update_at / 1000)), '%Y%m') month, count(1) FROM sessionlog " +
+        " where session_id={topic} AND school_id={kg} AND DATE_FORMAT((FROM_UNIXTIME(update_at / 1000)), '%Y') = {year} " +
+        " GROUP BY DATE_FORMAT((from_unixtime(update_at / 1000)), '%Y%m')"
+      SQL(adaptLocalDB(groupSql))
+        .on(
+          'kg -> kg.toString,
+          'topic -> topic,
+          'year -> year
+        ).as(statistic *)
+  }
+
+  val statistic = {
+    get[String]("month") ~
+      get[Long]("count(1)") map {
+      case month ~ count =>
+        SessionInMonth(month, count)
+    }
+  }
+
   def delete(kg: Long, topicId: String, id: Long) = DB.withConnection {
     implicit c =>
       SQL("update sessionlog set status=0 where school_id={kg} and session_id={topic} and uid={uid}")
-      .on(
+        .on(
           'kg -> kg.toString,
           'topic -> topicId,
           'uid -> id
@@ -28,16 +59,23 @@ object ChatSession {
   }
 
 
-  def history(kg: Long, topicId: String, from: Option[Long], to: Option[Long]) = DB.withConnection {
+  def generateMonthQuery(month: Option[String]): String = month match {
+    case Some(m) =>
+      adaptLocalDB(" and DATE_FORMAT((from_unixtime(update_at / 1000)), '%Y%m')={month} ")
+    case None => ""
+  }
+
+  def history(kg: Long, topicId: String, from: Option[Long], to: Option[Long], month: Option[String]) = DB.withConnection {
     implicit c =>
       Logger.info("h_%s".format(topicId))
       SQL("select * from sessionlog where status=1 and school_id={kg} and session_id={id} " +
-        rangerQuery(from, to))
+        generateMonthQuery(month) + rangerQuery(from, to))
         .on(
           'kg -> kg.toString,
           'id -> "h_%s".format(topicId),
           'from -> from,
-          'to -> to
+          'to -> to,
+          'month -> month
         ).as(simple(Some("^h_")) *)
   }
 
