@@ -104,6 +104,7 @@ POST          /kindergarten/:kg/history                                         
 GET           /kindergarten/:kg/session/:topicId/record                          controllers.SessionController.index(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int])
 DELETE        /kindergarten/:kg/session/:topicId/record/:id                      controllers.SessionController.delete(kg: Long, topicId: String, id: Long)
 POST          /kindergarten/:kg/session/:topicId/record                          controllers.SessionController.create(kg: Long, topicId: String, retrieve_recent_from: Option[Long])
+GET           /kindergarten/:kg/session                                          controllers.SessionController.indexInClasses(kg: Long, class_id: String)
 
 GET           /kindergarten/:kg/sender/:senderId                                 controllers.SessionController.senderDetail(kg: Long, senderId: String, type: String)
 
