@@ -1,4 +1,4 @@
-package funtional
+package functional
 
 import scala.concurrent.{ExecutionContext, Await, Future}
 import play.api.libs.ws.{WS, Response}
