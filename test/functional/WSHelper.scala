@@ -6,8 +6,8 @@ import play.api.libs.ws.WS.WSRequestHolder
 import ExecutionContext.Implicits.global
 
 object WSHelper {
-  def waitForWSCall(futures: Iterator[Future[Response]], timeout: Option[Long] = Some(1)) = {
-    Await.result(Future.sequence(futures), scala.concurrent.duration.Duration.apply(timeout.getOrElse(1L), "second"))
+  def waitForWSCall(futures: Iterator[Future[Response]], timeout: Option[Long] = Some(5)) = {
+    Await.result(Future.sequence(futures), scala.concurrent.duration.Duration.apply(timeout.getOrElse(5L), "second"))
   }
 
   def waitForSingleWSCall(future: Future[Response], timeout: Option[Long] = Some(5)) = {
