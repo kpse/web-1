@@ -56,7 +56,8 @@
 
       <div class="col-sm-8">
         <input id="admin-name" type="text" ng-model="school.principal.admin_login" name="adminLogin"
-               class="editing-field form-control" required/>
+               class="editing-field form-control" required ng-pattern="/^\w{3,16}$/" />
+        <span class="error-field" ng-show="newSchoolForm.adminLogin.$dirty && newSchoolForm.adminLogin.$error.pattern">登录名只能由3到16位数字和字母组成，不能包含特殊字符或者中文。</span>
       </div>
     </div>
     <div class="form-group">
