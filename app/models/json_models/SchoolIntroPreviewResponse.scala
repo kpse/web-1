@@ -8,7 +8,12 @@ import anorm.~
 import scala.Some
 import models.helper.MD5Helper.md5
 import anorm.SqlParser._
+import models.{Employee, ChargeInfo}
+import controllers.EmployeeController
+import controllers.helper.JsonLogger._
 import models.ChargeInfo
+import anorm.~
+import scala.Some
 
 case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: String, school_logo_url: String, name: String, token: Option[String], address: Option[String], full_name: Option[String])
 
@@ -47,27 +52,16 @@ object SchoolIntro {
             'token -> school.token,
             'full_name -> school.full_name
           ).executeInsert()
-        val employeeId = "3_%d_%d".format(school.school_id, time)
-        SQL("insert into employeeinfo (name, employee_id, phone, gender, workgroup, workduty, picurl, birthday, school_id, login_password, login_name) " +
-          " values ({name}, {employee_id}, {phone}, 0, '', '', '', '1980-01-01', {school_id}, {password}, {login_name})")
-          .on(
-            'school_id -> school.school_id.toString,
-            'name -> "%s校长".format(school.name),
-            'employee_id -> employeeId,
-            'login_name -> school.principal.admin_login,
-            'password -> md5(school.principal.admin_password),
-            'phone -> school.phone
-          ).executeInsert()
-        SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) " +
-          "values ({school_id},{employee_id},{group},{subordinate},{promoter},{time})")
-          .on(
-            'school_id -> school.school_id.toString,
-            'employee_id -> employeeId,
-            'group -> "principal",
-            'subordinate -> "",
-            'promoter -> "operator",
-            'time -> time
-          ).executeInsert()
+        val employee = Employee(None, "%s校长".format(school.name), school.phone, 0,
+          "", "", None, "1980-01-01", school.school_id, school.principal.admin_login, None, None, Some(1))
+        val createdEmployee = school.phone match {
+          case (reCreation) if Employee.hasBeenDeleted(reCreation) =>
+            Employee.reCreateByPhone(employee)
+          case _ =>
+            Employee.create(employee)
+        }
+        Employee.promote(createdEmployee.get)
+
         SQL("insert into chargeinfo (school_id, total_phone_number, expire_date, update_at) " +
           " values ({school_id}, {total}, {expire}, {time})")
           .on(
@@ -87,6 +81,7 @@ object SchoolIntro {
         case t: Throwable =>
           Logger.info("error %s".format(t.toString))
           c.rollback()
+          throw new IllegalArgumentException("创建学校失败。", t)
       }
       detail(school.school_id)
   }
