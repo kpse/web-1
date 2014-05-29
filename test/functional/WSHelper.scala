@@ -10,8 +10,8 @@ object WSHelper {
     Await.result(Future.sequence(futures), scala.concurrent.duration.Duration.apply(timeout.getOrElse(1L), "second"))
   }
 
-  def waitForSingleWSCall(future: Future[Response], timeout: Option[Long] = Some(1)) = {
-    Await.result(future, scala.concurrent.duration.Duration.apply(timeout.getOrElse(1L), "second"))
+  def waitForSingleWSCall(future: Future[Response], timeout: Option[Long] = Some(5)) = {
+    Await.result(future, scala.concurrent.duration.Duration.apply(timeout.getOrElse(5L), "second"))
   }
 
   def wsCall(url: String): WSRequestHolder = {
