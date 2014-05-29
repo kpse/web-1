@@ -127,7 +127,6 @@ class DataImportingSpec extends Specification with TestSupport {
 
       def createOnServer(url: String): (String) => Future[Response] = {
         line =>
-          println("%s <<<>>> %s".format(url, line))
           wsCall(url).withHeaders("Content-Type" -> "application/json").post(line.format(schoolId, schoolId))
       }
 
