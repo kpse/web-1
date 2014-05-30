@@ -83,6 +83,12 @@
         </a>
       </li>
 
+      <li class="action" ng-class="{active : isSelected('dailylog')}" ng-show="operatorOnly(adminUser)">
+        <a ng-click="goDailyLog()" class="btn dailylog">
+          <span>出勤状况</span>
+        </a>
+      </li>
+
       <li class="action" ng-class="{active : isSelected('relationship')}">
         <a class="btn relationship" ng-click="goRelationshipManagement()">
           <span>幼儿园档案管理</span>
@@ -103,13 +109,6 @@
           <span>教职员设置</span>
         </a>
       </li>
-
-      <li class="action" ng-class="{active : isSelected('dailylog')}" ng-show="operatorOnly(adminUser)">
-        <a ng-click="goDailyLog()" class="btn dailylog">
-          <span>出勤状况</span>
-        </a>
-      </li>
-
       <li class="action" ng-class="{active : isSelected('intro')}">
         <a ng-href="#/kindergarten/{{kindergarten.school_id}}/intro" class="btn intro">
           <span>幼儿园简介</span>
@@ -121,11 +120,6 @@
 
   </div>
   <div class="module-view-container">
-    <!--<ol class="breadcrumb">-->
-      <!--<li><a href="#">Home</a></li>-->
-      <!--<li><a href="#">Library</a></li>-->
-      <!--<li class="active">Data</li>-->
-    <!--</ol>-->
     <div class="module-view" ui-view></div>
   </div>
 </div>
