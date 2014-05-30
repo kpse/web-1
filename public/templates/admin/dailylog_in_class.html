@@ -1,0 +1,32 @@
+<div class="loading" ng-show="loading"></div>
+<h3>{{currentClass().name}}今日应到 {{children.length}}人 实到 {{childrenIn.length}}人</h3>
+<table class="table table-hover table-condensed">
+  <thead>
+  <tr class="row">
+    <th class=".col-xs-2">小孩姓名</th>
+    <th class=".col-xs-2">是否到校</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="c in childrenIn | filter: searchText" class="row" ng-click="detail(c)" ng-class="{editable: detail}">
+    <td class=".col-xs-2">{{c.name}}</td>
+    <td class=".col-xs-2">{{c.checkInStatus}}</td>
+  </tr>
+  </tbody>
+</table>
+
+<h3 ng-hide="childrenNotIn.length == 0">{{childrenNotIn.length}} 人未到校</h3>
+<table ng-hide="childrenNotIn.length == 0" class="table table-hover table-condensed">
+  <thead>
+  <tr class="row">
+    <th class=".col-xs-2">小孩姓名</th>
+    <th class=".col-xs-2">是否到校</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="c in childrenNotIn | filter: searchText" class="row" ng-class="{editable: detail}" ng-click="detail(c)">
+    <td class=".col-xs-2">{{c.name}}</td>
+    <td class=".col-xs-2">{{c.checkInStatus}}</td>
+  </tr>
+  </tbody>
+</table>

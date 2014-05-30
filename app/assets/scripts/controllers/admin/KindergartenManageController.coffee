@@ -39,6 +39,9 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.goMemberList = ->
         goPageWithClassesTab 'member'
 
+      scope.goDailyLog = ->
+        goPageWithClassesTab 'dailylog', 'child'
+
       scope.goRelationshipManagement = ->
         goPageWithClassesTab 'relationship/type/connected'
 

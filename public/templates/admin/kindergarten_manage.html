@@ -103,6 +103,13 @@
           <span>教职员设置</span>
         </a>
       </li>
+
+      <li class="action" ng-class="{active : isSelected('dailylog')}" ng-show="operatorOnly(adminUser)">
+        <a ng-click="goDailyLog()" class="btn dailylog">
+          <span>出勤状况</span>
+        </a>
+      </li>
+
       <li class="action" ng-class="{active : isSelected('intro')}">
         <a ng-href="#/kindergarten/{{kindergarten.school_id}}/intro" class="btn intro">
           <span>幼儿园简介</span>
