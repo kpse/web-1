@@ -22,7 +22,7 @@
       <div class="image-preview">
         <img class="conversation-image img-responsive" ng-show="log.record_url.length > 0" ng-src="{{compress(log.record_url, 110)}}"
              alt="图片无法显示"/>
-          <div ng-show="log.record_url == ''">N/A</div>
+          <div ng-show="!log.record_url">N/A</div>
       </div>
     </th>
 
