@@ -164,6 +164,10 @@ angular.module('kulebaoAdmin',
       url: '/list',
       templateUrl: 'templates/admin/dailylog_in_class.html',
       controller: 'DailyLogInClassCtrl'
+    .state 'kindergarten.dailylog.class.child',
+      url: '/child/:child_id',
+      templateUrl: 'templates/admin/dailylog_of_child.html',
+      controller: 'ChildDailyLogCtrl'
 
 
     .state 'kindergarten.welcome',
