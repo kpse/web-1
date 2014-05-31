@@ -2,11 +2,12 @@
 <h3>{{currentClass().name}}今日应到 {{children.length}}人 实到 {{childrenIn.length}}人</h3>
 <div class="dailylog-container row">
   <div class="specification pull-left col-xs-5">
-    <div>图例说明：</div>
+    <div>图例说明：<span>点击小孩名字可查看详细刷卡记录</span></div>
     <button class="child-in-status form-control col-xs-1 in">在校</button>
     <button class="child-in-status form-control col-xs-1 leave">已离校</button>
     <button class="child-in-status form-control col-xs-1 absence">今日未签到</button>
   </div>
+
   <div class="dailylog-in-class col-xs-11 row well">
     <button ng-repeat="c in children | filter: searchText | orderBy:'checkInStatus':true" class="child-in-status form-control col-xs-1"
             ng-class="{absence: c.checkInStatus=='未到校', leave: c.checkInStatus=='已离校', in: c.checkInStatus=='在校'}"
