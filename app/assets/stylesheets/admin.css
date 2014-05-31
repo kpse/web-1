@@ -140,5 +140,10 @@
       background-color: #808080;
     }
   }
+  .specification {
+    .child-in-status{
+      cursor: default;
+    }
+  }
 }
 
