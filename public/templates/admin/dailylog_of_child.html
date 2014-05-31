@@ -6,14 +6,14 @@
          alt="宝宝照片"/></div>
 
 <div class="col-xs-6">
-  <div>家长信息</div>
+  <div>家长联系方式</div>
 <ul>
-  <li ng-repeat="r in relationships">{{r.parent.name}} {{r.parent.phone}}</li>
+  <li ng-repeat="r in relationships">{{r.relationship}} {{r.parent.name}} <span class="glyphicon glyphicon-earphone">{{r.parent.phone}}</span></li>
 </ul>
 </div>
 <div class="col-xs-6"><div>带班老师信息</div>
 <ul>
-  <li ng-repeat="m in managers">{{m.name}} {{m.phone}}</li>
+  <li ng-repeat="m in managers">{{m.name}} <span class="glyphicon glyphicon-earphone"></span>{{m.phone}}</li>
   <li ng-show="managers.length == 0">未指定带班老师</li>
 </ul>
 </div>

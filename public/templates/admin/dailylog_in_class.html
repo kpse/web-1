@@ -8,7 +8,7 @@
     <button class="child-in-status form-control col-xs-1 absence">今日未签到</button>
   </div>
   <div class="dailylog-in-class col-xs-11 row well">
-    <button ng-repeat="c in children" class="child-in-status form-control col-xs-1"
+    <button ng-repeat="c in children | orderBy:'checkInStatus':true" class="child-in-status form-control col-xs-1"
             ng-class="{absence: c.checkInStatus=='未到校', leave: c.checkInStatus=='已离校', in: c.checkInStatus=='在校'}"
             ng-click="detail(c)">{{c.name}}
     </button>
