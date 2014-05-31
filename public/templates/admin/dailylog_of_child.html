@@ -1,32 +1,49 @@
 <div class="loading" ng-show="loading"></div>
 <h3>{{child.name}}小朋友的到校和离校记录</h3>
-<div class="portrait-container">
-  <img class="portrait" ng-src="{{child.portrait || '/assets/images/portrait_placeholder.png'}}"
-       alt="宝宝照片"/></div>
-</div>
-<div class="log-history"><table class="table table-hover table-condensed">
-  <thead>
-  <tr class="row">
-    <th class=".col-xs-1">通讯时间</th>
-    <th class=".col-xs-2">刷卡类型</th>
-    <th class=".col-xs-2">接送家长</th>
-    <th class=".col-xs-5">记录照片</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr ng-repeat="log in allLogs | filter: searchText" class="row">
-    <td class=".col-xs-1">于{{log.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</td>
-    <td class=".col-xs-2">{{log.notice_type == 1 ? '到校' : '离校' }}</td>
-    <td class=".col-xs-2">{{log.parent_name}}</td>
-    <th class=".col-xs-5">
-      <div class="image-preview">
-        <img class="conversation-image img-responsive" ng-show="log.record_url.length > 0" ng-src="{{compress(log.record_url, 110)}}"
-             alt="图片无法显示"/>
-          <div ng-show="!log.record_url">N/A</div>
-      </div>
-    </th>
+<div class="detail row">
+  <div class="portrait-container col-xs-3">
+    <img class="portrait" ng-src="{{child.portrait || '/assets/images/portrait_placeholder.png'}}"
+         alt="宝宝照片"/></div>
 
-  </tr>
-  </tbody>
-</table>
+<div class="col-xs-6">
+  <div>家长信息</div>
+<ul>
+  <li ng-repeat="r in relationships">{{r.parent.name}} {{r.parent.phone}}</li>
+</ul>
+</div>
+<div class="col-xs-6"><div>带班老师信息</div>
+<ul>
+  <li ng-repeat="m in managers">{{m.name}} {{m.phone}}</li>
+  <li ng-show="managers.length == 0">未指定带班老师</li>
+</ul>
+</div>
+</div>
+<div class="log-history">
+  <table class="table table-hover table-condensed">
+    <thead>
+    <tr class="row">
+      <th class=".col-xs-1">通讯时间</th>
+      <th class=".col-xs-2">刷卡类型</th>
+      <th class=".col-xs-2">接送家长</th>
+      <th class=".col-xs-5">记录照片</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="log in allLogs | filter: searchText" class="row">
+      <td class=".col-xs-1">于{{log.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</td>
+      <td class=".col-xs-2">{{log.notice_type == 1 ? '到校' : '离校' }}</td>
+      <td class=".col-xs-2">{{log.parent_name}}</td>
+      <th class=".col-xs-5">
+        <div class="image-preview">
+          <img class="conversation-image img-responsive" ng-show="log.record_url.length > 0"
+               ng-src="{{compress(log.record_url, 110)}}"
+               alt="图片无法显示"/>
+
+          <div ng-show="!log.record_url">N/A</div>
+        </div>
+      </th>
+
+    </tr>
+    </tbody>
+  </table>
 </div>

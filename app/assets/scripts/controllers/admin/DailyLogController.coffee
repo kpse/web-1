@@ -75,9 +75,12 @@ angular.module('kulebaoAdmin')
 angular.module('kulebaoAdmin')
 .controller 'ChildDailyLogCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'childService', 'singleDailyLogService', 'imageCompressService',
-    (scope, rootScope, stateParams, location, Child, DailyLog, Compressor) ->
-      scope.child = Child.get school_id: stateParams.kindergarten, child_id: stateParams.child_id
+    '$location', 'childService', 'singleDailyLogService', 'imageCompressService', 'relationshipService', 'classManagerService',
+    (scope, rootScope, stateParams, location, Child, DailyLog, Compressor, Relationship, Manager) ->
+      scope.child = Child.get school_id: stateParams.kindergarten, child_id: stateParams.child_id, ->
+        scope.relationships = Relationship.query school_id: stateParams.kindergarten, child: scope.child.child_id
+        scope.managers = Manager.query school_id: stateParams.kindergarten, class_id: stateParams.class_id
+
       scope.allLogs = DailyLog.query school_id: stateParams.kindergarten, child_id: stateParams.child_id
 
       scope.compress = (url, width, height) ->
