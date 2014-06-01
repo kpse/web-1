@@ -1,6 +1,6 @@
 angular.module('kulebaoOp').controller 'OpReportingCtrl',
   ['$scope', '$rootScope', '$location', '$http', 'parentService', 'childService', 'employeeService',
-   'allEmployeesService', 'classService', 'schoolService',
+   'schoolEmployeesService', 'classService', 'schoolService',
     (scope, rootScope, location, $http, Parent, Child, CurrentUser, Employee, Class, School) ->
       rootScope.tabName = 'reporting'
       scope.adminUser = CurrentUser.get()
@@ -29,7 +29,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
 
 angular.module('kulebaoOp').controller 'OpSchoolReportingCtrl',
   ['$scope', '$rootScope', '$stateParams', '$http', 'parentService', 'childService', 'employeeService',
-   'allEmployeesService', 'classService', 'schoolService', 'adminNewsPreview', 'sessionStatsService', 'historyStatsService',
+   'schoolEmployeesService', 'classService', 'schoolService', 'adminNewsPreview', 'sessionStatsService', 'historyStatsService',
    'dailyLogService',
     (scope, rootScope, stateParams, $http, Parent, Child, CurrentUser, Employee, Class, School, News, Chat, History, DailyLog) ->
       scope.adminUser = CurrentUser.get()
