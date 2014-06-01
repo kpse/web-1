@@ -1,8 +1,7 @@
 angular.module('kulebaoOp').controller 'OpReportingCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$http', 'parentService', 'childService', 'employeeService',
+  ['$scope', '$rootScope', '$location', '$http', 'parentService', 'childService', 'employeeService',
    'allEmployeesService', 'classService', 'schoolService',
-    (scope, rootScope, $stateParams, $http, Parent, Child, CurrentUser, Employee, Class, School) ->
-
+    (scope, rootScope, location, $http, Parent, Child, CurrentUser, Employee, Class, School) ->
       rootScope.tabName = 'reporting'
       scope.adminUser = CurrentUser.get()
 
@@ -23,7 +22,34 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
             scope.allEmployees = scope.allEmployees.concat k.employees
         scope.loading = false
 
+      scope.detail = (kg) ->
+        location.path('main/school_report/' + kg.school_id)
 
+  ]
+
+angular.module('kulebaoOp').controller 'OpSchoolReportingCtrl',
+  ['$scope', '$rootScope', '$stateParams', '$http', 'parentService', 'childService', 'employeeService',
+   'allEmployeesService', 'classService', 'schoolService', 'adminNewsPreview', 'sessionStatsService', 'historyStatsService',
+   'dailyLogService',
+    (scope, rootScope, stateParams, $http, Parent, Child, CurrentUser, Employee, Class, School, News, Chat, History, DailyLog) ->
+      scope.adminUser = CurrentUser.get()
+
+      scope.loading = true
+
+      scope.childrenInSchool = 0
+      scope.kindergarten = School.get school_id: stateParams.school_id, ->
+        scope.kindergarten.classes = Class.query school_id: stateParams.school_id, ->
+          _.forEach scope.kindergarten.classes, (clazz) ->
+            clazz.dailyLogs = DailyLog.query school_id: stateParams.school_id, class_id: clazz.class_id, ->
+              scope.childrenInSchool = scope.childrenInSchool + clazz.dailyLogs.length
+
+          scope.parents = Parent.query school_id: stateParams.school_id
+          scope.children = Child.query school_id: stateParams.school_id, connected: true
+          scope.employees = Employee.query school_id: stateParams.school_id
+          scope.allNews = News.query school_id: stateParams.school_id
+          scope.allChats = Chat.get school_id: stateParams.school_id
+          scope.allHistoryRecords = History.get school_id: stateParams.school_id
+          scope.loading = false
 
   ]
 

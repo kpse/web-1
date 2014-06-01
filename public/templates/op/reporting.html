@@ -20,8 +20,9 @@
     <td class="col-xs-3">{{allParents.length}}</td>
     <td class="col-xs-3">{{allChildren.length}}</td>
     <td class="col-xs-3">{{allEmployees.length}}</td>
-    <td class="col-xs-3">{{allClasses.length}}</td></tr>
-  </tbody>
+    <td class="col-xs-3">{{allClasses.length}}</td>
+  </tr>
+
   <tr ng-repeat="kg in kindergartens | filter: searchText" class="row" ng-class="{editable: detail}" ng-click="detail(kg)">
     <td class="col-xs-2"><a ng-href="/admin#/kindergarten/{{kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{kg.full_name}}</a></td>
     <td class="col-xs-3">{{kg.parents.length}}</td>
@@ -29,5 +30,6 @@
     <td class="col-xs-3">{{kg.employees.length}}</td>
     <td class="col-xs-3">{{kg.classes.length}}</td>
   </tr>
+  </tbody>
 </table>
 
