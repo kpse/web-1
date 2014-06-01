@@ -23,7 +23,7 @@
     <td class="col-xs-3">{{allClasses.length}}</td>
   </tr>
 
-  <tr ng-repeat="kg in kindergartens | filter: searchText" class="row" ng-class="{editable: detail}" ng-click="detail(kg)">
+  <tr ng-repeat="kg in kindergartens | filter: searchText | orderBy:'parents.length':true" class="row" ng-class="{editable: detail}" ng-click="detail(kg)">
     <td class="col-xs-2"><a ng-href="/admin#/kindergarten/{{kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{kg.full_name}}</a></td>
     <td class="col-xs-3">{{kg.parents.length}}</td>
     <td class="col-xs-3">{{kg.children.length}}</td>
