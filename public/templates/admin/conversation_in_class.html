@@ -2,23 +2,23 @@
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class=".col-xs-2">小孩姓名</th>
-    <th class=".col-xs-3">最后一条信息内容</th>
-    <th class=".col-xs-3">最近联系时间</th>
+    <th class="col-xs-3">小孩姓名</th>
+    <th class="col-xs-7">最后一条信息内容</th>
+    <th class="col-xs-2">最近联系时间</th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="c in children | filter: searchText" class="row" ng-class="{editable: goDetail, new: !c.lastMessage.isRead}" ng-click="goDetail(c)">
-    <td class=".col-xs-2">{{c.name}}<span ng-cloak ng-show="c.lastMessage && !c.lastMessage.isRead" class="new-flag label label-danger">New</span></td>
-    <td class=".col-xs-4" ng-show="c.lastMessage.content">{{c.lastMessage.content.substring(0,100)}}{{(c.lastMessage.content.length > 100) ? '...' : ''}}</td>
-    <th class=".col-xs-4" ng-show="c.lastMessage.media.url && !c.lastMessage.content">
+    <td class="col-xs-3">{{c.name}}<span ng-cloak ng-show="c.lastMessage && !c.lastMessage.isRead" class="new-flag label label-danger">New</span></td>
+    <td class="col-xs-7" ng-show="c.lastMessage.content">{{c.lastMessage.content.substring(0,100)}}{{(c.lastMessage.content.length > 100) ? '...' : ''}}</td>
+    <th class="col-xs-7" ng-show="c.lastMessage.media.url && !c.lastMessage.content">
       <div class="image-preview">
         <img class="conversation-image img-responsive" ng-src="{{compress(c.lastMessage.media.url, 110)}}"
              alt="图片"/>
       </div>
     </th>
-    <td class=".col-xs-4" ng-show="!c.lastMessage">N/A</td>
-    <td class=".col-xs-3">{{(c.lastMessage.timestamp | date:'yyyy年MM月dd日 HH:mm') || 'N/A'}}</td>
+    <td class="col-xs-7" ng-show="!c.lastMessage">N/A</td>
+    <td class="col-xs-2">{{(c.lastMessage.timestamp | date:'yyyy年MM月dd日 HH:mm') || 'N/A'}}</td>
   </tr>
   </tbody>
 </table>
