@@ -12,18 +12,18 @@
   <table class="table table-hover table-condensed employee-list">
     <thead>
     <tr class="row">
-      <th class=".col-xs-3">登录名</th>
-      <th class=".col-xs-3">老师姓名</th>
-      <th class=".col-xs-3">手机号</th>
-      <th class=".col-xs-2">操作</th>
+      <th class="col-xs-3">登录名</th>
+      <th class="col-xs-3">老师姓名</th>
+      <th class="col-xs-3">手机号</th>
+      <th class="col-xs-2">操作</th>
     </tr>
     </thead>
     <tbody>
     <tr ng-repeat="e in employees | filter: searchText" class="row" ng-class="{editable: edit}" ng-click="edit(e)">
-      <td class=".col-xs-3">{{e.login_name}}</td>
-      <td class=".col-xs-3">{{e.name}}</td>
-      <td class=".col-xs-3">{{e.phone}}</td>
-      <td class=".col-xs-2">
+      <td class="col-xs-3">{{e.login_name}}</td>
+      <td class="col-xs-3">{{e.name}}</td>
+      <td class="col-xs-3">{{e.phone}}</td>
+      <td class="col-xs-2">
         <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
                 ng-confirm-click="delete(e);$event.stopPropagation()" ng-show="adminUser && deletable(adminUser)">删除
         </button>
