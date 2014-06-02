@@ -2,26 +2,26 @@
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class="col-xs-1">小孩姓名</th>
-    <th class="col-xs-5">文字内容</th>
-    <th class="col-xs-5">图片</th>
-    <th class="col-xs-1">最后记录时间</th>
+    <th class="col-xs-2">小孩姓名</th>
+    <th class="col-xs-4">文字内容</th>
+    <th class="col-xs-4">图片</th>
+    <th class="col-xs-2">最后记录时间</th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="c in children | filter: searchText" class="row" ng-class="{editable: goDetail, new: !c.lastMessage.isRead}" ng-click="goDetail(c)">
-    <td class="col-xs-1">{{c.name}}<span ng-cloak ng-show="c.lastMessage && !c.lastMessage.isRead" class="new-flag label label-danger">New</span></td>
-    <td class="col-xs-5" ng-show="c.lastMessage.content">{{c.lastMessage.content.substring(0,100)}}{{(c.lastMessage.content.length > 100) ? '...' : ''}}</td>
-    <th class="col-xs-5" ng-show="c.lastMessage.medium[0]">
+    <td class="col-xs-2">{{c.name}}<span ng-cloak ng-show="c.lastMessage && !c.lastMessage.isRead" class="new-flag label label-danger">New</span></td>
+    <td class="col-xs-4" ng-show="c.lastMessage.content">{{c.lastMessage.content.substring(0,100)}}{{(c.lastMessage.content.length > 100) ? '...' : ''}}</td>
+    <th class="col-xs-4" ng-show="c.lastMessage.medium[0]">
       <div class="image-preview">
         <img class="conversation-image img-responsive" ng-src="{{compress(c.lastMessage.medium[0].url, 110)}}"
              alt="{{c.lastMessage.medium[0].type}}"/>
           <div ng-show="!c.lastMessage.medium[0]">N/A</div>
       </div>
     </th>
-    <td class="col-xs-5" ng-show="!c.lastMessage.content">N/A</td>
-    <td class="col-xs-5" ng-show="!c.lastMessage.medium">N/A</td>
-    <td class="col-xs-1">{{(c.lastMessage.timestamp | date:'yyyy年MM月dd日 HH:mm') || 'N/A'}}</td>
+    <td class="col-xs-4" ng-show="!c.lastMessage.content">N/A</td>
+    <td class="col-xs-4" ng-show="!c.lastMessage.medium">N/A</td>
+    <td class="col-xs-2">{{(c.lastMessage.timestamp | date:'yyyy年MM月dd日 HH:mm') || 'N/A'}}</td>
   </tr>
   </tbody>
 </table>
