@@ -2,22 +2,22 @@
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class=".col-xs-2">姓名</th>
-    <th class=".col-xs-1">情绪</th>
-    <th class=".col-xs-1">进餐</th>
-    <th class=".col-xs-1">睡觉</th>
-    <th class=".col-xs-1">集体活动</th>
-    <th class=".col-xs-1">游戏</th>
-    <th class=".col-xs-1">锻炼</th>
-    <th class=".col-xs-1">自理能力</th>
-    <th class=".col-xs-1">礼貌</th>
-    <th class=".col-xs-3">最近评价时间</th>
+    <th class="col-xs-2">姓名</th>
+    <th class="col-xs-1">情绪</th>
+    <th class="col-xs-1">进餐</th>
+    <th class="col-xs-1">睡觉</th>
+    <th class="col-xs-1">集体活动</th>
+    <th class="col-xs-1">游戏</th>
+    <th class="col-xs-1">锻炼</th>
+    <th class="col-xs-1">自理能力</th>
+    <th class="col-xs-1">礼貌</th>
+    <th class="col-xs-2">最近评价时间</th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="child in children | filter: searchText" class="row" ng-class="{editable: goDetail}" ng-click="goDetail(child)">
-    <td class=".col-xs-2">{{child.name}}</td>
-    <td class=".col-xs-1">
+    <td class="col-xs-2">{{child.name}}</td>
+    <td class="col-xs-1">
       <div ng-show="child.recentStatus">
         <rating value="child.recentStatus.emotion" max="3" readonly="true"></rating>
       </div>
@@ -25,7 +25,7 @@
         N/A
       </div>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <div ng-show="child.recentStatus">
         <rating value="child.recentStatus.dining" max="3" readonly="true"></rating>
       </div>
@@ -34,7 +34,7 @@
       </div>
     </td>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <div ng-show="child.recentStatus">
         <rating value="child.recentStatus.rest" max="3" readonly="true"></rating>
       </div>
@@ -42,7 +42,7 @@
         N/A
       </div>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <div ng-show="child.recentStatus">
         <rating value="child.recentStatus.activity" max="3" readonly="true"></rating>
       </div>
@@ -50,7 +50,7 @@
         N/A
       </div>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <div ng-show="child.recentStatus">
         <rating value="child.recentStatus.game" max="3" readonly="true"></rating>
       </div>
@@ -58,7 +58,7 @@
         N/A
       </div>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <div ng-show="child.recentStatus">
         <rating value="child.recentStatus.exercise" max="3" readonly="true"></rating>
       </div>
@@ -66,7 +66,7 @@
         N/A
       </div>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <div ng-show="child.recentStatus">
         <rating value="child.recentStatus.self_care" max="3" readonly="true"></rating>
       </div>
@@ -74,7 +74,7 @@
         N/A
       </div>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <div ng-show="child.recentStatus">
         <rating value="child.recentStatus.manner" max="3" readonly="true"></rating>
       </div>
@@ -83,7 +83,7 @@
       </div>
     </td>
 
-    <td class=".col-xs-3">{{(child.recentStatus.timestamp | date:'yyyy年MM月dd日') || 'N/A' }}</td>
+    <td class="col-xs-2">{{(child.recentStatus.timestamp | date:'yyyy年MM月dd日') || 'N/A' }}</td>
   </tr>
   </tbody>
 </table>

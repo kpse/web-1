@@ -13,7 +13,7 @@
     <th class=".col-xs-1">锻炼</th>
     <th class=".col-xs-1">自理能力</th>
     <th class=".col-xs-1">礼貌</th>
-    <th class=".col-xs-1">最近评价时间</th>
+    <th class=".col-xs-2">最近评价时间</th>
 
   </tr>
   </thead>
@@ -44,7 +44,7 @@
     <td class=".col-xs-1">
       <rating value="a.manner" max="3" readonly="true"></rating>
     </td>
-    <td class=".col-xs-1">{{a.timestamp | date:'yyyy年MM月dd日'}}</td>
+    <td class=".col-xs-2">{{a.timestamp | date:'yyyy年MM月dd日'}}</td>
   </tr>
   </tbody>
 </table>
