@@ -3,16 +3,16 @@
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class=".col-xs-1">手机号码</th>
-    <th class=".col-xs-2">家长姓名</th>
-    <th class=".col-xs-2">小孩</th>
+    <th class="col-xs-4">手机号码</th>
+    <th class="col-xs-4">家长姓名</th>
+    <th class="col-xs-4">小孩</th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="a in membersInClass | filter: searchText" class="row" ng-click="reject(a)" ng-class="{editable: reject}">
-    <td class=".col-xs-1">{{a.phone}}</td>
-    <td class=".col-xs-2">{{a.name}}</td>
-    <td class=".col-xs-2">{{a.children.join(',')}}</td>
+    <td class="col-xs-4">{{a.phone}}</td>
+    <td class="col-xs-4">{{a.name}}</td>
+    <td class="col-xs-4">{{a.children.join(',')}}</td>
   </tr>
   </tbody>
 </table>
@@ -20,16 +20,16 @@
 <table ng-hide="nonMembers.length == 0" class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class=".col-xs-1">手机号码</th>
-    <th class=".col-xs-2">家长姓名</th>
-    <th class=".col-xs-2">小孩</th>
+    <th class="col-xs-4">手机号码</th>
+    <th class="col-xs-4">家长姓名</th>
+    <th class="col-xs-4">小孩</th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="a in nonMembersInClass | filter: searchText" class="row" ng-class="{editable: promote}" ng-click="promote(a)">
-    <td class=".col-xs-1">{{a.phone}}</td>
-    <td class=".col-xs-2">{{a.name}}</td>
-    <td class=".col-xs-2">{{a.children.join(',')}}</td>
+    <td class="col-xs-4">{{a.phone}}</td>
+    <td class="col-xs-4">{{a.name}}</td>
+    <td class="col-xs-4">{{a.children.join(',')}}</td>
   </tr>
   </tbody>
 </table>
