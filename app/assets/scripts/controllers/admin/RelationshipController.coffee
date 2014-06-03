@@ -179,23 +179,32 @@ angular.module('kulebaoAdmin')
 
       scope.createParentFor = (child) ->
         child.$save ->
-          scope.$broadcast 'refreshing'
-          scope.currentModal.hide()
-          scope.newParent (parent)->
-            console.log 'invoking'
-            scope.newRelationship child, parent
+          scope.createParentOnly child
 
       scope.connectToExists = (child, parent) ->
         child.$save ->
-          scope.$broadcast 'refreshing'
-          scope.currentModal.hide()
-          scope.newRelationship child, parent
+          scope.connectToExistingOnly child, parent
 
       scope.connectToChild = (parent) ->
         parent.$save ->
-          scope.$broadcast 'refreshing'
-          scope.currentModal.hide()
-          scope.newRelationship undefined, parent
+          scope.connectToChildOnly(parent)
+
+      scope.createParentOnly = (child) ->
+        scope.$broadcast 'refreshing'
+        scope.currentModal.hide()
+        scope.newParent (parent)->
+          console.log 'invoking'
+          scope.newRelationship child, parent
+
+      scope.connectToExistingOnly = (child, parent) ->
+        scope.$broadcast 'refreshing'
+        scope.currentModal.hide()
+        scope.newRelationship child, parent
+
+      scope.connectToChildOnly = (parent) ->
+        scope.$broadcast 'refreshing'
+        scope.currentModal.hide()
+        scope.newRelationship undefined, parent
 
 
       scope.nameChanging = ->
