@@ -4,47 +4,47 @@
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class=".col-xs-2">老师</th>
-    <th class=".col-xs-1">情绪</th>
-    <th class=".col-xs-1">进餐</th>
-    <th class=".col-xs-1">睡觉</th>
-    <th class=".col-xs-1">集体活动</th>
-    <th class=".col-xs-1">游戏</th>
-    <th class=".col-xs-1">锻炼</th>
-    <th class=".col-xs-1">自理能力</th>
-    <th class=".col-xs-1">礼貌</th>
-    <th class=".col-xs-1">最近评价时间</th>
+    <th class="col-xs-2">老师</th>
+    <th class="col-xs-1">情绪</th>
+    <th class="col-xs-1">进餐</th>
+    <th class="col-xs-1">睡觉</th>
+    <th class="col-xs-1">集体活动</th>
+    <th class="col-xs-1">游戏</th>
+    <th class="col-xs-1">锻炼</th>
+    <th class="col-xs-1">自理能力</th>
+    <th class="col-xs-1">礼貌</th>
+    <th class="col-xs-2">最近评价时间</th>
 
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="a in allAssess | filter: searchText | orderBy:'timestamp':true " class="row" ng-click="preview(a)" ng-class="{editable: preview}">
-    <td class=".col-xs-2">{{a.publisher}}</td>
-    <td class=".col-xs-1">
+    <td class="col-xs-2">{{a.publisher}}</td>
+    <td class="col-xs-1">
       <rating value="a.emotion" max="3" readonly="true"></rating>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <rating value="a.dining" max="3" readonly="true"></rating>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <rating value="a.rest" max="3" readonly="true"></rating>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <rating value="a.activity" max="3" readonly="true"></rating>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <rating value="a.game" max="3" readonly="true"></rating>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <rating value="a.exercise" max="3" readonly="true"></rating>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <rating value="a.self_care" max="3" readonly="true"></rating>
     </td>
-    <td class=".col-xs-1">
+    <td class="col-xs-1">
       <rating value="a.manner" max="3" readonly="true"></rating>
     </td>
-    <td class=".col-xs-1">{{a.timestamp | date:'yyyy年MM月dd日'}}</td>
+    <td class="col-xs-2">{{a.timestamp | date:'yyyy年MM月dd日'}}</td>
   </tr>
   </tbody>
 </table>

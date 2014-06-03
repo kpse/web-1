@@ -7,25 +7,26 @@
 <div class="chat-history longer-history"><table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class=".col-xs-2">记录人</th>
-    <th class=".col-xs-5">文字内容</th>
-    <th class=".col-xs-4">图片</th>
-    <th class=".col-xs-1">通讯时间</th>
+    <th class="col-xs-1">记录人</th>
+    <th class="col-xs-5">文字内容</th>
+    <th class="col-xs-4">图片</th>
+    <th class="col-xs-2">通讯时间</th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="c in conversations | filter: searchText | orderBy:'id':true " class="row" ng-click="preview(c)" ng-class="{editable: preview}">
-    <td class=".col-xs-2">{{c.sender.name}}</td>
-    <td class=".col-xs-5" ng-show="c.content">{{c.content.substring(0,100)}}{{(c.content.length > 100) ? '...' : ''}}</td>
-    <td class=".col-xs-5" ng-show="!c.content">N/A</td>
-    <th class=".col-xs-4">
+    <td class="col-xs-1">{{c.sender.name}}</td>
+    <td class="col-xs-5" ng-show="c.content">{{c.content.substring(0,100)}}{{(c.content.length > 100) ? '...' : ''}}</td>
+    <td class="col-xs-5" ng-show="!c.content">N/A</td>
+    <th class="col-xs-4" ng-show="c.medium.length">
       <div class="image-preview">
         <img class="conversation-image img-responsive" ng-show="c.medium[0]" ng-src="{{compress(c.medium[0].url, 110)}}"
              alt="{{c.medium[0].type}}"/>
           <div ng-show="!c.medium[0]">N/A</div>
       </div>
     </th>
-    <td class=".col-xs-1">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</td>
+    <td class="col-xs-4" ng-show="!c.medium.length">N/A</td>
+    <td class="col-xs-2">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</td>
   </tr>
   </tbody>
 </table>

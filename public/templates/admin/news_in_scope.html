@@ -20,7 +20,7 @@
       </div>
       <h4 class="list-group-item-heading">{{news.title}}</h4>
 
-      <p class="list-group-item-text">{{news.content.substring(0,200)}}</p>
+      <p class="list-group-item-text">{{news.content.substring(0,200)}}{{news.content.length > 200 ? '……' : ''}}</p>
       <span ng-hide="news.published" class="published pull-right">未发布</span>
       <span ng-show="news.published" class="issue-date pull-right">于{{news.timestamp | date:'yyyy年MM月dd日 HH:mm'}}发布</span>
       <div class="clearfix"></div>

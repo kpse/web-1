@@ -170,6 +170,9 @@ GET           /cheatCode                                                        
 POST          /cheatCode                                                         controllers.CheatingController.create
 DELETE        /cheatCode                                                         controllers.CheatingController.delete
 
+GET           /api/v1/statistics/session/:schoolId                               controllers.StatisticsController.countSession(schoolId: Long)
+GET           /api/v1/statistics/history/:schoolId                               controllers.StatisticsController.countGrowingHistory(schoolId: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                      controllers.Static.at(path="/public/images", file)

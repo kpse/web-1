@@ -83,6 +83,12 @@
         </a>
       </li>
 
+      <li class="action" ng-class="{active : isSelected('dailylog')}" ng-show="operatorOnly(adminUser)">
+        <a ng-click="goDailyLog()" class="btn dailylog">
+          <span>当日幼儿出勤</span>
+        </a>
+      </li>
+
       <li class="action" ng-class="{active : isSelected('relationship')}">
         <a class="btn relationship" ng-click="goRelationshipManagement()">
           <span>幼儿园档案管理</span>
@@ -114,11 +120,6 @@
 
   </div>
   <div class="module-view-container">
-    <!--<ol class="breadcrumb">-->
-      <!--<li><a href="#">Home</a></li>-->
-      <!--<li><a href="#">Library</a></li>-->
-      <!--<li class="active">Data</li>-->
-    <!--</ol>-->
     <div class="module-view" ui-view></div>
   </div>
 </div>

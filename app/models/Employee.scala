@@ -15,7 +15,7 @@ import models.helper.PasswordHelper
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
-                    login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int]=Some(1))
+                    login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1))
 
 case class Principal(employee_id: String, school_id: Long, phone: String, timestamp: Long)
 
@@ -24,6 +24,40 @@ case class EmployeePassword(employee_id: String, school_id: Long, phone: String,
 case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String)
 
 object Employee {
+  def reCreateByPhone(employee: Employee) = DB.withConnection {
+    implicit c =>
+      val time = System.currentTimeMillis
+      val newEmployeeId = "3_%d_%d".format(employee.school_id, time)
+      SQL("update employeeinfo set employee_id={employee_id}, name={name}, gender={gender}, workgroup={workgroup}, " +
+        " workduty={workduty}, picurl={picurl}, birthday={birthday}, school_id={school_id}, " +
+        " login_name={login_name}, update_at={update_at}, status={status} " +
+        " where phone={phone}")
+        .on(
+          'employee_id -> newEmployeeId,
+          'name -> employee.name,
+          'phone -> employee.phone,
+          'gender -> employee.gender,
+          'workgroup -> employee.workgroup,
+          'workduty -> employee.workduty,
+          'picurl -> employee.portrait,
+          'birthday -> employee.birthday,
+          'school_id -> employee.school_id,
+          'login_name -> employee.login_name,
+          'status -> 1,
+          'update_at -> time
+        ).executeUpdate()
+
+      show(employee.phone)
+  }
+
+  def hasBeenDeleted(phone: String) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from employeeinfo where phone={phone} and status=0")
+        .on(
+          'phone -> phone
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
   def findById(kg: Long, id: String) = DB.withConnection {
     implicit c =>
       SQL("select * from employeeinfo where employee_id={id} and status=1 and school_id in ({kg}, '0')")
@@ -117,7 +151,7 @@ object Employee {
 
   def phoneExists(phone: String) = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from employeeinfo where phone={phone}")
+      SQL("select count(1) from employeeinfo where phone={phone} and status=1")
         .on(
           'phone -> phone
         ).as(get[Long]("count(1)") single) > 0
@@ -213,7 +247,7 @@ object Employee {
         employeeId =>
           SQL("update employeeinfo set name={name}, phone={phone}, gender={gender}, workgroup={workgroup}, " +
             " workduty={workduty}, picurl={picurl}, birthday={birthday}, school_id={school_id}, " +
-            " login_name={login_name}, update_at={update_at}, employee_id={employee_id}, status={status} " +
+            " login_name={login_name}, update_at={update_at}, status={status} " +
             " where employee_id={employee_id}")
             .on(
               'employee_id -> employeeId,

@@ -37,6 +37,8 @@ object EmployeeController extends Controller with Secured {
         request.body.validate[Employee].map {
           case (employee) if Employee.phoneExists(employee.phone) =>
             BadRequest(loggedJson(ErrorResponse("老师的电话重复，请检查输入。")))
+          case (reCreation) if Employee.hasBeenDeleted(reCreation.phone) =>
+            Ok(loggedJson(Employee.reCreateByPhone(reCreation)))
           case (employee) if Employee.loginNameExists(employee.login_name) =>
             BadRequest(loggedJson(ErrorResponse(employee.login_name + "已占用，建议用学校拼音缩写加数字来组织登录名。")))
           case (employee) =>
@@ -66,6 +68,8 @@ object EmployeeController extends Controller with Secured {
           case (me) if userId.equals(me.id) =>
             Logger.info("employee %s changes himself/herself".format(request.session.get("username")))
             Ok(loggedJson(Employee.update(me))).withSession(request.session + ("phone" -> me.phone) + ("username" -> me.login_name) + ("name" -> me.name))
+          case (reCreation) if Employee.hasBeenDeleted(reCreation.phone) =>
+            Ok(loggedJson(Employee.reCreateByPhone(reCreation)))
           case (other) if !(userId.equals(other.id) || Employee.isSuperUser(userId.getOrElse(""), kg)) =>
             Unauthorized(loggedJson(ErrorResponse("您无权修改其他老师的信息。")))
           case (phoneDuplicated) if Employee.phoneExists(phoneDuplicated.phone) && !Employee.idExists(phoneDuplicated.id) =>

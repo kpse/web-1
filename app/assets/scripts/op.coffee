@@ -45,6 +45,15 @@ angular.module('kulebaoOp',
       templateUrl: 'templates/admin/adult_manage.html',
       controller: 'OpShowPhoneCtrl'
 
+    .state 'main.report',
+      url: '/report',
+      templateUrl: 'templates/op/reporting.html',
+      controller: 'OpReportingCtrl'
+    .state 'main.school_report',
+      url: '/school_report/:school_id',
+      templateUrl: 'templates/op/school_reporting.html',
+      controller: 'OpSchoolReportingCtrl'
+
     $urlRouterProvider.otherwise ($injector, $location) ->
       $location.path '/main/school'
 

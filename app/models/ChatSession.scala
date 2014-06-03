@@ -19,6 +19,18 @@ case class MediaContent(url: String, `type`: Option[String] = Some("image"))
 case class SessionInMonth(month: String, count: Long)
 
 object ChatSession {
+  def countGrowingHistory(kg: Long) = DB.withConnection {
+    implicit c =>
+      val count: Long = SQL("select count(1) from sessionlog where school_id={kg} and session_id like 'h_%'").on('kg -> kg).as(get[Long]("count(1)") single)
+      Statistics("session", count)
+  }
+
+  def countInSchool(kg: Long) = DB.withConnection {
+    implicit c =>
+      val count: Long = SQL("select count(1) from sessionlog where school_id={kg} and session_id not like 'h_%'").on('kg -> kg).as(get[Long]("count(1)") single)
+      Statistics("session", count)
+  }
+
 
   def adaptLocalDB(sql: String): String = Play.current.configuration.getString("db.default.driver") match {
     case Some("org.h2.Driver") =>

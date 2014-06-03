@@ -3,22 +3,22 @@
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class=".col-xs-1">#</th>
-    <th class=".col-xs-3">小孩姓名</th>
-    <th class=".col-xs-3">班级</th>
-    <th class=".col-xs-3">家长姓名</th>
-    <th class=".col-xs-2">操作</th>
+    <th class="col-xs-1">#</th>
+    <th class="col-xs-3">小孩姓名</th>
+    <th class="col-xs-3">班级</th>
+    <th class="col-xs-3">家长姓名</th>
+    <th class="col-xs-2">操作</th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="child in children | filter: searchText" class="row" tooltip-placement="top" tooltip="单击关联">
-    <td class=".col-xs-1">{{child.child_id}}</td>
-    <td class=".col-xs-2">{{child.nick}}</td>
-    <td class=".col-xs-2">{{child.class_name}}</td>
-    <td class=".col-xs-3">{{child.parents}}</td>
+    <td class="col-xs-1">{{child.child_id}}</td>
+    <td class="col-xs-2">{{child.nick}}</td>
+    <td class="col-xs-2">{{child.class_name}}</td>
+    <td class="col-xs-3">{{child.parents}}</td>
 
 
-    <td class=".col-xs-2">
+    <td class="col-xs-2">
       <button class="btn btn-xs btn-primary" ng-confirm-msg="你确定要关联{{parent.name}}和{{child.nick}}吗?"
               ng-confirm-click="connect(parent, child)">关联</button>
     </td>

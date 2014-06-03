@@ -152,6 +152,24 @@ angular.module('kulebaoAdmin',
       templateUrl: 'templates/admin/classes_management.html',
       controller: 'ClassesManagementCtrl'
 
+    .state 'kindergarten.dailylog',
+      url: '/dailylog',
+      templateUrl: 'templates/admin/search_panel.html',
+      controller: 'AllDailyLogCtrl'
+    .state 'kindergarten.dailylog.class',
+      url: '/class/:class_id',
+      templateUrl: 'templates/admin/classes.html',
+      controller: 'DailyLogInClassCtrl'
+    .state 'kindergarten.dailylog.class.list',
+      url: '/list',
+      templateUrl: 'templates/admin/dailylog_in_class.html',
+      controller: 'DailyLogInClassCtrl'
+    .state 'kindergarten.dailylog.class.child',
+      url: '/child/:child_id',
+      templateUrl: 'templates/admin/dailylog_of_child.html',
+      controller: 'ChildDailyLogCtrl'
+
+
     .state 'kindergarten.welcome',
       url: '/welcome',
       templateUrl: 'templates/admin/welcome.html',
