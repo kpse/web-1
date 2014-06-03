@@ -97,15 +97,18 @@
     </div>
     <div class="col-sm-offset-6 col-sm-6">
       <div class="form-group">
-        <div class="loading" ng-show="saving"/>
+        <div class="loading" ng-show="saving"></div>
         <div class="btn-group dropup pull-right">
-          <a class="btn btn-success  adding-button dropdown-toggle"
+          <a class="btn btn-success adding-button dropdown-toggle"
              data-toggle="dropdown"
-             ng-disabled="!newChildForm.$dirty || newChildForm.$invalid || uploading">保存</a>
+             ng-disabled=" newChildForm.$invalid || uploading">保存</a>
           <ul class="dropdown-menu child-creating-menu" role="menu">
-            <li><a ng-click="saveChild(child)">仅保存</a></li>
-            <li><a ng-click="createParentFor(child)">创建新家长</a></li>
-            <li><a ng-click="connectToExists(child)">关联已有家长</a></li>
+            <li><a ng-show="newChildForm.$dirty" ng-click="saveChild(child)">仅保存</a></li>
+            <li><a ng-show="newChildForm.$dirty" ng-click="createParentFor(child)">创建新家长</a></li>
+            <li><a ng-show="newChildForm.$dirty" ng-click="connectToExists(child)">关联已有家长</a></li>
+            <li><a ng-hide="newChildForm.$dirty" ng-click="createParentOnly(child)">创建新家长</a></li>
+            <li><a ng-hide="newChildForm.$dirty" ng-click="connectToExistingOnly(child)">关联已有家长</a></li>
+
           </ul>
           <a class="btn btn-default adding-button" ng-disabled="saving"
              ng-click="$hide()">取消</a>
