@@ -1,7 +1,7 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
   ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
-   '$resource', 'chargeService', 'adminCreatingService', '$alert', 'uploadService', 'employeeService'
-    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, Upload, LoggedInEmployee) ->
+   '$resource', 'chargeService', 'adminCreatingService', '$alert', 'uploadService', 'employeeService', '$location',
+    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, Upload, LoggedInEmployee, location) ->
       scope.refresh = ->
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->
@@ -26,6 +26,9 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/op/edit_school.html'
+
+      scope.goChargePage = ->
+        location.path "/main/charge"
 
       scope.endEditing = (kg) ->
         School.save kg, ->
