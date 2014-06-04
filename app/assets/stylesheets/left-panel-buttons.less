@@ -30,12 +30,6 @@
       }
 
       .btn {
-        &.history,
-        &.dailylog {
-          span {
-            display: inline;
-          }
-        }
         span {
           display: none;
         }
@@ -80,43 +74,55 @@
           .hoverBkImage(-334);
         }
       }
-
-      .placeholder {
-        .bkImage(-380);
+      .history {
+        .bkImage(-382);
+        &:hover {
+          .hoverBkImage(-382);
+        }
       }
 
-      .relationship {
-        .bkImage(-428);
+      .placeholder {
+        .bkImage(0);
+      }
+
+      .dailylog {
+        .bkImage(-447);
         &:hover {
-          .hoverBkImage(-428);
+          .hoverBkImage(-447);
+        }
+      }
+      .relationship {
+        .bkImage(-496);
+        &:hover {
+          .hoverBkImage(-496);
         }
       }
 
       .member {
-        .bkImage(-478);
+        .bkImage(-545);
         &:hover {
-          .hoverBkImage(-478);
+          .hoverBkImage(-545);
         }
       }
 
       .classes {
-        .bkImage(-527);
+        .bkImage(-594);
         &:hover {
-          .hoverBkImage(-527);
+          .hoverBkImage(-594);
         }
       }
 
       .employee {
-        .bkImage(-576);
+        .bkImage(-643);
         &:hover {
-          .hoverBkImage(-576);
+          .hoverBkImage(-643);
         }
       }
 
       .intro {
-        .bkImage(-626);
+        .bkImage(-692);
         &:hover {
-          .hoverBkImage(-626);
+          .hoverBkImage(-692);
         }
       }
     }
@@ -138,20 +144,27 @@
     .active .assignment {
       .hoverBkImage(-334);
     }
+    .active .history {
+      .hoverBkImage(-382);
+    }
+
+    .active .dailylog {
+      .hoverBkImage(-447);
+    }
     .active .relationship {
-      .hoverBkImage(-428);
+      .hoverBkImage(-496);
     }
     .active .member {
-      .hoverBkImage(-478);
+      .hoverBkImage(-545);
     }
     .active .classes {
-      .hoverBkImage(-527);
+      .hoverBkImage(-594);
     }
     .active .employee {
-      .hoverBkImage(-576);
+      .hoverBkImage(-643);
     }
     .active .intro {
-      .hoverBkImage(-626);
+      .hoverBkImage(-692);
     }
   }
 
