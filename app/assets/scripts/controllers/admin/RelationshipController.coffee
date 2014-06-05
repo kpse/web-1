@@ -25,9 +25,10 @@ angular.module('kulebaoAdmin')
         }
       ]
 
-      scope.refresh = ->
+      scope.refresh = (callback)->
         scope.loading = true
         scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
+          callback() if callback?
           scope.loading = false
 
       scope.loading = true
@@ -85,26 +86,29 @@ angular.module('kulebaoAdmin')
           contentTemplate: 'templates/admin/add_child.html'
 
       scope.newRelationship = (child, parent)->
-        scope.relationship = scope.createRelationship(child, parent)
-        scope.parents = Parent.query school_id: stateParams.kindergarten, ->
-          _.forEach scope.parents, (p) -> p.validRelationships = {0: ['妈妈', '奶奶', '姥姥'], 1: ['爸爸', '爷爷', '姥爷']}[p.gender]
-          scope.children = Child.query school_id: stateParams.kindergarten, ->
-            scope.currentModal = Modal
-              scope: scope
-              contentTemplate: 'templates/admin/add_connection.html'
+        scope.refresh ->
+          scope.relationship = scope.createRelationship(child, parent)
+          scope.parents = Parent.query school_id: stateParams.kindergarten, ->
+            _.forEach scope.parents, (p) -> p.validRelationships = {0: ['妈妈', '奶奶', '姥姥'], 1: ['爸爸', '爷爷', '姥爷']}[p.gender]
+            scope.children = Child.query school_id: stateParams.kindergarten, ->
+              scope.currentModal = Modal
+                scope: scope
+                contentTemplate: 'templates/admin/add_connection.html'
 
       scope.editParent = (parent) ->
-        scope.parent = Parent.get school_id: stateParams.kindergarten, phone: parent.phone, ->
-          scope.currentModal = Modal
-            scope: scope
-            contentTemplate: 'templates/admin/add_adult.html'
+        scope.refresh ->
+          scope.parent = Parent.get school_id: stateParams.kindergarten, phone: parent.phone, ->
+            scope.currentModal = Modal
+              scope: scope
+              contentTemplate: 'templates/admin/add_adult.html'
 
       scope.editChild = (child) ->
-        scope.nickFollowing = true
-        scope.child = Child.get school_id: stateParams.kindergarten, child_id: child.child_id, ->
-          scope.currentModal = Modal
-            scope: scope
-            contentTemplate: 'templates/admin/add_child.html'
+        scope.refresh ->
+          scope.nickFollowing = true
+          scope.child = Child.get school_id: stateParams.kindergarten, child_id: child.child_id, ->
+            scope.currentModal = Modal
+              scope: scope
+              contentTemplate: 'templates/admin/add_child.html'
 
       scope.isPhoneDuplicated = (parent) ->
         return false if parent.phone is undefined
