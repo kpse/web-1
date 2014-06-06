@@ -36,6 +36,11 @@ function local_https_server {
     JAVA_OPTS="-Dhttps.port=9001 -Xmx3g" play run
 }
 
+function local_https_server_with_mysql {
+    load_env
+    JAVA_OPTS="-Dhttps.port=9001 -Xmx3g -Dconfig.resource=application_mysql.conf" play run
+}
+
 function deploy_prod {
     echo ".... start to deploy on env $1 ..."
     now=$(date +"%s")
@@ -82,6 +87,7 @@ function main {
   	case $1 in
 		js) js_dependency ;;
 		s) local_https_server ;;
+		mysql) local_https_server_with_mysql ;;
 		a) build_deploy_stage ;;
 		heroku) deploy_heroku ;;
 		prod) deploy_prod cocobabys.com ;;
