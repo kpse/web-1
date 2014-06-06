@@ -10,7 +10,7 @@ import models.helper.TimeHelper.any2DateTime
 import org.joda.time.DateTime
 
 case class ChargeInfo(school_id: Long, total_phone_number: Long, expire_date: String, status: Int, used: Long)
-case class ActiveCount(school_id: Long, active: Long, all: Long)
+case class ActiveCount(school_id: Long, activated: Long, all: Long)
 
 object Charge {
   def countActivePhones(kg: Long) = DB.withConnection {

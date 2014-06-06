@@ -30,8 +30,8 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
 angular.module('kulebaoOp').controller 'OpSchoolReportingCtrl',
   ['$scope', '$rootScope', '$stateParams', '$http', 'parentService', 'childService', 'employeeService',
    'schoolEmployeesService', 'classService', 'schoolService', 'adminNewsPreview', 'sessionStatsService', 'historyStatsService',
-   'dailyLogService',
-    (scope, rootScope, stateParams, $http, Parent, Child, CurrentUser, Employee, Class, School, News, Chat, History, DailyLog) ->
+   'dailyLogService', 'activeCountService',
+    (scope, rootScope, stateParams, $http, Parent, Child, CurrentUser, Employee, Class, School, News, Chat, History, DailyLog, ActiveCount) ->
       scope.adminUser = CurrentUser.get()
 
       scope.loading = true
@@ -49,6 +49,7 @@ angular.module('kulebaoOp').controller 'OpSchoolReportingCtrl',
           scope.allNews = News.query school_id: stateParams.school_id
           scope.allChats = Chat.get school_id: stateParams.school_id
           scope.allHistoryRecords = History.get school_id: stateParams.school_id
+          scope.active = ActiveCount.get school_id: stateParams.school_id
           scope.loading = false
 
   ]
