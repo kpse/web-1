@@ -1,7 +1,7 @@
 angular.module('kulebaoOp').controller 'OpReportingCtrl',
   ['$scope', '$rootScope', '$location', '$http', 'parentService', 'childService', 'employeeService',
-   'schoolEmployeesService', 'classService', 'schoolService',
-    (scope, rootScope, location, $http, Parent, Child, CurrentUser, Employee, Class, School) ->
+   'schoolEmployeesService', 'classService', 'schoolService', 'activeCountService', 'chargeService',
+    (scope, rootScope, location, $http, Parent, Child, CurrentUser, Employee, Class, School, ActiveCount, Charge) ->
       rootScope.tabName = 'reporting'
       scope.adminUser = CurrentUser.get()
 
@@ -10,6 +10,8 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
       scope.allEmployees = []
       scope.allChildren = []
       scope.allParents = []
+      scope.allActiveMembers = 0
+      scope.allAuthorised = 0
       scope.kindergartens = School.query ->
         _.forEach scope.kindergartens, (k) ->
           k.classes = Class.query school_id: k.school_id, ->
@@ -20,6 +22,10 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
             scope.allChildren = scope.allChildren.concat k.children
           k.employees = Employee.query school_id: k.school_id, ->
             scope.allEmployees = scope.allEmployees.concat k.employees
+          k.active = ActiveCount.get school_id: k.school_id, ->
+            scope.allActiveMembers = scope.allActiveMembers + k.active.activated
+          k.charge = Charge.query school_id: k.school_id, ->
+            scope.allAuthorised = scope.allAuthorised + k.charge[0].total_phone_number
         scope.loading = false
 
       scope.detail = (kg) ->

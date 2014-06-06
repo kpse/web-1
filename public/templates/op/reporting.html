@@ -8,26 +8,32 @@
   <thead>
   <tr class="row">
     <th class="col-xs-2">学校名称</th>
-    <th class="col-xs-3">家长总数</th>
-    <th class="col-xs-3">学生总数</th>
-    <th class="col-xs-3">老师总数</th>
-    <th class="col-xs-3">班级总数</th>
+    <th class="col-xs-2">开通总数</th>
+    <th class="col-xs-2">家长总数</th>
+    <th class="col-xs-2">激活手机数</th>
+    <th class="col-xs-2">学生总数</th>
+    <th class="col-xs-1">老师总数</th>
+    <th class="col-xs-1">班级总数</th>
   </tr>
   </thead>
   <tbody>
   <tr class="row"><td class="col-xs-2">合计：</td>
-    <td class="col-xs-3">{{allParents.length}}</td>
-    <td class="col-xs-3">{{allChildren.length}}</td>
-    <td class="col-xs-3">{{allEmployees.length}}</td>
-    <td class="col-xs-3">{{allClasses.length}}</td>
+    <td class="col-xs-2">{{allAuthorised}}</td>
+    <td class="col-xs-2">{{allParents.length}}</td>
+    <td class="col-xs-2">{{allActiveMembers}}</td>
+    <td class="col-xs-2">{{allChildren.length}}</td>
+    <td class="col-xs-1">{{allEmployees.length}}</td>
+    <td class="col-xs-1">{{allClasses.length}}</td>
   </tr>
 
   <tr ng-repeat="kg in kindergartens | filter: searchText | orderBy:'parents.length':true" class="row" ng-class="{editable: detail}" ng-click="detail(kg)">
     <td class="col-xs-2"><a ng-href="/admin#/kindergarten/{{kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{kg.full_name}}</a></td>
-    <td class="col-xs-3">{{kg.parents.length}}</td>
-    <td class="col-xs-3">{{kg.children.length}}</td>
-    <td class="col-xs-3">{{kg.employees.length}}</td>
-    <td class="col-xs-3">{{kg.classes.length}}</td>
+    <td class="col-xs-2">{{kg.charge[0].total_phone_number}}</td>
+    <td class="col-xs-2">{{kg.parents.length}}</td>
+    <td class="col-xs-2">{{kg.active.activated}}</td>
+    <td class="col-xs-2">{{kg.children.length}}</td>
+    <td class="col-xs-1">{{kg.employees.length}}</td>
+    <td class="col-xs-1">{{kg.classes.length}}</td>
   </tr>
   </tbody>
 </table>
