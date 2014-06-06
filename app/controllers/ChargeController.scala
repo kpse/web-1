@@ -2,12 +2,13 @@ package controllers
 
 import play.api.mvc.Controller
 import play.api.libs.json.{JsError, Json}
-import models.{ChargeInfo, Charge}
+import models.{ActiveCount, ChargeInfo, Charge}
 
 object ChargeController extends Controller with Secured {
 
   implicit val read1 = Json.reads[ChargeInfo]
   implicit val write1 = Json.writes[ChargeInfo]
+  implicit val write2 = Json.writes[ActiveCount]
 
   def update(kg: Long) = IsOperator(parse.json) {
     u =>
@@ -31,5 +32,11 @@ object ChargeController extends Controller with Secured {
     u =>
       _ =>
         Ok(Json.toJson(Charge.delete(kg)))
+  }
+
+  def activeCount(kg: Long) = IsAuthenticated {
+    u =>
+      _ =>
+        Ok(Json.toJson(Charge.countActivePhones(kg)))
   }
 }

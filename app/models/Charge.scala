@@ -10,8 +10,18 @@ import models.helper.TimeHelper.any2DateTime
 import org.joda.time.DateTime
 
 case class ChargeInfo(school_id: Long, total_phone_number: Long, expire_date: String, status: Int, used: Long)
+case class ActiveCount(school_id: Long, active: Long, all: Long)
 
 object Charge {
+  def countActivePhones(kg: Long) = DB.withConnection {
+    implicit c =>
+      val countActive: Long = SQL("select count(1) from accountinfo where active=1 and accountid in (select phone from parentinfo where school_id={kg})")
+        .on('kg -> kg).as(get[Long]("count(1)") single)
+      val countAll: Long = SQL("select count(1) from accountinfo where accountid in (select phone from parentinfo where school_id={kg})")
+        .on('kg -> kg).as(get[Long]("count(1)") single)
+      ActiveCount(kg, countActive, countAll)
+  }
+
 
   def limitExceed(kg: Long): Boolean = DB.withConnection {
     implicit c =>
