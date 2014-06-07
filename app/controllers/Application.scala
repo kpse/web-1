@@ -5,6 +5,7 @@ import play.api.libs.iteratee.Enumerator
 import scala.concurrent.ExecutionContext
 import ExecutionContext.Implicits.global
 import play.Play
+import java.io.File
 
 object Application extends Controller with Secured {
 
@@ -30,12 +31,21 @@ object Application extends Controller with Secured {
 
   def logging = OperatorPage {
     u => _ =>
-      val file = new java.io.File("%s/logs/application.log".format(Play.application.path))
-      val fileContent: Enumerator[Array[Byte]] = Enumerator.fromFile(file)
+      val file: File = new java.io.File("%s/logs/application.log".format(Play.application.path))
+      serveFile(file, ResponseHeader(200, Map(CONTENT_LENGTH -> file.length.toString)))
+  }
 
-      SimpleResult(
-        header = ResponseHeader(200, Map(CONTENT_LENGTH -> file.length.toString)),
-        body = fileContent
-      )
+  def downloadLog = OperatorPage {
+    u => _ =>
+      val file: File = new java.io.File("%s/logs/application.log".format(Play.application.path))
+      serveFile(file, ResponseHeader(200, Map(CONTENT_DISPOSITION -> "attachment; filename=\"application.txt\"", CONTENT_TYPE -> "application/force-download")))
+  }
+
+  def serveFile(file: java.io.File, header: ResponseHeader): SimpleResult = {
+    val fileContent: Enumerator[Array[Byte]] = Enumerator.fromFile(file)
+    SimpleResult(
+      header = header,
+      body = fileContent
+    )
   }
 }
