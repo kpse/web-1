@@ -54,7 +54,7 @@ object Application extends Controller with Secured {
     Html( new String(data.map(_.toChar)))
   }
 
-  def hearBeat = Action {
+  def heartbeat = Action {
     val file: File = new java.io.File("%s/logs/application.log".format(Play.application.path))
     val fileContent: Enumerator[Array[Byte]] = Enumerator.fromFile(file)
     Ok.chunked(fileContent >>> Enumerator.eof &> toCometMessage)

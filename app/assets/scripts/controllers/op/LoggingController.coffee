@@ -8,7 +8,7 @@ angular.module('kulebaoOp').controller 'OpLoggingMonitorCtrl',
         $anchorScroll()
 
       scope.poll = ->
-        $http(method: 'GET', url: '/hearbeat').
+        $http(method: 'GET', url: '/heartbeat').
           success((data) ->
             scope.content = data
             scope.gotoBottom()
