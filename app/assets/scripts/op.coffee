@@ -45,6 +45,11 @@ angular.module('kulebaoOp',
       templateUrl: 'templates/admin/adult_manage.html',
       controller: 'OpShowPhoneCtrl'
 
+    .state 'main.logging',
+      url: '/logging',
+      templateUrl: 'templates/op/logging.html',
+      controller: 'OpLoggingMonitorCtrl'
+
     .state 'main.report',
       url: '/report',
       templateUrl: 'templates/op/reporting.html',
