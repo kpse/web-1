@@ -11,8 +11,10 @@ object LoggingFilter extends EssentialFilter {
       nextFilter(requestHeader).map { result =>
         val endTime = System.currentTimeMillis
         val requestTime = endTime - startTime
-        Logger.info(s"${requestHeader.method} ${requestHeader.uri}" +
-          s" took ${requestTime}ms and returned ${result.header.status}")
+        if (!requestHeader.uri.startsWith("/assets/") && !requestHeader.uri.startsWith("/images/")) {
+          Logger.info(s"${requestHeader.method} ${requestHeader.uri}" +
+            s" took ${requestTime}ms and returned ${result.header.status}")
+        }
         result.withHeaders("Request-Time" -> requestTime.toString)
       }
     }
