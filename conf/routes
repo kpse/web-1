@@ -13,6 +13,7 @@ GET           /                                                                 
 GET           /admin                                                             controllers.Application.admin
 GET           /operation                                                         controllers.Application.operation
 GET           /download_log                                                      controllers.Application.downloadLog
+GET           /hearbeat                                                          controllers.Application.hearBeat
 
 POST          /login.do                                                          controllers.Authentication.login
 POST          /checkphonenum.do                                                  controllers.Authentication.validateNumber

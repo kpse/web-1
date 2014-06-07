@@ -17,3 +17,10 @@
   text-decoration: line-through;
   color: #808080;
 }
+
+.log-container {
+  pre {
+    max-height: 656px;
+    overflow-y: scroll;
+  }
+}

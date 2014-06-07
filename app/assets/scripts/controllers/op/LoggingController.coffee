@@ -1,11 +1,23 @@
 angular.module('kulebaoOp').controller 'OpLoggingMonitorCtrl',
-  ['$scope', '$rootScope', '$http',
-    (scope, rootScope, $http) ->
+  ['$scope', '$rootScope', '$http', '$timeout', '$location', '$anchorScroll',
+    (scope, rootScope, $http, $timeout, $location, $anchorScroll) ->
       rootScope.tabName = 'logging'
 
-      $http(method: 'GET', url: '/api/v1/logging').
-        success((data) ->
-          scope.content = data
+      scope.gotoBottom = ->
+        $location.hash('bottom');
+        $anchorScroll()
+
+      scope.poll = ->
+        $http(method: 'GET', url: '/hearbeat').
+          success((data) ->
+            scope.content = data
+            scope.gotoBottom()
+            $timeout(scope.poll, 9000, true) if rootScope.tabName is 'logging'
+          )
+        .error(->
+            $timeout(scope.poll, 9000, true) if rootScope.tabName is 'logging'
         )
+
+      scope.poll()
 
   ]

@@ -1,11 +1,12 @@
 package controllers
 
 import play.api.mvc._
-import play.api.libs.iteratee.Enumerator
+import play.api.libs.iteratee.{Iteratee, Enumeratee, Enumerator}
 import scala.concurrent.ExecutionContext
 import ExecutionContext.Implicits.global
 import play.Play
 import java.io.File
+import play.api.templates.Html
 
 object Application extends Controller with Secured {
 
@@ -48,4 +49,15 @@ object Application extends Controller with Secured {
       body = fileContent
     )
   }
+
+  val toCometMessage = Enumeratee.map[Array[Byte]] { data =>
+    Html( new String(data.map(_.toChar)))
+  }
+
+  def hearBeat = Action {
+    val file: File = new java.io.File("%s/logs/application.log".format(Play.application.path))
+    val fileContent: Enumerator[Array[Byte]] = Enumerator.fromFile(file)
+    Ok.chunked(fileContent >>> Enumerator.eof &> toCometMessage)
+  }
+
 }
