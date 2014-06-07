@@ -4,7 +4,7 @@ import play.api.mvc._
 import play.api.libs.iteratee.Enumerator
 import scala.concurrent.ExecutionContext
 import ExecutionContext.Implicits.global
-import play.{Logger, Play}
+import play.Play
 
 object Application extends Controller with Secured {
 
@@ -30,7 +30,7 @@ object Application extends Controller with Secured {
 
   def logging = OperatorPage {
     u => _ =>
-      val file = new java.io.File("logs/application.log")
+      val file = new java.io.File("%s/logs/application.log".format(Play.application.path))
       val fileContent: Enumerator[Array[Byte]] = Enumerator.fromFile(file)
 
       SimpleResult(
