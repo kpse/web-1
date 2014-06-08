@@ -1,12 +1,17 @@
 package controllers
 
 import play.api.mvc._
-import play.api.libs.iteratee.{Iteratee, Enumeratee, Enumerator}
+import play.api.libs.iteratee._
 import scala.concurrent.ExecutionContext
 import ExecutionContext.Implicits.global
-import play.Play
-import java.io.File
+import play.{Logger, Play}
+import java.io.{InputStream, File}
 import play.api.templates.Html
+import models.helper.Tail
+import play.api.libs.EventSource
+import play.api.mvc.ResponseHeader
+import play.api.mvc.SimpleResult
+import play.cache.Cache
 
 object Application extends Controller with Secured {
 
@@ -49,15 +54,19 @@ object Application extends Controller with Secured {
       body = fileContent
     )
   }
-
-  val toCometMessage = Enumeratee.map[Array[Byte]] { data =>
-    Html( new String(data.map(_.toChar)))
+  
+  def continuousLogging = Action {
+    val e = LogTracker.enumerator
+    Ok.chunked(e &> EventSource()).as(EVENT_STREAM)
   }
+}
 
-  def heartbeat = Action {
+object LogTracker {
+  def enumerator: Enumerator[String] = {
     val file: File = new java.io.File("%s/logs/application.log".format(Play.application.path))
-    val fileContent: Enumerator[Array[Byte]] = Enumerator.fromFile(file)
-    Ok.chunked(fileContent >>> Enumerator.eof &> toCometMessage)
+    lazy val fileContent: Enumerator[Array[Byte]] = Enumerator.fromStream(Tail.follow(file))
+    fileContent through Enumeratee.map[Array[Byte]] { data =>
+      Html(new String(data.map(_.toChar))).toString()
+    }
   }
-
 }

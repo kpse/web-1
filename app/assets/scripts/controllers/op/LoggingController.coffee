@@ -7,17 +7,14 @@ angular.module('kulebaoOp').controller 'OpLoggingMonitorCtrl',
         $location.hash('bottom');
         $anchorScroll()
 
-      scope.poll = ->
-        $http(method: 'GET', url: '/heartbeat').
-          success((data) ->
-            scope.content = data
-            scope.gotoBottom()
-            $timeout(scope.poll, 9000, true) if rootScope.tabName is 'logging'
-          )
-        .error(->
-            $timeout(scope.poll, 9000, true) if rootScope.tabName is 'logging'
-        )
+      scope.content = ''
 
-      scope.poll()
+      handleCallback = (msg) ->
+        scope.$apply ->
+          scope.content += msg.data.replace(/\\n/g, '\n').replace(/\\\//g, '/').replace(/^'/, '').replace(/'$/, '')
+        scope.gotoBottom()
+
+      source = new EventSource '/track_logging'
+      source.addEventListener 'message', handleCallback, false
 
   ]
