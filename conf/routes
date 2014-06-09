@@ -14,6 +14,7 @@ GET           /admin                                                            
 GET           /operation                                                         controllers.Application.operation
 GET           /download_log                                                      controllers.Application.downloadLog
 GET           /track_logging                                                         controllers.Application.continuousLogging
+GET           /pure_char_array                                                         controllers.Application.pureIntegerArray
 
 POST          /login.do                                                          controllers.Authentication.login
 POST          /checkphonenum.do                                                  controllers.Authentication.validateNumber

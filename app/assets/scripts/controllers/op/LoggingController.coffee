@@ -1,6 +1,6 @@
 angular.module('kulebaoOp').controller 'OpLoggingMonitorCtrl',
-  ['$scope', '$rootScope', '$http', '$timeout', '$location', '$anchorScroll',
-    (scope, rootScope, $http, $timeout, $location, $anchorScroll) ->
+  ['$scope', '$rootScope', '$http', '$timeout', '$location', '$anchorScroll', 'eventStreamService',
+    (scope, rootScope, $http, $timeout, $location, $anchorScroll, Event) ->
       rootScope.tabName = 'logging'
 
       scope.gotoBottom = ->
@@ -14,7 +14,6 @@ angular.module('kulebaoOp').controller 'OpLoggingMonitorCtrl',
           scope.content += msg.data.replace(/\\n/g, '\n').replace(/\\\//g, '/').replace(/^'/, '').replace(/'$/, '')
         scope.gotoBottom()
 
-      source = new EventSource '/track_logging'
-      source.addEventListener 'message', handleCallback, false
+      Event.init('/track_logging', handleCallback)
 
   ]

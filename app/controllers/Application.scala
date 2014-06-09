@@ -12,6 +12,7 @@ import play.api.libs.EventSource
 import play.api.mvc.ResponseHeader
 import play.api.mvc.SimpleResult
 import play.cache.Cache
+import java.util.concurrent.Callable
 
 object Application extends Controller with Secured {
 
@@ -54,10 +55,20 @@ object Application extends Controller with Secured {
       body = fileContent
     )
   }
-  
-  def continuousLogging = Action {
-    val e = LogTracker.enumerator
-    Ok.chunked(e &> EventSource()).as(EVENT_STREAM)
+
+  implicit def functionToCallable[R](f: () => R): Callable[R] = new Callable[R] {
+    def call: R = f()
+  }
+
+  def continuousLogging = OperatorPage {
+    u => _ =>
+      val e = Cache.getOrElse("logging", () => LogTracker.enumerator, 3600)
+      Ok.chunked(e &> EventSource()).as(EVENT_STREAM)
+  }
+
+  def pureIntegerArray = OperatorPage {
+    u => _ =>
+      Ok.chunked(LogTracker.e2 &> EventSource()).as(EVENT_STREAM)
   }
 }
 
@@ -65,8 +76,16 @@ object LogTracker {
   def enumerator: Enumerator[String] = {
     val file: File = new java.io.File("%s/logs/application.log".format(Play.application.path))
     lazy val fileContent: Enumerator[Array[Byte]] = Enumerator.fromStream(Tail.follow(file))
-    fileContent through Enumeratee.map[Array[Byte]] { data =>
-      Html(new String(data.map(_.toChar))).toString()
+    val e = fileContent through Enumeratee.map[Array[Byte]] { data =>
+      new String(data.map(_.toChar))
     }
+    Cache.set("logging", e)
+    e
+  }
+
+  def e2 = {
+    val s: Stream[String] = "A" #:: "B" #:: "C" #:: "D" #:: Stream.empty[String]
+    val s2 = s #::: s
+    Enumerator.unfold(s2) { s => Some(s.tail, s.head)}
   }
 }
