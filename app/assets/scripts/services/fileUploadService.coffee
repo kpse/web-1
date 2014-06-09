@@ -5,8 +5,8 @@ tokenService = ($http) ->
     $http.get '/ws/safe_file_token?bucket=kulebao-prod&key=' + encodeURIComponent remoteDir + file.name
 
 rawFileTokenService = ($http) ->
-  token: (file) ->
-    $http.get '/ws/fileToken?bucket=kulebao-prod&key=' + file.name
+  token: (file, remoteDir) ->
+    $http.get '/ws/fileToken?bucket=kulebao-prod&key=' + remoteDir + file.name
 
 
 qiniuService = (tokenService) ->
@@ -44,13 +44,13 @@ qiniuRawFileService = (tokenService) ->
     # Send to server, where we can then access it with $_FILES['file].
     data.append "file", file
     data.append "token", token
-    data.append "key", file.name
+    data.append "key", remoteDir + file.name
     xhr.open "POST", "http://up.qiniu.com"
     xhr.send data
 
 generateRemoteDir = (user)->
   return '' if user is undefined
-  '/' + user + '/'
+  user + '/'
 
 generateRemoteFileName = (remoteDir, fileName)->
   return fileName if remoteDir is ''
