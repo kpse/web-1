@@ -13,8 +13,7 @@ GET           /                                                                 
 GET           /admin                                                             controllers.Application.admin
 GET           /operation                                                         controllers.Application.operation
 GET           /download_log                                                      controllers.Application.downloadLog
-GET           /track_logging                                                         controllers.Application.continuousLogging
-GET           /pure_char_array                                                         controllers.Application.pureIntegerArray
+GET           /track_logging                                                     controllers.Application.continuousLogging
 
 POST          /login.do                                                          controllers.Authentication.login
 POST          /checkphonenum.do                                                  controllers.Authentication.validateNumber

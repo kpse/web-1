@@ -30,7 +30,7 @@ object Tail {
     def follow(file: File): InputStream = {
         val maxRetries = 3
         val waitToOpen = 1000
-        val waitBetweenReads = 2000
+        val waitBetweenReads = 100
 
         def sleep(msec: Long) = () => Thread.sleep(msec)
 
@@ -56,7 +56,16 @@ object Tail {
             def hasMoreElements = testExists(file, openTries, openSleep)
         }
 
-        new SequenceInputStream(e)
+        new SequenceInputStream(e) {
+          override def close(): Unit = {
+            e.hasMoreElements match {
+              case true =>
+                e.nextElement.close()
+              case false =>
+                super.close()
+            }
+          }
+        }
     }
 
     /**

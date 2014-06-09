@@ -6,7 +6,6 @@ import scala.concurrent.ExecutionContext
 import ExecutionContext.Implicits.global
 import play.{Logger, Play}
 import java.io.{InputStream, File}
-import play.api.templates.Html
 import models.helper.Tail
 import play.api.libs.EventSource
 import play.api.mvc.ResponseHeader
@@ -62,30 +61,25 @@ object Application extends Controller with Secured {
 
   def continuousLogging = OperatorPage {
     u => _ =>
-      val e = Cache.getOrElse("logging", () => LogTracker.enumerator, 3600)
-      Ok.chunked(e &> EventSource()).as(EVENT_STREAM)
-  }
-
-  def pureIntegerArray = OperatorPage {
-    u => _ =>
-      Ok.chunked(LogTracker.e2 &> EventSource()).as(EVENT_STREAM)
+      Ok.chunked(LogTracker.enumerator &> EventSource()).as(EVENT_STREAM)
   }
 }
 
 object LogTracker {
   def enumerator: Enumerator[String] = {
-    val file: File = new java.io.File("%s/logs/application.log".format(Play.application.path))
-    lazy val fileContent: Enumerator[Array[Byte]] = Enumerator.fromStream(Tail.follow(file))
-    val e = fileContent through Enumeratee.map[Array[Byte]] { data =>
-      new String(data.map(_.toChar))
-    }
-    Cache.set("logging", e)
-    e
+    val follow: InputStream = createStream
+    enumeratorFromStream(follow)
   }
 
-  def e2 = {
-    val s: Stream[String] = "A" #:: "B" #:: "C" #:: "D" #:: Stream.empty[String]
-    val s2 = s #::: s
-    Enumerator.unfold(s2) { s => Some(s.tail, s.head)}
+  def createStream: InputStream = {
+    val file: File = new java.io.File("%s/logs/application.log".format(Play.application.path))
+    Tail.follow(file)
+  }
+
+  def enumeratorFromStream(follow: InputStream): Enumerator[String] = {
+    lazy val fileContent: Enumerator[Array[Byte]] = Enumerator.fromStream(follow)
+    fileContent through Enumeratee.map[Array[Byte]] { data =>
+      new String(data.map(_.toChar))
+    }
   }
 }
