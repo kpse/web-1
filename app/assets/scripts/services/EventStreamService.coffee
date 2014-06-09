@@ -4,13 +4,13 @@ eventStreamService = ->
   eventStreamServiceCreated = {}
   init: (url, callback) ->
     old = eventStreamServiceCreated[url]
-    if old? && old.readyState != 1
+    if old?
       old.close()
       delete eventStreamServiceCreated[url]
       old = undefined
-    if !old? && callback?
+    if callback?
       source = new EventSource url
-      source.addEventListener 'message', callback, false
+      source.onmessage = callback
       source.onerror = (e)->
         console.log(e);
         source.close()

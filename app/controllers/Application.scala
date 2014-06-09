@@ -61,13 +61,19 @@ object Application extends Controller with Secured {
 
   def continuousLogging = OperatorPage {
     u => _ =>
+      Cache.get("logging") match {
+        case last: InputStream => last.close()
+        case null => false
+      }
       Ok.chunked(LogTracker.enumerator &> EventSource()).as(EVENT_STREAM)
+
   }
 }
 
 object LogTracker {
   def enumerator: Enumerator[String] = {
     val follow: InputStream = createStream
+    Cache.set("logging", follow)
     enumeratorFromStream(follow)
   }
 
@@ -82,4 +88,5 @@ object LogTracker {
       new String(data.map(_.toChar))
     }
   }
+
 }
