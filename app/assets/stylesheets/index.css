@@ -1,5 +1,8 @@
 .hero {
-  min-width: 1880px;
+  min-width: 1276px;
+  width: 90%;
+  float: left;
+  margin: 0 100px;
 }
 
 #slides {
