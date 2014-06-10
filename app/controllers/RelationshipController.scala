@@ -32,24 +32,41 @@ object RelationshipController extends Controller with Secured {
         val relationship: String = (body \ "relationship").as[String]
         val phone: String = (body \ "parent" \ "phone").as[String]
         val childId: String = (body \ "child" \ "child_id").as[String]
-
-        if (Relationship.getCard(phone, childId).equals(Some(card))){
-          Logger.info("Relationship.getCard equals true")
-        }
+        val uid: Option[Long] = (body \ "id").as[Option[Long]]
 
         val existingCard = Relationship.getCard(phone, childId)
-        Relationship.cardExists(card) match {
+
+        Relationship.cardExists(card, uid) match {
           case true if !Parent.phoneExists(kg, phone) =>
             BadRequest(loggedJson(ErrorResponse("本校记录中找不到对应的家长信息。")))
           case true if !Children.idExists(Some(childId)) =>
             BadRequest(loggedJson(ErrorResponse("本校记录中找不到该小孩信息。")))
-          case false if existingCard.nonEmpty && !existingCard.equals(Some(card)) =>
+          case exists if uid.isEmpty && existingCard.nonEmpty && !existingCard.equals(Some(card)) =>
             BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。")))
           case true =>
-            Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId)))
+            uid match {
+              case Some(id) =>
+                Logger.info("update existing 1")
+                Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, id)))
+              case None =>
+                BadRequest(loggedJson(ErrorResponse("卡号已存在，%s号卡已经关联过家长。".format(card))))
+            }
           case false =>
-            Ok(Json.toJson(Relationship.create(kg, card, relationship, phone, childId)))
+            uid match {
+              case Some(id) if Relationship.cardExists(card, None) =>
+                BadRequest(loggedJson(ErrorResponse("卡号已存在，%s号卡已经关联过家长。".format(card))))
+              case Some(id) =>
+                Logger.info("update existing 2")
+                Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, id)))
+              case None =>
+                Logger.info("create new")
+                Ok(Json.toJson(Relationship.create(kg, card, relationship, phone, childId)))
+            }
+
+
         }
+
+
   }
 
   def show(kg: Long, card: String) = IsLoggedIn {

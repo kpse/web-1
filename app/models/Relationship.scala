@@ -7,40 +7,68 @@ import anorm.SqlParser._
 import anorm.~
 import play.Logger
 
-case class Relationship(parent: Option[Parent], child: Option[ChildInfo], card: String, relationship: String)
+case class Relationship(parent: Option[Parent], child: Option[ChildInfo], card: String, relationship: String, id: Option[Long] = None)
+case class RelationshipIdentity(id: Long, card: String)
 
 object Relationship {
+  def updateCardNumber(kg: Long, oldCard: String, newCard: String, phone: String, childId: String) = DB.withConnection {
+    implicit c =>
+      SQL("update relationmap set card_num={newCard}" +
+        "where card_num={old} " +
+        "and parent_id=(select parent_id from parentinfo where phone={phone} and school_id={kg}) " +
+        "and child_id={child_id}")
+        .on(
+          'phone -> phone,
+          'child_id -> childId,
+          'kg -> kg.toString,
+          'newCard -> newCard,
+          'old -> oldCard
+        ).executeUpdate()
+      show(kg, newCard)
+  }
 
-  def update(kg: Long, card: String, relationship: String, phone: String, childId: String) = DB.withConnection {
+
+  def update(kg: Long, card: String, relationship: String, phone: String, childId: String, id: Long) = DB.withConnection {
     implicit c =>
       SQL("update relationmap set child_id={child_id}, " +
         "parent_id=(select parent_id from parentinfo where phone={phone} and school_id={kg}), " +
-        "relationship={relationship} " +
-        "where card_num={card}")
+        "relationship={relationship}, card_num={card} " +
+        "where uid={id}")
         .on(
           'phone -> phone,
           'child_id -> childId,
           'relationship -> relationship,
           'kg -> kg.toString,
-          'card -> card
+          'card -> card,
+          'id -> id
         ).executeUpdate()
       show(kg, card)
   }
 
-  def cardExists(card: String) = DB.withConnection {
+  def cardExists(card: String, id: Option[Long]) = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from relationmap where status=1 and card_num={card}")
-        .on('card -> card).as(get[Long]("count(1)") single) > 0
+      var sql: String = "select count(1) from relationmap where status=1 and card_num={card}"
+      id map(x=> sql = sql + " and uid={id}")
+      SQL(sql).on('card -> card, 'id -> id).as(get[Long]("count(1)") single) > 0
+
+  }
+
+  val relationshipId = {
+    get[Long]("uid") ~
+    get[String]("card_num") map {
+      case id ~ card =>
+         RelationshipIdentity(id, card)
+    }
   }
 
   def getCard(phone: String, childId: String) = DB.withConnection {
     implicit c =>
-      val option = SQL("select card_num from relationmap where status=1 and child_id={childId} " +
+      val option = SQL("select uid, card_num from relationmap where status=1 and child_id={childId} " +
         "and parent_id=(select parent_id from parentinfo where phone={phone} limit 1)")
         .on(
           'phone -> phone,
           'childId -> childId
-        ).as(get[String]("card_num") singleOpt)
+        ).as(relationshipId singleOpt)
       Logger.info(option.toString)
       option
   }
@@ -80,12 +108,13 @@ object Relationship {
 
 
   def simple(kg: Long) = {
+    get[Long]("uid") ~
     get[String]("parent_id") ~
       get[String]("child_id") ~
       get[String]("card_num") ~
       get[String]("relationship") map {
-      case parent ~ child ~ cardNum ~ r =>
-        Relationship(Parent.info(kg, parent), Children.info(kg, child), cardNum, r)
+      case id ~ parent ~ child ~ cardNum ~ r =>
+        Relationship(Parent.info(kg, parent), Children.info(kg, child), cardNum, r, Some(id))
     }
   }
 

@@ -89,7 +89,8 @@ angular.module('kulebaoAdmin')
         scope.refresh ->
           scope.relationship = scope.createRelationship(child, parent)
           scope.parents = Parent.query school_id: stateParams.kindergarten, ->
-            _.forEach scope.parents, (p) -> p.validRelationships = {0: ['妈妈', '奶奶', '姥姥'], 1: ['爸爸', '爷爷', '姥爷']}[p.gender]
+            _.forEach scope.parents, (p) ->
+              p.validRelationships = {0: ['妈妈', '奶奶', '姥姥'], 1: ['爸爸', '爷爷', '姥爷']}[p.gender]
             scope.children = Child.query school_id: stateParams.kindergarten, ->
               scope.currentModal = Modal
                 scope: scope
@@ -223,6 +224,22 @@ angular.module('kulebaoAdmin')
         if !_.contains r.parent.validRelationships, r.relationship
           r.relationship = r.parent.validRelationships[0]
 
+      scope.cardNumberEditing = 0
+      scope.editing = (r) ->
+        scope.cardNumberEditing = r.card
+        scope.oldRelationship = angular.copy r
+
+      scope.cancelEditing = (r)->
+        scope.cardNumberEditing = 0
+        r.card = scope.oldRelationship.card
+
+      scope.updateCardNumber = (relationship) ->
+        relationship.$save ->
+          scope.$broadcast 'refreshing'
+          scope.refresh()
+          scope.cardNumberEditing = 0
+        , (res) ->
+          handleError('关系', res)
   ]
 
 angular.module('kulebaoAdmin')
