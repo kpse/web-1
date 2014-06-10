@@ -35,7 +35,7 @@ class RelationshipControllerSpec extends Specification with TestSupport {
     }
 
     "be updated with same information" in new WithApplication {
-      private val jsBody = createRelationship("0001234567", "13408654680", "1_1391836223533")
+      private val jsBody = createRelationship("0001234567", "13408654680", "1_1391836223533", 1)
       val res = route(loggedRequest(POST, "/kindergarten/93740362/relationship/0001234567").withBody(jsBody)).get
 
       status(res) must equalTo(OK)
@@ -51,10 +51,10 @@ class RelationshipControllerSpec extends Specification with TestSupport {
   implicit val write2 = Json.writes[ChildInfo]
   implicit val write3 = Json.writes[Relationship]
 
-  def createRelationship(card: String, phone: String, childId: String): JsValue = {
+  def createRelationship(card: String, phone: String, childId: String, id: Long): JsValue = {
     Json.toJson(new Relationship(
       Some(new Parent(None, 0, "", phone, None, 0, "", None, None, None, None)),
       Some(new ChildInfo(Some(childId), "", "", "", 0, None, 0, None, None, None)),
-      card, "妈妈"))
+      card, "妈妈", Some(id)))
   }
 }

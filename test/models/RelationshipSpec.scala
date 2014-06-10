@@ -56,7 +56,7 @@ class RelationshipSpec extends Specification with TestSupport {
 
     "be updated by card info" in new WithApplication {
 
-      private val created = Relationship.update(93740362, "0001234567", "妈妈", "13408654680", "1_1391836223533")
+      private val created = Relationship.update(93740362, "0001234567", "妈妈", "13408654680", "1_1391836223533", 1)
 
       private val newRelationship = created.get
       newRelationship.parent.get.phone must equalTo("13408654680")
