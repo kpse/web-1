@@ -38,7 +38,7 @@
 
       <div class="col-sm-12">
         <div class="form-group row">
-          <div class="image-preview col-lg-3 " ng-repeat="m in message.medium">
+          <div class="image-preview col-xs-3 " ng-repeat="m in message.medium">
             <img class="message-image" ng-src="{{m.url}}"
                  alt="{{m.type}}"/>
           </div>
@@ -48,7 +48,7 @@
           <label for="message-pic" class="control-label">上传图像</label>
 
           <input type="file" id="message-pic" fileupload="pic"/>
-          <button class="btn btn-success btn-xs" ng-disabled="pic === undefined || pic.size > 2048000 || message.medium.length > 8"
+          <button class="btn btn-success btn-xs" ng-disabled="pic === undefined || pic.size > 2048000 || message.medium.length > 8 || uploading"
                   ng-click="uploadPic(message, this)">{{message.medium.length==0 ? '添加图像' : '继续添加图像'}}
           </button>
           <span ng-class="{error : pic.size > 2048000}" class="help-block">图片大小请不要超过2m</span>

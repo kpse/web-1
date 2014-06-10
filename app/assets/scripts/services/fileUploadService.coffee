@@ -20,6 +20,8 @@ qiniuService = (tokenService) ->
         url: "https://dn-kulebao.qbox.me/" + generateRemoteFileName remoteDir, response.name
         size: response.size
       })
+      angular.forEach angular.element("input[type='file']"), (elem)->
+        angular.element(elem).val(null)
 
     # Send to server, where we can then access it with $_FILES['file].
     data.append "file", file
@@ -39,6 +41,8 @@ qiniuRawFileService = (tokenService) ->
         url: "https://dn-kulebao.qbox.me/" + remoteDir + response.name
         size: response.size
       })
+      angular.forEach angular.element("input[type='file']"), (elem)->
+        angular.element(elem).val(null)
 
 
     # Send to server, where we can then access it with $_FILES['file].

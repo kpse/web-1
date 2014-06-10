@@ -120,11 +120,13 @@ angular.module('kulebaoAdmin')
         undefined isnt _.find scope.relationships, (r) ->
           r.card == card
 
-      scope.uploadPic = (person, pic) ->
+      scope.uploadPic = (person, thatScope, form) ->
         scope.uploading = true
-        Upload pic, (url) ->
+        Upload thatScope.pic, (url) ->
           scope.$apply ->
             person.portrait = url if url isnt undefined
+            form.$setDirty() if form?
+            delete thatScope.pic
             scope.uploading = false
         , scope.adminUser.id
 

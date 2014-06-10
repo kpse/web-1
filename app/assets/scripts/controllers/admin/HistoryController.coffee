@@ -127,7 +127,5 @@ angular.module('kulebaoAdmin')
             message.medium.push url : url, type: 'image' if url isnt undefined
             scope.uploading = false
             thatScope.pic = undefined
-          angular.forEach angular.element("input[type='file']"), (elem)->
-            angular.element(elem).val(null)
         , scope.adminUser.id
   ]
