@@ -49,6 +49,10 @@ angular.module('kulebaoOp',
       url: '/logging',
       templateUrl: 'templates/op/logging.html',
       controller: 'OpLoggingMonitorCtrl'
+    .state 'main.chat',
+      url: '/chat',
+      templateUrl: 'templates/op/chat.html',
+      controller: 'OpChatCtrl'
 
     .state 'main.report',
       url: '/report',

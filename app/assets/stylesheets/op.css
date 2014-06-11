@@ -24,3 +24,44 @@
     overflow-y: scroll;
   }
 }
+
+.chat-container {
+  margin-left: 0;
+  .container {
+    min-height: 400px;
+    max-height: 400px;
+    overflow-y: scroll;
+    .history-sentence {
+      text-align: right;
+      list-style-type: none;
+      padding-left: 10px;
+      &.me {
+        text-align: left;
+      }
+      .content {
+        width: 90%;
+        &.left {
+          border-color: #bc8f8f;
+        }
+        &.left:before {
+         border-color: transparent #bc8f8f;
+        }
+      }
+    }
+
+  }
+  .members {
+    min-height: 400px;
+    .member-list {
+      padding-left: 0;
+      .me {
+        background-color: #5a8f00;
+      }
+    }
+  }
+  .message-input {
+    min-height: 100px;
+  }
+}
+
+@import "triangle-border.less";

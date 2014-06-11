@@ -1,0 +1,20 @@
+<div class="well chat-container row">
+
+  <ul class="container well col-xs-9">
+     <li ng-repeat="m in all" ng-class="{me: '我' == m.user}" class="history-sentence">
+       <span>{{m.user}}</span>
+       <p class="content triangle-border" ng-class="{left: '我' == m.user, right: '我' != m.user}">{{m.message}}</p>
+     </li>
+    <a id="bottom"></a>
+  </ul>
+  <div class="members well col-xs-offset-1 col-xs-2">
+    <ul class="member-list">
+      <li ng-repeat="member in members" ng-class="{me: member.substring(0, 2) == '我('}">{{member}}</li>
+    </ul>
+  </div>
+
+  <textarea class="message-input form-control" ng-model="newMessage"></textarea>
+  <a class="btn btn-success" ng-click="sendMessage()">发送</a>
+  <a class="btn btn-danger" ng-show="chatSocket" ng-click="leave()">离开</a>
+  <a class="btn btn-danger" ng-hide="chatSocket" ng-click="enter()">加入</a>
+</div>

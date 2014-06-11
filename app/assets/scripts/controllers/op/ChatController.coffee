@@ -1,0 +1,42 @@
+angular.module('kulebaoOp').controller 'OpChatCtrl',
+  ['$scope', '$rootScope', 'employeeService', '$timeout', '$location', '$anchorScroll',
+    (scope, rootScope, Employee, $timeout, $location, $anchorScroll) ->
+      rootScope.tabName = 'chat'
+
+      scope.gotoBottom = ->
+        $location.hash('bottom');
+        $anchorScroll()
+
+      scope.all = []
+      scope.adminUser = Employee.get ->
+        WS = if window['MozWebSocket'] then MozWebSocket else WebSocket
+        scope.username = scope.adminUser.name + new Date().toJSON()
+        scope.chatSocket = new WS("ws://localhost:9000/api/v1/chat_client?username=" + scope.username)
+        scope.chatSocket.onmessage = scope.receiveEvent
+
+      scope.sendMessage = ->
+        scope.chatSocket.send JSON.stringify text: scope.newMessage
+        scope.newMessage = ''
+
+
+      scope.receiveEvent = (event) ->
+        data = JSON.parse(event.data)
+
+        if(data.error)
+          scope.chatSocket.close()
+          alert data.error
+
+        scope.$apply ->
+          displayName = if data.user == scope.username then '我' else data.user
+          scope.all.push user: displayName, message: data.message
+          scope.members = _.map data.members, (m) -> if m == scope.username then '我(' + m + ')' else m
+
+        scope.gotoBottom()
+
+      scope.leave = ->
+        scope.all.push user: scope.username, message: '你已经退出聊天。'
+        scope.members = []
+        scope.chatSocket.close()
+        scope.chatSocket = undefined
+        $location.path '/main/school'
+  ]
