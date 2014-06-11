@@ -27,9 +27,10 @@
 
 .chat-container {
   margin-left: 0;
+  max-width: 963px;
   .container {
     min-height: 400px;
-    max-height: 400px;
+    max-height: 545px;
     overflow-y: scroll;
     .history-sentence {
       text-align: right;
