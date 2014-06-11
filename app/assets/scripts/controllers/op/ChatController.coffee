@@ -7,11 +7,19 @@ angular.module('kulebaoOp').controller 'OpChatCtrl',
         $location.hash('bottom');
         $anchorScroll()
 
+      protocol = ->
+        if $location.host() == 'localhost'
+          "ws://"
+        else
+          "wss://"
+
       scope.all = []
       scope.adminUser = Employee.get ->
         WS = if window['MozWebSocket'] then MozWebSocket else WebSocket
         scope.username = scope.adminUser.name + new Date().toJSON()
-        scope.chatSocket = new WS("ws://localhost:9000/api/v1/chat_client?username=" + scope.username)
+        url = protocol() + $location.host() + ':' + $location.port().toString() + "/api/v1/chat_client?username=" + scope.username
+        console.log(url)
+        scope.chatSocket = new WS(url)
         scope.chatSocket.onmessage = scope.receiveEvent
 
       scope.sendMessage = ->
