@@ -1,4 +1,8 @@
 ﻿#slides {
+  height: 490px;
+  width: 1276px;
+  position: relative;
+  margin-left: 143px;
   display: none;
   a:link, a:visited {
     color: #333;
@@ -18,14 +22,13 @@
     margin-right: 5px;
     float: left;
   }
-  height: 350px;
 }
 
 .slidesjs-pagination {
   z-index: 200;
   position: absolute;
-  left: 800px;
-  top: 424px;
+  left:419px;
+  top:381px;
   list-style: none;
   li {
     float: left;

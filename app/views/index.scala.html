@@ -8,22 +8,24 @@
 }
 
 @staticMain("欢迎访问幼乐宝")(scripts)(styling) {
-  <div id="full-screen-slider"><div id="slides">
-    <li> <img class="hero" src="@routes.VersionedAssets.at("images/hero-1.jpg")"></li>
-    <li> <img class="hero" src="@routes.VersionedAssets.at("images/hero-2.jpg")"></li>
-    <li> <img class="hero" src="@routes.VersionedAssets.at("images/hero-3.jpg")"></li>
-  </div>
+  <div id="full-screen-slider">
+    <div class="qr-code-box">
+      <div class="qr-code"></div>
+      <a href="http://www.cocobabys.com/app_package?redirect=true"><div class="android download-link"></div></a>
+      <a href="https://itunes.apple.com/us/app/you-le-baoios/id854211863?ls=1&mt=8"><div class="iphone download-link"></div></a>
+    </div>
+    <div id="slides">
+      <li> <img class="hero" src="@routes.VersionedAssets.at("images/hero-1.jpg")"></li>
+      <li> <img class="hero" src="@routes.VersionedAssets.at("images/hero-2.jpg")"></li>
+      <li> <img class="hero" src="@routes.VersionedAssets.at("images/hero-3.jpg")"></li>
+    </div>
   </div>
 
-  <div class="qr-code-box">
-    <div class="qr-code"></div>
-    <a href="http://www.cocobabys.com/app_package?redirect=true"><div class="android download-link"></div></a>
-    <a href="https://itunes.apple.com/us/app/you-le-baoios/id854211863?ls=1&mt=8"><div class="iphone download-link"></div></a>
-  </div>
 
-  <div class="image-intro "><img src="images/b1.jpg"></div>
-  <div class="image-intro "><img src="images/b2.png"></div>
-  <div class="image-intro "><img src="images/b3.png"></div>
-  <div class="image-intro "><img src="images/b4.png"></div>
+
+  <div class="image-intro "><img src="@routes.VersionedAssets.at("images/b1.jpg")"></div>
+  <div class="image-intro "><img src="@routes.VersionedAssets.at("images/b2.png")"></div>
+  <div class="image-intro "><img src="@routes.VersionedAssets.at("images/b3.png")"></div>
+  <div class="image-intro "><img src="@routes.VersionedAssets.at("images/b4.png")"></div>
 
 }
