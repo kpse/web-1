@@ -55,8 +55,12 @@
     min-height: 400px;
     .member-list {
       padding-left: 0;
+      list-style: lower-alpha;
       .me {
-        background-color: #5a8f00;
+         .btn-warning {
+           background-color: #008000;
+           border-color: #008000;
+         }
       }
     }
   }

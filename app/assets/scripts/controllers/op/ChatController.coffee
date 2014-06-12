@@ -36,7 +36,7 @@ angular.module('kulebaoOp').controller 'OpChatCtrl',
 
         scope.$apply ->
           displayName = if data.user == scope.username then '我' else data.user
-          scope.all.push user: displayName, message: data.message
+          scope.all.push user: displayName, message: data.message, kind: data.kind
           scope.members = _.map data.members, (m) -> if m == scope.username then '我(' + m + ')' else m
 
         scope.gotoBottom()
@@ -47,4 +47,7 @@ angular.module('kulebaoOp').controller 'OpChatCtrl',
         scope.chatSocket.close()
         scope.chatSocket = undefined
         $location.path '/main/school'
+
+      scope.isAction = (message) ->
+        message.kind == 'join' || message.kind == 'quit'
   ]
