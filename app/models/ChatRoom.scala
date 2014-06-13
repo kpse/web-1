@@ -20,11 +20,11 @@ object Robot {
   def apply(chatRoom: ActorRef) {
     
     // Create an Iteratee that logs all messages to the console.
-    val loggerIteratee = Iteratee.foreach[JsValue](event => Logger("robot").info(event.toString))
+    val loggerIteratee = Iteratee.foreach[JsValue](event => Logger("robot").info(event.toString()))
     
     implicit val timeout = Timeout(1 second)
     // Make the robot join the room
-    chatRoom ? (Join("Robot")) map {
+    chatRoom ? Join("Robot") map {
       case Connected(robotChannel) => 
         // Apply this Enumerator on the logger.
         robotChannel |>> loggerIteratee
@@ -109,7 +109,12 @@ class ChatRoom extends Actor {
     }
     
     case Talk(username, text) => {
-      notifyAll("talk", username, text)
+      text.startsWith("*") match {
+        case true =>
+          notifyAll("action", username, text.replaceFirst("^\\*", ""))
+        case false =>
+          notifyAll("talk", username, text)
+      }
     }
     
     case Quit(username) => {

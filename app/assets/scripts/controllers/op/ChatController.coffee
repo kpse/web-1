@@ -49,5 +49,5 @@ angular.module('kulebaoOp').controller 'OpChatCtrl',
         $location.path '/main/school'
 
       scope.isAction = (message) ->
-        message.kind == 'join' || message.kind == 'quit'
+        message.kind != 'talk'
   ]
