@@ -50,4 +50,10 @@ angular.module('kulebaoOp').controller 'OpChatCtrl',
 
       scope.isAction = (message) ->
         message.kind != 'talk'
+
+      scope.keyPress = (event) ->
+        if (event.which == 13)
+          event.preventDefault()
+          scope.sendMessage()
+
   ]

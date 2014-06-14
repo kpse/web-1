@@ -15,7 +15,7 @@
     </ul>
   </div>
 
-  <textarea class="message-input form-control" ng-model="newMessage"></textarea>
+  <textarea class="message-input form-control" ng-model="newMessage" ng-keypress="keyPress($event)"></textarea>
   <a class="btn btn-success" ng-click="sendMessage()">发送</a>
   <a class="btn btn-danger" ng-show="chatSocket" ng-click="leave()">离开</a>
   <a class="btn btn-danger" ng-hide="chatSocket" ng-click="enter()">加入</a>
