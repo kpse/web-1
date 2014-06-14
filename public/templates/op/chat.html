@@ -3,8 +3,8 @@
   <ul class="container well col-xs-10">
      <li ng-repeat="m in all" ng-class="{me: '我' == m.user, action: {{isAction(m)}}}" class="history-sentence">
        <span ng-hide="isAction(m)" >{{m.user}}</span>
-       <p ng-hide="isAction(m)" class="content triangle-border" ng-class="{left: '我' == m.user, right: '我' != m.user}">{{m.message}}</p>
-       <p ng-show="isAction(m)" class="content" ng-class="{left: '我' == m.user, right: '我' != m.user}">{{m.user}} {{m.message}}</p>
+       <p ng-hide="isAction(m)" class="content triangle-border" ng-class="{left: '我' == m.user, right: '我' != m.user}" ng-bind-html="m.message | emoji" >{{m.message}}</p>
+       <p ng-show="isAction(m)" class="content" ng-class="{left: '我' == m.user, right: '我' != m.user}" ng-bind-html="m.message | emoji" >{{m.user}} {{m.message}}</p>
      </li>
     <a id="bottom"></a>
   </ul>

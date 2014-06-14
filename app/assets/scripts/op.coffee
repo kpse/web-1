@@ -4,7 +4,7 @@ angular.module('kulebaoAdmin',
    'angulartics.google.analytics', 'ngCookies'])
 angular.module('kulebaoOp',
   ['kulebaoAdmin', 'kulebaoApp', 'ui.router', 'ngResource', 'ngRoute', 'ui.bootstrap', 'ui.mask', 'angulartics',
-   'angulartics.google.analytics', 'ngCookies', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap'])
+   'angulartics.google.analytics', 'ngCookies', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap', 'emoji'])
 .config ['$stateProvider', '$urlRouterProvider',
   ($stateProvider, $urlRouterProvider) ->
     $stateProvider
