@@ -45,6 +45,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
         _.find scope.employees, (e) -> e.name == m
 
       scope.save = (clazz) ->
+        scope.loading = true
         managers = clazz.managers
         clazz.$save ->
           _.forEach managers, (m) ->
@@ -53,6 +54,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
             cm.$save()
           scope.refresh()
           scope.currentModal.hide()
+          scope.loading = false
 
       scope.isDuplicated = (clazz) ->
         return false if clazz.name is undefined

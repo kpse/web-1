@@ -24,7 +24,7 @@
 
     <div class="form-group">
       <a class="btn btn-warning pull-right adding-button"
-         ng-disabled="newClassForm.$invalid || isDuplicated(currentClass)"
+         ng-disabled="newClassForm.$invalid || isDuplicated(currentClass) || loading"
          ng-click="save(currentClass)">保存</a>
       <a class="btn btn-default pull-right adding-button"
          ng-click="$hide()">取消</a>
