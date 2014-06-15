@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin')
 .controller 'MembersListCtrl',
-  [ '$scope', '$rootScope', '$stateParams', 'schoolService', 'classService', '$location', 'chargeService',
-    (scope, rootScope, stateParams, School, Class, location, Charge) ->
+  [ '$scope', '$rootScope', '$stateParams', 'schoolService', 'classService', '$location', 'chargeService', 'accessClassService',
+    (scope, rootScope, stateParams, School, Class, location, Charge, AccessClass) ->
       rootScope.tabName = 'member'
 
       scope.refresh = ->
@@ -14,7 +14,7 @@ angular.module('kulebaoAdmin')
                 scope.heading = '全校已开通( ' + scope.kindergarten.charge[0].used + ' / ' + scope.kindergarten.charge[0].total_phone_number + ' 人)'
               else
                 scope.heading = '学校未开通手机幼乐宝服务，请与幼乐宝服务人员联系'
-              location.path(location.path() + '/class/' + scope.kindergarten.classes[0].class_id + '/list') if (location.path().indexOf('/class/') < 0)
+              AccessClass(scope.kindergarten.classes)
 
       scope.$on 'update_charge', ->
         scope.refresh()

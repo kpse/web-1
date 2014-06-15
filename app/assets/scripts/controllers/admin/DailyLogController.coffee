@@ -3,8 +3,8 @@
 angular.module('kulebaoAdmin')
 .controller 'AllDailyLogCtrl',
   [ '$scope', '$rootScope', '$stateParams', 'schoolService', 'classService', '$location', 'dailyLogService',
-    'childService',
-    (scope, rootScope, stateParams, School, Class, location, DailyLog, Child) ->
+    'childService', 'accessClassService',
+    (scope, rootScope, stateParams, School, Class, location, DailyLog, Child, AccessClass) ->
       rootScope.tabName = 'dailylog'
 
       scope.childrenInSchool = 0
@@ -17,7 +17,7 @@ angular.module('kulebaoAdmin')
 
             scope.allChildren = Child.query school_id: scope.kindergarten.school_id, connected: true, ->
               scope.heading = '全校应到 ' + scope.allChildren.length + '人 / 实到 ' + scope.childrenInSchool + ' 人'
-            location.path(location.path() + '/class/' + scope.kindergarten.classes[0].class_id + '/list') if (location.path().indexOf('/class/') < 0)
+            AccessClass(scope.kindergarten.classes)
 
       scope.$on 'update_charge', ->
         scope.refresh()

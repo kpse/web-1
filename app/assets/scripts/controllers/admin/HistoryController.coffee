@@ -3,16 +3,15 @@
 angular.module('kulebaoAdmin')
 .controller 'HistoryListCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    'schoolService', 'classService', '$location', 'imageCompressService',
-    (scope, rootScope, stateParams, School, Class, location, Compress) ->
+    'schoolService', 'classService', '$location', 'imageCompressService', 'accessClassService',
+    (scope, rootScope, stateParams, School, Class, location, Compress, AccessClass) ->
       rootScope.tabName = 'history'
       scope.heading = '记录小朋友成长的各种瞬间'
 
       scope.loading = true
       scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
         scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query ->
-          scope.loading = false
-          location.path(location.path() + '/class/' + scope.kindergarten.classes[0].class_id + '/list') if (location.path().indexOf('/class/') < 0)
+          AccessClass(scope.kindergarten.classes)
 
       scope.navigateTo = (c) ->
         location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')

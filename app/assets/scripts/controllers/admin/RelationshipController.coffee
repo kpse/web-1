@@ -244,14 +244,14 @@ angular.module('kulebaoAdmin')
 
 angular.module('kulebaoAdmin')
 .controller 'connectedCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService',
-    (scope, rootScope, stateParams, location, School, Class) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'accessClassService',
+    (scope, rootScope, stateParams, location, School, Class, AccessClass) ->
       scope.current_type = 'connected'
 
       scope.loading = true
       scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
-          location.path(location.path() + '/class/' + scope.kindergarten.classes[0].class_id + '/list') if (location.path().indexOf('/class/') < 0)
+          AccessClass(scope.kindergarten.classes)
 
       scope.navigateTo = (s) ->
         location.path(location.path().replace(/\/type\/.+$/, '') + '/type/' + s.url) if stateParams.type != s.url

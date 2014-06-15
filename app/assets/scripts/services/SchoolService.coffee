@@ -37,3 +37,12 @@ adminCreatingService = ($resource) ->
 
 angular.module('kulebaoAdmin')
 .factory('adminCreatingService', ['$resource', adminCreatingService])
+
+angular.module('kulebaoAdmin')
+.service 'accessClassService',
+  ['$location', (location) ->
+    (clazzes) ->
+      location.path(location.path() + '/class/' + clazzes[0].class_id + '/list') if (location.path().indexOf('/class/') < 0) && clazzes.length > 0
+      location.path('/welcome') if clazzes.length == 0
+  ]
+

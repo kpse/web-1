@@ -18,8 +18,8 @@ angular.module('kulebaoAdmin').controller 'ExpiredCtrl',
 
 angular.module('kulebaoAdmin').controller 'WelcomeCtrl',
   ['$scope', '$rootScope', '$stateParams', 'schoolService', 'employeeService', 'chargeService', 'parentService',
-   'childService'
-    (scope, $rootScope, stateParams, School, Employee, Charge, Parent, Child) ->
+   'childService', 'classService',
+    (scope, $rootScope, stateParams, School, Employee, Charge, Parent, Child, Class) ->
       scope.adminUser = Employee.get ->
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.charge = Charge.query school_id: stateParams.kindergarten, ->
@@ -29,4 +29,6 @@ angular.module('kulebaoAdmin').controller 'WelcomeCtrl',
               scope.chargeInfo = '学校未开通手机幼乐宝服务，请与幼乐宝服务人员联系'
           scope.parents = Parent.query school_id: stateParams.kindergarten
           scope.children = Child.query school_id: stateParams.kindergarten
+          scope.classes = Class.query school_id: stateParams.kindergarten, ->
+            scope.noAccess = scope.classes.length == 0
   ]

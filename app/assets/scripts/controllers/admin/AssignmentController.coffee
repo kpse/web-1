@@ -2,14 +2,14 @@
 
 angular.module('kulebaoAdmin')
 .controller 'AssignmentListCtrl',
-  [ '$scope', '$rootScope', '$stateParams', 'schoolService', 'classService', '$location',
-    (scope, rootScope, stateParams, School, Class, location) ->
+  [ '$scope', '$rootScope', '$stateParams', 'schoolService', 'classService', '$location', 'accessClassService',
+    (scope, rootScope, stateParams, School, Class, location, AccessClass) ->
       rootScope.tabName = 'assignment'
       scope.heading = '孩子在家里还需要学习什么？在这里告诉家长吧'
 
       scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
         scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query ->
-          location.path(location.path() + '/class/' + scope.kindergarten.classes[0].class_id + '/list') if (location.path().indexOf('/class/') < 0)
+          AccessClass(scope.kindergarten.classes)
 
       scope.navigateTo = (c) ->
         location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')
