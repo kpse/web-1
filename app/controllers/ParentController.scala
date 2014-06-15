@@ -20,11 +20,20 @@ object ParentController extends Controller with Secured {
 
   def index(kg: Long, classId: Option[Long], member: Option[Boolean], connected: Option[Boolean]) = IsLoggedIn {
     u => _ =>
-      classId match {
+      val accesses: List[UserAccess] = UserAccess.queryByUsername(u, kg)
+      UserAccess.filterClassId(accesses)(classId) match {
         case Some(id) =>
           Ok(Json.toJson(Parent.indexInClass(kg, id, member)))
+        case None if classId.isDefined =>
+          Ok(Json.toJson(List[Parent]()))
         case None =>
-          Ok(Json.toJson(Parent.simpleIndex(kg, member, connected)))
+          UserAccess.isSupervisor(accesses) match {
+            case true =>
+              Ok(Json.toJson(Parent.simpleIndex(kg, member, connected)))
+            case false =>
+              Ok(Json.toJson(Parent.indexInClass(kg, UserAccess.allClasses(accesses), member)))
+          }
+
       }
   }
 

@@ -10,6 +10,8 @@ import play.Logger
 case class UserAccess(school_id: Long, id: String, group: String, subordinate: String)
 
 object UserAccess {
+  def allClasses(accesses: List[UserAccess]) = accesses.map(_.subordinate).mkString(",")
+
   val simple = {
     get[String]("school_id") ~
       get[String]("employee_id") ~
@@ -47,6 +49,19 @@ object UserAccess {
                 }
               case _ => all
             }
+        }
+    }
+
+  }
+
+  def filterClassId(access: List[UserAccess])(classId: Option[Long]): Option[Long] = {
+    isSupervisor(access) match {
+      case true =>
+        classId
+      case false =>
+        access.find((a: UserAccess) => a.subordinate.equals(classId.getOrElse(-1).toString)) match {
+          case Some(x) => classId
+          case None => None
         }
     }
 

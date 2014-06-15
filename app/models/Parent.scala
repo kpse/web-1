@@ -375,4 +375,18 @@ object Parent {
         ).as(simple *)
   }
 
+  def indexInClass(kg: Long, classIds: String, member: Option[Boolean]) = DB.withConnection {
+    implicit c =>
+      classIds.length > 0 match {
+        case true =>
+          SQL(fullStructureSql + " and c.class_id in (" + classIds + ") " + generateMemberQuery(member))
+            .on('kg -> kg,
+              'member -> (if (member.getOrElse(false)) 1 else 0)
+            ).as(simple *)
+        case false =>
+          List[Parent]()
+      }
+
+  }
+
 }
