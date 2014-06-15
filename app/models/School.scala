@@ -13,6 +13,20 @@ case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, man
 
 
 object School {
+  def manageMoreClass(kg: Long, classId: Long, employee: Employee) = DB.withConnection {
+    implicit c =>
+      SQL("update privilege set subordinate= CONCAT((select subordinate from privilege where employee_id={id}) , {class_id} ) where school_id={kg} " +
+        "and status=1 and employee_id={id}")
+        .on('kg -> kg, 'class_id -> ",%d".format(classId), 'id -> employee.id).as(get[Long]("count(1)") single) > 0
+  }
+
+  def alreadyAManagerInSchool(kg: Long, employee: Employee) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from privilege where school_id={kg} " +
+        "and status=1 and employee_id={id}")
+        .on('kg -> kg, 'id -> employee.id).as(get[Long]("count(1)") single) > 0
+  }
+
   def delete(kg: Long) = DB.withTransaction {
     implicit c =>
 

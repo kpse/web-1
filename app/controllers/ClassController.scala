@@ -18,7 +18,8 @@ object ClassController extends Controller with Secured {
 
   def index(kg: Long) = IsLoggedIn {
     u => _ =>
-      Ok(Json.toJson(School.allClasses(kg)))
+      Logger.info(u)
+      Ok(Json.toJson(UserAccess.filter(UserAccess.queryByUsername(u, kg))(School.allClasses(kg))))
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) {
@@ -69,9 +70,11 @@ object ClassController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString())
         request.body.validate[Employee].map {
-          case (employee) if School.managerExists(kg, classId, employee)=>
+          case (noUpdate) if School.managerExists(kg, classId, noUpdate) =>
+            Logger.info("SuccessResponse")
             Ok(Json.toJson(new SuccessResponse))
           case (employee) =>
+            Logger.info("new employee")
             Ok(Json.toJson(School.createClassManagers(kg, classId, employee)))
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
