@@ -189,7 +189,9 @@ object Employee {
     case (userId) if isOperator(userId) => true
     case (userId) if isPrincipal(userId, schoolId) => true
     case (userId) if isTeacher(userId, schoolId) => true
-    case _ => false
+    case _ =>
+      Logger.info("false????%s,%s".format(id, schoolId))
+      false
   }
 
   def changPassword(kg: Long, phone: String, password: EmployeePassword) = DB.withConnection {
