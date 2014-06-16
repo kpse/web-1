@@ -35,23 +35,7 @@ object UserAccess {
   }
 
   def filter(access: List[UserAccess])(result: List[SchoolClass]): List[SchoolClass] = {
-    isSupervisor(access) match {
-      case true =>
-        result
-      case false =>
-        access.foldLeft(List[SchoolClass]()) {
-          (all: List[SchoolClass], privilege: UserAccess) =>
-            privilege.group match {
-              case "teacher" =>
-                all ::: result.filter {
-                  clazz =>
-                    privilege.subordinate.equals(clazz.class_id.getOrElse(0).toString)
-                }
-              case _ => all
-            }
-        }
-    }
-
+    result.partition(c => access.exists(a => List("principal", "operator").contains(a.group) || a.subordinate.equals(c.class_id.getOrElse(0).toString)))._1
   }
 
   def filterClassId(access: List[UserAccess])(classId: Option[Long]): Option[Long] = {
