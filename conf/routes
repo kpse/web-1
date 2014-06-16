@@ -147,9 +147,6 @@ POST          /employee_password/:phone                                         
 GET           /phone/:phone                                                      controllers.PhoneManagementController.show(phone: String)
 DELETE        /phone/:phone                                                      controllers.PhoneManagementController.delete(phone: String)
 
-GET           /ws/swipe                                                          controllers.WSController.call
-POST          /ws/swipe                                                          controllers.WSController.sendMessage
-
 GET           /app_package                                                       controllers.AppPackageController.last(redirect: Option[String])
 POST          /app_package                                                       controllers.AppPackageController.create
 GET           /app_package/download                                              controllers.AppPackageController.download
@@ -179,6 +176,10 @@ GET           /api/v1/statistics/history/:schoolId                              
 GET           /api/v1/logging                                                    controllers.Application.logging
 GET           /api/v1/chat_client                                                controllers.ChatController.chat(username)
 
+GET           /api/v1/device                                                     controllers.MacAddressController.index
+GET           /api/v1/device/:device                                             controllers.MacAddressController.show(device: String)
+POST          /api/v1/device                                                     controllers.MacAddressController.create
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                      controllers.Static.at(path="/public/images", file)
@@ -198,3 +199,6 @@ GET           /kindergarten/:kg/parent/:parentId/child/:childId                 
 
 GET           /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.index(kg: Long, phone: String, from: Option[Long], to: Option[Long], most: Option[Int])
 POST          /kindergarten/:kg/conversation/:phone                              controllers.ConversationController.create(kg: Long, phone: String, retrieve_recent_from: Option[Long])
+
+GET           /ws/swipe                                                          controllers.WSController.call
+POST          /ws/swipe                                                          controllers.WSController.sendMessage
