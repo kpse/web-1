@@ -91,7 +91,7 @@ class ChildControllerSpec extends Specification with TestSupport {
       val jsonResponse: JsValue = Json.parse(contentAsString(response))
       jsonResponse match {
         case JsArray(arr) =>
-          arr.length must greaterThanOrEqualTo(7)
+          arr.length must greaterThanOrEqualTo(6)
           (arr(0) \ "child_id").as[String] must equalTo("1_1391836223533")
         case _ => failure
       }
@@ -163,7 +163,7 @@ class ChildControllerSpec extends Specification with TestSupport {
       val jsonResponse: JsValue = Json.parse(contentAsString(response))
       jsonResponse match {
         case JsArray(arr) =>
-          arr.length must beEqualTo(6)
+          arr.length must beEqualTo(4)
         case _ => failure
       }
     }
@@ -177,7 +177,7 @@ class ChildControllerSpec extends Specification with TestSupport {
       val jsonResponse: JsValue = Json.parse(contentAsString(response))
       jsonResponse match {
         case JsArray(arr) =>
-          arr.length must beEqualTo(4)
+          arr.length must beEqualTo(2)
         case _ => failure
       }
     }
@@ -191,7 +191,7 @@ class ChildControllerSpec extends Specification with TestSupport {
       val jsonResponse: JsValue = Json.parse(contentAsString(response))
       jsonResponse match {
         case JsArray(arr) =>
-          arr.length must equalTo(4)
+          arr.length must equalTo(2)
         case _ => failure
       }
     }

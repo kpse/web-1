@@ -5,7 +5,7 @@ import org.specs2.mutable.Specification
 import models.json_models.{CheckInfo, CheckingMessage}
 
 class ParentSpec extends Specification with TestSupport {
-
+  val kg: Long = 93740362
   "Parent" should {
     "report index" in new WithApplication {
 
@@ -39,9 +39,10 @@ class ParentSpec extends Specification with TestSupport {
     }
 
 
+
     "create with phone inserted in push account" in new WithApplication {
       val newPhone = "12343212"
-      private val parent = Parent.create(93740362, new Parent(None, 93740362, "", newPhone, None, 0, "1990-01-01", None, None, None))
+      private val parent = Parent.create(kg, new Parent(None, kg, "", newPhone, None, 0, "1990-01-01", None, None, None))
 
       parent.nonEmpty must beTrue
       parent.map {
@@ -50,17 +51,19 @@ class ParentSpec extends Specification with TestSupport {
           p.member_status must beSome(0)
           p.status must beSome(1)
       }
-      val child = Children.create(93740362, new ChildInfo(None, "child", "nick", "2009-01-02", 0, None, 777666, None, None, None))
+      val child = Children.create(kg, new ChildInfo(None, "child", "nick", "2009-01-02", 0, None, 777666, None, None, None))
       private val card = "123"
-      Relationship.create(93740362, card, "mama", newPhone, child.get.child_id.get)
-      private val convert = CheckingMessage.convert(new CheckInfo(93740362, card, 2, 0, "", 0))
+      Relationship.create(kg, card, "mama", newPhone, child.get.child_id.get)
+      private val convert = CheckingMessage.convert(new CheckInfo(kg, card, 2, 0, "", 0))
 
       convert.nonEmpty must beTrue
+      Children.delete(kg, child.get.child_id.get)
+      Parent.delete(kg)(parent.get.phone)
     }
 
     "update with phone updated in push account" in new WithApplication {
       val newPhone = "13402819999"
-      private val parent = Parent.update(new Parent(Some("2_93740362_123"), 93740362, "", newPhone, None, 0, "1990-01-01", Some(0), Some(1), Some(1)))
+      private val parent = Parent.update(new Parent(Some("2_93740362_123"), kg, "", newPhone, None, 0, "1990-01-01", Some(0), Some(1), Some(1)))
 
       parent.nonEmpty must beTrue
       parent.map {
@@ -69,12 +72,14 @@ class ParentSpec extends Specification with TestSupport {
           p.member_status must beSome(1)
           p.status must beSome(1)
       }
-      val child = Children.create(93740362, new ChildInfo(None, "child", "nick", "2009-01-02", 0, None, 777666, None, None, None))
+      val child = Children.create(kg, new ChildInfo(None, "child", "nick", "2009-01-02", 0, None, 777666, None, None, None))
       private val card = "123321"
-      Relationship.create(93740362, card, "mama", newPhone, child.get.child_id.get)
-      private val convert = CheckingMessage.convert(new CheckInfo(93740362, card, 2, 0, "", 0))
+      Relationship.create(kg, card, "mama", newPhone, child.get.child_id.get)
+      private val convert = CheckingMessage.convert(new CheckInfo(kg, card, 2, 0, "", 0))
 
       convert.nonEmpty must beTrue
+      Children.delete(kg, child.get.child_id.get)
+      Parent.delete(kg)(parent.get.phone)
     }
 
     "throw exception when phone already exists in push account" in new WithApplication {
