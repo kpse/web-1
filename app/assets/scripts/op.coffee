@@ -53,6 +53,10 @@ angular.module('kulebaoOp',
       url: '/chat',
       templateUrl: 'templates/op/chat.html',
       controller: 'OpChatCtrl'
+    .state 'main.device',
+      url: '/device',
+      templateUrl: 'templates/op/verification_device.html',
+      controller: 'OpDeviceCtrl'
 
     .state 'main.report',
       url: '/report',

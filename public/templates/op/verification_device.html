@@ -1,0 +1,53 @@
+<div class="panel-heading"><h2>管理平板设备</h2></div>
+<div class="panel-body">
+  <span>检索：</span>
+  <input ng-model="searchText"/>
+  <span>输入MAC地址，学校名称等进行过滤</span>
+</div>
+<div class="well cheat-code-management-panel">
+  <form class="form-horizontal row" role="form" name="form">
+    <div class="form-group col-sm-7"><label for="school_id" class="form-control-static">学校</label>
+      <select class="form-control school-select" ng-model="device.school_id"
+              ng-options="value.school_id as value.name for (key, value) in allSchools"
+              data-style="btn-primary" name="school" required></select>
+      <span class="error-field" ng-show="form.school.$dirty && form.school.$error.required">请选择学校</span>
+    </div>
+    <div class="form-group col-sm-7"><label for="mac" class="form-control-static">MAC地址</label>
+      <input id="mac" name="mac" class="form-control" ng-model="device.mac" ui-mask="{{'**:**:**:**:**:**'}}" required
+             placeholder="MAC地址"/>
+      <span class="error-field" ng-show="form.mac.$dirty && form.mac.$error.required">请填写mac地址</span>
+    </div>
+    <div class="form-group col-sm-12">
+      <button class="btn btn-primary"
+              ng-click="device.mac=form.mac.$viewValue;save(device)" ng-disabled="form.$invalid">添加
+      </button>
+
+    </div>
+  </form>
+</div>
+<table class="table table-hover table-condensed devices-list">
+  <thead>
+  <tr class="row">
+    <th class="col-xs-2">#</th>
+    <th class="col-xs-4">学校名称</th>
+    <th class="col-xs-4">设备</th>
+    <th class="col-xs-2">操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <div class="loading" ng-show="loading"></div>
+  <tr ng-repeat="device in allDevices | filter: searchText | orderBy:'school_id'" class="row">
+    <td class="col-xs-2">{{device.school_id}}</td>
+    <td class="col-xs-4">{{device.school_name}}</td>
+    <td class="col-xs-4">{{device.mac}}</td>
+
+    <td class="col-xs-2">
+      <button class="btn btn-xs btn-danger" ng-click="delete(device)">删除
+      </button>
+      <button class="btn btn-xs btn-warning" ng-click="edit(device)">编辑
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+

@@ -9,8 +9,8 @@ import helper.MD5Helper.md5
 case class Device(mac: String, school_id: Long) {
   def create() = DB.withConnection {
     implicit c =>
-      SQL("insert into macwhitelist (mac, encoded_mac, update_at) values ({mac}, {encoded}, {time})")
-        .on('mac -> mac, 'encoded -> md5(mac), 'time -> System.currentTimeMillis())
+      SQL("insert into macwhitelist (school_id, mac, encoded_mac, update_at) values ({kg}, {mac}, {encoded}, {time})")
+        .on('kg -> school_id.toString,'mac -> mac, 'encoded -> md5(mac), 'time -> System.currentTimeMillis())
         .executeInsert()
   }
 }
