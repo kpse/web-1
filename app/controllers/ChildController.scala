@@ -3,7 +3,10 @@ package controllers
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import play.api.Logger
-import models.{ErrorResponse, Children, ChildInfo, School}
+import models._
+import scala.Some
+import models.ErrorResponse
+import models.ChildInfo
 
 object ChildController extends Controller with Secured {
 
@@ -26,9 +29,23 @@ object ChildController extends Controller with Secured {
 
   def indexInSchool(kg: Long, classIds: Option[String], connect: Option[Boolean]) = IsLoggedIn {
     u => _ =>
-      Children.findAllInClass(kg, classIds, connect) match {
-        case all: List[ChildInfo] => Ok(Json.toJson(all))
+      val accesses: List[UserAccess] = UserAccess.queryByUsername(u, kg)
+      val all = UserAccess.filterClassIds(accesses)(classIds) match {
+        case ids if ids.length > 0 =>
+          Logger.info(ids)
+          Children.findAllInClass(kg, Some(ids), connect)
+        case wrong if wrong.isEmpty && classIds.nonEmpty =>
+          List[ChildInfo]()
+        case empty =>
+          UserAccess.isSupervisor(accesses) match {
+            case true =>
+              Children.findAllInClass(kg, None, connect)
+            case false =>
+              Children.findAllInClass(kg, Some(UserAccess.allClasses(accesses)), connect)
+          }
+
       }
+      Ok(Json.toJson(all))
   }
 
   def showInfo(kg: Long, childId: String) = IsLoggedIn {

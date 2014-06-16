@@ -39,15 +39,13 @@ object UserAccess {
   }
 
   def filterClassId(access: List[UserAccess])(classId: Option[Long]): Option[Long] = {
-    isSupervisor(access) match {
-      case true =>
-        classId
-      case false =>
-        access.find((a: UserAccess) => a.subordinate.equals(classId.getOrElse(-1).toString)) match {
-          case Some(x) => classId
-          case None => None
-        }
+    access.exists((a: UserAccess) => List("principal", "operator").contains(a.group) || a.subordinate.equals(classId.getOrElse(-1).toString)) match {
+      case true => classId
+      case false => None
     }
+  }
 
+  def filterClassIds(access: List[UserAccess])(classIds: Option[String]): String = {
+    classIds.getOrElse("").split(",").partition(c => access.exists(a => List("principal", "operator").contains(a.group) || a.subordinate.equals(c)))._1.mkString(",")
   }
 }
