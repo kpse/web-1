@@ -4,7 +4,7 @@
   <input ng-model="searchText"/>
   <span>输入MAC地址，学校名称等进行过滤</span>
 </div>
-<div class="well cheat-code-management-panel">
+<div class="well device-management-panel">
   <form class="form-horizontal row" role="form" name="form">
     <div class="form-group col-sm-7"><label for="school_id" class="form-control-static">学校</label>
       <select class="form-control school-select" ng-model="device.school_id"
@@ -39,7 +39,13 @@
   <tr ng-repeat="device in allDevices | filter: searchText | orderBy:'school_id'" class="row">
     <td class="col-xs-2">{{device.school_id}}</td>
     <td class="col-xs-4">{{device.school_name}}</td>
-    <td class="col-xs-4">{{device.mac}}</td>
+    <td class="col-xs-4" ng-hide="deviceEditing==device.id"><a ng-click="editDevice(device)">{{device.mac}}</a></td>
+    <td class="col-xs-4" ng-show="deviceEditing==device.id">
+      <form name="editForm"><input class="form-control" ui-mask="{{'**:**:**:**:**:**'}}" ng-model="device.mac" name="edit">
+      <button class="inline-btn save-btn btn btn-xs btn-success">
+        <span class="glyphicon glyphicon-ok" ng-click="device.mac=editForm.edit.$viewValue;updateDevice(device)"></span></button>
+      <button class="inline-btn cancel-btn btn btn-xs btn-warning">
+        <span class="glyphicon glyphicon-remove" ng-click="cancelEditing(device)"></span></button></td></form>
 
     <td class="col-xs-2">
       <button class="btn btn-xs btn-danger" ng-click="delete(device)">删除

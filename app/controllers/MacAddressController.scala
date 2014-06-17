@@ -15,7 +15,6 @@ object MacAddressController extends Controller with Secured {
     Device.exists(device) match {
       case true => Ok(Json.toJson(new SuccessResponse))
       case false => NotFound("")
-
     }
   }
 
@@ -40,7 +39,7 @@ object MacAddressController extends Controller with Secured {
     u => request =>
       request.body.validate[Device].map {
         case (device: Device) if device.duplicated =>
-          BadRequest(Json.toJson(ErrorResponse("该地址已经存在。")))
+          BadRequest(Json.toJson(ErrorResponse("新地址已经存在。")))
         case (device: Device) =>
           Ok(Json.toJson(device.update()))
       }.recoverTotal {

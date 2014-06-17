@@ -24,13 +24,37 @@ angular.module('kulebaoOp').controller 'OpDeviceCtrl',
           scope.refresh()
           scope.form.$setPristine();
         , (res) ->
-          Alert
-            title: '添加设备失败'
-            content: res.data.error_msg
+          handleError('设备地址', res)
 
       scope.delete = (device)->
         device.$delete ->
           scope.refresh()
+          scope.form.$setPristine();
+
+      scope.deviceEditing = -1
+      scope.editDevice = (device) ->
+        scope.deviceEditing = device.id
+        scope.oldDevice = angular.copy device
+
+      scope.cancelEditing = (device)->
+        scope.deviceEditing = -1
+        device.mac = scope.oldDevice.mac
+
+      handleError = (obj, res) ->
+        Alert
+          title: '保存' + obj + '失败'
+          content: res.data.error_msg
+          placement: "top-left"
+          type: "danger"
+          container: '.panel-body'
+          duration: 3
+
+      scope.updateDevice = (device) ->
+        device.$save ->
+          scope.refresh()
+          scope.deviceEditing = -1
+        , (res) ->
+          handleError('设备地址', res)
 
   ]
 

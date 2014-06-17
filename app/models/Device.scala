@@ -9,7 +9,7 @@ import helper.MD5Helper.md5
 case class Device(id: Option[Long], mac: String, school_id: Long) {
   def duplicated: Boolean = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from macwhitelist where encoded_mac={encoded} and status=1 and id <> {id}")
+      SQL("select count(1) from macwhitelist where encoded_mac={encoded} and status=1 and uid <> {id}")
         .on('encoded -> md5(mac), 'id -> id)
         .as(get[Long]("count(1)") single) > 0
   }
@@ -23,7 +23,7 @@ case class Device(id: Option[Long], mac: String, school_id: Long) {
 
   def update() = DB.withConnection {
     implicit c =>
-      SQL("update macwhitelist set school_id={kg}, mac={mac}, encoded_mac={encoded_mac}, update_at={time} where uid={id}")
+      SQL("update macwhitelist set school_id={kg}, mac={mac}, encoded_mac={encoded}, update_at={time} where uid={id}")
         .on('kg -> school_id.toString,'mac -> mac, 'encoded -> md5(mac), 'time -> System.currentTimeMillis, 'id -> id)
         .executeUpdate()
   }
