@@ -2,7 +2,9 @@ angular.module('kulebaoOp').controller 'OpDeviceCtrl',
   ['$scope', '$rootScope', 'schoolService', 'classService', 'allEmployeesService', '$resource', '$alert',
     (scope, rootScope, School, Clazz, Employee, $resource, Alert) ->
       rootScope.tabName = 'device'
-      Device = $resource '/api/v1/device'
+      Device = $resource '/api/v1/device/:id', {
+        id: '@id'
+      }
 
       scope.refresh = ->
         scope.allSchools = School.query ->
@@ -21,14 +23,14 @@ angular.module('kulebaoOp').controller 'OpDeviceCtrl',
         device.$save ->
           scope.refresh()
           scope.form.$setPristine();
-          scope.editing = false
         , (res) ->
           Alert
             title: '添加设备失败'
             content: res.data.error_msg
 
-      scope.delete = ->
-      scope.edit = ->
+      scope.delete = (device)->
+        device.$delete ->
+          scope.refresh()
 
   ]
 
