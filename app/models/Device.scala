@@ -7,6 +7,20 @@ import play.api.Play.current
 import helper.MD5Helper.md5
 
 case class Device(id: Option[Long], mac: String, school_id: Long) {
+  def duplicated: Boolean = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from macwhitelist where encoded_mac={encoded} and status=1 and id <> {id}")
+        .on('encoded -> md5(mac), 'id -> id)
+        .as(get[Long]("count(1)") single) > 0
+  }
+
+  def exists() = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from macwhitelist where encoded_mac={encoded} and status=1")
+        .on('encoded -> md5(mac))
+        .as(get[Long]("count(1)") single) > 0
+  }
+
   def update() = DB.withConnection {
     implicit c =>
       SQL("update macwhitelist set school_id={kg}, mac={mac}, encoded_mac={encoded_mac}, update_at={time} where uid={id}")
