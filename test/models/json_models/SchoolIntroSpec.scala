@@ -11,7 +11,7 @@ class SchoolIntroSpec extends Specification with TestSupport {
 
       private val index = SchoolIntro.index
 
-      index.size must beGreaterThan(3)
+      index.size must beGreaterThanOrEqualTo(3)
       index(0).name must equalTo("第三军区幼儿园")
       index(0).school_id must equalTo(93740362L)
 

@@ -38,7 +38,7 @@ class DataImportingSpec extends Specification with TestSupport {
   implicit val read3 = Json.reads[Relationship]
   implicit val read4 = Json.reads[Employee]
 
-  tag("massive_import")
+
   "Application" should {
 
     "create objects on demand" in new WithServer {
@@ -130,7 +130,7 @@ class DataImportingSpec extends Specification with TestSupport {
           wsCall(url).withHeaders("Content-Type" -> "application/json").post(line.format(schoolId, schoolId))
       }
 
-    }
+    } tag("massive_import")
 
   }
 }
