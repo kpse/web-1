@@ -130,7 +130,7 @@ class DataImportingSpec extends Specification with TestSupport {
           wsCall(url).withHeaders("Content-Type" -> "application/json").post(line.format(schoolId, schoolId))
       }
 
-    } tag("massive_import")
+    } tag "massive_import"
 
   }
 }
