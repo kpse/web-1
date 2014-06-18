@@ -13,5 +13,5 @@ before_script:
   - unzip -q play-${PLAY_VERSION}.zip
   - npm install &>/dev/null
 script:
-  - play-${PLAY_VERSION}/play -Dlogger.resource=application-logger.xml clean "test-only * -- exclude massive_import"
+  - play-${PLAY_VERSION}/play -Dlogger.resource=travis-logger.xml clean "test-only * -- exclude massive_import"
   - ./node_modules/karma/bin/karma start --single-run --browsers PhantomJS karma.conf.coffee
