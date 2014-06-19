@@ -24,6 +24,11 @@ angular.module('kulebaoOp',
       url: '/feedback',
       templateUrl: 'templates/op/feedback.html',
       controller: 'OpFeedbackCtrl'
+    .state 'main.feedback.source',
+      url: '/source/:source',
+      templateUrl: 'templates/op/feedback_source.html',
+      controller: 'OpFeedbackSourceCtrl'
+
     .state 'main.principal',
       url: '/principal',
       templateUrl: 'templates/op/principal.html',
