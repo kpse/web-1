@@ -1,6 +1,7 @@
 angular.module('kulebaoOp').controller 'OpCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'employeeService', 'passwordService', '$modal', '$alert', 'uploadService'
-    (scope, $rootScope, stateParams, Employee, Password, Modal, Alert, Upload) ->
+  ['$scope', '$rootScope', '$stateParams', 'employeeService', 'passwordService', '$modal', '$alert', 'uploadService',
+   '$location',
+    (scope, $rootScope, stateParams, Employee, Password, Modal, Alert, Upload, location) ->
       scope.adminUser = Employee.get()
 
       scope.isSelected = (tab)->
@@ -51,4 +52,11 @@ angular.module('kulebaoOp').controller 'OpCtrl',
             employee.portrait = url if url isnt undefined
             scope.uploading = false
         , scope.adminUser.id
+
+      goPageWithTab = (pageName, tabName, defaultValue)->
+        if location.path().indexOf(pageName + '/' + tabName) < 0
+          location.path '/main/' + pageName + '/' + tabName + '/' + defaultValue
+
+      scope.goFeedback = ->
+        goPageWithTab 'feedback', 'source', 'android_parent/list'
   ]
