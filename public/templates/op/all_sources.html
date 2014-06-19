@@ -1,0 +1,6 @@
+<ul class="nav nav-tabs">
+  <li ng-repeat="s in sources" ng-class="{active: {{s.type == current_source}}}">
+    <a ng-click="navigateTo(s)">{{s.name}}</a>
+  </li>
+</ul>
+<div class="feedback-view" ui-view></div>

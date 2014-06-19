@@ -20,12 +20,17 @@ angular.module('kulebaoOp',
       url: '/school',
       templateUrl: 'templates/op/school.html',
       controller: 'OpSchoolCtrl'
+
     .state 'main.feedback',
       url: '/feedback',
       templateUrl: 'templates/op/feedback.html',
       controller: 'OpFeedbackCtrl'
     .state 'main.feedback.source',
       url: '/source/:source',
+      templateUrl: 'templates/op/all_sources.html',
+      controller: 'OpFeedbackCtrl'
+    .state 'main.feedback.source.list',
+      url: '/list',
       templateUrl: 'templates/op/feedback_source.html',
       controller: 'OpFeedbackSourceCtrl'
 

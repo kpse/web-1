@@ -11,12 +11,12 @@ angular.module('kulebaoOp').controller 'OpFeedbackCtrl',
 
 
       scope.navigateTo = (source) ->
-        location.path(location.path().replace(/\/source\/.+$/, '') + '/source/' + source.type) if stateParams.source != source.type
+        location.path(location.path().replace(/\/source\/.+$/, '') + '/source/' + source.type + '/list') if stateParams.source != source.type
 
       if stateParams.source is undefined
         scope.navigateTo scope.sources[0]
-      else
-        scope.current_source = stateParams.source
+
+      scope.current_source = stateParams.source
   ]
 
 angular.module('kulebaoOp').controller 'OpFeedbackSourceCtrl',
