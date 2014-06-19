@@ -76,16 +76,25 @@ object Authentication extends Controller {
 
   implicit val write1 = Json.writes[AppUpgradeResponse]
 
-  def app(version: Long) = Action {
+  def parentHasUpdate(version: Long) = Action {
     //    {"summary":"测试版本","error_code":"0","url":"http://cocobabys.oss-cn-hangzhou.aliyuncs.com/app_release/release_2.apk","size":500000,"version":"V1.1"}
-    AppPackage.latest.fold(BadRequest(""))({
+    hasPackageBeyond(version)
+  }
+
+  def teacherHasUpdate(version: Long) = Action {
+    //    {"summary":"测试版本","error_code":"0","url":"http://cocobabys.oss-cn-hangzhou.aliyuncs.com/app_release/release_2.apk","size":500000,"version":"V1.1"}
+    hasPackageBeyond(version, Some("teacher"))
+  }
+
+
+  def hasPackageBeyond(version: Long, pkgType: Option[String] = None): SimpleResult = {
+    AppPackage.latest(pkgType).fold(BadRequest(""))({
       case pkg if version < pkg.version_code =>
         Logger.info("latest version code = %d".format(pkg.version_code))
         Ok(Json.toJson(AppPackage.response(pkg)))
       case _ => Ok(Json.toJson(AppPackage.noUpdate))
     })
   }
-
 
   def resetPassword = Action(parse.json) {
     request =>

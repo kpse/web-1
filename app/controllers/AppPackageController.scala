@@ -1,12 +1,12 @@
 package controllers
 
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{SimpleResult, Action, Controller}
 import play.api.data.Form
 import play.api.data.Forms._
 import models.AppPackage
 import play.api.libs.json.Json
 
-object AppPackageController extends Controller {
+object AppPackageController extends Controller with Secured {
 
   /*
   $scope.app =
@@ -23,7 +23,8 @@ object AppPackageController extends Controller {
       "url" -> text,
       "file_size" -> longNumber,
       "version_name" -> text,
-      "version_code" -> number
+      "version_code" -> number,
+      "package_type" -> optional(text)
     )
   )
   implicit val write1 = Json.writes[AppPackage]
@@ -38,18 +39,27 @@ object AppPackageController extends Controller {
   }
 
   def last(redirect: Option[String]) = Action {
-    redirect.fold(BadRequest(""))({
-      case "true" =>
-        AppPackage.latest.fold(BadRequest(""))({
-          case pkg if pkg.url.startsWith("http") =>
-            Redirect(pkg.url)
-        })
-      case _ => Ok(Json.toJson(AppPackage.latest))
-    })
+    packageFor(redirect)
 
   }
 
   def download = Action {
     Ok(views.html.download())
+  }
+
+
+  def lastTeacherApp(redirect: Option[String]) = Action {
+    packageFor(redirect, Some("teacher"))
+  }
+
+  def packageFor(redirect: Option[String], userType: Some[String] = Some("parent")): SimpleResult = {
+    redirect.fold(BadRequest(""))({
+      case "true" =>
+        AppPackage.latest(userType).fold(BadRequest(""))({
+          case pkg if pkg.url.startsWith("http") =>
+            Redirect(pkg.url)
+        })
+      case _ => Ok(Json.toJson(AppPackage.latest(userType)))
+    })
   }
 }
