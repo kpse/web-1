@@ -14,15 +14,15 @@ object FeedbackController extends Controller {
     implicit request =>
       request.body.validate[Feedback].map {
         case (info) =>
-          Feedback.create(info)
+          info.create
           Ok(Json.toJson(new SuccessResponse))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
 
-  def index = Action {
-    Ok(Json.toJson(Feedback.index))
+  def index(source: Option[String]) = Action {
+    Ok(Json.toJson(Feedback.index(source)))
 
   }
 }

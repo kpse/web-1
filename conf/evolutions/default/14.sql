@@ -11,6 +11,7 @@ CREATE TABLE feedback (
   content     TEXT,
   comment     TEXT,
   status     TINYINT          NOT NULL DEFAULT 1,
+  source     varchar(20)          NOT NULL DEFAULT 'android_parent',
   update_at   BIGINT(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (uid)
 );
