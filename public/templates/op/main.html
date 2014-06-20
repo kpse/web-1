@@ -42,11 +42,6 @@
           学校管理
         </a>
       </li>
-      <li class="action" ng-class="{active : isSelected('app')}">
-        <a ng-href="#/main/app" class="btn">
-          客户端版本管理
-        </a>
-      </li>
       <li class="action" ng-class="{active : isSelected('feedback')}">
         <a ng-click="goFeedback()" class="btn">
           家长反馈跟踪
@@ -90,6 +85,11 @@
       <li class="action" ng-class="{active : isSelected('device')}">
         <a ng-href="#/main/device" class="btn">
           管理平板设备
+        </a>
+      </li>
+      <li class="action" ng-class="{active : isSelected('app')}">
+        <a ng-click="goAppRelease()" class="btn">
+          客户端版本管理
         </a>
       </li>
     </ul>

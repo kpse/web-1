@@ -14,8 +14,17 @@ angular.module('kulebaoOp',
       controller: 'OpCtrl'
     .state 'main.app',
       url: '/app',
-      templateUrl: 'templates/op/app.html',
+      templateUrl: 'templates/op/app_release.html',
       controller: 'OpAppCtrl'
+    .state 'main.app.type',
+      url: '/type/:type',
+      templateUrl: 'templates/op/all_sources.html',
+      controller: 'OpAppCtrl'
+    .state 'main.app.type.detail',
+      url: '/detail',
+      templateUrl: 'templates/op/app.html',
+      controller: 'OpAppDetailCtrl'
+
     .state 'main.school',
       url: '/school',
       templateUrl: 'templates/op/school.html',

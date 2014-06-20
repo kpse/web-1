@@ -59,4 +59,7 @@ angular.module('kulebaoOp').controller 'OpCtrl',
 
       scope.goFeedback = ->
         goPageWithTab 'feedback', 'source', 'android_parent/list'
+
+      scope.goAppRelease = ->
+        goPageWithTab 'app', 'type', 'parent/detail'
   ]
