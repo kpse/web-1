@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
   ['$scope', '$rootScope', '$stateParams', 'schoolService', '$modal', 'employeeService', 'schoolEmployeesService',
-   'uploadService', '$alert',
-    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Upload, Alert) ->
+   'uploadService', '$alert', 'employeesManageClassService',
+    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Upload, Alert, ClassManager) ->
       $rootScope.tabName = 'employee'
 
       scope.loading = true
@@ -15,6 +15,9 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
       scope.refresh = ->
         scope.loading = true
         scope.employees = SchoolEmployee.query school_id: $stateParams.kindergarten, ->
+          _.forEach scope.employees, (e) ->
+            e.subordinates = ClassManager.query school_id: $stateParams.kindergarten, phone: e.phone, ->
+              e.displayClasses = (_.map e.subordinates, (s) -> s.name).join(',')
           scope.loading = false
 
       scope.createEmployee = ->

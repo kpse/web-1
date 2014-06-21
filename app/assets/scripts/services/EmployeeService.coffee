@@ -31,3 +31,13 @@ angular.module('kulebaoAdmin')
           phone: '@phone'
         }
   ]
+
+angular.module('kulebaoAdmin')
+.factory 'employeesManageClassService', ['$resource',
+    ($resource) ->
+      $resource '/kindergarten/:school_id/employee/:phone/class',
+        {
+          school_id: '@school_id'
+          phone: '@phone'
+        }
+  ]
