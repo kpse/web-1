@@ -33,7 +33,7 @@ function deploy_heroku {
 
 function local_https_server {
     load_env
-    JAVA_OPTS="-Dhttps.port=9001 -Xmx3g" play run
+    JAVA_OPTS="-Dhttps.port=9001 -Xmx3g" play h2-browser run
 }
 
 function local_https_server_with_mysql {
