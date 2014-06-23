@@ -162,6 +162,7 @@ GET           /ws/verify/phone/:phone                                           
 POST          /ws/verify/phone/:phone                                            controllers.SMSController.verify(phone: String)
 
 POST          /feedback                                                          controllers.FeedbackController.create
+POST          /feedback/:id                                                      controllers.FeedbackController.update(id: Long)
 GET           /feedback                                                          controllers.FeedbackController.index(source: Option[String])
 
 GET           /push                                                              controllers.PushController.test
