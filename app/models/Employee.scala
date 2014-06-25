@@ -9,13 +9,87 @@ import java.util.Date
 import models.helper.TimeHelper.any2DateTime
 import models.helper.MD5Helper.md5
 import play.Logger
-import play.cache.Cache
 import models.helper.PasswordHelper
 
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
-                    login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1))
+                    login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1)) {
+  def update = DB.withConnection {
+    implicit c =>
+      id map {
+        employeeId =>
+          SQL("update employeeinfo set name={name}, phone={phone}, gender={gender}, workgroup={workgroup}, " +
+            " workduty={workduty}, picurl={picurl}, birthday={birthday}, school_id={school_id}, " +
+            " login_name={login_name}, update_at={update_at}, status={status} " +
+            " where employee_id={employee_id}")
+            .on(
+              'employee_id -> employeeId,
+              'name -> name,
+              'phone -> phone,
+              'gender -> gender,
+              'workgroup -> workgroup,
+              'workduty -> workduty,
+              'picurl -> portrait,
+              'birthday -> birthday,
+              'school_id -> school_id,
+              'login_name -> login_name,
+              'status -> status.getOrElse(1),
+              'update_at -> System.currentTimeMillis
+            ).executeUpdate()
+      }
+      None
+  }
+
+  def create = DB.withTransaction {
+    implicit c =>
+      val employeeId = id.getOrElse("3_%d_%d".format(school_id, System.currentTimeMillis))
+      try {
+        val inserted: Option[Long] = SQL("insert into employeeinfo (name, phone, gender, workgroup, workduty, picurl, birthday, school_id, login_name, login_password, update_at, employee_id) " +
+          "values ({name},{phone},{gender},{workgroup},{workduty},{portrait},{birthday},{school_id},{login_name},{login_password},{update_at}, {employee_id})")
+          .on(
+            'employee_id -> employeeId,
+            'name -> name,
+            'phone -> phone,
+            'gender -> gender,
+            'workgroup -> workgroup,
+            'workduty -> workduty,
+            'portrait -> portrait,
+            'birthday -> birthday,
+            'school_id -> school_id,
+            'login_name -> login_name,
+            'login_password -> md5(phone),
+            'update_at -> System.currentTimeMillis
+          ).executeInsert()
+        c.commit()
+        inserted.flatMap {
+          e =>
+            Logger.info("finding employee %d".format(e))
+            Employee.findById(school_id, employeeId)
+        }
+      }
+      catch {
+        case e: Throwable =>
+          Logger.info(e.getLocalizedMessage)
+          c.rollback()
+          None
+      }
+
+  }
+
+  def exists = DB.withConnection {
+    implicit c =>
+      id.exists(employeeId => SQL("select count(1) from employeeinfo where employee_id={id}").on('id -> employeeId).as(get[Long]("count(1)") single) > 0)
+  }
+
+  def importing = exists match {
+    case true => update
+    case false => create match {
+      case Some(x) => None
+      case None => Some(BatchImportReport(id.getOrElse("unknown"), "老师 %s 创建失败。".format(id.getOrElse("unknown"))))
+    }
+  }
+}
 
 case class Principal(employee_id: String, school_id: Long, phone: String, timestamp: Long)
 
@@ -243,28 +317,7 @@ object Employee {
 
   def update(employee: Employee) = DB.withConnection {
     implicit c =>
-      employee.id map {
-        employeeId =>
-          SQL("update employeeinfo set name={name}, phone={phone}, gender={gender}, workgroup={workgroup}, " +
-            " workduty={workduty}, picurl={picurl}, birthday={birthday}, school_id={school_id}, " +
-            " login_name={login_name}, update_at={update_at}, status={status} " +
-            " where employee_id={employee_id}")
-            .on(
-              'employee_id -> employeeId,
-              'name -> employee.name,
-              'phone -> employee.phone,
-              'gender -> employee.gender,
-              'workgroup -> employee.workgroup,
-              'workduty -> employee.workduty,
-              'picurl -> employee.portrait,
-              'birthday -> employee.birthday,
-              'school_id -> employee.school_id,
-              'login_name -> employee.login_name,
-              'status -> employee.status.getOrElse(1),
-              'update_at -> System.currentTimeMillis
-            ).executeUpdate()
-      }
-
+      employee.update
       show(employee.phone)
   }
 
@@ -297,23 +350,7 @@ object Employee {
 
   def create(employee: Employee) = DB.withConnection {
     implicit c =>
-      val employeeId = "3_%d_%d".format(employee.school_id, System.currentTimeMillis)
-      SQL("insert into employeeinfo (name, phone, gender, workgroup, workduty, picurl, birthday, school_id, login_name, login_password, update_at, employee_id) " +
-        "values ({name},{phone},{gender},{workgroup},{workduty},{portrait},{birthday},{school_id},{login_name},{login_password},{update_at}, {employee_id})")
-        .on(
-          'employee_id -> employeeId,
-          'name -> employee.name,
-          'phone -> employee.phone,
-          'gender -> employee.gender,
-          'workgroup -> employee.workgroup,
-          'workduty -> employee.workduty,
-          'portrait -> employee.portrait,
-          'birthday -> employee.birthday,
-          'school_id -> employee.school_id,
-          'login_name -> employee.login_name,
-          'login_password -> md5(employee.phone),
-          'update_at -> System.currentTimeMillis
-        ).executeInsert()
+      employee.create
       show(employee.phone)
   }
 
