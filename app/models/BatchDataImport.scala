@@ -51,10 +51,12 @@ case class ImportedChild(id: String, name: String, nick: String, birthday: Strin
     implicit c =>
       SQL("select count(1) from childinfo where child_id={id}").on('id -> id).as(get[Long]("count(1)") single) > 0
   }
+
   def importing = exists match {
     case true => update
     case false => create
   }
+
   def create = {
     val child = transform
     val create1: Option[ChildInfo] = Children.create(child.school_id.getOrElse(0), child)
@@ -72,3 +74,55 @@ case class ImportedChild(id: String, name: String, nick: String, birthday: Strin
   }
 }
 
+case class IdItem(id: String)
+
+case class ImportedRelationship(id: String, card: String, parent: IdItem, child: IdItem, relationship: String) {
+  def exists = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from relationmap where reference_id={id}").on('id -> id).as(get[Long]("count(1)") single) > 0
+  }
+
+  def importing = exists match {
+    case true => update
+    case false => create
+  }
+
+  def create = DB.withTransaction {
+    implicit c =>
+      try {
+        SQL("insert into relationmap (child_id, parent_id, card_num, relationship, reference_id) VALUES" +
+          " ({child}, {parent}, {card}, {relationship}, {id})")
+          .on(
+            'parent -> parent.id,
+            'child -> child.id,
+            'relationship -> relationship,
+            'card -> card,
+            'id -> id
+          ).executeInsert()
+        c.commit()
+        None
+      }
+      catch {
+        case e: Throwable =>
+          Logger.info(e.getLocalizedMessage)
+          c.rollback()
+          Some(BatchImportReport(id, "卡号 %s（%s <-> %s）创建失败。".format(card, parent.id, child.id)))
+      }
+  }
+
+  def update = DB.withConnection {
+    implicit c =>
+      SQL("update relationmap set child_id={child}, " +
+        "parent_id={parent}, relationship={relationship}, card_num={card} " +
+        "where reference_id={id}")
+        .on(
+          'parent -> parent.id,
+          'child -> child.id,
+          'relationship -> relationship,
+          'card -> card,
+          'id -> id
+        ).executeUpdate()
+      None
+  }
+
+}
