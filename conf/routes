@@ -185,10 +185,10 @@ POST          /api/v1/device                                                    
 POST          /api/v1/device/:device                                             controllers.MacAddressController.update(device: String)
 
 GET           /api/v1/teacher_app_package                                        controllers.AppPackageController.lastTeacherApp(redirect: Option[String])
-GET           /api/v1/batch_import/parents                                       controllers.BatchImportController.parents
-GET           /api/v1/batch_import/children                                      controllers.BatchImportController.children
-GET           /api/v1/batch_import/employees                                     controllers.BatchImportController.employees
-GET           /api/v1/batch_import/relationships                                 controllers.BatchImportController.relationships
+POST          /api/v1/batch_import/parents                                       controllers.BatchImportController.parents
+POST          /api/v1/batch_import/children                                      controllers.BatchImportController.children
+POST          /api/v1/batch_import/employees                                     controllers.BatchImportController.employees
+POST          /api/v1/batch_import/relationships                                 controllers.BatchImportController.relationships
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.VersionedAssets.at(file: controllers.VersionedAsset)

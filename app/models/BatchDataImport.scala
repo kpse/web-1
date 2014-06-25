@@ -4,6 +4,7 @@ import anorm.SqlParser._
 import anorm._
 import play.api.db.DB
 import play.api.Play.current
+import play.Logger
 
 case class BatchImportReport(id: String, reason: String)
 
@@ -39,9 +40,9 @@ object BatchDataImport {
     implicit c =>
       parents.map {
         case (p: ImportedParent) if p.exists =>
-          p.create
-        case p =>
           p.update
+        case p =>
+          p.create
       }
   }
 
