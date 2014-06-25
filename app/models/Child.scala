@@ -55,7 +55,7 @@ object Children {
     result
   }
 
-  def updateByChildId(kg: Long, childId: String, child: ChildInfo) = DB.withConnection {
+  def update(child: ChildInfo) = DB.withConnection {
     implicit c =>
       SQL("update childinfo set name={name},nick={nick},gender={gender},class_id={class_id}," +
         "birthday={birthday}, update_at={timestamp} " + optionalFields(child) + " where child_id={child_id}")
@@ -69,9 +69,9 @@ object Children {
           'picurl -> child.portrait,
           'address -> child.address,
           'status -> child.status,
-          'child_id -> childId
+          'child_id -> child.child_id
         ).executeUpdate
-      info(kg, childId)
+      info(child.school_id.get, child.child_id.get)
   }
 
 
@@ -86,37 +86,46 @@ object Children {
 
   }
 
-  def create(kg: Long, child: ChildInfo) = DB.withConnection {
+  def create(kg: Long, child: ChildInfo) = DB.withTransaction {
     implicit c =>
-      val timestamp = System.currentTimeMillis
-      val childId = child.child_id.getOrElse("1_%d".format(timestamp))
-      val childUid: Option[Long] = SQL("INSERT INTO childinfo(name, child_id, student_id, gender, classname, picurl, birthday, " +
-        "indate, school_id, address, stu_type, hukou, social_id, nick, status, update_at, class_id) " +
-        "VALUES ({name},{child_id},{student_id},{gender},{classname},{picurl},{birthday},{indate}," +
-        "{school_id},{address},{stu_type},{hukou},{social_id},{nick},{status},{timestamp},{class_id})")
-        .on(
-          'name -> child.name,
-          'child_id -> childId,
-          'student_id -> "%d".format(timestamp).take(5),
-          'gender -> child.gender,
-          'classname -> "",
-          'picurl -> child.portrait.getOrElse(""),
-          'birthday -> child.birthday,
-          'indate -> child.birthday,
-          'school_id -> kg.toString,
-          'address -> child.address,
-          'stu_type -> 2,
-          'hukou -> 1,
-          'social_id -> "social_id",
-          'nick -> child.nick,
-          'status -> 1,
-          'class_id -> child.class_id,
-          'timestamp -> timestamp).executeInsert()
-      Logger.info("created childinfo %s".format(childUid))
-      childUid.flatMap {
-        c =>
-          Logger.info("finding child %d".format(c))
-          findById(kg, c)
+      try {
+        val timestamp = System.currentTimeMillis
+        val childId = child.child_id.getOrElse("1_%d".format(timestamp))
+        val childUid: Option[Long] = SQL("INSERT INTO childinfo(name, child_id, student_id, gender, classname, picurl, birthday, " +
+          "indate, school_id, address, stu_type, hukou, social_id, nick, status, update_at, class_id) " +
+          "VALUES ({name},{child_id},{student_id},{gender},{classname},{picurl},{birthday},{indate}," +
+          "{school_id},{address},{stu_type},{hukou},{social_id},{nick},{status},{timestamp},{class_id})")
+          .on(
+            'name -> child.name,
+            'child_id -> childId,
+            'student_id -> "%d".format(timestamp).take(5),
+            'gender -> child.gender,
+            'classname -> "",
+            'picurl -> child.portrait.getOrElse(""),
+            'birthday -> child.birthday,
+            'indate -> child.birthday,
+            'school_id -> kg.toString,
+            'address -> child.address,
+            'stu_type -> 2,
+            'hukou -> 1,
+            'social_id -> "social_id",
+            'nick -> child.nick,
+            'status -> 1,
+            'class_id -> child.class_id,
+            'timestamp -> timestamp).executeInsert()
+        Logger.info("created childinfo %s".format(childUid))
+        c.commit()
+        childUid.flatMap {
+          c =>
+            Logger.info("finding child %d".format(c))
+            findById(kg, c)
+        }
+      }
+      catch {
+        case e: Throwable =>
+          Logger.info(e.getLocalizedMessage)
+          c.rollback()
+          None
       }
   }
 

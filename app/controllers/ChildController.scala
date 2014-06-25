@@ -61,12 +61,14 @@ object ChildController extends Controller with Secured {
       implicit request =>
         Logger.info(request.body.toString())
         request.body.validate[ChildInfo].map {
+          case (info) if info.school_id.getOrElse(-1) != kg =>
+            BadRequest(Json.toJson(ErrorResponse("学校不匹配。")))
           case (info) if !School.classExists(kg, info.class_id) =>
             BadRequest("class " + info.class_id + " does not exists.")
           case (info) if !Children.idExists(info.child_id) && info.status == Some(0) =>
             Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
           case (info) if Children.idExists(info.child_id) =>
-            Ok(Json.toJson(Children.updateByChildId(kg, info.child_id.get, info)))
+            Ok(Json.toJson(Children.update(info)))
           case (info) =>
             Ok(Json.toJson(Children.create(kg, info)))
         }.recoverTotal {
@@ -80,12 +82,16 @@ object ChildController extends Controller with Secured {
       implicit request =>
         Logger.info(request.body.toString())
         request.body.validate[ChildInfo].map {
+          case (info) if !info.child_id.getOrElse("").equals(childId) =>
+            BadRequest(Json.toJson(ErrorResponse("小孩id不匹配。")))
+          case (info) if info.school_id.getOrElse(-1) != kg =>
+            BadRequest(Json.toJson(ErrorResponse("学校不匹配。")))
           case (info) if !School.classExists(kg, info.class_id) =>
             BadRequest("class " + info.class_id + " does not exists.")
           case (info) if !Children.idExists(info.child_id) && info.status == Some(0) =>
             Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
           case (info) if Children.idExists(Some(childId)) =>
-            Ok(Json.toJson(Children.updateByChildId(kg, childId, info)))
+            Ok(Json.toJson(Children.update(info)))
           case (info) =>
             Ok(Json.toJson(Children.create(kg, info)))
         }.recoverTotal {
