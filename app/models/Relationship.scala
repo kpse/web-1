@@ -102,7 +102,7 @@ object Relationship {
           'relationship -> relationship,
           'kg -> kg.toString,
           'card -> card,
-          'reference_id -> "%s_%s_%s".format(childId, phone, relationship)
+          'reference_id -> "%s_%s".format(childId, System.currentTimeMillis)
         ).executeInsert()
       findById(kg)(id.getOrElse(-1))
   }
