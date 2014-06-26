@@ -6,6 +6,7 @@ import play.api.libs.json.{JsError, Json}
 import models.ImportedParent
 import models.SuccessResponse
 import models.BatchImportReport
+import models.BatchImportReport.report
 
 object BatchImportController extends Controller with Secured {
 
@@ -21,60 +22,39 @@ object BatchImportController extends Controller with Secured {
     u => request =>
       request.body.validate[List[ImportedParent]].map {
         case (parents) =>
-          val report: List[Option[BatchImportReport]] = parents.map(_.importing).filter(_.isDefined)
-          report match {
-            case x::xs =>
-              Ok(Json.toJson(report))
-            case List() =>
-              Ok(Json.toJson(new SuccessResponse))
-          }
+          Ok(report(parents.map(_.importing)))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
+
   def children = OperatorPage(parse.json) {
     u => request =>
       request.body.validate[List[ImportedChild]].map {
         case (children) =>
-          val report: List[Option[BatchImportReport]] = children.map(_.importing).filter(_.isDefined)
-          report match {
-            case x::xs =>
-              Ok(Json.toJson(report))
-            case List() =>
-              Ok(Json.toJson(new SuccessResponse))
-          }
+          Ok(report(children.map(_.importing)))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
+
   def employees = OperatorPage(parse.json) {
     u => request =>
       request.body.validate[List[Employee]].map {
         case (employees) =>
-          val report: List[Option[BatchImportReport]] = employees.map(_.importing).filter(_.isDefined)
-          report match {
-            case x::xs =>
-              Ok(Json.toJson(report))
-            case List() =>
-              Ok(Json.toJson(new SuccessResponse))
-          }
+          Ok(report(employees.map(_.importing)))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
+
   def relationships = OperatorPage(parse.json) {
     u => request =>
       request.body.validate[List[ImportedRelationship]].map {
-      case (relationships) =>
-        val report: List[Option[BatchImportReport]] = relationships.map(_.importing).filter(_.isDefined)
-        report match {
-          case x::xs =>
-            Ok(Json.toJson(report))
-          case List() =>
-            Ok(Json.toJson(new SuccessResponse))
-        }
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
+        case (relationships) =>
+          Ok(report(relationships.map(_.importing).filter(_.isDefined)))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
   }
 }
