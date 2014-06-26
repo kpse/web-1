@@ -15,6 +15,8 @@ GET           /operation                                                        
 GET           /download_log                                                      controllers.Application.downloadLog
 GET           /track_logging                                                     controllers.Application.continuousLogging
 
+GET           /captcha                                                           controllers.ReCaptchaController.captchaView
+
 POST          /login.do                                                          controllers.Authentication.login
 POST          /checkphonenum.do                                                  controllers.Authentication.validateNumber
 POST          /receiveBindInfo.do                                                controllers.Authentication.bindNumber
@@ -177,6 +179,8 @@ GET           /api/v1/statistics/history/:schoolId                              
 
 GET           /api/v1/logging                                                    controllers.Application.logging
 GET           /api/v1/chat_client                                                controllers.ChatController.chat(username)
+
+GET           /api/v1/captcha                                                    controllers.ReCaptchaController.captcha
 
 GET           /api/v1/device                                                     controllers.MacAddressController.index
 GET           /api/v1/device/:device                                             controllers.MacAddressController.show(device: String)
