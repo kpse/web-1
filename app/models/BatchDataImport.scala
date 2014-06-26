@@ -5,6 +5,7 @@ import anorm._
 import play.api.db.DB
 import play.api.Play.current
 import play.Logger
+import play.api.libs.json.Json
 
 case class BatchImportReport(id: String, reason: String)
 
@@ -125,4 +126,19 @@ case class ImportedRelationship(id: String, card: String, parent: IdItem, child:
       None
   }
 
+}
+
+object BatchImportReport {
+  implicit val write = Json.writes[BatchImportReport]
+  implicit val write1 = Json.writes[SuccessResponse]
+
+  def report(list: List[Option[BatchImportReport]]) = {
+    val report = list.filter(_.isDefined).map(_.get)
+    report match {
+      case x :: xs =>
+        Json.toJson(report)
+      case List() =>
+        Json.toJson(new SuccessResponse)
+    }
+  }
 }

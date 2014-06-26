@@ -31,6 +31,19 @@ object Parent {
       SQL("delete from accountinfo where accountid={phone}").on('phone -> phone).execute()
   }
 
+  def permanentRemoveById(id: String) = DB.withConnection {
+    implicit c =>
+      idExists(Some(id)) match {
+        case true =>
+          SQL("delete from relationmap where parent_id={id}").on('id -> id).execute()
+          SQL("delete from accountinfo where accountid in (select phone from parentinfo where parent_id={id})").on('id -> id).execute()
+          SQL("delete from parentinfo where parent_id={id}").on('id -> id).execute()
+          None
+        case false =>
+          Some(BatchImportReport(id, "家长 %s 不存在。".format(id)))
+      }
+  }
+
 
   def phoneSearch(phone: String) = DB.withConnection {
     implicit c =>

@@ -190,6 +190,8 @@ POST          /api/v1/batch_import/children                                     
 POST          /api/v1/batch_import/employees                                     controllers.BatchImportController.employees
 POST          /api/v1/batch_import/relationships                                 controllers.BatchImportController.relationships
 
+POST          /api/v1/batch_delete/parents                                       controllers.BatchDeleteController.deleteParents
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                      controllers.Static.at(path="/public/images", file)
