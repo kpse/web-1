@@ -94,14 +94,15 @@ object Relationship {
 
   def create(kg: Long, card: String, relationship: String, phone: String, childId: String) = DB.withConnection {
     implicit c =>
-      val id: Option[Long] = SQL("insert into relationmap (child_id, parent_id, card_num, relationship) VALUES" +
-        " ({child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg}), {card}, {relationship})")
+      val id: Option[Long] = SQL("insert into relationmap (child_id, parent_id, card_num, relationship, reference_id) VALUES" +
+        " ({child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg}), {card}, {relationship}, {reference_id})")
         .on(
           'phone -> phone,
           'child_id -> childId,
           'relationship -> relationship,
           'kg -> kg.toString,
-          'card -> card
+          'card -> card,
+          'reference_id -> "%s_%s_%s".format(childId, phone, relationship)
         ).executeInsert()
       findById(kg)(id.getOrElse(-1))
   }
