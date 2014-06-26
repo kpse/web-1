@@ -33,6 +33,9 @@ a {
   &:hover {
     color: @linksHover;
   }
+  &.normal-text {
+    color: #000000;
+  }
 }
 
 .app-qr-code {
@@ -62,12 +65,12 @@ p.note {
 
   .login-form {
     position: absolute;
-    top: 184px;
+    top: 70px;
     left: 538px;
     width: 468px;
-    height: 280px;
-    background: transparent url(../../images/login-form-bg.png) no-repeat 44px top;
-    background-size: 72%;
+    height: 380px;
+    background: transparent url(../../images/login-form-bg.png) no-repeat 44px -12px;
+    background-size: 72% 388px;
     padding: 48px;
     .form-group {
       padding: 12px;
@@ -106,6 +109,9 @@ p.note {
     }
     .forgotten-link {
       margin-top: 5px;
+    }
+    .button-container {
+      margin-top: -44px;
     }
   }
 }

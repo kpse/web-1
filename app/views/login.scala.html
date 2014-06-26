@@ -1,4 +1,4 @@
-@(form: Form[(String, String)])(implicit flash: Flash)
+@(form: Form[(String, String, String, String)])(implicit flash: Flash)
   @styling = {
     <link rel="shortcut icon" type="image/png" href="@routes.VersionedAssets.at("images/favicon.png")">
     <link rel="stylesheet" type="text/css" media="screen" href="@routes.VersionedAssets.at("stylesheets/main.css")">
@@ -41,7 +41,11 @@
         <div class="col-sm-8"><input id="password" type="password" name="password" class="form-control login-input" placeholder="密码"></div>
       </div>
       <div class="form-group">
-        <div class="col-sm-offset-4 col-sm-8"><button type="submit" id="login-button" class="login-button form-control">
+        <label for="re-captcha" class="col-sm-4 control-label">验证码</label>
+        <div class="col-sm-8">@views.html.captchaEmbed()</div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-8 button-container"><button type="submit" id="login-button" class="login-button form-control">
           登陆</button></div>
       </div>
       <p>
@@ -55,4 +59,5 @@
       <p>版权信息：成都库乐宝信息技术有限公司 All rights reserved. 许可证：蜀ICP备14002494号</p>
     </div>
   </div>
+
 }
