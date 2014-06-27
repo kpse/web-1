@@ -55,7 +55,7 @@ object Children {
     result
   }
 
-  def update(child: ChildInfo) = DB.withConnection {
+  def update(kg: Long, child: ChildInfo) = DB.withConnection {
     implicit c =>
       SQL("update childinfo set name={name},nick={nick},gender={gender},class_id={class_id}," +
         "birthday={birthday}, update_at={timestamp} " + optionalFields(child) + " where child_id={child_id}")
@@ -71,7 +71,7 @@ object Children {
           'status -> child.status,
           'child_id -> child.child_id
         ).executeUpdate
-      info(child.school_id.get, child.child_id.get)
+      info(kg, child.child_id.get)
   }
 
 

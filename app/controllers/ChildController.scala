@@ -68,7 +68,7 @@ object ChildController extends Controller with Secured {
           case (info) if !Children.idExists(info.child_id) && info.status == Some(0) =>
             Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
           case (info) if Children.idExists(info.child_id) =>
-            Ok(Json.toJson(Children.update(info)))
+            Ok(Json.toJson(Children.update(kg, info)))
           case (info) =>
             Ok(Json.toJson(Children.create(kg, info)))
         }.recoverTotal {
@@ -91,7 +91,7 @@ object ChildController extends Controller with Secured {
           case (info) if !Children.idExists(info.child_id) && info.status == Some(0) =>
             Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
           case (info) if Children.idExists(Some(childId)) =>
-            Ok(Json.toJson(Children.update(info)))
+            Ok(Json.toJson(Children.update(kg, info)))
           case (info) =>
             Ok(Json.toJson(Children.create(kg, info)))
         }.recoverTotal {

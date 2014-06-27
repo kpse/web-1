@@ -70,7 +70,7 @@ case class ImportedChild(id: String, name: String, nick: String, birthday: Strin
   }
 
   def update = {
-    Children.update(transform)
+    Children.update(school_id.get, transform)
     None
   }
 }
