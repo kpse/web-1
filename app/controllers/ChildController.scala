@@ -61,7 +61,7 @@ object ChildController extends Controller with Secured {
       implicit request =>
         Logger.info(request.body.toString())
         request.body.validate[ChildInfo].map {
-          case (info) if info.school_id.getOrElse(-1) != kg =>
+          case (info) if info.school_id.isDefined && info.school_id.get != kg =>
             BadRequest(Json.toJson(ErrorResponse("学校不匹配。")))
           case (info) if !School.classExists(kg, info.class_id) =>
             BadRequest("class " + info.class_id + " does not exists.")
