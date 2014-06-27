@@ -1,0 +1,20 @@
+<input type="text" name="answer" class="form-control" required />
+@import scala.util.Random
+@Random.setSeed(System.currentTimeMillis())
+@Random.nextInt(3) match {
+  case 1 => {
+    <img src="assets/images/captcha.jpg" class="img-responsive" alt=""/>
+    <input type="hidden" name="challenge" value="e6f7681249d77e4e69c69fe7866f532b"/>
+  }
+
+  case 2 => {
+    <img src="assets/images/captcha1.jpg" class="img-responsive" alt=""/>
+    <input type="hidden" name="challenge" value="d08b787a9bfd5a25626ce28e422de506"/>
+  }
+
+  case _ => {
+    <img src="assets/images/captcha2.jpg" class="img-responsive" alt=""/>
+    <input type="hidden" name="challenge" value="fced89169747395b75103c3a613bbb50"/>
+  }
+
+}

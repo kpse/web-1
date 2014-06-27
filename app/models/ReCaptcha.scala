@@ -31,13 +31,22 @@ object ReCaptcha {
 
   def checkAnswer(addr: String, challenge: String, response: String, reCaptcha: ReCaptchaImpl): Boolean = {
     try {
-      val future: Future[Boolean] = Future {reCaptcha.checkAnswer(addr, challenge, response).isValid}
-      Await result (future, 5 seconds)
+      val future: Future[Boolean] = Future {
+        reCaptcha.checkAnswer(addr, challenge, response).isValid
+      }
+      Await result(future, 5 seconds)
     }
     catch {
       case e: Throwable =>
         Logger.info(e.getLocalizedMessage)
         true
     }
+  }
+
+  def simpleCheck(challenge: String, answer: String) = {
+    val m = Map("e6f7681249d77e4e69c69fe7866f532b" -> "damage",
+      "d08b787a9bfd5a25626ce28e422de506" -> "fertile",
+      "fced89169747395b75103c3a613bbb50" -> "hanging")
+    answer.nonEmpty && answer.equalsIgnoreCase(m.get(challenge).getOrElse(""))
   }
 }
