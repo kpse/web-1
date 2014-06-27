@@ -6,8 +6,10 @@ import anorm._
 import anorm.SqlParser._
 import anorm.~
 import play.Logger
+import scala.util.Random
 
 case class Relationship(parent: Option[Parent], child: Option[ChildInfo], card: String, relationship: String, id: Option[Long] = None)
+
 case class RelationshipIdentity(id: Long, card: String)
 
 object Relationship {
@@ -48,16 +50,16 @@ object Relationship {
   def cardExists(card: String, id: Option[Long]) = DB.withConnection {
     implicit c =>
       var sql: String = "select count(1) from relationmap where status=1 and card_num={card}"
-      id map(x=> sql = sql + " and uid={id}")
+      id map (x => sql = sql + " and uid={id}")
       SQL(sql).on('card -> card, 'id -> id).as(get[Long]("count(1)") single) > 0
 
   }
 
   val relationshipId = {
     get[Long]("uid") ~
-    get[String]("card_num") map {
+      get[String]("card_num") map {
       case id ~ card =>
-         RelationshipIdentity(id, card)
+        RelationshipIdentity(id, card)
     }
   }
 
@@ -92,25 +94,36 @@ object Relationship {
   }
 
 
-  def create(kg: Long, card: String, relationship: String, phone: String, childId: String) = DB.withConnection {
+  def create(kg: Long, card: String, relationship: String, phone: String, childId: String) = DB.withTransaction {
     implicit c =>
-      val id: Option[Long] = SQL("insert into relationmap (child_id, parent_id, card_num, relationship, reference_id) VALUES" +
-        " ({child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg}), {card}, {relationship}, {reference_id})")
-        .on(
-          'phone -> phone,
-          'child_id -> childId,
-          'relationship -> relationship,
-          'kg -> kg.toString,
-          'card -> card,
-          'reference_id -> "%s_%s".format(childId, System.currentTimeMillis)
-        ).executeInsert()
-      findById(kg)(id.getOrElse(-1))
+      val random: Random = new Random(System.currentTimeMillis)
+      try {
+        val id: Option[Long] = SQL("insert into relationmap (child_id, parent_id, card_num, relationship, reference_id) VALUES" +
+          " ({child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg}), {card}, {relationship}, {reference_id})")
+          .on(
+            'phone -> phone,
+            'child_id -> childId,
+            'relationship -> relationship,
+            'kg -> kg.toString,
+            'card -> card,
+            'reference_id -> "%s_%s_%s".format(childId, phone, random.nextString(4))
+          ).executeInsert()
+        c.commit()
+        findById(kg)(id.getOrElse(-1))
+      }
+      catch {
+        case e: Throwable =>
+          c.rollback()
+          Logger.info("create relationship error...")
+          Logger.info(e.getLocalizedMessage)
+          None
+      }
   }
 
 
   def simple(kg: Long) = {
     get[Long]("uid") ~
-    get[String]("parent_id") ~
+      get[String]("parent_id") ~
       get[String]("child_id") ~
       get[String]("card_num") ~
       get[String]("relationship") map {

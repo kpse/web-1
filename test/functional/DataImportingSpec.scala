@@ -59,7 +59,7 @@ class DataImportingSpec extends Specification with TestSupport {
       val relationshipCheckingUrl = "http://localhost:19001/kindergarten/%d/relationship".format(schoolId)
       val relationshipSingleCheckingUrl = "http://localhost:19001/kindergarten/%d/relationship/0000000011".format(schoolId)
 
-      val employeeCreatingUrl = "http://localhost:19001/kindergarten/%d/employee".format(schoolId)
+      val employeeCreatingUrl = "http://localhost:19001/kindergarten/%d/employee/%s".format(schoolId, schoolId)
       val employeeCheckingUrl = "http://localhost:19001/kindergarten/%d/employee".format(schoolId)
 
       waitForWSCall(allRequests("/data/school.txt").filter(_.trim.nonEmpty).map(createOnServer(schoolCreatingUrl)))
@@ -113,8 +113,8 @@ class DataImportingSpec extends Specification with TestSupport {
       private val employeeRes: Response = waitForSingleWSCall(wsCall(employeeCheckingUrl).get())
 
       employeeRes.status must equalTo(200)
-      Json.parse(employeeRes.body).as[List[Employee]].size must beEqualTo(1)
-      (Json.parse(employeeRes.body)(0) \ "school_id").as[Long] must beEqualTo(schoolId)
+      Json.parse(employeeRes.body).as[List[Employee]].size must beEqualTo(2)
+      (Json.parse(employeeRes.body)(1) \ "name").as[String] must beEqualTo("王老师")
 
       val relationshipCheckingUrl2 = "http://localhost:19001/kindergarten/%d/relationship?parent=18647879092".format(schoolId)
 

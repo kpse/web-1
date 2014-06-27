@@ -1,3 +1,3 @@
-{"school_id":%d,"id":"3_%d_2","name":"woshi laoshi","gender":1,"phone":"15208306034","workgroup":"职工","workduty":"员工","birthday":"1985-08-02","login_name":"t_number_2"}
+{"school_id":%d,"id":"3_%d_2","name":"王老师","gender":1,"phone":"15208306034","workgroup":"职工","workduty":"员工","birthday":"1985-08-02","login_name":"t_number_2"}
 
 
