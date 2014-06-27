@@ -17,13 +17,9 @@ object Auth extends Controller {
   val loginForm = Form(
     tuple(
       "username" -> nonEmptyText,
-      "password" -> nonEmptyText,
-      "recaptcha_challenge_field" -> nonEmptyText,
-      "recaptcha_response_field" -> nonEmptyText
+      "password" -> nonEmptyText
     ) verifying("无效的用户名或密码。", _ match {
-      case (username, password, _, _) => Employee.authenticate(username, password).isDefined
-    }) verifying("验证码不正确。", _ match {
-      case (_, _, recaptcha_challenge_field, recaptcha_response_field) => ReCaptcha.check("cocobabys.com", recaptcha_challenge_field, recaptcha_response_field)
+      case (username, password) => Employee.authenticate(username, password).isDefined
     })
   )
 
