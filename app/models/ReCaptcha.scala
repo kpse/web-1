@@ -4,6 +4,9 @@ import play.api.Play.current
 import java.util.Properties
 import net.tanesha.recaptcha.{ReCaptchaImpl, ReCaptchaFactory}
 import play.Logger
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits._
 
 object ReCaptcha {
   def publicKey(): String = {
@@ -28,7 +31,8 @@ object ReCaptcha {
 
   def checkAnswer(addr: String, challenge: String, response: String, reCaptcha: ReCaptchaImpl): Boolean = {
     try {
-      reCaptcha.checkAnswer(addr, challenge, response).isValid
+      val future: Future[Boolean] = Future {reCaptcha.checkAnswer(addr, challenge, response).isValid}
+      Await result (future, 5 seconds)
     }
     catch {
       case e: Throwable =>
