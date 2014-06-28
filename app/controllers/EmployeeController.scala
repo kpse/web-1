@@ -15,6 +15,7 @@ object EmployeeController extends Controller with Secured {
   implicit val write = Json.writes[Employee]
   implicit val write1 = Json.writes[ErrorResponse]
   implicit val write2 = Json.writes[SchoolClass]
+  implicit val write3 = Json.writes[SuccessResponse]
   implicit val read1 = Json.reads[Employee]
   implicit val read2 = Json.reads[EmployeePassword]
   implicit val read3 = Json.reads[EmployeeResetPassword]
@@ -27,7 +28,13 @@ object EmployeeController extends Controller with Secured {
 
   def show(phone: String) = IsAuthenticated {
     u => _ =>
-      Ok(Json.toJson(Employee.show(phone)))
+      Employee.show(phone) match {
+        case Some(x) =>
+          Ok(Json.toJson(x))
+        case None =>
+          NotFound("没有找到对应老师。")
+      }
+
   }
 
 
@@ -148,4 +155,9 @@ object EmployeeController extends Controller with Secured {
         })
   }
 
+  def permanentRemove(phone: String) = IsOperator {
+    u => _ =>
+      Employee.permanentRemove(phone)
+      Ok(Json.toJson(new SuccessResponse))
+  }
 }

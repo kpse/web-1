@@ -63,6 +63,10 @@ angular.module('kulebaoOp',
       url: '/phone/:phone',
       templateUrl: 'templates/admin/adult_manage.html',
       controller: 'OpShowPhoneCtrl'
+    .state 'main.phone_management.teacher',
+      url: '/teacher/:phone',
+      templateUrl: 'templates/admin/teacher_manage.html',
+      controller: 'OpShowTeacherCtrl'
 
     .state 'main.logging',
       url: '/logging',

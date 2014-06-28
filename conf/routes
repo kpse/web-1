@@ -144,6 +144,7 @@ GET           /employee                                                         
 POST          /employee                                                          controllers.EmployeeController.create
 POST          /employee/:phone                                                   controllers.EmployeeController.updateOrCreate(phone: String)
 GET           /employee/:phone                                                   controllers.EmployeeController.show(phone: String)
+DELETE        /employee/:phone                                                   controllers.EmployeeController.permanentRemove(phone: String)
 GET           /employee_password/:phone                                          controllers.EmployeeController.check(phone: String)
 POST          /employee_password/:phone                                          controllers.EmployeeController.resetPassword(phone: String)
 

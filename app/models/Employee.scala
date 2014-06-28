@@ -98,6 +98,14 @@ case class EmployeePassword(employee_id: String, school_id: Long, phone: String,
 case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String)
 
 object Employee {
+  def permanentRemove(phone: String) = DB.withConnection {
+    implicit c =>
+      SQL("delete from employeeinfo where phone={phone}")
+        .on(
+          'phone -> phone
+        ).execute()
+  }
+
   def reCreateByPhone(employee: Employee) = DB.withConnection {
     implicit c =>
       val time = System.currentTimeMillis

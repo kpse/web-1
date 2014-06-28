@@ -1,0 +1,88 @@
+<div class="panel-body">
+  <h2>老师</h2>
+  <form class="form-horizontal row" role="form" name="editTeacherForm">
+
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label for="teacher-phone" class="col-sm-4 control-label">电话号码</label>
+
+        <div class="col-sm-8">
+          <p class="form-control-static">{{teacher.phone}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="teacher-name" class="col-sm-4 control-label">老师姓名</label>
+
+        <div class="col-sm-8">
+          <p class="form-control-static">{{teacher.name}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="teacher-gender" class="col-sm-4 control-label">性别</label>
+
+        <div class="col-sm-8">
+          <p class="form-control-static">{{ teacher.gender == 0 ? '女': '男'}}</p>
+        </div>
+      </div>
+      <div class="form-group">
+
+        <label for="teacher-birthday" class="col-sm-4 control-label">生日</label>
+
+        <div class="col-sm-8">
+          <p class="form-control-static">{{teacher.birthday}}</p>
+        </div>
+      </div>
+      <div class="form-group">
+
+        <label for="teacher-workduty" class="col-sm-4 control-label">职责</label>
+
+        <div class="col-sm-8">
+          <p class="form-control-static">{{teacher.workduty}}</p>
+        </div>
+      </div>
+      <div class="form-group">
+
+        <label for="teacher-workgroup" class="col-sm-4 control-label">群组</label>
+
+        <div class="col-sm-8">
+          <p class="form-control-static">{{teacher.workgroup}}</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-sm-6">
+      <div class="form-group">
+        <div class="portrait-container">
+          <img class="portrait" ng-src="{{teacher.portrait || '/assets/images/portrait_placeholder.png' }}"
+               alt="照片"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-12">
+      <div class="form-group">
+        <label for="teacher-school" class="col-sm-2 control-label">所在学校</label>
+
+        <div class="col-sm-8">
+          <p class="form-control-static">{{school.name}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="form-group">
+        <div class="btn-group pull-right">
+          <a class="btn btn-default adding-button"
+             ng-click="cancel()">取消</a>
+          <button class="btn btn-danger" ng-confirm-msg="你确定要删除吗?"
+                  ng-confirm-click="delete(teacher)">删除
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
