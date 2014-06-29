@@ -20,8 +20,8 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
       scope.editSchool = (kg) ->
         kg.charges = Charge.query school_id: kg.school_id, ->
           kg.charge = kg.charges[0]
-          kg.principal =
-            admin_login: kg.managers[0].detail.login_name
+          kg.principal = admin_login: kg.managers[0].detail.login_name if kg.managers[0]?
+
           scope.school = angular.copy kg
           scope.currentModal = Modal
             scope: scope

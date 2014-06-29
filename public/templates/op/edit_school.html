@@ -31,7 +31,7 @@
     </div>
 
     <div class="form-group">
-      <label for="school-phone" class="col-sm-2 control-label">校长手机号</label>
+      <label for="school-phone" class="col-sm-2 control-label">学校联系电话</label>
 
       <div class="col-sm-8">
         <input id="school-cell-phone" type="text" ng-model="school.phone" name="phone"
@@ -53,7 +53,8 @@
       <label for="admin-name" class="col-sm-2 control-label">校长登录名</label>
 
       <div class="col-sm-8">
-        <p id="admin-name" class="form-control-static">{{school.principal.admin_login}}</p>
+        <p id="admin-name" ng-show="school.principal" class="form-control-static">{{school.principal.admin_login}}</p>
+        <p ng-hide="school.principal" class="form-control-static">还没有管理员，<a class="dropdown" ng-click="$hide();addManager(school);$event.stopPropagation()">增加</a>一个</p>
       </div>
     </div>
 
