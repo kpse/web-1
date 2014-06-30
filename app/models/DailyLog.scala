@@ -10,10 +10,36 @@ import play.api.Play.current
 import models.helper.RangerHelper.rangerQueryWithField
 import org.joda.time.DateTime
 import play.Logger
+import org.joda.time.format.DateTimeFormat
 
 case class DailyLog(timestamp: Long, notice_type: Int, child_id: String, record_url: String, parent_name: String)
 
+case class DailyLogStats(class_id: Int, count: Long, school_id: Long, date: String)
+
 object DailyLog {
+
+  def generateDays: List[Long] = (0 to 9).map(DateTime.now().minusDays(_).toLocalDate.toDateTimeAtStartOfDay.toInstant.getMillis).toList
+
+  def singleDay(kg: Long, startTimeStamp: Long) = {
+    get[Int]("class_id") ~
+    get[Long]("count(1)") map {
+      case id ~ count =>
+        DailyLogStats(id, count, kg, new DateTime(startTimeStamp).toString(DateTimeFormat.forPattern("yyyy-MM-dd")))
+    }
+  }
+
+  def singleDayLog(kg: Long, start: Long, end: Long) = DB.withConnection {
+    implicit c=>
+      Logger.info("select class_id, count(1) from dailylog d, childinfo c where c.child_id=d.child_id and c.school_id=d.school_id and c.school_id=%s and check_at > %d and check_at < %d group by class_id".format(kg, start, end))
+      SQL("select class_id, count(1) from dailylog d, childinfo c where c.child_id=d.child_id and c.school_id=d.school_id and c.school_id={kg} and check_at > {start} and check_at < {end} group by class_id")
+        .on('kg -> kg, 'start -> start, 'end -> end).as(singleDay(kg, start) *)
+  }
+
+  def countHistory(kg: Long) = {
+    val days: List[Long] = generateDays
+    val dayBounds: List[(Long, Long)] = days.zip(days.tail).take(9)
+    dayBounds.foldLeft(List[DailyLogStats]())({ (all: List[DailyLogStats], day: (Long, Long)) => all ::: singleDayLog(kg, day._2, day._1)})
+  }
 
   def generateClassQuery(classes: String) = " child_id IN ( SELECT child_id FROM childinfo WHERE school_id={kg} AND class_id IN (%s)) ".format(classes)
 

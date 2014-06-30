@@ -177,6 +177,7 @@ DELETE        /cheatCode                                                        
 
 GET           /api/v1/statistics/session/:schoolId                               controllers.StatisticsController.countSession(schoolId: Long)
 GET           /api/v1/statistics/history/:schoolId                               controllers.StatisticsController.countGrowingHistory(schoolId: Long)
+GET           /api/v1/statistics/dailylog/:schoolId                              controllers.StatisticsController.countDailyLogHistory(schoolId: Long)
 
 GET           /api/v1/logging                                                    controllers.Application.logging
 GET           /api/v1/chat_client                                                controllers.ChatController.chat(username)
