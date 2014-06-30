@@ -38,7 +38,7 @@ object DailyLog {
   def countHistory(kg: Long) = {
     val days: List[Long] = generateDays
     val dayBounds: List[(Long, Long)] = days.zip(days.tail).take(9)
-    dayBounds.foldLeft(List[DailyLogStats]())({ (all: List[DailyLogStats], day: (Long, Long)) => all ::: singleDayLog(kg, day._2, day._1)})
+    dayBounds.foldRight(List[DailyLogStats]())({ (day: (Long, Long), all: List[DailyLogStats]) => all ::: singleDayLog(kg, day._2, day._1)})
   }
 
   def generateClassQuery(classes: String) = " child_id IN ( SELECT child_id FROM childinfo WHERE school_id={kg} AND class_id IN (%s)) ".format(classes)

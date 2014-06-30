@@ -23,3 +23,11 @@ singleDailyLogService = ($resource) ->
 
 angular.module('kulebaoAdmin')
 .factory('singleDailyLogService', ['$resource', singleDailyLogService])
+
+angular.module('kulebaoAdmin')
+.factory 'statisticsDailyLogService', ['$resource', ($resource) ->
+  $resource '/api/v1/statistics/dailylog/:school_id',
+    {
+      school_id: '@school_id'
+    }
+ ]

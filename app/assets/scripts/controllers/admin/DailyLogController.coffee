@@ -33,8 +33,8 @@ angular.module('kulebaoAdmin')
 .controller 'DailyLogInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', 'classService', 'parentService', '$modal', 'employeeService',
-    '$alert', 'childService', 'dailyLogService',
-    (scope, rootScope, stateParams, location, School, Class, Parent, Modal, Employee, Alert, Child, DailyLog) ->
+    '$alert', 'childService', 'dailyLogService', 'statisticsDailyLogService',
+    (scope, rootScope, stateParams, location, School, Class, Parent, Modal, Employee, Alert, Child, DailyLog, Statistics) ->
       scope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
 
@@ -70,6 +70,13 @@ angular.module('kulebaoAdmin')
 
       scope.detail = (child)->
         location.path(location.path().replace(/\/list$/, '') + '/child/' + child.child_id)
+
+      scope.d3Data = []
+      scope.allData = Statistics.query school_id: stateParams.kindergarten, ->
+        scope.d3Data = _.filter scope.allData, (d) -> d.class_id == scope.current_class
+
+      scope.title = 'DemoTitle'
+
   ]
 
 angular.module('kulebaoAdmin')
