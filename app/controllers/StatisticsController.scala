@@ -14,12 +14,12 @@ object StatisticsController extends Controller with Secured {
   implicit val write2 = Json.writes[ScoreItem]
 
   def countSession(schoolId: Long) = IsOperator {
-    u => _=>
+    u => _ =>
       Ok(Json.toJson(ChatSession.countInSchool(schoolId)))
   }
 
   def countGrowingHistory(schoolId: Long) = IsOperator {
-    u => _=>
+    u => _ =>
       Ok(Json.toJson(ChatSession.countGrowingHistory(schoolId)))
   }
 
@@ -41,6 +41,11 @@ object StatisticsController extends Controller with Secured {
   def countConversationHistory(schoolId: Long, employeeId: Option[String]) = IsAuthenticated {
     u => _ =>
       Ok(Json.toJson(ScoreItem.countHistory("sessionlog", "sender")(schoolId, employeeId)))
+  }
+
+  def countNewsHistory(schoolId: Long, employeeId: Option[String]) = IsAuthenticated {
+    u => _ =>
+      Ok(Json.toJson(ScoreItem.countHistory("news")(schoolId, employeeId)))
   }
 
 }

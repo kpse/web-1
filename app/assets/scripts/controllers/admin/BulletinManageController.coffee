@@ -77,6 +77,7 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
         new adminNewsService
           school_id: scope.kindergarten.school_id
           class_id: scope.current_class
+          publisher_id: scope.adminUser.id
 
       scope.create = ->
         scope.news = scope.createNews()

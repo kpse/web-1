@@ -6,7 +6,6 @@ import play.api.db.DB
 import anorm.~
 import scala.Some
 import play.api.Play.current
-import play.Logger
 
 case class ScoreItem(employee_id: String, count: Long)
 
@@ -27,7 +26,7 @@ object ScoreItem {
           List(SQL("select {id} as %s, count(1) from %s where school_id={kg} and %s={id}".format(publisherFieldName, tableName, publisherFieldName))
             .on('id -> id, 'kg -> kg).as(count(publisherFieldName) single))
         case None =>
-          SQL("select %s, count(1) from %s where school_id={kg} group by %s".format(publisherFieldName, tableName, publisherFieldName))
+          SQL("select %s, count(1) from %s where school_id={kg} and %s IS NOT NULL group by %s".format(publisherFieldName, tableName, publisherFieldName, publisherFieldName))
             .on('kg -> kg).as(count(publisherFieldName) *)
       }
 

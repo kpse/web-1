@@ -31,7 +31,8 @@ object NewsController extends Controller with Secured {
       "content" -> text,
       "published" -> boolean,
       "class_id" -> optional(number),
-      "image" -> optional(text)
+      "image" -> optional(text),
+      "publisher_id" -> optional(text)
     )
   )
 
@@ -66,7 +67,8 @@ object NewsController extends Controller with Secured {
       "content" -> text,
       "published" -> optional(boolean),
       "class_id" -> optional(number),
-      "image" -> optional(text)
+      "image" -> optional(text),
+      "publisher_id" -> optional(text)
     )
   )
 

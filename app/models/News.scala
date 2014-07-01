@@ -7,7 +7,7 @@ import anorm.~
 import play.api.Play.current
 import models.helper.RangerHelper.rangerQuery
 
-case class News(news_id: Long, school_id: Long, title: String, content: String, timestamp: Long, published: Boolean, notice_type: Int, class_id: Option[Int], image: Option[String])
+case class News(news_id: Long, school_id: Long, title: String, content: String, timestamp: Long, published: Boolean, notice_type: Int, class_id: Option[Int], image: Option[String], publisher_id: Option[String]=None)
 
 case class NewsPreview(id: Long)
 
@@ -28,14 +28,15 @@ object News {
 
   }
 
-  def create(form: (Long, String, String, Option[Boolean], Option[Int], Option[String])) = DB.withConnection {
+  def create(form: (Long, String, String, Option[Boolean], Option[Int], Option[String], Option[String])) = DB.withConnection {
     implicit c =>
       val createdId: Option[Long] =
-        SQL("insert into news (school_id, title, content, update_at, published, class_id, image) " +
-          "values ({kg}, {title}, {content}, {timestamp}, {published}, {class_id}, {image})")
+        SQL("insert into news (school_id, title, content, update_at, published, class_id, image, publisher_id) " +
+          "values ({kg}, {title}, {content}, {timestamp}, {published}, {class_id}, {image}, {publisher_id})")
           .on('content -> form._3,
             'kg -> form._1.toString,
             'title -> form._2,
+            'publisher_id -> form._7,
             'timestamp -> System.currentTimeMillis,
             'published -> (if (form._4.getOrElse(false)) 1 else 0),
             'class_id -> form._5.getOrElse(0),
@@ -52,13 +53,14 @@ object News {
         ).execute()
   }
 
-  def update(form: (Long, Long, String, String, Boolean, Option[Int], Option[String]), kg: Long) = DB.withConnection {
+  def update(form: (Long, Long, String, String, Boolean, Option[Int], Option[String], Option[String]), kg: Long) = DB.withConnection {
     implicit c =>
       SQL("update news set content={content}, published={published}, title={title}, " +
         "update_at={timestamp}, class_id={class_id}, image={image} where uid={id}")
         .on('content -> form._4,
           'title -> form._3,
           'id -> form._1,
+          'publisher_id -> form._8,
           'published -> (if (form._5) 1 else 0),
           'timestamp -> System.currentTimeMillis,
           'class_id -> form._6,
