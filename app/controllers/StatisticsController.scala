@@ -37,4 +37,10 @@ object StatisticsController extends Controller with Secured {
     u => _ =>
       Ok(Json.toJson(ScoreItem.countHistory("assess")(schoolId, employeeId)))
   }
+
+  def countConversationHistory(schoolId: Long, employeeId: Option[String]) = IsAuthenticated {
+    u => _ =>
+      Ok(Json.toJson(ScoreItem.countHistory("sessionlog", "sender")(schoolId, employeeId)))
+  }
+
 }

@@ -6,28 +6,29 @@ import play.api.db.DB
 import anorm.~
 import scala.Some
 import play.api.Play.current
+import play.Logger
 
 case class ScoreItem(employee_id: String, count: Long)
 
 
 object ScoreItem {
-  def count = {
-    get[String]("publisher_id") ~
+  def count(field: String) = {
+    get[String](field) ~
       get[Long]("count(1)") map {
       case id ~ count =>
         ScoreItem(id, count)
     }
   }
 
-  def countHistory(tableName: String)(kg: Long, employeeId: Option[String]) = DB.withConnection {
+  def countHistory(tableName: String, publisherFieldName: String="publisher_id")(kg: Long, employeeId: Option[String]) = DB.withConnection {
     implicit c =>
       employeeId match {
         case Some(id) =>
-          List(SQL("select {id} as publisher_id, count(1) from " + tableName + " where school_id={kg} and publisher_id={id}")
-            .on('id -> id, 'kg -> kg).as(count single))
+          List(SQL("select {id} as %s, count(1) from %s where school_id={kg} and %s={id}".format(publisherFieldName, tableName, publisherFieldName))
+            .on('id -> id, 'kg -> kg).as(count(publisherFieldName) single))
         case None =>
-          SQL("select publisher_id, count(1) from " + tableName + " where school_id={kg} group by publisher_id")
-            .on('kg -> kg).as(count *)
+          SQL("select %s, count(1) from %s where school_id={kg} group by %s".format(publisherFieldName, tableName, publisherFieldName))
+            .on('kg -> kg).as(count(publisherFieldName) *)
       }
 
   }
