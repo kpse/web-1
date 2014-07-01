@@ -7,15 +7,38 @@ import anorm.SqlParser._
 import play.Logger
 import models.helper.RangerHelper.rangerQuery
 
-case class Assignment(id: Option[Long], timestamp: Option[Long], title: String, content: String, publisher: String, icon_url: Option[String], class_id: Int, school_id: Option[Long])
+case class Assignment(id: Option[Long], timestamp: Option[Long], title: String, content: String, publisher: String, icon_url: Option[String], class_id: Int, school_id: Option[Long], publisher_id: Option[String] = None)
+
+case class AssignmentCount(employee_id: String, count: Long)
 
 object Assignment {
+  def count = {
+    get[String]("publisher_id") ~
+      get[Long]("count(1)") map {
+      case id ~ count =>
+        AssignmentCount(id, count)
+    }
+  }
+
+  def countHistory(kg: Long, employeeId: Option[String]) = DB.withConnection {
+    implicit c =>
+      employeeId match {
+        case Some(id) =>
+          List(SQL("select publisher_id, count(1) from assignment where school_id={kg} and publisher_id={id}")
+            .on('id -> id, 'kg -> kg).as(count single))
+        case None =>
+          SQL("select publisher_id, count(1) from assignment where school_id={kg} group by publisher_id")
+            .on('kg -> kg).as(count *)
+      }
+
+  }
+
   def create(kg: Long, assignment: Assignment) = DB.withConnection {
     implicit c =>
       val time = System.currentTimeMillis
       val assignmentId: Option[Long] = SQL("insert into assignment (school_id, update_at, title, content, " +
-        " publisher, image, class_id) " +
-        "values ({kg}, {time}, {title}, {content}, {publisher}, {url}, {class_id})")
+        " publisher, image, class_id, publisher_id) " +
+        "values ({kg}, {time}, {title}, {content}, {publisher}, {url}, {class_id}, {publisher_id})")
         .on(
           'kg -> kg.toString,
           'time -> time,
@@ -23,6 +46,7 @@ object Assignment {
           'content -> assignment.content,
           'url -> assignment.icon_url,
           'publisher -> assignment.publisher,
+          'publisher_id -> assignment.publisher_id,
           'class_id -> assignment.class_id,
           'kg -> kg.toString
         ).executeInsert()
@@ -40,7 +64,7 @@ object Assignment {
     implicit c =>
       val time = System.currentTimeMillis()
       SQL("update assignment set update_at={time}, title={title}, content={content}, " +
-        "publisher={publisher}, image={url}, class_id={class_id}" +
+        "publisher={publisher}, image={url}, class_id={class_id}, publisher_id={publisher_id}" +
         " where school_id={kg} and uid={id}")
         .on(
           'kg -> kg.toString,
@@ -50,6 +74,7 @@ object Assignment {
           'content -> assignment.content,
           'url -> assignment.icon_url,
           'publisher -> assignment.publisher,
+          'publisher_id -> assignment.publisher_id,
           'class_id -> assignment.class_id,
           'kg -> kg.toString
         ).executeUpdate()

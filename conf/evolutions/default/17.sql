@@ -13,15 +13,16 @@ CREATE TABLE assignment (
   content   TEXT NOT NULL,
   image TEXT DEFAULT '',
   publisher VARCHAR(20) NOT NULL DEFAULT '',
+  publisher_id VARCHAR(20) DEFAULT '',
   update_at BIGINT(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (uid)
 );
 
-INSERT INTO assignment (school_id, class_id, title, content, image, publisher, update_at)
+INSERT INTO assignment (school_id, class_id, title, content, image, publisher, update_at, publisher_id)
 VALUES
-('93740362', 777888, '老师你好。', '今天的作业是写生。', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '马老师', 12312313123),
-('93740362', 777888, '家长你好。', '今天的作业是吃饭。',  'http://suoqin-test.u.qiniudn.com/Fget0Tx492DJofAy-ZeUg1SANJ4X', '朱老师', 12313313123),
-('93740362', 777666, '老师再见。', '今天请带一只小兔子回家。', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '杨老师', 12314313123);
+('93740362', 777888, '老师你好。', '今天的作业是写生。', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '马老师', 12312313123, '3_93740362_1122'),
+('93740362', 777888, '家长你好。', '今天的作业是吃饭。',  'http://suoqin-test.u.qiniudn.com/Fget0Tx492DJofAy-ZeUg1SANJ4X', '朱老师', 12313313123, '3_93740362_1122'),
+('93740362', 777666, '老师再见。', '今天请带一只小兔子回家。', 'http://suoqin-test.u.qiniudn.com/FgPmIcRG6BGocpV1B9QMCaaBQ9LK', '杨老师', 12314313123, '3_93740362_3344');
 
 
 # --- !Downs
