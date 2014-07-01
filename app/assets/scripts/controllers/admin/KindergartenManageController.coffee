@@ -1,12 +1,14 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
   ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', 'employeeService', 'passwordService', '$modal',
-   'chargeService', 'uploadService', '$alert', 'assignmentStatsService',
+   'chargeService', 'uploadService', '$alert', 'StatsService',
     (scope, $rootScope, $stateParams, School, location, Employee, Password, Modal, Charge, Upload, Alert, Stats) ->
       scope.adminUser = Employee.get ->
         if (scope.adminUser.privilege_group isnt 'operator')
           location.path '/kindergarten/' + scope.adminUser.school_id + '/welcome'
 
-        scope.adminUser.assignment = Stats.query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
+        scope.adminUser.assignment = Stats('assignment').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
+        scope.adminUser.assess = Stats('assess').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
+        scope.adminUser.conversation = Stats('conversation').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
 
         scope.kindergarten = School.get school_id: $stateParams.kindergarten, ->
           scope.kindergarten.charge = Charge.query school_id: $stateParams.kindergarten, ->

@@ -65,6 +65,7 @@ angular.module('kulebaoAdmin')
             child_id: stateParams.child
             school_id: parseInt stateParams.kindergarten
             publisher: scope.adminUser.name
+            publisher_id: scope.adminUser.id
             emotion: 3
             activity: 3
             rest: 3

@@ -22,8 +22,8 @@
   <tr ng-repeat="e in employees | filter: searchText | orderBy:'assignment.count':true" class="row">
     <td class="col-xs-2">{{e.name}}</td>
     <td class="col-xs-2">{{e.assignment.count || 0}}</td>
-    <td class="col-xs-2">0</td>
-    <td class="col-xs-2">0</td>
+    <td class="col-xs-2">{{e.assess.count || 0}}</td>
+    <td class="col-xs-2">{{e.conversation.count || 0}}</td>
     <td class="col-xs-2">0</td>
     <td class="col-xs-2">N/A</td>
   </tr>
