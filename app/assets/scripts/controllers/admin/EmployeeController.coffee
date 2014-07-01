@@ -41,10 +41,11 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
         employee.assignment = Stats('assignment').query school_id: $stateParams.kindergarten, employee_id: employee.id, ->
           employee.assess = Stats('assess').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id, ->
             employee.conversation = Stats('conversation').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id, ->
-              scope.employee = angular.copy employee
-              scope.currentModal = Modal
-                scope: scope
-                contentTemplate: 'templates/admin/add_employee.html'
+              employee.news = Stats('news').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id, ->
+                scope.employee = angular.copy employee
+                scope.currentModal = Modal
+                  scope: scope
+                  contentTemplate: 'templates/admin/add_employee.html'
 
       scope.save = (employee) ->
         employee.$save ->
@@ -105,6 +106,10 @@ angular.module('kulebaoAdmin').controller 'EmployeesScoreCtrl',
             _.forEach scope.employees, (e) ->
               e.conversation = _.find scope.conversationStats, (s) -> e.id == s.employee_id
               e.conversation = count: 0 unless e.conversation?
+          scope.newsStats = Stats('news').query school_id: $stateParams.kindergarten, ->
+            _.forEach scope.employees, (e) ->
+              e.news = _.find scope.newsStats, (s) -> e.id == s.employee_id
+              e.news = count: 0 unless e.news?
 
           scope.loading = false
 

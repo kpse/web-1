@@ -9,6 +9,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         scope.adminUser.assignment = Stats('assignment').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
         scope.adminUser.assess = Stats('assess').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
         scope.adminUser.conversation = Stats('conversation').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
+        scope.adminUser.news = Stats('news').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
 
         scope.kindergarten = School.get school_id: $stateParams.kindergarten, ->
           scope.kindergarten.charge = Charge.query school_id: $stateParams.kindergarten, ->
@@ -54,10 +55,6 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
 
       scope.goHistory = ->
         goPageWithClassesTab 'history', 'child'
-
-      goPageWithTab = (pageName, tabName, defaultValue)->
-        if location.path().indexOf(pageName + '/' + tabName) < 0
-          location.path '/kindergarten/' +  $stateParams.kindergarten + '/' + pageName + '/' + tabName + '/' + defaultValue
 
       scope.goEmployeeList = ->
         location.path '/kindergarten/' +  $stateParams.kindergarten + '/employee/detail'
