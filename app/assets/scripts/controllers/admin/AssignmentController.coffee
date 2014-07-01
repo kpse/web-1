@@ -34,6 +34,7 @@ angular.module('kulebaoAdmin')
           class_id: parseInt stateParams.class_id
           school_id: parseInt stateParams.kindergarten
           publisher: scope.adminUser.name
+          publisher_id: scope.adminUser.id
 
       scope.create = ->
         scope.assignment = scope.newAssignment()
