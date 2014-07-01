@@ -22,7 +22,7 @@ object DailyLog {
 
   def singleDay(kg: Long, startTimeStamp: Long) = {
     get[Int]("class_id") ~
-    get[Long]("count(1)") map {
+    get[Long]("count") map {
       case id ~ count =>
         DailyLogStats(id, count, kg, new DateTime(startTimeStamp).toString(DateTimeFormat.forPattern("yyyy-MM-dd")))
     }
@@ -30,8 +30,8 @@ object DailyLog {
 
   def singleDayLog(kg: Long, start: Long, end: Long) = DB.withConnection {
     implicit c=>
-      Logger.info("select class_id, count(1) from dailylog d, childinfo c where c.child_id=d.child_id and c.school_id=d.school_id and c.school_id=%s and check_at > %d and check_at < %d group by class_id".format(kg, start, end))
-      SQL("select class_id, count(1) from dailylog d, childinfo c where c.child_id=d.child_id and c.school_id=d.school_id and c.school_id={kg} and check_at > {start} and check_at < {end} group by class_id")
+      Logger.info("select class_id, count(distinct d.child_id) as count from dailylog d, childinfo c where c.child_id=d.child_id and c.school_id=d.school_id and c.school_id=%s and check_at > %d and check_at < %d group by class_id".format(kg, start, end))
+      SQL("select class_id, count(distinct d.child_id) as count from dailylog d, childinfo c where c.child_id=d.child_id and c.school_id=d.school_id and c.school_id={kg} and check_at > {start} and check_at < {end} group by class_id")
         .on('kg -> kg, 'start -> start, 'end -> end).as(singleDay(kg, start) *)
   }
 
