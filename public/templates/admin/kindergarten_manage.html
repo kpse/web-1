@@ -105,7 +105,7 @@
         </a>
       </li>
       <li class="action" ng-class="{active : isSelected('employee')}" ng-show="showingUp(adminUser)">
-        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/employee" class="btn employee">
+        <a ng-click="goEmployeeList()" class="btn employee">
           <span>教职员设置</span>
         </a>
       </li>

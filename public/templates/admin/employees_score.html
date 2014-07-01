@@ -1,0 +1,31 @@
+<ul class="nav nav-tabs">
+  <li>
+    <a ng-click="goInfo()">信息</a>
+  </li>
+  <li class="active">
+    <a>积分</a>
+  </li>
+</ul>
+<div class="loading" ng-show="loading"></div>
+<table class="table table-hover table-condensed employee-list">
+  <thead>
+  <tr class="row">
+    <th class="col-xs-2">老师姓名</th>
+    <th class="col-xs-2">作业发布</th>
+    <th class="col-xs-2">在园评价</th>
+    <th class="col-xs-2">家园互动</th>
+    <th class="col-xs-2">公告发布</th>
+    <th class="col-xs-2">备注</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="e in employees | filter: searchText | orderBy:'assignment.count':true" class="row">
+    <td class="col-xs-2">{{e.name}}</td>
+    <td class="col-xs-2">{{e.assignment.count || 0}}</td>
+    <td class="col-xs-2">0</td>
+    <td class="col-xs-2">0</td>
+    <td class="col-xs-2">0</td>
+    <td class="col-xs-2">N/A</td>
+  </tr>
+  </tbody>
+</table>

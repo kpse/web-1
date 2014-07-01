@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
   ['$scope', '$rootScope', '$stateParams', 'schoolService', '$modal', 'employeeService', 'schoolEmployeesService',
-   'uploadService', '$alert', 'employeesManageClassService',
-    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Upload, Alert, ClassManager) ->
+   'uploadService', '$alert', 'employeesManageClassService', 'assignmentStatsService', '$location',
+    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Upload, Alert, ClassManager, Stats, location) ->
       $rootScope.tabName = 'employee'
 
       scope.loading = true
@@ -38,10 +38,11 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
           contentTemplate: 'templates/admin/add_employee.html'
 
       scope.edit = (employee) ->
-        scope.employee = angular.copy employee
-        scope.currentModal = Modal
-          scope: scope
-          contentTemplate: 'templates/admin/add_employee.html'
+        employee.assignment = Stats.query school_id: $stateParams.kindergarten, employee_id: employee.id, ->
+          scope.employee = angular.copy employee
+          scope.currentModal = Modal
+            scope: scope
+            contentTemplate: 'templates/admin/add_employee.html'
 
       scope.save = (employee) ->
         employee.$save ->
@@ -74,4 +75,27 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
       scope.deletable = (user)->
         undefined isnt _.find ['principal', 'operator'], (u) -> user.privilege_group == u
 
+      scope.goScore = ->
+        location.path location.path().replace(/\/detail$/, '/score')
+
+      scope.goInfo = ->
+        location.path location.path().replace(/\/score$/, '/detail')
+
+  ]
+
+angular.module('kulebaoAdmin').controller 'EmployeesScoreCtrl',
+  ['$scope', '$rootScope', '$stateParams', 'schoolService', '$modal', 'employeeService', 'schoolEmployeesService',
+   'uploadService', '$alert', 'assignmentStatsService',
+    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Upload, Alert, Stats) ->
+
+      scope.refresh = ->
+        scope.loading = true
+        scope.employees = SchoolEmployee.query school_id: $stateParams.kindergarten, ->
+          scope.stats = Stats.query school_id: $stateParams.kindergarten, ->
+            _.forEach scope.employees, (e) ->
+              e.assignment = _.find scope.stats, (s) -> e.id == s.employee_id
+              e.assignment = count: 0 unless e.assignment?
+          scope.loading = false
+
+      scope.refresh()
   ]

@@ -5,33 +5,6 @@
     <input ng-model="searchText"/>
     <span>输入内容进行查找</span>
   </div>
-  <button type="submit" class="btn btn-primary pull-right adding-for-individual" ng-disabled="loading"
-          ng-click="addEmployee()">添加新老师
-  </button>
-  <div class="loading" ng-show="loading"></div>
-  <table class="table table-hover table-condensed employee-list">
-    <thead>
-    <tr class="row">
-      <th class="col-xs-2">登录名</th>
-      <th class="col-xs-2">老师姓名</th>
-      <th class="col-xs-2">手机号</th>
-      <th class="col-xs-4">管理班级</th>
-      <th class="col-xs-2">操作</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-repeat="e in employees | filter: searchText" class="row" ng-class="{editable: edit}" ng-click="edit(e)">
-      <td class="col-xs-2">{{e.login_name}}</td>
-      <td class="col-xs-2">{{e.name}}</td>
-      <td class="col-xs-2">{{e.phone}}</td>
-      <td class="col-xs-4">{{e.displayClasses || 'N/A'}}</td>
-      <td class="col-xs-2">
-        <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
-                ng-confirm-click="delete(e);$event.stopPropagation()" ng-show="adminUser && deletable(adminUser)">删除
-        </button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <div ui-view></div>
 
 </div>

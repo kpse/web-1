@@ -53,6 +53,13 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.goHistory = ->
         goPageWithClassesTab 'history', 'child'
 
+      goPageWithTab = (pageName, tabName, defaultValue)->
+        if location.path().indexOf(pageName + '/' + tabName) < 0
+          location.path '/kindergarten/' +  $stateParams.kindergarten + '/' + pageName + '/' + tabName + '/' + defaultValue
+
+      scope.goEmployeeList = ->
+        location.path '/kindergarten/' +  $stateParams.kindergarten + '/employee/detail'
+
 
 
       scope.changePassword = (user) ->

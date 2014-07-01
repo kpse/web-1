@@ -147,6 +147,16 @@ angular.module('kulebaoAdmin',
       url: '/employee',
       templateUrl: 'templates/admin/employees.html',
       controller: 'EmployeesListCtrl'
+    .state 'kindergarten.employee.detail',
+      url: '/detail',
+      templateUrl: 'templates/admin/employees_detail.html',
+      controller: 'EmployeesListCtrl'
+    .state 'kindergarten.employee.score',
+      url: '/score',
+      templateUrl: 'templates/admin/employees_score.html',
+      controller: 'EmployeesScoreCtrl'
+
+
     .state 'kindergarten.classManagement',
       url: '/class',
       templateUrl: 'templates/admin/classes_management.html',
