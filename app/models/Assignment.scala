@@ -4,34 +4,12 @@ import play.api.db.DB
 import anorm._
 import play.api.Play.current
 import anorm.SqlParser._
-import play.Logger
 import models.helper.RangerHelper.rangerQuery
+import models.ScoreItem.count
 
 case class Assignment(id: Option[Long], timestamp: Option[Long], title: String, content: String, publisher: String, icon_url: Option[String], class_id: Int, school_id: Option[Long], publisher_id: Option[String] = None)
 
-case class AssignmentCount(employee_id: String, count: Long)
-
 object Assignment {
-  def count = {
-    get[String]("publisher_id") ~
-      get[Long]("count(1)") map {
-      case id ~ count =>
-        AssignmentCount(id, count)
-    }
-  }
-
-  def countHistory(kg: Long, employeeId: Option[String]) = DB.withConnection {
-    implicit c =>
-      employeeId match {
-        case Some(id) =>
-          List(SQL("select publisher_id, count(1) from assignment where school_id={kg} and publisher_id={id}")
-            .on('id -> id, 'kg -> kg).as(count single))
-        case None =>
-          SQL("select publisher_id, count(1) from assignment where school_id={kg} group by publisher_id")
-            .on('kg -> kg).as(count *)
-      }
-
-  }
 
   def create(kg: Long, assignment: Assignment) = DB.withConnection {
     implicit c =>

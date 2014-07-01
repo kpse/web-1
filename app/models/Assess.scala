@@ -10,7 +10,7 @@ import play.api.Play.current
 
 case class Assess(id: Option[Long], timestamp: Option[Long], publisher: String, comments: String,
                   emotion: Int, dining: Int, rest: Int, activity: Int, game: Int, exercise: Int,
-                  self_care: Int, manner: Int, child_id: String, school_id: Long) {
+                  self_care: Int, manner: Int, child_id: String, school_id: Long, publisher_id: Option[String]=None) {
 
   def exists = DB.withConnection {
     implicit c =>
@@ -25,6 +25,7 @@ case class Assess(id: Option[Long], timestamp: Option[Long], publisher: String, 
 }
 
 object Assess {
+
   def batchCreate(kg: Long, assessments: List[Assess]) = DB.withTransaction {
     implicit c =>
       try {
@@ -62,9 +63,10 @@ object Assess {
     implicit c =>
       SQL("update assess set publisher={publisher}, comments={comments}, " +
         "emotion={emotion}, dining={dining}, rest={rest}, activity={activity}, game={game}, " +
-        "exercise={exercise}, self_care={self_care}, manner={manner} where uid={id}")
+        "exercise={exercise}, self_care={self_care}, manner={manner}, publisher_id={publisher_id} where uid={id}")
         .on(
           'publisher -> assess.publisher,
+          'publisher_id -> assess.publisher_id,
           'comments -> assess.comments,
           'school_id -> kg.toString,
           'child_id -> childId,
@@ -97,12 +99,13 @@ object Assess {
   def create(assess: Assess, kg: Long, childId: String): Option[Long] = DB.withConnection {
     implicit c =>
       SQL("insert into assess (school_id, child_id, update_at, publisher, comments, " +
-        "emotion, dining, rest, activity, game, exercise, self_care, manner) " +
+        "emotion, dining, rest, activity, game, exercise, self_care, manner, publisher_id) " +
         "values ({school_id}, {child_id}, {update_at}, {publisher}, {comments}, {emotion}, {dining}, " +
-        "{rest}, {activity}, {game}, {exercise}, {self_care}, {manner})")
+        "{rest}, {activity}, {game}, {exercise}, {self_care}, {manner}, {publisher_id})")
         .on(
           'update_at -> System.currentTimeMillis,
           'publisher -> assess.publisher,
+          'publisher_id -> assess.publisher_id,
           'comments -> assess.comments,
           'school_id -> kg.toString,
           'child_id -> childId,
