@@ -147,3 +147,11 @@
   }
 }
 
+.bar-image-container {
+  .bar-image {
+    height: 400px;
+  }
+}
+
+@import "d3style.less";
+

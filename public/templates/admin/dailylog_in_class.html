@@ -14,5 +14,9 @@
             ng-click="detail(c)">{{c.name}}
     </button>
   </div>
-  <d3-bars data="d3Data" label="date" actual="count" all="children.length"></d3-bars>
+  <div class="clearfix"></div>
+  <h3>{{currentClass().name}}近期出勤情况</h3>
+  <d3-bars data="d3Data" label="date" actual="count" children="children" class="bar-image-container">
+  </d3-bars>
+
 </div>

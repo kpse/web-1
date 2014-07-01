@@ -38,6 +38,7 @@ angular.module('kulebaoAdmin')
       scope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
 
+
       scope.adminUser = Employee.get ->
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
