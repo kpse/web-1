@@ -31,4 +31,11 @@ object ScoreItem {
       }
 
   }
+
+  def countAllHistory(tableName: String, publisherFieldName: String="publisher_id") = DB.withConnection {
+    implicit c =>
+          SQL("select %s, count(1) from %s where %s IS NOT NULL group by %s".format(publisherFieldName, tableName, publisherFieldName, publisherFieldName))
+            .as(count(publisherFieldName) *)
+
+  }
 }

@@ -48,4 +48,23 @@ object StatisticsController extends Controller with Secured {
       Ok(Json.toJson(ScoreItem.countHistory("news")(schoolId, employeeId)))
   }
 
+  def countAllAssignment() = IsOperator {
+    u => _ =>
+      Ok(Json.toJson(ScoreItem.countAllHistory("assignment")))
+  }
+
+  def countAllAssess() = IsOperator {
+    u => _ =>
+      Ok(Json.toJson(ScoreItem.countAllHistory("assess")))
+  }
+
+  def countAllConversation() = IsOperator {
+    u => _ =>
+      Ok(Json.toJson(ScoreItem.countAllHistory("sessionlog", "sender")))
+  }
+
+  def countAllNews() = IsOperator {
+    u => _ =>
+      Ok(Json.toJson(ScoreItem.countAllHistory("news")))
+  }
 }

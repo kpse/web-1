@@ -180,8 +180,13 @@ GET           /api/v1/statistics/history/:schoolId                              
 GET           /api/v1/statistics/dailylog/:schoolId                              controllers.StatisticsController.countDailyLogHistory(schoolId: Long)
 GET           /api/v1/statistics/assignment/:schoolId                            controllers.StatisticsController.countAssignmentHistory(schoolId: Long, employee_id: Option[String])
 GET           /api/v1/statistics/assess/:schoolId                                controllers.StatisticsController.countAssessHistory(schoolId: Long, employee_id: Option[String])
-GET           /api/v1/statistics/conversation/:schoolId                                controllers.StatisticsController.countConversationHistory(schoolId: Long, employee_id: Option[String])
-GET           /api/v1/statistics/news/:schoolId                                controllers.StatisticsController.countNewsHistory(schoolId: Long, employee_id: Option[String])
+GET           /api/v1/statistics/conversation/:schoolId                          controllers.StatisticsController.countConversationHistory(schoolId: Long, employee_id: Option[String])
+GET           /api/v1/statistics/news/:schoolId                                  controllers.StatisticsController.countNewsHistory(schoolId: Long, employee_id: Option[String])
+
+GET           /api/v1/statistics/assignment                                      controllers.StatisticsController.countAllAssignment
+GET           /api/v1/statistics/assess                                          controllers.StatisticsController.countAllAssess
+GET           /api/v1/statistics/conversation                                    controllers.StatisticsController.countAllConversation
+GET           /api/v1/statistics/news                                            controllers.StatisticsController.countAllNews
 
 GET           /api/v1/logging                                                    controllers.Application.logging
 GET           /api/v1/chat_client                                                controllers.ChatController.chat(username)
