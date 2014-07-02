@@ -23,6 +23,7 @@ angular.module('kulebaoOp').controller 'OpTeacherScoreCtrl',
           e.conversation = _.find scope.conversation, (a) -> a.employee_id == e.id
           e.news = _.find scope.news, (a) -> a.employee_id == e.id
           e.school = _.find scope.schools, (a) -> a.school_id == e.school_id
+          e.count = scope.countScore(e)
 
       scope.noOperator = (employee) -> employee.privilege_group != 'operator'
 

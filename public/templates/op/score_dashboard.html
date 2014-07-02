@@ -9,21 +9,25 @@
   <thead>
   <tr class="row">
     <th class="col-xs-2">老师姓名</th>
-    <th class="col-xs-2">作业发布</th>
-    <th class="col-xs-2">在园评价</th>
-    <th class="col-xs-2">家园互动</th>
-    <th class="col-xs-2">公告发布</th>
+    <th class="col-xs-2">总分</th>
+    <th class="col-xs-1">作业发布</th>
+    <th class="col-xs-1">在园评价</th>
+    <th class="col-xs-1">家园互动</th>
+    <th class="col-xs-1">公告发布</th>
     <th class="col-xs-2">学校</th>
+    <th class="col-xs-2">手机号</th>
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="e in employees | filter: searchText | filter: noOperator | filter: nonZero | orderBy:countScore:true" class="row">
+  <tr ng-repeat="e in employees | filter: searchText | filter: noOperator | filter: nonZero | orderBy:'count':true" class="row">
     <td class="col-xs-2">{{e.name}}</td>
-    <td class="col-xs-2">{{e.assignment.count || 0}}</td>
-    <td class="col-xs-2">{{e.assess.count || 0}}</td>
-    <td class="col-xs-2">{{e.conversation.count || 0}}</td>
-    <td class="col-xs-2">{{e.news.count || 0}}</td>
+    <td class="col-xs-2">{{e.count}}</td>
+    <td class="col-xs-1">{{e.assignment.count || 0}}</td>
+    <td class="col-xs-1">{{e.assess.count || 0}}</td>
+    <td class="col-xs-1">{{e.conversation.count || 0}}</td>
+    <td class="col-xs-1">{{e.news.count || 0}}</td>
     <td class="col-xs-2"><a ng-href="/admin#/kindergarten/{{e.school_id}}/employee/score" ng-click="$event.stopPropagation()">{{e.school.name}}</a></td>
+    <td class="col-xs-2">{{e.phone}}</td>
   </tr>
   </tbody>
 </table>
