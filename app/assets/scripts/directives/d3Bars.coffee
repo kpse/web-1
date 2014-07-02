@@ -34,6 +34,8 @@ angular.module("kulebaoAdmin").directive "d3Bars", [
 
           width = 951
           offset = 50
+          barWidth = 30
+          barNumberDescOffset = 35
 
           headCount = scope.children.length
 
@@ -49,24 +51,36 @@ angular.module("kulebaoAdmin").directive "d3Bars", [
 
           bars = svg.selectAll('rect').data(someData).enter()
           bars.append('rect').attr('x', (d) ->
-            x(d.date) + offset).attr('height', (d) ->
+            x(d.date) + offset).style('fill', 'green').attr('width', barWidth)
+          .attr('y', 180).attr('height', 0)
+          .transition().duration(750)
+          .attr('height', (d) ->
             (d.count * 1.0 / headCount) * 180)
           .attr('y', (d) ->
-            (1 - (d.count * 1.0 / headCount)) * 180).attr('width', 20)
-          .style('fill', 'green')
+            (1 - (d.count * 1.0 / headCount)) * 180)
+
 
           bars.append('rect').attr('x', (d) ->
-            x(d.date) + offset).attr('height', (d) ->
+            x(d.date) + offset).attr('y', (d) -> ((1 - (d.count * 1.0 / headCount)) * 180))
+          .attr('width', barWidth)
+          .style('fill', 'red').attr('height', 0)
+          .transition().delay(750).duration(750)
+          .attr('y', 0)
+          .attr('height', (d) ->
             (1 - (d.count * 1.0 / headCount)) * 180)
-          .attr('y', 0).attr('width', 20)
-          .style('fill', 'red')
 
           bars.append("text").attr('width', 200).attr('height', 100).attr('x', (d) ->
-            x(d.date) + offset + 20).attr('y', 20).text((d) ->
-            headCount - d.count)
-          bars.append("text").attr('width', 200).attr('height', 100).attr('x', (d) ->
-            x(d.date) + offset + 20).attr('y', 160).text((d) ->
+            x(d.date) + offset + barNumberDescOffset).attr('y', 160)
+          .transition().duration(750)
+          .text((d) ->
             d.count)
+
+          bars.append("text").attr('width', 200).attr('height', 100).attr('x', (d) ->
+            x(d.date) + offset + barNumberDescOffset).attr('y', 20)
+          .transition().delay(750).duration(750)
+          .text((d) ->
+            (headCount - d.count) if headCount - d.count > 0)
+
 
           svg.append("text").attr('width', 200).attr('height', 100).attr('x', 20)
           .attr('y', 20).text('缺席')
