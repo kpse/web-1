@@ -1,11 +1,9 @@
-<ul class="nav nav-tabs">
-  <li>
-    <a ng-click="goInfo()">联系方式</a>
-  </li>
-  <li class="active">
-    <a>积分信息</a>
-  </li>
-</ul>
+<h2>老师积分情况</h2>
+<div class="well score-search-panel">
+  <span>检索：</span>
+  <input ng-model="searchText"/>
+
+</div>
 <div class="loading" ng-show="loading"></div>
 <table class="table table-hover table-condensed employee-list">
   <thead>
@@ -15,17 +13,18 @@
     <th class="col-xs-2">在园评价</th>
     <th class="col-xs-2">家园互动</th>
     <th class="col-xs-2">公告发布</th>
-    <th class="col-xs-2">备注</th>
+    <th class="col-xs-2">学校</th>
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="e in employees | filter: searchText | filter: noOperator | orderBy:countScore:true" class="row">
+  <tr ng-repeat="e in employees | filter: searchText | filter: noOperator | filter: nonZero | orderBy:countScore:true" class="row">
     <td class="col-xs-2">{{e.name}}</td>
     <td class="col-xs-2">{{e.assignment.count || 0}}</td>
     <td class="col-xs-2">{{e.assess.count || 0}}</td>
     <td class="col-xs-2">{{e.conversation.count || 0}}</td>
     <td class="col-xs-2">{{e.news.count || 0}}</td>
-    <td class="col-xs-2">N/A</td>
+    <td class="col-xs-2"><a ng-href="/admin#/kindergarten/{{e.school_id}}/employee/score" ng-click="$event.stopPropagation()">{{e.school.name}}</a></td>
   </tr>
   </tbody>
 </table>
+

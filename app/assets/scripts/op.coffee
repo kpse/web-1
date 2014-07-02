@@ -90,6 +90,11 @@ angular.module('kulebaoOp',
       templateUrl: 'templates/op/school_reporting.html',
       controller: 'OpSchoolReportingCtrl'
 
+    .state 'main.score',
+      url: '/score',
+      templateUrl: 'templates/op/score_dashboard.html',
+      controller: 'OpTeacherScoreCtrl'
+
     $urlRouterProvider.otherwise ($injector, $location) ->
       $location.path '/main/school'
 

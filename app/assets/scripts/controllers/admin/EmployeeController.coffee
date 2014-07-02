@@ -113,5 +113,14 @@ angular.module('kulebaoAdmin').controller 'EmployeesScoreCtrl',
 
           scope.loading = false
 
+      safeCount = (e) ->
+        try
+          e.count
+        catch error
+          0
+
+      scope.countScore = (employee) ->
+        safeCount(employee.assignment) + safeCount(employee.news) + safeCount(employee.conversation) + safeCount(employee.assess)
+
       scope.refresh()
   ]
