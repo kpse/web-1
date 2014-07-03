@@ -398,7 +398,6 @@ object Parent {
         case false =>
           List[Parent]()
       }
-
   }
 
 }

@@ -26,6 +26,8 @@ object ParentController extends Controller with Secured {
           Ok(Json.toJson(Parent.indexInClasses(kg, id.toString, member, connected)))
         case None if classId.isDefined =>
           Ok(Json.toJson(List[Parent]()))
+        case None if connected.isDefined && !connected.get =>
+          Ok(Json.toJson(Parent.simpleIndex(kg, member, connected)))
         case None =>
           UserAccess.isSupervisor(accesses) match {
             case true =>

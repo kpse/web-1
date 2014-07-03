@@ -134,5 +134,61 @@ class ParentControllerSpec extends Specification with TestSupport {
       }
     }
 
+    "show all unconnected parents to no privilege teachers" in new WithApplication {
+
+      val response = route(noAccessLoggedRequest(GET, "/kindergarten/93740362/parent?connected=false")).get
+
+      status(response) must equalTo(OK)
+
+      val jsonResponse: JsValue = Json.parse(contentAsString(response))
+      jsonResponse match {
+        case JsArray(arr) =>
+          arr.length must equalTo(2)
+        case _ => failure
+      }
+    }
+
+    "show no parent to no privilege teachers if they wanna check connected parants" in new WithApplication {
+
+      val response = route(noAccessLoggedRequest(GET, "/kindergarten/93740362/parent?connected=true")).get
+
+      status(response) must equalTo(OK)
+
+      val jsonResponse: JsValue = Json.parse(contentAsString(response))
+      jsonResponse match {
+        case JsArray(arr) =>
+          arr.isEmpty must beTrue
+        case _ => failure
+      }
+    }
+
+    "show all unconnected parents to all kinds of privilege: manager" in new WithApplication {
+
+      val response = route(twoClassesManagerLoggedRequest(GET, "/kindergarten/93740362/parent?connected=false")).get
+
+      status(response) must equalTo(OK)
+
+      val jsonResponse: JsValue = Json.parse(contentAsString(response))
+      jsonResponse match {
+        case JsArray(arr) =>
+          arr.length must equalTo(2)
+        case _ => failure
+      }
+    }
+
+    "show all unconnected parents to all kinds of privilege: principal" in new WithApplication {
+
+      val response = route(principalLoggedRequest(GET, "/kindergarten/93740362/parent?connected=false")).get
+
+      status(response) must equalTo(OK)
+
+      val jsonResponse: JsValue = Json.parse(contentAsString(response))
+      jsonResponse match {
+        case JsArray(arr) =>
+          arr.length must equalTo(2)
+        case _ => failure
+      }
+    }
+
   }
 }

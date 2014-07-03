@@ -19,7 +19,7 @@ class ParentSpec extends Specification with TestSupport {
 
     "report parents in class" in new WithApplication {
 
-      private val index = Parent.indexInClass(93740362, 777666, None)
+      private val index = Parent.indexInClasses(93740362, "777666", None, None)
 
       index.size must lessThan(5)
       index(0).parent_id must beSome("2_93740362_792")
