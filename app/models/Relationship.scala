@@ -79,7 +79,7 @@ object Relationship {
     implicit c =>
       SQL("delete from relationmap where card_num={card}")
         .on('card -> card
-        ).executeUpdate
+        ).execute()
   }
 
   def show(kg: Long, card: String) = DB.withConnection {

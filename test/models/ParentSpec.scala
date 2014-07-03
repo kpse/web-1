@@ -59,6 +59,7 @@ class ParentSpec extends Specification with TestSupport {
       convert.nonEmpty must beTrue
       Children.delete(kg, child.get.child_id.get)
       Parent.delete(kg)(parent.get.phone)
+      Relationship.delete(kg, card)
     }
 
     "update with phone updated in push account" in new WithApplication {
@@ -79,7 +80,7 @@ class ParentSpec extends Specification with TestSupport {
 
       convert.nonEmpty must beTrue
       Children.delete(kg, child.get.child_id.get)
-      Parent.delete(kg)(parent.get.phone)
+      Relationship.delete(kg, card)
     }
 
     "throw exception when phone already exists in push account" in new WithApplication {

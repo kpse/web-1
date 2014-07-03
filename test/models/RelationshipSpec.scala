@@ -51,7 +51,7 @@ class RelationshipSpec extends Specification with TestSupport {
       private val newRelationship = created.get
       newRelationship.parent.get.phone must equalTo("13408654681")
       newRelationship.child.get.child_id must beSome("1_1391836223533")
-
+      Relationship.delete(93740362, "9")
     }
 
     "be updated by card info" in new WithApplication {
