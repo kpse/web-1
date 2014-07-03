@@ -1,6 +1,6 @@
 {
   "name": "kulebao",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "[![Build Status](https://travis-ci.org/kulebao/web.png?branch=master)](https://travis-ci.org/kulebao/web)",
   "main": "karma.conf.js",
   "directories": {
