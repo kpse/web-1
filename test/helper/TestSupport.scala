@@ -10,7 +10,10 @@ trait TestSupport {
 
   trait WithApplication extends Around {
     def around[T: AsResult](t: => T) = {
-      val appWithMemoryDatabase = FakeApplication(additionalConfiguration = inMemoryDatabase("test"))
+      val appWithMemoryDatabase = FakeApplication(additionalConfiguration = Map(
+        "db.default.driver" -> "org.h2.Driver",
+        "db.default.url" -> "jdbc:h2:mem:test;MODE=MySQL"
+      ))
       running(appWithMemoryDatabase) {
         AsResult.effectively(t)
       }

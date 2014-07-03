@@ -38,8 +38,6 @@ class ParentSpec extends Specification with TestSupport {
 
     }
 
-
-
     "create with phone inserted in push account" in new WithApplication {
       val newPhone = "12343212"
       private val parent = Parent.create(kg, new Parent(None, kg, "", newPhone, None, 0, "1990-01-01", None, None, None))
@@ -57,9 +55,6 @@ class ParentSpec extends Specification with TestSupport {
       private val convert = CheckingMessage.convert(new CheckInfo(kg, card, 2, 0, "", 0))
 
       convert.nonEmpty must beTrue
-      Children.delete(kg, child.get.child_id.get)
-      Parent.delete(kg)(parent.get.phone)
-      Relationship.delete(kg, card)
     }
 
     "update with phone updated in push account" in new WithApplication {
@@ -79,8 +74,6 @@ class ParentSpec extends Specification with TestSupport {
       private val convert = CheckingMessage.convert(new CheckInfo(kg, card, 2, 0, "", 0))
 
       convert.nonEmpty must beTrue
-      Children.delete(kg, child.get.child_id.get)
-      Relationship.delete(kg, card)
     }
 
     "throw exception when phone already exists in push account" in new WithApplication {
