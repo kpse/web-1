@@ -356,43 +356,42 @@ object Parent {
         .as(simple singleOpt)
   }
 
+
   def generateMemberQuery(member: Option[Boolean]): String = member match {
     case Some(m) => " and member_status={member} "
     case None => ""
   }
 
-  def included(connected: Boolean): String = connected match {
-    case true => ""
-    case false => " not "
+  def generateConnectionQuery(connected: Option[Boolean]) = {
+    def included(connected: Boolean): String = connected match {
+      case true => ""
+      case false => " not "
+    }
+    connected match {
+      case Some(b) =>
+        " and p.parent_id " + included(b) + " in (select parent_id from relationmap r, childinfo c where r.child_id=c.child_id and r.status=1 and c.status=1 and c.school_id={kg})"
+      case None =>
+        ""
+    }
+  }
+
+
+  def generateClassQuery(classIds: String) = {
+    " and c.class_id in (" + classIds + ") "
   }
 
   def simpleIndex(kg: Long, member: Option[Boolean], connected: Option[Boolean]) = DB.withConnection {
     implicit c =>
-      connected match {
-        case Some(connection) =>
-          SQL(simpleSql + "and parent_id " + included(connection) + " in (select parent_id from relationmap r, childinfo c where r.child_id=c.child_id and r.status=1 and c.status=1 and c.school_id={kg})")
-            .on('kg -> kg.toString).as(simple *)
-        case _ =>
-          SQL(simpleSql + generateMemberQuery(member))
-            .on('kg -> kg.toString, 'member -> (if (member.getOrElse(false)) 1 else 0))
-            .as(simple *)
-      }
+      SQL(simpleSql + generateMemberQuery(member) + generateConnectionQuery(connected))
+        .on('kg -> kg.toString, 'member -> (if (member.getOrElse(false)) 1 else 0))
+        .as(simple *)
   }
 
-  def indexInClass(kg: Long, classId: Long, member: Option[Boolean]) = DB.withConnection {
-    implicit c =>
-      SQL(fullStructureSql + " and c.class_id={class_id} " + generateMemberQuery(member))
-        .on('kg -> kg,
-          'class_id -> classId,
-          'member -> (if (member.getOrElse(false)) 1 else 0)
-        ).as(simple *)
-  }
-
-  def indexInClass(kg: Long, classIds: String, member: Option[Boolean]) = DB.withConnection {
+  def indexInClasses(kg: Long, classIds: String, member: Option[Boolean], connected: Option[Boolean]) = DB.withConnection {
     implicit c =>
       classIds.length > 0 match {
         case true =>
-          SQL(fullStructureSql + " and c.class_id in (" + classIds + ") " + generateMemberQuery(member))
+          SQL(fullStructureSql + generateClassQuery(classIds) + generateMemberQuery(member) + generateConnectionQuery(connected))
             .on('kg -> kg,
               'member -> (if (member.getOrElse(false)) 1 else 0)
             ).as(simple *)

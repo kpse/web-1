@@ -23,7 +23,7 @@ object ParentController extends Controller with Secured {
       val accesses: List[UserAccess] = UserAccess.queryByUsername(u, kg)
       UserAccess.filterClassId(accesses)(classId) match {
         case Some(id) =>
-          Ok(Json.toJson(Parent.indexInClass(kg, id, member)))
+          Ok(Json.toJson(Parent.indexInClasses(kg, id.toString, member, connected)))
         case None if classId.isDefined =>
           Ok(Json.toJson(List[Parent]()))
         case None =>
@@ -31,7 +31,7 @@ object ParentController extends Controller with Secured {
             case true =>
               Ok(Json.toJson(Parent.simpleIndex(kg, member, connected)))
             case false =>
-              Ok(Json.toJson(Parent.indexInClass(kg, UserAccess.allClasses(accesses), member)))
+              Ok(Json.toJson(Parent.indexInClasses(kg, UserAccess.allClasses(accesses), member, connected)))
           }
 
       }
