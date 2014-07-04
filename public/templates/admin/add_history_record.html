@@ -39,10 +39,7 @@
       <div class="col-sm-12">
         <div class="form-group row">
           <div class="image-preview col-xs-3 " ng-repeat="m in message.medium">
-            <img class="message-image" ng-src="{{compress(m.url, 220)}}"
-                 alt="{{m.type}}" ng-show="isImage(m)" />
-            <a ng-show="isAudio(m)" ng-href="{{m.url}}" ><img class="message-audio" src="/assets/images/audio-file-icon.png"
-                 alt="{{m.type}}" /></a>
+            <div kl-media-preview media="m" height="220" clickable="true"></div>
           </div>
         </div>
 
@@ -51,7 +48,7 @@
 
           <input type="file" id="message-pic" fileupload="pic"/>
           <button class="btn btn-success btn-xs" ng-disabled="pic === undefined || pic.size > 2048000 || message.medium.length > 8 || uploading"
-                  ng-click="uploadPic(message, this)">{{message.medium.length==0 ? '添加图像' : '继续添加图像'}}
+                  ng-click="uploadPic(message, this)">{{message.medium.length==0 ? '添加' : '继续添加'}}
           </button>
           <span ng-class="{error : pic.size > 2048000}" class="help-block">图片大小请不要超过2m</span>
           <span ng-class="{error : message.medium.length > 8}" class="help-block">最多支持9张图片</span>

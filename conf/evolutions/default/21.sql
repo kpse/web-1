@@ -29,8 +29,10 @@ VALUES
 ('93740362', 'h_1_93740362_9982', '小孩历史测试一张图片', 'http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg', '2_93740362_790', 1401160055960, 'p'),
 ('93740362', 'h_1_93740362_9982', '小孩历史测试三张图片', 'http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg', '2_93740362_790', 1401170055960, 'p'),
 ('93740362', 'h_1_93740362_9982', '小孩历史测试五张图片', 'http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg', '2_93740362_790', 1401180055960, 'p'),
-('93740362', 'h_1_93740362_9982', '小孩历史测试九张图片', 'http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg', '2_93740362_790', 1401190055960, 'p'),
-('93740362', 'h_1_93740362_9982', '小孩历史测试一条声音', 'https://dn-kulebao.qbox.me/3_93740362_9972%252FfireEffect.mp3', '2_93740362_790', 1401190155960, 'p');
+('93740362', 'h_1_93740362_9982', '小孩历史测试九张图片', 'http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg', '2_93740362_790', 1401190055960, 'p');
+INSERT INTO sessionlog (school_id, session_id, content, media_url, sender, update_at, sender_type, media_type)
+VALUES
+('93740362', 'h_1_93740362_9982', '小孩历史测试一条声音', 'https://dn-kulebao.qbox.me/3_93740362_9972%252FfireEffect.mp3', '2_93740362_790', 1401190155960, 'p', 'music');
 
 
 # --- !Downs

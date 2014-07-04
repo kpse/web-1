@@ -16,13 +16,6 @@ angular.module('kulebaoAdmin')
       scope.navigateTo = (c) ->
         location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')
 
-      scope.compress = (url, width, height) ->
-        Compress.compress(url, width, height)
-
-      scope.isImage = (media) ->
-        media && /.(jpg|png)$/.test(media.url)
-      scope.isAudio = (media) ->
-        media && !scope.isImage(media)
   ]
 
 angular.module('kulebaoAdmin')

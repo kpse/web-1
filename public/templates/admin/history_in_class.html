@@ -14,12 +14,8 @@
     <td class="col-xs-4" ng-show="c.lastMessage.content">{{c.lastMessage.content.substring(0,100)}}{{(c.lastMessage.content.length > 100) ? '...' : ''}}</td>
     <td class="col-xs-4" ng-show="!c.lastMessage.content">N/A</td>
     <td class="col-xs-4" ng-show="c.lastMessage.medium[0]">
-      <div class="image-preview">
-        <img class="conversation-image img-responsive" ng-src="{{compress(c.lastMessage.medium[0].url, 110)}}"
-             alt="{{c.lastMessage.medium[0].type}}" ng-show="isImage(c.lastMessage.medium[0])" />
-        <img class="conversation-audio img-responsive"
-             ng-show="isAudio(c.lastMessage.medium[0])"
-             src="/assets/images/audio-file-icon.png" alt="{{c.lastMessage.medium[0].type}}" />
+      <div class="image-preview image-110">
+        <div kl-media-preview media="c.lastMessage.medium[0]" height="110"></div>
         <div ng-show="!c.lastMessage.medium[0]">N/A</div>
       </div>
     </td>

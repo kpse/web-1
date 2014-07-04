@@ -19,13 +19,9 @@
     <td class="col-xs-5" ng-show="c.content">{{c.content.substring(0,100)}}{{(c.content.length > 100) ? '...' : ''}}</td>
     <td class="col-xs-5" ng-show="!c.content">N/A</td>
     <th class="col-xs-4" ng-show="c.medium.length">
-      <div class="image-preview">
-        <img class="conversation-image img-responsive" ng-src="{{compress(c.medium[0].url, 110)}}"
-             alt="{{c.medium[0].type}}" ng-show="isImage(c.medium[0])" />
-        <img class="conversation-audio img-responsive" src="/assets/images/audio-file-icon.png"
-             ng-show="isAudio(c.medium[0])"
-             alt="{{c.medium[0].type}}" />
-          <div ng-show="!c.medium[0]">N/A</div>
+      <div class="image-preview image-110">
+        <div kl-media-preview media="c.medium[0]" height="110"></div>
+        <div ng-show="!c.medium[0]">N/A</div>
       </div>
     </th>
     <td class="col-xs-4" ng-show="!c.medium.length">N/A</td>
