@@ -18,6 +18,11 @@ angular.module('kulebaoAdmin')
 
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)
+
+      scope.isImage = (media) ->
+        /.(jpg|png)$/.test(media.url)
+      scope.isAudio = (media) ->
+        media && !scope.isImage(media)
   ]
 
 angular.module('kulebaoAdmin')

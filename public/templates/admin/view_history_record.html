@@ -20,8 +20,10 @@
 
       <div class="form-group row">
         <div class="image-preview col-xs-3" ng-repeat="m in viewing_message.medium">
-          <img class="message-image " ng-src="{{compress(m.url, 220)}}"
-               alt="{{m.type}}"/>
+          <img class="message-image" ng-src="{{compress(m.url, 220)}}"
+               alt="{{m.type}}" ng-show="isImage(m)" />
+          <img class="message-audio" src="/assets/images/audio-file-icon.png"
+               alt="{{m.type}}" ng-show="isAudio(m)" />
         </div>
       </div>
 

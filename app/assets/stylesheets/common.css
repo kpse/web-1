@@ -155,6 +155,10 @@
         max-height: 220px;
         max-width: 220px;
       }
+      .message-audio {
+        max-height: 150px;
+        max-width: 150px;
+      }
       .assess-image {
         max-height: 180px;
         max-width: 180px;
@@ -162,6 +166,10 @@
       .conversation-image {
         max-height: 110px;
         max-width: 110px;
+      }
+      .conversation-audio {
+        max-height: 80px;
+        max-width: 80px;
       }
       .news-image {
         max-height: 200px;
