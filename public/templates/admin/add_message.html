@@ -38,9 +38,8 @@
 
       <div class="col-sm-12">
         <div class="form-group col-sm-6">
-          <div class="image-preview">
-            <img class="message-image" ng-src="{{compress(message.media.url, 220)}}"
-                 alt="照片"/>
+          <div class="image-preview ">
+            <div kl-media-preview media="message.media" height="220"></div>
           </div>
         </div>
 

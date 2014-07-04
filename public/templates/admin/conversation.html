@@ -4,7 +4,7 @@
     <textarea ng-bk-focus class="message-input" type="text" ng-model="message.content" placeholder="要发送的内容.." required></textarea>
     <div class="clearfix"></div>
     <button ng-click="send(message)" class="btn btn-primary" ng-disabled="!message.content">快速回复</button>
-    <button ng-click="messageEditing(message)" class="btn btn-success">回复图片</button>
+    <button ng-click="messageEditing(message)" class="btn btn-success">详细回复</button>
 </form>
 
 <div class="chat-history longer-history"><table class="table table-hover table-condensed">
@@ -23,9 +23,8 @@
     <td class="col-xs-5" ng-show="!c.content">N/A</td>
 
     <th class="col-xs-5" ng-show="c.media.url">
-      <div class="image-preview">
-        <img class="conversation-image img-responsive" ng-src="{{compress(c.media.url, 110)}}"
-             alt="{{c.media.type}}"/>
+      <div class="image-preview image-110">
+        <div kl-media-preview media="c.media" height="110"></div>
       </div>
     </th>
     <td class="col-xs-5" ng-show="!c.media.url">N/A</td>

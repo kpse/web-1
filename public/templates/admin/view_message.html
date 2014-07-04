@@ -20,8 +20,7 @@
 
       <div class="form-group">
         <div class="image-preview">
-          <img class="message-image" ng-src="{{compress(viewing_message.media.url, 220)}}"
-               alt="{{viewing_message.media.type}}"/>
+          <div kl-media-preview media="viewing_message.media" height="220" clickable="true"></div>
         </div>
       </div>
 
