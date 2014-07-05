@@ -19,7 +19,7 @@
     <td class="col-xs-2">{{child.name}}</td>
     <td class="col-xs-1">
       <div ng-show="child.recentStatus">
-        <rating value="child.recentStatus.emotion" max="3" readonly="true"></rating>
+        <rating ng-model="child.recentStatus.emotion" max="3" readonly="true"></rating>
       </div>
       <div ng-hide="child.recentStatus">
         N/A
@@ -27,7 +27,7 @@
     </td>
     <td class="col-xs-1">
       <div ng-show="child.recentStatus">
-        <rating value="child.recentStatus.dining" max="3" readonly="true"></rating>
+        <rating ng-model="child.recentStatus.dining" max="3" readonly="true"></rating>
       </div>
       <div ng-hide="child.recentStatus">
         N/A
@@ -36,7 +36,7 @@
     </td>
     <td class="col-xs-1">
       <div ng-show="child.recentStatus">
-        <rating value="child.recentStatus.rest" max="3" readonly="true"></rating>
+        <rating ng-model="child.recentStatus.rest" max="3" readonly="true"></rating>
       </div>
       <div ng-hide="child.recentStatus">
         N/A
@@ -44,7 +44,7 @@
     </td>
     <td class="col-xs-1">
       <div ng-show="child.recentStatus">
-        <rating value="child.recentStatus.activity" max="3" readonly="true"></rating>
+        <rating ng-model="child.recentStatus.activity" max="3" readonly="true"></rating>
       </div>
       <div ng-hide="child.recentStatus">
         N/A
@@ -52,7 +52,7 @@
     </td>
     <td class="col-xs-1">
       <div ng-show="child.recentStatus">
-        <rating value="child.recentStatus.game" max="3" readonly="true"></rating>
+        <rating ng-model="child.recentStatus.game" max="3" readonly="true"></rating>
       </div>
       <div ng-hide="child.recentStatus">
         N/A
@@ -60,7 +60,7 @@
     </td>
     <td class="col-xs-1">
       <div ng-show="child.recentStatus">
-        <rating value="child.recentStatus.exercise" max="3" readonly="true"></rating>
+        <rating ng-model="child.recentStatus.exercise" max="3" readonly="true"></rating>
       </div>
       <div ng-hide="child.recentStatus">
         N/A
@@ -68,7 +68,7 @@
     </td>
     <td class="col-xs-1">
       <div ng-show="child.recentStatus">
-        <rating value="child.recentStatus.self_care" max="3" readonly="true"></rating>
+        <rating ng-model="child.recentStatus.self_care" max="3" readonly="true"></rating>
       </div>
       <div ng-hide="child.recentStatus">
         N/A
@@ -76,7 +76,7 @@
     </td>
     <td class="col-xs-1">
       <div ng-show="child.recentStatus">
-        <rating value="child.recentStatus.manner" max="3" readonly="true"></rating>
+        <rating ng-model="child.recentStatus.manner" max="3" readonly="true"></rating>
       </div>
       <div ng-hide="child.recentStatus">
         N/A
