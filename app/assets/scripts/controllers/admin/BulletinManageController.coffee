@@ -114,15 +114,11 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
           c.class_id == class_id
         clazz.name if clazz isnt undefined
 
-      scope.uploadPic = (news, pic) ->
-        scope.uploading = true
-        Upload pic, scope.adminUser.id,
-          ((url) ->
-            scope.$apply ->
-              news.image = url if url isnt undefined
-              scope.uploading = false
-          ),
-          ((res) ->
-            alert '上传失败，错误e=' + res.error)
+      scope.onFileUploadSuccess = (url) ->
+        scope.$apply ->
+          scope.news.image = url if url isnt undefined
+
+      scope.onFileUploadError = (res) ->
+        alert '上传失败，错误e=' + res.error
 
   ]

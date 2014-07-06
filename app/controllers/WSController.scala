@@ -2,7 +2,7 @@ package controllers
 
 import play.api.mvc._
 import play.api.libs.ws._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsError, JsValue, Json}
 import scala.concurrent.{Future, ExecutionContext}
 import ExecutionContext.Implicits.global
 import models.News
@@ -82,6 +82,8 @@ object WSController extends Controller {
 
   case class UpToken(token: String)
 
+
+
   implicit val writes1 = Json.writes[UpToken]
 
   def generateToken(bucket: String, key: Option[String]) = Action {
@@ -89,20 +91,44 @@ object WSController extends Controller {
     val SECRET_KEY = Play.current.configuration.getString("oss.sk").getOrElse("")
     Logger.info("ACCESS_KEY = %s, SECRET_KEY = %s".format(ACCESS_KEY, SECRET_KEY))
     val putPolicy = new PutPolicy(bucket)
-    key.map{ k=> putPolicy.scope = bucket + ":" + k}
+    key.map { k => putPolicy.scope = bucket + ":" + k}
     putPolicy.returnBody = "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"
     val uptoken = putPolicy.token(new Mac(ACCESS_KEY, SECRET_KEY))
     Ok(Json.toJson(UpToken(uptoken)))
   }
 
-  def generateEncodeToken(bucket: String, key: Option[String]) =
-    key match {
-      case Some(s) =>
-        val encodedKey = URLEncoder.encode(s, "UTF-8")
-        Logger.info("key = %s".format(encodedKey))
-        generateToken(bucket, Some(encodedKey))
-      case None =>
-        generateToken(bucket, None)
-    }
+  def generateEncodeToken(bucket: String, key: Option[String]) = key match {
+    case Some(s) =>
+      val encodedKey = URLEncoder.encode(s, "UTF-8")
+      Logger.info("key = %s".format(encodedKey))
+      generateToken(bucket, Some(encodedKey))
+    case None =>
+      generateToken(bucket, None)
+  }
+
+  case class Bucket(name: String, key: String) {
+    def scope = s"$name:$key"
+  }
+
+  implicit val read1 = Json.reads[Bucket]
+
+  def generateSafeToken = Action(parse.json) {
+    implicit request =>
+      val ACCESS_KEY = Play.current.configuration.getString("oss.ak").getOrElse("")
+      val SECRET_KEY = Play.current.configuration.getString("oss.sk").getOrElse("")
+      Logger.info("ACCESS_KEY = %s, SECRET_KEY = %s".format(ACCESS_KEY, SECRET_KEY))
+      request.body.validate[Bucket].map {
+        case (bucket) =>
+          val putPolicy = new PutPolicy(bucket.name)
+          putPolicy.scope = bucket.scope
+          Logger.info(s"scope = ${putPolicy.scope}")
+          putPolicy.returnBody = "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"
+          val uptoken = putPolicy.token(new Mac(ACCESS_KEY, SECRET_KEY))
+          Ok(Json.toJson(UpToken(uptoken)))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+
+  }
 
 }
