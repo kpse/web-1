@@ -1,18 +1,19 @@
 'use strict'
 
 angular.module("kulebaoAdmin").directive "klFileUpload",
-  ['uploadService', '$q',
-    (Upload, $q) ->
+  ['uploadService',
+    (Upload) ->
       return (
         restrict: "EA"
         scope:
-          ngModel: "=ngModel"
           user: "="
           onSuccess: "=onSuccess"
           onError: "=onError"
           controlDisabled: "@disabled"
+          label: "@"
 
         link: (scope, element) ->
+          scope.buttonLabel = scope.label || '上传'
           scope.uploading = false
           scope.fileControl = element[0].firstChild
           scope.fileControl.onchange = (e) ->

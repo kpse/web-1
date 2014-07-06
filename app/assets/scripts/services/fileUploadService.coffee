@@ -91,9 +91,9 @@ angular.module('kulebaoAdmin')
 .factory 'appUploadService', ['qiniuRawFileService', 'rawFileTokenService', uploadService]
 
 
-angular.module('kulebaoAdmin').directive "targetFile", ->
+angular.module('kulebaoAdmin').directive "fileupload", ->
   link: (scope, element, attributes) ->
     element.bind "change", (e) ->
       scope.$apply ->
-        scope[attributes.targetFile] = e.target.files[0]
+        scope[attributes.fileupload] = e.target.files[0]
         scope.app.file_size = e.target.files[0].size if scope.app isnt undefined

@@ -1,6 +1,6 @@
 <input type="file" class="picture-input"/>
 <button class="btn btn-success btn-xs" ng-disabled="targetFile === undefined || targetFile.size > 2048000 || controlDisabled"
-        ng-click="uploadPic()">上传
+        ng-click="uploadPic()">{{buttonLabel}}
 </button>
 <span ng-class="{error : targetFile.size > 2048000}" class="help-block">图片大小请不要超过2m</span>
 <div class="uploading" ng-show="uploading"></div>

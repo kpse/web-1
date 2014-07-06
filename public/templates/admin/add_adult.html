@@ -73,6 +73,7 @@
         <label for="parent-pic" class="col-sm-4 control-label">上传头像</label>
 
         <div class="col-sm-8">
+          <!--<kl-file-upload user="adminUser.id" ng-model="news" on-success="onFileUploadSuccess" on-error="onFileUploadError" label="上传头像"></kl-file-upload>-->
           <input type="file" id="parent-pic" fileupload="pic"/>
           <button class="btn btn-success btn-xs" ng-disabled="pic === undefined || pic.size > 2048000 || uploading"
                   ng-click="uploadPic(parent, this, newAdultForm)">上传头像

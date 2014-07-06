@@ -25,11 +25,11 @@ angular.module('kulebaoAdmin')
         School.save scope.kindergarten, ->
           scope.school_changed = false
 
-    scope.uploadPic = (pic) ->
-      scope.uploading = true
-      Upload pic, scope.adminUser.id, (url) ->
-        scope.$apply ->
-          scope.kindergarten.school_logo_url = url if url isnt undefined
-          scope.uploading = false
+    scope.onFileUploadSuccess = (url) ->
+      scope.$apply ->
+        scope.kindergarten.school_logo_url = url if url isnt undefined
+
+    scope.onFileUploadError = (res) ->
+      alert '上传失败，错误e=' + res.error
 
 ]
