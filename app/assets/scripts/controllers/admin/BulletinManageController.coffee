@@ -33,8 +33,8 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
       scope.maxSize = 5
       scope.itemsPerPage = 8
 
-      scope.refresh = (page)->
-        page = page || 1
+      scope.refresh = ()->
+        page = scope.currentPage
         scope.loading = true
         scope.preview = NewsPreivew.query
           school_id: stateParams.kindergarten
@@ -58,11 +58,8 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
             scope.kindergarten.classes.unshift class_id: 0, name: '全校'
             scope.refresh()
 
-      scope.onSelectPage = (page) ->
-        scope.refresh(page)
-
-      scope.$on 'go_page_1', ->
-        scope.onSelectPage()
+      scope.$watch 'currentPage', (newPage, oldPage) ->
+        scope.refresh(newPage)
 
       scope.publish = (news) ->
         news.published = true
@@ -91,14 +88,24 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
           scope: scope
           contentTemplate: 'templates/admin/add_news.html'
 
+      firstPageOrCurrentPage = (news) ->
+        if news.news_id?
+          () ->
+            scope.refresh()
+        else
+          () ->
+            scope.currentPage = 1
+            scope.refresh()
+
       scope.save = (news) ->
+        goPage = firstPageOrCurrentPage(news)
         news.$save ->
-          scope.$emit 'go_page_1'
+          goPage()
           scope.currentModal.hide()
 
       scope.remove = (news) ->
         news.$delete ->
-          scope.$emit 'go_page_1'
+          scope.refresh()
           scope.currentModal.hide()
 
       scope.nameOf = (class_id) ->
