@@ -27,10 +27,9 @@ angular.module('kulebaoAdmin')
 
     scope.uploadPic = (pic) ->
       scope.uploading = true
-      Upload pic, (url) ->
+      Upload pic, scope.adminUser.id, (url) ->
         scope.$apply ->
           scope.kindergarten.school_logo_url = url if url isnt undefined
           scope.uploading = false
-      , scope.adminUser.id
 
 ]

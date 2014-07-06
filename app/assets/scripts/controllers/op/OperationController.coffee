@@ -47,11 +47,10 @@ angular.module('kulebaoOp').controller 'OpCtrl',
 
       scope.uploadPic = (employee, pic) ->
         scope.uploading = true
-        Upload pic, (url) ->
+        Upload pic, scope.adminUser.id, (url) ->
           scope.$apply ->
             employee.portrait = url if url isnt undefined
             scope.uploading = false
-        , scope.adminUser.id
 
       goPageWithTab = (pageName, tabName, defaultValue)->
         if location.path().indexOf(pageName + '/' + tabName) < 0

@@ -65,10 +65,8 @@ angular.module('kulebaoAdmin')
 
       scope.uploadPic = (assignment, pic) ->
         scope.uploading = true
-        Upload pic, (url) ->
+        Upload pic, scope.adminUser.id, (url) ->
           scope.$apply ->
             assignment.icon_url = url if url isnt undefined
             scope.uploading = false
-        , scope.adminUser.id
-
   ]

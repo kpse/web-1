@@ -101,11 +101,10 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
 
       scope.uploadPic = (employee, pic) ->
         scope.uploading = true
-        Upload pic, (url) ->
+        Upload pic, scope.adminUser.id, (url) ->
           scope.$apply ->
             employee.portrait = url if url isnt undefined
             scope.uploading = false
-        , scope.adminUser.id
 
       scope.showingUp = (user) ->
         undefined isnt _.find ['principal', 'operator'], (u) -> user.privilege_group == u

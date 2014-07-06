@@ -116,9 +116,13 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
 
       scope.uploadPic = (news, pic) ->
         scope.uploading = true
-        Upload pic, (url) ->
-          scope.$apply ->
-            news.image = url if url isnt undefined
-            scope.uploading = false
-        , scope.adminUser.id
+        Upload pic, scope.adminUser.id,
+          ((url) ->
+            scope.$apply ->
+              news.image = url if url isnt undefined
+              scope.uploading = false
+          ),
+          ((res) ->
+            alert '上传失败，错误e=' + res.error)
+
   ]

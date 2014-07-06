@@ -12,8 +12,8 @@ angular.module("kulebaoAdmin").directive "d3Bars", [
         count: "&"
         onClick: "&"
 
-      link: (scope, iElement, iAttrs) ->
-        svg = d3.select(iElement[0]).append("svg").attr("width", "100%").attr('class', 'bar-image')
+      link: (scope, elem, attrs) ->
+        svg = d3.select(elem[0]).append("svg").attr("width", "100%").attr('class', 'bar-image')
 
         # watch for data changes and re-render
         scope.$watch "data", ((newVals, oldVals) ->

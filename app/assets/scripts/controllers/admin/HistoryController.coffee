@@ -119,10 +119,9 @@ angular.module('kulebaoAdmin')
 
       scope.uploadPic = (message, thatScope) ->
         scope.uploading = true
-        Upload thatScope.pic, (url) ->
+        Upload thatScope.pic, scope.adminUser.id, (url) ->
           scope.$apply ->
             message.medium.push url : url, type: 'image' if url isnt undefined
             scope.uploading = false
             thatScope.pic = undefined
-        , scope.adminUser.id
   ]

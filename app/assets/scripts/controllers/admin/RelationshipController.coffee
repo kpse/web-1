@@ -123,13 +123,12 @@ angular.module('kulebaoAdmin')
 
       scope.uploadPic = (person, thatScope, form) ->
         scope.uploading = true
-        Upload thatScope.pic, (url) ->
+        Upload thatScope.pic, scope.adminUser.id, (url) ->
           scope.$apply ->
             person.portrait = url if url isnt undefined
             form.$setDirty() if form?
             delete thatScope.pic
             scope.uploading = false
-        , scope.adminUser.id
 
       handleError = (obj, res) ->
         Alert

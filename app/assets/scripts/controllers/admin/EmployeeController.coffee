@@ -69,11 +69,10 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
 
       scope.uploadPic = (employee, pic) ->
         scope.uploading = true
-        Upload pic, (url) ->
+        Upload pic, scope.adminUser.id, (url) ->
           scope.$apply ->
             employee.portrait = url if url isnt undefined
             scope.uploading = false
-        , scope.adminUser.id
 
       scope.deletable = (user)->
         undefined isnt _.find ['principal', 'operator'], (u) -> user.privilege_group == u
@@ -88,8 +87,8 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
 
 angular.module('kulebaoAdmin').controller 'EmployeesScoreCtrl',
   ['$scope', '$rootScope', '$stateParams', 'schoolService', '$modal', 'employeeService', 'schoolEmployeesService',
-   'uploadService', '$alert', 'StatsService',
-    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Upload, Alert, Stats) ->
+   '$alert', 'StatsService',
+    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Alert, Stats) ->
 
       scope.refresh = ->
         scope.loading = true

@@ -27,10 +27,10 @@ angular.module('kulebaoOp').controller 'OpPrincipalCtrl',
 
       scope.uploadPic = (employee, pic) ->
         scope.uploading = true
-        Upload pic, (url) ->
+        Upload pic, scope.adminUser.id, (url) ->
           scope.$apply ->
             employee.portrait = url if url isnt undefined
             scope.uploading = false
-        , scope.adminUser.id
+
   ]
 
