@@ -71,7 +71,7 @@ generateRemoteFileName = (remoteDir, fileName)->
 
 uploadService = (qiniuService, tokenService) ->
   (file, user, onSuccess, onError) ->
-    return (onError || angular.noop)(undefined) if file is undefined
+    return (onError || angular.noop)(error: '没有指定文件。') if file is undefined
     remoteDir = generateRemoteDir user
     tokenService.token(file, remoteDir).success (data)->
       qiniuService.send file, remoteDir, data.token, (remoteFile) ->
