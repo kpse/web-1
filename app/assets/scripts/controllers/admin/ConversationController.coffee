@@ -127,11 +127,4 @@ angular.module('kulebaoAdmin')
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/add_message.html'
-
-      scope.uploadPic = (message, pic) ->
-        scope.uploading = true
-        Upload pic, scope.adminUser.id, (url) ->
-          scope.$apply ->
-            message.media.url = url if url isnt undefined
-            scope.uploading = false
   ]

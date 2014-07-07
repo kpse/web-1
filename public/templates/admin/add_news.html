@@ -22,11 +22,11 @@
       </div>
 
       <div class="col-sm-6">
-        <div class="form-group">
+        <div class="form-group" ng-hide="news.published">
           <label for="news-pic" class="col-sm-4 control-label">上传</label>
 
           <div class="col-sm-8">
-            <kl-file-upload ng-model="news" user="adminUser.id" ng-disabled="news.published"></kl-file-upload>
+            <kl-file-upload ng-model="news" user="adminUser.id"></kl-file-upload>
           </div>
 
         </div>
