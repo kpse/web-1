@@ -78,6 +78,7 @@ angular.module('kulebaoAdmin')
             scope: scope
             contentTemplate: 'templates/admin/add_adult.html'
 
+      scope.buttonLabel = '上传头像'
       scope.newChild = ->
         scope.nickFollowing = true
         scope.child = scope.createChild()
@@ -120,15 +121,6 @@ angular.module('kulebaoAdmin')
         return false if card is undefined || card.length < 10
         undefined isnt _.find scope.relationships, (r) ->
           r.card == card
-
-      scope.uploadPic = (person, thatScope, form) ->
-        scope.uploading = true
-        Upload thatScope.pic, scope.adminUser.id, (url) ->
-          scope.$apply ->
-            person.portrait = url if url isnt undefined
-            form.$setDirty() if form?
-            delete thatScope.pic
-            scope.uploading = false
 
       handleError = (obj, res) ->
         Alert
