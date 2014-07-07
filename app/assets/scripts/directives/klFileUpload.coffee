@@ -11,12 +11,13 @@ angular.module("kulebaoAdmin").directive "klFileUpload",
           user: "="
           onSuccess: "=onSuccess"
           onError: "=onError"
-          controlDisabled: "@disabled"
-          label: "@"
+          controlDisabled: "=?disabled"
+          label: "=?label"
 
-        link: (scope, element) ->
-          scope.buttonLabel = scope.label || '上传'
-          scope.fieldName = scope.fieldName || 'image'
+        link: (scope, element, attrs) ->
+          scope.label = scope.label || '上传'
+          scope.controlDisabled = scope.controlDisabled || false
+          scope.field = scope.fieldName || 'image'
           scope.uploading = false
           scope.fileControl = element[0].firstChild
           scope.fileControl.onchange = (e) ->
@@ -46,8 +47,8 @@ angular.module("kulebaoAdmin").directive "klFileUpload",
               f(url, size, other) if angular.isFunction(f)
               if scope.ngModel
                 scope.$apply ->
-                  scope.ngModel[scope.fieldName] = url
-                  scope.ngModel[scope.fieldName + 'Size'] = size
+                  scope.ngModel[scope.field] = url
+                  scope.ngModel[scope.field + 'Size'] = size
               scope.cleanUp()
 
         templateUrl: 'templates/directives/kl_upload_file.html'

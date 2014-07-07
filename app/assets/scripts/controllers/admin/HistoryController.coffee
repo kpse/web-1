@@ -104,12 +104,13 @@ angular.module('kulebaoAdmin')
 
 
       scope.send = (msg) ->
-          msg.$save ->
-            scope.refresh()
+        msg.$save ->
+          scope.refresh()
 
       scope.messageEditing = ->
         scope.currentModal = Modal
           scope: scope
+          keyboard: false
           contentTemplate: 'templates/admin/add_history_record.html'
 
       scope.messageDeleting = (message) ->
@@ -117,11 +118,25 @@ angular.module('kulebaoAdmin')
           scope.refresh()
           scope.currentModal.hide()
 
-      scope.uploadPic = (message, thatScope) ->
-        scope.uploading = true
-        Upload thatScope.pic, scope.adminUser.id, (url) ->
-          scope.$apply ->
-            message.medium.push url : url, type: 'image' if url isnt undefined
-            scope.uploading = false
-            thatScope.pic = undefined
+      scope.detectType = (url) ->
+        if url && url.match /\.(jpg|png)$/
+          'image'
+        else if url && url.match /\.(mp3|mp4|amr)$/
+          'audio'
+        else
+          'unknown'
+
+      scope.disableUploading = false
+      scope.buttonLabel = '添加'
+      scope.onUploadSuccess = (url) ->
+        scope.$apply ->
+          scope.message.medium.push url: url, type: scope.detectType(url) if url isnt undefined
+          scope.disableUploading = scope.dynamicDisable(scope.message)
+          scope.buttonLabel = scope.dynamicLabel(scope.message)
+
+      scope.dynamicLabel = (message)->
+        if message.medium.length == 0 then '添加' else '继续添加'
+
+      scope.dynamicDisable = (message) ->
+        message.medium && message.medium.length > 8
   ]

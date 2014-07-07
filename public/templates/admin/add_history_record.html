@@ -33,7 +33,7 @@
       <textarea id="content" name="content" ng-model="message.content"
                 class="editing-content form-control message-content" ng-maxlength="500"
                 placeholder="对{{child.name}}的祝福。。。"
-                ng-required="message.media.url == ''"></textarea>
+                ng-required="message.medium.length == ''"></textarea>
 
 
       <div class="col-sm-12">
@@ -45,14 +45,8 @@
 
         <div class="form-group col-sm-6">
           <label for="message-pic" class="control-label">上传</label>
-
-          <input type="file" id="message-pic" fileupload="pic"/>
-          <button class="btn btn-success btn-xs" ng-disabled="pic === undefined || pic.size > 2048000 || message.medium.length > 8 || uploading"
-                  ng-click="uploadPic(message, this)">{{message.medium.length==0 ? '添加' : '继续添加'}}
-          </button>
-          <span ng-class="{error : pic.size > 2048000}" class="help-block">图片大小请不要超过2m</span>
-          <span ng-class="{error : message.medium.length > 8}" class="help-block">最多支持9张图片</span>
-          <div class="uploading" ng-show="uploading"></div>
+          <kl-file-upload user="adminUser.id" on-success="onUploadSuccess" disabled="disableUploading"
+                          label="buttonLabel"></kl-file-upload>
         </div>
       </div>
     </div>
