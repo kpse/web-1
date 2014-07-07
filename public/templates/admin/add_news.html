@@ -26,7 +26,7 @@
           <label for="news-pic" class="col-sm-4 control-label">上传</label>
 
           <div class="col-sm-8">
-            <kl-file-upload user="adminUser.id" on-success="onFileUploadSuccess" on-error="onFileUploadError"></kl-file-upload>
+            <kl-file-upload ng-model="news" user="adminUser.id" ng-disabled="news.published"></kl-file-upload>
           </div>
 
         </div>

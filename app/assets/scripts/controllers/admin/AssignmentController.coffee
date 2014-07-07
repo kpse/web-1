@@ -28,7 +28,6 @@ angular.module('kulebaoAdmin')
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', 'classService', 'assignmentService', '$modal', 'employeeService', 'uploadService',
     (scope, rootScope, stateParams, location, School, Class, Assignment, Modal, Employee, Upload) ->
-
       scope.newAssignment = ->
         new Assignment
           class_id: parseInt stateParams.class_id
@@ -62,11 +61,4 @@ angular.module('kulebaoAdmin')
         assignment.$save ->
           scope.refresh()
           scope.currentModal.hide()
-
-      scope.uploadPic = (assignment, pic) ->
-        scope.uploading = true
-        Upload pic, scope.adminUser.id, (url) ->
-          scope.$apply ->
-            assignment.icon_url = url if url isnt undefined
-            scope.uploading = false
   ]

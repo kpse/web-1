@@ -46,16 +46,7 @@
                alt="亲子作业图片"/></div>
       </div>
       <div class="form-group col-sm-5">
-
-        <div class="">
-          <input type="file" id="assignment-pic-upload" fileupload="pic"/>
-          <button class="btn btn-success btn-xs" ng-disabled="pic === undefined || pic.size > 2048000"
-                  ng-click="uploadPic(assignment, pic)">上传图片
-          </button>
-          <span ng-class="{error : pic.size > 2048000}" class="help-block">图片大小请不要超过2m</span>
-          <div class="uploading" ng-show="uploading"/>
-        </div>
-
+        <kl-file-upload ng-model="assignment" user="adminUser.id" field-name="icon_url" label="上传图片"></kl-file-upload>
       </div>
     </div>
     <div class="clearfix"></div>

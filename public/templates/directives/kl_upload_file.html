@@ -1,5 +1,6 @@
-<input type="file" class="picture-input"/>
-<button class="btn btn-success btn-xs" ng-disabled="targetFile === undefined || targetFile.size > 2048000 || controlDisabled"
+<input type="file" class="picture-input" ng-disabled="controlDisabled"/>
+<button class="btn btn-success btn-xs"
+        ng-disabled="targetFile === undefined || targetFile.size > 2048000 || uploading || controlDisabled"
         ng-click="uploadPic()">{{buttonLabel}}
 </button>
 <span ng-class="{error : targetFile.size > 2048000}" class="help-block">图片大小请不要超过2m</span>

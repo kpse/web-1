@@ -113,12 +113,4 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
         clazz = _.find scope.kindergarten.classes, (c) ->
           c.class_id == class_id
         clazz.name if clazz isnt undefined
-
-      scope.onFileUploadSuccess = (url) ->
-        scope.$apply ->
-          scope.news.image = url if url isnt undefined
-
-      scope.onFileUploadError = (res) ->
-        alert '上传失败，错误e=' + res.error
-
   ]
