@@ -13,6 +13,7 @@ angular.module("kulebaoAdmin").directive "klFileUpload",
           onError: "=onError"
           controlDisabled: "=?disabled"
           label: "=?label"
+          form: "=?"
 
         link: (scope, element, attrs) ->
           scope.label = scope.label || '上传'
@@ -49,6 +50,7 @@ angular.module("kulebaoAdmin").directive "klFileUpload",
                 scope.$apply ->
                   scope.ngModel[scope.field] = url
                   scope.ngModel[scope.field + 'Size'] = size
+                  scope.form.$setDirty() if scope.form?
               scope.cleanUp()
 
         templateUrl: 'templates/directives/kl_upload_file.html'

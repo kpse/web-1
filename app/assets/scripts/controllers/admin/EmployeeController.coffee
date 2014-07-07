@@ -67,12 +67,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
         employee.$delete ->
           scope.refresh()
 
-      scope.uploadPic = (employee, pic) ->
-        scope.uploading = true
-        Upload pic, scope.adminUser.id, (url) ->
-          scope.$apply ->
-            employee.portrait = url if url isnt undefined
-            scope.uploading = false
+      scope.buttonLabel = '上传头像'
 
       scope.deletable = (user)->
         undefined isnt _.find ['principal', 'operator'], (u) -> user.privilege_group == u
