@@ -41,6 +41,7 @@ angular.module('kulebaoAdmin')
           scope: scope
           contentTemplate: 'templates/admin/assignment.html'
 
+      scope.buttonLabel = '上传图片'
       scope.adminUser = Employee.get ->
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
