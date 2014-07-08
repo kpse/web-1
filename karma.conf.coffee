@@ -19,7 +19,7 @@ module.exports = (config) ->
       'public/vendor/angular-ui-router/angular-ui-router.min.js',
       'public/vendor/angular-route/angular-route.min.js',
       'public/javascripts/vendor/underscore-min.js',
-      'public/vendor/**/*.js',
+      'public/vendor/**/*.min.js',
       'public/javascripts/vendor/**/*.js',
       'app/assets/scripts/main.coffee',
       'app/assets/scripts/admin.coffee',
