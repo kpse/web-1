@@ -64,7 +64,7 @@
       "../../test/assets/config": "angular-mocks.js"
     },
     "*": {
-      ".": "*.min.js{,.map}"
+      ".": "*.js{,.map}"
     }
   }
 }
