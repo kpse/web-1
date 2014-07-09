@@ -52,9 +52,9 @@ class RelationshipControllerSpec extends Specification with TestSupport {
   implicit val write3 = Json.writes[Relationship]
 
   def createRelationship(card: String, phone: String, childId: String, id: Long): JsValue = {
-    Json.toJson(new Relationship(
-      Some(new Parent(None, 0, "", phone, None, 0, "", None, None, None, None)),
-      Some(new ChildInfo(Some(childId), "", "", "", 0, None, 0, None, None, None)),
+    Json.toJson(Relationship(
+      Some(Parent(None, 0, "", phone, None, 0, "", None, None, None, None)),
+      Some(ChildInfo(Some(childId), "", "", "", 0, None, 0, None, None, None)),
       card, "妈妈", Some(id)))
   }
 }

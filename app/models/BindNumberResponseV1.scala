@@ -28,7 +28,7 @@ case class MemberStatus(status: Int){
 
 object BindNumberResponseV1 {
 
-  implicit def convertToMemberStatus(status: Int) = new MemberStatus(status)
+  implicit def convertToMemberStatus(status: Int) = MemberStatus(status)
 
   def response(updateTime: Long) = {
     get[String]("accountid") ~
@@ -38,7 +38,7 @@ object BindNumberResponseV1 {
       get[Int]("member_status") ~
       get[Int]("active") map {
       case accountid ~ parent ~ schoolId ~ schoolName ~ account_status ~ active =>
-        new BindNumberResponseV1(0, updateTime.toString, parent, accountid, schoolId.toLong, schoolName, account_status.readable)
+        BindNumberResponseV1(0, updateTime.toString, parent, accountid, schoolId.toLong, schoolName, account_status.readable)
     }
   }
   def handle(request: BindingNumber) = DB.withConnection {
@@ -59,11 +59,11 @@ object BindNumberResponseV1 {
           updateTokenAfterBinding(request, updateTime)
           r
         case res if res.isEmpty && exitsDisregardingToken(request.phonenum)("1,2") =>
-          new BindNumberResponseV1(3)
+          BindNumberResponseV1(3)
         case res if res.isEmpty && (isExpired(request.phonenum) || schoolExpired(request.phonenum)) =>
-          new BindNumberResponseV1(2)
+          BindNumberResponseV1(2)
         case None =>
-          new BindNumberResponseV1(1)
+          BindNumberResponseV1(1)
       }
   }
 }

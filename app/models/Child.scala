@@ -144,7 +144,7 @@ object Children {
       get[Long]("childinfo.update_at") map {
       case schoolId ~ childId ~ childName ~ nick ~ icon_url ~ childGender
         ~ childBirthday ~ classId ~ className ~ address ~ t =>
-        new ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt,
+        ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt,
           Some(icon_url.getOrElse("")), classId, Some(className), Some(t), Some(schoolId.toLong), address)
     }
   }

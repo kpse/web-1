@@ -71,10 +71,8 @@ object ClassController extends Controller with Secured {
         Logger.info(request.body.toString())
         request.body.validate[Employee].map {
           case (noUpdate) if School.managerExists(kg, classId, noUpdate) =>
-            Logger.info("SuccessResponse")
             Ok(Json.toJson(new SuccessResponse))
           case (employee) =>
-            Logger.info("new employee")
             Ok(Json.toJson(School.createClassManagers(kg, classId, employee)))
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))

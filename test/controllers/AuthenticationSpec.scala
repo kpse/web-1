@@ -18,7 +18,7 @@ class AuthenticationSpec extends Specification with TestSupport {
   "Authentication" should {
     "log mobile in" in new WithApplication {
 
-      private val json = Json.toJson(new MobileLogin("13333333333", "password"))
+      private val json = Json.toJson(MobileLogin("13333333333", "password"))
       val loginResponse = route(FakeRequest(POST, "/login.do").withJsonBody(json)).get
 
       status(loginResponse) must equalTo(OK)
@@ -33,7 +33,7 @@ class AuthenticationSpec extends Specification with TestSupport {
     implicit val checkWrites = Json.writes[CheckPhone]
 
     "phone number is ok even for nonactive" in new WithApplication {
-      private val json = Json.toJson(new CheckPhone("13408654683"))
+      private val json = Json.toJson(CheckPhone("13408654683"))
 
       val validateResponse = route(FakeRequest(POST, "/checkphonenum.do").withJsonBody(json)).get
 
@@ -45,7 +45,7 @@ class AuthenticationSpec extends Specification with TestSupport {
     }
 
     "validate phone number for active number" in new WithApplication {
-      private val json = Json.toJson(new CheckPhone("13408654680"))
+      private val json = Json.toJson(CheckPhone("13408654680"))
 
       val validateResponse = route(FakeRequest(POST, "/checkphonenum.do").withJsonBody(json)).get
 
@@ -57,7 +57,7 @@ class AuthenticationSpec extends Specification with TestSupport {
     }
 
     "validate phone number for wrong number" in new WithApplication {
-      private val json = Json.toJson(new CheckPhone("9191919"))
+      private val json = Json.toJson(CheckPhone("9191919"))
 
       val validateResponse = route(FakeRequest(POST, "/checkphonenum.do").withJsonBody(json)).get
 
@@ -75,7 +75,7 @@ class AuthenticationSpec extends Specification with TestSupport {
       val phone = "13333333333"
       val user_id = "12334"
       val channel_id = "000000"
-      private val json = Json.toJson(new BindingNumber(phone, user_id, channel_id, None, "0"))
+      private val json = Json.toJson(BindingNumber(phone, user_id, channel_id, None, "0"))
 
       val bindingResponse = route(FakeRequest(POST, "/receiveBindInfo.do").withJsonBody(json)).get
 
@@ -92,7 +92,7 @@ class AuthenticationSpec extends Specification with TestSupport {
 
     "reject mobile when wrong password" in new WithApplication {
 
-      private val json = Json.toJson(new MobileLogin("13333333333", "wrong password"))
+      private val json = Json.toJson(MobileLogin("13333333333", "wrong password"))
 
       val loginResponse = route(FakeRequest(POST, "/login.do").withJsonBody(json)).get
 
@@ -108,7 +108,7 @@ class AuthenticationSpec extends Specification with TestSupport {
 
     "validate for expired phone number" in new WithApplication {
 
-      private val json = Json.toJson(new CheckPhone("22222222222"))
+      private val json = Json.toJson(CheckPhone("22222222222"))
 
       val validateResponse = route(FakeRequest(POST, "/checkphonenum.do").withJsonBody(json)).get
 

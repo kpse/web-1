@@ -62,7 +62,7 @@ object DailyLog {
       get[Int]("notice_type") ~
       get[String]("parent_name") map {
       case child_id ~ timestamp ~ url ~ notice_type ~ name =>
-        new DailyLog(timestamp, notice_type, child_id, url, name)
+        DailyLog(timestamp, notice_type, child_id, url, name)
     }
   }
 

@@ -33,9 +33,9 @@ object AppPackage {
   }
 
 
-  def response(pkg: AppPackage) = new AppUpgradeResponse(0, Some(pkg.url), Some(pkg.file_size), Some(pkg.version_name), Some(pkg.summary), pkg.package_type)
+  def response(pkg: AppPackage) = AppUpgradeResponse(0, Some(pkg.url), Some(pkg.file_size), Some(pkg.version_name), Some(pkg.summary), pkg.package_type)
 
-  def noUpdate = new AppUpgradeResponse(1, None, None, None, None)
+  def noUpdate = AppUpgradeResponse(1, None, None, None, None)
 
   val simple = {
     get[Long]("uid") ~

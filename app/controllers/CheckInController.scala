@@ -37,7 +37,7 @@ object CheckInController extends Controller with Secured {
               }
           }
           Future {
-            Ok(Json.toJson(new CheckingInAndOutResponse(1, "未找到与卡号(%s)匹配的数据。".format(check.card_no))))
+            Ok(Json.toJson(CheckingInAndOutResponse(1, "未找到与卡号(%s)匹配的数据。".format(check.card_no))))
           }
 
       }.getOrElse(Future {

@@ -32,9 +32,9 @@ object CheckingMessage {
           get[String]("childinfo.name") ~
           get[Int]("device") map {
           case child_id ~ pushid ~ name ~ childName ~ 3  =>
-            new CheckNotification(request.timestamp, request.notice_type, child_id, pushid, request.record_url, name, 3, None)
+            CheckNotification(request.timestamp, request.notice_type, child_id, pushid, request.record_url, name, 3, None)
           case child_id ~ pushid ~ name ~ childName ~ 4  =>
-            new CheckNotification(request.timestamp, request.notice_type, child_id, pushid, request.record_url, name, 4,
+            CheckNotification(request.timestamp, request.notice_type, child_id, pushid, request.record_url, name, 4,
               Some(generateNotice(childName)))
         }
 

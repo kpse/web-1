@@ -290,9 +290,9 @@ object Parent {
       case id ~ k_id ~ name ~ birthday ~ gender ~ portrait ~
         schoolName ~ schoolId ~ relationship ~ childName ~
         nick ~ childBirthday ~ childGender ~ childPortrait ~ child_id ~ classId ~ card ~ phone ~ address ~ className ~ childTime =>
-        new ParentInfo(Some(id), birthday.toDateOnly, gender.toInt, portrait.getOrElse(""), name, phone,
-          new School(schoolId.toLong, schoolName), relationship,
-          new ChildInfo(Some(child_id), childName, nick, childBirthday.toDateOnly, childGender.toInt,
+        ParentInfo(Some(id), birthday.toDateOnly, gender.toInt, portrait.getOrElse(""), name, phone,
+          School(schoolId.toLong, schoolName), relationship,
+          ChildInfo(Some(child_id), childName, nick, childBirthday.toDateOnly, childGender.toInt,
             Some(childPortrait.getOrElse("")), classId, Some(className), Some(childTime), Some(schoolId.toLong), address), card)
     }
   }
@@ -342,7 +342,7 @@ object Parent {
       get[Option[String]]("parentinfo.company") ~
       get[Long]("parentinfo.update_at") map {
       case id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday ~ member ~ status ~ company ~ t =>
-        new Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t), Some(member), Some(status), company)
+        Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t), Some(member), Some(status), company)
     }
   }
 

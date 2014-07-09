@@ -53,7 +53,7 @@ object MacAddressController extends Controller with Secured {
         case true =>
           Ok(Json.toJson(new SuccessResponse))
         case false =>
-          Ok(Json.toJson(new ErrorResponse("删除Mac失败")))
+          Ok(Json.toJson(ErrorResponse("删除Mac失败")))
       }
   }
 

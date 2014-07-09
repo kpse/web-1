@@ -28,8 +28,8 @@ object ChangePasswordResponse {
               'timestamp -> updateTime
             ).executeUpdate
           cleanCache(phone)
-          new ChangePasswordResponse(0, updateTime.toString)
-        case error => new ChangePasswordResponse(1232, "验证码错误。")
+          ChangePasswordResponse(0, updateTime.toString)
+        case error => ChangePasswordResponse(1232, "验证码错误。")
       }
   }
 
@@ -47,8 +47,8 @@ object ChangePasswordResponse {
               'timestamp -> updateTime
             ).executeUpdate
           cleanCache(request.account_name)
-          new ChangePasswordResponse(0, updateTime.toString)
-        case error => new ChangePasswordResponse(1232, "")
+          ChangePasswordResponse(0, updateTime.toString)
+        case error => ChangePasswordResponse(1232, "")
       }
   }
 
@@ -76,9 +76,9 @@ object ChangePasswordResponse {
               'new_password -> md5(request.new_password),
               'timestamp -> updateTime
             ).executeUpdate
-          new ChangePasswordResponse(0, updateTime.toString)
+          ChangePasswordResponse(0, updateTime.toString)
         case true =>
-          new ChangePasswordResponse(1, "")
+          ChangePasswordResponse(1, "")
       }
   }
 }

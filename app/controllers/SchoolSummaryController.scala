@@ -34,7 +34,7 @@ object SchoolSummaryController extends Controller with Secured {
     u => _ =>
       SchoolIntro.detail(kg).fold(NotFound(""))({
         case school =>
-          Ok(Json.toJson(new SchoolIntroDetail(Some(0), kg, Some(school))))
+          Ok(Json.toJson(SchoolIntroDetail(Some(0), kg, Some(school))))
       })
   }
 

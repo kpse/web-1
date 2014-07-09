@@ -40,7 +40,7 @@ class ParentSpec extends Specification with TestSupport {
 
     "create with phone inserted in push account" in new WithApplication {
       val newPhone = "12343212"
-      private val parent = Parent.create(kg, new Parent(None, kg, "", newPhone, None, 0, "1990-01-01", None, None, None))
+      private val parent = Parent.create(kg, Parent(None, kg, "", newPhone, None, 0, "1990-01-01", None, None, None))
 
       parent.nonEmpty must beTrue
       parent.map {
@@ -49,17 +49,17 @@ class ParentSpec extends Specification with TestSupport {
           p.member_status must beSome(0)
           p.status must beSome(1)
       }
-      val child = Children.create(kg, new ChildInfo(None, "child", "nick", "2009-01-02", 0, None, 777666, None, None, None))
+      val child = Children.create(kg, ChildInfo(None, "child", "nick", "2009-01-02", 0, None, 777666, None, None, None))
       private val card = "123"
       Relationship.create(kg, card, "mama", newPhone, child.get.child_id.get)
-      private val convert = CheckingMessage.convert(new CheckInfo(kg, card, 2, 0, "", 0))
+      private val convert = CheckingMessage.convert(CheckInfo(kg, card, 2, 0, "", 0))
 
       convert.nonEmpty must beTrue
     }
 
     "update with phone updated in push account" in new WithApplication {
       val newPhone = "13402819999"
-      private val parent = Parent.update(new Parent(Some("2_93740362_123"), kg, "", newPhone, None, 0, "1990-01-01", Some(0), Some(1), Some(1)))
+      private val parent = Parent.update(Parent(Some("2_93740362_123"), kg, "", newPhone, None, 0, "1990-01-01", Some(0), Some(1), Some(1)))
 
       parent.nonEmpty must beTrue
       parent.map {
@@ -68,17 +68,17 @@ class ParentSpec extends Specification with TestSupport {
           p.member_status must beSome(1)
           p.status must beSome(1)
       }
-      val child = Children.create(kg, new ChildInfo(None, "child", "nick", "2009-01-02", 0, None, 777666, None, None, None))
+      val child = Children.create(kg, ChildInfo(None, "child", "nick", "2009-01-02", 0, None, 777666, None, None, None))
       private val card = "123321"
       Relationship.create(kg, card, "mama", newPhone, child.get.child_id.get)
-      private val convert = CheckingMessage.convert(new CheckInfo(kg, card, 2, 0, "", 0))
+      private val convert = CheckingMessage.convert(CheckInfo(kg, card, 2, 0, "", 0))
 
       convert.nonEmpty must beTrue
     }
 
     "throw exception when phone already exists in push account" in new WithApplication {
       val existingPhone = "13402815318"
-      Parent.update(new Parent(Some("2_93740362_123"), 93740362, "", existingPhone, None, 0, "1990-01-01", Some(0), Some(1), Some(1))) must throwA(new IllegalAccessError("Phone number %s is existing in accountinfo".format(existingPhone)))
+      Parent.update(Parent(Some("2_93740362_123"), 93740362, "", existingPhone, None, 0, "1990-01-01", Some(0), Some(1), Some(1))) must throwA(new IllegalAccessError("Phone number %s is existing in accountinfo".format(existingPhone)))
     }
   }
 }

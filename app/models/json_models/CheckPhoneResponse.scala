@@ -17,14 +17,14 @@ object CheckPhoneResponse {
         .on('phone -> request.phonenum).as(get[Int]("active") singleOpt)
       result match {
         case Some(x) =>
-          new CheckPhoneResponse("1102")
+          CheckPhoneResponse("1102")
         case None =>
           val numberExists = SQL("select count(1) from accountinfo where accountid={phone}").on('phone -> request.phonenum).as(get[Long]("count(1)") single)
           numberExists match {
             case 0 =>
-              new CheckPhoneResponse("1100")
+              CheckPhoneResponse("1100")
             case 1 =>
-              new CheckPhoneResponse("1101")
+              CheckPhoneResponse("1101")
           }
       }
   }

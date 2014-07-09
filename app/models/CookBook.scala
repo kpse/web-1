@@ -131,12 +131,12 @@ object CookBook {
         mon_lunch ~ tue_lunch ~ wed_lunch ~ thu_lunch ~ fri_lunch ~
         mon_dinner ~ tue_dinner ~ wed_dinner ~ thu_dinner ~ fri_dinner ~
         mon_extra ~ tue_extra ~ wed_extra ~ thu_extra ~ fri_extra =>
-        val weekCookbook = new WeekCookbook(
-          new DayCookbook(mon_breakfast, mon_lunch, mon_dinner, mon_extra),
-          new DayCookbook(tue_breakfast, tue_lunch, tue_dinner, tue_extra),
-          new DayCookbook(wed_breakfast, wed_lunch, wed_dinner, wed_extra),
-          new DayCookbook(thu_breakfast, thu_lunch, thu_dinner, thu_extra),
-          new DayCookbook(fri_breakfast, fri_lunch, fri_dinner, fri_extra))
+        val weekCookbook = WeekCookbook(
+          DayCookbook(mon_breakfast, mon_lunch, mon_dinner, mon_extra),
+          DayCookbook(tue_breakfast, tue_lunch, tue_dinner, tue_extra),
+          DayCookbook(wed_breakfast, wed_lunch, wed_dinner, wed_extra),
+          DayCookbook(thu_breakfast, thu_lunch, thu_dinner, thu_extra),
+          DayCookbook(fri_breakfast, fri_lunch, fri_dinner, fri_extra))
         CookbookDetail(Some(0), school_id.toLong, Some(cookbook), Some(timestamp), weekCookbook)
     }
   }

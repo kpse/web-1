@@ -62,7 +62,7 @@ object BindNumberResponse {
       get[String]("schoolinfo.name") ~
       get[Int]("active") map {
       case accountid ~ parent ~ schoolId ~ schoolName ~ active =>
-        new BindNumberResponse(0, updateTime, parent, accountid, schoolId.toLong, schoolName)
+        BindNumberResponse(0, updateTime, parent, accountid, schoolId.toLong, schoolName)
     }
   }
 
@@ -84,11 +84,11 @@ object BindNumberResponse {
           updateTokenAfterBinding(request, updateTime)
           r
         case res if res.isEmpty && exitsDisregardingToken(request.phonenum) =>
-          new BindNumberResponse(3, "", "", "", 0, "")
+          BindNumberResponse(3, "", "", "", 0, "")
         case res if res.isEmpty && (isExpired(request.phonenum) || schoolExpired(request.phonenum)) =>
-          new BindNumberResponse(2, "", "", "", 0, "")
+          BindNumberResponse(2, "", "", "", 0, "")
         case None =>
-          new BindNumberResponse(1, "", "", "", 0, "")
+          BindNumberResponse(1, "", "", "", 0, "")
       }
   }
 

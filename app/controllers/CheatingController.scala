@@ -19,9 +19,9 @@ object CheatingController extends Controller with Secured {
       _ =>
         Cache.get(cheatCodeKey) match {
           case code: String =>
-            Ok(loggedJson(new CheatCode(code)))
+            Ok(loggedJson(CheatCode(code)))
           case _ =>
-            Ok(loggedJson(new CheatCode("")))
+            Ok(loggedJson(CheatCode("")))
         }
 
   }

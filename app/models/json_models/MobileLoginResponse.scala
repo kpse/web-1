@@ -27,7 +27,7 @@ object MobileLoginResponse {
       val success = if (firstRow.isEmpty) 1 else 0
       val (username, account, token) = getAccountInfo(firstRow)
       val schoolName = getSchoolInfo(firstRow)
-      new MobileLoginResponse(success, username, schoolName, token, account)
+      MobileLoginResponse(success, username, schoolName, token, account)
   }
 
   def getSchoolInfo(stream: Stream[SqlRow]) = stream match {

@@ -30,7 +30,7 @@ object Schedule {
   }
 
 
-  def insertNew(schedule: ScheduleDetail)  = DB.withTransaction {
+  def insertNew(schedule: ScheduleDetail) = DB.withTransaction {
     implicit c =>
       try {
         SQL("update scheduleinfo set status=0 where school_id={school_id} and class_id={class_id} and schedule_id={schedule_id}")
@@ -73,6 +73,7 @@ object Schedule {
 
 
   }
+
   def findById(uid: Long) = DB.withConnection {
     implicit c =>
       SQL("select * from scheduleinfo where status=1 and uid={uid}")
@@ -125,12 +126,12 @@ object Schedule {
       case school_id ~ class_id ~ schedule_id ~ timestamp ~
         mon_am ~ tue_am ~ wed_am ~ thu_am ~ fri_am ~
         mon_pm ~ tue_pm ~ wed_pm ~ thu_pm ~ fri_pm =>
-        val schedule = new WeekSchedule(
-          new DaySchedule(mon_am, mon_pm),
-          new DaySchedule(tue_am, tue_pm),
-          new DaySchedule(wed_am, wed_pm),
-          new DaySchedule(thu_am, thu_pm),
-          new DaySchedule(fri_am, fri_pm))
+        val schedule = WeekSchedule(
+          DaySchedule(mon_am, mon_pm),
+          DaySchedule(tue_am, tue_pm),
+          DaySchedule(wed_am, wed_pm),
+          DaySchedule(thu_am, thu_pm),
+          DaySchedule(fri_am, fri_pm))
         ScheduleDetail(0, school_id.toLong, class_id, schedule_id, timestamp, schedule)
     }
   }
