@@ -13,8 +13,8 @@ case class MobileLoginResponse(error_code: Int,
                                access_token: String,
                                account_name: String)
 
-object MobileLoginResponse {
-  def handle(login: MobileLogin): MobileLoginResponse = {
+object LoginCheck {
+  def apply(login: MobileLogin): MobileLoginResponse = {
     checkPassword(login)
   }
 

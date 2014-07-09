@@ -46,7 +46,7 @@ object Authentication extends Controller {
       request.body.validate[MobileLogin].map {
         case (login) =>
           loggedJson(login)
-          val result = MobileLoginResponse.handle(login)
+          val result = LoginCheck(login)
           Ok(loggedJson(result))
       }.recoverTotal {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
