@@ -6,11 +6,16 @@ import play.api.db.DB
 import anorm.~
 import play.api.Play.current
 
-case class AppPackage(version_code: Int, url: String, file_size: Long, version_name: String, summary: String, release_time: Long, package_type: Option[String]=None)
+case class AppPackage(version_code: Int, url: String, file_size: Long, version_name: String, summary: String, release_time: Long, package_type: Option[String] = None)
 
-case class AppUpgradeResponse(error_code: Int, url: Option[String], size: Option[Long], version: Option[String], summary: Option[String], package_type: Option[String]=None)
+case class AppUpgradeResponse(error_code: Int, url: Option[String], size: Option[Long], version: Option[String], summary: Option[String], package_type: Option[String] = None)
 
 object AppPackage {
+
+  def forceUpdate = latest(Some("parent")).fold(new ForceUpdateResponse)({
+    case lastPackage: AppPackage =>
+      ForceUpdateResponse(lastPackage.url)
+  })
 
   def create(app: (String, String, Long, String, Int, Option[String])) = DB.withConnection {
     implicit c =>
