@@ -3,7 +3,7 @@ package models
 import play.api.db.DB
 import anorm._
 import play.api.Logger
-import models.json_models.BindNumberResponse.{wrongToken, isExpired, schoolExpired, updateTokenAfterBinding}
+import models.json_models.BindNumberResponse.{exitsDisregardingToken, isExpired, schoolExpired, updateTokenAfterBinding}
 import anorm.SqlParser._
 import anorm.~
 import scala.Some
@@ -17,6 +17,7 @@ case class BindNumberResponseV1(error_code: Int,
                               school_id: Long=0,
                               school_name: String="",
                               member_status: String="")
+
 case class MemberStatus(status: Int){
   def readable = status match {
     case 0 => "未开通"
@@ -54,9 +55,9 @@ object BindNumberResponseV1 {
         ).as(response(updateTime) singleOpt)
       Logger.info(row.toString)
       row match {
-        case wrong if wrong.isEmpty && wrongToken(request.phonenum) =>
+        case res if res.isEmpty && exitsDisregardingToken(request.phonenum) =>
           new BindNumberResponseV1(3)
-        case expired if expired.isEmpty && (isExpired(request.phonenum) || schoolExpired(request.phonenum)) =>
+        case res if res.isEmpty && (isExpired(request.phonenum) || schoolExpired(request.phonenum)) =>
           new BindNumberResponseV1(2)
         case None =>
           new BindNumberResponseV1(1)

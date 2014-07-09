@@ -43,7 +43,7 @@ object BindNumberResponse {
   }
 
 
-  def wrongToken(phone: String): Boolean = DB.withConnection {
+  def exitsDisregardingToken(phone: String): Boolean = DB.withConnection {
     implicit c =>
       val stmt: String = "select count(1) " +
         "from accountinfo a, parentinfo p, chargeinfo c " +
@@ -82,9 +82,9 @@ object BindNumberResponse {
         ).as(response(updateTime.toString) singleOpt)
       Logger.info(row.toString)
       row match {
-        case None if wrongToken(request.phonenum) =>
+        case res if res.isEmpty && exitsDisregardingToken(request.phonenum) =>
           new BindNumberResponse(3, "", "", "", 0, "")
-        case None if isExpired(request.phonenum) || schoolExpired(request.phonenum) =>
+        case res if res.isEmpty && (isExpired(request.phonenum) || schoolExpired(request.phonenum)) =>
           new BindNumberResponse(2, "", "", "", 0, "")
         case None =>
           new BindNumberResponse(1, "", "", "", 0, "")
