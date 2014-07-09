@@ -6,10 +6,19 @@ import models.json_models._
 import models.json_models.CheckPhoneResponse
 import models.json_models.MobileLogin
 import models.json_models.BindingNumber
-import models.{ErrorResponse, Employee, AppUpgradeResponse, AppPackage}
+import models._
 import play.api.Logger
-import helper.JsonLogger._
+import controllers.helper.JsonLogger._
 import models.helper.PasswordHelper
+import models.json_models.ChangePassword
+import models.AppUpgradeResponse
+import scala.Some
+import models.json_models.BindingNumber
+import models.ErrorResponse
+import play.api.mvc.SimpleResult
+import models.json_models.MobileLogin
+import models.json_models.CheckPhone
+import models.json_models.ResetPassword
 
 object Authentication extends Controller {
 
@@ -22,6 +31,7 @@ object Authentication extends Controller {
   implicit val w1 = Json.writes[MobileLoginResponse]
   implicit val w2 = Json.writes[CheckPhoneResponse]
   implicit val w3 = Json.writes[BindNumberResponse]
+  implicit val w12 = Json.writes[BindNumberResponseV1]
   implicit val w4 = Json.writes[ChangePasswordResponse]
   implicit val w5 = Json.writes[MobileLogin]
   implicit val w6 = Json.writes[CheckPhone]
@@ -162,6 +172,23 @@ object Authentication extends Controller {
                   Ok(loggedJson(success)).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
               })
             case other => Ok(loggedJson(other)).withNewSession
+          }
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + loggedErrorJson(e))
+      }
+  }
+
+  def bindNumberV1() = Action(parse.json) {
+    request =>
+      request.body.validate[BindingNumber].map {
+        case (login) =>
+          Logger.info(login.toString)
+          val result = BindNumberResponseV1.handle(login)
+          result match {
+            case success if success.error_code == 0 =>
+              Ok(loggedJson(success)).withSession("username" -> success.account_name, "token" -> success.access_token)
+            case _ =>
+              Ok(loggedJson(result)).withNewSession
           }
       }.recoverTotal {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
