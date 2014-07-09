@@ -43,15 +43,13 @@ object BindNumberResponse {
   }
 
 
-  def exitsDisregardingToken(phone: String): Boolean = DB.withConnection {
+  def exitsDisregardingToken(phone: String)(implicit memberStatusScope: String="1"): Boolean = DB.withConnection {
     implicit c =>
-      val stmt: String = "select count(1) " +
+      SQL("select count(1) " +
         "from accountinfo a, parentinfo p, chargeinfo c " +
         "where c.school_id=p.school_id and a.accountid = p.phone " +
-        "and p.status=1 and c.status=1 and member_status=1 " +
-        "and accountid={accountid}"
-      Logger.info(stmt)
-      SQL(stmt)
+        s"and p.status=1 and c.status=1 and member_status in ($memberStatusScope) " +
+        "and accountid={accountid}")
         .on(
           'accountid -> phone
         ).as(get[Long]("count(1)") single) > 0
@@ -82,15 +80,15 @@ object BindNumberResponse {
         ).as(response(updateTime.toString) singleOpt)
       Logger.info(row.toString)
       row match {
+        case Some(r) =>
+          updateTokenAfterBinding(request, updateTime)
+          r
         case res if res.isEmpty && exitsDisregardingToken(request.phonenum) =>
           new BindNumberResponse(3, "", "", "", 0, "")
         case res if res.isEmpty && (isExpired(request.phonenum) || schoolExpired(request.phonenum)) =>
           new BindNumberResponse(2, "", "", "", 0, "")
         case None =>
           new BindNumberResponse(1, "", "", "", 0, "")
-        case Some(r) =>
-          updateTokenAfterBinding(request, updateTime)
-          r
       }
   }
 

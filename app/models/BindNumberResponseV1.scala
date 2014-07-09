@@ -55,15 +55,15 @@ object BindNumberResponseV1 {
         ).as(response(updateTime) singleOpt)
       Logger.info(row.toString)
       row match {
-        case res if res.isEmpty && exitsDisregardingToken(request.phonenum) =>
+        case Some(r) =>
+          updateTokenAfterBinding(request, updateTime)
+          r
+        case res if res.isEmpty && exitsDisregardingToken(request.phonenum)("1,2") =>
           new BindNumberResponseV1(3)
         case res if res.isEmpty && (isExpired(request.phonenum) || schoolExpired(request.phonenum)) =>
           new BindNumberResponseV1(2)
         case None =>
           new BindNumberResponseV1(1)
-        case Some(r) =>
-          updateTokenAfterBinding(request, updateTime)
-          r
       }
   }
 }
