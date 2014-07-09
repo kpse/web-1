@@ -113,12 +113,12 @@ class FollowingInputStream(val file: File, val waitNewInput: () => Unit) extends
 
   override def close = underlying.close
 
-  protected def rotated_? = {
+  protected def rotated_? : Boolean = {
     try {
       underlying.getChannel.position > file.length
     }
-    finally {
-      false
+    catch {
+      case t: Throwable => false
     }
   }
 
