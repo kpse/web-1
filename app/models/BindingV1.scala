@@ -10,7 +10,7 @@ import scala.Some
 import models.json_models.BindingNumber
 import play.api.Play.current
 
-case class BindNumberResponseV1(error_code: Int,
+case class BindingResponseV1(error_code: Int,
                               access_token: String="",
                               username: String="",
                               account_name: String="",
@@ -26,7 +26,7 @@ case class MemberStatus(status: Int){
   }
 }
 
-object BindNumberResponseV1 {
+object BindingV1 {
 
   implicit def convertToMemberStatus(status: Int) = MemberStatus(status)
 
@@ -38,10 +38,10 @@ object BindNumberResponseV1 {
       get[Int]("member_status") ~
       get[Int]("active") map {
       case accountid ~ parent ~ schoolId ~ schoolName ~ account_status ~ active =>
-        BindNumberResponseV1(0, updateTime.toString, parent, accountid, schoolId.toLong, schoolName, account_status.readable)
+        BindingResponseV1(0, updateTime.toString, parent, accountid, schoolId.toLong, schoolName, account_status.readable)
     }
   }
-  def handle(request: BindingNumber) = DB.withConnection {
+  def apply(request: BindingNumber) = DB.withConnection {
     implicit c =>
       val updateTime = System.currentTimeMillis
       val row = SQL("select a.*, p.name, p.school_id, s.name, member_status " +
@@ -59,11 +59,11 @@ object BindNumberResponseV1 {
           updateTokenAfterBinding(request, updateTime)
           r
         case res if res.isEmpty && exitsDisregardingToken(request.phonenum)("1,2") =>
-          BindNumberResponseV1(3)
+          BindingResponseV1(3)
         case res if res.isEmpty && (isExpired(request.phonenum) || schoolExpired(request.phonenum)) =>
-          BindNumberResponseV1(2)
+          BindingResponseV1(2)
         case None =>
-          BindNumberResponseV1(1)
+          BindingResponseV1(1)
       }
   }
 }
