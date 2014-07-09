@@ -59,7 +59,7 @@ object Authentication extends Controller {
       request.body.validate[CheckPhone].map {
         case (phone) =>
           loggedJson(phone)
-          Ok(loggedJson(CheckPhoneResponse.handle(phone)))
+          Ok(loggedJson(Check(phone)))
       }.recoverTotal {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
       }
@@ -72,7 +72,7 @@ object Authentication extends Controller {
       request.body.validate[BindingNumber].map {
         case (login) =>
           Logger.info(login.toString)
-          val result = BindNumberResponse.handle(login)
+          val result = Binding(login)
           result match {
             case success if success.error_code == 0 =>
               Ok(loggedJson(success)).withSession("username" -> success.account_name, "token" -> success.access_token)

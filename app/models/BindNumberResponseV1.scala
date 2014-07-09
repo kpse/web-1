@@ -3,7 +3,7 @@ package models
 import play.api.db.DB
 import anorm._
 import play.api.Logger
-import models.json_models.BindNumberResponse.{exitsDisregardingToken, isExpired, schoolExpired, updateTokenAfterBinding}
+import models.json_models.Binding.{exitsDisregardingToken, isExpired, schoolExpired, updateTokenAfterBinding}
 import anorm.SqlParser._
 import anorm.~
 import scala.Some

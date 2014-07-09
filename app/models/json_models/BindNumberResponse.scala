@@ -5,7 +5,6 @@ import anorm._
 import anorm.SqlParser._
 import play.api.Logger
 import play.api.Play.current
-import models.helper.MD5Helper.md5
 import anorm.~
 import scala.Some
 
@@ -17,9 +16,7 @@ case class BindNumberResponse(error_code: Int,
                               account_name: String,
                               school_id: Long, school_name: String)
 
-object BindNumberResponse {
-
-  def generateNewPassword(number: String) = md5(number.drop(3))
+object Binding {
 
   def convertToCode(deviceType: Option[String]) = {
     //device_type => 1: web 2: pc 3:android 4:ios 5:wp
@@ -66,7 +63,7 @@ object BindNumberResponse {
     }
   }
 
-  def handle(request: BindingNumber) = DB.withConnection {
+  def apply(request: BindingNumber) = DB.withConnection {
     implicit c =>
       val updateTime = System.currentTimeMillis
       val row = SQL("select a.*, p.name, p.school_id, s.name " +

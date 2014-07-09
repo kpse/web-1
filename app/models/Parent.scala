@@ -4,11 +4,12 @@ import anorm.SqlParser._
 import anorm._
 import play.api.db.DB
 import play.api.Play.current
-import models.json_models.BindNumberResponse._
 import anorm.~
 import java.util.Date
 import play.Logger
 import models.helper.TimeHelper.any2DateTime
+import models.helper.PasswordHelper.generateNewPassword
+
 
 case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String], gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int], company: Option[String] = None)
 
