@@ -15,7 +15,7 @@
           <tbody>
           <tr ng-repeat="c in conversations | filter: searchText " class="row" ng-click="preview(c, {reply: false})">
             <td class="col-xs-2">{{c.sender.name}}</td>
-            <td class="col-xs-7">{{c.content | limitTo:50}}{{(c.content.length > 50) ? '...' : ''}}</td>
+            <td class="col-xs-7">{{c.content | truncate:50}}</td>
             <td class="col-xs-3">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</td>
           </tr>
           </tbody>

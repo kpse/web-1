@@ -19,7 +19,7 @@
   <tbody>
   <tr ng-repeat="c in conversations | filter: searchText | orderBy:'id':true " class="row" ng-click="preview(c)" ng-class="{editable: preview}">
     <td class="col-xs-1">{{c.sender.name}}</td>
-    <td class="col-xs-5" ng-show="c.content">{{c.content | limitTo:100}}{{(c.content.length > 100) ? '...' : ''}}</td>
+    <td class="col-xs-5" ng-show="c.content">{{c.content | truncate:100}}</td>
     <td class="col-xs-5" ng-show="!c.content">N/A</td>
 
     <th class="col-xs-5" ng-show="c.media.url">

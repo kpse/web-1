@@ -11,7 +11,7 @@
   <tbody>
   <tr ng-repeat="c in children | filter: searchText" class="row" ng-class="{editable: goDetail, new: !c.lastMessage.isRead}" ng-click="goDetail(c)">
     <td class="col-xs-2">{{c.name}}<span ng-cloak ng-show="c.lastMessage && !c.lastMessage.isRead" class="new-flag label label-danger">New</span></td>
-    <td class="col-xs-4" ng-show="c.lastMessage.content">{{c.lastMessage.content| limitTo:100}}{{(c.lastMessage.content.length > 100) ? '...' : ''}}</td>
+    <td class="col-xs-4" ng-show="c.lastMessage.content">{{c.lastMessage.content| truncate:100}}</td>
     <td class="col-xs-4" ng-show="!c.lastMessage.content">N/A</td>
     <td class="col-xs-4" ng-show="c.lastMessage.medium[0]">
       <div class="image-preview image-110">
