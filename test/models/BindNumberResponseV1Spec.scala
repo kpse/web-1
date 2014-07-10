@@ -56,7 +56,7 @@ class BindNumberResponseV1Spec extends Specification with TestSupport {
 
     "fail with 2 when number is expired" in new WithApplication {
 
-      private val response = BindingV1(BindingNumber("22222222222", "123", "", Some("android"), "2"))
+      private val response = BindingV1(BindingNumber("22222222224", "123", "", Some("android"), "2"))
 
       response.error_code must equalTo(2)
 
@@ -72,7 +72,7 @@ class BindNumberResponseV1Spec extends Specification with TestSupport {
 
     "success for trial parents" in new WithApplication {
 
-      private val response = BindingV1(BindingNumber("22222222224", "123", "", Some("android"), "5"))
+      private val response = BindingV1(BindingNumber("22222222222", "123", "", Some("android"), "2"))
 
       response.error_code must equalTo(0)
       response.member_status must equalTo("试用")

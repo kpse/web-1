@@ -26,9 +26,9 @@ object Binding {
     }
   }
 
-  def isExpired(phone: String) = DB.withConnection {
+  def isExpired(phone: String)(implicit expireScope: String="0") = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from parentinfo where member_status=0 and status=1 and phone={phone}")
+      SQL(s"select count(1) from parentinfo where member_status in ($expireScope) and status=1 and phone={phone}")
         .on('phone -> phone).as(get[Long]("count(1)") single) > 0
   }
 

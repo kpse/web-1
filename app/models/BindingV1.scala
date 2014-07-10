@@ -20,9 +20,9 @@ case class BindingResponseV1(error_code: Int,
 
 case class MemberStatus(status: Int){
   def readable = status match {
-    case 0 => "未开通"
+    case 0 => "试用"
     case 1 => "已开通"
-    case 2 => "试用"
+    case 2 => "未开通"
   }
 }
 
@@ -47,7 +47,7 @@ object BindingV1 {
       val row = SQL("select a.*, p.name, p.school_id, s.name, member_status " +
         "from accountinfo a, parentinfo p, schoolinfo s, chargeinfo c " +
         "where s.school_id=p.school_id and a.accountid = p.phone and c.school_id=p.school_id " +
-        "and c.status=1 and p.status=1 and member_status in (1, 2) " +
+        "and c.status=1 and p.status=1 and member_status in (0, 1) " +
         "and accountid={accountid} and pwd_change_time={token}")
         .on(
           'accountid -> request.phonenum,
@@ -58,9 +58,9 @@ object BindingV1 {
         case Some(r) =>
           updateTokenAfterBinding(request, updateTime)
           r
-        case res if res.isEmpty && exitsDisregardingToken(request.phonenum)("1,2") =>
+        case res if res.isEmpty && exitsDisregardingToken(request.phonenum)("0,1") =>
           BindingResponseV1(3)
-        case res if res.isEmpty && (isExpired(request.phonenum) || schoolExpired(request.phonenum)) =>
+        case res if res.isEmpty && (isExpired(request.phonenum)("2") || schoolExpired(request.phonenum)) =>
           BindingResponseV1(2)
         case None =>
           BindingResponseV1(1)
