@@ -3,12 +3,14 @@ package models
 import play.api.db.DB
 import anorm._
 import play.api.Logger
-import models.json_models.Binding.{exitsDisregardingToken, isExpired, schoolExpired, updateTokenAfterBinding}
 import anorm.SqlParser._
 import anorm.~
 import scala.Some
 import models.json_models.BindingNumber
 import play.api.Play.current
+import models.PushableNumber.{updateTokenAfterBinding, convertPhoneToPushableNumber}
+import models.MemberPhoneNumber.convertPhoneToMemberPhoneNumber
+
 
 case class BindingResponseV1(error_code: Int,
                               access_token: String="",
@@ -20,9 +22,9 @@ case class BindingResponseV1(error_code: Int,
 
 case class MemberStatus(status: Int){
   def readable = status match {
-    case 0 => "试用"
-    case 1 => "已开通"
-    case 2 => "未开通"
+    case 0 => "free"
+    case 1 => "paid"
+    case 2 => "suspended"
   }
 }
 
@@ -58,9 +60,9 @@ object BindingV1 {
         case Some(r) =>
           updateTokenAfterBinding(request, updateTime)
           r
-        case res if res.isEmpty && exitsDisregardingToken(request.phonenum)("0,1") =>
+        case res if res.isEmpty && request.phonenum.existsDisregardingToken("0,1") =>
           BindingResponseV1(3)
-        case res if res.isEmpty && (isExpired(request.phonenum)("2") || schoolExpired(request.phonenum)) =>
+        case res if res.isEmpty && request.phonenum.isExpired("2") =>
           BindingResponseV1(2)
         case None =>
           BindingResponseV1(1)

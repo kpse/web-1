@@ -4,24 +4,13 @@ import play.api.db.DB
 import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
+import models.PushableNumber.convertPhoneToPushableNumber
 
 case class CheckPhone(phonenum: String)
 
 case class CheckPhoneResponse(check_phone_result: String)
 
-
-case class PushableNumber(phone: String) {
-
-  def existsInPushRecord = DB.withConnection {
-    implicit c =>
-      SQL("select count(1) from accountinfo where accountid={phone}")
-        .on('phone -> phone).as(get[Long]("count(1)") single) > 0
-  }
-}
-
 object Check {
-
-  implicit def convertPhoneToPushableNumber(phone: String) = PushableNumber(phone)
 
   def apply(request: CheckPhone) = DB.withConnection {
     implicit c =>

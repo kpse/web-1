@@ -13,7 +13,7 @@ class BindNumberResponseV1Spec extends Specification with TestSupport {
 
       response.error_code must equalTo(0)
       response.access_token must not equalTo "0"
-      response.member_status must equalTo("已开通")
+      response.member_status must equalTo("paid")
     }
 
     "success when info is inactive" in new WithApplication {
@@ -75,7 +75,7 @@ class BindNumberResponseV1Spec extends Specification with TestSupport {
       private val response = BindingV1(BindingNumber("22222222222", "123", "", Some("android"), "2"))
 
       response.error_code must equalTo(0)
-      response.member_status must equalTo("试用")
+      response.member_status must equalTo("free")
 
     }
   }

@@ -7,50 +7,18 @@ import play.api.Logger
 import play.api.Play.current
 import anorm.~
 import scala.Some
+import models.PushableNumber.{updateTokenAfterBinding, convertPhoneToPushableNumber}
+import models.MemberPhoneNumber.convertPhoneToMemberPhoneNumber
 
 case class BindingNumber(phonenum: String, user_id: String, channel_id: String, device_type: Option[String], access_token: String)
 
 case class BindNumberResponse(error_code: Int,
-                              access_token: String,
-                              username: String,
-                              account_name: String,
-                              school_id: Long, school_name: String)
+                              access_token: String = "",
+                              username: String = "",
+                              account_name: String = "",
+                              school_id: Long = 0, school_name: String = "")
 
 object Binding {
-
-  def convertToCode(deviceType: Option[String]) = {
-    //device_type => 1: web 2: pc 3:android 4:ios 5:wp
-    deviceType match {
-      case Some(ios) if ios.equalsIgnoreCase("ios") => 4
-      case _ => 3
-    }
-  }
-
-  def isExpired(phone: String)(implicit expireScope: String="0") = DB.withConnection {
-    implicit c =>
-      SQL(s"select count(1) from parentinfo where member_status in ($expireScope) and status=1 and phone={phone}")
-        .on('phone -> phone).as(get[Long]("count(1)") single) > 0
-  }
-
-  def schoolExpired(phone: String) = DB.withConnection {
-    implicit c =>
-      SQL("select count(1) from chargeinfo c, parentinfo p " +
-        "where c.school_id=p.school_id and p.phone={phone} and c.status=0 and p.status=1")
-        .on('phone -> phone).as(get[Long]("count(1)") single) > 0
-  }
-
-
-  def exitsDisregardingToken(phone: String)(implicit memberStatusScope: String="1"): Boolean = DB.withConnection {
-    implicit c =>
-      SQL("select count(1) " +
-        "from accountinfo a, parentinfo p, chargeinfo c " +
-        "where c.school_id=p.school_id and a.accountid = p.phone " +
-        s"and p.status=1 and c.status=1 and member_status in ($memberStatusScope) " +
-        "and accountid={accountid}")
-        .on(
-          'accountid -> phone
-        ).as(get[Long]("count(1)") single) > 0
-  }
 
   def response(updateTime: String) = {
     get[String]("accountid") ~
@@ -80,24 +48,15 @@ object Binding {
         case Some(r) =>
           updateTokenAfterBinding(request, updateTime)
           r
-        case res if res.isEmpty && exitsDisregardingToken(request.phonenum) =>
-          BindNumberResponse(3, "", "", "", 0, "")
-        case res if res.isEmpty && (isExpired(request.phonenum) || schoolExpired(request.phonenum)) =>
-          BindNumberResponse(2, "", "", "", 0, "")
+        case res if res.isEmpty && request.phonenum.existsDisregardingToken =>
+          BindNumberResponse(3)
+        case res if res.isEmpty && request.phonenum.isExpired =>
+          BindNumberResponse(2)
         case None =>
-          BindNumberResponse(1, "", "", "", 0, "")
+          BindNumberResponse(1)
       }
   }
 
-  def updateTokenAfterBinding(request: BindingNumber, updateTime: Long) = DB.withConnection {
-    implicit c =>
-      SQL("update accountinfo set pushid={pushid}, device={device}, active=1, " +
-        "pwd_change_time={timestamp} where accountid={accountid}")
-        .on('accountid -> request.phonenum,
-          'pushid -> request.user_id,
-          'timestamp -> updateTime,
-          'device -> convertToCode(request.device_type)
-        ).executeUpdate
-  }
+
 }
 
