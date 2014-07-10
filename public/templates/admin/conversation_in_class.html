@@ -10,7 +10,7 @@
   <tbody>
   <tr ng-repeat="c in children | filter: searchText" class="row" ng-class="{editable: goDetail, new: !c.lastMessage.isRead}" ng-click="goDetail(c)">
     <td class="col-xs-3">{{c.name}}<span ng-cloak ng-show="c.lastMessage && !c.lastMessage.isRead" class="new-flag label label-danger">New</span></td>
-    <td class="col-xs-7" ng-show="c.lastMessage.content">{{c.lastMessage.content.substring(0,100)}}{{(c.lastMessage.content.length > 100) ? '...' : ''}}</td>
+    <td class="col-xs-7" ng-show="c.lastMessage.content">{{c.lastMessage.content| limitTo:100}}{{(c.lastMessage.content.length > 100) ? '...' : ''}}</td>
     <td class="col-xs-7" ng-show="c.lastMessage.media.url && !c.lastMessage.content">
       <div class="image-preview image-110">
         <div kl-media-preview media="c.lastMessage.media" height="110"></div>
