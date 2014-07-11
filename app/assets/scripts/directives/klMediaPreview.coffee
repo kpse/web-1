@@ -1,8 +1,8 @@
 'use strict'
 
 angular.module("kulebaoAdmin").directive "klMediaPreview",
-  ['imageCompressService', '$compile', '$http', '$templateCache',
-    (Compress, $compile, $http, $templateCache) ->
+  ['imageCompressService',
+    (Compress) ->
       return (
         restrict: "EA"
         scope:
@@ -15,15 +15,6 @@ angular.module("kulebaoAdmin").directive "klMediaPreview",
           scope.$watch "media.url", ( (n, o) ->
             scope.refresh()
           ), true
-
-
-          scope.getTemplate = (contentType) ->
-            if contentType?
-              templateUrl = "/templates/directives/kl_media_preview.html"
-            else
-              templateUrl = "/templates/directives/kl_media_preview_no_click.html"
-
-            $http.get templateUrl, cache: $templateCache
 
           scope.compress = (url, width, height) ->
             if scope.isImage(url)
@@ -42,11 +33,10 @@ angular.module("kulebaoAdmin").directive "klMediaPreview",
             scope.url = scope.compress scope.media.url, scope.width, scope.height
             scope.type = scope.media.type
 
-            loader = scope.getTemplate(scope.clickable)
-            loader.success((html) ->
-              element.html html
-            ).then (res) ->
-              element.replaceWith $compile(element.html())(scope)
-
+        templateUrl: (tElement, tAttrs) ->
+          if tAttrs.clickable
+            "/templates/directives/kl_media_preview.html"
+          else
+            "/templates/directives/kl_media_preview_no_click.html"
       )
   ]
