@@ -116,4 +116,20 @@ object ParentController extends Controller with Secured {
         case p => Ok(Json.toJson(p))
       })
   }
+
+  implicit val read = Json.reads[PhoneCheck]
+  def isGoodToUse(phone: String) = IsAuthenticated(parse.json) {
+    u => request =>
+      request.body.validate[PhoneCheck].map {
+        case (parent) =>
+          Parent.phoneSearch(parent.phone).fold(Ok(Json.toJson(new SuccessResponse("号码不存在。"))))({
+            case p if parent.isTheSame(p) =>
+              Ok(Json.toJson(SuccessResponse("号码已存在，且与id匹配。")))
+            case _ =>
+              Ok(Json.toJson(ErrorResponse("号码与id不匹配。")))
+          })
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
 }

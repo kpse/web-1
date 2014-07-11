@@ -15,6 +15,9 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
 
 case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait: String, name: String, phone: String, kindergarten: School, relationship: String, child: ChildInfo, card: String)
 
+case class PhoneCheck(id: Option[String], phone: String) {
+  def isTheSame(parent: Parent) = parent.parent_id.equals(id)
+}
 
 object Parent {
 
