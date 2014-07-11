@@ -3,7 +3,7 @@
 angular.module('kulebaoAdmin')
 .controller 'RelationshipMainCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
-   'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService', 'employeeService'
+   'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService', 'employeeService',
     (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload, Employee) ->
       rootScope.tabName = 'relationship'
       scope.heading = '管理幼儿及家长基础档案信息'
@@ -111,11 +111,6 @@ angular.module('kulebaoAdmin')
             scope.currentModal = Modal
               scope: scope
               contentTemplate: 'templates/admin/add_child.html'
-
-      scope.isPhoneDuplicated = (parent) ->
-        return false if parent.phone is undefined
-        undefined isnt _.find scope.parents, (p) ->
-          (p.phone == parent.phone && p.parent_id != parent.parent_id)
 
       scope.isCardDuplicated = (card) ->
         return false if card is undefined || card.length < 10
