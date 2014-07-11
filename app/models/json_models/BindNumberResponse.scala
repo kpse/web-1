@@ -30,7 +30,7 @@ object Binding {
         BindNumberResponse(0, updateTime, parent, accountid, schoolId.toLong, schoolName)
     }
   }
-
+  @Deprecated
   def apply(request: BindingNumber) = DB.withConnection {
     implicit c =>
       val updateTime = System.currentTimeMillis
