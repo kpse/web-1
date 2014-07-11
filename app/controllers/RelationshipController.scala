@@ -37,35 +37,26 @@ object RelationshipController extends Controller with Secured {
         val existingCard = Relationship.getCard(phone, childId)
 
         Relationship.cardExists(card, uid) match {
-          case true if !Parent.phoneExists(kg, phone) =>
+          case exists if exists && !Parent.phoneExists(kg, phone) =>
             BadRequest(loggedJson(ErrorResponse("本校记录中找不到对应的家长信息。")))
-          case true if !Children.idExists(Some(childId)) =>
+          case exists if exists && !Children.idExists(Some(childId)) =>
             BadRequest(loggedJson(ErrorResponse("本校记录中找不到该小孩信息。")))
-          case exists if uid.isEmpty && existingCard.nonEmpty && !existingCard.equals(Some(card)) =>
+          case exists if exists && uid.isEmpty && existingCard.nonEmpty && !existingCard.equals(Some(card)) =>
             BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。")))
-          case true =>
-            uid match {
-              case Some(id) =>
-                Logger.info("update existing 1")
-                Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, id)))
-              case None =>
-                BadRequest(loggedJson(ErrorResponse("卡号已存在，%s号卡已经关联过家长。".format(card))))
-            }
-          case false =>
-            uid match {
-              case Some(id) if Relationship.cardExists(card, None) =>
-                BadRequest(loggedJson(ErrorResponse("卡号已存在，%s号卡已经关联过家长。".format(card))))
-              case Some(id) =>
-                Logger.info("update existing 2")
-                Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, id)))
-              case None =>
-                Logger.info("create new")
-                Ok(Json.toJson(Relationship.create(kg, card, relationship, phone, childId)))
-            }
-
-
+          case exists if exists && uid.isDefined =>
+            Logger.info("update existing 1")
+            Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, uid.get)))
+          case exists if exists && uid.isEmpty =>
+            BadRequest(loggedJson(ErrorResponse("卡号已存在，%s号卡已经关联过家长。".format(card))))
+          case exists if !exists && uid.isDefined && Relationship.cardExists(card, None) =>
+            BadRequest(loggedJson(ErrorResponse("卡号已存在，%s号卡已经关联过家长。".format(card))))
+          case exists if !exists && uid.isDefined =>
+            Logger.info("update existing 2")
+            Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, uid.get)))
+          case exists if !exists && uid.isEmpty =>
+            Logger.info("create new")
+            Ok(Json.toJson(Relationship.create(kg, card, relationship, phone, childId)))
         }
-
 
   }
 
@@ -77,5 +68,14 @@ object RelationshipController extends Controller with Secured {
   def delete(kg: Long, card: String) = IsLoggedIn {
     u => _ =>
       Ok(Json.toJson(Relationship.delete(kg, card)))
+  }
+
+  def isGoodToUse = IsAuthenticated(parse.json) {
+    u => request =>
+      request.body.validate[Relationship].map {
+        case (relationship) => NotFound
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
   }
 }
