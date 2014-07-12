@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory 'parentService', ['$resource',
   ($resource) ->
     $resource '/kindergarten/:school_id/parent/:phone',
@@ -22,7 +22,7 @@ angular.module('kulebaoAdmin')
 ]
 
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory 'phoneManageService', ['$resource',
   ($resource) ->
     $resource '/phone/:phone',

@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module("kulebaoAdmin").directive "klMediaPreview",
+angular.module("kulebao.directives").directive "klMediaPreview",
   ['imageCompressService',
     (Compress) ->
       return (

@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('kulebaoApp')
+angular.module('kulebao.filters')
 .filter 'phone', () ->
     (tel) ->
       return "" unless tel

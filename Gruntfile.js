@@ -48,11 +48,11 @@ module.exports = function (grunt) {
     },
     concat: {
       admin: {
-        src: ['app/assets/scripts/controllers/admin/*.js'],
+        src: ['app/assets/scripts/admin.js', 'app/assets/scripts/controllers/admin/*.js'],
         dest: 'dist/admin.js'
       },
       op: {
-        src: ['app/assets/scripts/controllers/op/*.js'],
+        src: ['app/assets/scripts/op.js', 'app/assets/scripts/controllers/op/*.js'],
         dest: 'dist/op.js'
       },
       directives: {

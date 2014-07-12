@@ -7,6 +7,6 @@ conversationService = ($resource) ->
       phone: '@phone'
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('conversationService', ['$resource', conversationService])
 

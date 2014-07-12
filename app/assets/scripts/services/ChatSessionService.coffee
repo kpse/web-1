@@ -8,7 +8,7 @@ chatSessionService = ($resource) ->
       rid: '@id'
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('chatSessionService', ['$resource', chatSessionService])
 
 senderService = ($resource) ->
@@ -19,7 +19,7 @@ senderService = ($resource) ->
       type: '@sender.type'
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('senderService', ['$resource', senderService])
 
 
@@ -32,5 +32,5 @@ historyService = ($resource) ->
       rid: '@id'
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('historyService', ['$resource', historyService])

@@ -8,5 +8,5 @@ scheduleService = ($resource) ->
       schedule_id: '@schedule_id'
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('scheduleService', ['$resource', scheduleService])

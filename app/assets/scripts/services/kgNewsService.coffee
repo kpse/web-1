@@ -31,7 +31,7 @@ readingStatService = ($resource) ->
     }
 
 
-angular.module('kulebaoApp')
+angular.module('kulebao.services')
 .factory('newsService', ['$resource', newsService])
 .factory('readService', ['$resource', readService])
 .factory('readingStatService', ['$resource', readingStatService])

@@ -6,7 +6,7 @@ dailyLogService = ($resource) ->
       school_id: '@school_id'
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('dailyLogService', ['$resource', dailyLogService])
 
 singleDailyLogService = ($resource) ->
@@ -21,10 +21,10 @@ singleDailyLogService = ($resource) ->
           most: 1
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('singleDailyLogService', ['$resource', singleDailyLogService])
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory 'statisticsDailyLogService', ['$resource', ($resource) ->
   $resource '/api/v1/statistics/dailylog/:school_id',
     {

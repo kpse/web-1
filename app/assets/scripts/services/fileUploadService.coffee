@@ -77,21 +77,21 @@ uploadService = (qiniuService, tokenService) ->
       qiniuService.send file, remoteDir, data.token, (remoteFile) ->
         (onSuccess || angular.noop)(remoteFile.url)
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory 'tokenService', ['$http', tokenService]
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory 'rawFileTokenService', ['$http', rawFileTokenService]
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory 'qiniuService', ['tokenService', qiniuService]
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory 'qiniuRawFileService', ['rawFileTokenService', qiniuRawFileService]
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory 'uploadService', ['qiniuService', 'tokenService', uploadService]
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory 'appUploadService', ['qiniuRawFileService', 'rawFileTokenService', uploadService]
 
 
-angular.module('kulebaoAdmin').directive "fileupload", ->
+angular.module('kulebao.services').directive "fileupload", ->
   link: (scope, element, attributes) ->
     element.bind "change", (e) ->
       scope.$apply ->

@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module("kulebaoAdmin").directive "d3Bars", [
+angular.module("kulebao.directives").directive "d3Bars", [
   "d3"
   (d3) ->
     return (

@@ -6,5 +6,5 @@ principalService = ($resource) ->
       school_id: '@school_id'
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('principalService', ['$resource', principalService])

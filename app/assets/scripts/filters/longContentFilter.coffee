@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.filters')
 .filter 'truncate', ['$filter', ($filter) ->
     (content, length) ->
       return '' unless content?

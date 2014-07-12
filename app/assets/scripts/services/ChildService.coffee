@@ -7,5 +7,5 @@ childService = ($resource) ->
       child_id: '@child_id'
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('childService', ['$resource', childService])

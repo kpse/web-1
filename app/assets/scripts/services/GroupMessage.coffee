@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
   .service 'GroupMessage', ['$resource', ($resource) ->
     $resource('/ws/broadcast')
   ]

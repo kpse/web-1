@@ -7,5 +7,5 @@ cookbookService = ($resource) ->
       cookbook_id: '@cookbook_id'
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('cookbookService', ['$resource', cookbookService])

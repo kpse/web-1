@@ -17,5 +17,5 @@ eventStreamService = ->
       eventStreamServiceCreated[url] = source
 
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .service('eventStreamService', eventStreamService)

@@ -1,12 +1,12 @@
 angular.module('kulebao.services', ['ngResource'])
 angular.module('kulebao.directives', ['kulebao.services'])
-angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics', 'kulebao.directives'])
+angular.module('kulebao.filters', ['kulebao.services'])
+angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics', 'kulebao.directives', 'kulebao.filters'])
 angular.module('kulebaoAdmin',
-  ['kulebaoApp', 'ui.router', 'ngResource', 'ngRoute', 'ui.bootstrap', 'ui.mask', 'angulartics',
-   'angulartics.google.analytics', 'ngCookies'])
+  ['kulebaoApp', 'ui.bootstrap', 'ui.mask', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap', 'mgcrea.ngStrap.helpers.dimensions',
+   'ngCookies'])
 angular.module('kulebaoOp',
-  ['kulebaoAdmin', 'kulebaoApp', 'ui.router', 'ngResource', 'ngRoute', 'ui.bootstrap', 'ui.mask', 'angulartics',
-   'angulartics.google.analytics', 'ngCookies', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap', 'emoji'])
+  ['kulebaoAdmin', 'emoji'])
 .config ['$stateProvider', '$urlRouterProvider',
   ($stateProvider, $urlRouterProvider) ->
     $stateProvider

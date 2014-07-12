@@ -7,7 +7,7 @@ passwordService = ($resource) ->
       phone: '@phone'
     }
 
-angular.module('kulebaoApp')
+angular.module('kulebao.services')
 .factory('passwordService', ['$resource', passwordService])
 
 passwordTokenService = ($resource) ->
@@ -16,5 +16,5 @@ passwordTokenService = ($resource) ->
       phone: '@phone'
     }
 
-angular.module('kulebaoApp')
+angular.module('kulebao.services')
 .factory('passwordTokenService', ['$resource', passwordTokenService])

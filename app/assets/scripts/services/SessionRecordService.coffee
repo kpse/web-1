@@ -8,5 +8,5 @@ readRecordService = ($resource) ->
       reader: '@reader'
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('readRecordService', ['$resource', readRecordService])

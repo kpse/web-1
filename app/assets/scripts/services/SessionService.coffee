@@ -11,5 +11,5 @@ sessionService = ($cookies) ->
   session
 
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('session', ['$cookies', sessionService])

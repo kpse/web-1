@@ -7,7 +7,7 @@ classService = ($resource) ->
       class_id: '@class_id'
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('classService', ['$resource', classService])
 
 classManagerService = ($resource) ->
@@ -17,7 +17,7 @@ classManagerService = ($resource) ->
       class_id: '@class_id'
     }
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('classManagerService', ['$resource', classManagerService])
 
 schoolService = ($resource) ->
@@ -29,16 +29,16 @@ schoolService = ($resource) ->
     }
 
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('schoolService', ['$resource', schoolService])
 
 adminCreatingService = ($resource) ->
   $resource '/kindergarten'
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory('adminCreatingService', ['$resource', adminCreatingService])
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .service 'accessClassService',
   ['$location', (location) ->
     (clazzes) ->

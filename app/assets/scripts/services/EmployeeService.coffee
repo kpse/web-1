@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory 'employeeService', ['$resource', 'session',
     ($resource, Session) ->
       $resource '/employee/:phone',
@@ -13,7 +13,7 @@ angular.module('kulebaoAdmin')
         }
   ]
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory 'allEmployeesService', ['$resource',
     ($resource) ->
       $resource '/employee/:phone',
@@ -22,7 +22,7 @@ angular.module('kulebaoAdmin')
         }
   ]
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory 'schoolEmployeesService', ['$resource',
     ($resource) ->
       $resource '/kindergarten/:school_id/employee/:phone',
@@ -32,7 +32,7 @@ angular.module('kulebaoAdmin')
         }
   ]
 
-angular.module('kulebaoAdmin')
+angular.module('kulebao.services')
 .factory 'employeesManageClassService', ['$resource',
     ($resource) ->
       $resource '/kindergarten/:school_id/employee/:phone/class',

@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module("kulebaoAdmin").directive "klFileUpload",
+angular.module("kulebao.directives").directive "klFileUpload",
   ['uploadService',
     (Upload) ->
       return (

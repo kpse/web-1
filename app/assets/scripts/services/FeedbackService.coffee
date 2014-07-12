@@ -6,5 +6,5 @@ feedbackService= ($resource) ->
     feedback_id: '@id'
   }
 
-angular.module('kulebaoOp')
+angular.module('kulebao.services')
 .factory('feedbackService', ['$resource', feedbackService])
