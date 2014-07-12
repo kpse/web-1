@@ -48,7 +48,7 @@ function deploy_prod {
     destFilename="kulebao-1.0-SNAPSHOT.$now.zip"
     destServer="kulebao@$1"
     destPath="$destServer:~/$destFilename"
-    play dist && \
+    grunt minjs && play dist && \
     scp $srcFilename $destPath && \
     ssh $destServer "unzip -x $destFilename -d /var/play/$now/" && \
     ssh $destServer "rm /var/play/kulebao" && \
