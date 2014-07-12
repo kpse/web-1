@@ -1,5 +1,7 @@
-angular.module('kulebaoApp',
-  ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics', 'mgcrea.ngStrap'])
+angular.module('kulebao.services', ['ngResource'])
+angular.module('kulebao.directives', ['kulebao.services'])
+angular.module('kulebao.filters', ['kulebao.services'])
+angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics', 'mgcrea.ngStrap', 'kulebao.directives', 'kulebao.filters'])
 .config ['$stateProvider', '$urlRouterProvider',
   ($stateProvider, $urlRouterProvider) ->
     $stateProvider
