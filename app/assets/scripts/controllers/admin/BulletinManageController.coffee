@@ -1,9 +1,9 @@
 'use strict'
 
 angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
-  ['$scope', '$rootScope', '$location', 'adminNewsService',
+  ['$scope', '$rootScope', '$location',
    '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService', 'imageCompressService',
-    (scope, $rootScope, location, adminNewsService, stateParams, School, Modal, Employee, Class, Compress) ->
+    (scope, $rootScope, location, stateParams, School, Modal, Employee, Class, Compress) ->
       $rootScope.tabName = 'bulletin'
       scope.heading = '全园和班级的通知公告都可以在这里发布'
 
@@ -38,6 +38,7 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
         scope.loading = true
         scope.preview = NewsPreivew.query
           school_id: stateParams.kindergarten
+          publisher_id: scope.adminUser.id
           class_id: stateParams.class
           restrict: true, ->
             scope.preview = scope.preview.reverse()
@@ -46,6 +47,7 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
             last = scope.preview[startIndex...startIndex + scope.itemsPerPage][0].id if scope.preview.length > 0
             scope.newsletters = adminNewsService.query
               school_id: stateParams.kindergarten
+              publisher_id: scope.adminUser.id
               class_id: stateParams.class
               restrict: true
               to: last + 1 || last
@@ -59,10 +61,11 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
             scope.refresh()
 
       scope.$watch 'currentPage', (newPage, oldPage) ->
-        scope.refresh(newPage)
+        scope.refresh(newPage) if newPage isnt oldPage
 
       scope.publish = (news) ->
         news.published = true
+        news.publisher_id = scope.adminUser.id
         news.$save ->
           scope.refresh()
 
@@ -90,15 +93,16 @@ angular.module('kulebaoAdmin').controller 'BulletinCtrl',
 
       firstPageOrCurrentPage = (news) ->
         if news.news_id?
-          () ->
+          ->
             scope.refresh()
         else
-          () ->
+          ->
             scope.currentPage = 1
             scope.refresh()
 
       scope.save = (news) ->
         goPage = firstPageOrCurrentPage(news)
+        news.publisher_id = scope.adminUser.id
         news.$save ->
           goPage()
           scope.currentModal.hide()
