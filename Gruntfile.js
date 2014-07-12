@@ -93,7 +93,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   // Default task(s).
-  grunt.registerTask('default', ['bower:install', 'copy', 'ngmin']);
+  grunt.registerTask('default', ['bower:install', 'copy']);
   grunt.registerTask('minjs', ['clean', 'concat','ngmin', 'uglify']);
 
 };
