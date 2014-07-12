@@ -1,4 +1,11 @@
-@scripts = {
+@minifiedScripts = {
+  <script src="@routes.VersionedAssets.at("scripts/min/op.min.js")" type="text/javascript"></script>
+  <script src="@routes.VersionedAssets.at("scripts/min/services.min.js")" type="text/javascript"></script>
+  <script src="@routes.VersionedAssets.at("scripts/min/directives.min.js")" type="text/javascript"></script>
+  <script src="@routes.VersionedAssets.at("scripts/min/filters.min.js")" type="text/javascript"></script>
+  @commonScripts
+}
+@normalScripts = {
   <script src="@routes.VersionedAssets.at("scripts/op.js")" type="text/javascript"></script>
 
   <script src="@routes.VersionedAssets.at("scripts/controllers/op/OperationController.js")" type="text/javascript"></script>
@@ -35,6 +42,9 @@
   <script src="@routes.VersionedAssets.at("scripts/services/StatsService.js")" type="text/javascript"></script>
   <script src="@routes.VersionedAssets.at("scripts/services/EventStreamService.js")" type="text/javascript"></script>
 
+  @commonScripts
+}
+@commonScripts = {
   <script src="@routes.VersionedAssets.at("javascripts/vendor/angularjs/mask.js")" type="text/javascript"></script>
   <script src="@routes.VersionedAssets.at("javascripts/vendor/bootstrap-datepicker.js")" type="text/javascript"></script>
   <script src="@routes.VersionedAssets.at("vendor/angular-emoji-filter/emoji.min.js")" type="text/javascript"></script>
@@ -46,6 +56,17 @@
   <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/libraries.min.css")">
   <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("vendor/angular-emoji-filter/emoji.min.css")">
 }
+
+@import play.api.Play
+@import play.api.Play.current
+
+@scripts = @{
+  Play.configuration.getBoolean("assets.min") match {
+    case Some(true) =>minifiedScripts
+    case _ => normalScripts
+  }
+}
+
 @main("kulebaoOp")(scripts)(styling) {
   <div class="main-view" ui-view></div>
 }
