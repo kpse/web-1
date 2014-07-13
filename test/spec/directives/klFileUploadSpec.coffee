@@ -66,9 +66,20 @@ describe 'Directive: klFileUpload', () ->
     expect(scope.size).toBe 100
 
 
-#  it 'should display DOMs when using attribute form', inject ($compile) ->
-#    expect(scope.url).toBe 'some_url'
-#
-#
-#  it 'should pass out ng-model after uploading successfully', inject ($compile) ->
-#    expect(scope.url).toBe 'some_url'
+  it 'should display DOMs when using attribute form', inject ($compile, $timeout) ->
+    mockUploadServiceFlag = true
+
+    scope.stubSuccess = (url, size) ->
+      scope.url = url
+      scope.size = size
+
+    scope.targetFile = 'filename'
+    element = angular.element '<div kl-file-upload user="user" on-success="stubSuccess"></div>'
+    element = $compile(element)(scope)
+    scope.$digest()
+
+    angular.element(element[0].children[1]).triggerHandler('click')
+
+    $timeout.flush();
+    expect(scope.url).toBe 'some_url'
+    expect(scope.size).toBe 100
