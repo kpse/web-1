@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin')
 .controller 'IntroCtrl', [ '$scope', '$rootScope', '$stateParams',
-                           '$location', 'schoolService', '$http', 'uploadService', '$timeout', '$cacheFactory', 'employeeService'
-  (scope, rootScope, stateParams, location, School, $http, Upload, $timeout, $cacheFactory, Employee) ->
+                           'schoolService', '$cacheFactory', 'employeeService'
+  (scope, rootScope, stateParams, School, $cacheFactory, Employee) ->
     rootScope.tabName = 'intro'
 
     scope.adminUser = Employee.get ->
