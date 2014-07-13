@@ -3,7 +3,7 @@
 describe 'Filter: phoneFilter', () ->
 
   # load the filter's module
-  beforeEach module 'kulebaoAdmin'
+  beforeEach module 'kulebao.filters'
 
   # initialize a new instance of the filter before each test
   phoneFilter = {}
