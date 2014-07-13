@@ -99,17 +99,14 @@ angular.module('kulebaoOp',
 
     $urlRouterProvider.otherwise ($injector, $location) ->
       $location.path '/main/school'
-
-
 ]
-
-angular.module("kulebaoOp").config ($modalProvider) ->
+.config(($modalProvider) ->
   angular.extend $modalProvider.defaults,
     animation: 'am-fade'
     placement: 'center'
     backdrop: 'static'
 
-angular.module("kulebaoOp").config ($alertProvider) ->
+).module("kulebaoOp").config ($alertProvider) ->
   angular.extend $alertProvider.defaults,
     animation: 'am-fade-and-slide-top'
     placement: 'top'

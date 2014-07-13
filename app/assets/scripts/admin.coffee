@@ -213,14 +213,13 @@ angular.module('kulebaoAdmin',
 
 
 ]
-
-angular.module("kulebaoAdmin").config ($modalProvider) ->
+.config(($modalProvider) ->
   angular.extend $modalProvider.defaults,
     animation: 'am-fade'
-    placement: 'center'
+    placement: 'bottom'
     backdrop: 'static'
 
-angular.module("kulebaoAdmin").config ($alertProvider) ->
+).config ($alertProvider) ->
   angular.extend $alertProvider.defaults,
     animation: 'am-fade-and-slide-top'
     placement: 'top'
