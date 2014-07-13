@@ -21,7 +21,6 @@ angular.module('kulebaoAdmin')
 
   ]
 
-angular.module('kulebaoAdmin')
 .controller 'ConversationsInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', 'classService', 'parentService', 'chatSessionService', 'childService',
@@ -55,8 +54,6 @@ angular.module('kulebaoAdmin')
 
 
   ]
-
-angular.module('kulebaoAdmin')
 .controller 'ConversationCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', '$http', 'classService', 'chatSessionService', 'childService', '$modal',

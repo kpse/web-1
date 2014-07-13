@@ -10,13 +10,13 @@ angular.module('kulebaoAdmin').controller 'DefaultCtrl',
         location.path('/' + res.status)
   ]
 
-angular.module('kulebaoAdmin').controller 'ExpiredCtrl',
+.controller 'ExpiredCtrl',
   ['$scope', 'employeeService',
     (scope, Employee) ->
       scope.adminUser = Employee.get()
   ]
 
-angular.module('kulebaoAdmin').controller 'WelcomeCtrl',
+.controller 'WelcomeCtrl',
   ['$scope', '$rootScope', '$stateParams', 'schoolService', 'employeeService', 'chargeService', 'parentService',
    'childService', 'classService',
     (scope, $rootScope, stateParams, School, Employee, Charge, Parent, Child, Class) ->

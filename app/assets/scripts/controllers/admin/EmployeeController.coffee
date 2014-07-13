@@ -80,7 +80,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
 
   ]
 
-angular.module('kulebaoAdmin').controller 'EmployeesScoreCtrl',
+.controller 'EmployeesScoreCtrl',
   ['$scope', '$rootScope', '$stateParams', 'schoolService', '$modal', 'employeeService', 'schoolEmployeesService',
    '$alert', 'StatsService',
     (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Alert, Stats) ->

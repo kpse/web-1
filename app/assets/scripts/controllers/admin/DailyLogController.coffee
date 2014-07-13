@@ -3,8 +3,8 @@
 angular.module('kulebaoAdmin')
 .controller 'AllDailyLogCtrl',
   [ '$scope', '$rootScope', '$stateParams', 'schoolService', 'classService', '$location', 'dailyLogService',
-    'childService', 'accessClassService',
-    (scope, rootScope, stateParams, School, Class, location, DailyLog, Child, AccessClass) ->
+    'childService', 'accessClassService', 'imageCompressService',
+    (scope, rootScope, stateParams, School, Class, location, DailyLog, Child, AccessClass, Compressor) ->
       rootScope.tabName = 'dailylog'
 
       scope.childrenInSchool = 0
@@ -27,14 +27,16 @@ angular.module('kulebaoAdmin')
       scope.navigateTo = (c) ->
         location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')
 
+      scope.compress = (url, width, height) ->
+        return '' unless url?
+        Compressor.compress(url, width, height)
   ]
 
-angular.module('kulebaoAdmin')
 .controller 'DailyLogInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', 'classService', 'parentService', '$modal', 'employeeService',
-    '$alert', 'childService', 'dailyLogService', 'statisticsDailyLogService',
-    (scope, rootScope, stateParams, location, School, Class, Parent, Modal, Employee, Alert, Child, DailyLog, Statistics) ->
+    'childService', 'dailyLogService', 'statisticsDailyLogService',
+    (scope, rootScope, stateParams, location, School, Class, Parent, Modal, Employee, Child, DailyLog, Statistics) ->
       scope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
 
@@ -74,24 +76,20 @@ angular.module('kulebaoAdmin')
 
       scope.d3Data = []
       scope.allData = Statistics.query school_id: stateParams.kindergarten, ->
-        scope.d3Data = _.filter scope.allData, (d) -> d.class_id == scope.current_class
+        scope.d3Data = _.filter scope.allData, (d) ->
+          d.class_id == scope.current_class
 
       scope.title = 'DemoTitle'
 
   ]
-
-angular.module('kulebaoAdmin')
 .controller 'ChildDailyLogCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'childService', 'singleDailyLogService', 'imageCompressService', 'relationshipService', 'classManagerService',
-    (scope, rootScope, stateParams, location, Child, DailyLog, Compressor, Relationship, Manager) ->
+    '$location', 'childService', 'singleDailyLogService', 'relationshipService',
+    'classManagerService',
+    (scope, rootScope, stateParams, location, Child, DailyLog, Relationship, Manager) ->
       scope.child = Child.get school_id: stateParams.kindergarten, child_id: stateParams.child_id, ->
         scope.relationships = Relationship.query school_id: stateParams.kindergarten, child: scope.child.child_id
         scope.managers = Manager.query school_id: stateParams.kindergarten, class_id: stateParams.class_id
 
       scope.allLogs = DailyLog.query school_id: stateParams.kindergarten, child_id: stateParams.child_id
-
-      scope.compress = (url, width, height) ->
-        Compressor.compress(url, width, height)
-
   ]

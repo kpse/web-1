@@ -22,7 +22,7 @@ angular.module('kulebaoOp').controller 'OpFeedbackCtrl',
       scope.current_source = stateParams.source
   ]
 
-angular.module('kulebaoOp').controller 'OpFeedbackSourceCtrl',
+.controller 'OpFeedbackSourceCtrl',
   ['$scope', '$rootScope', 'feedbackService', '$location', '$stateParams',
     (scope, rootScope, Feedback, location, stateParams) ->
       scope.$emit 'set_tab', stateParams.source

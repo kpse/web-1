@@ -2,7 +2,7 @@
 <h3>{{child.name}}小朋友的到校和离校记录</h3>
 <div class="detail row">
   <div class="portrait-container col-xs-3">
-    <img class="portrait" ng-src="{{child.portrait || '/assets/images/portrait_placeholder.png'}}"
+    <img class="portrait" ng-src="{{compress(child.portrait, 110) || '/assets/images/portrait_placeholder.png'}}"
          alt="宝宝照片"/></div>
 
 <div class="col-xs-6">

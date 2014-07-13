@@ -1,9 +1,9 @@
 'use strict'
 
 angular.module('kulebaoAdmin')
-.controller 'ScheduleCtrl', [ '$scope', '$rootScope', '$stateParams',
-                              '$location', 'schoolService', '$http', 'scheduleService', '$timeout', 'classService',
-                              'accessClassService'
+.controller('ScheduleCtrl', [ '$scope', '$rootScope', '$stateParams',
+                               '$location', 'schoolService', '$http', 'scheduleService', '$timeout', 'classService',
+                               'accessClassService'
   (scope, rootScope, stateParams, location, School, $http, Schedule, $timeout, Class, AccessClass) ->
     rootScope.tabName = 'schedule'
     scope.heading = '课程表'
@@ -17,9 +17,7 @@ angular.module('kulebaoAdmin')
 
     scope.navigateTo = (c) ->
       location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')
-]
-
-angular.module('kulebaoAdmin')
+])
 .controller 'ClassScheduleCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', '$http', 'scheduleService', '$alert'

@@ -18,7 +18,6 @@ angular.module('kulebaoAdmin')
 
   ]
 
-angular.module('kulebaoAdmin')
 .controller 'HistoryInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', 'classService', 'parentService', 'historyService', 'childService',
@@ -53,7 +52,6 @@ angular.module('kulebaoAdmin')
 
   ]
 
-angular.module('kulebaoAdmin')
 .controller 'HistoryCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', '$http', 'classService', 'historyService', 'childService', '$modal',

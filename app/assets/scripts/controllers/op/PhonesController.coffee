@@ -38,7 +38,7 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
         location.path '/main/phone_management'
   ]
 
-angular.module('kulebaoOp').controller 'OpShowPhoneCtrl',
+.controller 'OpShowPhoneCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'phoneManageService', 'schoolService', '$alert',
     (scope, rootScope, stateParams, location, Phone, School, Alert) ->
       scope.parent = Phone.get phone: stateParams.phone, ->
@@ -50,7 +50,7 @@ angular.module('kulebaoOp').controller 'OpShowPhoneCtrl',
           scope.cancel()
   ]
 
-angular.module('kulebaoOp').controller 'OpShowTeacherCtrl',
+.controller 'OpShowTeacherCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'allEmployeesService', 'schoolService', '$alert',
     (scope, rootScope, stateParams, location, Employee, School, Alert) ->
       scope.teacher = Employee.get phone: stateParams.phone, ->

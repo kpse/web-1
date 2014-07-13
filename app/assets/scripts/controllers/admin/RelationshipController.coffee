@@ -228,7 +228,6 @@ angular.module('kulebaoAdmin')
           handleError('关系', res)
   ]
 
-angular.module('kulebaoAdmin')
 .controller 'connectedCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'accessClassService',
     (scope, rootScope, stateParams, location, School, Class, AccessClass) ->
@@ -243,7 +242,6 @@ angular.module('kulebaoAdmin')
         location.path(location.path().replace(/\/type\/.+$/, '') + '/type/' + s.url) if stateParams.type != s.url
   ]
 
-angular.module('kulebaoAdmin')
 .controller 'ConnectedInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', 'classService', 'parentService', 'conversationService', 'relationshipService',
@@ -261,7 +259,6 @@ angular.module('kulebaoAdmin')
 
   ]
 
-angular.module('kulebaoAdmin')
 .controller 'ConnectedRelationshipCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', 'classService', 'parentService', 'conversationService', 'relationshipService',

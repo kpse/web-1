@@ -16,14 +16,12 @@ angular.module('kulebaoAdmin')
 
   ]
 
-angular.module('kulebaoAdmin')
 .controller 'AssignmentsInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     (scope, rootScope, stateParams) ->
       scope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
   ]
-angular.module('kulebaoAdmin')
 .controller 'AssignmentsCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', 'classService', 'assignmentService', '$modal', 'employeeService', 'uploadService',

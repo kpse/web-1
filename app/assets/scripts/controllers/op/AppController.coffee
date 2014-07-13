@@ -33,7 +33,7 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
 
   ]
 
-angular.module('kulebaoOp').controller 'OpAppDetailCtrl',
+.controller 'OpAppDetailCtrl',
   ['$scope', '$rootScope', '$stateParams', '$http', 'appUploadService', 'appPackageService', 'employeeService',
    '$location', 'teacherAppPackageService',
     (scope, $rootScope, $stateParams, $http, remoteFileSetter, AppPackage, Employee, location, TeacherAppPackage) ->

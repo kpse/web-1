@@ -26,7 +26,6 @@ angular.module('kulebaoAdmin')
 
   ]
 
-angular.module('kulebaoAdmin')
 .controller 'MembersInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'schoolService', 'classService', 'parentService', '$modal', 'employeeService', 'chargeService',

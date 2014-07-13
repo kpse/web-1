@@ -33,7 +33,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
 
   ]
 
-angular.module('kulebaoOp').controller 'OpSchoolReportingCtrl',
+.controller 'OpSchoolReportingCtrl',
   ['$scope', '$rootScope', '$stateParams', '$http', 'parentService', 'childService', 'employeeService',
    'schoolEmployeesService', 'classService', 'schoolService', 'adminNewsPreview', 'sessionStatsService', 'historyStatsService',
    'dailyLogService', 'activeCountService',

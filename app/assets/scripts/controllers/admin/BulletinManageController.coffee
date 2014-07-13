@@ -24,7 +24,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
         Compress.compress(url, width, height)
   ]
 
-angular.module('kulebaoAdmin').controller 'BulletinCtrl',
+.controller 'BulletinCtrl',
   ['$scope', '$rootScope', 'adminNewsService',
    '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService', 'adminNewsPreview', 'uploadService',
     (scope, $rootScope, adminNewsService, stateParams, School, Modal, Employee, Class, NewsPreivew, Upload) ->

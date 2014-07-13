@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin')
 .controller 'CookbookCtrl', [ '$scope', '$rootScope', '$stateParams',
-                              '$location', 'schoolService', '$http', 'cookbookService', '$timeout',
-  (scope, rootScope, stateParams, location, School, $http, Cookbook, $timeout) ->
+                              'schoolService', 'cookbookService',
+  (scope, rootScope, stateParams, School, Cookbook) ->
     rootScope.tabName = 'cookbook'
     scope.cookbook_changed = false
     scope.isEditing = false

@@ -106,7 +106,7 @@ angular.module('kulebaoOp',
     placement: 'center'
     backdrop: 'static'
 
-).module("kulebaoOp").config ($alertProvider) ->
+).config ($alertProvider) ->
   angular.extend $alertProvider.defaults,
     animation: 'am-fade-and-slide-top'
     placement: 'top'

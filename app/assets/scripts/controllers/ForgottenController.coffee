@@ -44,7 +44,6 @@ angular.module('kulebaoApp')
 
 ]
 
-angular.module('kulebaoApp')
 .controller 'PasswordCtrl', [ '$scope', '$rootScope', '$stateParams',
                               '$location', '$http', '$alert', '$sce', 'employeePhoneService', '$window',
   (scope, rootScope, stateParams, location, $http, Alert, $sce, ResetPassword, $window) ->
