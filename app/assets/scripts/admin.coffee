@@ -216,7 +216,7 @@ angular.module('kulebaoAdmin',
 .config(($modalProvider) ->
   angular.extend $modalProvider.defaults,
     animation: 'am-fade'
-    placement: 'bottom'
+    placement: 'center'
     backdrop: 'static'
 
 ).config ($alertProvider) ->
