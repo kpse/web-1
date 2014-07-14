@@ -36,6 +36,12 @@ function local_https_server {
     JAVA_OPTS="-Dhttps.port=9001 -Xmx3g" play h2-browser run
 }
 
+function local_https_server_with_minjs {
+    load_env
+    grunt minjs &&
+    JAVA_OPTS="-Dhttps.port=9001 -Xmx3g" play -Dassets.min=true h2-browser run
+}
+
 function local_https_server_with_mysql {
     load_env
     JAVA_OPTS="-Dhttps.port=9001 -Xmx3g -Dconfig.resource=application_mysql.conf" play run
@@ -87,6 +93,7 @@ function main {
   	case $1 in
 		js) js_dependency ;;
 		s) local_https_server ;;
+		ss) local_https_server_with_minjs ;;
 		mysql) local_https_server_with_mysql ;;
 		a) build_deploy_stage ;;
 		heroku) deploy_heroku ;;
