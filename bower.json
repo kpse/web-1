@@ -20,7 +20,8 @@
   },
   "devDependencies": {
     "angular-mocks": "1.2.19",
-    "angular-scenario": "1.2.19"
+    "angular-scenario": "1.2.19",
+    "angular-ui-utils": "~0.1.1"
   },
   "homepage": "https://github.com/kulebao/web",
   "authors": [
@@ -36,7 +37,10 @@
   ],
   "exportsOverride": {
     "angular-strap": {
-      ".": ["dist/*.min.js{,.map}", "dist/*.min.map"]
+      ".": [
+        "dist/*.min.js{,.map}",
+        "dist/*.min.map"
+      ]
     },
     "angulartics": {
       ".": "dist/*.min.js{,.map}"
@@ -50,7 +54,10 @@
       "css/images": "themes/base/minified/images/*"
     },
     "jquery": {
-      ".": ["dist/*.min.js{,.map}", "dist/*.min.map"]
+      ".": [
+        "dist/*.min.js{,.map}",
+        "dist/*.min.map"
+      ]
     },
     "bootstrap": {
       "fonts": "dist/fonts/*.{eot,svg,ttf,woff}",

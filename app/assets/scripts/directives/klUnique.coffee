@@ -11,8 +11,10 @@ angular.module("kulebao.directives").directive "klUnique",
 
         link: (scope, element, attrs, c) ->
           scope.$watch 'klUnique.phone', (n) ->
-            return unless n?
-            scope.check(scope.klUnique)
+            if !n? || n.length == 0
+              c.$setValidity 'unique', true
+            else
+              scope.check(scope.klUnique)
 
           scope.check = (parent) ->
             return unless parent?

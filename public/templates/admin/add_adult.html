@@ -9,7 +9,8 @@
           <input id="parent-phone" type="text" ng-model="parent.phone" name="phone"
                  ui-mask="{{'999-9999-9999'}}"
                  class="editing-field form-control" ng-bk-focus kl-unique="parent" required/>
-          <span class="error-field" ng-show="newAdultForm.phone.$dirty && newAdultForm.phone.$error.unique">与现有手机号重复！</span>
+          <span class="error-field" ng-show="newAdultForm.phone.$dirty && newAdultForm.phone.$error.unique">与现有手机号重复</span>
+          <span class="error-field" ng-show="newAdultForm.phone.$dirty && newAdultForm.phone.$error.required">请输入手机号</span>
         </div>
       </div>
 
