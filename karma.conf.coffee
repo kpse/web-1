@@ -5,31 +5,31 @@ module.exports = (config) ->
   config.set(
 
   # base path, that will be used to resolve files and exclude
-    basePath: '',
+    basePath: ''
 
 
   # frameworks to use
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine']
 
 
   # list of files / patterns to load in the browser
     files: [
-      'public/vendor/jquery/jquery.min.js',
-      'public/vendor/angular/angular.min.js',
-      'public/vendor/angular-ui-router/angular-ui-router.min.js',
-      'public/vendor/angular-route/angular-route.min.js',
-      'public/javascripts/vendor/underscore-min.js',
-      'public/vendor/**/*.min.js',
-      'public/javascripts/vendor/**/*.js',
-      'app/assets/scripts/main.coffee',
-      'app/assets/scripts/admin.coffee',
-      'app/assets/scripts/op.coffee',
-      'app/assets/scripts/services/*.coffee',
-      'app/assets/scripts/controllers/**/*.coffee',
-      'app/assets/scripts/directives/*.coffee',
-      'app/assets/scripts/filters/*.coffee',
-      'test/assets/config/jasmine-jquery.js',
-      'test/assets/config/angular-mocks/angular-mocks.js',
+      'public/vendor/jquery/jquery.min.js'
+      'public/vendor/angular/angular.min.js'
+      'public/vendor/angular-ui-router/angular-ui-router.min.js'
+      'public/vendor/angular-route/angular-route.min.js'
+      'public/javascripts/vendor/underscore-min.js'
+      'public/vendor/**/*.min.js'
+      'public/javascripts/vendor/**/*.js'
+      'app/assets/scripts/main.coffee'
+      'app/assets/scripts/admin.coffee'
+      'app/assets/scripts/op.coffee'
+      'app/assets/scripts/services/*.coffee'
+      'app/assets/scripts/controllers/**/*.coffee'
+      'app/assets/scripts/directives/*.coffee'
+      'app/assets/scripts/filters/*.coffee'
+      'test/assets/config/jasmine-jquery.js'
+      'test/assets/config/angular-mocks/angular-mocks.js'
       'test/spec/**/*.coffee'
     ],
 
@@ -56,15 +56,15 @@ module.exports = (config) ->
 
   # test results reporter to use
   # possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress'],
+    reporters: ['progress']
 
 
   # web server port
-    port: 9876,
+    port: 9876
 
 
   # enable / disable colors in the output (reporters and logs)
-    colors: true,
+    colors: true
 
 
   # level of logging
@@ -73,7 +73,7 @@ module.exports = (config) ->
 
 
   # enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
+    autoWatch: false
 
 
   # Start these browsers, currently available:
@@ -84,22 +84,22 @@ module.exports = (config) ->
   # - Safari (only Mac)
   # - PhantomJS
   # - IE (only Windows)
-    browsers: ['Chrome'],
+    browsers: ['Chrome', 'PhantomJS']
 
 
   # If browser does not capture in given timeout [ms], kill it
-    captureTimeout: 60000,
+    captureTimeout: 60000
 
 
   # Continuous Integration mode
   # if true, it capture browsers, run tests and exit
-    singleRun: true,
+    singleRun: true
 
     plugins: [
-      "karma-jasmine",
-      'karma-requirejs',
-      'karma-coffee-preprocessor',
-      'karma-chrome-launcher',
+      "karma-jasmine"
+      'karma-requirejs'
+      'karma-coffee-preprocessor'
+      'karma-chrome-launcher'
       "karma-phantomjs-launcher"
     ]
   )
