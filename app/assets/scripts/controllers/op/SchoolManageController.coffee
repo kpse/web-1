@@ -1,6 +1,6 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
   ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
-   '$resource', 'chargeService', 'adminCreatingService', '$alert', 'uploadService', 'employeeService', '$location', '$q', 'StatsService'
+   '$resource', 'chargeService', 'adminCreatingService', '$alert', 'uploadService', 'employeeService', '$location', '$q', 'StatsService',
     (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, Upload, LoggedInEmployee, location, $q, Stats) ->
       scope.refresh = ->
         scope.kindergartens = School.query ->
@@ -149,13 +149,6 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         return false if employee.phone is undefined || employee.phone.length < 10
         undefined isnt _.find scope.employees, (e) ->
           e.phone == employee.phone && e.id != employee.id
-
-      scope.uploadPic = (employee, pic) ->
-        scope.uploading = true
-        Upload pic, scope.adminUser.id, (url) ->
-          scope.$apply ->
-            employee.portrait = url if url isnt undefined
-            scope.uploading = false
 
   ]
 
