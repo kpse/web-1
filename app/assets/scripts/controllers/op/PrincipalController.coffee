@@ -1,6 +1,7 @@
 angular.module('kulebaoOp').controller 'OpPrincipalCtrl',
-  ['$scope', '$rootScope', 'schoolService', 'classService', 'allEmployeesService', '$modal', 'uploadService',
-    (scope, rootScope, School, Clazz, Employee, Modal, Upload) ->
+  ['$scope', '$rootScope', 'schoolService', 'classService', 'allEmployeesService', '$modal', 'uploadService', '$q',
+   'StatsService',
+    (scope, rootScope, School, Clazz, Employee, Modal, Upload, $q, Stats) ->
       rootScope.tabName = 'principal'
 
       scope.refresh = ->
@@ -11,10 +12,19 @@ angular.module('kulebaoOp').controller 'OpPrincipalCtrl',
       scope.refresh()
 
       scope.edit = (employee) ->
-        scope.employee = angular.copy employee
-        scope.currentModal = Modal
-          scope: scope
-          contentTemplate: 'templates/admin/add_employee.html'
+        all = $q.all [Stats('assignment').query(school_id: employee.school_id, employee_id: employee.id).$promise,
+                      Stats('assess').query(school_id: employee.school_id, employee_id: employee.id).$promise,
+                      Stats('conversation').query(school_id: employee.school_id, employee_id: employee.id).$promise,
+                      Stats('news').query(school_id: employee.school_id, employee_id: employee.id).$promise]
+        all.then (q) ->
+          employee.assignment = q[0]
+          employee.assess = q[1]
+          employee.conversation = q[2]
+          employee.news = q[3]
+          scope.employee = angular.copy employee
+          scope.currentModal = Modal
+            scope: scope
+            contentTemplate: 'templates/admin/add_employee.html'
 
       scope.delete = (employee) ->
         employee.$delete ->

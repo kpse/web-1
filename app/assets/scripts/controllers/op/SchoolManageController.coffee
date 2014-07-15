@@ -1,7 +1,7 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
   ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
-   '$resource', 'chargeService', 'adminCreatingService', '$alert', 'uploadService', 'employeeService', '$location',
-    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, Upload, LoggedInEmployee, location) ->
+   '$resource', 'chargeService', 'adminCreatingService', '$alert', 'uploadService', 'employeeService', '$location', '$q', 'StatsService'
+    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, Upload, LoggedInEmployee, location, $q, Stats) ->
       scope.refresh = ->
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->
@@ -37,11 +37,22 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         , (res) ->
           handleError res
 
-      scope.edit = (employee) ->
-        scope.employee = angular.copy employee.detail
-        scope.currentModal = Modal
-          scope: scope
-          contentTemplate: 'templates/admin/add_employee.html'
+      scope.edit = (one) ->
+        employee = one.detail
+        all = $q.all [Stats('assignment').query(school_id: employee.school_id, employee_id: employee.id).$promise,
+                      Stats('assess').query(school_id: employee.school_id, employee_id: employee.id).$promise,
+                      Stats('conversation').query(school_id: employee.school_id, employee_id: employee.id).$promise,
+                      Stats('news').query(school_id: employee.school_id, employee_id: employee.id).$promise]
+        all.then (q) ->
+          employee.assignment = q[0]
+          employee.assess = q[1]
+          employee.conversation = q[2]
+          employee.news = q[3]
+
+          scope.employee = angular.copy employee
+          scope.currentModal = Modal
+            scope: scope
+            contentTemplate: 'templates/admin/add_employee.html'
 
       scope.createPrincipal = (school) ->
         new Employee

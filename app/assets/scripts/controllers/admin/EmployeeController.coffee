@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
   ['$scope', '$rootScope', '$stateParams', 'schoolService', '$modal', 'employeeService', 'schoolEmployeesService',
-   'uploadService', '$alert', 'employeesManageClassService', 'StatsService', '$location',
-    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Upload, Alert, ClassManager, Stats, location) ->
+   'uploadService', '$alert', 'employeesManageClassService', 'StatsService', '$location', '$q'
+    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Upload, Alert, ClassManager, Stats, location, $q) ->
       $rootScope.tabName = 'employee'
 
       scope.loading = true
@@ -38,14 +38,20 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
           contentTemplate: 'templates/admin/add_employee.html'
 
       scope.edit = (employee) ->
-        employee.assignment = Stats('assignment').query school_id: $stateParams.kindergarten, employee_id: employee.id, ->
-          employee.assess = Stats('assess').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id, ->
-            employee.conversation = Stats('conversation').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id, ->
-              employee.news = Stats('news').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id, ->
-                scope.employee = angular.copy employee
-                scope.currentModal = Modal
-                  scope: scope
-                  contentTemplate: 'templates/admin/add_employee.html'
+        all = $q.all [Stats('assignment').query(school_id: $stateParams.kindergarten, employee_id: employee.id).$promise,
+                      Stats('assess').query(school_id: $stateParams.kindergarten, employee_id: employee.id).$promise,
+                      Stats('conversation').query(school_id: $stateParams.kindergarten, employee_id: employee.id).$promise,
+                      Stats('news').query(school_id: $stateParams.kindergarten, employee_id: employee.id).$promise]
+        all.then (q) ->
+          employee.assignment = q[0]
+          employee.assess = q[1]
+          employee.conversation = q[2]
+          employee.news = q[3]
+
+          scope.employee = angular.copy employee
+          scope.currentModal = Modal
+            scope: scope
+            contentTemplate: 'templates/admin/add_employee.html'
 
       scope.save = (employee) ->
         employee.$save ->
