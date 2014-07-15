@@ -24,7 +24,7 @@ qiniuService = (tokenService) ->
           console.log(response)
       else
         successCallback({
-          url: "https://dn-kulebao.qbox.me/" + generateRemoteFileName remoteDir, removeInvalidChars(response.name)
+          url: "https://dn-kulebao.qbox.me/" + generateRemoteFileName remoteDir, encodeURI removeInvalidChars response.name
           size: response.size
         })
       angular.forEach angular.element("input[type='file']"), (elem)->
