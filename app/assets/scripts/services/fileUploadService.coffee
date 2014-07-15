@@ -66,7 +66,7 @@ generateRemoteFileName = (remoteDir, fileName)->
   if remoteDir is ''
     fileName
   else
-    remoteDir + '/' + fileName
+    remoteDir + '/' + encodeURI fileName
 
 
 uploadService = (qiniuService, tokenService) ->
