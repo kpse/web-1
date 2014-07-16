@@ -2,22 +2,23 @@
 
 angular.module('kulebaoApp')
 .controller('ForgottenCtrl', [ '$scope', '$rootScope', '$stateParams',
-                               '$location', '$http', 'employeePhoneService', '$alert', '$sce', 'passwordTokenService',
-  (scope, rootScope, stateParams, location, $http, Phone, Alert, $sce, Token) ->
+                               '$location', '$http', 'employeePhoneService', '$alert', 'passwordTokenService',
+  (scope, rootScope, stateParams, location, $http, Phone, Alert, Token) ->
     scope.sendToken = (phone) ->
       scope.employee = Phone.get phone: phone, ->
         Token.bind(phone: phone).get ->
           Alert
             title: '验证码已发送。'
-            content: $sce.trustAsHtml '请注意查看手机短信。'
+            content: '请注意查看手机短信。'
             placement: "top"
             type: "info"
             container: '.phone-input-panel'
             duration: 3
       , (res) ->
+        delete scope.employee
         Alert
           title: '号码不存在。'
-          content: $sce.trustAsHtml res.data.error_msg
+          content: res.data.error_msg
           placement: "top-left"
           type: "danger"
           container: '.phone-input-panel'
@@ -36,7 +37,7 @@ angular.module('kulebaoApp')
     handleValidateError = (data) ->
       Alert
         title: '验证码错误'
-        content: $sce.trustAsHtml data.error_msg
+        content: data.error_msg
         placement: "top-left"
         type: "danger"
         container: '.phone-input-panel'
@@ -44,8 +45,8 @@ angular.module('kulebaoApp')
 
 ])
 .controller 'PasswordCtrl', [ '$scope', '$rootScope', '$stateParams',
-                              '$location', '$http', '$alert', '$sce', 'employeePhoneService', '$window',
-  (scope, rootScope, stateParams, location, $http, Alert, $sce, ResetPassword, $window) ->
+                              '$location', '$http', '$alert', 'employeePhoneService', '$window',
+  (scope, rootScope, stateParams, location, $http, Alert, ResetPassword, $window) ->
     location.path '/password' if rootScope.resetToken is undefined
     scope.user = ResetPassword.get phone: stateParams.phone
 
@@ -61,7 +62,7 @@ angular.module('kulebaoApp')
     handleValidateError = (data) ->
       Alert
         title: '重置密码失败'
-        content: $sce.trustAsHtml '请检查你的验证码'
+        content: '请检查你的验证码'
         placement: "top-left"
         type: "danger"
         container: '.reset-password-panel'
