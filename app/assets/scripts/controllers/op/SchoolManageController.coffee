@@ -37,22 +37,11 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         , (res) ->
           handleError res
 
-      scope.edit = (one) ->
-        employee = one.detail
-        all = $q.all [Stats('assignment').query(school_id: employee.school_id, employee_id: employee.id).$promise,
-                      Stats('assess').query(school_id: employee.school_id, employee_id: employee.id).$promise,
-                      Stats('conversation').query(school_id: employee.school_id, employee_id: employee.id).$promise,
-                      Stats('news').query(school_id: employee.school_id, employee_id: employee.id).$promise]
-        all.then (q) ->
-          employee.assignment = q[0]
-          employee.assess = q[1]
-          employee.conversation = q[2]
-          employee.news = q[3]
-
-          scope.employee = angular.copy employee
-          scope.currentModal = Modal
-            scope: scope
-            contentTemplate: 'templates/admin/add_employee.html'
+      scope.edit = (user) ->
+        scope.employee = angular.copy user
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/admin/add_employee.html'
 
       scope.createPrincipal = (school) ->
         new Employee

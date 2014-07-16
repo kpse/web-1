@@ -38,20 +38,10 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
           contentTemplate: 'templates/admin/add_employee.html'
 
       scope.edit = (employee) ->
-        all = $q.all [Stats('assignment').query(school_id: $stateParams.kindergarten, employee_id: employee.id).$promise,
-                      Stats('assess').query(school_id: $stateParams.kindergarten, employee_id: employee.id).$promise,
-                      Stats('conversation').query(school_id: $stateParams.kindergarten, employee_id: employee.id).$promise,
-                      Stats('news').query(school_id: $stateParams.kindergarten, employee_id: employee.id).$promise]
-        all.then (q) ->
-          employee.assignment = q[0]
-          employee.assess = q[1]
-          employee.conversation = q[2]
-          employee.news = q[3]
-
-          scope.employee = angular.copy employee
-          scope.currentModal = Modal
-            scope: scope
-            contentTemplate: 'templates/admin/add_employee.html'
+        scope.employee = angular.copy employee
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/admin/add_employee.html'
 
       scope.save = (employee) ->
         employee.$save ->
