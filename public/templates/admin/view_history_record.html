@@ -30,7 +30,7 @@
       <div class="loading" ng-show="loading"></div>
       <div class="btn-group">
         <button class="btn btn-default" ng-click="$hide()">关闭</button>
-        <button class="btn btn-danger" ng-click="messageDeleting(viewing_message)">删除</button>
+        <button class="btn btn-danger" ng-show="canDelete(viewing_message)" ng-click="messageDeleting(viewing_message)">删除</button>
         <button class="btn btn-info" ng-show="viewOption.reply" ng-click="messageEditing() && $hide()">添加
         </button>
       </div>

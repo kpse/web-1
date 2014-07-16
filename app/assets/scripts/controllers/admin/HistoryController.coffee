@@ -137,4 +137,7 @@ angular.module('kulebaoAdmin')
 
       scope.dynamicDisable = (message) ->
         message.medium && message.medium.length > 8
+
+      scope.canDelete = (message) ->
+        message.sender.id == scope.adminUser.id
   ]
