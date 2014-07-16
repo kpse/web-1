@@ -1,8 +1,8 @@
 'use strict'
 
 angular.module('kulebaoApp')
-.controller 'ForgottenCtrl', [ '$scope', '$rootScope', '$stateParams',
-                               '$location', '$http', 'employeePhoneService', '$alert', '$sce', 'passwordTokenService'
+.controller('ForgottenCtrl', [ '$scope', '$rootScope', '$stateParams',
+                               '$location', '$http', 'employeePhoneService', '$alert', '$sce', 'passwordTokenService',
   (scope, rootScope, stateParams, location, $http, Phone, Alert, $sce, Token) ->
     scope.sendToken = (phone) ->
       scope.employee = Phone.get phone: phone, ->
@@ -42,8 +42,7 @@ angular.module('kulebaoApp')
         container: '.phone-input-panel'
         duration: 3
 
-]
-
+])
 .controller 'PasswordCtrl', [ '$scope', '$rootScope', '$stateParams',
                               '$location', '$http', '$alert', '$sce', 'employeePhoneService', '$window',
   (scope, rootScope, stateParams, location, $http, Alert, $sce, ResetPassword, $window) ->
