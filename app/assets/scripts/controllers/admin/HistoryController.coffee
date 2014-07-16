@@ -138,6 +138,7 @@ angular.module('kulebaoAdmin')
       scope.dynamicDisable = (message) ->
         message.medium && message.medium.length > 8
 
-      scope.canDelete = (message) ->
-        message.sender.id == scope.adminUser.id
+      scope.deletable = (message) ->
+        (message.sender? && message.sender.id == scope.adminUser.id) || undefined isnt _.find ['principal', 'operator'], (u) -> scope.adminUser.privilege_group == u
+
   ]
