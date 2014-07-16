@@ -89,6 +89,15 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
       case None => Some(BatchImportReport(id.getOrElse("unknown"), "老师 %s 创建失败。".format(id.getOrElse("unknown"))))
     }
   }
+
+  def hasHistory(historyId: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from sessionlog where uid={id} and sender={sender}")
+        .on(
+          'id -> historyId,
+          'sender -> id
+        ).as(get[Long]("count(1)") single) > 0
+  }
 }
 
 case class Principal(employee_id: String, school_id: Long, phone: String, timestamp: Long)
@@ -98,6 +107,7 @@ case class EmployeePassword(employee_id: String, school_id: Long, phone: String,
 case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String)
 
 object Employee {
+
   def permanentRemove(phone: String) = DB.withConnection {
     implicit c =>
       SQL("delete from employeeinfo where phone={phone}")
@@ -418,4 +428,14 @@ object Employee {
       SQL("select * from employeeinfo where status=1").as(simple *)
   }
 
+}
+
+object Teacher {
+  def unapply(loginName: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from employeeinfo where login_name={login_name}")
+        .on(
+          'login_name -> loginName
+        ).as(Employee.simple singleOpt)
+  }
 }

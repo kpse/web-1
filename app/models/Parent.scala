@@ -11,7 +11,16 @@ import models.helper.TimeHelper.any2DateTime
 import models.helper.PasswordHelper.generateNewPassword
 
 
-case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String], gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int], company: Option[String] = None)
+case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String], gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int], company: Option[String] = None) {
+  def hasHistory(historyId: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from sessionlog where uid={id} and sender={sender}")
+        .on(
+          'id -> historyId,
+          'sender -> parent_id
+        ).as(get[Long]("count(1)") single) > 0
+  }
+}
 
 case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait: String, name: String, phone: String, kindergarten: School, relationship: String, child: ChildInfo, card: String)
 
@@ -404,4 +413,8 @@ object Parent {
       }
   }
 
+}
+
+object Relative {
+  def unapply(phone: String): Option[Parent] = Parent.phoneSearch(phone)
 }

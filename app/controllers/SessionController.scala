@@ -8,7 +8,6 @@ import models.MediaContent
 import models.Sender
 import scala.Some
 import controllers.helper.JsonLogger.loggedJson
-import java.io.Serializable
 
 object SessionController extends Controller with Secured {
 
@@ -97,9 +96,17 @@ object SessionController extends Controller with Secured {
   def deleteHistory(kg: Long, topicId: String, id: Long) = delete(kg, "h_%s".format(topicId), id)
 
   def delete(kg: Long, topicId: String, id: Long) = IsAuthenticated {
-    u => _ =>
-      ChatSession.delete(kg, topicId, id)
-      Ok(Json.toJson(new SuccessResponse))
+    user => _ =>
+      user match {
+        case Relative(p) if p.school_id == kg && p.hasHistory(id) =>
+          ChatSession.delete(kg, topicId, id)
+          Ok(Json.toJson(new SuccessResponse))
+        case Teacher(teacher) if Employee.isSuperUser(teacher.id.get, kg) || teacher.hasHistory(id) =>
+          ChatSession.delete(kg, topicId, id)
+          Ok(Json.toJson(new SuccessResponse))
+        case _ =>
+          Forbidden(Json.toJson(ErrorResponse("您只能删除本人发送的记录。")))
+      }
   }
 
   def statistics(kg: Long, topicId: String, year: String) =  IsAuthenticated {
