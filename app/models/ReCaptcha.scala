@@ -34,7 +34,7 @@ object ReCaptcha {
       val future: Future[Boolean] = Future {
         reCaptcha.checkAnswer(addr, challenge, response).isValid
       }
-      Await result(future, 5 seconds)
+      Await result(future, 5.seconds)
     }
     catch {
       case e: Throwable =>
@@ -47,6 +47,6 @@ object ReCaptcha {
     val m = Map("e6f7681249d77e4e69c69fe7866f532b" -> "damage",
       "d08b787a9bfd5a25626ce28e422de506" -> "fertile",
       "fced89169747395b75103c3a613bbb50" -> "hanging")
-    answer.nonEmpty && answer.equalsIgnoreCase(m.get(challenge).getOrElse(""))
+    answer.nonEmpty && answer.equalsIgnoreCase(m.getOrElse(challenge, ""))
   }
 }

@@ -66,7 +66,7 @@ object WSController extends Controller {
       val newsId: Long = (body \ "news_id").as[Long]
       val news = News.findById(schoolId, newsId)
       Logger.info("sending message of school %d, news %d".format(schoolId, newsId))
-      if (!news.isEmpty) {
+      if (news.nonEmpty) {
         val url = "http://djcwebtest.duapp.com/nmn.do"
         WS.url(url).post(broadcastMessage(news.get)).map {
           response =>

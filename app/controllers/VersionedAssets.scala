@@ -23,9 +23,8 @@ object VersionedAsset {
       val modified = Play.resource(resourceName).flatMap {
         resource =>
           resource.getProtocol match {
-            case file if file == "file" => {
+            case "file" =>
               Some(new File(resource.toURI).lastModified())
-            }
             case _ => None
           }
       }

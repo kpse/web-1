@@ -111,7 +111,7 @@ class FollowingInputStream(val file: File, val waitNewInput: () => Unit) extends
 
   override def read(b: Array[Byte], off: Int, len: Int): Int = handle(underlying.read(b, off, len))
 
-  override def close = underlying.close
+  override def close() = underlying.close()
 
   protected def rotated_? : Boolean = {
     try {

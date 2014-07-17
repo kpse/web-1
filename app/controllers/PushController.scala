@@ -45,14 +45,12 @@ object PushController extends Controller {
       Json.toJson(new SuccessResponse)
     }
     catch {
-      case e: ChannelClientException => {
+      case e: ChannelClientException =>
         Json.toJson(ErrorResponse(e.printStackTrace().toString))
-      }
-      case e: ChannelServerException => {
+      case e: ChannelServerException =>
         val error = "request_id: %d, error_code: %d, error_message: %s".format(e.getRequestId, e.getErrorCode, e.getErrorMsg)
         Logger.info(error)
         Json.toJson(ErrorResponse(error))
-      }
     }
   }
 

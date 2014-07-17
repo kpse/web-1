@@ -33,7 +33,7 @@ object CookBook {
           "thu_breakfast={thu_breakfast}, thu_lunch={thu_lunch}, thu_dinner={thu_dinner}, thu_extra={thu_extra}, " +
           "fri_breakfast={fri_breakfast}, fri_lunch={fri_lunch}, fri_dinner={fri_dinner}, fri_extra={fri_extra}")
           .on('school_id -> cookbook.school_id.toString,
-            'cookbook_id -> (cookbook.cookbook_id.getOrElse(23)),
+            'cookbook_id -> cookbook.cookbook_id.getOrElse(23),
             'extra_tip -> "",
             'timestamp -> time,
             'mon_breakfast -> cookbook.week.mon.breakfast,

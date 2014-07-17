@@ -111,7 +111,7 @@ class ChatRoom extends Actor {
 
   def receive = {
 
-    case Join(username) => {
+    case Join(username) =>
       if (members.contains(username)) {
         sender ! CannotConnect("这个用户名已存在。")
       } else {
@@ -119,25 +119,21 @@ class ChatRoom extends Actor {
         sender ! Connected(chatEnumerator)
         self ! NotifyJoin(username)
       }
-    }
 
-    case NotifyJoin(username) => {
+    case NotifyJoin(username) =>
       notifyAll("join", username, s"${username}进入聊天室。")
-    }
 
-    case Talk(username, text) => {
+    case Talk(username, text) =>
       text.startsWith("*") match {
         case true =>
           notifyAll("action", username, username + text.replaceFirst("^\\*", ""))
         case false =>
           notifyAll("talk", username, text)
       }
-    }
 
-    case Quit(username) => {
+    case Quit(username) =>
       members = members - username
       notifyAll("quit", username, s"${username}离开了聊天室。")
-    }
 
   }
 

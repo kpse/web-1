@@ -13,7 +13,7 @@ object BatchDeleteController extends Controller with Secured {
   implicit val read3 = Json.reads[IdItem]
 
 
-  def deleteParents = OperatorPage(parse.json) {
+  def deleteParents() = OperatorPage(parse.json) {
     u => request =>
       request.body.validate[List[IdItem]].map {
         case (parents) =>
