@@ -70,6 +70,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
           scope.refresh()
 
       scope.deleteNews = (news) ->
+        news.publisher_id = scope.adminUser.id
         news.$delete ->
           scope.refresh()
 
@@ -108,6 +109,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
           scope.currentModal.hide()
 
       scope.remove = (news) ->
+        news.publisher_id = scope.adminUser.id
         news.$delete ->
           scope.refresh()
           scope.currentModal.hide()
