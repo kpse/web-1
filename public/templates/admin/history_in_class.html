@@ -16,10 +16,9 @@
     <td class="col-xs-4" ng-show="c.lastMessage.medium[0]">
       <div class="image-preview image-110">
         <div kl-media-preview media="c.lastMessage.medium[0]" height="110"></div>
-        <div ng-show="!c.lastMessage.medium[0]">N/A</div>
       </div>
     </td>
-    <td class="col-xs-4" ng-show="!c.lastMessage.medium">N/A</td>
+    <td class="col-xs-4" ng-show="c.lastMessage.medium.length == 0 || !c.lastMessage.medium[0]">N/A</td>
     <td class="col-xs-2">{{(c.lastMessage.timestamp | date:'yyyy年MM月dd日 HH:mm') || 'N/A'}}</td>
   </tr>
   </tbody>
