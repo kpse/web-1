@@ -20,6 +20,14 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
           'sender -> parent_id
         ).as(get[Long]("count(1)") single) > 0
   }
+
+  def duplicatedPhoneWithOthers: Boolean = {
+    Parent.phoneSearch(phone) match {
+      case Some(p) if p.parent_id.equals(parent_id) => false
+      case None => false
+      case _ => true
+    }
+  }
 }
 
 case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait: String, name: String, phone: String, kindergarten: School, relationship: String, child: ChildInfo, card: String)
@@ -29,13 +37,6 @@ case class PhoneCheck(id: Option[String], phone: String) {
 }
 
 object Parent {
-
-  def hasDuplicatedPhoneWithOtherParent(parent: Parent): Boolean = {
-    idExists(parent.parent_id) &&
-      !phoneSearch(parent.phone).fold("")({
-        case p => p.parent_id.getOrElse("")
-      }).equals(parent.parent_id.get)
-  }
 
   def permanentRemove(phone: String) = DB.withConnection {
     implicit c =>
@@ -121,13 +122,14 @@ object Parent {
     implicit c =>
       val oldPhone = oldPhoneNumber(parent)
       oldPhone match {
-        case conflicting if oldPhone != parent.phone && isConflicting(parent) =>
+        case conflicting if !conflicting.equals(parent.phone) && isConflicting(parent) =>
           throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
-        case conflicting if oldPhone != parent.phone && isConflictingInConversation(parent) =>
+        case conflicting if !conflicting.equals(parent.phone) && isConflictingInConversation(parent) =>
           throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
-        case old =>
+        case old if !old.equals(parent.phone) =>
           updatePushAccount(old, parent)
           updateConversationRecord(old, parent)
+        case _ =>
       }
   }
 
@@ -271,11 +273,15 @@ object Parent {
 
   def createPushAccount(parent: Parent): Option[Long] = DB.withConnection {
     implicit c =>
-      if (isConflicting(parent)) throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
-      SQL("INSERT INTO accountinfo(accountid, password, pushid, active, pwd_change_time) " +
-        "VALUES ({accountid},{password},'',0,0)")
-        .on('accountid -> parent.phone,
-          'password -> generateNewPassword(parent.phone)).executeInsert()
+      isConflicting(parent) match {
+        case true => throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
+        case false =>
+          SQL("INSERT INTO accountinfo(accountid, password, pushid, active, pwd_change_time) " +
+            "VALUES ({accountid},{password},'',0,0)")
+            .on('accountid -> parent.phone,
+              'password -> generateNewPassword(parent.phone)).executeInsert()
+      }
+
   }
 
   val withRelationship = {
