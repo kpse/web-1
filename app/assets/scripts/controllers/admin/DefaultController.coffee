@@ -23,7 +23,7 @@ angular.module('kulebaoAdmin').controller 'DefaultCtrl',
       scope.adminUser = Employee.get ->
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.charge = Charge.query school_id: stateParams.kindergarten, ->
-            if scope.kindergarten.charge[0] && scope.kindergarten.charge[0].status == 1
+            if scope.kindergarten.charge && scope.kindergarten.charge[0] && scope.kindergarten.charge[0].status == 1
               scope.chargeInfo = '全校已开通( ' + scope.kindergarten.charge[0].used + ' / ' + scope.kindergarten.charge[0].total_phone_number + ' 人)'
             else
               scope.chargeInfo = '学校未开通手机幼乐宝服务，请与幼乐宝服务人员联系'
