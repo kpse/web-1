@@ -20,7 +20,8 @@ angular.module("kulebao.directives").directive "klFileUpload",
           scope.label = scope.label || '上传'
           scope.controlDisabled = scope.controlDisabled || false
           scope.field = scope.fieldName || 'image'
-          scope.regex = if scope.suffix? then new RegExp(scope.suffix, 'i') else /\.(jpg|png)$/i
+          scope.suffixes = scope.suffix || 'jpg|png'
+          scope.regex = new RegExp("\.(#{scope.suffixes})$", 'i')
           scope.uploading = false
           scope.fileControl = element[0].firstChild
           scope.suffixError = false
