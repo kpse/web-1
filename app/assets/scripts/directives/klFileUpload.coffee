@@ -14,17 +14,25 @@ angular.module("kulebao.directives").directive "klFileUpload",
           controlDisabled: "=?disabled"
           label: "=?label"
           form: "=?"
+          suffix: "@?"
 
         link: (scope, element, attrs) ->
           scope.label = scope.label || '上传'
           scope.controlDisabled = scope.controlDisabled || false
           scope.field = scope.fieldName || 'image'
+          scope.regex = if scope.suffix? then new RegExp(scope.suffix, 'i') else /\.(jpg|png)$/i
           scope.uploading = false
           scope.fileControl = element[0].firstChild
+          scope.suffixError = false
           scope.fileControl.onchange = (e) ->
-            scope.$apply ->
-              scope.targetFile = e.target.files[0]
-              scope.fileSize = e.target.files[0].size if scope.targetFile?
+            unless e.target.files[0].name.match(scope.regex)?
+              scope.$apply ->
+                scope.suffixError = true
+            else
+              scope.$apply ->
+                scope.targetFile = e.target.files[0]
+                scope.fileSize = e.target.files[0].size if scope.targetFile?
+                scope.suffixError = false
 
           scope.uploadPic = ->
             scope.uploading = true

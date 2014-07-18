@@ -1,7 +1,8 @@
 <input type="file" class="picture-input" ng-disabled="controlDisabled"/>
 <button class="btn btn-success btn-xs"
-        ng-disabled="targetFile === undefined || targetFile.size > 2048000 || uploading || controlDisabled"
+        ng-disabled="targetFile === undefined || targetFile.size > 2048000 || uploading || controlDisabled || suffixError"
         ng-click="uploadPic()">{{label}}
 </button>
 <span ng-class="{error : targetFile.size > 2048000}" class="help-block">图片大小请不要超过2m</span>
+<span ng-show="suffixError" class="error help-block">只接受后缀名jpg和png的图片</span>
 <div class="uploading" ng-show="uploading"></div>
