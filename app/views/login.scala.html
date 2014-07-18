@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="main-login">
-    @helper.form(routes.Auth.authenticate, 'class -> "login-form") {
+    @helper.form(routes.Auth.authenticate, 'class -> "login-form", 'autocomplete -> "off") {
 
 
       @form.globalError.map { error =>
