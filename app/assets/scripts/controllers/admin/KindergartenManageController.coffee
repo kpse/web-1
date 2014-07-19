@@ -12,8 +12,9 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         scope.adminUser.news = Stats('news').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
 
         scope.kindergarten = School.get school_id: $stateParams.kindergarten, ->
-          scope.kindergarten.charge = Charge.query school_id: $stateParams.kindergarten, ->
-            if scope.kindergarten.charge && scope.kindergarten.charge[0] && scope.kindergarten.charge[0].status == 0
+          Charge.query school_id: $stateParams.kindergarten, (data)->
+            scope.kindergarten.charge = data[0]
+            if scope.kindergarten.charge.status == 0
               location.path '/expired'
         , (res) ->
           location.path '/' + res.status
@@ -98,13 +99,6 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         user.$save ->
           scope.adminUser = user
           scope.currentModal.hide()
-
-      scope.uploadPic = (employee, pic) ->
-        scope.uploading = true
-        Upload pic, scope.adminUser.id, (url) ->
-          scope.$apply ->
-            employee.portrait = url if url isnt undefined
-            scope.uploading = false
 
       scope.showingUp = (user) ->
         undefined isnt _.find ['principal', 'operator'], (u) -> user.privilege_group == u

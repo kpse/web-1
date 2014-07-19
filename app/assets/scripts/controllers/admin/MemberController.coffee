@@ -9,9 +9,10 @@ angular.module('kulebaoAdmin')
       scope.refresh = ->
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.query school_id: scope.kindergarten.school_id, ->
-            scope.kindergarten.charge = Charge.query school_id: stateParams.kindergarten, ->
-              if scope.kindergarten.charge && scope.kindergarten.charge[0] && scope.kindergarten.charge[0].status == 1
-                scope.heading = '全校已开通( ' + scope.kindergarten.charge[0].used + ' / ' + scope.kindergarten.charge[0].total_phone_number + ' 人)'
+            Charge.query school_id: stateParams.kindergarten, (data)->
+              scope.kindergarten.charge = data[0]
+              if scope.kindergarten.charge && scope.kindergarten.charge.status == 1
+                scope.heading = '全校已开通( ' + scope.kindergarten.charge.used + ' / ' + scope.kindergarten.charge.total_phone_number + ' 人)'
               else
                 scope.heading = '学校未开通手机幼乐宝服务，请与幼乐宝服务人员联系'
               AccessClass(scope.kindergarten.classes)
