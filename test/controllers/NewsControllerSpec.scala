@@ -7,7 +7,7 @@ import org.specs2.mutable.Specification
 import play.api.test.FakeRequest
 import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.test.Helpers._
-import models.{News, PhoneCheck}
+import models.{News, ParentPhoneCheck}
 import play.api.data.Form
 import play.api.data.Forms._
 import scala.text

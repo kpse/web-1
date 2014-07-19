@@ -115,19 +115,32 @@ object ParentController extends Controller with Secured {
       })
   }
 
-  implicit val read = Json.reads[PhoneCheck]
-  def isGoodToUse(phone: String) = IsAuthenticated(parse.json) {
+  implicit val read6 = Json.reads[ParentPhoneCheck]
+  implicit val read7 = Json.reads[EmployeePhoneCheck]
+  def isGoodToUse(phone: String, isEmployee: Option[String]) = IsAuthenticated(parse.json) {
     u => request =>
-      request.body.validate[PhoneCheck].map {
-        case (parent) =>
-          Parent.phoneSearch(parent.phone).fold(Ok(Json.toJson(new SuccessResponse("号码不存在。"))))({
-            case p if parent.isTheSame(p) =>
-              Ok(Json.toJson(SuccessResponse("号码已存在，且与id匹配。")))
-            case _ =>
-              Ok(Json.toJson(ErrorResponse("号码与id不匹配。")))
-          })
-      }.recoverTotal {
-        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      isEmployee match {
+        case Some(s) =>
+          request.body.validate[EmployeePhoneCheck].map {
+            case (employee) =>
+              numberCheck(employee, Employee.phoneSearch(employee.phone))
+          }.recoverTotal {
+            e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+          }
+        case None =>
+          request.body.validate[ParentPhoneCheck].map {
+            case (parent) =>
+              numberCheck(parent, Parent.phoneSearch(parent.phone))
+          }.recoverTotal {
+            e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+          }
       }
+
   }
+  def numberCheck[T](person: PhoneCheck[T], exist: Option[T]) = exist.fold(Ok(Json.toJson(new SuccessResponse("号码不存在。"))))({
+    case p if person.isTheSame(p) =>
+      Ok(Json.toJson(SuccessResponse("号码已存在，且与id匹配。")))
+    case _ =>
+      Ok(Json.toJson(ErrorResponse("号码与id不匹配。")))
+  })
 }

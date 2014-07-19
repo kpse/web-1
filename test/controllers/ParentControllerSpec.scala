@@ -8,13 +8,13 @@ import play.Logger
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.libs.json.{JsArray, JsValue, Json}
-import models.{PhoneCheck, ChildInfo, Parent}
+import models.{ParentPhoneCheck, ChildInfo, Parent}
 
 @RunWith(classOf[JUnitRunner])
 class ParentControllerSpec extends Specification with TestSupport {
   implicit val writes = Json.writes[Parent]
-  implicit val read = Json.reads[PhoneCheck]
-  implicit val writes2 = Json.writes[PhoneCheck]
+  implicit val read = Json.reads[ParentPhoneCheck]
+  implicit val writes2 = Json.writes[ParentPhoneCheck]
 
   def principalLoggedRequest(method: String, url: String) = {
     FakeRequest(method, url).withSession("id" -> "3_93740362_1122", "username" -> "e0001")
@@ -194,7 +194,7 @@ class ParentControllerSpec extends Specification with TestSupport {
     }
 
     "phone check successfully when phone number does not exist" in new WithApplication {
-      private val requestBody = Json.toJson(PhoneCheck(None, "1234567"))
+      private val requestBody = Json.toJson(ParentPhoneCheck(None, "1234567"))
 
       val checkResponse = route(principalLoggedRequest(POST, "/api/v1/phone_check/1234567").withJsonBody(requestBody)).get
 
@@ -207,7 +207,7 @@ class ParentControllerSpec extends Specification with TestSupport {
     }
 
     "phone check successfully when phone number and id are matching" in new WithApplication {
-      private val requestBody = Json.toJson(PhoneCheck(Some("2_93740362_123"), "13402815317"))
+      private val requestBody = Json.toJson(ParentPhoneCheck(Some("2_93740362_123"), "13402815317"))
 
       val checkResponse = route(principalLoggedRequest(POST, "/api/v1/phone_check/13402815317").withJsonBody(requestBody)).get
 
@@ -220,7 +220,7 @@ class ParentControllerSpec extends Specification with TestSupport {
     }
 
     "phone check fails when phone number and id are not matching" in new WithApplication {
-      private val requestBody = Json.toJson(PhoneCheck(Some("2_93740362_456"), "13402815317"))
+      private val requestBody = Json.toJson(ParentPhoneCheck(Some("2_93740362_456"), "13402815317"))
 
       val checkResponse = route(principalLoggedRequest(POST, "/api/v1/phone_check/13402815317").withJsonBody(requestBody)).get
 
@@ -233,7 +233,7 @@ class ParentControllerSpec extends Specification with TestSupport {
     }
 
     "phone check fails when phone number exists and id is missing" in new WithApplication {
-      private val requestBody = Json.toJson(PhoneCheck(None, "13402815317"))
+      private val requestBody = Json.toJson(ParentPhoneCheck(None, "13402815317"))
 
       val checkResponse = route(principalLoggedRequest(POST, "/api/v1/phone_check/13402815317").withJsonBody(requestBody)).get
 

@@ -249,6 +249,14 @@ object Employee {
         ).as(get[Long]("count(1)") single) > 0
   }
 
+  def phoneSearch(phone: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from employeeinfo where phone={phone} and status=1")
+        .on(
+          'phone -> phone
+        ).as(simple singleOpt)
+  }
+
 
   def isOperator(id: String) = DB.withConnection {
     implicit c =>

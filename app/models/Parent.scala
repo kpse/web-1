@@ -32,8 +32,15 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
 
 case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait: String, name: String, phone: String, kindergarten: School, relationship: String, child: ChildInfo, card: String)
 
-case class PhoneCheck(id: Option[String], phone: String) {
+trait PhoneCheck[T] {
+  def isTheSame(t: T): Boolean
+}
+
+case class ParentPhoneCheck(id: Option[String], phone: String) extends PhoneCheck[Parent]{
   def isTheSame(parent: Parent) = parent.parent_id.equals(id)
+}
+case class EmployeePhoneCheck(id: Option[String], phone: String) extends PhoneCheck[Employee]{
+  def isTheSame(employee: Employee) = employee.id.equals(id)
 }
 
 object Parent {

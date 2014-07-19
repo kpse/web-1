@@ -7,13 +7,13 @@ import org.specs2.mutable.Specification
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.libs.json.{JsArray, JsValue, Json}
-import models.{PhoneCheck, Parent}
+import models.{ParentPhoneCheck, Parent}
 
 @RunWith(classOf[JUnitRunner])
 class SessionControllerSpec extends Specification with TestSupport {
   implicit val writes = Json.writes[Parent]
-  implicit val read = Json.reads[PhoneCheck]
-  implicit val writes2 = Json.writes[PhoneCheck]
+  implicit val read = Json.reads[ParentPhoneCheck]
+  implicit val writes2 = Json.writes[ParentPhoneCheck]
 
   def principalLoggedRequest(method: String, url: String) = {
     FakeRequest(method, url).withSession("id" -> "3_93740362_1122", "username" -> "e0001")
