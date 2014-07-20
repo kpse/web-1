@@ -83,7 +83,7 @@
     <div class="col-sm-offset-4 col-sm-8">
       <div class="form-group">
         <a class="btn btn-warning pull-right adding-button"
-           ng-disabled="newEmployeeForm.$invalid || isDuplicated(employee) || uploading || !newEmployeeForm.$dirty"
+           ng-disabled="newEmployeeForm.$invalid || uploading || newEmployeeForm.$pristine"
            ng-click="save(employee)">保存</a>
         <a class="btn btn-default pull-right adding-button"
            ng-click="$hide()">取消</a>

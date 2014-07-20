@@ -1,6 +1,7 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
   ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
-   '$resource', 'chargeService', 'adminCreatingService', '$alert', 'uploadService', 'employeeService', '$location', '$q', 'StatsService',
+   '$resource', 'chargeService', 'adminCreatingService', '$alert', 'uploadService', 'employeeService', '$location',
+   '$q', 'StatsService',
     (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, Upload, LoggedInEmployee, location, $q, Stats) ->
       scope.refresh = ->
         scope.kindergartens = School.query ->
@@ -20,7 +21,8 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
       scope.editSchool = (kg) ->
         kg.charges = Charge.query school_id: kg.school_id, ->
           kg.charge = kg.charges[0]
-          kg.principal = admin_login: kg.managers[0].detail.login_name if kg.managers[0]?
+          kg.principal =
+            admin_login: kg.managers[0].detail.login_name if kg.managers[0]?
 
           scope.school = angular.copy kg
           scope.currentModal = Modal
@@ -56,11 +58,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           group: 'principal'
 
       scope.addManager = (kg) ->
-        scope.employees = Employee.query ->
-          scope.employee = scope.createPrincipal(kg.school_id)
-          scope.currentModal = Modal
-            scope: scope
-            contentTemplate: 'templates/admin/add_employee.html'
+        scope.employee = scope.createPrincipal(kg.school_id)
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/admin/add_employee.html'
 
 
       scope.delete = (kg)->
@@ -133,11 +134,6 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
       nextId = (schools)->
         13 + _.max _.map schools, (c) ->
           c.school_id
-
-      scope.isDuplicated = (employee) ->
-        return false if employee.phone is undefined || employee.phone.length < 10
-        undefined isnt _.find scope.employees, (e) ->
-          e.phone == employee.phone && e.id != employee.id
 
   ]
 

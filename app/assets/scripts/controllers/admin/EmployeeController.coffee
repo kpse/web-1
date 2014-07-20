@@ -54,11 +54,6 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
             placement: "top-left"
             container: '.panel-body'
 
-      scope.isDuplicated = (employee) ->
-        return false if employee.phone is undefined || employee.phone.length < 10
-        undefined isnt _.find scope.employees, (e) ->
-          e.phone == employee.phone && e.id != employee.id
-
       scope.delete = (employee) ->
         employee.$delete ->
           scope.refresh()
