@@ -37,6 +37,7 @@ angular.module('kulebao.services')
     $resource 'api/v1/phone_check/:phone',
       {
         phone: '@phone'
+        employee: '@employee'
       }, {
         'check': method: 'POST'
       }

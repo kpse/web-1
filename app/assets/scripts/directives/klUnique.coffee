@@ -8,17 +8,21 @@ angular.module("kulebao.directives").directive "klUnique",
         require: 'ngModel'
         scope:
           klUnique: "="
+          uniqueType: "@"
+          uniqueIdentity: "@"
 
         link: (scope, element, attrs, c) ->
+          scope.uniqueIdentity = scope.uniqueIdentity || 'parent_id'
           scope.$watch 'klUnique.phone', (n) ->
             if !n? || n.length == 0
               c.$setValidity 'unique', true
             else
               scope.check(scope.klUnique)
 
-          scope.check = (parent) ->
-            return unless parent?
-            valid = PhoneCheck.check id: parent.parent_id, phone: parent.phone, (->
+
+          scope.check = (person) ->
+            return unless person?
+            PhoneCheck.check id: person[scope.uniqueIdentity], phone: person.phone, employee: scope.uniqueType, ((valid)->
               if valid.error_code == 0
                 c.$setValidity 'unique', true
               else
