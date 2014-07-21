@@ -12,7 +12,7 @@ angular.module("kulebao.directives").directive "klUnique",
           uniqueIdentity: "@"
 
         link: (scope, element, attrs, c) ->
-          scope.uniqueIdentity = scope.uniqueIdentity || 'parent_id'
+          scope.id = scope.uniqueIdentity || 'parent_id'
           scope.$watch 'klUnique.phone', (n) ->
             if !n? || n.length == 0
               c.$setValidity 'unique', true
@@ -22,7 +22,7 @@ angular.module("kulebao.directives").directive "klUnique",
 
           scope.check = (person) ->
             return unless person?
-            PhoneCheck.check id: person[scope.uniqueIdentity], phone: person.phone, employee: scope.uniqueType, ((valid)->
+            PhoneCheck.check id: person[scope.id], phone: person.phone, employee: scope.uniqueType, ((valid)->
               if valid.error_code == 0
                 c.$setValidity 'unique', true
               else
