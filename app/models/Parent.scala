@@ -36,10 +36,11 @@ trait PhoneCheck[T] {
   def isTheSame(t: T): Boolean
 }
 
-case class ParentPhoneCheck(id: Option[String], phone: String) extends PhoneCheck[Parent]{
+case class ParentPhoneCheck(id: Option[String], phone: String) extends PhoneCheck[Parent] {
   def isTheSame(parent: Parent) = parent.parent_id.equals(id)
 }
-case class EmployeePhoneCheck(id: Option[String], phone: String) extends PhoneCheck[Employee]{
+
+case class EmployeePhoneCheck(id: Option[String], phone: String) extends PhoneCheck[Employee] {
   def isTheSame(employee: Employee) = employee.id.equals(id)
 }
 
@@ -342,7 +343,6 @@ object Parent {
     implicit c =>
       classId match {
         case Some(id) =>
-          Logger.info("id = " + id.toString)
           SQL(fullStructureSql + " and c.class_id={class_id}")
             .on('kg -> kg,
               'class_id -> id.toString)
@@ -415,14 +415,22 @@ object Parent {
 
   def indexInClasses(kg: Long, classIds: String, member: Option[Boolean], connected: Option[Boolean]) = DB.withConnection {
     implicit c =>
-      classIds.length > 0 match {
-        case true =>
-          SQL(fullStructureSql + generateClassQuery(classIds) + generateMemberQuery(member) + generateConnectionQuery(connected))
-            .on('kg -> kg,
-              'member -> (if (member.getOrElse(false)) 1 else 0)
-            ).as(simple *)
-        case false =>
-          List[Parent]()
+      connected match {
+        case Some(false) =>
+          SQL(simpleSql + generateMemberQuery(member) + generateConnectionQuery(Some(false)))
+            .on('kg -> kg.toString, 'member -> (if (member.getOrElse(false)) 1 else 0))
+            .as(simple *)
+        case _ =>
+          classIds.length > 0 match {
+            case true =>
+              SQL(fullStructureSql + generateClassQuery(classIds) + generateMemberQuery(member) + generateConnectionQuery(connected))
+                .on('kg -> kg,
+                  'member -> (if (member.getOrElse(false)) 1 else 0)
+                ).as(simple *)
+            case false =>
+              List[Parent]()
+          }
+
       }
   }
 

@@ -33,7 +33,15 @@ object ParentController extends Controller with Secured {
             case true =>
               Ok(Json.toJson(Parent.simpleIndex(kg, member, connected)))
             case false =>
-              Ok(Json.toJson(Parent.indexInClasses(kg, UserAccess.allClasses(accesses), member, connected)))
+              connected match {
+                case None =>
+                  val parents: List[Parent] = Parent.indexInClasses(kg, UserAccess.allClasses(accesses), member, None)
+                  val unConnected = Parent.indexInClasses(kg, UserAccess.allClasses(accesses), member, Some(false))
+                  Ok(Json.toJson(parents ++ unConnected))
+                case _ =>
+                  Ok(Json.toJson(Parent.indexInClasses(kg, UserAccess.allClasses(accesses), member, connected)))
+              }
+
           }
 
       }

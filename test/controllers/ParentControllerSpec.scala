@@ -67,7 +67,7 @@ class ParentControllerSpec extends Specification with TestSupport {
       }
     }
 
-    "show no parent to no access teacher" in new WithApplication {
+    "show all unconnected parents to no access teacher" in new WithApplication {
 
       val response = route(noAccessLoggedRequest(GET, "/kindergarten/93740362/parent")).get
 
@@ -76,7 +76,7 @@ class ParentControllerSpec extends Specification with TestSupport {
       val jsonResponse: JsValue = Json.parse(contentAsString(response))
       jsonResponse match {
         case JsArray(arr) =>
-          arr.length must beEqualTo(0)
+          arr.length must beEqualTo(3)
         case _ => failure
       }
     }
