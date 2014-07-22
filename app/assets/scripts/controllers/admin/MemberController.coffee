@@ -8,14 +8,15 @@ angular.module('kulebaoAdmin')
 
       scope.refresh = ->
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.classes = Class.query school_id: scope.kindergarten.school_id, ->
+          scope.kindergarten.classes = Class.query school_id: scope.kindergarten.school_id, (classes)->
+            scope.kindergarten.classes = classes
+            AccessClass(scope.kindergarten.classes)
             Charge.query school_id: stateParams.kindergarten, (data)->
               scope.kindergarten.charge = data[0]
               if scope.kindergarten.charge && scope.kindergarten.charge.status == 1
                 scope.heading = '全校已开通( ' + scope.kindergarten.charge.used + ' / ' + scope.kindergarten.charge.total_phone_number + ' 人)'
               else
                 scope.heading = '学校未开通手机幼乐宝服务，请与幼乐宝服务人员联系'
-              AccessClass(scope.kindergarten.classes)
 
       scope.$on 'update_charge', ->
         scope.refresh()
@@ -23,15 +24,15 @@ angular.module('kulebaoAdmin')
       scope.refresh()
 
       scope.navigateTo = (c) ->
-        location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')
+        location.path("kindergarten/#{stateParams.kindergarten}/member/class/#{c.class_id}/list")
 
   ]
 
 .controller 'MembersInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'schoolService', 'classService', 'parentService', '$modal', 'employeeService', 'chargeService',
+    'schoolService', 'classService', 'parentService', '$modal', 'employeeService', 'chargeService',
     '$alert', 'relationshipService',
-    (scope, rootScope, stateParams, location, School, Class, Parent, Modal, Employee, Charge, Alert, Relationship) ->
+    (scope, rootScope, stateParams, School, Class, Parent, Modal, Employee, Charge, Alert, Relationship) ->
       scope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
 

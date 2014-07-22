@@ -43,6 +43,6 @@ angular.module('kulebao.services')
   ['$location', (location) ->
     (clazzes) ->
       location.path(location.path() + '/class/' + clazzes[0].class_id + '/list') if (location.path().indexOf('/class/') < 0) && clazzes.length > 0
-      location.path('/welcome') if clazzes.length == 0
+      location.path('/default') if clazzes.length == 0
   ]
 

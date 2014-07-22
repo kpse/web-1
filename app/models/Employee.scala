@@ -1,15 +1,15 @@
 package models
 
-import play.api.db.DB
-import anorm._
-import anorm.SqlParser._
-import anorm.~
-import play.api.Play.current
 import java.util.Date
-import models.helper.TimeHelper.any2DateTime
+
+import anorm.SqlParser._
+import anorm.{~, _}
 import models.helper.MD5Helper.md5
-import play.Logger
 import models.helper.PasswordHelper
+import models.helper.TimeHelper.any2DateTime
+import play.Logger
+import play.api.Play.current
+import play.api.db.DB
 
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
@@ -401,7 +401,7 @@ object Employee {
   def groupOf(employeeId: String, schoolId: Long): Option[String] = employeeId match {
     case (id) if isOperator(id) => Some("operator")
     case (id) if isPrincipal(id, schoolId) => Some("principal")
-    case _ => None
+    case _ => Some("teacher")
   }
 
   val simple = {

@@ -3,7 +3,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
    'chargeService', 'uploadService', '$alert', 'StatsService',
     (scope, $rootScope, $stateParams, School, location, Employee, Password, Modal, Charge, Upload, Alert, Stats) ->
       scope.adminUser = Employee.get ->
-        if (scope.adminUser.privilege_group isnt 'operator')
+        if (scope.adminUser.privilege_group isnt 'operator') && scope.adminUser.school_id != parseInt $stateParams.kindergarten
           location.path '/kindergarten/' + scope.adminUser.school_id + '/welcome'
 
         scope.adminUser.assignment = Stats('assignment').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
@@ -26,7 +26,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         if location.path().indexOf(pageName + '/class') < 0
           location.path '/kindergarten/' + $stateParams.kindergarten + '/' + pageName
         else if subName? && location.path().indexOf('/' + subName + '/') > 0
-          location.path location.path().replace new RegExp('/' + subName + '/.+$',"g"), '/list'
+          location.path location.path().replace new RegExp('/' + subName + '/.+$', "g"), '/list'
         else
           location.path location.path().replace /\/[^\/]+$/, '/list'
 
@@ -58,8 +58,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         goPageWithClassesTab 'history', 'child'
 
       scope.goEmployeeList = ->
-        location.path '/kindergarten/' +  $stateParams.kindergarten + '/employee/detail'
-
+        location.path '/kindergarten/' + $stateParams.kindergarten + '/employee/detail'
 
 
       scope.changePassword = (user) ->
@@ -101,7 +100,8 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
           scope.currentModal.hide()
 
       scope.showingUp = (user) ->
-        undefined isnt _.find ['principal', 'operator'], (u) -> user.privilege_group == u
+        undefined isnt _.find ['principal', 'operator'], (u) ->
+          user.privilege_group == u
 
       scope.operatorOnly = (user) ->
         user.privilege_group == 'operator'
