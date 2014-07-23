@@ -20,9 +20,6 @@ angular.module('kulebaoAdmin')
         scope.children = Child.query school_id: stateParams.kindergarten, connected: false, ->
           scope.loading = false
 
-      scope.navigateTo = (s) ->
-        location.path(location.path().replace(/\/type\/.+$/, '') + '/type/' + s.url) if stateParams.type != s.url
-
       scope.delete = (child) ->
         Child.delete school_id: stateParams.kindergarten, child_id: child.child_id, ->
           scope.refreshChildren()

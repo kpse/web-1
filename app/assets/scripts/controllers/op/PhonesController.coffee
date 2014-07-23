@@ -22,7 +22,7 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
             notFound(phone)
 
       scope.navigateTo = (phone, type = 'phone')->
-        location.path '/main/phone_management/' + type + '/' + phone
+        location.path "/main/phone_management/#{type}/#{phone}"
 
       scope.alertDelete = (person) ->
         type = if person.parent_id? then '家长' else '老师'

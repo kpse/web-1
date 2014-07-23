@@ -17,8 +17,8 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
             scope.kindergarten.classes.unshift class_id: 0, name: '全校'
             location.path(location.path() + '/class/0/list') if (location.path().indexOf('/class/') < 0)
 
-      scope.navigateTo = (s) ->
-        location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + s.class_id + '/list')
+      scope.navigateTo = (c) ->
+        location.path("kindergarten/#{stateParams.kindergarten}/bulletin/class/#{c.class_id}/list")
 
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)

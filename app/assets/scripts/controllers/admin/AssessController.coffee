@@ -14,7 +14,7 @@ angular.module('kulebaoAdmin')
           AccessClass(scope.kindergarten.classes)
 
       scope.navigateTo = (c) ->
-        location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')
+        location.path("kindergarten/#{stateParams.kindergarten}/baby-status/class/#{c.class_id}/list")
 
   ]
 .controller 'AssessInClassCtrl',

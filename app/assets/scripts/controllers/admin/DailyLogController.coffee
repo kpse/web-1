@@ -25,7 +25,7 @@ angular.module('kulebaoAdmin')
       scope.refresh()
 
       scope.navigateTo = (c) ->
-        location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')
+        location.path("kindergarten/#{stateParams.kindergarten}/dailylog/class/#{c.class_id}/list")
 
       scope.compress = (url, width, height) ->
         return '' unless url?

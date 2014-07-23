@@ -226,6 +226,9 @@ angular.module('kulebaoAdmin')
           scope.cardNumberEditing = 0
         , (res) ->
           handleError('关系', res)
+
+      scope.navigateTo = (s) ->
+        location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/#{s.url}") if stateParams.type != s.url
   ]
 
 .controller 'connectedCtrl',
@@ -238,8 +241,6 @@ angular.module('kulebaoAdmin')
         scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
           AccessClass(scope.kindergarten.classes)
 
-      scope.navigateTo = (s) ->
-        location.path(location.path().replace(/\/type\/.+$/, '') + '/type/' + s.url) if stateParams.type != s.url
   ]
 
 .controller 'ConnectedInClassCtrl',
@@ -255,7 +256,7 @@ angular.module('kulebaoAdmin')
           scope.loading = false
 
       scope.navigateTo = (c) ->
-        location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')
+        location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/#{stateParams.type}/class/#{c.class_id}/list")
 
   ]
 

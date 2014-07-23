@@ -14,7 +14,7 @@ angular.module('kulebaoAdmin')
           AccessClass(scope.kindergarten.classes)
 
       scope.navigateTo = (c) ->
-        location.path(location.path().replace(/\/class\/.+$/, '') + '/class/' + c.class_id + '/list')
+        location.path("kindergarten/#{stateParams.kindergarten}/conversation/class/#{c.class_id}/list")
 
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)
