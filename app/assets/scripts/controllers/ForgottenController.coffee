@@ -28,7 +28,7 @@ angular.module('kulebaoApp')
       result = Token.save phone: scope.employee.phone, code: token, ->
         if result.error_code == 0
           rootScope.resetToken = token
-          location.path('/reset/' + scope.employee.phone)
+          location.path "/reset/#{scope.employee.phone}"
         else
           handleValidateError(result)
       , (res) ->

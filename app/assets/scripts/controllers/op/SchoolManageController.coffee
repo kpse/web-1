@@ -30,7 +30,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             contentTemplate: 'templates/op/edit_school.html'
 
       scope.goChargePage = ->
-        location.path "/main/charge"
+        location.path '/main/charge'
 
       scope.endEditing = (kg) ->
         School.save kg, ->

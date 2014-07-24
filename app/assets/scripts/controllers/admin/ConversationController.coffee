@@ -47,11 +47,7 @@ angular.module('kulebaoAdmin')
 
 
       scope.goDetail = (child) ->
-        if (location.path().indexOf('/list') > 0 )
-          location.path location.path().replace(/\/list$/, '/child/' + child.child_id)
-        else
-          location.path location.path().replace(/\/child\/\d+$/, '') + '/child/' + child.child_id
-
+        location.path "kindergarten/#{stateParams.kindergarten}/conversation/class/#{child.class_id}/child/#{child.child_id}"
 
   ]
 .controller 'ConversationCtrl',

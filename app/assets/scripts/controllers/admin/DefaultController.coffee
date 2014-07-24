@@ -3,11 +3,11 @@ angular.module('kulebaoAdmin').controller 'DefaultCtrl',
     (scope, $rootScope, $stateParams, School, location, Employee) ->
       scope.adminUser = Employee.get ->
         scope.kindergarten = School.get school_id: scope.adminUser.school_id, ->
-          location.path('/kindergarten/' + scope.kindergarten.school_id + '/welcome')
+          location.path "/kindergarten/#{scope.kindergarten.school_id}/welcome"
         , (res) ->
-          location.path('/' + res.status)
+          location.path "/#{res.status}"
       , (res) ->
-        location.path('/' + res.status)
+        location.path "/#{res.status}"
   ]
 
 .controller 'ExpiredCtrl',

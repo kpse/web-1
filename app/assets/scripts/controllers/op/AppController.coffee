@@ -23,7 +23,7 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
 
 
       scope.navigateTo = (source) ->
-        location.path("/main/app/type/#{source.type}/detail") if $stateParams.source != source.type
+        location.path "/main/app/type/#{source.type}/detail" if $stateParams.source != source.type
 
       if $stateParams.type is undefined
         scope.navigateTo scope.sources[0]

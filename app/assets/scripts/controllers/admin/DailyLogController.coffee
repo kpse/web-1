@@ -72,7 +72,7 @@ angular.module('kulebaoAdmin')
             scope.loading = false
 
       scope.detail = (child)->
-        location.path(location.path().replace(/\/list$/, '') + '/child/' + child.child_id)
+        location.path "kindergarten/#{stateParams.kindergarten}/dailylog/class/#{child.class_id}/child/#{child.child_id}"
 
       scope.d3Data = []
       scope.allData = Statistics.query school_id: stateParams.kindergarten, ->

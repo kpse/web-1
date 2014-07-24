@@ -4,7 +4,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
     (scope, $rootScope, $stateParams, School, location, Employee, Password, Modal, Charge, Upload, Alert, Stats) ->
       scope.adminUser = Employee.get ->
         if (scope.adminUser.privilege_group isnt 'operator') && scope.adminUser.school_id != parseInt $stateParams.kindergarten
-          location.path '/kindergarten/' + scope.adminUser.school_id + '/welcome'
+          location.path "/kindergarten/#{scope.adminUser.school_id}/welcome"
 
         scope.adminUser.assignment = Stats('assignment').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
         scope.adminUser.assess = Stats('assess').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
@@ -17,16 +17,16 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
             if scope.kindergarten.charge.status == 0
               location.path '/expired'
         , (res) ->
-          location.path '/' + res.status
+          location.path "/#{res.status}"
 
       scope.isSelected = (tab)->
         tab is $rootScope.tabName
 
       goPageWithClassesTab = (pageName, subName)->
-        if location.path().indexOf(pageName + '/class') < 0
-          location.path '/kindergarten/' + $stateParams.kindergarten + '/' + pageName
-        else if subName? && location.path().indexOf('/' + subName + '/') > 0
-          location.path location.path().replace new RegExp('/' + subName + '/.+$', "g"), '/list'
+        if location.path().indexOf("#{pageName}/class") < 0
+          location.path "/kindergarten/#{$stateParams.kindergarten}/#{pageName}"
+        else if subName? && location.path().indexOf("/#{subName}/") > 0
+          location.path location.path().replace new RegExp("/#{subName}/.+$", "g"), '/list'
         else
           location.path location.path().replace /\/[^\/]+$/, '/list'
 
@@ -58,7 +58,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         goPageWithClassesTab 'history', 'child'
 
       scope.goEmployeeList = ->
-        location.path '/kindergarten/' + $stateParams.kindergarten + '/employee/detail'
+        location.path "/kindergarten/#{$stateParams.kindergarten}/employee/detail"
 
 
       scope.changePassword = (user) ->

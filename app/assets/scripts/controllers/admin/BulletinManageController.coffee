@@ -15,7 +15,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
         scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
           scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
             scope.kindergarten.classes.unshift class_id: 0, name: '全校'
-            location.path(location.path() + '/class/0/list') if (location.path().indexOf('/class/') < 0)
+            location.path "#{location.path()}/class/0/list" if (location.path().indexOf('/class/') < 0)
 
       scope.navigateTo = (c) ->
         location.path("kindergarten/#{stateParams.kindergarten}/bulletin/class/#{c.class_id}/list")

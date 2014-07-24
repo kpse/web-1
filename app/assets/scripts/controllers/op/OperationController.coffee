@@ -53,8 +53,7 @@ angular.module('kulebaoOp').controller 'OpCtrl',
             scope.uploading = false
 
       goPageWithTab = (pageName, tabName, defaultValue)->
-        if location.path().indexOf(pageName + '/' + tabName) < 0
-          location.path '/main/' + pageName + '/' + tabName + '/' + defaultValue
+        location.path "/main/#{pageName}/#{tabName}/#{defaultValue}" if location.path().indexOf("#{pageName}/#{tabName}") < 0
 
       scope.goFeedback = ->
         goPageWithTab 'feedback', 'source', 'android_parent/list'

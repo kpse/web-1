@@ -29,7 +29,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
         scope.loading = false
 
       scope.detail = (kg) ->
-        location.path('main/school_report/' + kg.school_id)
+        location.path "main/school_report/#{kg.school_id}"
 
   ]
 
