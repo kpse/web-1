@@ -52,7 +52,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
           scope.parents = Parent.query school_id: stateParams.school_id
           scope.children = Child.query school_id: stateParams.school_id, connected: true
           scope.employees = Employee.query school_id: stateParams.school_id
-          scope.allNews = News.query school_id: stateParams.school_id
+          scope.allNews = News.query school_id: stateParams.school_id, publisher_id: scope.adminUser.id
           scope.allChats = Chat.get school_id: stateParams.school_id
           scope.allHistoryRecords = History.get school_id: stateParams.school_id
           scope.active = ActiveCount.get school_id: stateParams.school_id
