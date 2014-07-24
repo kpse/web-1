@@ -23,8 +23,7 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
 
 
       scope.navigateTo = (source) ->
-        location.path(location.path().replace(/\/type\/.+$/,
-          '') + '/type/' + source.type + '/detail') if $stateParams.type != source.type
+        location.path("/main/app/type/#{source.type}/detail") if $stateParams.source != source.type
 
       if $stateParams.type is undefined
         scope.navigateTo scope.sources[0]
@@ -37,7 +36,6 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
   ['$scope', '$rootScope', '$stateParams', '$http', 'appUploadService', 'appPackageService', 'employeeService',
    '$location', 'teacherAppPackageService',
     (scope, $rootScope, $stateParams, $http, remoteFileSetter, AppPackage, Employee, location, TeacherAppPackage) ->
-
       scope.lastApp = scope.PackageService.latest ->
         scope.app = scope.createPkg()
         scope.app.version_code = scope.lastApp.version_code + 1
