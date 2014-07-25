@@ -21,7 +21,7 @@ angular.module('kulebaoAdmin')
       scope.isEditing = !scope.isEditing
       console.log 'scope.kindergarten changed: ' + scope.school_changed
       if scope.school_changed
-        $cacheFactory.get('$http').removeAll();
+        $cacheFactory.get('$http').removeAll()
         School.save scope.kindergarten, ->
           scope.school_changed = false
 

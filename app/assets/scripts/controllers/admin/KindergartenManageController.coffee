@@ -1,7 +1,7 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'schoolService', '$location', 'employeeService', 'passwordService', '$modal',
+  ['$scope', '$rootScope', '$stateParams', '$cacheFactory', 'schoolService', '$location', 'employeeService', 'passwordService', '$modal',
    'chargeService', 'uploadService', '$alert', 'StatsService',
-    (scope, $rootScope, $stateParams, School, location, Employee, Password, Modal, Charge, Upload, Alert, Stats) ->
+    (scope, $rootScope, $stateParams, $cacheFactory, School, location, Employee, Password, Modal, Charge, Upload, Alert, Stats) ->
       scope.adminUser = Employee.get ->
         if (scope.adminUser.privilege_group isnt 'operator') && scope.adminUser.school_id != parseInt $stateParams.kindergarten
           location.path "/kindergarten/#{scope.adminUser.school_id}/welcome"
@@ -96,6 +96,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
 
       scope.save = (user) ->
         user.$save ->
+          $cacheFactory.get('$http').removeAll()
           scope.adminUser = user
           scope.currentModal.hide()
 

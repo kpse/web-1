@@ -10,6 +10,9 @@ angular.module('kulebao.services')
           all:
             params:
               phone: '@phone'
+          get:
+            method: 'GET'
+            cache: true
         }
   ]
 
