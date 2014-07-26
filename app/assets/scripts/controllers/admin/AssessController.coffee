@@ -3,15 +3,14 @@
 angular.module('kulebaoAdmin')
 .controller 'AssessListCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    'schoolService', 'classService', '$location', 'accessClassService',
-    (scope, rootScope, stateParams, School, Class, location, AccessClass) ->
+    'classService', '$location', 'accessClassService',
+    (scope, rootScope, stateParams, Class, location, AccessClass) ->
       rootScope.tabName = 'baby-status'
       scope.heading = '评价宝宝最近的表现'
 
       scope.loading = true
-      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-        scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query ->
-          AccessClass(scope.kindergarten.classes)
+      scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query ->
+        AccessClass(scope.kindergarten.classes)
 
       scope.navigateTo = (c) ->
         location.path("kindergarten/#{stateParams.kindergarten}/baby-status/class/#{c.class_id}/list")
@@ -19,18 +18,16 @@ angular.module('kulebaoAdmin')
   ]
 .controller 'AssessInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'schoolService', 'classService', 'assessService', 'childService',
-    (scope, rootScope, stateParams, location, School, Class, Assess, Child) ->
+    '$location', 'classService', 'assessService', 'childService',
+    (scope, rootScope, stateParams, location, Class, Assess, Child) ->
       scope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
 
-      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-        scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query()
-        scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true).query ->
-          _.forEach scope.children, (c) ->
-            c.status = Assess.bind(school_id: stateParams.kindergarten, child_id: c.child_id, most: 1).query ->
-              c.recentStatus = c.status[0]
-          scope.loading = false
+      scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true).query ->
+        _.forEach scope.children, (c) ->
+          c.status = Assess.bind(school_id: stateParams.kindergarten, child_id: c.child_id, most: 1).query ->
+            c.recentStatus = c.status[0]
+        scope.loading = false
 
       scope.goDetail = (child) ->
         location.path "kindergarten/#{stateParams.kindergarten}/baby-status/class/#{child.class_id}/child/#{child.child_id}"
@@ -38,10 +35,9 @@ angular.module('kulebaoAdmin')
   ]
 .controller 'AssessCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'schoolService', '$http', 'classService', 'assessService', 'childService', '$modal',
-    '$popover', '$tooltip', 'employeeService'
-    (scope, rootScope, stateParams, location, School, $http, Class, Assess, Child, Modal, Popover, Tooltip, Employee) ->
-      scope.adminUser = Employee.get()
+    '$location', '$http', 'classService', 'assessService', 'childService', '$modal',
+    '$popover', '$tooltip',
+    (scope, rootScope, stateParams, location, $http, Class, Assess, Child, Modal, Popover, Tooltip) ->
 
       scope.loading = true
       scope.child = Child.bind(school_id: stateParams.kindergarten, child_id: stateParams.child).get ->
