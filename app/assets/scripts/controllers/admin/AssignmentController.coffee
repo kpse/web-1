@@ -2,20 +2,18 @@
 
 angular.module('kulebaoAdmin')
 .controller 'AssignmentListCtrl',
-  [ '$scope', '$rootScope', '$stateParams', 'schoolService', 'classService', '$location', 'accessClassService',
-    (scope, rootScope, stateParams, School, Class, location, AccessClass) ->
+  [ '$scope', '$rootScope', '$stateParams', 'classService', '$location', 'accessClassService',
+    (scope, rootScope, stateParams, Class, location, AccessClass) ->
       rootScope.tabName = 'assignment'
       scope.heading = '孩子在家里还需要学习什么？在这里告诉家长吧'
 
-      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-        scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query ->
-          AccessClass(scope.kindergarten.classes)
+      scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query ->
+        AccessClass(scope.kindergarten.classes)
 
       scope.navigateTo = (c) ->
         location.path("kindergarten/#{stateParams.kindergarten}/assignment/class/#{c.class_id}/list")
 
   ]
-
 .controller 'AssignmentsInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     (scope, rootScope, stateParams) ->
@@ -24,8 +22,8 @@ angular.module('kulebaoAdmin')
   ]
 .controller 'AssignmentsCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'schoolService', 'classService', 'assignmentService', '$modal', 'employeeService', 'uploadService',
-    (scope, rootScope, stateParams, location, School, Class, Assignment, Modal, Employee, Upload) ->
+    '$location', 'classService', 'assignmentService', '$modal',
+    (scope, rootScope, stateParams, location, Class, Assignment, Modal) ->
       scope.newAssignment = ->
         new Assignment
           class_id: parseInt stateParams.class_id
@@ -40,15 +38,13 @@ angular.module('kulebaoAdmin')
           contentTemplate: 'templates/admin/assignment.html'
 
       scope.buttonLabel = '上传图片'
-      scope.adminUser = Employee.get ->
-        scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
-            scope.refresh()
 
       scope.refresh = ->
         scope.loading = true
         scope.assignments = Assignment.query school_id: stateParams.kindergarten, class_id: stateParams.class_id, ->
           scope.loading = false
+
+      scope.refresh()
 
       scope.edit = (assignment) ->
         scope.assignment = angular.copy(assignment)
