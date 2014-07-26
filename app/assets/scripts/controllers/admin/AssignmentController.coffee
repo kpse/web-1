@@ -2,13 +2,12 @@
 
 angular.module('kulebaoAdmin')
 .controller 'AssignmentListCtrl',
-  [ '$scope', '$rootScope', '$stateParams', 'classService', '$location', 'accessClassService',
-    (scope, rootScope, stateParams, Class, location, AccessClass) ->
+  [ '$scope', '$rootScope', '$stateParams', '$location', 'accessClassService',
+    (scope, rootScope, stateParams, location, AccessClass) ->
       rootScope.tabName = 'assignment'
       scope.heading = '孩子在家里还需要学习什么？在这里告诉家长吧'
 
-      scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query ->
-        AccessClass(scope.kindergarten.classes)
+      AccessClass(scope.kindergarten.classes)
 
       scope.navigateTo = (c) ->
         location.path("kindergarten/#{stateParams.kindergarten}/assignment/class/#{c.class_id}/list")
@@ -22,8 +21,8 @@ angular.module('kulebaoAdmin')
   ]
 .controller 'AssignmentsCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'classService', 'assignmentService', '$modal',
-    (scope, rootScope, stateParams, location, Class, Assignment, Modal) ->
+    '$location', 'assignmentService', '$modal',
+    (scope, rootScope, stateParams, location, Assignment, Modal) ->
       scope.newAssignment = ->
         new Assignment
           class_id: parseInt stateParams.class_id
