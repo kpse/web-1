@@ -2,13 +2,11 @@
 
 angular.module('kulebaoAdmin')
 .controller 'RelationshipMainCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
-   'relationshipService', '$modal', 'childService', '$http', '$alert', 'uploadService', 'employeeService',
-    (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child, $http, Alert, Upload, Employee) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', 'classService', 'parentService',
+   'relationshipService', '$modal', 'childService', '$http', '$alert',
+    (scope, rootScope, stateParams, location, Class, Parent, Relationship, Modal, Child, $http, Alert) ->
       rootScope.tabName = 'relationship'
       scope.heading = '管理幼儿及家长基础档案信息'
-
-      scope.adminUser = Employee.get()
 
       scope.types = [
         {
@@ -32,9 +30,8 @@ angular.module('kulebaoAdmin')
           scope.loading = false
 
       scope.loading = true
-      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-        scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
-          scope.refresh()
+      scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
+        scope.refresh()
 
       scope.createParent = ->
         new Parent
@@ -54,17 +51,19 @@ angular.module('kulebaoAdmin')
           class_id: scope.kindergarten.classes[0].class_id
           school_id: parseInt stateParams.kindergarten
 
-      recommand = (parent) ->
+      possibleRelationship = (person) ->
+        {0: ['妈妈', '奶奶', '姥姥'], 1: ['爸爸', '爷爷', '姥爷']}[person.gender]
+      recommend = (parent) ->
         if parent? && parent.validRelationships?
           parent.validRelationships[0]
         else
           '妈妈'
 
       scope.createRelationship = (child, parent)->
-        parent.validRelationships = {0: ['妈妈', '奶奶', '姥姥'], 1: ['爸爸', '爷爷', '姥爷']}[parent.gender] if parent?
+        parent.validRelationships = possibleRelationship(parent) if parent?
         new Relationship
           school_id: parseInt stateParams.kindergarten
-          relationship: recommand(parent)
+          relationship: recommend(parent)
           child: child
           parent: parent
           fix_child: child?
@@ -91,7 +90,7 @@ angular.module('kulebaoAdmin')
           scope.relationship = scope.createRelationship(child, parent)
           scope.parents = Parent.query school_id: stateParams.kindergarten, ->
             _.forEach scope.parents, (p) ->
-              p.validRelationships = {0: ['妈妈', '奶奶', '姥姥'], 1: ['爸爸', '爷爷', '姥爷']}[p.gender]
+              p.validRelationships = possibleRelationship(p)
             scope.children = Child.query school_id: stateParams.kindergarten, ->
               scope.currentModal = Modal
                 scope: scope
@@ -232,28 +231,28 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'connectedCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'accessClassService',
-    (scope, rootScope, stateParams, location, School, Class, AccessClass) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', 'classService', 'accessClassService',
+    (scope, rootScope, stateParams, location, Class, AccessClass) ->
       scope.current_type = 'connected'
 
       scope.loading = true
-      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-        scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
-          AccessClass(scope.kindergarten.classes)
+      scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
+        AccessClass(scope.kindergarten.classes)
 
+      scope.navigateTo = (s) ->
+        location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/#{s.url}") if stateParams.type != s.url
   ]
 
 .controller 'ConnectedInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'schoolService', 'classService', 'parentService', 'conversationService', 'relationshipService',
-    (scope, rootScope, stateParams, location, School, Class, Parent, Chat, Relationship) ->
+    '$location', 'classService', 'parentService', 'conversationService', 'relationshipService',
+    (scope, rootScope, stateParams, location, Class, Parent, Chat, Relationship) ->
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.loading = true
-      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-        scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten
-        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
-          scope.loading = false
+      scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten
+      scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
+        scope.loading = false
 
       scope.navigateTo = (c) ->
         location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/#{stateParams.type}/class/#{c.class_id}/list")
