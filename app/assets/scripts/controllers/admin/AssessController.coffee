@@ -3,14 +3,12 @@
 angular.module('kulebaoAdmin')
 .controller 'AssessListCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    'classService', '$location', 'accessClassService',
-    (scope, rootScope, stateParams, Class, location, AccessClass) ->
+    '$location', 'accessClassService',
+    (scope, rootScope, stateParams, location, AccessClass) ->
       rootScope.tabName = 'baby-status'
       scope.heading = '评价宝宝最近的表现'
 
-      scope.loading = true
-      scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query ->
-        AccessClass(scope.kindergarten.classes)
+      AccessClass(scope.kindergarten.classes)
 
       scope.navigateTo = (c) ->
         location.path("kindergarten/#{stateParams.kindergarten}/baby-status/class/#{c.class_id}/list")
@@ -18,8 +16,8 @@ angular.module('kulebaoAdmin')
   ]
 .controller 'AssessInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'classService', 'assessService', 'childService',
-    (scope, rootScope, stateParams, location, Class, Assess, Child) ->
+    '$location', 'assessService', 'childService',
+    (scope, rootScope, stateParams, location, Assess, Child) ->
       scope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
 
@@ -35,9 +33,8 @@ angular.module('kulebaoAdmin')
   ]
 .controller 'AssessCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', '$http', 'classService', 'assessService', 'childService', '$modal',
-    '$popover', '$tooltip',
-    (scope, rootScope, stateParams, location, $http, Class, Assess, Child, Modal, Popover, Tooltip) ->
+    '$location', '$http', 'assessService', 'childService', '$modal',
+    (scope, rootScope, stateParams, location, $http, Assess, Child, Modal) ->
 
       scope.loading = true
       scope.child = Child.bind(school_id: stateParams.kindergarten, child_id: stateParams.child).get ->
