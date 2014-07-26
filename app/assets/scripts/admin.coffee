@@ -15,6 +15,7 @@ angular.module('kulebaoAdmin',
       resolve:
         AdminUser : (employeeService) -> employeeService.get().$promise
         School : ($stateParams, schoolService) -> schoolService.get(school_id: $stateParams.kindergarten).$promise
+        ClassesInSchool : ($stateParams, classService) -> classService.query(school_id: $stateParams.kindergarten).$promise
     .state 'kindergarten.bulletin',
       url: '/bulletin',
       templateUrl: 'templates/admin/search_panel.html',

@@ -1,9 +1,12 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
   ['$scope', '$rootScope', '$stateParams', '$cacheFactory', '$location', 'employeeService', 'passwordService', '$modal',
-   'chargeService', 'uploadService', '$alert', 'StatsService', 'AdminUser', 'School',
-    (scope, $rootScope, $stateParams, $cacheFactory, location, Employee, Password, Modal, Charge, Upload, Alert, Stats, AdminUser, School) ->
+   'chargeService', 'uploadService', '$alert', 'StatsService', 'AdminUser', 'School', 'ClassesInSchool'
+    (scope, $rootScope, $stateParams, $cacheFactory, location, Employee, Password, Modal, Charge, Upload, Alert, Stats, AdminUser, School, ClassesInSchool) ->
+
       scope.adminUser = AdminUser
       scope.kindergarten = School
+      scope.kindergarten.classes = ClassesInSchool
+
       if (scope.adminUser.privilege_group isnt 'operator') && scope.adminUser.school_id != parseInt $stateParams.kindergarten
         location.path "/kindergarten/#{scope.adminUser.school_id}/welcome"
 
