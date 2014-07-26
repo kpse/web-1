@@ -3,14 +3,9 @@
 
 angular.module('kulebaoAdmin')
 .controller 'unconnectedChildCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService', 'parentService',
-   'relationshipService', '$modal', 'childService'
-    (scope, rootScope, stateParams, location, School, Class, Parent, Relationship, Modal, Child) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', 'childService',
+    (scope, rootScope, stateParams, location, Child) ->
       scope.current_type = 'unconnectedChild'
-
-      scope.loading = true
-      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-        scope.refreshChildren()
 
       scope.$on 'refreshing', ->
         scope.refreshChildren()
@@ -19,6 +14,8 @@ angular.module('kulebaoAdmin')
         scope.loading = true
         scope.children = Child.query school_id: stateParams.kindergarten, connected: false, ->
           scope.loading = false
+
+      scope.refreshChildren()
 
       scope.delete = (child) ->
         Child.delete school_id: stateParams.kindergarten, child_id: child.child_id, ->
