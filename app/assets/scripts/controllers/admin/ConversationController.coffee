@@ -3,12 +3,11 @@
 angular.module('kulebaoAdmin')
 .controller 'ConversationsListCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    'classService', '$location', 'imageCompressService', 'accessClassService',
-    (scope, rootScope, stateParams, Class, location, Compress, AccessClass) ->
+    '$location', 'imageCompressService', 'accessClassService',
+    (scope, rootScope, stateParams, location, Compress, AccessClass) ->
       rootScope.tabName = 'conversation'
       scope.heading = '使用该功能与家长直接对话'
 
-      scope.loading = true
       AccessClass(scope.kindergarten.classes)
 
       scope.navigateTo = (c) ->
@@ -21,9 +20,9 @@ angular.module('kulebaoAdmin')
 
 .controller 'ConversationsInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'parentService', 'chatSessionService', 'childService',
+    '$location', 'chatSessionService', 'childService',
     'senderService', 'readRecordService',
-    (scope, rootScope, stateParams, location, Parent, Chat, Child, Sender, ReaderLog) ->
+    (scope, rootScope, stateParams, location, Chat, Child, Sender, ReaderLog) ->
       scope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
 
@@ -47,9 +46,9 @@ angular.module('kulebaoAdmin')
   ]
 .controller 'ConversationCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', '$http', 'classService', 'chatSessionService', 'childService', '$modal',
+    '$location', '$http', 'chatSessionService', 'childService', '$modal',
     '$popover', '$tooltip', 'senderService', 'readRecordService',
-    (scope, rootScope, stateParams, location, $http, Class, Message, Child, Modal, Popover, Tooltip, Sender, ReaderLog) ->
+    (scope, rootScope, stateParams, location, $http, Message, Child, Modal, Popover, Tooltip, Sender, ReaderLog) ->
 
       scope.loading = true
       scope.child = Child.bind(school_id: stateParams.kindergarten, child_id: stateParams.child_id).get ->
