@@ -22,11 +22,6 @@ describe 'Controller: ParentsCtrl', ($alert) ->
     }
     $httpBackend = _$httpBackend_
 
-    $httpBackend.expectGET('/kindergarten/93740362')
-    .respond
-        school_id: 93740362
-        name: 'school_name'
-
     $httpBackend.expectGET('/kindergarten/93740362/parent?connected=false')
     .respond [
       id: 1
