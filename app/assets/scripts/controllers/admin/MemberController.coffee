@@ -30,16 +30,12 @@ angular.module('kulebaoAdmin')
 
 .controller 'MembersInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    'schoolService', 'classService', 'parentService', '$modal', 'employeeService', 'chargeService',
+    'parentService', '$modal', 'chargeService',
     '$alert', 'relationshipService',
-    (scope, rootScope, stateParams, School, Class, Parent, Modal, Employee, Charge, Alert, Relationship) ->
-      scope.loading = true
+    (scope, rootScope, stateParams, Parent, Modal, Charge, Alert, Relationship) ->
       scope.current_class = parseInt(stateParams.class_id)
 
-      scope.adminUser = Employee.get ->
-        scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
-            scope.refresh()
+      scope.refresh()
 
       scope.currentClass = ->
         _.find scope.kindergarten.classes, (c) ->
