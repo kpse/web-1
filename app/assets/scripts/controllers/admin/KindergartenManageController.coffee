@@ -1,23 +1,18 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$cacheFactory', 'schoolService', '$location', 'employeeService', 'passwordService', '$modal',
-   'chargeService', 'uploadService', '$alert', 'StatsService',
-    (scope, $rootScope, $stateParams, $cacheFactory, School, location, Employee, Password, Modal, Charge, Upload, Alert, Stats) ->
-      scope.adminUser = Employee.get ->
-        if (scope.adminUser.privilege_group isnt 'operator') && scope.adminUser.school_id != parseInt $stateParams.kindergarten
-          location.path "/kindergarten/#{scope.adminUser.school_id}/welcome"
+  ['$scope', '$rootScope', '$stateParams', '$cacheFactory', '$location', 'employeeService', 'passwordService', '$modal',
+   'chargeService', 'uploadService', '$alert', 'StatsService', 'AdminUser', 'School',
+    (scope, $rootScope, $stateParams, $cacheFactory, location, Employee, Password, Modal, Charge, Upload, Alert, Stats, AdminUser, School) ->
+      scope.adminUser = AdminUser
+      scope.kindergarten = School
+      if (scope.adminUser.privilege_group isnt 'operator') && scope.adminUser.school_id != parseInt $stateParams.kindergarten
+        location.path "/kindergarten/#{scope.adminUser.school_id}/welcome"
 
-        scope.adminUser.assignment = Stats('assignment').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
-        scope.adminUser.assess = Stats('assess').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
-        scope.adminUser.conversation = Stats('conversation').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
-        scope.adminUser.news = Stats('news').query school_id: $stateParams.kindergarten, employee_id: scope.adminUser.id
-
-        scope.kindergarten = School.get school_id: $stateParams.kindergarten, ->
-          Charge.query school_id: $stateParams.kindergarten, (data)->
-            scope.kindergarten.charge = data[0]
-            if scope.kindergarten.charge.status == 0
-              location.path '/expired'
-        , (res) ->
-          location.path "/#{res.status}"
+      Charge.query school_id: $stateParams.kindergarten, (data)->
+        scope.kindergarten.charge = data[0]
+        if scope.kindergarten.charge.status == 0
+          location.path '/expired'
+      , (res) ->
+        location.path "/#{res.status}"
 
       scope.isSelected = (tab)->
         tab is $rootScope.tabName

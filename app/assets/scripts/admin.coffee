@@ -12,6 +12,9 @@ angular.module('kulebaoAdmin',
       url: '/kindergarten/:kindergarten',
       templateUrl: 'templates/admin/kindergarten_manage.html',
       controller: 'KgManageCtrl'
+      resolve:
+        AdminUser : (employeeService) -> employeeService.get().$promise
+        School : ($stateParams, schoolService) -> schoolService.get(school_id: $stateParams.kindergarten).$promise
     .state 'kindergarten.bulletin',
       url: '/bulletin',
       templateUrl: 'templates/admin/search_panel.html',

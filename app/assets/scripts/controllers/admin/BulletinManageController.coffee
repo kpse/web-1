@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
   ['$scope', '$rootScope', '$location',
-   '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService', 'imageCompressService',
-    (scope, $rootScope, location, stateParams, School, Modal, Employee, Class, Compress) ->
+   '$stateParams', '$modal', 'classService', 'imageCompressService',
+    (scope, $rootScope, location, stateParams, Modal, Class, Compress) ->
       $rootScope.tabName = 'bulletin'
       scope.heading = '全园和班级的通知公告都可以在这里发布'
 
@@ -11,11 +11,9 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
       scope.loading = true
 
-      scope.adminUser = Employee.get ->
-        scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
-            scope.kindergarten.classes.unshift class_id: 0, name: '全校'
-            location.path "#{location.path()}/class/0/list" if (location.path().indexOf('/class/') < 0)
+      scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
+        scope.kindergarten.classes.unshift class_id: 0, name: '全校'
+        location.path "#{location.path()}/class/0/list" if (location.path().indexOf('/class/') < 0)
 
       scope.navigateTo = (c) ->
         location.path("kindergarten/#{stateParams.kindergarten}/bulletin/class/#{c.class_id}/list")
@@ -26,8 +24,8 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
 .controller 'BulletinCtrl',
   ['$scope', '$rootScope', 'adminNewsService',
-   '$stateParams', 'schoolService', '$modal', 'employeeService', 'classService', 'adminNewsPreview', 'uploadService',
-    (scope, $rootScope, adminNewsService, stateParams, School, Modal, Employee, Class, NewsPreivew, Upload) ->
+   '$stateParams', '$modal', 'classService', 'adminNewsPreview', 'uploadService',
+    (scope, $rootScope, adminNewsService, stateParams, Modal, Class, NewsPreivew, Upload) ->
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
@@ -54,11 +52,9 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
               most: scope.itemsPerPage, ->
                 scope.loading = false
 
-      scope.adminUser = Employee.get ->
-        scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
-            scope.kindergarten.classes.unshift class_id: 0, name: '全校'
-            scope.refresh()
+      scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
+        scope.kindergarten.classes.unshift class_id: 0, name: '全校'
+        scope.refresh()
 
       scope.$watch 'currentPage', (newPage, oldPage) ->
         scope.refresh(newPage) if newPage isnt oldPage
