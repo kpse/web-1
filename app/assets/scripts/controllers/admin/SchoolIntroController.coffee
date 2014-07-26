@@ -2,19 +2,16 @@
 
 angular.module('kulebaoAdmin')
 .controller 'IntroCtrl', [ '$scope', '$rootScope', '$stateParams',
-                           'schoolService', '$cacheFactory', 'employeeService'
-  (scope, rootScope, stateParams, School, $cacheFactory, Employee) ->
+                           'schoolService', '$cacheFactory',
+  (scope, rootScope, stateParams, School, $cacheFactory) ->
     rootScope.tabName = 'intro'
 
-    scope.adminUser = Employee.get ->
-      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-        scope.$watch 'kindergarten', (oldv, newv) ->
-          scope.school_changed = true if newv isnt oldv
-        , true
+    scope.$watch 'kindergarten', (oldv, newv) ->
+      scope.school_changed = true if newv isnt oldv
+    , true
 
     scope.school_changed = false
     scope.isEditing = false
-
 
     scope.toggleEditing = (e) ->
       e.stopPropagation()
