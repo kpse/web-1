@@ -34,17 +34,12 @@ angular.module('kulebaoAdmin')
 
 .controller 'DailyLogInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'schoolService', 'classService', 'parentService', '$modal', 'employeeService',
+    '$location', 'parentService', '$modal',
     'childService', 'dailyLogService', 'statisticsDailyLogService',
-    (scope, rootScope, stateParams, location, School, Class, Parent, Modal, Employee, Child, DailyLog, Statistics) ->
-      scope.loading = true
+    (scope, rootScope, stateParams, location, Parent, Modal, Child, DailyLog, Statistics) ->
       scope.current_class = parseInt(stateParams.class_id)
 
-
-      scope.adminUser = Employee.get ->
-        scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.classes = Class.query school_id: stateParams.kindergarten, ->
-            scope.refresh()
+      scope.refresh()
 
       scope.currentClass = ->
         _.find scope.kindergarten.classes, (c) ->

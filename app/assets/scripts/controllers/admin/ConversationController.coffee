@@ -21,13 +21,12 @@ angular.module('kulebaoAdmin')
 
 .controller 'ConversationsInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'classService', 'parentService', 'chatSessionService', 'childService',
+    '$location', 'parentService', 'chatSessionService', 'childService',
     'senderService', 'readRecordService',
-    (scope, rootScope, stateParams, location, Class, Parent, Chat, Child, Sender, ReaderLog) ->
+    (scope, rootScope, stateParams, location, Parent, Chat, Child, Sender, ReaderLog) ->
       scope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
 
-      scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query()
       scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true).query ->
         _.forEach scope.children, (child) ->
           child.messages = Chat.bind(school_id: stateParams.kindergarten, topic: child.child_id, most: 1).query ->
