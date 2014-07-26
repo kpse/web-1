@@ -2,22 +2,20 @@
 
 angular.module('kulebaoAdmin')
 .controller 'AllDailyLogCtrl',
-  [ '$scope', '$rootScope', '$stateParams', 'schoolService', 'classService', '$location', 'dailyLogService',
+  [ '$scope', '$rootScope', '$stateParams', '$location', 'dailyLogService',
     'childService', 'accessClassService', 'imageCompressService',
-    (scope, rootScope, stateParams, School, Class, location, DailyLog, Child, AccessClass, Compressor) ->
+    (scope, rootScope, stateParams, location, DailyLog, Child, AccessClass, Compressor) ->
       rootScope.tabName = 'dailylog'
 
       scope.childrenInSchool = 0
       scope.refresh = ->
-        scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.classes = Class.query school_id: scope.kindergarten.school_id, ->
-            _.forEach scope.kindergarten.classes, (clazz) ->
-              clazz.dailyLog = DailyLog.query school_id: stateParams.kindergarten, class_id: clazz.class_id, ->
-                scope.childrenInSchool = scope.childrenInSchool + clazz.dailyLog.length
+        _.forEach scope.kindergarten.classes, (clazz) ->
+          clazz.dailyLog = DailyLog.query school_id: stateParams.kindergarten, class_id: clazz.class_id, ->
+            scope.childrenInSchool = scope.childrenInSchool + clazz.dailyLog.length
 
-            scope.allChildren = Child.query school_id: scope.kindergarten.school_id, connected: true, ->
-              scope.heading = '全校应到 ' + scope.allChildren.length + '人 / 实到 ' + scope.childrenInSchool + ' 人'
-            AccessClass(scope.kindergarten.classes)
+        scope.allChildren = Child.query school_id: scope.kindergarten.school_id, connected: true, ->
+          scope.heading = '全校应到 ' + scope.allChildren.length + '人 / 实到 ' + scope.childrenInSchool + ' 人'
+        AccessClass(scope.kindergarten.classes)
 
       scope.$on 'update_charge', ->
         scope.refresh()

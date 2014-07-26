@@ -2,21 +2,18 @@
 
 angular.module('kulebaoAdmin')
 .controller 'MembersListCtrl',
-  [ '$scope', '$rootScope', '$stateParams', 'schoolService', 'classService', '$location', 'chargeService', 'accessClassService',
-    (scope, rootScope, stateParams, School, Class, location, Charge, AccessClass) ->
+  [ '$scope', '$rootScope', '$stateParams', '$location', 'chargeService', 'accessClassService',
+    (scope, rootScope, stateParams, location, Charge, AccessClass) ->
       rootScope.tabName = 'member'
 
       scope.refresh = ->
-        scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-          scope.kindergarten.classes = Class.query school_id: scope.kindergarten.school_id, (classes)->
-            scope.kindergarten.classes = classes
-            AccessClass(scope.kindergarten.classes)
-            Charge.query school_id: stateParams.kindergarten, (data)->
-              scope.kindergarten.charge = data[0]
-              if scope.kindergarten.charge && scope.kindergarten.charge.status == 1
-                scope.heading = '全校已开通( ' + scope.kindergarten.charge.used + ' / ' + scope.kindergarten.charge.total_phone_number + ' 人)'
-              else
-                scope.heading = '学校未开通手机幼乐宝服务，请与幼乐宝服务人员联系'
+        AccessClass(scope.kindergarten.classes)
+        Charge.query school_id: stateParams.kindergarten, (data)->
+          scope.kindergarten.charge = data[0]
+          if scope.kindergarten.charge && scope.kindergarten.charge.status == 1
+            scope.heading = '全校已开通( ' + scope.kindergarten.charge.used + ' / ' + scope.kindergarten.charge.total_phone_number + ' 人)'
+          else
+            scope.heading = '学校未开通手机幼乐宝服务，请与幼乐宝服务人员联系'
 
       scope.$on 'update_charge', ->
         scope.refresh()
@@ -34,8 +31,6 @@ angular.module('kulebaoAdmin')
     '$alert', 'relationshipService',
     (scope, rootScope, stateParams, Parent, Modal, Charge, Alert, Relationship) ->
       scope.current_class = parseInt(stateParams.class_id)
-
-      scope.refresh()
 
       scope.currentClass = ->
         _.find scope.kindergarten.classes, (c) ->
@@ -57,6 +52,9 @@ angular.module('kulebaoAdmin')
               scope.loading = false
               scope.membersInClass = _.uniq scope.members, (m) -> m.parent_id
               scope.nonMembersInClass = _.uniq scope.nonMembers, (m) -> m.parent_id
+
+      scope.refresh()
+
       scope.exceed = ->
         scope.kindergarten.charge[0].used >= scope.kindergarten.charge[0].total_phone_number
 

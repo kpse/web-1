@@ -1,16 +1,10 @@
 'use strict'
 
 angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'schoolService', '$modal', 'employeeService', 'schoolEmployeesService',
+  ['$scope', '$rootScope', '$stateParams', '$modal', 'schoolEmployeesService',
    'uploadService', '$alert', 'employeesManageClassService', 'StatsService', '$location', '$q'
-    (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Upload, Alert, ClassManager, Stats, location, $q) ->
+    (scope, $rootScope, $stateParams, Modal, SchoolEmployee, Upload, Alert, ClassManager, Stats, location, $q) ->
       $rootScope.tabName = 'employee'
-
-      scope.loading = true
-
-      scope.kindergarten = School.get school_id: $stateParams.kindergarten, ->
-        scope.adminUser = Employee.get ->
-          scope.refresh()
 
       scope.refresh = ->
         scope.loading = true
@@ -19,6 +13,8 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
             e.subordinates = ClassManager.query school_id: $stateParams.kindergarten, phone: e.phone, ->
               e.displayClasses = (_.map e.subordinates, (s) -> s.name).join(',')
           scope.loading = false
+
+      scope.refresh()
 
       scope.createEmployee = ->
         new SchoolEmployee

@@ -3,15 +3,12 @@
 angular.module('kulebaoAdmin')
 .controller 'HistoryListCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    'schoolService', 'classService', '$location', 'imageCompressService', 'accessClassService',
-    (scope, rootScope, stateParams, School, Class, location, Compress, AccessClass) ->
+    '$location', 'accessClassService',
+    (scope, rootScope, stateParams, location, AccessClass) ->
       rootScope.tabName = 'history'
       scope.heading = '记录小朋友成长的各种瞬间'
 
-      scope.loading = true
-      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-        scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query ->
-          AccessClass(scope.kindergarten.classes)
+      AccessClass(scope.kindergarten.classes)
 
       scope.navigateTo = (c) ->
         location.path("kindergarten/#{stateParams.kindergarten}/history/class/#{c.class_id}/list")
@@ -20,27 +17,24 @@ angular.module('kulebaoAdmin')
 
 .controller 'HistoryInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'schoolService', 'classService', 'parentService', 'historyService', 'childService',
+    '$location', 'parentService', 'historyService', 'childService',
     'senderService', 'readRecordService', 'employeeService',
-    (scope, rootScope, stateParams, location, School, Class, Parent, Chat, Child, Sender, ReaderLog, Employee) ->
+    (scope, rootScope, stateParams, location, Parent, Chat, Child, Sender, ReaderLog, Employee) ->
       scope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
-      scope.adminUser = Employee.get()
 
-      scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-        scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query()
-        scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true).query ->
-          _.forEach scope.children, (child) ->
-            child.messages = Chat.bind(school_id: stateParams.kindergarten, topic: child.child_id, most: 1).query ->
-              child.lastMessage = child.messages[0]
-              child.lastMessage.isRead = true if child.lastMessage isnt undefined
-              if child.lastMessage isnt undefined
-                child.lastMessage.sender.info = Sender.bind(school_id: stateParams.kindergarten, id: child.lastMessage.sender.id, type: child.lastMessage.sender.type).get ->
-                  child.lastMessage.sender.name = child.lastMessage.sender.info.name
-                  child.lastMessage.sender.read_record = ReaderLog.bind(school_id: stateParams.kindergarten, topic: child.child_id, reader: scope.adminUser.id).get ->
-                    child.lastMessage.isRead = child.lastMessage.sender.read_record.session_id >= child.lastMessage.id
+      scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true).query ->
+        _.forEach scope.children, (child) ->
+          child.messages = Chat.bind(school_id: stateParams.kindergarten, topic: child.child_id, most: 1).query ->
+            child.lastMessage = child.messages[0]
+            child.lastMessage.isRead = true if child.lastMessage isnt undefined
+            if child.lastMessage isnt undefined
+              child.lastMessage.sender.info = Sender.bind(school_id: stateParams.kindergarten, id: child.lastMessage.sender.id, type: child.lastMessage.sender.type).get ->
+                child.lastMessage.sender.name = child.lastMessage.sender.info.name
+                child.lastMessage.sender.read_record = ReaderLog.bind(school_id: stateParams.kindergarten, topic: child.child_id, reader: scope.adminUser.id).get ->
+                  child.lastMessage.isRead = child.lastMessage.sender.read_record.session_id >= child.lastMessage.id
 
-          scope.loading = false
+        scope.loading = false
 
 
       scope.goDetail = (child) ->
@@ -50,9 +44,9 @@ angular.module('kulebaoAdmin')
 
 .controller 'HistoryCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'schoolService', '$http', 'classService', 'historyService', 'childService', '$modal',
+    '$location', '$http', 'historyService', 'childService', '$modal',
     '$popover', '$tooltip', 'employeeService', 'uploadService', 'senderService', 'readRecordService',
-    (scope, rootScope, stateParams, location, School, $http, Class, Message, Child, Modal, Popover, Tooltip, Employee, Upload, Sender, ReaderLog) ->
+    (scope, rootScope, stateParams, location, $http, Message, Child, Modal, Popover, Tooltip, Employee, Upload, Sender, ReaderLog) ->
       scope.adminUser = Employee.get()
 
       scope.loading = true

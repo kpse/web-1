@@ -2,18 +2,14 @@
 
 angular.module('kulebaoAdmin')
 .controller('ScheduleCtrl', [ '$scope', '$rootScope', '$stateParams',
-                               '$location', 'schoolService', '$http', 'scheduleService', '$timeout', 'classService',
+                               '$location', '$http', 'scheduleService', '$timeout', 'classService',
                                'accessClassService'
-  (scope, rootScope, stateParams, location, School, $http, Schedule, $timeout, Class, AccessClass) ->
+  (scope, rootScope, stateParams, location, $http, Schedule, $timeout, Class, AccessClass) ->
     rootScope.tabName = 'schedule'
     scope.heading = '课程表'
     scope.current_class = parseInt stateParams.class_id
 
-
-    scope.loading = true
-    scope.kindergarten = School.get school_id: stateParams.kindergarten, ->
-      scope.kindergarten.classes = Class.bind({school_id: scope.kindergarten.school_id}).query ->
-        AccessClass(scope.kindergarten.classes)
+    AccessClass(scope.kindergarten.classes)
 
     scope.navigateTo = (c) ->
       location.path("kindergarten/#{stateParams.kindergarten}/schedule/class/#{c.class_id}/list")
@@ -21,8 +17,8 @@ angular.module('kulebaoAdmin')
 ])
 .controller 'ClassScheduleCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'schoolService', '$http', 'scheduleService', '$alert'
-    (scope, rootScope, stateParams, location, School, $http, Schedule, Alert) ->
+    '$location', '$http', 'scheduleService', '$alert'
+    (scope, rootScope, stateParams, location, $http, Schedule, Alert) ->
       scope.schedule_changed = false
       scope.isEditing = false
 
