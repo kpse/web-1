@@ -17,7 +17,7 @@ angular.module("kulebao.directives").directive "klChildDailyLogBars", [
 
         # watch for data changes and re-render
         scope.$watch "data", ((newVals, oldVals) ->
-          scope.render newVals if scope.children?
+          scope.render newVals if scope.children? && scope.children.length > 0
         ), true
 
         scope.$watch "children", ((newVals, oldVals) ->
