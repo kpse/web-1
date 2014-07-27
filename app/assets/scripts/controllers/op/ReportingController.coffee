@@ -1,9 +1,8 @@
 angular.module('kulebaoOp').controller 'OpReportingCtrl',
-  ['$scope', '$rootScope', '$location', '$http', 'parentService', 'childService', 'employeeService',
+  ['$scope', '$rootScope', '$location', '$http', 'parentService', 'childService',
    'schoolEmployeesService', 'classService', 'schoolService', 'activeCountService', 'chargeService',
-    (scope, rootScope, location, $http, Parent, Child, CurrentUser, Employee, Class, School, ActiveCount, Charge) ->
+    (scope, rootScope, location, $http, Parent, Child, Employee, Class, School, ActiveCount, Charge) ->
       rootScope.tabName = 'reporting'
-      scope.adminUser = CurrentUser.get()
 
       scope.loading = true
       scope.allClasses = []
@@ -34,12 +33,10 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
   ]
 
 .controller 'OpSchoolReportingCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$http', 'parentService', 'childService', 'employeeService',
+  ['$scope', '$rootScope', '$stateParams', '$http', 'parentService', 'childService',
    'schoolEmployeesService', 'classService', 'schoolService', 'adminNewsPreview', 'sessionStatsService', 'historyStatsService',
    'dailyLogService', 'activeCountService',
-    (scope, rootScope, stateParams, $http, Parent, Child, CurrentUser, Employee, Class, School, News, Chat, History, DailyLog, ActiveCount) ->
-      scope.adminUser = CurrentUser.get()
-
+    (scope, rootScope, stateParams, $http, Parent, Child, Employee, Class, School, News, Chat, History, DailyLog, ActiveCount) ->
       scope.loading = true
 
       scope.childrenInSchool = 0

@@ -1,23 +1,22 @@
 angular.module('kulebaoOp').controller 'OpDeviceCtrl',
-  ['$scope', '$rootScope', 'schoolService', 'classService', 'allEmployeesService', '$resource', '$alert',
-    (scope, rootScope, School, Clazz, Employee, $resource, Alert) ->
+  ['$scope', '$rootScope', 'schoolService', '$resource', '$alert',
+    (scope, rootScope, School, $resource, Alert) ->
       rootScope.tabName = 'device'
+
       Device = $resource '/api/v1/device/:id', {
         id: '@id'
       }
 
       scope.refresh = ->
+        scope.loading = true
         scope.allSchools = School.query ->
           scope.allDevices = Device.query ->
             _.forEach scope.allDevices, (d) ->
               d.school_name = (_.find scope.allSchools, (s) -> s.school_id == d.school_id).name
         scope.device = new Device
-
-      scope.loading = true
-      scope.employees = Employee.query ->
-        scope.refresh()
         scope.loading = false
 
+      scope.refresh()
 
       scope.save = (device) ->
         device.$save ->

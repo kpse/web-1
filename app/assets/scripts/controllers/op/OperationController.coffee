@@ -1,8 +1,8 @@
 angular.module('kulebaoOp').controller 'OpCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'employeeService', 'passwordService', '$modal', '$alert', 'uploadService',
-   '$location',
-    (scope, $rootScope, stateParams, Employee, Password, Modal, Alert, Upload, location) ->
-      scope.adminUser = Employee.get()
+  ['$scope', '$rootScope', '$stateParams', 'passwordService', '$modal', '$alert',
+   '$location', 'AdminUser',
+    (scope, $rootScope, stateParams, Password, Modal, Alert, location, AdminUser) ->
+      scope.adminUser = AdminUser
 
       scope.isSelected = (tab)->
         tab == $rootScope.tabName
@@ -44,13 +44,6 @@ angular.module('kulebaoOp').controller 'OpCtrl',
         user.$save ->
           scope.adminUser = user
           scope.currentModal.hide()
-
-      scope.uploadPic = (employee, pic) ->
-        scope.uploading = true
-        Upload pic, scope.adminUser.id, (url) ->
-          scope.$apply ->
-            employee.portrait = url if url isnt undefined
-            scope.uploading = false
 
       goPageWithTab = (pageName, tabName, defaultValue)->
         location.path "/main/#{pageName}/#{tabName}/#{defaultValue}" if location.path().indexOf("#{pageName}/#{tabName}") < 0

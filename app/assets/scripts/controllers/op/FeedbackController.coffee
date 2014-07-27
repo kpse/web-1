@@ -1,6 +1,6 @@
 angular.module('kulebaoOp').controller 'OpFeedbackCtrl',
-  ['$scope', '$rootScope', 'feedbackService', '$location', '$stateParams', '$timeout',
-    (scope, rootScope, Feedback, location, stateParams, $timeout) ->
+  ['$scope', '$rootScope', '$location', '$stateParams',
+    (scope, rootScope, location, stateParams) ->
       rootScope.tabName = 'feedback'
 
       scope.sources = [
@@ -22,8 +22,8 @@ angular.module('kulebaoOp').controller 'OpFeedbackCtrl',
   ]
 
 .controller 'OpFeedbackSourceCtrl',
-  ['$scope', '$rootScope', 'feedbackService', '$location', '$stateParams',
-    (scope, rootScope, Feedback, location, stateParams) ->
+  ['$scope', '$rootScope', '$location', '$stateParams', 'feedbackService',
+    (scope, rootScope, location, stateParams, Feedback) ->
       scope.$emit 'set_tab', stateParams.source
 
       scope.refresh = ->

@@ -1,12 +1,11 @@
 angular.module('kulebaoOp').controller 'OpVerificationCtrl',
-  ['$scope', '$rootScope', 'schoolService', 'classService', 'allEmployeesService', '$resource', '$alert',
-    (scope, rootScope, School, Clazz, Employee, $resource, Alert) ->
+  ['$scope', '$rootScope', '$resource', '$alert',
+    (scope, rootScope, $resource, Alert) ->
       rootScope.tabName = 'code'
       Code = $resource '/cheatCode'
 
       scope.loading = true
-      scope.employees = Employee.query ->
-        scope.code = Code.get()
+      scope.code = Code.get ->
         scope.loading = false
 
       scope.edit = (code) ->

@@ -28,7 +28,7 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
         type = if person.parent_id? then '家长' else '老师'
         Alert
           title: '删除成功'
-          content: '手机号为' + person.phone + '的' + type + '已经删除。'
+          content: "手机号为#{person.phone}的#{type}已经删除。"
           placement: "top"
           type: "danger"
           container: '.well'
@@ -39,8 +39,8 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
   ]
 
 .controller 'OpShowPhoneCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'phoneManageService', 'schoolService', '$alert',
-    (scope, rootScope, stateParams, location, Phone, School, Alert) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', 'phoneManageService', 'schoolService',
+    (scope, rootScope, stateParams, location, Phone, School) ->
       scope.parent = Phone.get phone: stateParams.phone, ->
         scope.school = School.get school_id: scope.parent.school_id
 
@@ -51,8 +51,8 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
   ]
 
 .controller 'OpShowTeacherCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'allEmployeesService', 'schoolService', '$alert',
-    (scope, rootScope, stateParams, location, Employee, School, Alert) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', 'allEmployeesService', 'schoolService',
+    (scope, rootScope, stateParams, location, Employee, School) ->
       scope.teacher = Employee.get phone: stateParams.phone, ->
         scope.school = School.get school_id: scope.teacher.school_id
 

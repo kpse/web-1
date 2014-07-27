@@ -1,6 +1,6 @@
 angular.module('kulebaoOp').controller 'OpChatCtrl',
-  ['$scope', '$rootScope', 'employeeService', '$timeout', '$location', '$anchorScroll',
-    (scope, rootScope, Employee, $timeout, $location, $anchorScroll) ->
+  ['$scope', '$rootScope', '$timeout', '$location', '$anchorScroll',
+    (scope, rootScope, $timeout, $location, $anchorScroll) ->
       rootScope.tabName = 'chat'
 
       scope.gotoBottom = ->
@@ -14,13 +14,12 @@ angular.module('kulebaoOp').controller 'OpChatCtrl',
           "wss://"
 
       scope.all = []
-      scope.adminUser = Employee.get ->
-        WS = if window['MozWebSocket'] then MozWebSocket else WebSocket
-        scope.username = scope.adminUser.name + new Date().getMilliseconds()
-        url = protocol() + $location.host() + ':' + $location.port().toString() + "/api/v1/chat_client?username=" + scope.username
-        console.log(url)
-        scope.chatSocket = new WS(url)
-        scope.chatSocket.onmessage = scope.receiveEvent
+      WS = if window['MozWebSocket'] then MozWebSocket else WebSocket
+      scope.username = scope.adminUser.name + new Date().getMilliseconds()
+      url = "#{protocol()}#{$location.host()}:#{$location.port()}/api/v1/chat_client?username=#{scope.username}"
+      console.log(url)
+      scope.chatSocket = new WS(url)
+      scope.chatSocket.onmessage = scope.receiveEvent
 
       scope.sendMessage = ->
         scope.chatSocket.send JSON.stringify text: scope.newMessage

@@ -14,6 +14,8 @@ angular.module('kulebaoOp',
       url: '/main',
       templateUrl: 'templates/op/main.html',
       controller: 'OpCtrl'
+      resolve:
+        AdminUser : (employeeService) -> employeeService.get().$promise
     .state 'main.app',
       url: '/app',
       templateUrl: 'templates/op/app_release.html',

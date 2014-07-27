@@ -1,6 +1,6 @@
 angular.module('kulebaoOp').controller 'OpChargeCtrl',
-  ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'chargeService', 'allEmployeesService',
-    (scope, rootScope, School, Clazz, Modal, Charge, Employee) ->
+  ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'chargeService',
+    (scope, rootScope, School, Clazz, Modal, Charge) ->
 
       scope.refresh = ->
         scope.kindergartens = School.query ->

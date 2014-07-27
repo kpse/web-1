@@ -1,7 +1,6 @@
 angular.module('kulebaoOp').controller 'OpPrincipalCtrl',
-  ['$scope', '$rootScope', 'schoolService', 'classService', 'allEmployeesService', '$modal', 'uploadService', '$q',
-   'StatsService',
-    (scope, rootScope, School, Clazz, Employee, Modal, Upload, $q, Stats) ->
+  ['$scope', '$rootScope', 'schoolService', 'classService', 'allEmployeesService', '$modal', 'uploadService',
+    (scope, rootScope, School, Clazz, Employee, Modal, Upload) ->
       rootScope.tabName = 'principal'
 
       scope.refresh = ->
@@ -25,13 +24,6 @@ angular.module('kulebaoOp').controller 'OpPrincipalCtrl',
         object.$save ->
           scope.refresh()
           scope.currentModal.hide()
-
-      scope.uploadPic = (employee, pic) ->
-        scope.uploading = true
-        Upload pic, scope.adminUser.id, (url) ->
-          scope.$apply ->
-            employee.portrait = url if url isnt undefined
-            scope.uploading = false
 
   ]
 

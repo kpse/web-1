@@ -1,8 +1,7 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
   ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
-   '$resource', 'chargeService', 'adminCreatingService', '$alert', 'uploadService', 'employeeService', '$location',
-   '$q', 'StatsService',
-    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, Upload, LoggedInEmployee, location, $q, Stats) ->
+   '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location',
+    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location) ->
       scope.refresh = ->
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->
@@ -13,8 +12,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           scope.admins = Employee.query()
 
 
-      scope.adminUser = LoggedInEmployee.get ->
-        scope.refresh()
+      scope.refresh()
 
       rootScope.tabName = 'school'
 

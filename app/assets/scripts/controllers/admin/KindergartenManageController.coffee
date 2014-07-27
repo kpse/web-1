@@ -1,7 +1,7 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$cacheFactory', '$location', 'employeeService', 'passwordService', '$modal',
-   'chargeService', 'uploadService', '$alert', 'StatsService', 'AdminUser', 'School', 'ClassesInSchool'
-    (scope, $rootScope, $stateParams, $cacheFactory, location, Employee, Password, Modal, Charge, Upload, Alert, Stats, AdminUser, School, ClassesInSchool) ->
+  ['$scope', '$rootScope', '$stateParams', '$cacheFactory', '$location', 'passwordService', '$modal',
+   'chargeService', '$alert', 'AdminUser', 'School', 'ClassesInSchool'
+    (scope, $rootScope, $stateParams, $cacheFactory, location, Password, Modal, Charge, Alert, AdminUser, School, ClassesInSchool) ->
 
       scope.adminUser = AdminUser
       scope.kindergarten = School

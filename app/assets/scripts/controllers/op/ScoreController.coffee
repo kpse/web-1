@@ -1,8 +1,7 @@
 angular.module('kulebaoOp').controller 'OpTeacherScoreCtrl',
-  ['$scope', '$rootScope', 'employeeService', 'allEmployeesService', 'StatsService', 'schoolService', '$q',
-    (scope, rootScope, CurrentUser, Employee, Stats, School, $q) ->
+  ['$scope', '$rootScope', 'allEmployeesService', 'StatsService', 'schoolService', '$q',
+    (scope, rootScope, Employee, Stats, School, $q) ->
       rootScope.tabName = 'score'
-      scope.adminUser = CurrentUser.get()
 
       all = $q.all [Stats('assignment').query().$promise,
                     Stats('assess').query().$promise,
