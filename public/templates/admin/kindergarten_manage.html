@@ -99,12 +99,12 @@
           <span>开通手机号管理</span>
         </a>
       </li>
-      <li class="action" ng-class="{active : isSelected('classes')}" ng-show="showingUp(adminUser)">
+      <li class="action" ng-class="{active : isSelected('classes')}" ng-show="isSuperUser(adminUser)">
         <a ng-href="#/kindergarten/{{kindergarten.school_id}}/class" class="btn classes">
           <span>班级管理</span>
         </a>
       </li>
-      <li class="action" ng-class="{active : isSelected('employee')}" ng-show="showingUp(adminUser)">
+      <li class="action" ng-class="{active : isSelected('employee')}" ng-show="isSuperUser(adminUser)">
         <a ng-click="goEmployeeList()" class="btn employee">
           <span>教职员设置</span>
         </a>
