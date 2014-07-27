@@ -54,7 +54,11 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'allEmployeesService', 'schoolService',
     (scope, rootScope, stateParams, location, Employee, School) ->
       scope.teacher = Employee.get phone: stateParams.phone, ->
-        scope.school = School.get school_id: scope.teacher.school_id
+        if scope.teacher.school_id > 0
+          scope.school = School.get school_id: scope.teacher.school_id
+        else
+          scope.school =
+            name: '总管理员'
 
       scope.delete = (person)->
         Employee.delete person, ->
