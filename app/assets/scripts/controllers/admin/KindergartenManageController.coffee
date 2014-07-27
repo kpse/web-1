@@ -11,6 +11,8 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       if (scope.adminUser.privilege_group isnt 'operator') && scope.adminUser.school_id != parseInt $stateParams.kindergarten
         location.path "/kindergarten/#{scope.adminUser.school_id}/welcome"
 
+      location.path "#{location.path}/welcome" if /kindergarten\/\d+$/.test location.path()
+
       Charge.query school_id: $stateParams.kindergarten, (data)->
         scope.kindergarten.charge = data[0]
         if scope.kindergarten.charge.status == 0
