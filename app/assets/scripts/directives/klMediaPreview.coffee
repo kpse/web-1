@@ -12,7 +12,7 @@ angular.module("kulebao.directives").directive "klMediaPreview",
           clickable: "@"
 
         link: (scope, element) ->
-          scope.$watch "media.url", ( (n, o) ->
+          scope.$watch 'media.url', ( (n, o) ->
             scope.refresh()
           ), true
 
