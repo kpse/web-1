@@ -41,7 +41,7 @@ angular.module('kulebaoOp').controller 'OpDeviceCtrl',
 
       handleError = (obj, res) ->
         Alert
-          title: '保存' + obj + '失败'
+          title: "保存#{obj}失败"
           content: res.data.error_msg
           placement: "top-left"
           type: "danger"

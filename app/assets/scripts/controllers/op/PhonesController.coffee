@@ -5,7 +5,7 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
 
       notFound = (phone) ->
         Alert
-          title: '未找到手机号' + phone
+          title: "未找到手机号#{phone}"
           content: '请修改条件进行查找。'
           placement: "top-left"
           type: "danger"

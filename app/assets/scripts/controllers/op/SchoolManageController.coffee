@@ -77,7 +77,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           address: '四川省某个地区'
           full_name: '新学校全名'
           principal:
-            admin_login: 'admin' + id
+            admin_login: "admin#{id}"
             admin_password: '',
           charge:
             school_id: id
@@ -87,7 +87,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             used: 0
 
       scope.idChange = (school)->
-        school.principal.admin_login = 'admin' + school.school_id
+        school.principal.admin_login = "admin#{school.school_id}"
         school.charge.school_id = school.school_id
 
       scope.addSchool = ->
@@ -115,7 +115,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
       scope.save = (object) ->
         if object.group
-          Manager = $resource('/kindergarten/' + object.school_id + '/principal')
+          Manager = $resource("/kindergarten/#{object.school_id}/principal")
           Manager.save object, ->
             scope.refresh()
             scope.currentModal.hide()
