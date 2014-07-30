@@ -8,7 +8,7 @@ tokenService = ($http) ->
 
 rawFileTokenService = ($http) ->
   token: (file, remoteDir) ->
-    $http.get '/ws/fileToken?bucket=kulebao-prod&key=' + remoteDir + file.name
+    $http.get '/ws/fileToken?bucket=kulebao-prod&key=' + remoteDir + '/' + file.name
 
 
 qiniuService = (tokenService) ->
@@ -46,15 +46,17 @@ qiniuRawFileService = (tokenService) ->
     xhr.onloadend = (e) ->
       response = JSON.parse(e.currentTarget.response)
       successCallback({
-        url: "https://dn-kulebao.qbox.me/" + remoteDir + response.name
+        url: "https://dn-kulebao.qbox.me/" + remoteDir  + '/' + response.name
         size: response.size
       })
+      angular.forEach angular.element("input[type='file']"), (elem)->
+        angular.element(elem).val(null)
 
 
     # Send to server, where we can then access it with $_FILES['file].
     data.append "file", file
     data.append "token", token
-    data.append "key", remoteDir + file.name
+    data.append "key", remoteDir + '/' + file.name
     xhr.open "POST", "http://up.qiniu.com"
     xhr.send data
 
