@@ -1,7 +1,7 @@
 angular.module('kulebaoOp').controller 'OpAppCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$http', 'appUploadService', 'appPackageService',
+  ['$scope', '$rootScope', '$stateParams', 'appPackageService',
    '$location', 'teacherAppPackageService',
-    (scope, $rootScope, $stateParams, $http, remoteFileSetter, AppPackage, location, TeacherAppPackage) ->
+    (scope, $rootScope, $stateParams, AppPackage, location, TeacherAppPackage) ->
       $rootScope.tabName = 'app'
 
       isTeacherPackage = ->
@@ -31,8 +31,8 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
   ]
 
 .controller 'OpAppDetailCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$http', 'appUploadService',
-    (scope, $rootScope, $stateParams, $http, remoteFileSetter) ->
+  ['$scope', '$rootScope', '$stateParams', 'appUploadService',
+    (scope, $rootScope, $stateParams, remoteFileSetter) ->
       scope.lastApp = scope.PackageService.latest ->
         scope.app = scope.createPkg()
         scope.app.version_code = scope.lastApp.version_code + 1
