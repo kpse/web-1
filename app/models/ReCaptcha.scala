@@ -44,9 +44,23 @@ object ReCaptcha {
   }
 
   def simpleCheck(challenge: String, answer: String) = {
-    val m = Map("e6f7681249d77e4e69c69fe7866f532b" -> "damage",
+    val m = Map(
+      "e6f7681249d77e4e69c69fe7866f532b" -> "damage",
       "d08b787a9bfd5a25626ce28e422de506" -> "fertile",
-      "fced89169747395b75103c3a613bbb50" -> "hanging")
+      "7787466eff202c14b0055d79c62d6361" -> "chest",
+      "bb76efb2453eb79acd5d494d285aca1c" -> "wound",
+      "40997ced00f423dbfb431cbdb36fb541" -> "chief",
+      "250b6df5a00e6de73db95ba7ab8c0914" -> "church",
+      "a3e44c48f46b73d2097b7ada42f4b439" -> "paper",
+      "b3ffebe131a983b21270f72ecbd027fa" -> "sudden",
+      "3afb060d24982bda4715f9b2508f4aea" -> "stick",
+      "1f851d3407be69a868a7063b4a75cd7f" -> "letter",
+      "d126f90c1d24d8374b6362aeb887f1fa" -> "twist",
+      "f0a94aa51d1359037c12d1f7d3dc623f" -> "slope",
+      "b1bc362612130bfc14b315d6dfdb0e3d" -> "ready",
+      "97a2d30e09db519fa15316291f145008" -> "military",
+      "fced89169747395b75103c3a613bbb50" -> "hanging"
+    )
     answer.nonEmpty && answer.equalsIgnoreCase(m.getOrElse(challenge, ""))
   }
 }
