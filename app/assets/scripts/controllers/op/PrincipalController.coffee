@@ -1,6 +1,6 @@
 angular.module('kulebaoOp').controller 'OpPrincipalCtrl',
-  ['$scope', '$rootScope', 'schoolService', 'classService', 'allEmployeesService', '$modal', 'uploadService',
-    (scope, rootScope, School, Clazz, Employee, Modal, Upload) ->
+  ['$scope', '$rootScope', 'schoolService', 'classService', 'allEmployeesService', '$modal',
+    (scope, rootScope, School, Clazz, Employee, Modal) ->
       rootScope.tabName = 'principal'
 
       scope.refresh = ->
