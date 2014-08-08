@@ -57,7 +57,7 @@
     </div>
 
     <div class="panel-footer">
-      <div ng-show="news.published" class="issue-date">于{{news.timestamp | date:'yyyy年MM月dd日 HH:mm'}}发布</div>
+      <div ng-show="news.published" class="issue-date">{{news.publisher_id ? news.publisher.name : ''}}于{{news.timestamp | date:'yyyy年MM月dd日 HH:mm'}}发布</div>
       <div ng-hide="news.published" class="issue-date">未发布</div>
       <div class="loading" ng-show="loading"></div>
       <div class="btn-group">

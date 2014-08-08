@@ -24,8 +24,8 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
 .controller 'BulletinCtrl',
   ['$scope', '$rootScope', 'adminNewsService',
-   '$stateParams', '$modal', 'adminNewsPreview',
-    (scope, $rootScope, adminNewsService, stateParams, Modal, NewsPreivew) ->
+   '$stateParams', '$modal', 'adminNewsPreview', 'senderService',
+    (scope, $rootScope, adminNewsService, stateParams, Modal, NewsPreivew, Sender) ->
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
@@ -38,8 +38,8 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
           school_id: stateParams.kindergarten
           publisher_id: scope.adminUser.id
           class_id: stateParams.class
-          restrict: true, ->
-            scope.preview = scope.preview.reverse()
+          restrict: true, (data) ->
+            scope.preview = data.reverse()
             scope.totalItems = scope.preview.length
             startIndex = (page - 1) * scope.itemsPerPage
             last = scope.preview[startIndex...startIndex + scope.itemsPerPage][0].id if scope.preview.length > 0
@@ -49,8 +49,9 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
               class_id: stateParams.class
               restrict: true
               to: last + 1 || last
-              most: scope.itemsPerPage, ->
+              most: scope.itemsPerPage, (all) ->
                 scope.loading = false
+                _.forEach all, (one) -> one.publisher = Sender.bind(school_id: stateParams.kindergarten, id: one.publisher_id, type: 't').get() if one.publisher_id?
 
       scope.refresh()
 
