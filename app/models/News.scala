@@ -89,11 +89,12 @@ object News {
       get[Long]("update_at") ~
       get[Option[Int]]("class_id") ~
       get[Int]("published") ~
+      get[Option[String]]("publisher_id") ~
       get[Option[String]]("image") map {
-      case id ~ school_id ~ title ~ content ~ timestamp ~ classId ~ 1 ~ image =>
-        News(id, school_id.toLong, title, content, timestamp, true, NOTICE_TYPE_SCHOOL_INFO, classId, Some(image.getOrElse("")))
-      case id ~ school_id ~ title ~ content ~ timestamp ~ classId ~ 0 ~ image =>
-        News(id, school_id.toLong, title, content, timestamp, false, NOTICE_TYPE_SCHOOL_INFO, classId, Some(image.getOrElse("")))
+      case id ~ school_id ~ title ~ content ~ timestamp ~ classId ~ 1 ~ publisher_id ~ image=>
+        News(id, school_id.toLong, title, content, timestamp, true, NOTICE_TYPE_SCHOOL_INFO, classId, Some(image.getOrElse("")), publisher_id)
+      case id ~ school_id ~ title ~ content ~ timestamp ~ classId ~ 0 ~ publisher_id ~ image =>
+        News(id, school_id.toLong, title, content, timestamp, false, NOTICE_TYPE_SCHOOL_INFO, classId, Some(image.getOrElse("")), publisher_id)
     }
   }
 
