@@ -32,7 +32,7 @@
             ng-show="messageForm.content.$dirty && messageForm.content.$error.maxlength">回复内容请不要超过500个字符</span>
       <textarea id="content" name="content" ng-model="message.content"
                 class="editing-content form-control message-content" ng-maxlength="500"
-                placeholder="对{{child.name}}的祝福。。。"
+                placeholder="想对{{child.name}}说点什么吗。。。"
                 ng-required="message.medium.length == ''"></textarea>
 
 
