@@ -54,10 +54,22 @@ object VideoMember {
       SQL("select * from videomembers where school_id={kg}").on('kg -> kg).as(simple *)
   }
 
+  def rawIndex(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select account from videomembers where school_id={kg}").on('kg -> kg).as(rawSimple *)
+  }
+
   def show(kg: Long, id: String) = DB.withConnection {
     implicit c =>
       SQL("select * from videomembers where school_id={kg} and parent_id={id}")
         .on('kg -> kg, 'id -> id).as(simple singleOpt)
+  }
+  
+  def validate(token: String): Option[Long] = token match {
+    case t: String if t.length > 10 =>
+      Some(93740362)
+    case other =>
+      None
   }
 
   val simple = {
@@ -68,4 +80,15 @@ object VideoMember {
         VideoMember(id, Some(account), Some("123"), Some(kg.toLong))
     }
   }
+
+  val rawSimple = {
+    get[String]("account") map {
+      case account =>
+        RawVideoMember(account)
+    }
+  }
+}
+
+object RawVideoMember {
+  implicit val writer = Json.writes[RawVideoMember]
 }

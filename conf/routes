@@ -214,6 +214,7 @@ POST          /api/v1/binding                                                   
 POST          /api/v1/phone_check/:phone                                         controllers.ParentController.isGoodToUse(phone: String, employee: Option[String])
 POST          /api/v1/card_check                                                 controllers.RelationshipController.isGoodToUse
 
+GET           /api/v1/video_member                                               controllers.VideoMemberController.externalIndex(token: String)
 GET           /api/v1/kindergarten/:kg/video_member                              controllers.VideoMemberController.index(kg: Long)
 GET           /api/v1/kindergarten/:kg/video_member/:id                          controllers.VideoMemberController.show(kg: Long, id: String)
 POST          /api/v1/kindergarten/:kg/video_member                              controllers.VideoMemberController.create(kg: Long)
