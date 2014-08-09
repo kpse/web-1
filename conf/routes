@@ -215,6 +215,7 @@ POST          /api/v1/phone_check/:phone                                        
 POST          /api/v1/card_check                                                 controllers.RelationshipController.isGoodToUse
 
 POST          /api/v1/video_provider/:kg                                         controllers.VideoProviderController.create(kg: Long)
+GET           /api/v1/video_provider/:kg                                         controllers.VideoProviderController.show(kg: Long)
 GET           /api/v1/video_provider                                             controllers.VideoProviderController.index
 
 GET           /api/v1/video_member                                               controllers.VideoMemberController.externalIndex(token: String)

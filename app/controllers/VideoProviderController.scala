@@ -16,4 +16,9 @@ object VideoProviderController extends Controller with Secured {
       VideoProvider.create(kg)
       Ok(Json.toJson(new SuccessResponse))
   }
+
+  def show(kg: Long) = OperatorPage {
+    u => implicit request =>
+      Ok(Json.toJson(VideoProvider.show(kg)))
+  }
 }

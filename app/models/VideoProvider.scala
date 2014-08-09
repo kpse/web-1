@@ -26,6 +26,11 @@ object VideoProvider {
       SQL("select * from videoprovidertoken").as(simple *)
   }
 
+  def show(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select * from videoprovidertoken where school_id={kg}").on('kg -> kg).as(simple singleOpt)
+  }
+
   val simple = {
     get[String]("school_id") ~
     get[String]("token") map {
