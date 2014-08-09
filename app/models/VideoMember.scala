@@ -65,11 +65,10 @@ object VideoMember {
         .on('kg -> kg, 'id -> id).as(simple singleOpt)
   }
   
-  def validate(token: String): Option[Long] = token match {
-    case t: String if t.length > 10 =>
-      Some(93740362)
-    case other =>
-      None
+  def validate(token: String): Option[String] = DB.withConnection {
+    implicit c =>
+      SQL("select school_id from videoprovidertoken where token={token}")
+        .on('token -> token).as(get[String]("school_id") singleOpt)
   }
 
   val simple = {

@@ -56,8 +56,8 @@ object VideoMemberController extends Controller with Secured {
 
   def externalIndex(token: String) = Action {
     VideoMember.validate(token) match {
-      case Some(schoolId) =>
-        Ok(Json.toJson(VideoMember.rawIndex(schoolId)))
+      case Some(schoolId) if schoolId.toLong > 0 =>
+        Ok(Json.toJson(VideoMember.rawIndex(schoolId.toLong)))
       case None =>
         Forbidden(Json.toJson(ErrorResponse("不合法的token，请联系幼乐宝工作人员。")))
     }
