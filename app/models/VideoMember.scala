@@ -9,7 +9,6 @@ import anorm.~
 import helper.MD5Helper.md5
 
 
-
 case class RawVideoMember(account: String)
 case class VideoMember(id: String, account: Option[String], password: Option[String], school_id: Option[Long]){
   def update = DB.withConnection {
@@ -54,23 +53,12 @@ object VideoMember {
       SQL("select * from videomembers where school_id={kg}").on('kg -> kg).as(simple *)
   }
 
-  def rawIndex(kg: Long) = DB.withConnection {
-    implicit c =>
-      SQL("select account from videomembers where school_id={kg}").on('kg -> kg).as(rawSimple *)
-  }
-
   def show(kg: Long, id: String) = DB.withConnection {
     implicit c =>
       SQL("select * from videomembers where school_id={kg} and parent_id={id}")
         .on('kg -> kg, 'id -> id).as(simple singleOpt)
   }
   
-  def validate(token: String): Option[String] = DB.withConnection {
-    implicit c =>
-      SQL("select school_id from videoprovidertoken where token={token}")
-        .on('token -> token).as(get[String]("school_id") singleOpt)
-  }
-
   val simple = {
     get[String]("school_id") ~
     get[String]("parent_id") ~
@@ -80,14 +68,29 @@ object VideoMember {
     }
   }
 
-  val rawSimple = {
+
+}
+
+object RawVideoMember {
+  implicit val writer = Json.writes[RawVideoMember]
+
+  def validate(token: String): Option[String] = DB.withConnection {
+    implicit c =>
+      SQL("select school_id from videoprovidertoken where token={token}")
+        .on('token -> token).as(get[String]("school_id") singleOpt)
+  }
+
+  def index(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select account from videomembers where school_id={kg}").on('kg -> kg).as(simple *)
+  }
+
+  val simple = {
     get[String]("account") map {
       case account =>
         RawVideoMember(account)
     }
   }
+
 }
 
-object RawVideoMember {
-  implicit val writer = Json.writes[RawVideoMember]
-}

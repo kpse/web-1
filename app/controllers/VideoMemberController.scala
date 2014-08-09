@@ -1,6 +1,6 @@
 package controllers
 
-import models.{ErrorResponse, VideoMember}
+import models._
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Action, Controller}
 
@@ -55,12 +55,18 @@ object VideoMemberController extends Controller with Secured {
   }
 
   def externalIndex(token: String) = Action {
-    VideoMember.validate(token) match {
+    RawVideoMember.validate(token) match {
       case Some(schoolId) if schoolId.toLong > 0 =>
-        Ok(Json.toJson(VideoMember.rawIndex(schoolId.toLong)))
+        Ok(Json.toJson(RawVideoMember.index(schoolId.toLong)))
       case None =>
         Forbidden(Json.toJson(ErrorResponse("不合法的token，请联系幼乐宝工作人员。")))
     }
 
+  }
+
+  def externalCreate(kg: Long) = OperatorPage(parse.json) {
+    u => implicit request =>
+      VideoProvider.create(kg)
+      Ok(Json.toJson(new SuccessResponse))
   }
 }
