@@ -1,12 +1,12 @@
 angular.module('kulebaoOp').controller 'OpChargeCtrl',
-  ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'chargeService',
-    (scope, rootScope, School, Clazz, Modal, Charge) ->
-
+  ['$scope', '$rootScope', '$location', 'schoolService', 'classService', '$modal', 'chargeService',
+   'videoProviderService',
+    (scope, rootScope, $location, School, Clazz, Modal, Charge, VideoProvider) ->
       scope.refresh = ->
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->
-            kg.charge = Charge.query(school_id: kg.school_id)
-
+            kg.charge = Charge.query school_id: kg.school_id
+            kg.videoProvider = VideoProvider.get school_id: kg.school_id
 
       scope.refresh()
 
@@ -25,7 +25,7 @@ angular.module('kulebaoOp').controller 'OpChargeCtrl',
           scope.refresh()
 
       scope.enable = (charge) ->
-        charge.status=1
+        charge.status = 1
         charge.$save ->
           scope.refresh()
 
@@ -33,5 +33,13 @@ angular.module('kulebaoOp').controller 'OpChargeCtrl',
         charge.$save ->
           scope.refresh()
           scope.currentModal.hide()
+
+      scope.videoProviderURL = (token) ->
+        "#{$location.protocol()}://#{$location.host()}:#{$location.port()}/api/v1/video_member?token=#{token}"
+
+      scope.enableVideo = (schoolId) ->
+        VideoProvider.save school_id: schoolId, ->
+          scope.kg.videoProvider = VideoProvider.get school_id: schoolId
+
   ]
 

@@ -16,3 +16,11 @@ angular.module('kulebao.services')
       school_id: '@school_id'
     }
 ]
+
+angular.module('kulebao.services')
+.factory 'videoProviderService', ['$resource', ($resource) ->
+  $resource '/api/v1/video_provider/:school_id',
+    {
+      school_id: '@school_id'
+    }
+]

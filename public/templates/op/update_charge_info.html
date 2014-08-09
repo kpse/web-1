@@ -35,6 +35,22 @@
       </div>
     </div>
 
+    <div class="form-group" ng-hide="kg.videoProvider.token">
+      <label class="col-sm-2 control-label">开通视频</label>
+
+      <div class="col-sm-8">
+        <a ng-click="enableVideo(kg.school_id)" class="form-control-static">开通</a>
+      </div>
+    </div>
+
+    <div class="form-group" ng-show="kg.videoProvider.token">
+      <label class="col-sm-2 control-label">视频账号查询</label>
+
+      <div class="col-sm-8">
+        <p ng-show="kg.videoProvider.token" class="form-control-static">{{videoProviderURL(kg.videoProvider.token)}}</p>
+      </div>
+    </div>
+
 
     <div class="form-group">
       <a class="btn btn-warning pull-right adding-button"
