@@ -212,7 +212,9 @@ GET           /api/v1/test/force_update                                         
 POST          /api/v1/binding                                                    controllers.Authentication.bindNumberV1
 
 POST          /api/v1/phone_check/:phone                                         controllers.ParentController.isGoodToUse(phone: String, employee: Option[String])
-POST          /api/v1/card_check                                                  controllers.RelationshipController.isGoodToUse
+POST          /api/v1/card_check                                                 controllers.RelationshipController.isGoodToUse
+
+GET           /api/v1/kindergarten/:kg/video_member                             controllers.VideoMemberController.index(kg: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.VersionedAssets.at(file: controllers.VersionedAsset)
