@@ -17,6 +17,12 @@ object VideoMember {
       SQL("select * from videomembers where school_id={kg}").on('kg -> kg).as(simple *)
   }
 
+  def show(kg: Long, id: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from videomembers where school_id={kg} and parent_id={id}")
+        .on('kg -> kg, 'id -> id).as(simple singleOpt)
+  }
+
   val simple = {
     get[String]("school_id") ~
     get[String]("parent_id") ~
