@@ -3,8 +3,8 @@
 angular.module('kulebaoAdmin')
 .controller 'RelationshipMainCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'parentService',
-   'relationshipService', '$modal', 'childService', '$http', '$alert',
-    (scope, rootScope, stateParams, location, Parent, Relationship, Modal, Child, $http, Alert) ->
+   'relationshipService', '$modal', 'childService', '$http', '$alert', 'videoMemberService',
+    (scope, rootScope, stateParams, location, Parent, Relationship, Modal, Child, $http, Alert, VideoMember) ->
       rootScope.tabName = 'relationship'
       scope.heading = '管理幼儿及家长基础档案信息'
 
@@ -39,6 +39,7 @@ angular.module('kulebaoAdmin')
           name: ''
           member_status: 0
           kindergarten: scope.kindergarten
+          video_member_status: 0
 
       scope.createChild = ->
         new Child
@@ -96,7 +97,11 @@ angular.module('kulebaoAdmin')
 
       scope.editParent = (parent) ->
         scope.refresh ->
-          scope.parent = Parent.get school_id: stateParams.kindergarten, phone: parent.phone, ->
+          scope.parent = Parent.get school_id: stateParams.kindergarten, phone: parent.phone, (p) ->
+            scope.parent.video_member_status = 0
+            VideoMember.get school_id: stateParams.kindergarten, id: parent.parent_id, ->
+                p.video_member_status = 1
+              ,(e) -> p.video_member_status = 0
             scope.currentModal = Modal
               scope: scope
               contentTemplate: 'templates/admin/add_adult.html'
@@ -126,6 +131,7 @@ angular.module('kulebaoAdmin')
       scope.saveParent = (parent) ->
         saveHook = parent.saveHook
         parent.$save ->
+          VideoMember.save school_id: parent.school_id, id: parent.parent_id
           scope.$broadcast 'refreshing'
           scope.currentModal.hide()
           saveHook(parent) if typeof saveHook == 'function'
