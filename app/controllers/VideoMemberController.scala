@@ -46,6 +46,9 @@ object VideoMemberController extends Controller with Secured {
           BadRequest(Json.toJson(ErrorResponse("请提供一致的信息。")))
         case (member) if member.isAccountDuplicated =>
           BadRequest(Json.toJson(ErrorResponse(s"提供的账号${member.account.get}重复。")))
+        case (member) if !member.isExisting =>
+          member.create
+          Ok(Json.toJson(VideoMember.show(kg, member.id)))
         case (member) =>
           member.update
           Ok(Json.toJson(VideoMember.show(kg, member.id)))
