@@ -224,6 +224,7 @@ GET           /api/v1/kindergarten/:kg/video_member                             
 GET           /api/v1/kindergarten/:kg/video_member/:id                          controllers.VideoMemberController.show(kg: Long, id: String)
 POST          /api/v1/kindergarten/:kg/video_member                              controllers.VideoMemberController.create(kg: Long)
 POST          /api/v1/kindergarten/:kg/video_member/:id                          controllers.VideoMemberController.update(kg: Long, id: String)
+DELETE        /api/v1/kindergarten/:kg/video_member/:id                          controllers.VideoMemberController.delete(kg: Long, id: String)
 
 
 # Map static resources from the /public folder to the /assets URL path

@@ -14,7 +14,7 @@ case class RawVideoMember(account: String)
 case class VideoMember(id: String, account: Option[String], password: Option[String], school_id: Option[Long]){
   def update = DB.withConnection {
     implicit c =>
-      SQL("update videomembers set account={account} where parent_id={id}")
+      SQL("update videomembers set account={account} where parent_id={id} and status=1")
         .on('account -> generateAccount(account), 'id -> id ).executeUpdate()
   }
   def create = DB.withConnection {
@@ -26,13 +26,13 @@ case class VideoMember(id: String, account: Option[String], password: Option[Str
 
   def isExisting = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from videomembers where school_id={kg} and parent_id={id}")
+      SQL("select count(1) from videomembers where school_id={kg} and parent_id={id} and status=1")
         .on('kg -> school_id, 'id -> id ).as(get[Long]("count(1)") single) > 0
   }
 
   def isAccountDuplicated = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from videomembers where account={account}")
+      SQL("select count(1) from videomembers where account={account} and status=1")
         .on('account -> account ).as(get[Long]("count(1)") single) > 0
   }
 
@@ -51,13 +51,19 @@ object VideoMember {
 
   def all(kg: Long) = DB.withConnection {
     implicit c =>
-      SQL("select * from videomembers where school_id={kg}").on('kg -> kg).as(simple *)
+      SQL("select * from videomembers where school_id={kg} and status=1").on('kg -> kg).as(simple *)
   }
 
   def show(kg: Long, id: String) = DB.withConnection {
     implicit c =>
-      SQL("select * from videomembers where school_id={kg} and parent_id={id}")
+      SQL("select * from videomembers where school_id={kg} and parent_id={id} and status=1")
         .on('kg -> kg, 'id -> id).as(simple singleOpt)
+  }
+
+  def delete(kg: Long, id: String) = DB.withConnection {
+    implicit c =>
+      SQL("update videomembers set status=0 where school_id={kg} and parent_id={id}")
+        .on('kg -> kg, 'id -> id).executeUpdate()
   }
 
   def passwordOfVideo = Play.current.configuration.getString("video.provider.password")

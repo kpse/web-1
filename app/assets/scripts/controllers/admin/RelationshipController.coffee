@@ -130,8 +130,12 @@ angular.module('kulebaoAdmin')
 
       scope.saveParent = (parent) ->
         saveHook = parent.saveHook
+        video_member_status = parent.video_member_status
         parent.$save ->
-          VideoMember.save school_id: parent.school_id, id: parent.parent_id
+          if video_member_status == 1
+            VideoMember.save school_id: parent.school_id, id: parent.parent_id
+          else
+            VideoMember.remove school_id: parent.school_id, id: parent.parent_id
           scope.$broadcast 'refreshing'
           scope.currentModal.hide()
           saveHook(parent) if typeof saveHook == 'function'

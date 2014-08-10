@@ -72,4 +72,10 @@ object VideoMemberController extends Controller with Secured {
       VideoProvider.create(kg)
       Ok(Json.toJson(new SuccessResponse))
   }
+
+  def delete(kg: Long, id: String) = IsLoggedIn {
+    u => _ =>
+      VideoMember.delete(kg, id)
+      Ok(Json.toJson(new SuccessResponse))
+  }
 }
