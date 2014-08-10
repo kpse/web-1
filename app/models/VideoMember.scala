@@ -1,5 +1,6 @@
 package models
 
+import play.api.Play
 import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
@@ -58,13 +59,15 @@ object VideoMember {
       SQL("select * from videomembers where school_id={kg} and parent_id={id}")
         .on('kg -> kg, 'id -> id).as(simple singleOpt)
   }
-  
+
+  def passwordOfVideo = Play.current.configuration.getString("video.provider.password")
+
   val simple = {
     get[String]("school_id") ~
     get[String]("parent_id") ~
     get[String]("account") map {
       case kg ~ id ~ account =>
-        VideoMember(id, Some(account), Some("123"), Some(kg.toLong))
+        VideoMember(id, Some(account), passwordOfVideo, Some(kg.toLong))
     }
   }
 
