@@ -115,9 +115,11 @@ trait Secured {
     val id = request.session.get("id")
     val token = request.session.get("token")
     val Pattern = "/kindergarten/(\\d+).*".r
+    val NewApi = "/api/v1/kindergarten/(\\d+).*".r
     request.path match {
       case path if Employee.canAccess(id) => user
       case Pattern(c) if Employee.canAccess(id, c.toLong) => user
+      case NewApi(c) if Employee.canAccess(id, c.toLong) => user
       case Pattern(c) if Parent.canAccess(user, token, c.toLong) => user
       case _ => None
     }
