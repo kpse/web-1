@@ -56,7 +56,7 @@ angular.module('kulebaoAdmin')
       scope.refresh()
 
       scope.exceed = ->
-        scope.kindergarten.charge[0].used >= scope.kindergarten.charge[0].total_phone_number
+        scope.kindergarten.charge.used >= scope.kindergarten.charge.total_phone_number
 
       scope.promote = (parent) ->
         return scope.noPromotion() if scope.exceed()
