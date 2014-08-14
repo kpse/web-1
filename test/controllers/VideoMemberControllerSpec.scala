@@ -48,6 +48,21 @@ class VideoMemberControllerSpec extends Specification with TestSupport {
       status(response) must equalTo(OK)
     }
 
+    "be updated by teacher" in new WithApplication {
+
+      private val json: JsValue = Json.toJson(VideoMember("13", Some("account_name"), None, Some(93740362)))
+
+      val createResponse = route(ownerTeacherRequest(POST, "/api/v1/kindergarten/93740362/video_member/13").withBody(json)).get
+
+      status(createResponse) must equalTo(OK)
+
+      val response = route(ownerTeacherRequest(GET, "/api/v1/kindergarten/93740362/video_member/13")).get
+
+      status(response) must equalTo(OK)
+      val jsonResponse: JsValue = Json.parse(contentAsString(response))
+      (jsonResponse \ "account").as[String] must equalTo("account_name")
+    }
+
     "not list without token" in new WithApplication {
 
       val response = route(FakeRequest(GET, "/api/v1/video_member")).get
