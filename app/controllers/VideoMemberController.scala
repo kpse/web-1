@@ -26,14 +26,8 @@ object VideoMemberController extends Controller with Secured {
       request.body.validate[VideoMember].map {
         case (member) if !member.school_id.equals(Some(kg)) =>
           BadRequest(Json.toJson(ErrorResponse("请提供一致的信息。")))
-        case (member) if member.isAccountDuplicated =>
-          BadRequest(Json.toJson(ErrorResponse(s"提供的账号${member.account.get}重复。")))
-        case (member) if member.isExisting =>
-          member.update
-          Ok(Json.toJson(VideoMember.show(kg, member.id)))
         case (member) =>
-          member.create
-          Ok(Json.toJson(VideoMember.show(kg, member.id)))
+          createOrUpdate(member)
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
@@ -44,17 +38,22 @@ object VideoMemberController extends Controller with Secured {
       request.body.validate[VideoMember].map {
         case (member) if !member.school_id.equals(Some(kg)) || !id.equals(member.id) =>
           BadRequest(Json.toJson(ErrorResponse("请提供一致的信息。")))
-        case (member) if member.isAccountDuplicated =>
-          BadRequest(Json.toJson(ErrorResponse(s"提供的账号${member.account.get}重复。")))
-        case (member) if !member.isExisting =>
-          member.create
-          Ok(Json.toJson(VideoMember.show(kg, member.id)))
         case (member) =>
-          member.update
-          Ok(Json.toJson(VideoMember.show(kg, member.id)))
+          createOrUpdate(member)
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
+  }
+
+  def createOrUpdate(videoMember: VideoMember) = videoMember match {
+    case (member) if member.isAccountDuplicated =>
+      BadRequest(Json.toJson(ErrorResponse(s"提供的账号${member.account.get}重复。")))
+    case (member) if member.isExisting =>
+      member.update
+      Ok(Json.toJson(VideoMember.show(member.school_id.get, member.id)))
+    case (member) =>
+      member.create
+      Ok(Json.toJson(VideoMember.show(member.school_id.get, member.id)))
   }
 
   def externalIndex(token: String) = Action {
