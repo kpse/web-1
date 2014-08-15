@@ -63,6 +63,16 @@ class VideoMemberControllerSpec extends Specification with TestSupport {
       (jsonResponse \ "account").as[String] must equalTo("account_name")
     }
 
+    "not be created if account duplicated" in new WithApplication {
+
+      private val json: JsValue = Json.toJson(VideoMember("1993", Some("132"), None, Some(93740362)))
+
+      val createResponse = route(ownerTeacherRequest(POST, "/api/v1/kindergarten/93740362/video_member").withBody(json)).get
+
+      status(createResponse) must equalTo(BAD_REQUEST)
+
+    }
+
     "not list without token" in new WithApplication {
 
       val response = route(FakeRequest(GET, "/api/v1/video_member")).get
