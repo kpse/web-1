@@ -12,7 +12,8 @@ CREATE TABLE videomembers (
 );
 
 INSERT INTO videomembers (school_id, parent_id, account) VALUES
-  ('93740362', '13', '132');
+  ('93740362', '13', '132'),
+  ('93740362', '14', '144');
 
 
 # --- !Downs

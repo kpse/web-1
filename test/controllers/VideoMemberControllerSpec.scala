@@ -73,6 +73,16 @@ class VideoMemberControllerSpec extends Specification with TestSupport {
 
     }
 
+    "not be updated if account duplicated" in new WithApplication {
+
+      private val json: JsValue = Json.toJson(VideoMember("14", Some("132"), None, Some(93740362)))
+
+      val createResponse = route(ownerTeacherRequest(POST, "/api/v1/kindergarten/93740362/video_member/14").withBody(json)).get
+
+      status(createResponse) must equalTo(BAD_REQUEST)
+
+    }
+
     "not list without token" in new WithApplication {
 
       val response = route(FakeRequest(GET, "/api/v1/video_member")).get
