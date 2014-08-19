@@ -113,6 +113,9 @@ p.note {
   }
 }
 
+.login-link {
+  display: none;
+}
 
 // --------------------------- IMPORTS
 @import 'main/_widgets.less';
