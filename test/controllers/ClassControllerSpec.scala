@@ -17,6 +17,14 @@ class ClassControllerSpec extends Specification with TestSupport {
     FakeRequest(method, url).withSession("username" -> "13408654680", "token" -> "1386849160798")
   }
 
+  def principalLoggedRequest(method: String, url: String) = {
+    FakeRequest(method, url).withSession("id" -> "3_93740362_1122", "username" -> "e0001")
+  }
+
+  def twoClassesManagerLoggedRequest(method: String, url: String) = {
+    FakeRequest(method, url).withSession("id" -> "3_93740362_3344", "username" -> "e0002")
+  }
+
   "Class" should {
     "check authentication first" in new WithServer {
 
@@ -31,6 +39,34 @@ class ClassControllerSpec extends Specification with TestSupport {
       val updateResponse = route(loggedRequest(DELETE, "/kindergarten/93740362/class/777888")).get
 
       status(updateResponse) must equalTo(BAD_REQUEST)
+    }
+
+    "show all to principal" in new WithServer {
+
+      val response = route(principalLoggedRequest(GET, "/kindergarten/93740362/class")).get
+
+      status(response) must equalTo(OK)
+
+      val jsonResponse: JsValue = Json.parse(contentAsString(response))
+      jsonResponse match {
+        case JsArray(arr) =>
+          arr.length must equalTo(3)
+        case _ => failure
+      }
+    }
+
+    "show partial to limited privilege teachers" in new WithServer {
+
+      val response = route(twoClassesManagerLoggedRequest(GET, "/kindergarten/93740362/class")).get
+
+      status(response) must equalTo(OK)
+
+      val jsonResponse: JsValue = Json.parse(contentAsString(response))
+      jsonResponse match {
+        case JsArray(arr) =>
+          arr.length must equalTo(2)
+        case _ => failure
+      }
     }
 
   }
