@@ -25,6 +25,10 @@ class ClassControllerSpec extends Specification with TestSupport {
     FakeRequest(method, url).withSession("id" -> "3_93740362_3344", "username" -> "e0002")
   }
 
+  def noAccessLoggedRequest(method: String, url: String) = {
+    FakeRequest(method, url).withSession("id" -> "3_93740362_9977", "username" -> "e0003")
+  }
+
   "Class" should {
     "check authentication first" in new WithServer {
 
@@ -65,6 +69,20 @@ class ClassControllerSpec extends Specification with TestSupport {
       jsonResponse match {
         case JsArray(arr) =>
           arr.length must equalTo(2)
+        case _ => failure
+      }
+    }
+
+    "return empty to no privilege teachers" in new WithServer {
+
+      val response = route(noAccessLoggedRequest(GET, "/kindergarten/93740362/class")).get
+
+      status(response) must equalTo(OK)
+
+      val jsonResponse: JsValue = Json.parse(contentAsString(response))
+      jsonResponse match {
+        case JsArray(arr) =>
+          arr.length must equalTo(0)
         case _ => failure
       }
     }
