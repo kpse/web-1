@@ -40,9 +40,9 @@ class ClassControllerSpec extends Specification with TestSupport {
 
     "not be deleted while children belongs in it" in new WithServer {
 
-      val updateResponse = route(loggedRequest(DELETE, "/kindergarten/93740362/class/777888")).get
+      val response = route(loggedRequest(DELETE, "/kindergarten/93740362/class/777888")).get
 
-      status(updateResponse) must equalTo(BAD_REQUEST)
+      status(response) must equalTo(BAD_REQUEST)
     }
 
     "show all to principal" in new WithServer {
