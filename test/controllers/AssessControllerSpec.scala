@@ -48,7 +48,7 @@ class AssessControllerSpec extends Specification with TestSupport {
       private val result: JsResult[List[Assess]] = oldValue.validate[List[Assess]]
       private val before: Int = result.asOpt.get.size
 
-      private val json: JsValue = Json.toJson(Assess(None, None, "a", "comments", 3, 3, 3,3, 3, 3, 3, 3, "1_93740362_374", 93740362, None))
+      private val json: JsValue = Json.toJson(Assess(None, None, "a", "comments", 3, 3, 3, 3, 3, 3, 3, 3, "1_93740362_374", 93740362, None))
       val createResponse = route(loggedRequest(POST, "/kindergarten/93740362/child/1_93740362_374/assess").withBody(json)).get
 
       status(createResponse) must equalTo(OK)
