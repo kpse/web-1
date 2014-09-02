@@ -14,7 +14,7 @@ case class RawVideoMember(account: String)
 case class VideoMember(id: String, account: Option[String], password: Option[String], school_id: Option[Long]){
   def update = DB.withConnection {
     implicit c =>
-      SQL("update videomembers set account={account} where parent_id={id} and status=1")
+      SQL("update videomembers set account={account}, status=1 where parent_id={id}")
         .on('account -> generateAccount(account), 'id -> id ).executeUpdate()
   }
   def create = DB.withConnection {
@@ -26,7 +26,7 @@ case class VideoMember(id: String, account: Option[String], password: Option[Str
 
   def isExisting = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from videomembers where school_id={kg} and parent_id={id} and status=1")
+      SQL("select count(1) from videomembers where school_id={kg} and parent_id={id}")
         .on('kg -> school_id, 'id -> id ).as(get[Long]("count(1)") single) > 0
   }
 
