@@ -104,5 +104,35 @@ class VideoMemberControllerSpec extends Specification with TestSupport {
       status(response) must equalTo(FORBIDDEN)
     }
 
+
+    "be toggled by teacher" in new WithApplication {
+
+      private val json: JsValue = Json.toJson(VideoMember("100", None, None, Some(93740362)))
+      val createResponse = route(ownerTeacherRequest(POST, "/api/v1/kindergarten/93740362/video_member").withBody(json)).get
+
+      status(createResponse) must equalTo(OK)
+
+      val response = route(ownerTeacherRequest(GET, "/api/v1/kindergarten/93740362/video_member/100")).get
+
+      status(response) must equalTo(OK)
+
+      val deleteResponse = route(ownerTeacherRequest(DELETE, "/api/v1/kindergarten/93740362/video_member/100").withBody(json)).get
+
+      status(deleteResponse) must equalTo(OK)
+
+      val notFoundResponse = route(ownerTeacherRequest(GET, "/api/v1/kindergarten/93740362/video_member/100")).get
+
+      status(notFoundResponse) must equalTo(NOT_FOUND)
+
+      val createResponse2 = route(ownerTeacherRequest(POST, "/api/v1/kindergarten/93740362/video_member").withBody(json)).get
+
+      status(createResponse2) must equalTo(OK)
+
+      val response2 = route(ownerTeacherRequest(GET, "/api/v1/kindergarten/93740362/video_member/100")).get
+
+      status(response2) must equalTo(OK)
+
+    }
+
   }
 }
