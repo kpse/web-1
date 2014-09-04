@@ -39,7 +39,7 @@ class EmployeeControllerSpec extends Specification with TestSupport {
 
     }
 
-    "show all children to operator" in new WithServer {
+    "show all employees to operator" in new WithServer {
 
       val response = route(operatorRequest(GET, "/employee")).get
 
@@ -51,6 +51,14 @@ class EmployeeControllerSpec extends Specification with TestSupport {
           arr.length must greaterThanOrEqualTo(6)
         case _ => failure
       }
+    }
+
+    "show nothing to principals" in new WithServer {
+
+      val response = route(principalLoggedRequest(GET, "/employee")).get
+
+      status(response) must equalTo(UNAUTHORIZED)
+
     }
   }
 }
