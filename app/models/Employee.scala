@@ -98,6 +98,29 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
           'sender -> id
         ).as(get[Long]("count(1)") single) > 0
   }
+
+  def updatePassword(password: String) = DB.withConnection {
+    implicit c =>
+      SQL("update employeeinfo set login_password={password} where employee_id={id}")
+        .on(
+          'id -> id,
+          'password -> md5(password)
+        ).executeUpdate()
+  }
+
+  def promote = DB.withConnection {
+    implicit c =>
+      SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) " +
+        "values ({school_id},{employee_id},{group},{subordinate},{promoter},{time})")
+        .on(
+          'school_id -> school_id,
+          'employee_id -> id,
+          'group -> "principal",
+          'subordinate -> "",
+          'promoter -> "operator",
+          'time -> System.currentTimeMillis
+        ).executeInsert()
+  }
 }
 
 case class Principal(employee_id: String, school_id: Long, phone: String, timestamp: Long)
@@ -317,28 +340,8 @@ object Employee {
         ).as(simplePrincipal *)
   }
 
-
-  def promote(employee: Employee) = DB.withConnection {
-    implicit c =>
-      SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) " +
-        "values ({school_id},{employee_id},{group},{subordinate},{promoter},{time})")
-        .on(
-          'school_id -> employee.school_id,
-          'employee_id -> employee.id,
-          'group -> "principal",
-          'subordinate -> "",
-          'promoter -> "operator",
-          'time -> System.currentTimeMillis
-        ).executeInsert()
-      show(employee.phone)
-  }
-
   def createPrincipal(employee: Employee) = {
-    val created: Option[Employee] = create(employee)
-    created map {
-      case (admin) =>
-        promote(admin)
-    }
+    create(employee) map(_.promote)
   }
 
   def update(employee: Employee) = DB.withConnection {

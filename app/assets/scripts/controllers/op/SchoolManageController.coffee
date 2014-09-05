@@ -114,7 +114,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           handleError res
 
       scope.save = (object) ->
-        if object.group
+        if object.group?
           Manager = $resource("/kindergarten/#{object.school_id}/principal")
           Manager.save object, ->
             scope.refresh()
