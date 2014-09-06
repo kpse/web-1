@@ -18,7 +18,7 @@
   <tbody>
   <tr ng-repeat="kg in kindergartens | filter: searchText" class="row"
       ng-class="{editable: edit, expired: kg.charge[0].status==0}" ng-click="edit(kg)">
-    <td class="col-xs-3"><a ng-href="/admin#/kindergarten/{{kg.school_id}}" ng-click="$event.stopPropagation()">{{kg.school_id}}</a>
+    <td class="col-xs-3"><a ng-href="/admin#/kindergarten/{{kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{kg.school_id}}</a>
     </td>
     <td class="col-xs-3">{{kg.name}}</td>
     <td class="col-xs-1">{{kg.charge[0].total_phone_number}}</td>
