@@ -94,6 +94,8 @@ object VideoMember {
       SQL("select (total_video_account - count(1)) as count from videomembers v, chargeinfo c where v.school_id={kg} and v.school_id=c.school_id and v.status=1 and c.status=1")
         .on('kg -> kg).as(availableCounting(kg) single)
   }
+
+  def limitExceed(kg: Long): Boolean = available(kg).count <= 0
 }
 
 object RawVideoMember {

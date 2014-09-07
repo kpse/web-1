@@ -11,7 +11,7 @@ import models.helper.TimeHelper.any2DateTime
 import models.helper.PasswordHelper.generateNewPassword
 
 
-case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String], gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int], company: Option[String] = None) {
+case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String], gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int], company: Option[String] = None, video_member_status: Option[Long] = None) {
   def hasHistory(historyId: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from sessionlog where uid={id} and sender={sender}")
@@ -27,6 +27,14 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
       case None => false
       case _ => true
     }
+  }
+
+  def isAMember: Boolean = {
+    member_status.getOrElse(0) == 1
+  }
+
+  def isAVideoMember: Boolean = {
+    video_member_status.getOrElse(0) == 1
   }
 }
 
