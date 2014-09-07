@@ -22,7 +22,7 @@
     </td>
     <td class="col-xs-3">{{kg.name}}</td>
     <td class="col-xs-1">{{kg.charge[0].total_phone_number}}</td>
-    <td class="col-xs-1">{{kg.videoProvider.token ? 'YES' : 'NO'}}</td>
+    <td class="col-xs-1">{{kg.videoProvider.token ? kg.charge[0].total_video_account : '未开通'}}</td>
     <td class="col-xs-3">{{kg.charge[0].expire_date}}</td>
     <td class="col-xs-2">
       <button ng-show="kg.charge[0].status==1" class="btn btn-xs btn-danger" ng-confirm-msg="你确定要让{{kg.name}}的所有账号过期吗?"
