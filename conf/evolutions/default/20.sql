@@ -9,6 +9,7 @@ CREATE TABLE chargeinfo (
   uid        INT(11)          NOT NULL AUTO_INCREMENT,
   school_id    VARCHAR(20)  NOT NULL,
   total_phone_number     INT(11) NOT NULL default 0,
+  total_video_account     INT(11) NOT NULL default 0,
   expire_date DATE             NOT NULL DEFAULT '2200-01-01',
   status INT default 1,
   update_at BIGINT(20)             NOT NULL DEFAULT 0,
