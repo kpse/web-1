@@ -1,6 +1,7 @@
 package controllers
 
 import models._
+import models.VideoMember._
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Action, Controller}
 
@@ -64,6 +65,11 @@ object VideoMemberController extends Controller with Secured {
         Forbidden(Json.toJson(ErrorResponse("不合法的token，请联系幼乐宝工作人员。")))
     }
 
+  }
+
+  def available(kg: Long) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(VideoMember.available(kg)))
   }
 
   def externalCreate(kg: Long) = OperatorPage(parse.json) {

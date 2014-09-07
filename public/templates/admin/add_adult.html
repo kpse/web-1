@@ -65,7 +65,7 @@
 
         <div class="col-sm-8">
           <div class="control-group input-append">
-            <select class="form-control member-select" ng-model="parent.video_member_status"
+            <select class="form-control member-select" ng-model="parent.video_member_status" name="videoMember"
                     ng-options="value.id as value.desc for (key, value) in [{id: 0, desc:'未开通'}, {id: 1, desc: '已开通'}]"
                     data-style="btn-primary"></select>
           </div>

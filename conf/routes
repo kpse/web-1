@@ -219,6 +219,7 @@ GET           /api/v1/video_provider/:kg                                        
 GET           /api/v1/video_provider                                             controllers.VideoProviderController.index
 
 GET           /api/v1/video_member                                               controllers.VideoMemberController.externalIndex(token: String)
+GET           /api/v1/video_member/available/:kg                                     controllers.VideoMemberController.available(kg: Long)
 
 GET           /api/v1/kindergarten/:kg/video_member                              controllers.VideoMemberController.index(kg: Long)
 GET           /api/v1/kindergarten/:kg/video_member/:id                          controllers.VideoMemberController.show(kg: Long, id: String)
