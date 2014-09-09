@@ -99,6 +99,15 @@ angular.module('kulebaoOp',
       templateUrl: 'templates/op/score_dashboard.html',
       controller: 'OpTeacherScoreCtrl'
 
+    .state 'main.video',
+      url: '/video',
+      templateUrl: 'templates/op/video_dashboard.html',
+      controller: 'OpVideoMemberCtrl'
+    .state 'main.video_school',
+      url: '/video_in_school/:school_id',
+      templateUrl: 'templates/op/video_school_detail.html',
+      controller: 'OpVideoMemberInSchoolCtrl'
+
     $urlRouterProvider.otherwise ($injector, $location) ->
       $location.path '/main/school'
 ]

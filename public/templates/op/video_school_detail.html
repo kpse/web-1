@@ -1,0 +1,25 @@
+<h2>{{kindergarten.full_name}}开通的全部视频账号</h2>
+<div class="well schools-search-panel">
+  <span>检索：</span>
+  <input ng-model="searchText"/>
+</div>
+<div class="loading" ng-show="loading"></div>
+<table class="table table-hover table-condensed schools-list">
+  <thead>
+  <tr class="row">
+    <th class="col-xs-4">班级</th>
+    <th class="col-xs-2">家长姓名</th>
+    <th class="col-xs-2">家长姓名</th>
+    <th class="col-xs-4">已开通账号</th>
+  </tr>
+  </thead>
+  <tbody>
+   <tr ng-repeat="p in parents | filter: searchText | orderBy:'p.reltaionship[0].child.class_name'" class="row">
+    <td class="col-xs-4">{{p.reltaionship[0].child.class_name}}</a></td>
+    <td class="col-xs-2">{{p.detail.name}}</td>
+    <td class="col-xs-2">{{p.detail.phone}}</td>
+    <td class="col-xs-4">{{p.account}}</td>
+  </tr>
+  </tbody>
+</table>
+
