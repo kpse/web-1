@@ -107,6 +107,10 @@ angular.module('kulebaoOp',
       url: '/video_in_school/:school_id',
       templateUrl: 'templates/op/video_school_detail.html',
       controller: 'OpVideoMemberInSchoolCtrl'
+    .state 'main.video_school.class',
+      url: '/class/:class_id',
+      templateUrl: 'templates/op/video_class_detail.html',
+      controller: 'OpVideoMemberInClassCtrl'
 
     $urlRouterProvider.otherwise ($injector, $location) ->
       $location.path '/main/school'

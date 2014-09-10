@@ -1,0 +1,22 @@
+<ul class="nav nav-tabs">
+  <li ng-repeat="c in kindergarten.classes" ng-class="{active: {{c.class_id == current_class}}}">
+    <a ng-click="navigateTo(c)">{{c.name}}</a>
+  </li>
+</ul>
+<table class="table table-hover table-condensed schools-list">
+  <thead>
+  <tr class="row">
+    <th class="col-xs-4">家长姓名</th>
+    <th class="col-xs-4">手机</th>
+    <th class="col-xs-4">已开通账号</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="p in parents | filter: searchText " class="row" ng-show="display(p)">
+    <td class="col-xs-4"><a ng-href="/admin#/kindergarten/{{kindergarten.school_id}}/relationship/type/connected/class/{{p.reltaionship[0].child.class_id}}/list">{{p.detail.name}}</a></td>
+    <td class="col-xs-4">{{p.detail.phone}}</td>
+    <td class="col-xs-4">{{p.account}}</td>
+  </tr>
+  </tbody>
+</table>
+

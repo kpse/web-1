@@ -4,24 +4,4 @@
   <input ng-model="searchText"/>
 </div>
 <div class="loading" ng-show="loading"></div>
-<table class="table table-hover table-condensed schools-list">
-  <thead>
-  <tr class="row">
-    <th class="col-xs-4">班级</th>
-    <th class="col-xs-2">家长姓名</th>
-    <th class="col-xs-2">手机</th>
-    <th class="col-xs-4">已开通账号</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr ng-repeat="p in parents | filter: searchText | orderBy:'p.relationship[0].child.class_name'" class="row">
-    <td class="col-xs-4"><a
-      ng-href="/admin#/kindergarten/{{kindergarten.school_id}}/relationship/type/connected/class/{{p.reltaionship[0].child.class_id}}/list">{{p.reltaionship[0].child.class_name}}</a>
-    </td>
-    <td class="col-xs-2">{{p.detail.name}}</td>
-    <td class="col-xs-2">{{p.detail.phone}}</td>
-    <td class="col-xs-4">{{p.account}}</td>
-  </tr>
-  </tbody>
-</table>
-
+<div class="parents-class-view" ui-view></div>
