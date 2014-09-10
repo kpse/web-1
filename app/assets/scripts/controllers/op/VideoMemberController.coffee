@@ -14,10 +14,11 @@ angular.module('kulebaoOp').controller 'OpVideoMemberCtrl',
   ]
 
 angular.module('kulebaoOp').controller 'OpVideoMemberInSchoolCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'schoolService', 'videoMemberService', 'senderService', 'relationshipService',
-    (scope, rootScope, stateParams, School, VideoMember, Parent, Relationship) ->
+  ['$scope', '$rootScope', '$stateParams', 'schoolService', 'videoMemberService', 'senderService', 'relationshipService', 'classService',
+    (scope, rootScope, stateParams, School, VideoMember, Parent, Relationship, Class) ->
       scope.loading = true
-      scope.kindergarten = School.get school_id: stateParams.school_id
+      scope.kindergarten = School.get school_id: stateParams.school_id, ->
+        scope.kindergarten.classes = Class.query school_id: stateParams.school_id
       scope.parents = VideoMember.query school_id: stateParams.school_id, (all)->
         _.forEach all, (p) ->
           Parent.get school_id: stateParams.school_id, id: p.id, type: 'p', (data)->
