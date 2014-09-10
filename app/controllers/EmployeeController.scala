@@ -110,13 +110,16 @@ object EmployeeController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString())
         request.body.validate[EmployeePassword].map {
+          case (employee) if employee.old_password.equalsIgnoreCase(employee.new_password) =>
+            BadRequest(loggedJson(ErrorResponse("新旧密码一样。")))
           case (employee) if !Employee.oldPasswordMatch(employee) =>
             BadRequest(loggedJson(ErrorResponse("旧密码错误。")))
           case (employee) if !PasswordHelper.isValid(employee.new_password) =>
             BadRequest(loggedJson(ErrorResponse(PasswordHelper.ErrorMessage)))
           case (employee) =>
             Logger.info(employee.toString)
-            Ok(loggedJson(Employee.changPassword(kg, phone, employee)))
+            Employee.changPassword(kg, phone, employee)
+            Ok(loggedJson(new SuccessResponse))
         }.recoverTotal {
           e => BadRequest("Detected error:" + loggedErrorJson(e))
         }
