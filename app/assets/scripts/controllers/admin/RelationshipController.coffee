@@ -188,6 +188,8 @@ angular.module('kulebaoAdmin')
       scope.connectToChild = (parent) ->
         parent.$save ->
           scope.connectToChildOnly(parent)
+        , (res) ->
+          handleError('家长', res)
 
       scope.createParentOnly = (child) ->
         scope.$broadcast 'refreshing'
