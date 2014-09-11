@@ -83,16 +83,16 @@ object VideoMember {
   }
 
   def availableCounting(kg: Long) = {
-    get[Long]("count") map {
+    get[Option[Long]]("count") map {
       case count =>
-        AvailableSlots(kg, count)
+        AvailableSlots(kg, count.getOrElse(0))
     }
   }
 
   def available(kg: Long) = DB.withConnection {
     implicit c =>
-      SQL("select (total_video_account - count(1)) as count from videomembers v, chargeinfo c where v.school_id={kg} and v.school_id=c.school_id and v.status=1 and c.status=1")
-        .on('kg -> kg).as(availableCounting(kg) singleOpt).getOrElse(AvailableSlots(kg, 0))
+      SQL("select ((select total_video_account from chargeinfo where school_id={kg} and status=1) - count(1)) as count from videomembers where school_id={kg} and status=1")
+        .on('kg -> kg).as(availableCounting(kg) single)
   }
 
   def limitExceed(kg: Long): Boolean = available(kg).count <= 0
