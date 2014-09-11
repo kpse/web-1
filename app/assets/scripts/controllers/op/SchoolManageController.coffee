@@ -38,7 +38,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           handleError res
 
       scope.edit = (user) ->
-        scope.employee = angular.copy user
+        scope.employee = angular.copy user.detail
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/add_employee.html'
