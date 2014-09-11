@@ -92,7 +92,7 @@ object VideoMember {
   def available(kg: Long) = DB.withConnection {
     implicit c =>
       SQL("select (total_video_account - count(1)) as count from videomembers v, chargeinfo c where v.school_id={kg} and v.school_id=c.school_id and v.status=1 and c.status=1")
-        .on('kg -> kg).as(availableCounting(kg) single)
+        .on('kg -> kg).as(availableCounting(kg) singleOpt).getOrElse(AvailableSlots(kg, 0))
   }
 
   def limitExceed(kg: Long): Boolean = available(kg).count <= 0
