@@ -79,7 +79,7 @@ object VideoMember {
       get[String]("account") map {
       case kg ~ id ~ account =>
 //        VideoMember(id, Some(account), passwordOfVideo, Some(kg.toLong))
-        VideoMember(id, Some("cocobaby"), Some("13880498549"), Some(kg.toLong))
+        VideoMember(id, Some("cocbaby"), Some("13880498549"), Some(kg.toLong))
     }
   }
 
