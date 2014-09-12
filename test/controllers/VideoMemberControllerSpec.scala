@@ -60,7 +60,8 @@ class VideoMemberControllerSpec extends Specification with TestSupport {
 
       status(response) must equalTo(OK)
       val jsonResponse: JsValue = Json.parse(contentAsString(response))
-      (jsonResponse \ "account").as[String] must equalTo("account_name")
+//      (jsonResponse \ "account").as[String] must equalTo("account_name")
+      (jsonResponse \ "account").as[String] must equalTo("cocobaby")
     }
 
     "not be created if account duplicated" in new WithApplication {
