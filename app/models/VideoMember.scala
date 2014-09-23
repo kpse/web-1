@@ -79,8 +79,14 @@ object VideoMember {
       get[String]("account") map {
       case kg ~ id ~ account =>
 //        VideoMember(id, Some(account), passwordOfVideo, Some(kg.toLong))
-        VideoMember(id, Some("cocbaby"), Some("13880498549"), Some(kg.toLong))
+        fakeAccountAccordingSchool(kg.toLong, id, account)
+
     }
+  }
+
+  def fakeAccountAccordingSchool(kg: Long, id: String, account: String) = kg match {
+    case 2014|2101 => VideoMember(id, Some("cocbaby"), Some("13880498549"), Some(kg))
+    case _ => VideoMember(id, Some("2222"), Some("6yWw2D"), Some(kg))
   }
 
   def availableCounting(kg: Long) = {

@@ -12,8 +12,7 @@ object VideoMemberController extends Controller with Secured {
   }
 
   def show(kg: Long, id: String) = IsLoggedIn { u => _ =>
-    val member: Option[VideoMember] = VideoMember.show(kg, id)
-    member match {
+    VideoMember.show(kg, id) match {
       case Some(member) =>
         Ok(Json.toJson(member))
       case None =>
