@@ -154,6 +154,7 @@ DELETE        /phone/:phone                                                     
 GET           /app_package                                                       controllers.AppPackageController.last(redirect: Option[String])
 POST          /app_package                                                       controllers.AppPackageController.create
 GET           /app_package/download                                              controllers.AppPackageController.download
+GET           /teacher_app_package/download                                      controllers.AppPackageController.downloadTeacherClient
 
 POST          /ws/broadcast                                                      controllers.WSController.sendBroadcastMessage
 
@@ -219,7 +220,7 @@ GET           /api/v1/video_provider/:kg                                        
 GET           /api/v1/video_provider                                             controllers.VideoProviderController.index
 
 GET           /api/v1/video_member                                               controllers.VideoMemberController.externalIndex(token: String)
-GET           /api/v1/video_member/available/:kg                                     controllers.VideoMemberController.available(kg: Long)
+GET           /api/v1/video_member/available/:kg                                 controllers.VideoMemberController.available(kg: Long)
 
 GET           /api/v1/kindergarten/:kg/video_member                              controllers.VideoMemberController.index(kg: Long)
 GET           /api/v1/kindergarten/:kg/video_member/:id                          controllers.VideoMemberController.show(kg: Long, id: String)

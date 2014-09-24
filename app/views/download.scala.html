@@ -1,3 +1,5 @@
+@(title: String, iOSUrl: String, androidUrl: String)
+
 @scripts = {
 }
 @styling = {
@@ -5,18 +7,18 @@
   <link rel="stylesheet" media="screen and (min-width: 1081px)" href="@routes.VersionedAssets.at("stylesheets/download.css")">
 }
 
-@staticMain("幼乐宝|客户端下载")(scripts)(styling) {
+@staticMain(title)(scripts)(styling) {
   <img class="hero img-responsive" src="@routes.VersionedAssets.at("images/phonebanner.jpg")"/>
   <p class="title">按照操作系统选择</p>
   <ul class="app-download">
     <li class="app-download-iphone">
-      <a href="https://itunes.apple.com/us/app/you-le-baoios/id854211863?ls=1&mt=8">
+      <a href="@iOSUrl">
         <span>iPhone版</span>
         <span class="pull-right download">免费下载</span>
       </a>
     </li>
     <li class="app-download-android">
-      <a href="/app_package?redirect=true">
+      <a href="@androidUrl">
         <span>Android版</span>
         <span class="pull-right download">免费下载</span>
       </a>
