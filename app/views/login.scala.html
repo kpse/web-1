@@ -7,7 +7,11 @@
   }
   @scripts = {}
 @staticMain("幼乐宝|欢迎访问幼乐宝|家园互动|家园直通车|")(scripts)(styling) {
-
+  <div class="qr-code-box">
+    <div class="qr-code"></div>
+    <a href="http://www.cocobabys.com/teacher_app_package?redirect=true"><div class="android download-link"></div></a>
+    <a href="#"><div class="iphone download-link"></div></a>
+  </div>
   <div class="login-container">
     <div class="main-login">
     @helper.form(routes.Auth.authenticate, 'class -> "login-form", 'autocomplete -> "off") {
@@ -42,7 +46,7 @@
       <div class="form-group">
         <div class="col-sm-offset-4 col-sm-8 button-container">
           <button type="submit" id="login-button" class="login-button form-control btn-success">
-          登陆</button>
+            登陆</button>
         </div>
       </div>
       <p>

@@ -122,3 +122,14 @@ p.note {
 // Some shared elements
 @import 'main/_header.less';
 // Top header + User bar
+
+@import "qr-code.less";
+
+.qr-code-box {
+  top: 200px;
+  right: 164px;
+  .qr-code {
+    background: transparent url(../../images/qrcode_teacher_android.png) no-repeat;
+    background-size: 100%;
+  }
+}
