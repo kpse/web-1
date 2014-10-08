@@ -7,8 +7,8 @@ angular.module('kulebaoAdmin')
     (scope, rootScope, stateParams, location, DailyLog, Child, AccessClass, Compressor) ->
       rootScope.tabName = 'dailylog'
 
-      scope.childrenInSchool = 0
       scope.refresh = ->
+        scope.childrenInSchool = 0
         _.forEach scope.kindergarten.classes, (clazz) ->
           clazz.dailyLog = DailyLog.query school_id: stateParams.kindergarten, class_id: clazz.class_id, ->
             scope.childrenInSchool = scope.childrenInSchool + clazz.dailyLog.length
