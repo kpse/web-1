@@ -121,8 +121,10 @@ object School {
   def updateManager(clazz: SchoolClass) = DB.withConnection {
     implicit c =>
       Logger.info(clazz.toString)
-      SQL("delete from privilege where school_id={kg} and subordinate={class}")
-        .on('kg -> clazz.school_id.toString, 'class -> clazz.class_id.getOrElse(-1).toString).execute()
+      if (clazz.managers.nonEmpty) {
+        SQL("delete from privilege where school_id={kg} and subordinate={class}")
+          .on('kg -> clazz.school_id.toString, 'class -> clazz.class_id.getOrElse(-1).toString).execute()
+      }
       clazz.managers.getOrElse(List()) map {
         manager =>
           Logger.info(Employee.findByName(clazz.school_id, manager).toString)
