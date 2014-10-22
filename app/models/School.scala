@@ -6,13 +6,15 @@ import anorm.SqlParser._
 import anorm.~
 import play.api.Play.current
 import play.Logger
+import play.api.libs.json.Json
 
 case class School(school_id: Long, name: String)
 
-case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, managers: Option[List[String]] = Some(List[String]()))
+case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, managers: Option[List[String]] = None)
 
 
 object School {
+  implicit val schoolClassWriter = Json.writes[SchoolClass]
   def manageMoreClass(kg: Long, classId: Long, employee: Employee) = DB.withConnection {
     implicit c =>
       SQL("update privilege set subordinate= CONCAT((select subordinate from privilege where employee_id={id}) , {class_id} ) where school_id={kg} " +

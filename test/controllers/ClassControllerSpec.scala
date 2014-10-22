@@ -1,7 +1,7 @@
 package controllers
 
 import _root_.helper.TestSupport
-import models.ChildInfo
+import models.{SchoolClass, ChildInfo}
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
@@ -9,6 +9,7 @@ import play.Logger
 import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, WithServer}
+import models.School._
 
 @RunWith(classOf[JUnitRunner])
 class ClassControllerSpec extends Specification with TestSupport {
@@ -83,6 +84,60 @@ class ClassControllerSpec extends Specification with TestSupport {
       jsonResponse match {
         case JsArray(arr) =>
           arr.length must equalTo(0)
+        case _ => failure
+      }
+    }
+
+    "be created by post" in new WithServer {
+      private val classInfo = Json.toJson(SchoolClass(93740362, Some(123), "test"))
+      val createRes = route(principalLoggedRequest(POST, "/kindergarten/93740362/class").withBody(classInfo)).get
+
+      status(createRes) must equalTo(OK)
+
+      val response = route(principalLoggedRequest(GET, "/kindergarten/93740362/class/123/manager")).get
+
+      status(response) must equalTo(OK)
+
+      val jsonResponse: JsValue = Json.parse(contentAsString(response))
+      jsonResponse match {
+        case JsArray(arr) =>
+          arr.length must equalTo(0)
+        case _ => failure
+      }
+    }
+
+    "be created with manager" in new WithServer {
+      private val classInfo = Json.toJson(SchoolClass(93740362, Some(123), "test", Some(List("富贵"))))
+      val createRes = route(principalLoggedRequest(POST, "/kindergarten/93740362/class").withBody(classInfo)).get
+
+      status(createRes) must equalTo(OK)
+
+      val response = route(principalLoggedRequest(GET, "/kindergarten/93740362/class/123/manager")).get
+
+      status(response) must equalTo(OK)
+
+      val jsonResponse: JsValue = Json.parse(contentAsString(response))
+      jsonResponse match {
+        case JsArray(arr) =>
+          (arr(0) \ "name").as[String] must equalTo("富贵")
+        case _ => failure
+      }
+    }
+
+    "keep relationship while updating without manager info" in new WithServer {
+      private val classInfo = Json.toJson(SchoolClass(93740362, Some(777888), "苹果2班"))
+      val createRes = route(principalLoggedRequest(POST, "/kindergarten/93740362/class").withBody(classInfo)).get
+
+      status(createRes) must equalTo(OK)
+
+      val response = route(principalLoggedRequest(GET, "/kindergarten/93740362/class/777888/manager")).get
+
+      status(response) must equalTo(OK)
+
+      val jsonResponse: JsValue = Json.parse(contentAsString(response))
+      jsonResponse match {
+        case JsArray(arr) =>
+          arr.length must greaterThan(0)
         case _ => failure
       }
     }
