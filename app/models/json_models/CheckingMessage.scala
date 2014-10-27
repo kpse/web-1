@@ -6,36 +6,36 @@ import play.api.Play.current
 import anorm.SqlParser._
 import anorm.~
 import org.joda.time.DateTime
-import models.DailyLog
+import models.{Advertisement, DailyLog}
 
 case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long)
 
-case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String, pushid: String, record_url: String, parent_name: String, device: Int, aps: Option[IOSField])
+case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String, pushid: String, record_url: String, parent_name: String, device: Int, aps: Option[IOSField], ad: Option[String] = None)
 
 case class IOSField(alert: String, sound: String = "", badge: Int = 1)
 
 object CheckingMessage {
-
-
-
   def convert(request: CheckInfo): List[CheckNotification] = DB.withConnection {
     implicit c =>
       def generateNotice(childName: String): IOSField = {
-        IOSField("您的孩子 %s 已于 %s 打卡%s。".format(childName,
+        IOSField("%s提醒您：您的孩子 %s 已于 %s 打卡%s。".format(advertisementOf(request.school_id), childName,
           new DateTime(request.timestamp).toString("HH:mm:ss"),
-          if (request.notice_type==1) "入园" else "离开幼儿园"))
+          if (request.notice_type == 1) "入园" else "离开幼儿园"))
       }
+
+      def advertisementOf(schoolId: Long): String = Advertisement.find(schoolId).name
+
       val simple = {
         get[String]("child_id") ~
           get[String]("pushid") ~
           get[String]("parent_name") ~
           get[String]("childinfo.name") ~
           get[Int]("device") map {
-          case child_id ~ pushid ~ name ~ childName ~ 3  =>
-            CheckNotification(request.timestamp, request.notice_type, child_id, pushid, request.record_url, name, 3, None)
-          case child_id ~ pushid ~ name ~ childName ~ 4  =>
+          case child_id ~ pushid ~ name ~ childName ~ 3 =>
+            CheckNotification(request.timestamp, request.notice_type, child_id, pushid, request.record_url, name, 3, None, Some(advertisementOf(request.school_id)))
+          case child_id ~ pushid ~ name ~ childName ~ 4 =>
             CheckNotification(request.timestamp, request.notice_type, child_id, pushid, request.record_url, name, 4,
-              Some(generateNotice(childName)))
+              Some(generateNotice(childName)), Some(advertisementOf(request.school_id)))
         }
 
       }
