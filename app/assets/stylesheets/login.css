@@ -126,8 +126,9 @@ p.note {
 @import "qr-code.less";
 
 .qr-code-box {
-  top: 200px;
-  right: 164px;
+  position: absolute;
+  top: 30%;
+  left: 960px;
   .qr-code {
     background: transparent url(../../images/qrcode_teacher_android.png) no-repeat;
     background-size: 100%;
