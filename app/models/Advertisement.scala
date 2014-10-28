@@ -1,13 +1,17 @@
 package models
 
+import play.api.libs.json.Json
+
 case class Advertisement(id: Long, school_id: Long, position_id: Long, link: String, image: String, name: String)
 
 object Advertisement {
-  def find(schoolId: Long): Advertisement = {
+  implicit val advertiseWrite = Json.writes[Advertisement]
+
+  def find(schoolId: Long): List[Advertisement] = {
     if (schoolId > 2100 && schoolId != 93740362) {
-      default
+      List(default)
     } else {
-      Advertisement(1, schoolId, 1, "https://www.cocobabys.com/", "https://www.cocobabys.com/assets/images/hero-1.jpg", "库贝影楼")
+      List(Advertisement(1, schoolId, 1, "https://www.cocobabys.com/", "https://www.cocobabys.com/assets/images/hero-1.jpg", "库贝影楼"))
     }
   }
 
