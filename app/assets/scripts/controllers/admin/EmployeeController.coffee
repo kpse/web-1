@@ -65,6 +65,8 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
       scope.goInfo = ->
         location.path location.path().replace(/\/score$/, '/detail')
 
+      scope.groupDisplayName = (group) ->
+        if group == 'teacher' then '普通老师' else '校长'
   ]
 
 .controller 'EmployeesScoreCtrl',
