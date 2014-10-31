@@ -4,8 +4,8 @@ CREATE TABLE advertisement (
   uid       INT(11)     NOT NULL AUTO_INCREMENT,
   school_id VARCHAR(20) NOT NULL,
   position_id INT(11) default 0,
-  link text NOT NULL default '',
-  image text NOT NULL default '',
+  link text NOT NULL,
+  image text NOT NULL,
   name VARCHAR(20) NOT NULL default '',
   update_at BIGINT      NOT NULL DEFAULT 0,
   PRIMARY KEY (uid)
