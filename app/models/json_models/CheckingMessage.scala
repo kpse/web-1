@@ -23,7 +23,7 @@ object CheckingMessage {
           if (request.notice_type == 1) "入园" else "离开幼儿园"))
       }
 
-      def advertisementOf(schoolId: Long): String = Advertisement.find(schoolId).head.name
+      def advertisementOf(schoolId: Long): String = Advertisement.index(schoolId).head.name
 
       val simple = {
         get[String]("child_id") ~

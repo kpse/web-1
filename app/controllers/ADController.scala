@@ -7,7 +7,7 @@ import play.api.mvc.{Controller, Action}
 object ADController extends Controller with Secured {
 
   def index(kg: Long) = Action {
-    Ok(Json.toJson(Advertisement.find(kg)))
+    Ok(Json.toJson(Advertisement.index(kg)))
   }
 
   def show(kg: Long, id: Long) = Action {
