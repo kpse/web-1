@@ -9,9 +9,9 @@ import play.Logger
 
 case class CookbookPreviewResponse(error_code: Int, school_id: Long, cookbook_id: Long, timestamp: Long)
 
-case class DayCookbook(breakfast: String, lunch: String, dinner: String, extra: String)
+case class DayCookbook(breakfast: Option[String], lunch: Option[String], dinner: Option[String], extra: Option[String])
 
-case class WeekCookbook(mon: DayCookbook, tue: DayCookbook, wed: DayCookbook, thu: DayCookbook, fri: DayCookbook)
+case class WeekCookbook(mon: Option[DayCookbook], tue: Option[DayCookbook], wed: Option[DayCookbook], thu: Option[DayCookbook], fri: Option[DayCookbook])
 
 case class CookbookDetail(error_code: Option[Int], school_id: Long, cookbook_id: Option[Long], timestamp: Option[Long], week: WeekCookbook)
 
@@ -36,26 +36,26 @@ object CookBook {
             'cookbook_id -> cookbook.cookbook_id.getOrElse(23),
             'extra_tip -> "",
             'timestamp -> time,
-            'mon_breakfast -> cookbook.week.mon.breakfast,
-            'mon_lunch -> cookbook.week.mon.lunch,
-            'mon_dinner -> cookbook.week.mon.dinner,
-            'mon_extra -> cookbook.week.mon.extra,
-            'tue_breakfast -> cookbook.week.tue.breakfast,
-            'tue_lunch -> cookbook.week.tue.lunch,
-            'tue_dinner -> cookbook.week.tue.dinner,
-            'tue_extra -> cookbook.week.tue.extra,
-            'wed_breakfast -> cookbook.week.wed.breakfast,
-            'wed_lunch -> cookbook.week.wed.lunch,
-            'wed_dinner -> cookbook.week.wed.dinner,
-            'wed_extra -> cookbook.week.wed.extra,
-            'thu_breakfast -> cookbook.week.thu.breakfast,
-            'thu_lunch -> cookbook.week.thu.lunch,
-            'thu_dinner -> cookbook.week.thu.dinner,
-            'thu_extra -> cookbook.week.thu.extra,
-            'fri_breakfast -> cookbook.week.fri.breakfast,
-            'fri_lunch -> cookbook.week.fri.lunch,
-            'fri_dinner -> cookbook.week.fri.dinner,
-            'fri_extra -> cookbook.week.fri.extra
+            'mon_breakfast -> cookbook.week.mon.getOrElse(emptyDay).breakfast,
+            'mon_lunch -> cookbook.week.mon.getOrElse(emptyDay).lunch,
+            'mon_dinner -> cookbook.week.mon.getOrElse(emptyDay).dinner,
+            'mon_extra -> cookbook.week.mon.getOrElse(emptyDay).extra,
+            'tue_breakfast -> cookbook.week.tue.getOrElse(emptyDay).breakfast,
+            'tue_lunch -> cookbook.week.tue.getOrElse(emptyDay).lunch,
+            'tue_dinner -> cookbook.week.tue.getOrElse(emptyDay).dinner,
+            'tue_extra -> cookbook.week.tue.getOrElse(emptyDay).extra,
+            'wed_breakfast -> cookbook.week.wed.getOrElse(emptyDay).breakfast,
+            'wed_lunch -> cookbook.week.wed.getOrElse(emptyDay).lunch,
+            'wed_dinner -> cookbook.week.wed.getOrElse(emptyDay).dinner,
+            'wed_extra -> cookbook.week.wed.getOrElse(emptyDay).extra,
+            'thu_breakfast -> cookbook.week.thu.getOrElse(emptyDay).breakfast,
+            'thu_lunch -> cookbook.week.thu.getOrElse(emptyDay).lunch,
+            'thu_dinner -> cookbook.week.thu.getOrElse(emptyDay).dinner,
+            'thu_extra -> cookbook.week.thu.getOrElse(emptyDay).extra,
+            'fri_breakfast -> cookbook.week.fri.getOrElse(emptyDay).breakfast,
+            'fri_lunch -> cookbook.week.fri.getOrElse(emptyDay).lunch,
+            'fri_dinner -> cookbook.week.fri.getOrElse(emptyDay).dinner,
+            'fri_extra -> cookbook.week.fri.getOrElse(emptyDay).extra
           ).executeInsert()
         c.commit()
         findById(newId.get)
@@ -69,6 +69,8 @@ object CookBook {
 
 
   }
+
+  val emptyDay = DayCookbook(None, None, None, None)
 
   def show(kg: Long, cookbookId: Long): Option[CookbookDetail] = DB.withConnection {
     implicit c =>
@@ -105,38 +107,38 @@ object CookBook {
     get[String]("school_id") ~
       get[Int]("cookbook_id") ~
       get[Long]("timestamp") ~
-      get[String]("extra_tip") ~
-      get[String]("mon_breakfast") ~
-      get[String]("tue_breakfast") ~
-      get[String]("wed_breakfast") ~
-      get[String]("thu_breakfast") ~
-      get[String]("fri_breakfast") ~
-      get[String]("mon_lunch") ~
-      get[String]("tue_lunch") ~
-      get[String]("wed_lunch") ~
-      get[String]("thu_lunch") ~
-      get[String]("fri_lunch") ~
-      get[String]("mon_dinner") ~
-      get[String]("tue_dinner") ~
-      get[String]("wed_dinner") ~
-      get[String]("thu_dinner") ~
-      get[String]("fri_dinner") ~
-      get[String]("mon_extra") ~
-      get[String]("tue_extra") ~
-      get[String]("wed_extra") ~
-      get[String]("thu_extra") ~
-      get[String]("fri_extra") map {
+      get[Option[String]]("extra_tip") ~
+      get[Option[String]]("mon_breakfast") ~
+      get[Option[String]]("tue_breakfast") ~
+      get[Option[String]]("wed_breakfast") ~
+      get[Option[String]]("thu_breakfast") ~
+      get[Option[String]]("fri_breakfast") ~
+      get[Option[String]]("mon_lunch") ~
+      get[Option[String]]("tue_lunch") ~
+      get[Option[String]]("wed_lunch") ~
+      get[Option[String]]("thu_lunch") ~
+      get[Option[String]]("fri_lunch") ~
+      get[Option[String]]("mon_dinner") ~
+      get[Option[String]]("tue_dinner") ~
+      get[Option[String]]("wed_dinner") ~
+      get[Option[String]]("thu_dinner") ~
+      get[Option[String]]("fri_dinner") ~
+      get[Option[String]]("mon_extra") ~
+      get[Option[String]]("tue_extra") ~
+      get[Option[String]]("wed_extra") ~
+      get[Option[String]]("thu_extra") ~
+      get[Option[String]]("fri_extra") map {
       case school_id ~ cookbook ~ timestamp ~ extra_tip ~
         mon_breakfast ~ tue_breakfast ~ wed_breakfast ~ thu_breakfast ~ fri_breakfast ~
         mon_lunch ~ tue_lunch ~ wed_lunch ~ thu_lunch ~ fri_lunch ~
         mon_dinner ~ tue_dinner ~ wed_dinner ~ thu_dinner ~ fri_dinner ~
         mon_extra ~ tue_extra ~ wed_extra ~ thu_extra ~ fri_extra =>
         val weekCookbook = WeekCookbook(
-          DayCookbook(mon_breakfast, mon_lunch, mon_dinner, mon_extra),
-          DayCookbook(tue_breakfast, tue_lunch, tue_dinner, tue_extra),
-          DayCookbook(wed_breakfast, wed_lunch, wed_dinner, wed_extra),
-          DayCookbook(thu_breakfast, thu_lunch, thu_dinner, thu_extra),
-          DayCookbook(fri_breakfast, fri_lunch, fri_dinner, fri_extra))
+          Some(DayCookbook(mon_breakfast, mon_lunch, mon_dinner, mon_extra)),
+          Some(DayCookbook(tue_breakfast, tue_lunch, tue_dinner, tue_extra)),
+          Some(DayCookbook(wed_breakfast, wed_lunch, wed_dinner, wed_extra)),
+          Some(DayCookbook(thu_breakfast, thu_lunch, thu_dinner, thu_extra)),
+          Some(DayCookbook(fri_breakfast, fri_lunch, fri_dinner, fri_extra)))
         CookbookDetail(Some(0), school_id.toLong, Some(cookbook), Some(timestamp), weekCookbook)
     }
   }
