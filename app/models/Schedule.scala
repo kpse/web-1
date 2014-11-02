@@ -9,9 +9,9 @@ import play.Logger
 
 case class SchedulePreviewResponse(error_code: Int, school_id: Long, class_id: Long, schedule_id: Long, timestamp: Long)
 
-case class DaySchedule(am: String, pm: String)
+case class DaySchedule(am: Option[String], pm: Option[String])
 
-case class WeekSchedule(mon: DaySchedule, tue: DaySchedule, wed: DaySchedule, thu: DaySchedule, fri: DaySchedule)
+case class WeekSchedule(mon: Option[DaySchedule], tue: Option[DaySchedule], wed: Option[DaySchedule], thu: Option[DaySchedule], fri: Option[DaySchedule])
 
 case class ScheduleDetail(error_code: Int, school_id: Long, class_id: Long, schedule_id: Long, timestamp: Long, week: WeekSchedule)
 
@@ -50,16 +50,16 @@ object Schedule {
             'schedule_id -> (schedule.schedule_id + 1),
             'class_id -> schedule.class_id,
             'timestamp -> System.currentTimeMillis,
-            'mon_am -> schedule.week.mon.am,
-            'tue_am -> schedule.week.tue.am,
-            'wed_am -> schedule.week.wed.am,
-            'thu_am -> schedule.week.thu.am,
-            'fri_am -> schedule.week.fri.am,
-            'mon_pm -> schedule.week.mon.pm,
-            'tue_pm -> schedule.week.tue.pm,
-            'wed_pm -> schedule.week.wed.pm,
-            'thu_pm -> schedule.week.thu.pm,
-            'fri_pm -> schedule.week.fri.pm
+            'mon_am -> schedule.week.mon.getOrElse(emptyDay).am,
+            'tue_am -> schedule.week.tue.getOrElse(emptyDay).am,
+            'wed_am -> schedule.week.wed.getOrElse(emptyDay).am,
+            'thu_am -> schedule.week.thu.getOrElse(emptyDay).am,
+            'fri_am -> schedule.week.fri.getOrElse(emptyDay).am,
+            'mon_pm -> schedule.week.mon.getOrElse(emptyDay).pm,
+            'tue_pm -> schedule.week.tue.getOrElse(emptyDay).pm,
+            'wed_pm -> schedule.week.wed.getOrElse(emptyDay).pm,
+            'thu_pm -> schedule.week.thu.getOrElse(emptyDay).pm,
+            'fri_pm -> schedule.week.fri.getOrElse(emptyDay).pm
           ).executeInsert()
         c.commit()
         findById(newId.get)
@@ -72,6 +72,10 @@ object Schedule {
       }
 
 
+  }
+
+  val emptyDay = {
+    DaySchedule(None, None)
   }
 
   def findById(uid: Long) = DB.withConnection {
@@ -113,25 +117,25 @@ object Schedule {
       get[Int]("class_id") ~
       get[Int]("schedule_id") ~
       get[Long]("timestamp") ~
-      get[String]("mon_am") ~
-      get[String]("tue_am") ~
-      get[String]("wed_am") ~
-      get[String]("thu_am") ~
-      get[String]("fri_am") ~
-      get[String]("mon_pm") ~
-      get[String]("tue_pm") ~
-      get[String]("wed_pm") ~
-      get[String]("thu_pm") ~
-      get[String]("fri_pm") map {
+      get[Option[String]]("mon_am") ~
+      get[Option[String]]("tue_am") ~
+      get[Option[String]]("wed_am") ~
+      get[Option[String]]("thu_am") ~
+      get[Option[String]]("fri_am") ~
+      get[Option[String]]("mon_pm") ~
+      get[Option[String]]("tue_pm") ~
+      get[Option[String]]("wed_pm") ~
+      get[Option[String]]("thu_pm") ~
+      get[Option[String]]("fri_pm") map {
       case school_id ~ class_id ~ schedule_id ~ timestamp ~
         mon_am ~ tue_am ~ wed_am ~ thu_am ~ fri_am ~
         mon_pm ~ tue_pm ~ wed_pm ~ thu_pm ~ fri_pm =>
         val schedule = WeekSchedule(
-          DaySchedule(mon_am, mon_pm),
-          DaySchedule(tue_am, tue_pm),
-          DaySchedule(wed_am, wed_pm),
-          DaySchedule(thu_am, thu_pm),
-          DaySchedule(fri_am, fri_pm))
+          Some(DaySchedule(mon_am, mon_pm)),
+          Some(DaySchedule(tue_am, tue_pm)),
+          Some(DaySchedule(wed_am, wed_pm)),
+          Some(DaySchedule(thu_am, thu_pm)),
+          Some(DaySchedule(fri_am, fri_pm)))
         ScheduleDetail(0, school_id.toLong, class_id, schedule_id, timestamp, schedule)
     }
   }
