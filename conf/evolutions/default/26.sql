@@ -7,6 +7,7 @@ CREATE TABLE advertisement (
   link text NOT NULL,
   image text NOT NULL,
   name VARCHAR(20) NOT NULL default '',
+  status    INT DEFAULT 1,
   update_at BIGINT      NOT NULL DEFAULT 0,
   PRIMARY KEY (uid)
 );

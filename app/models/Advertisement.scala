@@ -10,10 +10,11 @@ case class Advertisement(id: Option[Long], school_id: Long, position_id: Long, l
 
 object Advertisement {
   implicit val advertiseWrite = Json.writes[Advertisement]
+  implicit val advertiseRead = Json.reads[Advertisement]
 
   def index(schoolId: Long): List[Advertisement] = DB.withConnection {
     implicit c =>
-      SQL("select * from advertisement where school_id={kg}")
+      SQL("select * from advertisement where school_id={kg} and status=1")
         .on(
           'kg -> schoolId.toString
         ).as(simple *)
@@ -26,6 +27,20 @@ object Advertisement {
           'kg -> kg.toString,
           'uid -> id
         ).as(simple singleOpt)
+  }
+
+  def create(kg: Long, ad: Advertisement) =  DB.withConnection {
+    implicit c =>
+      SQL("insert into advertisement (school_id, position_id, link, image, name, update_at) " +
+        "values ({kg}, {position}, {link}, {image}, {name}, {update_at})")
+        .on(
+          'kg -> kg.toString,
+          'position -> ad.position_id,
+          'link -> ad.link,
+          'image -> ad.image,
+          'name -> ad.name,
+          'update_at -> System.currentTimeMillis()
+        ).executeInsert()
   }
 
   val default = Advertisement(Some(0), 0, 0, "", "", "幼乐宝", Some(0))
