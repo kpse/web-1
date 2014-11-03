@@ -43,6 +43,20 @@ object Advertisement {
         ).executeInsert()
   }
 
+  def update(kg: Long, ad: Advertisement) =  DB.withConnection {
+    implicit c =>
+      SQL("update advertisement set school_id={kg}, position_id={position}, link={link}, image={image}, name={name}, update_at={update_at} where uid={id}")
+        .on(
+          'kg -> kg.toString,
+          'position -> ad.position_id,
+          'link -> ad.link,
+          'image -> ad.image,
+          'name -> ad.name,
+          'update_at -> System.currentTimeMillis(),
+          'id -> ad.id.getOrElse(0)
+        ).executeUpdate()
+  }
+
   val default = Advertisement(Some(0), 0, 0, "", "", "幼乐宝", Some(0))
 
   val simple = {
