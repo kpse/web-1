@@ -53,4 +53,7 @@ angular.module('kulebaoOp').controller 'OpCtrl',
 
       scope.goAppRelease = ->
         goPageWithTab 'app', 'type', 'parent/detail'
+
+      scope.goAdConfiguration = ->
+        location.path '/main/commercials' if location.path().indexOf('/main/commercials') < 0
   ]

@@ -1,0 +1,25 @@
+<h2>广告配置</h2>
+<div class="well schools-search-panel">
+  <span>检索：</span>
+  <input ng-model="searchText"/>
+</div>
+<div class="loading" ng-show="loading"></div>
+<table class="table table-hover table-condensed schools-list">
+  <thead>
+  <tr class="row">
+    <th class="col-xs-1">#</th>
+    <th class="col-xs-3">学校名称</th>
+    <th class="col-xs-4">广告数</th>
+    <th class="col-xs-4">所在位置</th>
+  </tr>
+  </thead>
+  <tbody>
+   <tr ng-repeat="kg in kindergartens | filter: searchText" class="row" ng-class="{editable: edit}" ng-click="edit(kg.ad)">
+    <td class="col-xs-1"><a ng-href="/admin#/kindergarten/{{kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{kg.school_id}}</a></td>
+    <td class="col-xs-3"><a ng-href="/admin#/kindergarten/{{kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{kg.full_name}}</a></td>
+    <td class="col-xs-4">{{kg.ad.length}}</td>
+    <td class="col-xs-4">{{positionReport(kg)}}</td>
+  </tr>
+  </tbody>
+</table>
+

@@ -112,6 +112,24 @@ angular.module('kulebaoOp',
       templateUrl: 'templates/op/video_class_detail.html',
       controller: 'OpVideoMemberInClassCtrl'
 
+
+    .state 'main.ad',
+      url: '/commercials',
+      templateUrl: 'templates/op/ad_dashboard.html',
+      controller: 'OpAdsCtrl'
+    .state 'main.ad_all',
+      url: '/all_commercials',
+      templateUrl: 'templates/op/ad_all.html',
+      controller: 'OpAllAdsCtrl'
+    .state 'main.ad_school',
+      url: '/ad_in_school/:school_id',
+      templateUrl: 'templates/op/ad_school_detail.html',
+      controller: 'OpAdsInSchoolCtrl'
+    .state 'main.ad_school.position',
+      url: '/position/:position_id',
+      templateUrl: 'templates/op/ad_position_detail.html',
+      controller: 'OpAdPositionCtrl'
+
     $urlRouterProvider.otherwise ($injector, $location) ->
       $location.path '/main/school'
 ]
