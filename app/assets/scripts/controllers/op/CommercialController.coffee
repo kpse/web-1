@@ -26,6 +26,7 @@ angular.module('kulebaoOp').controller 'OpAdsCtrl',
 
       scope.delete = (ad) ->
         ad.$delete ->
+          scope.ads.splice(scope.ads.indexOf(ad), 1)
           scope.refresh()
 
       scope.save = (ad) ->
