@@ -38,4 +38,11 @@ object ADController extends Controller with Secured {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
+
+  def delete(kg: Long, id: Long) = IsOperator { u =>
+    request =>
+      Advertisement.delete(kg, id)
+      Ok(Json.toJson(new SuccessResponse))
+
+  }
 }

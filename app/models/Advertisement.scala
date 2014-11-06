@@ -29,7 +29,7 @@ object Advertisement {
         ).as(simple singleOpt)
   }
 
-  def create(kg: Long, ad: Advertisement) =  DB.withConnection {
+  def create(kg: Long, ad: Advertisement) = DB.withConnection {
     implicit c =>
       SQL("insert into advertisement (school_id, position_id, link, image, name, update_at) " +
         "values ({kg}, {position}, {link}, {image}, {name}, {update_at})")
@@ -43,7 +43,7 @@ object Advertisement {
         ).executeInsert()
   }
 
-  def update(kg: Long, ad: Advertisement) =  DB.withConnection {
+  def update(kg: Long, ad: Advertisement) = DB.withConnection {
     implicit c =>
       SQL("update advertisement set school_id={kg}, position_id={position}, link={link}, image={image}, name={name}, update_at={update_at} where uid={id}")
         .on(
@@ -55,6 +55,15 @@ object Advertisement {
           'update_at -> System.currentTimeMillis(),
           'id -> ad.id.getOrElse(0)
         ).executeUpdate()
+  }
+
+  def delete(kg: Long, id: Long) = DB.withConnection {
+    implicit c =>
+      SQL("update advertisement set update_at={update_at}, status=0 where uid={id}")
+        .on(
+          'update_at -> System.currentTimeMillis(),
+          'id -> id
+        ).execute()
   }
 
   val default = Advertisement(Some(0), 0, 0, "", "", "幼乐宝", Some(0))
