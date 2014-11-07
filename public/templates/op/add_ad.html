@@ -44,7 +44,7 @@
       <label for="ad-name" class="col-sm-4 control-label">广告商名称</label>
 
       <div class="col-sm-8">
-        <input id="ad-name" class="form-control" ng-model="newAd.name" required placeholder="推送时被显示为XX提醒您"/>
+        <input id="ad-name" class="form-control" ng-model="newAd.name" required placeholder="推送时被显示为XX提醒您" maxlength="20"/>
       </div>
     </div>
 
@@ -69,7 +69,7 @@
 
       <div class="col-sm-8">
         <input id="ad-position" class="form-control" type="number" ng-model="newAd.position_id" required
-               min="1" placeholder="广告的在APP中的位置"/>
+               min="1" max="100" placeholder="广告的在APP中的位置"/>
       </div>
     </div>
 
