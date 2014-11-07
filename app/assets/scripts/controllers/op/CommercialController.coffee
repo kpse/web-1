@@ -18,8 +18,9 @@ angular.module('kulebaoOp').controller 'OpAdsCtrl',
       scope.positionReport = (kg) ->
         if kg.ad && kg.ad.length > 0 then _.map(kg.ad , (a) -> a.position_id).join(',') else '无'
 
-      scope.edit = (ad) ->
-        scope.ads = angular.copy ad
+      scope.edit = (kg) ->
+        scope.ads = angular.copy kg.ad
+        scope.newAd = scope.createNewAd(kg)
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/op/add_ad.html'
@@ -36,6 +37,12 @@ angular.module('kulebaoOp').controller 'OpAdsCtrl',
 
       scope.closeModel = ->
         scope.currentModal.hide()
+
+      scope.createNewAd = (kg)->
+        new Ad
+          school_id: kg.school_id
+          position: 1
+
   ]
 
 angular.module('kulebaoOp').controller 'OpAdsInSchoolCtrl',

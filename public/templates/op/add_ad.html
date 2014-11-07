@@ -15,9 +15,11 @@
   <tr ng-repeat="ad in ads" class="row">
     <td class="col-xs-2">{{ad.name}}</td>
     <td class="col-xs-3">{{ad.link}}</td>
-    <td class="col-xs-3"><div class="portrait-container">
-      <img class="portrait" ng-src="{{ad.image || '/assets/images/portrait_placeholder.png'}}"
-           alt="广告图片"/></div></td>
+    <td class="col-xs-3">
+      <div class="portrait-container">
+        <img class="portrait" ng-src="{{ad.image || '/assets/images/portrait_placeholder.png'}}"
+             alt="广告图片"/></div>
+    </td>
     <td class="col-xs-1">{{ad.position_id}}</td>
     <td class="col-xs-2">{{ad.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</td>
     <td class="col-xs-1">
@@ -29,57 +31,57 @@
   </tbody>
 </table>
 <h2>创建</h2>
-<h4>开发中...</h4>
-<form role="form" class="upload-form form-horizontal" name="newAdform">
-  <!--<div class="form-group">-->
-    <!--<label for="store-version-code" class="col-sm-4 control-label">版本序号</label>-->
-
-    <!--<div class="col-sm-8">-->
-      <!--<input id="store-version-code" class="form-control" type="number" ng-model="app.version_code" ng-bk-focus required min="{{lastApp.version_code + 1}}"/>-->
-    <!--</div>-->
-  <!--</div>-->
-
-  <!--<div class="form-group">-->
-    <!--<label for="summary" class="col-sm-4 control-label">概要</label>-->
-
-    <!--<div class="col-sm-8">-->
-      <!--<textarea id="summary" class="form-control version-summary" ng-model="app.summary" placeholder="版本介绍。。。" required/>-->
-    <!--</div>-->
-  <!--</div>-->
-
-  <!--<div class="form-group">-->
-    <!--<label for="store-version" class="col-sm-4 control-label">升级包版本</label>-->
-
-    <!--<div class="col-sm-8">-->
-      <!--<input id="store-version" class="form-control" ng-model="app.version_name" placeholder="{{lastApp.version_name}}-snapshot" required/>-->
-    <!--</div>-->
-  <!--</div>-->
-
-  <!--<div class="form-group">-->
-    <!--<label class="col-sm-4 control-label" for="store-url">升级包路径</label>-->
-
-    <!--<div class="col-sm-8">-->
-      <!--<input type="file" id="store-url" ng-model="app.url" fileupload="uploadfile" />-->
-      <!--<input type="hidden" ng-model="app.file_size" required/>-->
-      <!--<span class="help-block">上传新的升级包文件到服务器</span>-->
-      <!--<div class="uploading" ng-show="uploading"/>-->
-    <!--</div>-->
-  <!--</div>-->
-
-  <!--<div class="form-group">-->
-    <!--<label for="store-size" class="col-sm-4 control-label">升级包大小</label>-->
-
-    <!--<div class="col-sm-8">-->
-      <!--<p id="store-size" class="form-control-static">{{app.file_size}}</p>-->
-    <!--</div>-->
-  <!--</div>-->
-
-  <div class="form-group button-group">
-    <!--<div class="col-sm-offset-3 col-sm-4">-->
-      <!--<button type="submit" class="btn btn-default" ng-disabled="newAppform.$invalid || uploading" ng-click="doUpload(uploadfile)">更新</button>-->
-    <!--</div>-->
-    <div class="col-sm-4">
-      <button class="btn btn-info" ng-click="closeModel()" ng-disabled="uploading">取消</button>
-    </div>
+<div class="col-sm-4">
+  <div class="form-group">
+    <div class="portrait-container">
+      <img class="portrait" ng-src="{{newAd.image || '/assets/images/wip.gif'}}"
+           alt="广告图片"/></div>
   </div>
-</form>
+</div>
+<div class="col-sm-8">
+  <form role="form" class="upload-form form-horizontal" name="newAdForm">
+    <div class="form-group">
+      <label for="ad-name" class="col-sm-4 control-label">广告商名称</label>
+
+      <div class="col-sm-8">
+        <input id="ad-name" class="form-control" ng-model="newAd.name" required placeholder="推送时被显示为XX提醒您"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="ad-image" class="col-sm-4 control-label">图片URL</label>
+
+      <div class="col-sm-8">
+        <input id="ad-image" class="form-control" type="url" ng-model="newAd.image" required placeholder="广告显示的图片"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="ad-link" class="col-sm-4 control-label">广告跳转链接</label>
+
+      <div class="col-sm-8">
+        <input id="ad-link" class="form-control" ng-model="newAd.link" required placeholder="点击广告时跳转的链接"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="ad-position" class="col-sm-4 control-label">广告位编号</label>
+
+      <div class="col-sm-8">
+        <input id="ad-position" class="form-control" type="number" ng-model="newAd.position_id" required
+               min="1" placeholder="广告的在APP中的位置"/>
+      </div>
+    </div>
+
+    <div class="form-group button-group">
+      <div class="col-sm-offset-3 col-sm-4">
+        <button type="submit" class="btn btn-default" ng-disabled="newAdForm.$invalid || uploading"
+                ng-click="save(newAd)">保存
+        </button>
+      </div>
+      <div class="col-sm-4">
+        <button class="btn btn-info" ng-click="closeModel()" ng-disabled="uploading">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
