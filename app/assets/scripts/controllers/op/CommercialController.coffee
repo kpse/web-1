@@ -21,9 +21,18 @@ angular.module('kulebaoOp').controller 'OpAdsCtrl',
       scope.edit = (kg) ->
         scope.ads = angular.copy kg.ad
         scope.newAd = scope.createNewAd(kg)
+        scope.editing = false
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/op/add_ad.html'
+
+      scope.editExistingAd = (ad) ->
+        scope.newAd = angular.copy ad
+        scope.editing = true
+
+      scope.addNewAd = (kg)->
+        scope.newAd = scope.createNewAd(school_id: kg)
+        scope.editing = false
 
       scope.delete = (ad) ->
         ad.$delete ->
