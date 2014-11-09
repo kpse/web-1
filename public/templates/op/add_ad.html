@@ -1,6 +1,6 @@
-<h2 ng-show="ads.length > 0">已存在的广告</h2>
+<h2 ng-show="kg.ad.length > 0">已存在的广告</h2>
 <div class="loading" ng-show="loading"></div>
-<table class="table table-hover table-condensed charge-list" ng-show="ads.length > 0">
+<table class="table table-hover table-condensed charge-list" ng-show="kg.ad.length > 0">
   <thead>
   <tr class="row">
     <th class="col-xs-2">广告商名称</th>
@@ -12,7 +12,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="ad in ads" class="row">
+  <tr ng-repeat="ad in kg.ad" class="row">
     <td class="col-xs-2">{{ad.name}}</td>
     <td class="col-xs-3">{{ad.link}}</td>
     <td class="col-xs-3">

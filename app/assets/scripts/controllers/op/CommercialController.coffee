@@ -19,7 +19,7 @@ angular.module('kulebaoOp').controller 'OpAdsCtrl',
         if kg.ad && kg.ad.length > 0 then _.map(kg.ad , (a) -> a.position_id).join(',') else '无'
 
       scope.edit = (kg) ->
-        scope.ads = angular.copy kg.ad
+        scope.kg = angular.copy kg
         scope.newAd = scope.createNewAd(kg)
         scope.editing = false
         scope.currentModal = Modal
@@ -36,7 +36,7 @@ angular.module('kulebaoOp').controller 'OpAdsCtrl',
 
       scope.delete = (ad) ->
         ad.$delete ->
-          scope.ads.splice(scope.ads.indexOf(ad), 1)
+          scope.kg.ad.splice(scope.kg.ad.indexOf(ad), 1)
           scope.refresh()
 
       scope.save = (ad) ->
