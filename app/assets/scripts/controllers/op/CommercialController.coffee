@@ -18,7 +18,7 @@ angular.module('kulebaoOp').controller 'OpAdsCtrl',
       scope.positionReport = (kg) ->
         if kg.ad && kg.ad.length > 0 then _.map(kg.ad , (a) -> a.position_id).join(',') else '无'
 
-      scope.edit = (kg) ->
+      scope.editAd = (kg) ->
         scope.kg = angular.copy kg
         scope.newAd = scope.createNewAd(kg)
         scope.editing = false
