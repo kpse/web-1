@@ -284,7 +284,7 @@ angular.module('kulebaoAdmin')
         card_no: card
         card_type: 2
         notice_type: type
-        record_url: 'http://suoqin-test.u.qiniudn.com/FoUJaV4r5L0bM0414mGWEIuCLEdL'
+        record_url: 'https://dn-cocobabys.qbox.me/big_shots.jpg'
         parent: name
         timestamp: new Date().getTime()
 
