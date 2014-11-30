@@ -2,7 +2,7 @@ angular.module('kulebaoOp').controller 'OpTeacherScoreCtrl',
   ['$scope', '$rootScope', 'allEmployeesService', 'StatsService', 'schoolService', '$q',
     (scope, rootScope, Employee, Stats, School, $q) ->
       rootScope.tabName = 'score'
-
+      scope.loading = true
       all = $q.all [Stats('assignment').query().$promise,
                     Stats('assess').query().$promise,
                     Stats('conversation').query().$promise,
@@ -23,6 +23,7 @@ angular.module('kulebaoOp').controller 'OpTeacherScoreCtrl',
           e.news = _.find scope.news, (a) -> a.employee_id == e.id
           e.school = _.find scope.schools, (a) -> a.school_id == e.school_id
           e.count = scope.countScore(e)
+          scope.loading = false
 
       scope.noOperator = (employee) -> employee.privilege_group != 'operator'
 
