@@ -132,16 +132,18 @@ angular.module('kulebaoAdmin')
         saveHook = parent.saveHook
         video_member_status = parent.video_member_status
         parent.$save ->
-          if video_member_status == 1
-            VideoMember.save school_id: parent.school_id, id: parent.parent_id
-          else
-            VideoMember.remove school_id: parent.school_id, id: parent.parent_id
+          scope.updateVideoMember(parent, video_member_status == 1)
           scope.$broadcast 'refreshing'
           scope.currentModal.hide()
           saveHook(parent) if typeof saveHook == 'function'
         , (res) ->
           handleError('家长', res)
 
+      scope.updateVideoMember = (parent, save) ->
+        if save
+          VideoMember.save school_id: parent.school_id, id: parent.parent_id
+        else
+          VideoMember.remove school_id: parent.school_id, id: parent.parent_id
 
       scope.saveRelationship = (relationship) ->
         relationship.$save ->
@@ -186,7 +188,9 @@ angular.module('kulebaoAdmin')
           scope.connectToExistingOnly child, parent
 
       scope.connectToChild = (parent) ->
+        video_member_status = parent.video_member_status
         parent.$save ->
+          scope.updateVideoMember(parent, video_member_status)
           scope.connectToChildOnly(parent)
         , (res) ->
           handleError('家长', res)
