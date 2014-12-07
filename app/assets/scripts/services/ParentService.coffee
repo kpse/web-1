@@ -39,6 +39,8 @@ angular.module('kulebao.services')
         phone: '@phone'
         employee: '@employee'
       }, {
-        'check': method: 'POST'
+        'check':
+          method: 'POST'
+          cache: true
       }
 ]
