@@ -253,7 +253,7 @@ object Parent {
   def create(kg: Long, parent: Parent) = DB.withTransaction {
     implicit c =>
       val timestamp = System.currentTimeMillis
-      val parent_id = parent.parent_id.getOrElse("2_%d_%d".format(kg, timestamp))
+      val parent_id = parent.parent_id.getOrElse("1_%d_%d".format(kg, timestamp))
       try {
         val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status) " +
           "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member})")
