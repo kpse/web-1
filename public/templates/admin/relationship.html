@@ -29,12 +29,13 @@
 
     <td class="col-xs-4">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
-              ng-confirm-click="delete(r.card)">删除
+              ng-confirm-click="delete(r.card)" ng-show="adminUser.privilege_group == 'operator'">删除
       </button>
       <button class="btn btn-xs btn-info" ng-click="sendMessage(r, 1)" ng-show="adminUser.privilege_group == 'operator'">到校刷卡
       </button>
       <button class="btn btn-xs btn-warning" ng-click="sendMessage(r, 0)" ng-show="adminUser.privilege_group == 'operator'">离开刷卡
       </button>
+      <span ng-hide="adminUser.privilege_group == 'operator'">该数据导入自安全系统</span>
     </td>
   </tr>
   </tbody>

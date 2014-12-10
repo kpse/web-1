@@ -23,8 +23,8 @@
 
     <td class="col-xs-4">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
-              ng-confirm-click="delete(child)">删除 </button>
-
+              ng-confirm-click="delete(child)" ng-show="adminUser.privilege_group == 'operator'">删除</button>
+      <span ng-hide="adminUser.privilege_group == 'operator'">该数据导入自安全系统</span>
     </td>
   </tr>
   </tbody>
