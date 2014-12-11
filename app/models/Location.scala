@@ -20,8 +20,14 @@ object Location {
 
   def history(deviceId: String, from: Option[String], to: Option[String], most: Option[Int]) = DB.withConnection("location") {
     implicit c =>
-      SQL("select * from records where device_id={device} limit 1")
-        .on('device -> deviceId)
+      val time: DateTime = new DateTime(DateTimeZone.UTC)
+      println(time.toString("ddMMyy"))
+      var sql: String = "select * from records where device_id={device} and `date`={date} "
+      most map { count =>
+        sql += s" limit $count "
+      }
+      SQL(sql)
+        .on('device -> deviceId, 'date -> time.toString("ddMMyy"))
         .as(pureLocation *)
   }
 
