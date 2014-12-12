@@ -1,13 +1,12 @@
 package models
 
 import anorm.SqlParser._
-import anorm.{~, _}
-import org.joda.time.{DateTimeZone, DateTime}
-import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
-import org.joda.time.tz.DateTimeZoneBuilder
+import anorm._
+import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
+import org.joda.time.{DateTime, DateTimeZone}
+import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
-import play.api.Play.current
 
 case class Location(kg: Long, child_id: String, latitude: String, latitude_direction: String, longitude: String, longitude_direction: String, speed: String, direction: String, timestamp: Long)
 case class LocationRecord(deviceId: String, latitude: String, latitude_direction: String, longitude: String, longitude_direction: String, speed: String, direction: String, timestamp: Long)
