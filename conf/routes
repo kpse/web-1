@@ -239,6 +239,8 @@ GET           /api/v1/kindergarten/:kg/location/:child_id                       
 
 GET           /api/v2/location/:deviceId/record                                  controllers.LocationController.history(deviceId: String, from: Option[String], to: Option[String], most: Option[Int])
 
+GET           /api/v2/location/:deviceId/status/power                                  controllers.LocationController.status(deviceId: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                      controllers.Static.at(path="/public/images", file)

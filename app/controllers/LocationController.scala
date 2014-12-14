@@ -14,4 +14,7 @@ object LocationController extends Controller {
     Ok(Json.toJson(Location.history(deviceId, from, to, most)))
   }
 
+  def status(deviceId: String) = Action {
+    Ok(Json.toJson(Location.powerStatus(deviceId)))
+  }
 }
