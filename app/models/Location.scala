@@ -36,7 +36,9 @@ object Location {
 
   def powerStatus(deviceId: String) = DB.withConnection("location") {
     implicit c =>
-      SQL("select * from link_records order by uid DESC limit 1").as(power single)
+      SQL("select * from link_records where device_id={device} order by uid DESC limit 1")
+        .on('device -> deviceId)
+        .as(power singleOpt)
   }
 
   def find(kg: Long, childId: String) = DB.withConnection("location") {

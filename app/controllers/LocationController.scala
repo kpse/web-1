@@ -1,6 +1,6 @@
 package controllers
 
-import models.Location
+import models.{ErrorResponse, PowerStatus, Location}
 import models.Location._
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -15,6 +15,11 @@ object LocationController extends Controller {
   }
 
   def status(deviceId: String) = Action {
-    Ok(Json.toJson(Location.powerStatus(deviceId)))
+    val status1: Option[PowerStatus] = Location.powerStatus(deviceId)
+    status1 match {
+      case Some(p) => Ok(Json.toJson(p))
+      case None => Ok(Json.toJson(ErrorResponse("no such device registered.")))
+    }
+
   }
 }
