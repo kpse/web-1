@@ -25,7 +25,7 @@ object Location {
     implicit c =>
       val time: DateTime = new DateTime(DateTimeZone.UTC)
       println(time.toString("ddMMyy"))
-      var sql: String = "select * from records where device_id={device} and `date`={date} "
+      var sql: String = "select * from records where device_id={device} and `date`={date} order by uid DESC"
       most map { count =>
         sql += s" limit $count "
       }
@@ -36,7 +36,7 @@ object Location {
 
   def powerStatus(deviceId: String) = DB.withConnection("location") {
     implicit c =>
-      SQL("select * from records order by uid DESC limit 1").as(power single)
+      SQL("select * from link_records order by uid DESC limit 1").as(power single)
   }
 
   def find(kg: Long, childId: String) = DB.withConnection("location") {
@@ -46,11 +46,11 @@ object Location {
 
   def power = {
     get[String]("device_id") ~
-    get[String]("tracker_status") ~
+    get[String]("bat") ~
       get[String]("time") ~
       get[String]("date") map {
-      case deviceId ~ trackerStatus ~ time ~ date =>
-        PowerStatus(deviceId, formatTime(date, time), 98)
+      case deviceId ~ bat ~ time ~ date =>
+        PowerStatus(deviceId, formatTime(date, time), bat.toInt)
     }
   }
 

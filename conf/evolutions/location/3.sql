@@ -16,6 +16,12 @@ CREATE TABLE link_records (
   PRIMARY KEY (uid)
 );
 
+INSERT INTO link_records (device_id, `time`, gsm, gps,
+                     bat, step, turnover,
+                     ex1, ex2, `date`, tracker_status)
+VALUES
+  ('1451351909', '143716', '60', '88', '97', '0', '0', '3','60','111214','FFFFFFFF');
+
 # --- !Downs
 
 DROP TABLE IF EXISTS link_records;
