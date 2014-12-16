@@ -13,7 +13,7 @@ CREATE TABLE employeeinfo (
   gender      INT       NOT NULL DEFAULT 2,
   workgroup   VARCHAR(40) NOT NULL DEFAULT '',
   workduty    VARCHAR(20) NOT NULL DEFAULT '',
-  picurl      VARCHAR(128) DEFAULT '',
+  picurl      VARCHAR(512) DEFAULT '',
   birthday    DATE             NOT NULL DEFAULT '1800-01-01',
   school_id   VARCHAR(20) NOT NULL,
   login_password    varchar(32) NOT NULL,

@@ -8,7 +8,7 @@ CREATE TABLE parentinfo (
   phone        VARCHAR(16)  NOT NULL DEFAULT '',
   gender       INT   NOT NULL DEFAULT 2,
   company      VARCHAR(200) NOT NULL DEFAULT '',
-  picurl       VARCHAR(128) NOT NULL DEFAULT '',
+  picurl       VARCHAR(512) NOT NULL DEFAULT '',
   birthday     DATE         NOT NULL DEFAULT '1800-01-01',
   school_id    VARCHAR(20)  NOT NULL,
   member_status       INT      NOT NULL DEFAULT 1,

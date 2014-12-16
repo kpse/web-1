@@ -8,7 +8,7 @@ CREATE TABLE childinfo (
   gender INT NOT NULL DEFAULT 2,
   class_id int(11) NOT NULL,
   classname varchar(40) DEFAULT '',
-  picurl varchar(128) NOT NULL DEFAULT '',
+  picurl varchar(512) NOT NULL DEFAULT '',
   birthday date NOT NULL DEFAULT '1800-01-01',
   indate date NOT NULL DEFAULT '1800-01-01',
   school_id varchar(20) NOT NULL,
