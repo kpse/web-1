@@ -68,10 +68,11 @@ angular.module('kulebaoAdmin')
           fix_child: child?
           fix_parent: parent?
 
-      scope.newParent = (saveHook)->
+      scope.newParent = (saveHook, askForConnecting = true)->
         scope.parents = Parent.query school_id: stateParams.kindergarten, ->
           scope.parent = scope.createParent()
           scope.parent.saveHook = saveHook
+          scope.connecting = askForConnecting
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/admin/add_adult.html'
@@ -198,9 +199,8 @@ angular.module('kulebaoAdmin')
       scope.createParentOnly = (child) ->
         scope.$broadcast 'refreshing'
         scope.currentModal.hide()
-        scope.newParent (parent)->
-          console.log 'invoking'
-          scope.newRelationship child, parent
+        doNotAskConnectAgain = false
+        scope.newParent ((parent)-> scope.newRelationship child, parent) ,doNotAskConnectAgain
 
       scope.connectToExistingOnly = (child, parent) ->
         scope.$broadcast 'refreshing'
