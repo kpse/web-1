@@ -239,7 +239,10 @@ GET           /api/v1/kindergarten/:kg/location/:child_id                       
 
 GET           /api/v2/location/:deviceId/record                                  controllers.LocationController.history(deviceId: String, from: Option[String], to: Option[String], most: Option[Int])
 
-GET           /api/v2/location/:deviceId/status/power                                  controllers.LocationController.status(deviceId: String)
+GET           /api/v2/location/:deviceId/status/power                            controllers.LocationController.status(deviceId: String)
+
+#Check in history
+POST          /api/v2/kindergarten/:kg/check_history                             controllers.PushController.saveOnly(kg: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.VersionedAssets.at(file: controllers.VersionedAsset)

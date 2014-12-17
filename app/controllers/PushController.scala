@@ -141,4 +141,21 @@ object PushController extends Controller {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
+
+  def saveOnly(kg: Long) = Action(parse.json) {
+    request =>
+      Logger.info("checking history: " + request.body)
+      request.body.validate[List[CheckInfo]].map {
+        case (all) =>
+          all map {
+            check =>
+              val messages = CheckingMessage.convert(check)
+              DailyLog.create(messages, check)
+              Logger.info("messages : " + messages)
+          }
+          Ok(Json.toJson(new SuccessResponse))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
 }
