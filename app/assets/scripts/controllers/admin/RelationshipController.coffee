@@ -103,6 +103,7 @@ angular.module('kulebaoAdmin')
             VideoMember.get school_id: stateParams.kindergarten, id: parent.parent_id, ->
                 p.video_member_status = 1
               ,(e) -> p.video_member_status = 0
+            scope.connecting = true
             scope.currentModal = Modal
               scope: scope
               contentTemplate: 'templates/admin/add_adult.html'
