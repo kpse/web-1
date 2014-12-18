@@ -46,3 +46,11 @@ angular.module('kulebao.services')
       location.path '/default' if clazzes.length == 0
   ]
 
+angular.module('kulebao.services')
+.service 'schoolConfigService', ($resource) ->
+  $resource '/api/v2/school_config/:school_id',
+    {
+      school_id: '@school_id'
+    }
+
+

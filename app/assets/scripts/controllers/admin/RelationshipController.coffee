@@ -3,8 +3,8 @@
 angular.module('kulebaoAdmin')
 .controller 'RelationshipMainCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'parentService',
-   'relationshipService', '$modal', 'childService', '$http', '$alert', 'videoMemberService',
-    (scope, rootScope, stateParams, location, Parent, Relationship, Modal, Child, $http, Alert, VideoMember) ->
+   'relationshipService', '$modal', 'childService', '$http', '$alert', 'videoMemberService', 'schoolConfigService',
+    (scope, rootScope, stateParams, location, Parent, Relationship, Modal, Child, $http, Alert, VideoMember, SchoolConfig) ->
       rootScope.tabName = 'relationship'
       scope.heading = '管理幼儿及家长基础档案信息'
 
@@ -25,6 +25,11 @@ angular.module('kulebaoAdmin')
 
       scope.refresh = (callback)->
         scope.loading = true
+        scope.backend = true
+        SchoolConfig.get school_id: stateParams.kindergarten, (data)->
+          backendConfig = _.find data['config'], (item) -> item.name == 'backend'
+          backendConfig? && scope.backend = backendConfig.value == 'true'
+
         scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
           callback() if callback?
           scope.loading = false
