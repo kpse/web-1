@@ -5,13 +5,7 @@ import play.api.libs.json.{JsError, Json}
 import models.json_models._
 import play.Logger
 import models._
-import models.ChargeInfo
-import models.json_models.SchoolIntroPreviewResponse
-import models.json_models.PrincipalOfSchool
-import models.json_models.CreatingSchool
-import scala.Some
-import models.ErrorResponse
-import models.json_models.SchoolIntroDetail
+import models.School._
 
 object SchoolSummaryController extends Controller with Secured {
   implicit val writes1 = Json.writes[SchoolIntroPreviewResponse]
@@ -86,5 +80,23 @@ object SchoolSummaryController extends Controller with Secured {
     u => request =>
       School.delete(kg)
       Ok(Json.toJson(new SuccessResponse))
+  }
+
+  def config(kg: Long) = IsAuthenticated {
+    u => request =>
+      Ok(Json.toJson(School.config(kg)))
+  }
+
+  def addConfig(kg: Long) = IsOperator(parse.json) {
+    u => request =>
+      Logger.info(request.body.toString())
+      request.body.validate[SchoolConfig].map {
+        case (current) if current.config.nonEmpty =>
+          current.config.map(School.addConfig(kg, _))
+          Ok(Json.toJson(new SuccessResponse))
+        case _ => Ok(Json.toJson(ErrorResponse("no config added.")))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
   }
 }

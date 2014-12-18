@@ -244,6 +244,10 @@ GET           /api/v2/location/:deviceId/status/power                           
 #Check in history
 POST          /api/v2/kindergarten/:kg/check_history                             controllers.PushController.saveOnly(kg: Long)
 
+#School config
+GET           /api/v2/school_config/:kg                                          controllers.SchoolSummaryController.config(kg: Long)
+POST          /api/v2/school_config/:kg                                          controllers.SchoolSummaryController.addConfig(kg: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                      controllers.Static.at(path="/public/images", file)
