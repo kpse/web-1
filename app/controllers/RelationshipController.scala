@@ -60,6 +60,29 @@ object RelationshipController extends Controller with Secured {
 
   }
 
+  def create(kg: Long) = IsAuthenticated(parse.json) {
+    u =>
+      implicit request =>
+        Logger.info(request.body.toString())
+        val body: JsValue = request.body
+        val relationship: String = (body \ "relationship").as[String]
+        val phone: String = (body \ "parent" \ "phone").as[String]
+        val childId: String = (body \ "child" \ "child_id").as[String]
+
+        (phone, childId) match {
+          case (p, _) if !Parent.phoneExists(kg, p) =>
+            BadRequest(loggedJson(ErrorResponse("本校记录中找不到对应的家长信息。")))
+          case (_, c) if !Children.idExists(Some(c)) =>
+            BadRequest(loggedJson(ErrorResponse("本校记录中找不到该小孩信息。")))
+          case (p, c) if Relationship.getCard(p, c).nonEmpty =>
+            BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。")))
+          case (p, c) =>
+            Logger.info("create new")
+            Ok(Json.toJson(Relationship.fakeCardCreate(kg, relationship, p, c)))
+        }
+
+  }
+
   def show(kg: Long, card: String) = IsLoggedIn {
     u => _ =>
       Ok(Json.toJson(Relationship.show(kg, card)))

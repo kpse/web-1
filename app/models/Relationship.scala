@@ -13,6 +13,31 @@ case class Relationship(parent: Option[Parent], child: Option[ChildInfo], card: 
 case class RelationshipIdentity(id: Long, card: String)
 
 object Relationship {
+  def fakeCardCreate(kg: Long, relationship: String, phone: String, childId: String) = DB.withTransaction {
+    implicit c =>
+      val random: Random = new Random(System.currentTimeMillis)
+      try {
+        val id: Option[Long] = SQL("insert into relationmap (child_id, parent_id, card_num, relationship, reference_id) VALUES" +
+          " ({child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg}), (SELECT concat('F', LPAD(count(1), 9, '0')) FROM relationmap), {relationship}, {reference_id})")
+          .on(
+            'phone -> phone,
+            'child_id -> childId,
+            'relationship -> relationship,
+            'kg -> kg.toString,
+            'reference_id -> "%s_%s_%s".format(childId, phone, random.nextString(4))
+          ).executeInsert()
+        c.commit()
+        findById(kg)(id.getOrElse(-1))
+      }
+      catch {
+        case e: Throwable =>
+          c.rollback()
+          Logger.info("create no card relationship error...")
+          Logger.info(e.getLocalizedMessage)
+          None
+      }
+  }
+
   def updateCardNumber(kg: Long, oldCard: String, newCard: String, phone: String, childId: String) = DB.withConnection {
     implicit c =>
       SQL("update relationmap set card_num={newCard}" +
