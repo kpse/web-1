@@ -3,17 +3,18 @@ package controllers
 import play.api.mvc._
 import play.api.libs.json.{JsError, Json}
 import models.json_models._
+import models.json_models.SchoolIntro._
 import play.Logger
 import models._
 import models.School._
 
 object SchoolSummaryController extends Controller with Secured {
   implicit val writes1 = Json.writes[SchoolIntroPreviewResponse]
-  implicit val writes2 = Json.writes[SchoolIntro]
+
   implicit val writes3 = Json.writes[SchoolIntroDetail]
   implicit val writes4 = Json.writes[ErrorResponse]
   implicit val writes5 = Json.writes[SuccessResponse]
-  implicit val read1 = Json.reads[SchoolIntro]
+
   implicit val read2 = Json.reads[SchoolIntroDetail]
   implicit val read4 = Json.reads[PrincipalOfSchool]
   implicit val read5 = Json.reads[ChargeInfo]
@@ -38,7 +39,8 @@ object SchoolSummaryController extends Controller with Secured {
         Logger.info(request.body.toString())
         request.body.validate[SchoolIntro].map {
           case (detail) if SchoolIntro.schoolExists(detail.school_id) =>
-            Ok(Json.toJson(SchoolIntro.updateExists(detail)))
+            SchoolIntro.updateExists(detail)
+            Ok(Json.toJson(new SuccessResponse))
           case _ => NotFound
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))

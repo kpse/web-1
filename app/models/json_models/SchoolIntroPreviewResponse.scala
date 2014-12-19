@@ -1,21 +1,14 @@
 package models.json_models
 
-import play.api.db.DB
-import anorm._
-import play.api.Play.current
-import play.Logger
-import anorm.~
-import scala.Some
-import models.helper.MD5Helper.md5
 import anorm.SqlParser._
-import models.{Employee, ChargeInfo}
-import controllers.EmployeeController
-import controllers.helper.JsonLogger._
-import models.ChargeInfo
-import anorm.~
-import scala.Some
+import anorm.{~, _}
+import models.{ChargeInfo, ConfigItem, Employee, School}
+import play.Logger
+import play.api.Play.current
+import play.api.db.DB
+import play.api.libs.json.Json
 
-case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: String, school_logo_url: String, name: String, token: Option[String], address: Option[String], full_name: Option[String])
+case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: String, school_logo_url: String, name: String, token: Option[String], address: Option[String], full_name: Option[String], properties: Option[List[ConfigItem]] = None)
 
 case class CreatingSchool(school_id: Long, phone: String, name: String, token: String, principal: PrincipalOfSchool, charge: ChargeInfo, address: String, full_name: Option[String])
 
@@ -27,6 +20,11 @@ case class SchoolIntroPreviewResponse(error_code: Int, timestamp: Long, school_i
 
 
 object SchoolIntro {
+  implicit val configItemWriter = Json.writes[ConfigItem]
+  implicit val configItemReader = Json.reads[ConfigItem]
+  implicit val schoolIntroWrites = Json.writes[SchoolIntro]
+  implicit val schoolIntroRead1 = Json.reads[SchoolIntro]
+
   def adminExists(adminLogin: String) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from employeeinfo where login_name={name}").on('name -> adminLogin).as(get[Long]("count(1)") single) > 0
@@ -107,25 +105,36 @@ object SchoolIntro {
 
   }
 
-  def updateExists(info: SchoolIntro) = DB.withConnection {
+  def updateExists(info: SchoolIntro) = DB.withTransaction {
     implicit c =>
       val timestamp = System.currentTimeMillis
       Logger.info(info.toString)
 
-      SQL("update schoolinfo set name={name}, " +
-        "description={description}, phone={phone}, " +
-        "logo_url={logo_url}, update_at={timestamp}, token={token}, address={address} " +
-        generateFullNameSql(info.full_name) +
-        "where school_id={id}")
-        .on('id -> info.school_id.toString,
-          'name -> info.name,
-          'description -> info.desc,
-          'phone -> info.phone,
-          'logo_url -> info.school_logo_url,
-          'token -> info.token,
-          'address -> info.address,
-          'full_name -> info.full_name,
-          'timestamp -> timestamp).executeUpdate()
+      try {
+        SQL("update schoolinfo set name={name}, " +
+          "description={description}, phone={phone}, " +
+          "logo_url={logo_url}, update_at={timestamp}, token={token}, address={address} " +
+          generateFullNameSql(info.full_name) +
+          "where school_id={id}")
+          .on('id -> info.school_id.toString,
+            'name -> info.name,
+            'description -> info.desc,
+            'phone -> info.phone,
+            'logo_url -> info.school_logo_url,
+            'token -> info.token,
+            'address -> info.address,
+            'full_name -> info.full_name,
+            'timestamp -> timestamp).executeUpdate()
+        info.properties map {
+          configs =>
+            configs.map(School.addConfig(info.school_id, _))
+        }
+      }
+      catch {
+        case t: Throwable =>
+          Logger.info("error %s".format(t.toString))
+          c.rollback()
+      }
 
   }
 
