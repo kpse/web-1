@@ -1,7 +1,7 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
   ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
-   '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location',
-    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location) ->
+   '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location', 'schoolConfigService',
+    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location, SchoolConfig) ->
       scope.refresh = ->
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->
@@ -9,6 +9,13 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
               _.map kg.managers, (p) ->
                 p.detail = Employee.get phone: p.phone
             kg.charge = Charge.query school_id: kg.school_id
+            kg.config =
+              backend: "true"
+
+            SchoolConfig.get school_id: kg.school_id, (data)->
+              backendConfig = _.find data['config'], (item) -> item.name == 'backend'
+              backendConfig? && kg.config.backend = backendConfig.value
+
           scope.admins = Employee.query()
 
 
@@ -20,7 +27,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         kg.charges = Charge.query school_id: kg.school_id, ->
           kg.charge = kg.charges[0]
           kg.principal =
-            admin_login: kg.managers[0].detail.login_name if kg.managers[0]?
+            admin_login: kg.managers[0].detail.login_name if kg.managers && kg.managers[0]?
 
           scope.school = angular.copy kg
           scope.currentModal = Modal
@@ -31,6 +38,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         location.path '/main/charge'
 
       scope.endEditing = (kg) ->
+        kg.properties = [{name: 'backend', value: kg.config.backend}]
         School.save kg, ->
           scope.refresh()
           scope.currentModal.hide()
