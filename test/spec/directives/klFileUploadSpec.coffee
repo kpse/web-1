@@ -12,7 +12,7 @@ describe 'Directive: klFileUpload', () ->
 
   # load the directive's module
   beforeEach ->
-    angular.module('mock', []).factory 'uploadService', ['$timeout', mockUploadService]
+    angular.module('mock', []).factory 'multipleUploadService', ['$timeout', mockUploadService]
     angular.module 'test', ['kulebaoAdmin', 'mock']
     module 'test'
 

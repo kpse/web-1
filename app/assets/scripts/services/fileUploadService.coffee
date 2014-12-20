@@ -79,6 +79,10 @@ uploadService = (qiniuService, tokenService) ->
       qiniuService.send file, remoteDir, data.token, (remoteFile) ->
         (onSuccess || angular.noop)(remoteFile.url)
 
+multipleUploadService = (uploadService) ->
+  (files, user, onSuccess, onError) ->
+    _.forEach files, (f) -> uploadService(f, user, onSuccess, onError)
+
 angular.module('kulebao.services')
 .factory 'tokenService', ['$http', tokenService]
 angular.module('kulebao.services')
@@ -89,6 +93,8 @@ angular.module('kulebao.services')
 .factory 'qiniuRawFileService', ['rawFileTokenService', qiniuRawFileService]
 angular.module('kulebao.services')
 .factory 'uploadService', ['qiniuService', 'tokenService', uploadService]
+angular.module('kulebao.services')
+.factory 'multipleUploadService', ['uploadService', multipleUploadService]
 angular.module('kulebao.services')
 .factory 'appUploadService', ['qiniuRawFileService', 'rawFileTokenService', uploadService]
 

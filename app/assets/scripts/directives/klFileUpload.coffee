@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module("kulebao.directives").directive "klFileUpload",
-  ['uploadService',
+  ['multipleUploadService',
     (Upload) ->
       return (
         restrict: "EA"
@@ -31,13 +31,14 @@ angular.module("kulebao.directives").directive "klFileUpload",
                 scope.suffixError = true
             else
               scope.$apply ->
-                scope.targetFile = e.target.files[0]
-                scope.fileSize = e.target.files[0].size if scope.targetFile?
+                scope.targetFiles = e.target.files
+                scope.targetFile = scope.targetFiles[0]
+                scope.fileSize = scope.targetFile.size if scope.targetFile?
                 scope.suffixError = false
 
           scope.uploadPic = ->
             scope.uploading = true
-            Upload scope.targetFile, scope.user, scope.combineSuccess(scope.onSuccess), scope.combineFailure(scope.onError)
+            Upload scope.targetFiles, scope.user, scope.combineSuccess(scope.onSuccess), scope.combineFailure(scope.onError)
 
           scope.cleanUp = ->
             scope.$apply ->
@@ -62,6 +63,10 @@ angular.module("kulebao.directives").directive "klFileUpload",
                   scope.form.$setDirty() if scope.form?
               scope.cleanUp()
 
-        templateUrl: 'templates/directives/kl_upload_file.html'
+        templateUrl: (elem, attr) ->
+          if attr.multiple?
+            'templates/directives/kl_upload_multiple_files.html'
+          else
+            'templates/directives/kl_upload_file.html'
       )
   ]
