@@ -11,10 +11,13 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             kg.charge = Charge.query school_id: kg.school_id
             kg.config =
               backend: "true"
+              hideVideo: "false"
 
             SchoolConfig.get school_id: kg.school_id, (data)->
               backendConfig = _.find data['config'], (item) -> item.name == 'backend'
               backendConfig? && kg.config.backend = backendConfig.value
+              hideVideoConfig = _.find data['config'], (item) -> item.name == 'hideVideo'
+              hideVideoConfig? && kg.config.hideVideo = hideVideoConfig.value
 
           scope.admins = Employee.query()
 
@@ -38,7 +41,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         location.path '/main/charge'
 
       scope.endEditing = (kg) ->
-        kg.properties = [{name: 'backend', value: kg.config.backend}]
+        kg.properties = [{name: 'backend', value: kg.config.backend}, {name: 'hideVideo', value: kg.config.hideVideo}]
         School.save kg, ->
           scope.refresh()
           scope.currentModal.hide()
