@@ -2,7 +2,7 @@ package models.json_models
 
 import anorm.SqlParser._
 import anorm.{~, _}
-import models.{ChargeInfo, ConfigItem, Employee, School}
+import models._
 import play.Logger
 import play.api.Play.current
 import play.api.db.DB
@@ -163,7 +163,8 @@ object SchoolIntro {
       get[Option[String]]("token") ~
       get[Option[String]]("address") map {
       case id ~ phone ~ timestamp ~ desc ~ logoUrl ~ name ~ fullName ~ token ~ address =>
-        SchoolIntro(id.toLong, phone, timestamp, desc, logoUrl, name, token, address, Some(fullName))
+        val config: SchoolConfig = School.config(id.toLong)
+        SchoolIntro(id.toLong, phone, timestamp, desc, logoUrl, name, token, address, Some(fullName), Some(config.config))
     }
 
   }
