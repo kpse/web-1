@@ -6,6 +6,7 @@ import play.api.Play.current
 import anorm.SqlParser._
 import anorm.~
 import play.Logger
+import helper.JsonStringHelper.any2JsonString
 
 case class CookbookPreviewResponse(error_code: Int, school_id: Long, cookbook_id: Long, timestamp: Long)
 
@@ -134,11 +135,11 @@ object CookBook {
         mon_dinner ~ tue_dinner ~ wed_dinner ~ thu_dinner ~ fri_dinner ~
         mon_extra ~ tue_extra ~ wed_extra ~ thu_extra ~ fri_extra =>
         val weekCookbook = WeekCookbook(
-          Some(DayCookbook(mon_breakfast, mon_lunch, mon_dinner, mon_extra)),
-          Some(DayCookbook(tue_breakfast, tue_lunch, tue_dinner, tue_extra)),
-          Some(DayCookbook(wed_breakfast, wed_lunch, wed_dinner, wed_extra)),
-          Some(DayCookbook(thu_breakfast, thu_lunch, thu_dinner, thu_extra)),
-          Some(DayCookbook(fri_breakfast, fri_lunch, fri_dinner, fri_extra)))
+          Some(DayCookbook(mon_breakfast.s, mon_lunch.s, mon_dinner.s, mon_extra.s)),
+          Some(DayCookbook(tue_breakfast.s, tue_lunch.s, tue_dinner.s, tue_extra.s)),
+          Some(DayCookbook(wed_breakfast.s, wed_lunch.s, wed_dinner.s, wed_extra.s)),
+          Some(DayCookbook(thu_breakfast.s, thu_lunch.s, thu_dinner.s, thu_extra.s)),
+          Some(DayCookbook(fri_breakfast.s, fri_lunch.s, fri_dinner.s, fri_extra.s)))
         CookbookDetail(Some(0), school_id.toLong, Some(cookbook), Some(timestamp), weekCookbook)
     }
   }
