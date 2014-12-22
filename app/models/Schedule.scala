@@ -6,6 +6,7 @@ import anorm.SqlParser._
 import anorm.~
 import play.api.Play.current
 import play.Logger
+import helper.JsonStringHelper.any2JsonString
 
 case class SchedulePreviewResponse(error_code: Int, school_id: Long, class_id: Long, schedule_id: Long, timestamp: Long)
 
@@ -131,11 +132,11 @@ object Schedule {
         mon_am ~ tue_am ~ wed_am ~ thu_am ~ fri_am ~
         mon_pm ~ tue_pm ~ wed_pm ~ thu_pm ~ fri_pm =>
         val schedule = WeekSchedule(
-          Some(DaySchedule(mon_am, mon_pm)),
-          Some(DaySchedule(tue_am, tue_pm)),
-          Some(DaySchedule(wed_am, wed_pm)),
-          Some(DaySchedule(thu_am, thu_pm)),
-          Some(DaySchedule(fri_am, fri_pm)))
+          Some(DaySchedule(mon_am.s, mon_pm.s)),
+          Some(DaySchedule(tue_am.s, tue_pm.s)),
+          Some(DaySchedule(wed_am.s, wed_pm.s)),
+          Some(DaySchedule(thu_am.s, thu_pm.s)),
+          Some(DaySchedule(fri_am.s, fri_pm.s)))
         ScheduleDetail(0, school_id.toLong, class_id, schedule_id, timestamp, schedule)
     }
   }
