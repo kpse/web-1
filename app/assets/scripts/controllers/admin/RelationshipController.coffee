@@ -279,12 +279,20 @@ angular.module('kulebaoAdmin')
 .controller 'ConnectedRelationshipCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'relationshipService',
-    '$http',
-    (scope, rootScope, stateParams, location, Relationship, $http) ->
+    '$http', '$filter',
+    (scope, rootScope, stateParams, location, Relationship, $http, $filter) ->
+
+      extendFilterFriendlyProperties = (r) ->
+        r.phone = r.parent.phone
+        r.formattedPhone = $filter('phone')(r.parent.phone)
+        r.childName = r.child.name
+        r.className = r.child.class_name
+        r
 
       scope.refreshRelationship = ->
         scope.loading = true
-        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query ->
+        relationships = Relationship.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query ->
+          scope.relationships = _.map relationships, (r) -> extendFilterFriendlyProperties(r)
           scope.loading = false
 
       scope.refreshRelationship()
