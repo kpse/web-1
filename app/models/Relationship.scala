@@ -17,8 +17,8 @@ object Relationship {
     implicit c =>
       val random: Random = new Random(System.currentTimeMillis)
       try {
-        val id: Option[Long] = SQL("insert into relationmap (child_id, parent_id, card_num, relationship, reference_id) VALUES" +
-          " ({child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg}), (SELECT concat('F', LPAD(count(1), 9, '0')) FROM relationmap), {relationship}, {reference_id})")
+        val id: Option[Long] = SQL("insert into relationmap (child_id, parent_id, card_num, relationship, reference_id) " +
+          " select {child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg}), (SELECT concat('F', LPAD(count(1), 9, '0')) FROM relationmap), {relationship}, {reference_id}")
           .on(
             'phone -> phone,
             'child_id -> childId,
