@@ -1,8 +1,9 @@
 <input type="file" class="picture-input" ng-disabled="controlDisabled" multiple />
 <button class="btn btn-success btn-xs"
-        ng-disabled="targetFile === undefined || targetFile.size > 2048000 || uploading || controlDisabled || suffixError"
+        ng-disabled="targetFile === undefined || targetFile.size > 2048000 || uploading || controlDisabled || suffixError || limitationError"
         ng-click="uploadPic()">{{label}}
 </button>
 <span ng-class="{error : targetFile.size > 2048000}" class="help-block">图片大小请不要超过2m</span>
 <span ng-show="suffixError" class="error help-block">只接受后缀名{{suffixes}}的图片</span>
+<span ng-show="limitationError" class="error help-block">最多只能选择9张图片</span>
 <div class="uploading" ng-show="uploading"></div>

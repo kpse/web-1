@@ -15,6 +15,7 @@ angular.module("kulebao.directives").directive "klFileUpload",
           label: "=?label"
           form: "=?"
           suffix: "@?"
+          images: "=?multiple"
 
         link: (scope, element, attrs) ->
           scope.label = scope.label || '上传'
@@ -25,8 +26,14 @@ angular.module("kulebao.directives").directive "klFileUpload",
           scope.uploading = false
           scope.fileControl = element[0].firstChild
           scope.suffixError = false
+          scope.limitationError = false
+          scope.images = scope.images || []
           scope.fileControl.onchange = (e) ->
-            unless e.target.files[0].name.match(scope.regex)?
+            targetFiles = e.target.files
+            if (targetFiles.length + scope.images.length) > 9
+              scope.$apply ->
+                scope.limitationError = true
+            else if !scope.validateFiles(targetFiles)
               scope.$apply ->
                 scope.suffixError = true
             else
@@ -35,6 +42,10 @@ angular.module("kulebao.directives").directive "klFileUpload",
                 scope.targetFile = scope.targetFiles[0]
                 scope.fileSize = scope.targetFile.size if scope.targetFile?
                 scope.suffixError = false
+                scope.limitationError = false
+
+          scope.validateFiles = (files) ->
+            _.every files, (f) -> f.name.match(scope.regex)?
 
           scope.uploadPic = ->
             scope.uploading = true
@@ -44,6 +55,7 @@ angular.module("kulebao.directives").directive "klFileUpload",
             scope.$apply ->
               scope.uploading = false
               delete scope.targetFile
+              delete scope.targetFiles
               angular.element(scope.fileControl).val(null)
 
           scope.combineFailure = (f) ->
