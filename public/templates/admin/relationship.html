@@ -1,7 +1,7 @@
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class="col-xs-2" ng-show="backend">卡号</th>
+    <th class="col-xs-2" ng-if="backend">卡号</th>
     <th class="col-xs-1">班级</th>
     <th class="col-xs-1">小孩姓名</th>
     <th class="col-xs-1">家长姓名</th>
@@ -13,8 +13,8 @@
   <tbody>
   <div class="loading" ng-show="loading"></div>
   <tr ng-repeat="r in relationships | filter: searchText" class="row">
-    <td class="col-xs-2" ng-hide="cardNumberEditing=={{r.card}} || !backend"><a ng-click="editing(r)">{{r.card}}</a></td>
-    <td class="col-xs-2" ng-show="cardNumberEditing=={{r.card}} && backend">
+    <td class="col-xs-2" ng-hide="cardNumberEditing=={{r.card}}" ng-if="backend"><a ng-click="editing(r)">{{r.card}}</a></td>
+    <td class="col-xs-2" ng-show="cardNumberEditing=={{r.card}}" ng-if="backend">
       <input class="form-control" ui-mask="{{'99999-99999'}}" ng-model="r.card">
       <button class="inline-btn save-btn btn btn-xs btn-success">
         <span class="glyphicon glyphicon-ok" ng-click="updateCardNumber(r)"></span></button>
