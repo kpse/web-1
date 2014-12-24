@@ -1,6 +1,6 @@
 angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
-  ['$scope', '$rootScope', '$location', '$stateParams', 'phoneManageService', '$alert', 'allEmployeesService',
-    (scope, rootScope, location, stateParams, Phone, Alert, Employee) ->
+  ['$scope', '$rootScope', '$location', '$stateParams', 'phoneManageService', '$alert', 'allEmployeesService', 'relationshipService',
+    (scope, rootScope, location, stateParams, Phone, Alert, Employee, Relationship) ->
       rootScope.tabName = 'phone_management'
 
       notFound = (phone) ->
@@ -20,6 +20,10 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
             scope.navigateTo(phone, 'teacher')
           , (res) ->
             notFound(phone)
+
+      scope.queryCard = (card) ->
+        scope.relationship = Relationship.get school_id: stateParams.kindergarten, card: card, ->
+          scope.navigateTo(card, 'card')
 
       scope.navigateTo = (phone, type = 'phone')->
         location.path "/main/phone_management/#{type}/#{phone}"
@@ -49,6 +53,9 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
         Phone.delete parent, ->
           scope.alertDelete(parent)
           scope.cancel()
+
+      scope.goToSchool = ->
+        location.path '/main/phone_management'
   ]
 
 .controller 'OpShowTeacherCtrl',
@@ -65,5 +72,12 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
         Employee.delete person, ->
           scope.alertDelete(person)
           scope.cancel()
+  ]
+
+.controller 'OpShowCardCtrl',
+  ['$scope', '$rootScope', '$stateParams', '$location', 'relationshipService',
+    (scope, rootScope, stateParams, location, Relationship) ->
+
+      scope.relationship = Relationship.get school_id: stateParams.kindergarten, card: stateParams.card
   ]
 

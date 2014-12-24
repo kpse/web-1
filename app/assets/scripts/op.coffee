@@ -59,6 +59,7 @@ angular.module('kulebaoOp',
       url: '/verification_code',
       templateUrl: 'templates/op/verification_code.html',
       controller: 'OpVerificationCtrl'
+
     .state 'main.phone_management',
       url: '/phone_management',
       templateUrl: 'templates/op/manage_by_phone.html',
@@ -71,6 +72,10 @@ angular.module('kulebaoOp',
       url: '/teacher/:phone',
       templateUrl: 'templates/admin/teacher_manage.html',
       controller: 'OpShowTeacherCtrl'
+    .state 'main.phone_management.card',
+      url: '/card/:card',
+      templateUrl: 'templates/admin/card_manage.html',
+      controller: 'OpShowCardCtrl'
 
     .state 'main.logging',
       url: '/logging',
