@@ -1,5 +1,5 @@
 angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
-  ['$scope', '$rootScope', '$location', '$stateParams', 'phoneManageService', '$alert', 'allEmployeesService', 'relationshipService',
+  ['$scope', '$rootScope', '$location', '$stateParams', 'phoneManageService', '$alert', 'allEmployeesService', 'relationshipSearchService',
     (scope, rootScope, location, stateParams, Phone, Alert, Employee, Relationship) ->
       rootScope.tabName = 'phone_management'
 
@@ -22,7 +22,7 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
             notFound(phone)
 
       scope.queryCard = (card) ->
-        scope.relationship = Relationship.get school_id: stateParams.kindergarten, card: card, ->
+        scope.relationship = Relationship.get card: card, ->
           scope.navigateTo(card, 'card')
 
       scope.navigateTo = (phone, type = 'phone')->
@@ -75,9 +75,10 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
   ]
 
 .controller 'OpShowCardCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'relationshipService',
-    (scope, rootScope, stateParams, location, Relationship) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', 'relationshipSearchService', 'schoolService',
+    (scope, rootScope, stateParams, location, Relationship, School) ->
 
-      scope.relationship = Relationship.get school_id: stateParams.kindergarten, card: stateParams.card
+      scope.relationship = Relationship.get card: stateParams.card, ->
+        scope.school = School.get school_id: scope.relationship.parent.school_id
   ]
 

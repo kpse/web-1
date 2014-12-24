@@ -11,6 +11,15 @@ angular.module('kulebao.services')
 ]
 
 angular.module('kulebao.services')
+.factory 'relationshipSearchService', ['$resource',
+  ($resource) ->
+    $resource '/api/v2/relationship/:card',
+      {
+        card: '@card'
+      }
+]
+
+angular.module('kulebao.services')
 .factory 'cardCheckService', ['$resource',
   ($resource) ->
     $resource 'api/v1/card_check', {}, {
