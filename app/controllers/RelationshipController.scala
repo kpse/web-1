@@ -104,6 +104,12 @@ object RelationshipController extends Controller with Secured {
 
   def search(card: String) = IsOperator {
     u => _ =>
-      Ok(Json.toJson(Relationship.search(card)))
+      Relationship.search(card) match {
+        case Some(r) =>
+          Ok(Json.toJson(Relationship.search(card)))
+        case None =>
+          NotFound
+      }
+
   }
 }

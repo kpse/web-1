@@ -23,6 +23,16 @@
       </div>
 
       <div class="form-group">
+        <label for="parent-status" class="col-sm-4 control-label">家长状态</label>
+
+        <div class="col-sm-8">
+          <p class="form-control-static" ng-show="relationship.parent.status==1">有效</p>
+          <p class="form-control-static" ng-hide="relationship.parent.status==1">已删除</p>
+
+        </div>
+      </div>
+
+      <div class="form-group">
         <label for="child-name" class="col-sm-4 control-label">学生姓名</label>
 
         <div class="col-sm-8">
@@ -32,6 +42,15 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label for="child-status" class="col-sm-4 control-label">学生状态</label>
+
+        <div class="col-sm-8">
+          <p class="form-control-static" ng-show="relationship.child.status==1">有效</p>
+          <p class="form-control-static" ng-hide="relationship.child.status==1">已删除</p>
+
+        </div>
+      </div>
 
       <div class="col-sm-6">
         <div class="form-group">

@@ -12,6 +12,15 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
           container: '.well'
           duration: 3
 
+      cardNotFound = (card) ->
+        Alert
+          title: "未找到卡号#{card}"
+          content: '请修改条件进行查找。'
+          placement: "top-left"
+          type: "danger"
+          container: '.well'
+          duration: 3
+
       scope.query = (phone) ->
         scope.parent = Phone.get phone: phone, ->
           scope.navigateTo(phone)
@@ -23,7 +32,9 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
 
       scope.queryCard = (card) ->
         scope.relationship = Relationship.get card: card, ->
-          scope.navigateTo(card, 'card')
+            scope.navigateTo(card, 'card')
+          , (res) ->
+            cardNotFound(card)
 
       scope.navigateTo = (phone, type = 'phone')->
         location.path "/main/phone_management/#{type}/#{phone}"
