@@ -101,4 +101,9 @@ object RelationshipController extends Controller with Secured {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
+
+  def search(card: String) = IsOperator {
+    u => _ =>
+      Ok(Json.toJson(Relationship.search(card)))
+  }
 }

@@ -13,6 +13,12 @@ case class Relationship(parent: Option[Parent], child: Option[ChildInfo], card: 
 case class RelationshipIdentity(id: Long, card: String)
 
 object Relationship {
+  def search(cardNumber: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from relationmap where card_num={card}").on('card -> cardNumber).as(searchSample singleOpt)
+
+  }
+
   def fakeCardCreate(kg: Long, relationship: String, phone: String, childId: String) = DB.withTransaction {
     implicit c =>
       val random: Random = new Random(System.currentTimeMillis)
@@ -154,6 +160,17 @@ object Relationship {
       get[String]("relationship") map {
       case id ~ parent ~ child ~ cardNum ~ r =>
         Relationship(Parent.info(kg, parent), Children.info(kg, child), cardNum, r, Some(id))
+    }
+  }
+
+  val searchSample = {
+    get[Long]("uid") ~
+      get[String]("parent_id") ~
+      get[String]("child_id") ~
+      get[String]("card_num") ~
+      get[String]("relationship") map {
+      case id ~ parent ~ child ~ cardNum ~ r =>
+        Relationship(Parent.idSearch(parent), Children.idSearch(child), cardNum, r, Some(id))
     }
   }
 

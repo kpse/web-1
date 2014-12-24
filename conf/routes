@@ -249,6 +249,8 @@ POST          /api/v2/kindergarten/:kg/check_history                            
 GET           /api/v2/school_config/:kg                                          controllers.SchoolSummaryController.config(kg: Long)
 POST          /api/v2/school_config/:kg                                          controllers.SchoolSummaryController.addConfig(kg: Long)
 
+GET           /api/v2/relationship/:card                                         controllers.RelationshipController.search(card: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                      controllers.Static.at(path="/public/images", file)

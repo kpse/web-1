@@ -13,6 +13,14 @@ case class ChildInfo(child_id: Option[String], name: String, nick: String, birth
                      timestamp: Option[Long], school_id: Option[Long], address: Option[String] = None, status: Option[Int] = Some(1))
 
 object Children {
+  def idSearch(id: String): Option[ChildInfo] = DB.withConnection {
+    implicit c =>
+      SQL("select c.*, c2.class_name from childinfo c, classinfo c2 " +
+        "where c.class_id=c2.class_id and c.status=1 and c.child_id={id} and c.school_id=c2.school_id ")
+        .on('id -> id)
+        .as(childInformation singleOpt)
+  }
+
   def delete(kg: Long, childId: String) = DB.withConnection {
     implicit c =>
       SQL("update childinfo set status=0, update_at={timestamp} where child_id={child_id} and school_id={kg}")

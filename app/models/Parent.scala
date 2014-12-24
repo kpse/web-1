@@ -53,6 +53,13 @@ case class EmployeePhoneCheck(id: Option[String], phone: String) extends PhoneCh
 }
 
 object Parent {
+  def idSearch(id: String): Option[Parent] = DB.withConnection {
+    implicit c =>
+      SQL("select * from parentinfo p where p.parent_id={id}")
+        .on('id -> id)
+        .as(simple singleOpt)
+  }
+
 
   def permanentRemove(phone: String) = DB.withConnection {
     implicit c =>
