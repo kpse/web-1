@@ -1,7 +1,11 @@
+<button class="btn btn-danger" ng-confirm-msg="你确定要删除吗?"
+        ng-confirm-click="multipleDelete()" ng-show="adminUser.privilege_group == 'operator' || !backend">删除选中项
+</button>
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
     <th class="col-xs-2" ng-if="backend">卡号</th>
+    <th class="col-xs-2" ng-if="!backend"><input type="checkbox" ng-model="allCheck" ng-change="checkAll(allCheck)"/> 全选</th>
     <th class="col-xs-1">班级</th>
     <th class="col-xs-1">小孩姓名</th>
     <th class="col-xs-1">家长姓名</th>
@@ -20,6 +24,7 @@
         <span class="glyphicon glyphicon-ok" ng-click="updateCardNumber(r)"></span></button>
       <button class="inline-btn cancel-btn btn btn-xs btn-warning">
         <span class="glyphicon glyphicon-remove" ng-click="cancelEditing(r)"></span></button></td>
+    <td class="col-xs-2" ng-if="!backend"><input type="checkbox" ng-model="r.checked"/></td>
     <td class="col-xs-1">{{r.child.class_name}}</td>
     <td class="col-xs-1"><a ng-click="editChild(r.child)">{{r.child.name}}</a></td>
     <td class="col-xs-1"><a ng-click="editParent(r.parent)">{{r.parent.name}}</a></td>

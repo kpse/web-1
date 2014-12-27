@@ -279,8 +279,8 @@ angular.module('kulebaoAdmin')
 .controller 'ConnectedRelationshipCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'relationshipService',
-    '$http', '$filter',
-    (scope, rootScope, stateParams, location, Relationship, $http, $filter) ->
+    '$http', '$filter', '$q',
+    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q) ->
 
       extendFilterFriendlyProperties = (r) ->
         r.phone = r.parent.phone
@@ -317,4 +317,14 @@ angular.module('kulebaoAdmin')
 
       scope.$on 'refreshing', ->
         scope.refreshRelationship()
+
+      scope.checkAll = (check) ->
+        _.forEach scope.relationships, (r) -> r.checked = check
+
+      scope.multipleDelete = ->
+        checked = _.filter scope.relationships, (r) -> r.checked?
+        queue = _.map checked, (r) -> Relationship.delete(school_id: stateParams.kindergarten, card: r.card).$promise
+        all = $q.all queue
+        all.then (q) ->
+          scope.refreshRelationship()
   ]
