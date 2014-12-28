@@ -322,9 +322,18 @@ angular.module('kulebaoAdmin')
         _.forEach scope.relationships, (r) -> r.checked = check
 
       scope.multipleDelete = ->
-        checked = _.filter scope.relationships, (r) -> r.checked?
+        checked = _.filter scope.relationships, (r) -> r.checked? && r.checked == true
         queue = _.map checked, (r) -> Relationship.delete(school_id: stateParams.kindergarten, card: r.card).$promise
         all = $q.all queue
         all.then (q) ->
           scope.refreshRelationship()
+
+      scope.hasSelection = (relationships) ->
+        _.some relationships, (r) -> r.checked? && r.checked == true
+
+      scope.singleSelection = (relationship) ->
+        allChecked = _.every scope.relationships, (r) -> r.checked? && r.checked == true
+        scope.selection.allCheck = allChecked
+
+      scope.selection = allCheck: false
   ]
