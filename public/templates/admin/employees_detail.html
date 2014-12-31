@@ -6,29 +6,34 @@
     <a ng-click="goScore()">积分信息</a>
   </li>
 </ul>
-<button type="submit" class="btn btn-primary pull-right adding-for-individual" ng-disabled="loading"
+<button type="submit" class="btn btn-primary adding-for-individual" ng-disabled="loading"
         ng-click="addEmployee()">添加新老师
+</button>
+<button ng-disabled="!hasSelection(employees)" class="btn btn-danger" ng-confirm-msg="你确定要删除吗?"
+        ng-confirm-click="multipleDelete()" ng-show="adminUser && deletable(adminUser)">删除选中项
 </button>
 <div class="loading" ng-show="loading"></div>
 <table class="table table-hover table-condensed employee-list">
   <thead>
   <tr class="row">
+    <th class="col-xs-1"><input type="checkbox" ng-model="selection.allCheck" ng-change="checkAll(selection.allCheck)"/> 全选</th>
     <th class="col-xs-2">登录名</th>
     <th class="col-xs-2">老师姓名</th>
     <th class="col-xs-2">手机号</th>
     <th class="col-xs-3">管理班级</th>
     <th class="col-xs-1">权限</th>
-    <th class="col-xs-2">操作</th>
+    <th class="col-xs-1">操作</th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="e in employees | filter: searchText" class="row" ng-class="{editable: edit, principal: e.privilege_group == 'principal'}" ng-click="edit(e)">
+    <td class="col-xs-1" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="e.checked" ng-change="singleSelection(e)"/></td>
     <td class="col-xs-2">{{e.login_name}}</td>
     <td class="col-xs-2">{{e.name}}</td>
     <td class="col-xs-2">{{e.phone}}</td>
     <td class="col-xs-3">{{e.displayClasses || 'N/A'}}</td>
     <td class="col-xs-1">{{groupDisplayName(e.privilege_group)}}</td>
-    <td class="col-xs-2">
+    <td class="col-xs-1">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
               ng-confirm-click="delete(e);$event.stopPropagation()" ng-show="adminUser && deletable(adminUser)">删除
       </button>

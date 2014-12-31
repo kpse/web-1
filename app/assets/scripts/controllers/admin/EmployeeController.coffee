@@ -67,6 +67,31 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
 
       scope.groupDisplayName = (group) ->
         if group == 'teacher' then '普通老师' else '校长'
+
+      scope.checkAll = (check) ->
+        _.forEach scope.employees, (r) ->
+          r.checked = check
+
+      scope.multipleDelete = ->
+        checked = _.filter scope.employees, (r) ->
+          r.checked? && r.checked == true
+        queue = _.map checked, (employee) ->
+          SchoolEmployee.delete(school_id: $stateParams.kindergarten, phone: employee.phone).$promise
+        all = $q.all queue
+        all.then (q) ->
+          scope.refresh()
+
+      scope.hasSelection = (employees) ->
+        _.some employees, (r) ->
+          r.checked? && r.checked == true
+
+      scope.singleSelection = (employee) ->
+        allChecked = _.every scope.employees, (r) ->
+          r.checked? && r.checked == true
+        scope.selection.allCheck = allChecked
+
+      scope.selection =
+        allCheck: false
   ]
 
 .controller 'EmployeesScoreCtrl',
