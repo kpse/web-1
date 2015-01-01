@@ -19,7 +19,7 @@ angular.module("kulebao.directives").directive "klExcelParse", ->
       scope.label = scope.label || '导入Excel'
       scope.controlDisabled = scope.controlDisabled || false
       scope.field = scope.fieldName || 'image'
-      scope.suffixes = scope.suffix || 'xls|xlsx'
+      scope.suffixes = scope.suffix || 'xls'
       scope.regex = new RegExp("\.(#{scope.suffixes})$", 'i')
       scope.uploading = false
       scope.fileControl = element[0].firstChild
