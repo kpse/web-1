@@ -3,6 +3,6 @@
         ng-disabled="targetFile === undefined || targetFile.size > 2048000 || uploading || controlDisabled || suffixError"
         ng-click="parseFile()">{{label}}
 </button>
-<!--<span ng-class="{error : targetFile.size > 2048000}" class="help-block">图片大小请不要超过2m</span>-->
-<span ng-show="suffixError" class="error help-block">只接受后缀名{{suffixes}}的图片</span>
+<span ng-class="{error : targetFile.size > 2048000}" class="help-block">excel文件请不要超过2m</span>
+<span ng-show="suffixError" class="error help-block">只接受后缀名{{suffixes}}的文件</span>
 <div class="uploading" ng-show="uploading"></div>
