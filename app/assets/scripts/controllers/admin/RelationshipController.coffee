@@ -20,6 +20,10 @@ angular.module('kulebaoAdmin')
         {
           name: '未关联小孩'
           url: 'unconnectedChild'
+        },
+        {
+          name: '批量导入'
+          url: 'BatchImport'
         }
       ]
 
@@ -27,7 +31,8 @@ angular.module('kulebaoAdmin')
         scope.loading = true
         scope.backend = true
         SchoolConfig.get school_id: stateParams.kindergarten, (data)->
-          backendConfig = _.find data['config'], (item) -> item.name == 'backend'
+          backendConfig = _.find data['config'], (item) ->
+            item.name == 'backend'
           backendConfig? && scope.backend = backendConfig.value == 'true'
 
         scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
@@ -106,8 +111,9 @@ angular.module('kulebaoAdmin')
           scope.parent = Parent.get school_id: stateParams.kindergarten, phone: parent.phone, (p) ->
             scope.parent.video_member_status = 0
             VideoMember.get school_id: stateParams.kindergarten, id: parent.parent_id, ->
-                p.video_member_status = 1
-              ,(e) -> p.video_member_status = 0
+              p.video_member_status = 1
+            , (e) ->
+              p.video_member_status = 0
             scope.connecting = true
             scope.currentModal = Modal
               scope: scope
@@ -206,7 +212,8 @@ angular.module('kulebaoAdmin')
         scope.$broadcast 'refreshing'
         scope.currentModal.hide()
         doNotAskConnectAgain = false
-        scope.newParent ((parent)-> scope.newRelationship child, parent) ,doNotAskConnectAgain
+        scope.newParent ((parent)->
+          scope.newRelationship child, parent), doNotAskConnectAgain
 
       scope.connectToExistingOnly = (child, parent) ->
         scope.$broadcast 'refreshing'
@@ -281,7 +288,6 @@ angular.module('kulebaoAdmin')
     '$location', 'relationshipService',
     '$http', '$filter', '$q',
     (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q) ->
-
       extendFilterFriendlyProperties = (r) ->
         r.phone = r.parent.phone
         r.formattedPhone = $filter('phone')(r.parent.phone)
@@ -292,7 +298,8 @@ angular.module('kulebaoAdmin')
       scope.refreshRelationship = ->
         scope.loading = true
         relationships = Relationship.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query ->
-          scope.relationships = _.map relationships, (r) -> extendFilterFriendlyProperties(r)
+          scope.relationships = _.map relationships, (r) ->
+            extendFilterFriendlyProperties(r)
           scope.loading = false
 
       scope.refreshRelationship()
@@ -319,21 +326,39 @@ angular.module('kulebaoAdmin')
         scope.refreshRelationship()
 
       scope.checkAll = (check) ->
-        _.forEach scope.relationships, (r) -> r.checked = check
+        _.forEach scope.relationships, (r) ->
+          r.checked = check
 
       scope.multipleDelete = ->
-        checked = _.filter scope.relationships, (r) -> r.checked? && r.checked == true
-        queue = _.map checked, (r) -> Relationship.delete(school_id: stateParams.kindergarten, card: r.card).$promise
+        checked = _.filter scope.relationships, (r) ->
+          r.checked? && r.checked == true
+        queue = _.map checked, (r) ->
+          Relationship.delete(school_id: stateParams.kindergarten, card: r.card).$promise
         all = $q.all queue
         all.then (q) ->
           scope.refreshRelationship()
 
       scope.hasSelection = (relationships) ->
-        _.some relationships, (r) -> r.checked? && r.checked == true
+        _.some relationships, (r) ->
+          r.checked? && r.checked == true
 
       scope.singleSelection = (relationship) ->
-        allChecked = _.every scope.relationships, (r) -> r.checked? && r.checked == true
+        allChecked = _.every scope.relationships, (r) ->
+          r.checked? && r.checked == true
         scope.selection.allCheck = allChecked
 
-      scope.selection = allCheck: false
+      scope.selection =
+        allCheck: false
+  ]
+
+.controller 'BatchImportCtrl',
+  [ '$scope', '$rootScope', '$stateParams',
+    '$location', 'relationshipService',
+    '$http', '$filter', '$q',
+    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q) ->
+      scope.loading = false
+
+      scope.onSuccess = (data)->
+        console.log(data)
+        scope.excel = data
   ]

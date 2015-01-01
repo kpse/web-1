@@ -1,0 +1,14 @@
+<ul class="nav nav-tabs">
+  <li ng-repeat="type in types" ng-class="{active: {{type.url == current_type}}}">
+    <a ng-click="navigateTo(type)">{{type.name}}</a>
+  </li>
+</ul>
+<br/>
+<div kl-excel-parse ng-model="excel" on-success="onSuccess" ></div>
+<br/>
+<div class="clearfix"></div>
+
+<!--<div class="import-preview-view" ui-view></div>-->
+<div>
+  {{excel}}
+</div>
