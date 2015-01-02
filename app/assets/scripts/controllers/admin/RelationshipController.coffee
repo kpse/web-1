@@ -23,7 +23,7 @@ angular.module('kulebaoAdmin')
         },
         {
           name: '批量导入'
-          url: 'BatchImport'
+          url: 'batchImport'
         }
       ]
 
@@ -351,7 +351,7 @@ angular.module('kulebaoAdmin')
         allCheck: false
   ]
 
-.controller 'BatchImportCtrl',
+.controller 'batchImportCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'relationshipService',
     '$http', '$filter', '$q',
@@ -359,6 +359,29 @@ angular.module('kulebaoAdmin')
       scope.loading = false
 
       scope.onSuccess = (data)->
-        console.log(data)
         scope.excel = data
+        location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview")
+
+  ]
+
+.controller 'ImportPreviewRelationshipCtrl',
+  [ '$scope', '$rootScope', '$stateParams',
+    '$location', 'relationshipService',
+    '$http', '$filter', '$q',
+    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q) ->
+      scope.loading = false
+
+      location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport") unless scope.excel?
+
+      scope.relationships = _.map scope.excel, (row) ->
+        new Relationship
+          parent:
+            name: row['家长A姓名']
+            phone: row['家长A手机号']
+          child:
+            child_id: '123'
+            class_name: row['所属班级']
+            name: row['宝宝姓名']
+          relationship: row['家长A亲属关系']
+
   ]

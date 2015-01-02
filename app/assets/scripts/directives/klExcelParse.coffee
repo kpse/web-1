@@ -58,7 +58,7 @@ angular.module("kulebao.directives").directive "klExcelParse", ->
         reader.onload = (e) ->
           data = e.target.result;
           wb = XLS.read(data, {type: 'binary'});
-          scope.ngModel = JSON.stringify(toJson(wb), 2, 2)
+          scope.ngModel = toJson(wb)
           scope.combineSuccess(scope.onSuccess)(scope.ngModel)
           scope.cleanUp()
         reader.readAsBinaryString(scope.targetFile)
