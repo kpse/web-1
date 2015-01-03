@@ -357,6 +357,7 @@ angular.module('kulebaoAdmin')
     '$http', '$filter', '$q',
     (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q) ->
       scope.loading = false
+      scope.current_type = 'batchImport'
 
       scope.onSuccess = (data)->
         scope.excel = data
