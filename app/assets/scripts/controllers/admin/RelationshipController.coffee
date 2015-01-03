@@ -359,9 +359,31 @@ angular.module('kulebaoAdmin')
       scope.loading = false
       scope.current_type = 'batchImport'
 
+      parentRange = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+
+      allParents = ->
+        _.map parentRange, (r) ->
+          "家长#{r}"
+
       scope.onSuccess = (data)->
         scope.excel = data
-        location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview")
+        scope.relationships = _.filter (_.flatten _.map scope.excel, (row) ->
+          _.map allParents(), (p) ->
+            new Relationship
+              parent:
+                name: row["#{p}姓名"]
+                phone: row["#{p}手机号"]
+              child:
+                class_name: row['所属班级']
+                name: row['宝宝姓名']
+              relationship: row["#{p}亲属关系"]
+            ), (r) ->
+              r.parent.name?
+
+        scope.classesScope = _.map (_.uniq _.map scope.relationships, (r) -> r.child.class_name)
+          , (c, i) -> name: c, class_id: i + 1000
+
+        location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/1000/list")
 
   ]
 
@@ -371,28 +393,19 @@ angular.module('kulebaoAdmin')
     '$http', '$filter', '$q',
     (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q) ->
       scope.loading = false
+      scope.current_class = parseInt(stateParams.class_id)
 
       location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport") unless scope.excel?
 
-      parentRange = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+      classOfId = (id) ->
+        _.find scope.classesScope, (c) -> c.class_id == parseInt id
 
-      allParents = ->
-        _.map parentRange, (r) ->
-          "家长#{r}"
-
-      scope.relationships = _.filter (_.flatten _.map scope.excel, (row) ->
-        _.map allParents(), (p) ->
-          new Relationship
-            parent:
-              name: row["#{p}姓名"]
-              phone: row["#{p}手机号"]
-            child:
-              class_name: row['所属班级']
-              name: row['宝宝姓名']
-            relationship: row["#{p}亲属关系"]
-      ), (r) ->
-        r.parent.name?
+      scope.relationships = _.filter scope.relationships, (r) ->
+        r.child.class_name != classOfId(stateParams.class_id).name
 
       scope.editChild = ->
       scope.editParent = ->
+
+      scope.navigateTo = (c) ->
+        location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/#{c.class_id}/list")
   ]

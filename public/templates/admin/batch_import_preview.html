@@ -1,0 +1,8 @@
+<h3 ng-show="excel">预览即将导入的数据</h3>
+<div ng-show="">
+  {{excel}}
+</div>
+<button ng-disabled="!excel" class="btn btn-primary" ng-confirm-msg="你确定要应用所有新数据的吗?"
+        ng-confirm-click="applyAllChange()">应用所有导入数据
+</button>
+<div class="sub-view" ui-view></div>

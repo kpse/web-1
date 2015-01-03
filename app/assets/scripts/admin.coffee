@@ -73,6 +73,14 @@ angular.module('kulebaoAdmin',
       controller: 'ConnectedRelationshipCtrl'
     .state 'kindergarten.relationship.type.preview',
       url: '/preview',
+      templateUrl: 'templates/admin/batch_import_preview.html',
+      controller: 'batchImportCtrl'
+    .state 'kindergarten.relationship.type.preview.class',
+      url: '/class/:class_id',
+      templateUrl: 'templates/admin/classes.html',
+      controller: 'ImportPreviewRelationshipCtrl'
+    .state 'kindergarten.relationship.type.preview.class.list',
+      url: '/list',
       templateUrl: 'templates/admin/relationship.html',
       controller: 'ImportPreviewRelationshipCtrl'
 
