@@ -374,15 +374,25 @@ angular.module('kulebaoAdmin')
 
       location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport") unless scope.excel?
 
-      scope.relationships = _.map scope.excel, (row) ->
-        new Relationship
-          parent:
-            name: row['家长A姓名']
-            phone: row['家长A手机号']
-          child:
-            child_id: '123'
-            class_name: row['所属班级']
-            name: row['宝宝姓名']
-          relationship: row['家长A亲属关系']
+      parentRange = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
+      allParents = ->
+        _.map parentRange, (r) ->
+          "家长#{r}"
+
+      scope.relationships = _.filter (_.flatten _.map scope.excel, (row) ->
+        _.map allParents(), (p) ->
+          new Relationship
+            parent:
+              name: row["#{p}姓名"]
+              phone: row["#{p}手机号"]
+            child:
+              class_name: row['所属班级']
+              name: row['宝宝姓名']
+            relationship: row["#{p}亲属关系"]
+      ), (r) ->
+        r.parent.name?
+
+      scope.editChild = ->
+      scope.editParent = ->
   ]
