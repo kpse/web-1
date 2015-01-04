@@ -19,13 +19,14 @@ angular.module("kulebao.directives").directive "klExcelParse", ->
       scope.label = scope.label || '导入Excel'
       scope.controlDisabled = scope.controlDisabled || false
       scope.field = scope.fieldName || 'image'
-      scope.suffixes = scope.suffix || 'xls'
+      scope.suffixes = scope.suffix || 'xls|xlsx'
       scope.regex = new RegExp("\.(#{scope.suffixes})$", 'i')
       scope.uploading = false
       scope.fileControl = element[0].firstChild
       scope.suffixError = false
       scope.limitationError = false
       scope.images = scope.images || []
+      scope.excelUtil = XLS
       scope.fileControl.onchange = (e) ->
         targetFiles = e.target.files
         if (targetFiles.length + scope.images.length) > 9
@@ -41,6 +42,9 @@ angular.module("kulebao.directives").directive "klExcelParse", ->
             scope.fileSize = scope.targetFile.size if scope.targetFile?
             scope.suffixError = false
             scope.limitationError = false
+            scope.excelUtil = if stringEndsWith scope.targetFile.name, '.xls' then XLS else XLSX
+
+      stringEndsWith = (name, s) -> s is '' or name[-s.length..] is s
 
       scope.validateFiles = (files) ->
         _.every files, (f) ->
@@ -48,7 +52,7 @@ angular.module("kulebao.directives").directive "klExcelParse", ->
 
       toJson = (workbook) ->
         _.reduce workbook.SheetNames, (all, sheetName) ->
-            roa = XLS.utils.sheet_to_row_object_array(workbook.Sheets[sheetName])
+            roa = scope.excelUtil.utils.sheet_to_row_object_array(workbook.Sheets[sheetName])
             all[sheetName] = roa  if roa.length > 0
           , {};
 
@@ -57,7 +61,7 @@ angular.module("kulebao.directives").directive "klExcelParse", ->
         reader = new FileReader();
         reader.onload = (e) ->
           data = e.target.result;
-          wb = XLS.read(data, {type: 'binary'});
+          wb = scope.excelUtil.read(data, {type: 'binary'});
           scope.ngModel = toJson(wb)
           scope.combineSuccess(scope.onSuccess)(scope.ngModel)
           scope.cleanUp()
