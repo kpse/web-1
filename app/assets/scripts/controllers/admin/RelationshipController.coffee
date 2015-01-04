@@ -367,6 +367,8 @@ angular.module('kulebaoAdmin')
 
       scope.onSuccess = (data)->
         scope.excel = data
+        scope.relationships = []
+        scope.classesScope = []
         scope.relationships = _.filter (_.flatten _.map scope.excel, (row) ->
           _.map allParents(), (p) ->
             new Relationship
@@ -401,7 +403,7 @@ angular.module('kulebaoAdmin')
         _.find scope.classesScope, (c) -> c.class_id == parseInt id
 
       scope.relationships = _.filter scope.relationships, (r) ->
-        r.child.class_name != classOfId(stateParams.class_id).name
+        r.child.class_name == classOfId(stateParams.class_id).name
 
       scope.editChild = ->
       scope.editParent = ->
