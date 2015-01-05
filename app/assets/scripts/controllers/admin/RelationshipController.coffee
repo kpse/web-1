@@ -354,8 +354,8 @@ angular.module('kulebaoAdmin')
 .controller 'batchImportCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'relationshipService',
-    '$http', '$filter', '$q', 'classService', '$state',
-    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, School, $state) ->
+    '$http', '$filter', '$q', 'classService', '$state', 'batchDataService',
+    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, School, $state, BatchData) ->
       scope.loading = false
       scope.current_type = 'batchImport'
 
@@ -379,6 +379,7 @@ angular.module('kulebaoAdmin')
                 class_name: row['所属班级']
                 name: row['宝宝姓名']
               relationship: row["#{p}亲属关系"]
+              school_id: parseInt(stateParams.kindergarten)
         ), (r) ->
           r.parent.name?
 
@@ -389,19 +390,62 @@ angular.module('kulebaoAdmin')
 
         location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/1000/list")
 
+      BatchParents = BatchData('parents')
+      BatchChildren = BatchData('children')
+      BatchRelationship = BatchData('relationships')
+
+      classOfName = (name) ->
+        _.find scope.classesScope, (c) ->
+          c.name == name
+
+      parentByName = (name) ->
+        _.find scope.parents, (p) -> p.name == name
+
+      childByName = (name) ->
+        _.find scope.children, (c) -> c.name == name
+
+      assignIds = (relationships) ->
+        schoolId = parseInt stateParams.kindergarten
+        scope.parents = _.map _.uniq(_.map(scope.relationships, (r) -> r.parent), (p) -> p.name)
+          , (p, i) ->
+            p.parent_id = "1_#{schoolId}_00#{i}"
+            p.id = p.parent_id
+            p.birthday = "1969-01-07"
+            p.school_id = schoolId
+            p.gender = 1
+            p
+        scope.children = _.map _.uniq(_.map(scope.relationships, (r) -> r.child), (c) -> c.name)
+          , (c, i) ->
+            c.child_id = "2_#{schoolId}_00#{i}"
+            c.id = c.child_id
+            c.school_id = schoolId
+            c.birthday = "1999-01-07"
+            c.gender = 1
+            c.nick = c.name
+            c
+        _.map relationships, (r, i) ->
+          r.parent.id = parentByName(r.parent.name).id
+          r.child.id = childByName(r.child.name).id
+          r.child.class_id = classOfName(r.child.class_name).class_id
+          r.card = "#{schoolId}0#{schoolId}0#{schoolId}#{i}f".slice(-10);
+          r.id = r.card
+          r
+
       scope.applyAllChange = ->
         scope.loading = true
         School.delete school_id: stateParams.kindergarten, ->
-          classQueue = _.map scope.classesScope, (c) -> School.save(c).$promise
+          classQueue = _.map scope.classesScope, (c) ->
+            School.save(c).$promise
           allClass = $q.all classQueue
           allClass.then (q) ->
-#          queue = [BatchParents.$save(scope.parents).$promise,
-#                   BatchChildren.$save(scope.children).$promise,
-#                   BatchRelationship.$save(scope.relationships).$promise]
-#          allCreation = $q.all queue
-#          allCreation.then (q) ->
-#            location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/connected")
-            $state.reload();
+            scope.relationships = assignIds(scope.relationships)
+            queue = [BatchParents.save(scope.parents).$promise,
+                     BatchChildren.save(scope.children).$promise,
+                     BatchRelationship.save(scope.relationships).$promise]
+            allCreation = $q.all queue
+            allCreation.then (q) ->
+              $state.reload()
+              location.path "kindergarten/#{stateParams.kindergarten}/relationship/type/connected"
   ]
 
 .controller 'ImportPreviewRelationshipCtrl',

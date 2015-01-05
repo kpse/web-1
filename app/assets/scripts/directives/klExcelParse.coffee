@@ -16,7 +16,7 @@ angular.module("kulebao.directives").directive "klExcelParse", ->
       images: "=?multiple"
 
     link: (scope, element, attrs) ->
-      scope.label = scope.label || '导入Excel'
+      scope.label = scope.label || '读入数据'
       scope.controlDisabled = scope.controlDisabled || false
       scope.field = scope.fieldName || 'image'
       scope.suffixes = scope.suffix || 'xls|xlsx'
