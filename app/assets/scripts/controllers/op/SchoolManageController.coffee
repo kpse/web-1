@@ -92,7 +92,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             admin_password: '',
           charge:
             school_id: id
-            expire_date: '2015-01-01'
+            expire_date: "#{new Date().getFullYear() + 1}-01-01"
             total_phone_number: 0
             status: 1
             used: 0
