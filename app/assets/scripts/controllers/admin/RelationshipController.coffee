@@ -354,8 +354,8 @@ angular.module('kulebaoAdmin')
 .controller 'batchImportCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'relationshipService',
-    '$http', '$filter', '$q',
-    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q) ->
+    '$http', '$filter', '$q', 'classService', '$state',
+    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, School, $state) ->
       scope.loading = false
       scope.current_type = 'batchImport'
 
@@ -379,28 +379,44 @@ angular.module('kulebaoAdmin')
                 class_name: row['所属班级']
                 name: row['宝宝姓名']
               relationship: row["#{p}亲属关系"]
-            ), (r) ->
-              r.parent.name?
+        ), (r) ->
+          r.parent.name?
 
-        scope.classesScope = _.map (_.uniq _.map scope.relationships, (r) -> r.child.class_name)
-          , (c, i) -> name: c, class_id: i + 1000
+        scope.classesScope = _.map (_.uniq _.map scope.relationships, (r) ->
+            r.child.class_name)
+        , (c, i) ->
+          name: c, class_id: i + 1000, school_id: parseInt(stateParams.kindergarten)
 
         location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/1000/list")
 
+      scope.applyAllChange = ->
+        scope.loading = true
+        School.delete school_id: stateParams.kindergarten, ->
+          classQueue = _.map scope.classesScope, (c) -> School.save(c).$promise
+          allClass = $q.all classQueue
+          allClass.then (q) ->
+#          queue = [BatchParents.$save(scope.parents).$promise,
+#                   BatchChildren.$save(scope.children).$promise,
+#                   BatchRelationship.$save(scope.relationships).$promise]
+#          allCreation = $q.all queue
+#          allCreation.then (q) ->
+#            location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/connected")
+            $state.reload();
   ]
 
 .controller 'ImportPreviewRelationshipCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'relationshipService',
+    '$location', 'classService',
     '$http', '$filter', '$q',
-    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q) ->
+    (scope, rootScope, stateParams, location, School, $http, $filter, $q) ->
       scope.loading = false
       scope.current_class = parseInt(stateParams.class_id)
 
       location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport") unless scope.excel?
 
       classOfId = (id) ->
-        _.find scope.classesScope, (c) -> c.class_id == parseInt id
+        _.find scope.classesScope, (c) ->
+          c.class_id == parseInt id
 
       scope.relationships = _.filter scope.relationships, (r) ->
         r.child.class_name == classOfId(stateParams.class_id).name

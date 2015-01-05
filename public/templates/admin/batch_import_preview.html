@@ -2,7 +2,7 @@
 <div ng-show="">
   {{excel}}
 </div>
-<button ng-disabled="!excel" class="btn btn-primary" ng-confirm-msg="你确定要应用所有新数据的吗?"
+<button ng-disabled="!excel" class="btn btn-primary" ng-confirm-msg="批量导入会删除当前学校的所有数据,包括且不限于公告,家园互动和成长历史.你确定要应用新数据的吗?"
         ng-confirm-click="applyAllChange()">应用所有导入数据
 </button>
 <div class="sub-view" ui-view></div>
