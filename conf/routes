@@ -39,6 +39,7 @@ GET           /kindergarten/:kg/class                                           
 POST          /kindergarten/:kg/class                                            controllers.ClassController.create(kg: Long)
 POST          /kindergarten/:kg/class/:classId                                   controllers.ClassController.update(kg: Long, classId: Long)
 DELETE        /kindergarten/:kg/class/:classId                                   controllers.ClassController.delete(kg: Long, classId: Long)
+DELETE        /kindergarten/:kg/class                                            controllers.ClassController.removeAll(kg: Long)
 GET           /kindergarten/:kg/class/:classId/manager                           controllers.ClassController.managers(kg: Long, classId: Long)
 POST          /kindergarten/:kg/class/:classId/manager                           controllers.ClassController.createManager(kg: Long, classId: Long)
 

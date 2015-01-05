@@ -78,4 +78,10 @@ object ClassController extends Controller with Secured {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
         }
   }
+
+  def removeAll(kg: Long) = IsPrincipal {
+    u => _ =>
+      School.cleanSchoolData(kg)
+      Ok(Json.toJson(new SuccessResponse))
+  }
 }

@@ -44,6 +44,7 @@ object School {
   implicit val configItemReader = Json.reads[ConfigItem]
   implicit val schoolConfigWriter = Json.writes[SchoolConfig]
   implicit val schoolConfigReader = Json.reads[SchoolConfig]
+
   def manageMoreClass(kg: Long, classId: Long, employee: Employee) = DB.withConnection {
     implicit c =>
       SQL("update privilege set subordinate= CONCAT((select subordinate from privilege where employee_id={id}) , {class_id} ) where school_id={kg} " +
@@ -58,7 +59,28 @@ object School {
         .on('kg -> kg, 'id -> employee.id).as(get[Long]("count(1)") single) > 0
   }
 
+  def deleteSchool(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("delete from schoolInfo where school_id={kg}")
+        .on('kg -> kg.toString).execute()
+  }
+
   def delete(kg: Long) = DB.withTransaction {
+    implicit c =>
+
+      try {
+        cleanSchoolData(kg)
+        deleteSchool(kg)
+        c.commit()
+      }
+      catch {
+        case t: Throwable =>
+          Logger.info("error %s".format(t.toString))
+          c.rollback()
+      }
+  }
+
+  def cleanSchoolData(kg: Long) = DB.withTransaction {
     implicit c =>
 
       try {
@@ -70,7 +92,7 @@ object School {
           .on('kg -> kg.toString).execute()
 
         List("classinfo", "childinfo", "parentinfo", "news",
-          "scheduleinfo", "cookbookinfo", "schoolinfo", "employeeinfo", "dailylog", "conversation",
+          "scheduleinfo", "cookbookinfo", "employeeinfo", "dailylog", "conversation",
           "assignment", "assess", "privilege", "chargeinfo").map {
           table =>
             SQL("delete from " + table + " where school_id={kg}")
@@ -83,8 +105,6 @@ object School {
           Logger.info("error %s".format(t.toString))
           c.rollback()
       }
-
-
   }
 
   def managerExists(kg: Long, classId: Long, employee: Employee) = DB.withConnection {
@@ -249,7 +269,6 @@ object School {
   }
 
 
-
   def addConfig(kg: Long, config: ConfigItem) = DB.withConnection {
     implicit c =>
       config.isExist(kg) match {
@@ -262,7 +281,7 @@ object School {
   }
 
   val simpleItem = {
-      get[String]("name") ~
+    get[String]("name") ~
       get[String]("value") map {
       case name ~ value =>
         ConfigItem(name, value)
