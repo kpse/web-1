@@ -3,6 +3,7 @@ package models.json_models
 import anorm.SqlParser._
 import anorm.{~, _}
 import models._
+import org.joda.time.DateTime
 import play.Logger
 import play.api.Play.current
 import play.api.db.DB
@@ -69,7 +70,7 @@ object SchoolIntro {
           .on(
             'school_id -> school.school_id.toString,
             'total -> school.charge.total_phone_number,
-            'expire -> school.charge.expire_date,
+            'expire -> DateTime.parse(school.charge.expire_date).toString("yyyy-MM-dd"),
             'time -> time
           ).executeInsert()
         SQL("insert into classinfo (school_id, class_id, class_name) " +
