@@ -444,8 +444,10 @@ angular.module('kulebaoAdmin')
                      BatchRelationship.save(scope.relationships).$promise]
             allCreation = $q.all queue
             allCreation.then (q) ->
-              $state.reload()
-              location.path "kindergarten/#{stateParams.kindergarten}/relationship/type/connected"
+              $timeout ->
+                  $state.reload()
+                  location.path "kindergarten/#{stateParams.kindergarten}/relationship/type/connected"
+                , 5000
   ]
 
 .controller 'ImportPreviewRelationshipCtrl',
