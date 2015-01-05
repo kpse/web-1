@@ -34,6 +34,7 @@ angular.module('kulebaoAdmin')
           backendConfig = _.find data['config'], (item) ->
             item.name == 'backend'
           backendConfig? && scope.backend = backendConfig.value == 'true'
+          scope.types.pop() if scope.backend
 
         scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
           callback() if callback?
@@ -354,8 +355,8 @@ angular.module('kulebaoAdmin')
 .controller 'batchImportCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'relationshipService',
-    '$http', '$filter', '$q', 'classService', '$state', 'batchDataService',
-    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, School, $state, BatchData) ->
+    '$http', '$filter', '$q', 'classService', '$state', 'batchDataService', '$timeout',
+    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, School, $state, BatchData, $timeout) ->
       scope.loading = false
       scope.current_type = 'batchImport'
 
