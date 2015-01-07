@@ -119,7 +119,10 @@ object ChatSession {
     case emptyString if emptyString.isEmpty =>
       Some(List[MediaContent]())
     case multi =>
-      Some(multi.split(urlSeparator).toList.map(MediaContent(_)))
+      val allContent = multi.split(urlSeparator).toList zip (Stream continually types.split(typeSeparator).toList).flatten map {
+        (p) => MediaContent(p._1, Some(p._2))
+      }
+      Some(allContent)
   }
 
   def simple(prefix: Option[String] = None) = {
@@ -139,8 +142,10 @@ object ChatSession {
   }
 
   val urlSeparator = "  "
+  val typeSeparator = """\|"""
 
   def joinMediumUrls(medium: List[MediaContent]): String = medium.map(_.url).mkString(urlSeparator)
+  def joinMediumTypes(medium: List[MediaContent]): String = medium.map(_.`type`.getOrElse("image")).mkString(typeSeparator)
 
   def create(kg: Long, session: ChatSession, originId: String) = DB.withConnection {
     implicit c =>
@@ -156,7 +161,7 @@ object ChatSession {
             'id -> session.topic,
             'content -> session.content,
             'url -> joinMediumUrls(many.get),
-            'media_type -> "image",
+            'media_type -> joinMediumTypes(many.get),
             'sender -> session.sender.id,
             'sender_type -> session.sender.`type`,
             'update_at -> time
