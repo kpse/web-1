@@ -34,7 +34,7 @@ angular.module('kulebaoAdmin')
           backendConfig = _.find data['config'], (item) ->
             item.name == 'backend'
           backendConfig? && scope.backend = backendConfig.value == 'true'
-          scope.types.pop() if scope.backend || !scope.isSuperUser()
+          scope.types.pop() if scope.backend or (!scope.backend and !scope.isSuperUser())
 
         scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
           callback() if callback?
