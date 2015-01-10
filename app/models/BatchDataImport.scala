@@ -136,7 +136,7 @@ object BatchImportReport {
     val report = list.filter(_.isDefined).map(_.get)
     report match {
       case x :: xs =>
-        Json.toJson(report)
+        Json.toJson(ErrorResponse(report.toString))
       case List() =>
         Json.toJson(new SuccessResponse)
     }
