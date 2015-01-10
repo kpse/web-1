@@ -142,7 +142,7 @@ object ChatSession {
   }
 
   val urlSeparator = "  "
-  val typeSeparator = ""","""
+  val typeSeparator = ","
 
   def joinMediumUrls(medium: List[MediaContent]): String = medium.map(_.url).mkString(urlSeparator)
   def joinMediumTypes(medium: List[MediaContent]): String = medium.map(_.`type`.getOrElse("image")).mkString(typeSeparator)
