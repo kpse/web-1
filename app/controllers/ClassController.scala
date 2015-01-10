@@ -27,6 +27,8 @@ object ClassController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString())
         request.body.validate[SchoolClass].map {
+          case (classInfo) if School.classNameExists(classInfo) =>
+            Ok(Json.toJson(ErrorResponse("已有ID不相同的同名班级,请确认信息正确性")))
           case (classInfo) =>
             Ok(Json.toJson(School.updateOrCreate(classInfo)))
         }.recoverTotal {

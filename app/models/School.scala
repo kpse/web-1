@@ -45,6 +45,24 @@ object School {
   implicit val schoolConfigWriter = Json.writes[SchoolConfig]
   implicit val schoolConfigReader = Json.reads[SchoolConfig]
 
+  def classNameExists(clazz: SchoolClass) = DB.withConnection {
+    implicit c =>
+      clazz.class_id match {
+        case Some(x) =>
+          SQL("select count(1) from classinfo where school_id={kg} and class_id <> {id} and class_name={name} ").on(
+            'kg -> clazz.school_id,
+            'id -> x,
+            'name -> clazz.name
+          ).as(get[Long]("count(1)") single) > 0
+        case None =>
+          SQL("select count(1) from classinfo where school_id={kg} and class_name={name} ").on(
+            'kg -> clazz.school_id,
+            'name -> clazz.name
+          ).as(get[Long]("count(1)") single) > 0
+      }
+
+  }
+
   def manageMoreClass(kg: Long, classId: Long, employee: Employee) = DB.withConnection {
     implicit c =>
       SQL("update privilege set subordinate= CONCAT((select subordinate from privilege where employee_id={id}) , {class_id} ) where school_id={kg} " +
