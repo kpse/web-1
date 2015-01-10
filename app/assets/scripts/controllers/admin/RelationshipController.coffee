@@ -355,8 +355,8 @@ angular.module('kulebaoAdmin')
 .controller 'batchImportCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'relationshipService',
-    '$http', '$filter', '$q', 'classService', '$state', 'batchDataService', '$timeout',
-    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, School, $state, BatchData, $timeout) ->
+    '$http', '$filter', '$q', 'classService', '$state', 'batchDataService', '$timeout', '$alert',
+    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, School, $state, BatchData, $timeout, Alert) ->
       scope.loading = false
       scope.current_type = 'batchImport'
 
@@ -445,10 +445,24 @@ angular.module('kulebaoAdmin')
                      BatchRelationship.save(scope.relationships).$promise]
             allCreation = $q.all queue
             allCreation.then (q) ->
-              $timeout ->
+              success = _.every q, (f) -> f.error_code == 0
+              if success
+                $timeout ->
                   $state.reload()
                   location.path "kindergarten/#{stateParams.kindergarten}/relationship/type/connected"
                 , 5000
+              else
+                error = _.reduce (_.filter q, (f) -> f.error_code != 0),
+                    (all, err) -> all += "\n#{err.error_msg}"
+                  , ""
+                Alert
+                  title: '批量导入失败'
+                  content: error
+                  placement: "top-left"
+                  type: "danger"
+                  container: '.panel-body'
+                scope.loading = false
+
   ]
 
 .controller 'ImportPreviewRelationshipCtrl',
