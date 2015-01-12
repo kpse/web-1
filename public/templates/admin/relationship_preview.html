@@ -1,0 +1,21 @@
+<table class="table table-hover table-condensed">
+  <thead>
+  <tr class="row">
+    <th class="col-xs-2">班级</th>
+    <th class="col-xs-2">小孩姓名</th>
+    <th class="col-xs-3">家长姓名</th>
+    <th class="col-xs-3">电话号码</th>
+    <th class="col-xs-2">关系</th>
+  </tr>
+  </thead>
+  <tbody>
+  <div class="loading" ng-show="loading"></div>
+  <tr ng-repeat="r in relationships | filter: searchText" class="row">
+    <td class="col-xs-2">{{r.child.class_name}}</td>
+    <td class="col-xs-2"><a ng-click="editChild(r.child)">{{r.child.name}}</a></td>
+    <td class="col-xs-3"><a ng-click="editParent(r.parent)">{{r.parent.name}}</a></td>
+    <td class="col-xs-3">{{r.parent.phone | phone}}</td>
+    <td class="col-xs-2">{{r.relationship}}</td>
+  </tr>
+  </tbody>
+</table>

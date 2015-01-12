@@ -448,9 +448,9 @@ angular.module('kulebaoAdmin')
               success = _.every q, (f) -> f.error_code == 0
               if success
                 $timeout ->
-                  $state.reload()
-                  location.path "kindergarten/#{stateParams.kindergarten}/relationship/type/connected"
-                , 5000
+                    location.path "kindergarten/#{stateParams.kindergarten}/relationship/type/connected"
+                  , 200
+                $state.reload()
               else
                 error = _.reduce (_.filter q, (f) -> f.error_code != 0),
                     (all, err) -> all += "\n#{err.error_msg}"

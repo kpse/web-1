@@ -81,7 +81,7 @@ angular.module('kulebaoAdmin',
       controller: 'ImportPreviewRelationshipCtrl'
     .state 'kindergarten.relationship.type.preview.class.list',
       url: '/list',
-      templateUrl: 'templates/admin/relationship.html',
+      templateUrl: 'templates/admin/relationship_preview.html',
       controller: 'ImportPreviewRelationshipCtrl'
 
     .state 'kindergarten.conversation',
