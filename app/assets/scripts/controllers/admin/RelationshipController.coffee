@@ -384,6 +384,8 @@ angular.module('kulebaoAdmin')
         ), (r) ->
           r.parent.name?
 
+        scope.errorNumbers = []
+
         scope.classesScope = _.map (_.uniq _.map scope.relationships, (r) ->
             r.child.class_name)
         , (c, i) ->
