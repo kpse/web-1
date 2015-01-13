@@ -482,9 +482,6 @@ angular.module('kulebaoAdmin')
       scope.relationships = _.filter scope.relationships, (r) ->
         r.child.class_name == classOfId(stateParams.class_id).name
 
-      scope.editChild = ->
-      scope.editParent = ->
-
       scope.navigateTo = (c) ->
         location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/#{c.class_id}/list")
   ]
