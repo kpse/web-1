@@ -1,0 +1,28 @@
+<h2>班级名称: {{currentClass.name}}</h2>
+<div class="panel-body table-responsive">
+  <table class="table table-hover table-condensed table-bordered">
+    <thead>
+    <tr class="row">
+      <th class="col-xs-3">小孩姓名</th>
+      <th class="col-xs-3">性别</th>
+      <th class="col-xs-3">生日</th>
+      <th class="col-xs-3">家庭地址</th>
+    </tr>
+    </thead>
+    <tbody>
+    <div class="loading" ng-show="loading"></div>
+    <tr ng-repeat="child in children" class="row">
+      <td class="col-xs-3">{{child.name}}</a></td>
+      <td class="col-xs-3">{{child.gender | gender}}</td>
+      <td class="col-xs-3">{{child.birthday}}</td>
+      <td class="col-xs-3">{{child.address}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="col-sm-offset-8 col-sm-1">
+    <a class="btn btn-primary"
+       ng-click="$hide()">关闭</a>
+  </div>
+</div>
+
+

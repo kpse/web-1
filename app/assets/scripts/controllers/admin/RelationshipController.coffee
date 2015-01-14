@@ -366,6 +366,9 @@ angular.module('kulebaoAdmin')
         _.map parentRange, (r) ->
           "家长#{r}"
 
+      extractGender = (input) ->
+        if (input == '男') then 1 else 0
+
       scope.onSuccess = (data)->
         scope.excel = data
         scope.relationships = []
@@ -376,9 +379,12 @@ angular.module('kulebaoAdmin')
               parent:
                 name: row["#{p}姓名"]
                 phone: row["#{p}手机号"]
+                gender: extractGender row["#{p}性别"]
               child:
                 class_name: row['所属班级']
                 name: row['宝宝姓名']
+                birthday: row['出生日期']
+                gender: extractGender row['性别']
               relationship: row["#{p}亲属关系"]
               school_id: parseInt(stateParams.kindergarten)
         ), (r) ->
@@ -407,25 +413,28 @@ angular.module('kulebaoAdmin')
       childByName = (name) ->
         _.find scope.children, (c) -> c.name == name
 
+      scope.extractChildren = (relationships, schoolId) ->
+        _.map _.uniq(_.map(relationships, (r) -> r.child), (c) -> c.name)
+        , (c, i) ->
+          c.child_id = "2_#{schoolId}_00#{i}"
+          c.id = c.child_id
+          c.school_id = schoolId
+          c.birthday = "1999-01-07"
+          c.nick = c.name
+          c
+      scope.extractParents = (relationships, schoolId) ->
+        _.map _.uniq(_.map(relationships, (r) -> r.parent), (p) -> p.name)
+        , (p, i) ->
+          p.parent_id = "1_#{schoolId}_00#{i}"
+          p.id = p.parent_id
+          p.birthday = "1969-01-07"
+          p.school_id = schoolId
+          p
+
       assignIds = (relationships) ->
         schoolId = parseInt stateParams.kindergarten
-        scope.parents = _.map _.uniq(_.map(scope.relationships, (r) -> r.parent), (p) -> p.name)
-          , (p, i) ->
-            p.parent_id = "1_#{schoolId}_00#{i}"
-            p.id = p.parent_id
-            p.birthday = "1969-01-07"
-            p.school_id = schoolId
-            p.gender = 1
-            p
-        scope.children = _.map _.uniq(_.map(scope.relationships, (r) -> r.child), (c) -> c.name)
-          , (c, i) ->
-            c.child_id = "2_#{schoolId}_00#{i}"
-            c.id = c.child_id
-            c.school_id = schoolId
-            c.birthday = "1999-01-07"
-            c.gender = 1
-            c.nick = c.name
-            c
+        scope.parents = scope.extractParents scope.relationships, schoolId
+        scope.children = scope.extractChildren scope.relationships, schoolId
         _.map relationships, (r, i) ->
           r.parent.id = parentByName(r.parent.name).id
           r.child.id = childByName(r.child.name).id
@@ -469,11 +478,11 @@ angular.module('kulebaoAdmin')
 
 .controller 'ImportPreviewRelationshipCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'classService',
-    '$http', '$filter', '$q',
-    (scope, rootScope, stateParams, location, School, $http, $filter, $q) ->
+    '$location', '$modal',
+    (scope, rootScope, stateParams, location, Modal) ->
       scope.loading = false
-      scope.current_class = parseInt(stateParams.class_id)
+      scope.current_class = parseInt stateParams.class_id
+      schoolId = parseInt stateParams.kindergarten
 
       location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport") unless scope.excel?
 
@@ -484,6 +493,15 @@ angular.module('kulebaoAdmin')
       scope.relationships = _.filter scope.relationships, (r) ->
         r.child.class_name == classOfId(stateParams.class_id).name
 
+      scope.children = scope.extractChildren scope.relationships, schoolId
+
       scope.navigateTo = (c) ->
         location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/#{c.class_id}/list")
+
+      scope.previewChild = ->
+        scope.currentClass = classOfId(stateParams.class_id)
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/admin/children_preview.html'
+          id: 'preview-child-modal'
   ]
