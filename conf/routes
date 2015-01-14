@@ -215,6 +215,7 @@ GET           /api/v1/test/force_update                                         
 POST          /api/v1/binding                                                    controllers.Authentication.bindNumberV1
 
 POST          /api/v1/phone_check/:phone                                         controllers.ParentController.isGoodToUse(phone: String, employee: Option[String])
+POST          /api/v1/kindergarten/:kg/phone_check/:phone                        controllers.ParentController.isGoodToUseInSchool(kg: Long, phone: String, employee: Option[String])
 POST          /api/v1/card_check                                                 controllers.RelationshipController.isGoodToUse
 
 POST          /api/v1/video_provider/:kg                                         controllers.VideoProviderController.create(kg: Long)

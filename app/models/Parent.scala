@@ -45,10 +45,22 @@ trait PhoneCheck[T] {
 }
 
 case class ParentPhoneCheck(id: Option[String], phone: String) extends PhoneCheck[Parent] {
+  def existsInSchool(kg: Long) = Parent.phoneSearch(phone) match {
+    case Some(p) =>
+      p.school_id == kg
+    case None => false
+  }
+
   def isTheSame(parent: Parent) = parent.parent_id.equals(id)
 }
 
 case class EmployeePhoneCheck(id: Option[String], phone: String) extends PhoneCheck[Employee] {
+  def existsInSchool(kg: Long) = Employee.phoneSearch(phone) match {
+    case Some(e) =>
+      e.school_id == kg
+    case None => false
+  }
+
   def isTheSame(employee: Employee) = employee.id.equals(id)
 }
 

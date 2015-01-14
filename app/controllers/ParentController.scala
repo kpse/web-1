@@ -148,4 +148,29 @@ object ParentController extends Controller with Secured {
     case _ =>
       Ok(Json.toJson(ErrorResponse("号码与id不匹配。")))
   })
+
+  def isGoodToUseInSchool(kg: Long, phone: String, isEmployee: Option[String]) = IsAuthenticated(parse.json) {
+    u => request =>
+      isEmployee match {
+        case Some(s) =>
+          request.body.validate[EmployeePhoneCheck].map {
+            case (employee) if employee.existsInSchool(kg) =>
+              Ok(Json.toJson(SuccessResponse(s"号码#{employee.phone}已存在，且与id匹配。")))
+            case (employee) =>
+              numberCheck(employee, Employee.phoneSearch(employee.phone))
+          }.recoverTotal {
+            e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+          }
+        case None =>
+          request.body.validate[ParentPhoneCheck].map {
+            case (parent) if parent.existsInSchool(kg) =>
+              Ok(Json.toJson(SuccessResponse(s"号码#{parent.phone}已存在，且与id匹配。")))
+            case (parent) =>
+              numberCheck(parent, Parent.phoneSearch(parent.phone))
+          }.recoverTotal {
+            e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+          }
+      }
+
+  }
 }
