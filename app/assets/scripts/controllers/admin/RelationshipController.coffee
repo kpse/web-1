@@ -355,8 +355,8 @@ angular.module('kulebaoAdmin')
 .controller 'batchImportCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'relationshipService',
-    '$http', '$filter', '$q', 'classService', '$state', 'batchDataService', '$timeout', '$alert',
-    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, School, $state, BatchData, $timeout, Alert) ->
+    '$http', '$filter', '$q', 'classService', '$state', 'batchDataService', '$timeout', '$alert', 'phoneCheckInSchoolService',
+    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, School, $state, BatchData, $timeout, Alert, PhoneCheck) ->
       scope.loading = false
       scope.current_type = 'batchImport'
 
@@ -380,6 +380,7 @@ angular.module('kulebaoAdmin')
                 name: row["#{p}姓名"]
                 phone: row["#{p}手机号"]
                 gender: extractGender row["#{p}性别"]
+                birthday: '1980-01-01'
               child:
                 class_name: row['所属班级']
                 name: row['宝宝姓名']
@@ -390,7 +391,11 @@ angular.module('kulebaoAdmin')
         ), (r) ->
           r.parent.name?
 
-        scope.errorNumbers = []
+        phones = _.map scope.relationships, (r) -> r.parent.phone
+        checkQueue = _.map phones, (p) -> PhoneCheck.check(phone: p, school_id: parseInt(stateParams.kindergarten)).$promise
+        $q.all(checkQueue).then (q) ->
+          codes = _.map q, (r) -> r.error_code
+          scope.errorNumbers = _.uniq _.map (_.filter _.zip(phones, codes), (a) -> a[1] != 0), (p) -> p[0]
 
         scope.classesScope = _.map (_.uniq _.map scope.relationships, (r) ->
             r.child.class_name)

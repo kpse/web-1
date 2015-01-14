@@ -44,3 +44,18 @@ angular.module('kulebao.services')
           cache: true
       }
 ]
+
+angular.module('kulebao.services')
+.factory 'phoneCheckInSchoolService', ['$resource',
+  ($resource) ->
+    $resource 'api/v1/kindergarten/:school_id/phone_check/:phone',
+      {
+        school_id: '@school_id'
+        phone: '@phone'
+        employee: '@employee'
+      }, {
+        'check':
+          method: 'POST'
+          cache: true
+      }
+]
