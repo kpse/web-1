@@ -419,7 +419,6 @@ angular.module('kulebaoAdmin')
           c.child_id = "2_#{schoolId}_00#{i}"
           c.id = c.child_id
           c.school_id = schoolId
-          c.birthday = "1999-01-07"
           c.nick = c.name
           c
       scope.extractParents = (relationships, schoolId) ->
@@ -427,7 +426,6 @@ angular.module('kulebaoAdmin')
         , (p, i) ->
           p.parent_id = "1_#{schoolId}_00#{i}"
           p.id = p.parent_id
-          p.birthday = "1969-01-07"
           p.school_id = schoolId
           p
 
