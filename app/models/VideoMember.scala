@@ -85,8 +85,9 @@ object VideoMember {
   }
 
   def fakeAccountAccordingSchool(kg: Long, id: String, account: String) = kg match {
-    case 2014|2101|2046 => VideoMember(id, Some("cocbaby"), Some("13880498549"), Some(kg))
-    case _ => VideoMember(id, Some("2222"), Some("6yWw2D"), Some(kg))
+    case 2046 => VideoMember(id, Some("cocbaby"), Some("13880498549"), Some(kg))
+    case 2001 => VideoMember(id, Some("2222"), Some("6yWw2D"), Some(kg))
+    case _ => VideoMember(id, Some(account), passwordOfVideo, Some(kg.toLong))
   }
 
   def availableCounting(kg: Long) = {
