@@ -11,7 +11,9 @@ CREATE TABLE schoolconfig (
 );
 
 INSERT INTO schoolconfig (school_id, name, value, update_at) VALUES
-  ('93740362', 'backend', 'false', 1401150055960);
+  ('93740362', 'backend', 'false', 1401150055960),
+  ('93740362', 'video_user_name', 'username', 1401150055960),
+  ('93740362', 'video_user_password', 'password', 1401150055960);
 
 
 # --- !Downs

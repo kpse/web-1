@@ -94,7 +94,7 @@ object SchoolSummaryController extends Controller with Secured {
       Logger.info(request.body.toString())
       request.body.validate[SchoolConfig].map {
         case (current) if current.config.nonEmpty =>
-          current.config.map(School.addConfig(kg, _))
+          current.config.map(Charge.addConfig(kg, _))
           Ok(Json.toJson(new SuccessResponse))
         case _ => Ok(Json.toJson(ErrorResponse("no config added.")))
       }.recoverTotal {

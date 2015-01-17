@@ -5,9 +5,7 @@ angular.module('kulebaoOp').controller 'OpChargeCtrl',
       scope.refresh = ->
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->
-            kg.charge = Charge.query school_id: kg.school_id, ->
-              kg.charge[0].video_user_name = '2222'
-              kg.charge[0].video_user_password = '5555'
+            kg.charge = Charge.query school_id: kg.school_id
             kg.videoProvider = VideoProvider.get school_id: kg.school_id
 
       scope.refresh()

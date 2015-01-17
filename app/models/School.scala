@@ -286,18 +286,6 @@ object School {
       SchoolConfig(kg, configItems)
   }
 
-
-  def addConfig(kg: Long, config: ConfigItem) = DB.withConnection {
-    implicit c =>
-      config.isExist(kg) match {
-        case true =>
-          config.update(kg)
-        case false =>
-          config.create(kg)
-      }
-
-  }
-
   val simpleItem = {
     get[String]("name") ~
       get[String]("value") map {

@@ -128,7 +128,7 @@ object SchoolIntro {
             'timestamp -> timestamp).executeUpdate()
         info.properties map {
           configs =>
-            configs.map(School.addConfig(info.school_id, _))
+            configs.map(Charge.addConfig(info.school_id, _))
         }
       }
       catch {

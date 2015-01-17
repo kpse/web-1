@@ -1,5 +1,6 @@
 package models
 
+import play.Logger
 import play.api.db.DB
 import anorm._
 import play.api.Play.current
@@ -9,7 +10,7 @@ import java.util.Date
 import models.helper.TimeHelper.any2DateTime
 import org.joda.time.DateTime
 
-case class ChargeInfo(school_id: Long, total_phone_number: Long, expire_date: String, status: Int, used: Long, total_video_account: Option[Long]=Some(0))
+case class ChargeInfo(school_id: Long, total_phone_number: Long, expire_date: String, status: Int, used: Long, total_video_account: Option[Long]=Some(0), video_user_name: Option[String] = None, video_user_password: Option[String] = None)
 case class ActiveCount(school_id: Long, activated: Long, all: Long)
 
 object Charge {
@@ -44,17 +45,28 @@ object Charge {
         ).executeUpdate
   }
 
-  def update(kg: Long, charge: ChargeInfo) = DB.withConnection {
+  def update(kg: Long, charge: ChargeInfo) = DB.withTransaction {
     implicit c =>
-      SQL("update chargeinfo set total_phone_number={count}, total_video_account={accounts}, expire_date={expire}, status={status}" +
-        " where school_id={kg}")
-        .on(
-          'kg -> kg.toString,
-          'count -> charge.total_phone_number,
-          'accounts -> charge.total_video_account,
-          'expire -> charge.expire_date,
-          'status -> charge.status
-        ).executeUpdate
+      try {
+        SQL("update chargeinfo set total_phone_number={count}, total_video_account={accounts}, expire_date={expire}, status={status}" +
+          " where school_id={kg}")
+          .on(
+            'kg -> kg.toString,
+            'count -> charge.total_phone_number,
+            'accounts -> charge.total_video_account,
+            'expire -> charge.expire_date,
+            'status -> charge.status
+          ).executeUpdate
+        charge.video_user_name map { value => addConfig(kg, ConfigItem("video_user_name", value))}
+        charge.video_user_password map { value => addConfig(kg, ConfigItem("video_user_password", value))}
+        c.commit()
+        0
+      }
+      catch {
+        case e: Throwable => c.rollback()
+          Logger.info(e.getLocalizedMessage)
+          1
+      }
   }
 
   def create(kg: Long) = DB.withConnection {
@@ -85,7 +97,10 @@ object Charge {
   def index(kg: Long) = DB.withConnection {
     implicit c =>
       SQL("select *, (select count(distinct p.phone) from parentinfo p, relationmap r " +
-        "where p.parent_id=r.parent_id and r.status=1 and member_status=1 and p.status=1 and school_id={kg}) as used from chargeinfo where school_id={kg}")
+        "where p.parent_id=r.parent_id and r.status=1 and member_status=1 and p.status=1 and school_id={kg}) as used, " +
+        " (select value from schoolconfig where school_id={kg} and name='video_user_name' ) as video_user_name, " +
+        " (select value from schoolconfig where school_id={kg} and name='video_user_password' ) as video_user_password " +
+        " from chargeinfo where school_id={kg}")
         .on(
           'kg -> kg.toString
         ).as(simple *)
@@ -97,9 +112,22 @@ object Charge {
       get[Long]("total_video_account") ~
       get[Date]("expire_date") ~
       get[Int]("status") ~
-      get[Long]("used") map {
-      case kg ~ count ~ videoCount ~ expire ~ status ~ used =>
-        ChargeInfo(kg.toLong, count, expire.toDateOnly, status, used, Some(videoCount))
+      get[Long]("used") ~
+      get[Option[String]]("video_user_name") ~
+      get[Option[String]]("video_user_password") map {
+      case kg ~ count ~ videoCount ~ expire ~ status ~ used ~ videoAccount ~ videoPassword =>
+        ChargeInfo(kg.toLong, count, expire.toDateOnly, status, used, Some(videoCount), videoAccount, videoPassword)
     }
+  }
+
+  def addConfig(kg: Long, config: ConfigItem) = DB.withConnection {
+    implicit c =>
+      config.isExist(kg) match {
+        case true =>
+          config.update(kg)
+        case false =>
+          config.create(kg)
+      }
+
   }
 }
