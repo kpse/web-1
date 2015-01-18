@@ -142,5 +142,27 @@ class ClassControllerSpec extends Specification with TestSupport {
       }
     }
 
+    "not create class with id 0" in new WithServer {
+      private val classInfo = Json.toJson(SchoolClass(93740362, Some(0), "不能为零"))
+      val createRes = route(principalLoggedRequest(POST, "/kindergarten/93740362/class").withBody(classInfo)).get
+
+      status(createRes) must equalTo(OK)
+
+      val jsonResponse: JsValue = Json.parse(contentAsString(createRes))
+      (jsonResponse \ "error_code").as[Int] must equalTo(1)
+      (jsonResponse \ "error_msg").as[String] must equalTo("不允许创建ID为0的班级.")
+    }
+
+    "not create class with duplicated name" in new WithServer {
+      private val classInfo = Json.toJson(SchoolClass(93740362, Some(1112), "香蕉班"))
+      val createRes = route(principalLoggedRequest(POST, "/kindergarten/93740362/class/1112").withBody(classInfo)).get
+
+      status(createRes) must equalTo(OK)
+
+      val jsonResponse: JsValue = Json.parse(contentAsString(createRes))
+      (jsonResponse \ "error_code").as[Int] must equalTo(2)
+      (jsonResponse \ "error_msg").as[String] must equalTo("已有ID不相同的同名班级,请确认信息正确性")
+    }
+
   }
 }

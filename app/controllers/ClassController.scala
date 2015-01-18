@@ -1,6 +1,7 @@
 package controllers
 
-import play.api.mvc.{Action, Controller}
+import controllers.helper.JsonLogger._
+import play.api.mvc.{SimpleResult, Action, Controller}
 import play.api.libs.json.{JsError, Json}
 import models._
 import play.Logger
@@ -22,16 +23,13 @@ object ClassController extends Controller with Secured {
       Ok(Json.toJson(UserAccess.filter(UserAccess.queryByUsername(u, kg))(School.allClasses(kg))))
   }
 
-  def create(kg: Long) = IsLoggedIn(parse.json) {
+  def create(kg: Long) = IsPrincipal(parse.json) {
     u =>
       request =>
         Logger.info(request.body.toString())
-        request.body.validate[SchoolClass].map {
-          case (classInfo) if School.classNameExists(classInfo) =>
-            Ok(Json.toJson(ErrorResponse("已有ID不相同的同名班级,请确认信息正确性")))
-          case (classInfo) =>
-            Ok(Json.toJson(School.updateOrCreate(classInfo)))
-        }.recoverTotal {
+        request.body.validate[SchoolClass].map(
+          noZeroID orElse noDuplicateName orElse createOrUpdate
+        ).recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
         }
 
@@ -41,13 +39,34 @@ object ClassController extends Controller with Secured {
     u =>
       request =>
         Logger.info(request.body.toString())
-        request.body.validate[SchoolClass].map {
-          case (classInfo) =>
-            Ok(Json.toJson(School.updateOrCreate(classInfo)))
-        }.recoverTotal {
+        request.body.validate[SchoolClass].map(
+          idNotMatched(classId) orElse
+            noZeroID orElse
+            noDuplicateName orElse
+            createOrUpdate
+        ).recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
         }
+  }
 
+  val noZeroID: PartialFunction[SchoolClass, SimpleResult] = {
+    case (classInfo) if classInfo.class_id equals Some(0) =>
+      Ok(loggedJson(ErrorResponse("不允许创建ID为0的班级.", 1)))
+  }
+
+  val noDuplicateName: PartialFunction[SchoolClass, SimpleResult] = {
+    case (classInfo) if School.classNameExists(classInfo) =>
+      Ok(loggedJson(ErrorResponse("已有ID不相同的同名班级,请确认信息正确性", 2)))
+  }
+
+  val createOrUpdate: PartialFunction[SchoolClass, SimpleResult] = {
+    case (classInfo) =>
+      Ok(loggedJson(School.updateOrCreate(classInfo)))
+  }
+
+  def idNotMatched(classId: Long): PartialFunction[SchoolClass, SimpleResult] = {
+    case (classInfo) if classInfo.class_id.getOrElse(0) != classId =>
+      Ok(loggedJson(ErrorResponse("different id from url.")))
   }
 
   def delete(kg: Long, classId: Long) = IsLoggedIn {
