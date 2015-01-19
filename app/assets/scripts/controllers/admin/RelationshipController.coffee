@@ -256,6 +256,10 @@ angular.module('kulebaoAdmin')
 
       scope.navigateTo = (s) ->
         location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/#{s.url}") if stateParams.type != s.url
+
+      scope.membersInformation =
+        members : [{id: 0, desc:'未开通'}, {id: 1, desc: '已开通'}]
+        videoMembers : [{id: 0, desc:'未开通'}, {id: 1, desc: '已开通'}]
   ]
 
 .controller 'connectedCtrl',
