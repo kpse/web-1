@@ -35,7 +35,7 @@ qiniuService = (tokenService) ->
     data.append "token", token
     key = generateRemoteFileName remoteDir, removeInvalidChars(file.name)
     data.append "key", key
-    xhr.open "POST", "http://up.qiniu.com"
+    xhr.open "POST", "https://up.qbox.me"
     xhr.send data
 
 qiniuRawFileService = (tokenService) ->
@@ -57,7 +57,7 @@ qiniuRawFileService = (tokenService) ->
     data.append "file", file
     data.append "token", token
     data.append "key", remoteDir + '/' + file.name
-    xhr.open "POST", "http://up.qiniu.com"
+    xhr.open "POST", "https://up.qbox.me"
     xhr.send data
 
 generateRemoteDir = (user) -> if user? then user else ''
