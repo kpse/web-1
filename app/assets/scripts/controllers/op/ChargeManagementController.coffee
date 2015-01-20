@@ -40,6 +40,7 @@ angular.module('kulebaoOp').controller 'OpChargeCtrl',
       scope.enableVideo = (schoolId) ->
         VideoProvider.save school_id: schoolId, ->
           scope.kg.videoProvider = VideoProvider.get school_id: schoolId
+          scope.charge.total_video_account = 1
 
   ]
 
