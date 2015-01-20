@@ -43,7 +43,7 @@ case class VideoMember(id: String, account: Option[String], password: Option[Str
   private def generateAccount(base: Option[String]) = {
     base match {
       case Some(key) => key
-      case None => md5(s"$school_id$id")
+      case None => md5(s"$school_id$id").take(24)
     }
   }
 
