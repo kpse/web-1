@@ -6,7 +6,7 @@ angular.module('kulebaoAdmin',
   ['kulebaoApp', 'ui.bootstrap', 'ui.mask', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap', 'mgcrea.ngStrap.helpers.dimensions',
    'ngCookies'])
 angular.module('kulebaoOp',
-  ['kulebaoAdmin', 'emoji'])
+  ['kulebaoAdmin', 'emoji', 'ngCsv'])
 .config ['$stateProvider', '$urlRouterProvider',
   ($stateProvider, $urlRouterProvider) ->
     $stateProvider
