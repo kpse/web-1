@@ -104,7 +104,7 @@
 
     <div class="form-group">
       <a class="btn btn-warning pull-right adding-button"
-         ng-disabled="editSchoolForm.$invalid || isSchoolDuplicated(school)"
+         ng-disabled="editSchoolForm.$invalid || isSchoolDuplicated(school) || editSchoolForm.$pristine"
          ng-click="endEditing(school)">保存</a>
       <a class="btn btn-default pull-right adding-button"
          ng-click="$hide()">取消</a>
