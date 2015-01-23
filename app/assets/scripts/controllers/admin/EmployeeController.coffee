@@ -8,7 +8,8 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
 
       scope.refresh = ->
         scope.loading = true
-        scope.employees = SchoolEmployee.query school_id: $stateParams.kindergarten, ->
+        scope.employees = SchoolEmployee.query school_id: $stateParams.kindergarten, (data)->
+          scope.employees = _.reject data, (employee) -> employee.id == scope.adminUser.id
           _.forEach scope.employees, (e) ->
             e.subordinates = ClassManager.query school_id: $stateParams.kindergarten, phone: e.phone, ->
               e.displayClasses = (_.map e.subordinates, (s) -> s.name).join(',')
