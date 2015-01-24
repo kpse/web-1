@@ -253,6 +253,8 @@ POST          /api/v2/school_config/:kg                                         
 
 GET           /api/v2/relationship/:card                                         controllers.RelationshipController.search(card: String)
 
+POST          /api/v2/admin_password_reset/:phone                                controllers.Authentication.adminReset(phone: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                      controllers.Static.at(path="/public/images", file)

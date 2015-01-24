@@ -35,6 +35,7 @@ object ChangePasswordResponse {
 
 
   def cleanCache(phone: String) = Cache.remove(phone)
+  def prepareCache(phone: String, code: String) = Cache.set(phone, code, 100)
 
   def handleReset(request: ResetPassword) = DB.withConnection {
     implicit c =>

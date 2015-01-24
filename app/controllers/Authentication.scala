@@ -20,7 +20,7 @@ import models.json_models.MobileLogin
 import models.json_models.CheckPhone
 import models.json_models.ResetPassword
 
-object Authentication extends Controller {
+object Authentication extends Controller with Secured {
 
   implicit val r1 = Json.reads[ChangePassword]
   implicit val r2 = Json.reads[ResetPassword]
@@ -190,6 +190,20 @@ object Authentication extends Controller {
             case _ =>
               Ok(loggedJson(result)).withNewSession
           }
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + loggedErrorJson(e))
+      }
+  }
+
+  def adminReset(phone: String) = IsOperator(parse.json) {
+    u => request =>
+      request.body.validate[ResetPassword].map {
+        case (r) if Parent.phoneSearch(r.account_name).nonEmpty =>
+          loggedJson(r)
+          ChangePasswordResponse.prepareCache(r.account_name, r.authcode)
+          Ok(loggedJson(ChangePasswordResponse.handleReset(r)))
+        case (r) =>
+          Ok(loggedJson(ErrorResponse("没有找到对应号码的家长(Parent with such phone number is not found).")))
       }.recoverTotal {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
       }
