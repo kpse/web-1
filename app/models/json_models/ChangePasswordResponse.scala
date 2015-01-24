@@ -29,7 +29,7 @@ object ChangePasswordResponse {
             ).executeUpdate
           cleanCache(phone)
           ChangePasswordResponse(0, updateTime.toString)
-        case error => ChangePasswordResponse(1232, "验证码错误。")
+        case error => ChangePasswordResponse(1232, "验证码错误(token is invalid)。")
       }
   }
 
@@ -48,7 +48,7 @@ object ChangePasswordResponse {
             ).executeUpdate
           cleanCache(request.account_name)
           ChangePasswordResponse(0, updateTime.toString)
-        case error => ChangePasswordResponse(1232, "")
+        case error => ChangePasswordResponse(1232, "验证码错误(token is invalid)。")
       }
   }
 
