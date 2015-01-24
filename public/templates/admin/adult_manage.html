@@ -93,6 +93,9 @@
           <button class="btn btn-danger" ng-confirm-msg="你确定要删除吗?"
                   ng-confirm-click="delete(parent)">删除
           </button>
+          <button ng-show="resetPassword" class="btn btn-warning" ng-confirm-msg="你确定要重置密码吗?"
+                  ng-confirm-click="resetPassword(parent)">重置密码
+          </button>
         </div>
       </div>
     </div>

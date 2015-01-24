@@ -70,8 +70,8 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
   ]
 
 .controller 'OpShowTeacherCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'allEmployeesService', 'schoolService',
-    (scope, rootScope, stateParams, location, Employee, School) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', '$alert', 'allEmployeesService', 'schoolService', 'employeePhoneService',
+    (scope, rootScope, stateParams, location, Alert, Employee, School, EmployeePassword) ->
       scope.teacher = Employee.get phone: stateParams.phone, ->
         if scope.teacher.school_id > 0
           scope.school = School.get school_id: scope.teacher.school_id
@@ -83,6 +83,17 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
         Employee.delete person, ->
           scope.alertDelete(person)
           scope.cancel()
+
+      scope.resetPassword = (person) ->
+        person.new_password = _.last(person.phone, 8).join('')
+        EmployeePassword.save person, ->
+          Alert
+            title: '重置成功'
+            content: "登录名为#{person.login_name}的教师密码重置为手机号码后八位。"
+            placement: "top"
+            type: "success"
+            container: '.well'
+            duration: 3
   ]
 
 .controller 'OpShowCardCtrl',
