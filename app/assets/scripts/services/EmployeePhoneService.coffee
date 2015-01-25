@@ -8,3 +8,12 @@ angular.module('kulebao.services')
         phone: '@phone'
       }
 ]
+
+angular.module('kulebao.services')
+.factory 'parentPasswordService', ['$resource',
+  ($resource) ->
+    $resource '/api/v2/admin_password_reset/:phone',
+      {
+        phone: '@phone'
+      }
+]

@@ -54,8 +54,8 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
   ]
 
 .controller 'OpShowPhoneCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'phoneManageService', 'schoolService', 'videoMemberService',
-    (scope, rootScope, stateParams, location, Phone, School, VideoMember) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', '$alert', 'phoneManageService', 'schoolService', 'videoMemberService', 'parentPasswordService',
+    (scope, rootScope, stateParams, location, Alert, Phone, School, VideoMember, ParentPassword) ->
       scope.parent = Phone.get phone: stateParams.phone, ->
         scope.school = School.get school_id: scope.parent.school_id
         scope.parent.videoMember = VideoMember.get school_id: scope.parent.school_id, id: scope.parent.parent_id
@@ -67,6 +67,26 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
 
       scope.goToSchool = ->
         location.path '/main/phone_management'
+
+      scope.resetPassword = (person) ->
+        person.new_password = _.last(person.phone, 8).join('')
+        person.authcode = "0"
+        person.account_name = person.phone
+        ParentPassword.save person, ->
+          Alert
+            title: '密码重置成功'
+            content: "手机号为#{person.phone}的家长密码重置为手机号码后八位。"
+            placement: "top"
+            type: "success"
+            container: '.well'
+            duration: 3
+          , Alert
+              title: '密码重置失败'
+              content: "问下开发看看后台日志吧"
+              placement: "top"
+              type: "danger"
+              container: '.well'
+              duration: 3
   ]
 
 .controller 'OpShowTeacherCtrl',
@@ -88,7 +108,7 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
         person.new_password = _.last(person.phone, 8).join('')
         EmployeePassword.save person, ->
           Alert
-            title: '重置成功'
+            title: '密码重置成功'
             content: "登录名为#{person.login_name}的教师密码重置为手机号码后八位。"
             placement: "top"
             type: "success"
