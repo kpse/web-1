@@ -34,10 +34,13 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
 
 .controller 'OpSchoolReportingCtrl',
   ['$scope', '$rootScope', '$stateParams', '$http', 'parentService', 'childService',
-   'schoolEmployeesService', 'classService', 'schoolService', 'adminNewsPreview', 'sessionStatsService', 'historyStatsService',
-   'dailyLogService', 'activeCountService',
-    (scope, rootScope, stateParams, $http, Parent, Child, Employee, Class, School, News, Chat, History, DailyLog, ActiveCount) ->
+   'schoolEmployeesService', 'classService', 'schoolService', 'adminNewsPreview', 'StatsService', 'activeCountService',
+    (scope, rootScope, stateParams, $http, Parent, Child, Employee, Class, School, News, Statistics, ActiveCount) ->
       scope.loading = true
+
+      Chat = Statistics 'session'
+      History = Statistics 'history'
+      DailyLog = Statistics 'dailylog'
 
       scope.childrenInSchool = 0
       scope.kindergarten = School.get school_id: stateParams.school_id, ->
