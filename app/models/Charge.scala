@@ -11,7 +11,7 @@ import models.helper.TimeHelper.any2DateTime
 import org.joda.time.DateTime
 
 case class ChargeInfo(school_id: Long, total_phone_number: Long, expire_date: String, status: Int, used: Long, total_video_account: Option[Long]=Some(0), video_user_name: Option[String] = None, video_user_password: Option[String] = None)
-case class ActiveCount(school_id: Long, activated: Long, all: Long)
+case class ActiveCount(school_id: Long, activated: Long, all: Long, member: Long, video: Long)
 
 object Charge {
   def countActivePhones(kg: Long) = DB.withConnection {
@@ -20,7 +20,15 @@ object Charge {
         .on('kg -> kg).as(get[Long]("count(1)") single)
       val countAll: Long = SQL("select count(1) from accountinfo where accountid in (select phone from parentinfo where school_id={kg})")
         .on('kg -> kg).as(get[Long]("count(1)") single)
-      ActiveCount(kg, countActive, countAll)
+
+      val countMember: Long = SQL("select count(1) from accountinfo where accountid in " +
+        "(select phone from parentinfo where school_id={kg} and member_status=1)")
+        .on('kg -> kg).as(get[Long]("count(1)") single)
+      val countVideoMember: Long = SQL("select count(1) from accountinfo where accountid in " +
+        "(select phone from parentinfo p, videomembers v where p.school_id = v.school_id and " +
+        "p.school_id={kg} and p.parent_id = v.parent_id)")
+        .on('kg -> kg).as(get[Long]("count(1)") single)
+      ActiveCount(kg, countActive, countAll, countMember, countVideoMember)
   }
 
 

@@ -21,8 +21,20 @@
     <td class="col-xs-6">{{parents.length}}</td>
   </tr>
   <tr class="row">
-    <td class="col-xs-6">开通手机数</td>
-    <td class="col-xs-6">{{active.all}}</td>
+    <td class="col-xs-6">开通手机数(开通率)</td>
+    <td class="col-xs-6">{{active.all}}({{active.all/parents.length * 100 | number:2 }}%)</td>
+  </tr>
+  <tr class="row">
+    <td class="col-xs-6">会员数(开通率)</td>
+    <td class="col-xs-6">{{active.member}}({{active.member/parents.length * 100 | number:2 }}%)</td>
+  </tr>
+  <tr class="row">
+    <td class="col-xs-6">视频账号数(开通率)</td>
+    <td class="col-xs-6">{{active.video}}({{active.video/parents.length * 100 | number:2 }}%)</td>
+  </tr>
+  <tr class="row">
+    <td class="col-xs-6">刷卡率(每天收到2次推送的家长数/家长总数)</td>
+    <td class="col-xs-6">80%</td>
   </tr>
   <tr class="row">
     <td class="col-xs-6">激活的手机数</td>
