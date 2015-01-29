@@ -11,7 +11,7 @@ import models.helper.TimeHelper.any2DateTime
 import org.joda.time.DateTime
 
 case class ChargeInfo(school_id: Long, total_phone_number: Long, expire_date: String, status: Int, used: Long, total_video_account: Option[Long]=Some(0), video_user_name: Option[String] = None, video_user_password: Option[String] = None)
-case class ActiveCount(school_id: Long, activated: Long, all: Long, member: Long, video: Long)
+case class ActiveCount(school_id: Long, activated: Long, all: Long, member: Long, video: Long, check_in_out: Long)
 
 object Charge {
   def countActivePhones(kg: Long) = DB.withConnection {
@@ -28,7 +28,16 @@ object Charge {
         "(select phone from parentinfo p, videomembers v where p.school_id = v.school_id and " +
         "p.school_id={kg} and p.parent_id = v.parent_id)")
         .on('kg -> kg).as(get[Long]("count(1)") single)
-      ActiveCount(kg, countActive, countAll, countMember, countVideoMember)
+
+      val countActiveCheckIn = SQL("select count(1) from (SELECT p.parent_id as parent, count(1) as times " +
+        "FROM DAILYLOG d, parentinfo p, relationmap r " +
+        "where d.card_no = r.card_num and p.parent_id = r.parent_id " +
+        "and p.school_id = {kg}  and check_at > {oneMonthAgo} and check_at < {now} " +
+        "group by p.parent_id having times > 10) people_checkin")
+        .on('oneMonthAgo -> DateTime.now().minusDays(30).getMillis,
+          'now -> System.currentTimeMillis(),
+        'kg -> kg).as(get[Long]("count(1)") single)
+      ActiveCount(kg, countActive, countAll, countMember, countVideoMember, countActiveCheckIn)
   }
 
 
