@@ -11,6 +11,9 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
       scope.allParents = []
       scope.allActiveMembers = 0
       scope.allAuthorised = 0
+      scope.allMembers = 0
+      scope.allVideoMembers = 0
+      scope.allActiveParents = 0
       scope.kindergartens = School.query ->
         _.forEach scope.kindergartens, (k) ->
           k.classes = Class.query school_id: k.school_id, ->
@@ -23,8 +26,12 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
             scope.allEmployees = scope.allEmployees.concat k.employees
           k.active = ActiveCount.get school_id: k.school_id, ->
             scope.allActiveMembers = scope.allActiveMembers + k.active.activated
+            scope.allMembers = scope.allMembers + k.active.member
+            scope.allVideoMembers = scope.allVideoMembers + k.active.video
+            scope.allActiveParents = scope.allActiveParents + k.active.check_in_out
           k.charge = Charge.query school_id: k.school_id, ->
             scope.allAuthorised = scope.allAuthorised + k.charge[0].total_phone_number
+
         scope.loading = false
 
       scope.detail = (kg) ->

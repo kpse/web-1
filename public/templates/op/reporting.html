@@ -9,8 +9,10 @@
   <tr class="row">
     <th class="col-xs-2">学校名称</th>
     <th class="col-xs-2">开通总数</th>
-    <th class="col-xs-2">家长总数</th>
-    <th class="col-xs-2">激活手机数</th>
+    <th class="col-xs-1">家长总数</th>
+    <th class="col-xs-1">视频开通数</th>
+    <th class="col-xs-1">会员数</th>
+    <th class="col-xs-1">活跃家长数</th>
     <th class="col-xs-2">学生总数</th>
     <th class="col-xs-1">老师总数</th>
     <th class="col-xs-1">班级总数</th>
@@ -19,18 +21,22 @@
   <tbody>
   <tr class="row"><td class="col-xs-2">合计：</td>
     <td class="col-xs-2">{{allAuthorised}}</td>
-    <td class="col-xs-2">{{allParents.length}}</td>
-    <td class="col-xs-2">{{allActiveMembers}}</td>
+    <td class="col-xs-1">{{allParents.length}}</td>
+    <td class="col-xs-1">{{allVideoMembers}}</td>
+    <td class="col-xs-1">{{allMembers}}</td>
+    <td class="col-xs-1">{{allActiveParents}}</td>
     <td class="col-xs-2">{{allChildren.length}}</td>
     <td class="col-xs-1">{{allEmployees.length}}</td>
     <td class="col-xs-1">{{allClasses.length}}</td>
   </tr>
 
-  <tr ng-repeat="kg in kindergartens | filter: searchText | orderBy:'parents.length':true" class="row" ng-class="{editable: detail}" ng-click="detail(kg)">
+  <tr ng-repeat="kg in kindergartens | filter: searchText | orderBy:['-active.video', '-active.check_in_out', '-active.member']" class="row" ng-class="{editable: detail}" ng-click="detail(kg)">
     <td class="col-xs-2"><a ng-href="/admin#/kindergarten/{{kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{kg.full_name}}</a></td>
     <td class="col-xs-2">{{kg.charge[0].total_phone_number}}</td>
-    <td class="col-xs-2">{{kg.parents.length}}</td>
-    <td class="col-xs-2">{{kg.active.activated}}</td>
+    <td class="col-xs-1">{{kg.parents.length}}</td>
+    <td class="col-xs-1">{{kg.active.video}}</td>
+    <td class="col-xs-1">{{kg.active.member}}</td>
+    <td class="col-xs-1">{{kg.active.check_in_out}}</td>
     <td class="col-xs-2">{{kg.children.length}}</td>
     <td class="col-xs-1">{{kg.employees.length}}</td>
     <td class="col-xs-1">{{kg.classes.length}}</td>
