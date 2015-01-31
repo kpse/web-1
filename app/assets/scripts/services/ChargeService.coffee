@@ -14,6 +14,8 @@ angular.module('kulebao.services')
   $resource '/kindergarten/:school_id/active',
     {
       school_id: '@school_id'
+    }, {
+      get: cache: true
     }
 ]
 
