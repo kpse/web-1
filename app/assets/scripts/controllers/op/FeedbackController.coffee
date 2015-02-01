@@ -1,6 +1,6 @@
 angular.module('kulebaoOp').controller 'OpFeedbackCtrl',
-  ['$scope', '$rootScope', '$location', '$stateParams',
-    (scope, rootScope, location, stateParams) ->
+  ['$scope', '$rootScope', '$state', '$stateParams',
+    (scope, rootScope, $state, stateParams) ->
       rootScope.tabName = 'feedback'
 
       scope.sources = [
@@ -13,10 +13,10 @@ angular.module('kulebaoOp').controller 'OpFeedbackCtrl',
 
 
       scope.navigateTo = (source) ->
-        location.path("/main/feedback/source/#{source.type}/list") if stateParams.source != source.type
+        $state.go('main.feedback.source.list', source: source.type) if stateParams.source != source.type
 
-      if stateParams.source is undefined
-        scope.navigateTo scope.sources[0]
+
+      scope.navigateTo scope.sources[0] unless stateParams.source?
 
       scope.current_source = stateParams.source
   ]
