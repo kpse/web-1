@@ -2,11 +2,11 @@ package models
 
 import anorm.SqlParser._
 import anorm._
+import play.Logger
 import play.api.db.DB
 import play.api.Play.current
 import anorm.~
 import java.util.Date
-import play.Logger
 import models.helper.TimeHelper.any2DateTime
 import models.helper.PasswordHelper.generateNewPassword
 
@@ -93,6 +93,39 @@ object Parent {
       }
   }
 
+  def enableMember(phone: String) = updateMembership(phone)(1)
+
+  def disableMember(phone: String) = updateMembership(phone)(0)
+
+  def updateMembership(phone: String)(status: Int): Option[Parent] = DB.withTransaction {
+    implicit c =>
+      val parent: Option[Parent] = Parent.phoneSearch(phone)
+      try {
+        parent map {
+          p =>
+            SQL("update parentinfo set update_at={timestamp}, member_status={status} where phone={phone}")
+              .on(
+                'phone -> p.phone,
+                'status -> status,
+                'timestamp -> System.currentTimeMillis).executeUpdate()
+            resetLoginToken(p.phone)
+        }
+      }
+      catch {
+        case t: Throwable =>
+          Logger.info(t.toString)
+          Logger.info(t.getLocalizedMessage)
+          c.rollback()
+      }
+      parent
+
+  }
+
+  def resetLoginToken(phone: String) = DB.withConnection {
+    implicit c =>
+      SQL("update accountinfo set pwd_change_time=0 where accountid={phone}")
+        .on('phone -> phone).executeUpdate()
+  }
 
   def phoneSearch(phone: String) = DB.withConnection {
     implicit c =>
@@ -272,7 +305,7 @@ object Parent {
   def create(kg: Long, parent: Parent) = DB.withTransaction {
     implicit c =>
       val timestamp = System.currentTimeMillis
-      val parent_id = parent.parent_id.getOrElse("1_%d_%d".format(kg, timestamp%100000))
+      val parent_id = parent.parent_id.getOrElse("1_%d_%d".format(kg, timestamp % 100000))
       try {
         val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status) " +
           "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member})")
