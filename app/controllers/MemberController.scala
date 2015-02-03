@@ -7,7 +7,7 @@ import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
 object MemberController extends Controller with Secured {
-  def create(phone: String) = IsAuthenticated(parse.json) {
+  def create(phone: String) = IsLoggedIn(parse.json) {
     u => implicit request =>
       request.body.validate[ParentMember].map {
         case (member) =>
@@ -18,7 +18,7 @@ object MemberController extends Controller with Secured {
 
   }
 
-  def delete(phone: String) = IsAuthenticated(parse.json) {
+  def delete(phone: String) = IsLoggedIn(parse.json) {
     u => implicit request =>
       Parent.phoneSearch(phone) match {
         case Some(x) =>
