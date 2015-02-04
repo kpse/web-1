@@ -33,8 +33,8 @@ object MemberController extends Controller with Secured {
 
   }
 
-  def delete(phone: String) = IsLoggedIn(parse.json) {
-    u => implicit request =>
+  def delete(phone: String) = IsLoggedIn {
+    u => _ =>
       Parent.phoneSearch(phone) match {
         case Some(x) =>
           ParentMember(x.phone, 0).disable

@@ -8,7 +8,7 @@ import play.api.Play.current
 import anorm.~
 import play.api.libs.json.Json
 
-case class ParentMember(phone: String, timestamp: Long, received_at: Option[Long] = None) {
+case class ParentMember(phone: String, sms_enabled_at: Long, received_at: Option[Long] = None) {
   def disable: Option[Parent] = DB.withTransaction {
     implicit c =>
       var parent: Option[Parent] = None
@@ -29,7 +29,7 @@ case class ParentMember(phone: String, timestamp: Long, received_at: Option[Long
   def save = DB.withConnection {
     implicit c =>
       SQL("INSERT INTO membershiprecords (phone, sms_enabled_at, received_at) VALUES ({phone}, {time}, {receivedAt}) ")
-        .on('phone -> phone, 'time -> timestamp, 'receivedAt -> System.currentTimeMillis).executeInsert()
+        .on('phone -> phone, 'time -> sms_enabled_at, 'receivedAt -> System.currentTimeMillis).executeInsert()
   }
 
   def enable: Option[Parent] = DB.withTransaction {
