@@ -53,7 +53,7 @@
 
         <div class="col-sm-8">
           <div class="control-group input-append">
-            <select class="form-control member-select" ng-model="parent.member_status"
+            <select class="form-control member-select" ng-disabled="disableMemberEditing" ng-model="parent.member_status"
                     ng-options="item.id as item.desc for item in membersInformation.members"
                     data-style="btn-primary"></select>
           </div>

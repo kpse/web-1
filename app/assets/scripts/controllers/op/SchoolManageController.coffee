@@ -1,23 +1,28 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
   ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
    '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location', 'schoolConfigService',
-    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location, SchoolConfig) ->
+   'schoolConfigExtractService',
+    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location, SchoolConfig, ConfigExtract) ->
       scope.refresh = ->
+        extractConfig = ConfigExtract
+
+        scope.generateConfigArray = (all) ->
+          _.map all, (value, key) ->
+            {name: key, value: value}
+
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->
             kg.managers = Principal.query school_id: kg.school_id, ->
               _.map kg.managers, (p) ->
                 p.detail = Employee.get phone: p.phone
             kg.charge = Charge.query school_id: kg.school_id
-            kg.config =
-              backend: "true"
-              hideVideo: "false"
+
 
             SchoolConfig.get school_id: kg.school_id, (data)->
-              backendConfig = _.find data['config'], (item) -> item.name == 'backend'
-              backendConfig? && kg.config.backend = backendConfig.value
-              hideVideoConfig = _.find data['config'], (item) -> item.name == 'hideVideo'
-              hideVideoConfig? && kg.config.hideVideo = hideVideoConfig.value
+              kg.config =
+                backend: extractConfig data['config'], 'backend', 'true'
+                hideVideo: extractConfig data['config'], 'hideVideo', 'false'
+                disableMemberEditing: extractConfig data['config'], 'disableMemberEditing', 'false'
 
           scope.admins = Employee.query()
 
@@ -41,7 +46,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         location.path '/main/charge'
 
       scope.endEditing = (kg) ->
-        kg.properties = [{name: 'backend', value: kg.config.backend}, {name: 'hideVideo', value: kg.config.hideVideo}]
+        kg.properties = scope.generateConfigArray kg.config
         School.save kg, ->
           scope.refresh()
           scope.currentModal.hide()

@@ -94,6 +94,15 @@
     </div>
 
     <div class="form-group">
+      <label for="member-control" class="col-sm-2 control-label">禁用会员编辑(适用于江西移动)</label>
+
+      <div class="col-sm-8">
+        <input type="radio" ng-model="school.config.disableMemberEditing" value="true"> 禁止编辑
+        <input type="radio" ng-model="school.config.disableMemberEditing" value="false"> 可以编辑 <br/>
+      </div>
+    </div>
+
+    <div class="form-group">
       <label for="address" class="col-sm-2 control-label">学校地址</label>
 
       <div class="col-sm-8">

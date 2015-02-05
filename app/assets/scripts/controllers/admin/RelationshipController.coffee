@@ -30,10 +30,12 @@ angular.module('kulebaoAdmin')
       scope.refresh = (callback)->
         scope.loading = true
         scope.backend = true
+        scope.disableMemberEditing = false
         SchoolConfig.get school_id: stateParams.kindergarten, (data)->
-          backendConfig = _.find data['config'], (item) ->
-            item.name == 'backend'
+          backendConfig = _.find data['config'], (item) -> item.name == 'backend'
           backendConfig? && scope.backend = backendConfig.value == 'true'
+          disableMemberEditingConfig = _.find data['config'], (item) -> item.name == 'disableMemberEditing'
+          disableMemberEditingConfig? && scope.disableMemberEditing = disableMemberEditingConfig.value == 'true'
           scope.types.pop() if scope.backend or (!scope.backend and !scope.isSuperUser())
 
         scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
