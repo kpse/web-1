@@ -1,13 +1,12 @@
 package models
 
-import play.api.Play
-import play.api.db.DB
-import play.api.libs.json.Json
-import play.api.Play.current
 import anorm.SqlParser._
 import anorm._
-import anorm.~
-import helper.MD5Helper.md5
+import models.helper.MD5Helper.md5
+import play.api.Play
+import play.api.Play.current
+import play.api.db.DB
+import play.api.libs.json.Json
 
 
 case class AvailableSlots(school_id: Long, count: Long)
@@ -50,6 +49,8 @@ case class VideoMember(id: String, account: Option[String], password: Option[Str
 }
 
 object VideoMember {
+  def default(kg: Long) = VideoMember("default", Some("test123"), Some("123456"), Some(kg))
+
   implicit val write = Json.writes[VideoMember]
   implicit val write2 = Json.writes[AvailableSlots]
   implicit val read = Json.reads[VideoMember]

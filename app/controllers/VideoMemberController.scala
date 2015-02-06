@@ -1,7 +1,7 @@
 package controllers
 
-import models._
 import models.VideoMember._
+import models._
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Action, Controller}
 
@@ -81,5 +81,10 @@ object VideoMemberController extends Controller with Secured {
     u => _ =>
       VideoMember.delete(kg, id)
       Ok(Json.toJson(new SuccessResponse))
+  }
+
+  def default(kg: Long) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(VideoMember.default(kg)))
   }
 }
