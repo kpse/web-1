@@ -16,7 +16,7 @@
 
       <div class="col-sm-8">
         <input id="school-full-name" type="text" ng-model="school.full_name" name="full_name"
-               class="editing-field form-control" required/>
+               class="editing-field form-control" placeholder="供超级后台管理员区分学校用,不会显示在客户端" required/>
         <span class="error-field" ng-show="newSchoolForm.full_name.$dirty && isSchoolDuplicated(school, 'full_name')">与已有学校全称重复！</span>
       </div>
     </div>
@@ -26,7 +26,7 @@
 
       <div class="col-sm-8">
         <input id="school-name" type="text" ng-model="school.name" name="name"
-               class="editing-field form-control" required ng-maxlength="8"/>
+               class="editing-field form-control" placeholder="显示在客户端的学校名称,不能超过8个汉字" required ng-maxlength="8"/>
         <span class="error-field" ng-show="newSchoolForm.name.$error.maxlength">学校显示名称不能超过8个字符</span>
       </div>
     </div>
@@ -37,7 +37,7 @@
 
       <div class="col-sm-8">
         <input id="school-cell-phone" type="text" ng-model="school.phone" name="phone"
-               class="editing-field form-control" required ng-pattern="/^\d{11}$/"/>
+               class="editing-field form-control" placeholder="11位数字手机号,不能与现有老师的手机重复" required ng-pattern="/^\d{11}$/"/>
         <span class="error-field" ng-show="newSchoolForm.phone.$error.pattern">错误的手机号码，应该是11位数字</span>
       </div>
     </div>
@@ -47,7 +47,7 @@
 
       <div class="col-sm-8">
         <input id="school-token" type="text" ng-model="school.token" name="token"
-               class="editing-field form-control" required/>
+               class="editing-field form-control" placeholder="与安全后台对接专用验证码,建议妥善管理,避免重复" required/>
       </div>
     </div>
 
@@ -105,7 +105,7 @@
 
       <div class="col-sm-8">
         <input id="address" type="text" ng-model="school.address" name="address"
-               class="editing-field form-control" required/>
+               class="editing-field form-control" placeholder="一般没人填,你这次填不填?" required/>
       </div>
     </div>
 

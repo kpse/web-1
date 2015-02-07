@@ -87,11 +87,6 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         id = nextId(scope.kindergartens)
         new School
           school_id: id
-          phone: '12121311131'
-          name: '短名字'
-          token: '1'
-          address: '四川省某个地区'
-          full_name: '新学校全名'
           principal:
             admin_login: "admin#{id}"
             admin_password: '',
