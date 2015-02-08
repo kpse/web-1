@@ -1,7 +1,7 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$cacheFactory', '$location', 'passwordService', '$modal',
-   'chargeService', '$alert', 'AdminUser', 'School', 'ClassesInSchool'
-    (scope, $rootScope, $stateParams, $cacheFactory, location, Password, Modal, Charge, Alert, AdminUser, School, ClassesInSchool) ->
+  ['$scope', '$rootScope', '$stateParams', '$cacheFactory', '$location', '$state', 'passwordService', '$modal',
+   'chargeService', '$alert', 'AdminUser', 'School', 'ClassesInSchool', 'schoolConfigService',
+    (scope, $rootScope, $stateParams, $cacheFactory, location, $state, Password, Modal, Charge, Alert, AdminUser, School, ClassesInSchool, SchoolConfig) ->
 
       scope.adminUser = AdminUser
       scope.kindergarten = School
@@ -19,6 +19,11 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
           location.path '/expired'
       , (res) ->
         location.path "/#{res.status}"
+
+      scope.disableMemberEditing = false
+      SchoolConfig.get school_id: $stateParams.kindergarten, (data)->
+        config = _.find data['config'], (item) -> item.name == 'disableMemberEditing'
+        config? && scope.disableMemberEditing = config.value == 'true'
 
       scope.isSelected = (tab)->
         tab is $rootScope.tabName
@@ -59,7 +64,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         goPageWithClassesTab 'history', 'child'
 
       scope.goEmployeeList = ->
-        location.path "/kindergarten/#{$stateParams.kindergarten}/employee/detail"
+        $state.go 'kindergarten.employee.detail', kindergarten: $stateParams.kindergarten unless $state.includes 'kindergarten.employee', kindergarten: $stateParams.kindergarten
 
 
       scope.changePassword = (user) ->
