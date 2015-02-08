@@ -77,6 +77,7 @@ object Authentication extends Controller with Secured {
             case success if success.error_code == 0 =>
               Ok(loggedJson(success)).withSession("username" -> success.account_name, "token" -> success.access_token)
             case _ =>
+              Logger.info("versioncode in request : (%s)".format(request.headers.get("versioncode")))
               Ok(loggedJson(result)).withNewSession
           }
       }.recoverTotal {
@@ -188,6 +189,7 @@ object Authentication extends Controller with Secured {
             case success if success.error_code == 0 =>
               Ok(loggedJson(success)).withSession("username" -> success.account_name, "token" -> success.access_token)
             case _ =>
+              Logger.info("versioncode in request : (%s)".format(request.headers.get("versioncode")))
               Ok(loggedJson(result)).withNewSession
           }
       }.recoverTotal {
