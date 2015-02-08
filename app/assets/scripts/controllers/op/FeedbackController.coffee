@@ -11,20 +11,13 @@ angular.module('kulebaoOp').controller 'OpFeedbackCtrl',
         {name: '已处理', type: 'done'}
       ]
 
+      $state.go('main.feedback.source.list', source: scope.sources[0].type) unless stateParams.source?
 
-      scope.navigateTo = (source) ->
-        $state.go('main.feedback.source.list', source: source.type) if stateParams.source != source.type
-
-
-      scope.navigateTo scope.sources[0] unless stateParams.source?
-
-      scope.current_source = stateParams.source
   ]
 
 .controller 'OpFeedbackSourceCtrl',
   ['$scope', '$rootScope', '$location', '$stateParams', 'feedbackService',
     (scope, rootScope, location, stateParams, Feedback) ->
-      scope.$emit 'set_tab', stateParams.source
 
       scope.refresh = ->
         scope.loading = true
