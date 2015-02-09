@@ -38,18 +38,18 @@ object RelationshipController extends Controller with Secured {
 
         Relationship.cardExists(card, uid) match {
           case exists if exists && !Parent.phoneExists(kg, phone) =>
-            BadRequest(loggedJson(ErrorResponse("本校记录中找不到对应的家长信息。")))
+            BadRequest(loggedJson(ErrorResponse("本校记录中找不到对应的家长信息。(Parents info is not found in current school)")))
           case exists if exists && !Children.idExists(Some(childId)) =>
-            BadRequest(loggedJson(ErrorResponse("本校记录中找不到该小孩信息。")))
+            BadRequest(loggedJson(ErrorResponse("本校记录中找不到该小孩信息。(Child info is not found in current school)")))
           case exists if exists && uid.isEmpty && existingCard.nonEmpty && !existingCard.equals(Some(card)) =>
-            BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。")))
+            BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。(Duplicated relationship)")))
           case exists if exists && uid.isDefined =>
             Logger.info("update existing 1")
             Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, uid.get)))
           case exists if exists && uid.isEmpty =>
-            BadRequest(loggedJson(ErrorResponse("卡号已存在，%s号卡已经关联过家长。".format(card))))
+            BadRequest(loggedJson(ErrorResponse("卡号已存在，%s号卡已经关联过家长。(Card is connected to parent before)".format(card))))
           case exists if !exists && uid.isDefined && Relationship.cardExists(card, None) =>
-            BadRequest(loggedJson(ErrorResponse("卡号已存在，%s号卡已经关联过家长。".format(card))))
+            BadRequest(loggedJson(ErrorResponse("卡号已存在，%s号卡已经关联过家长。(Card is connected to parent before)".format(card))))
           case exists if !exists && uid.isDefined =>
             Logger.info("update existing 2")
             Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, uid.get)))
@@ -71,11 +71,11 @@ object RelationshipController extends Controller with Secured {
 
         (phone, childId) match {
           case (p, _) if !Parent.phoneExists(kg, p) =>
-            BadRequest(loggedJson(ErrorResponse("本校记录中找不到对应的家长信息。")))
+            BadRequest(loggedJson(ErrorResponse("本校记录中找不到对应的家长信息。(Parents info is not found in current school)")))
           case (_, c) if !Children.idExists(Some(c)) =>
-            BadRequest(loggedJson(ErrorResponse("本校记录中找不到该小孩信息。")))
+            BadRequest(loggedJson(ErrorResponse("本校记录中找不到该小孩信息。(Child info is not found in current school)")))
           case (p, c) if Relationship.getCard(p, c).nonEmpty =>
-            BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。")))
+            BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。(Duplicated relationship)")))
           case (p, c) =>
             Logger.info("create new")
             Ok(Json.toJson(Relationship.fakeCardCreate(kg, relationship, p, c)))
