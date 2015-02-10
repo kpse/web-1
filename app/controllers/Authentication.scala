@@ -1,24 +1,12 @@
 package controllers
 
-import play.api.mvc._
-import play.api.libs.json._
-import models.json_models._
-import models.json_models.CheckPhoneResponse
-import models.json_models.MobileLogin
-import models.json_models.BindingNumber
-import models._
-import play.api.Logger
 import controllers.helper.JsonLogger._
+import models.{AppUpgradeResponse, ErrorResponse, _}
 import models.helper.PasswordHelper
-import models.json_models.ChangePassword
-import models.AppUpgradeResponse
-import scala.Some
-import models.json_models.BindingNumber
-import models.ErrorResponse
-import play.api.mvc.SimpleResult
-import models.json_models.MobileLogin
-import models.json_models.CheckPhone
-import models.json_models.ResetPassword
+import models.json_models.{BindingNumber, ChangePassword, CheckPhone, CheckPhoneResponse, MobileLogin, ResetPassword, _}
+import play.api.Logger
+import play.api.libs.json._
+import play.api.mvc.{SimpleResult, _}
 
 object Authentication extends Controller with Secured {
 
@@ -161,7 +149,7 @@ object Authentication extends Controller with Secured {
     request =>
       request.body.validate[ResetPassword].map {
         case (nonExists) if !Employee.loginNameExists(nonExists.account_name) =>
-          BadRequest(loggedJson(ErrorResponse("不存在登录名为%s的老师。".format(nonExists.account_name))))
+          BadRequest(loggedJson(ErrorResponse("不存在登录名为%s的老师。(Employee not exist)".format(nonExists.account_name))))
         case (nonExists) if !PasswordHelper.isValid(nonExists.new_password) =>
           BadRequest(loggedJson(ErrorResponse(PasswordHelper.ErrorMessage)))
         case (r) =>

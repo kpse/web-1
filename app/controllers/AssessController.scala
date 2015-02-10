@@ -1,8 +1,8 @@
 package controllers
 
-import play.api.mvc.{Action, Controller}
+import models.{Assess, ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
-import models.{JsonResponse, SuccessResponse, ErrorResponse, Assess}
+import play.api.mvc.Controller
 
 object AssessController extends Controller with Secured {
   implicit val write = Json.writes[Assess]
@@ -39,7 +39,7 @@ object AssessController extends Controller with Secured {
           case (assessments) =>
             Assess.batchCreate(kg, assessments).isEmpty match {
               case true =>
-                Ok(Json.toJson(ErrorResponse("批量创建评价失败。")))
+                Ok(Json.toJson(ErrorResponse("批量创建评价失败。(Batch createing assessment failed.)")))
               case false =>
                 Ok(Json.toJson(new SuccessResponse))
             }

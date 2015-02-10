@@ -1,12 +1,10 @@
 package controllers
 
-import play.api.mvc.{Action, Controller}
-import play.api.libs.json.{JsValue, JsError, Json}
-import models._
+import controllers.helper.JsonLogger._
+import models.{ChildInfo, ErrorResponse, _}
 import play.Logger
-import models.ErrorResponse
-import models.ChildInfo
-import helper.JsonLogger._
+import play.api.libs.json.{JsError, JsValue, Json}
+import play.api.mvc.Controller
 
 object RelationshipController extends Controller with Secured {
 
