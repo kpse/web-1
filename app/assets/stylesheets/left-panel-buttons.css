@@ -1,14 +1,5 @@
+util.print: Use console.log instead
 @media screen and (min-width: 769px) {
-
-  .hoverBkImage(@x) {
-    background: e(%("#34393D url(../../images/left-btns.png) no-repeat -239px %spx", @x));
-  }
-
-  .bkImage(@x) {
-    background: e(%("#34393D url(../../images/left-btns.png) no-repeat -15px %spx", @x));
-  }
-
-
   .module-view-container {
     float: right;
     width: 963px;
@@ -17,174 +8,158 @@
     position: absolute;
     margin-left: 222px;
   }
-
   .modules-list-container {
     background: #f8f8f8 url(../../images/tabs-bg.png) no-repeat;
     min-width: 252px;
     max-width: 252px;
     margin-left: -30px;
     height: 739px;
-    .modules-list {
-      .action {
-        display: block;
-      }
-
-      .btn {
-        span {
-          display: none;
-        }
-        min-height: 47px;
-        min-width: 223px;
-        width: 223px;
-      }
-
-      .news {
-        .bkImage(-86);
-        &:hover {
-          .hoverBkImage(-86);
-        }
-      }
-      .conversation {
-        .bkImage(-136);
-        &:hover {
-          .hoverBkImage(-136);
-        }
-      }
-      .assess {
-        .bkImage(-186);
-        &:hover {
-          .hoverBkImage(-186);
-        }
-      }
-      .cookbook {
-        .bkImage(-236);
-        &:hover {
-          .hoverBkImage(-236);
-        }
-      }
-      .schedule {
-        .bkImage(-285);
-        &:hover {
-          .hoverBkImage(-285);
-        }
-      }
-      .assignment {
-        .bkImage(-334);
-        &:hover {
-          .hoverBkImage(-334);
-        }
-      }
-      .history {
-        .bkImage(-382);
-        &:hover {
-          .hoverBkImage(-382);
-        }
-      }
-
-      .placeholder {
-        .bkImage(0);
-      }
-
-      .dailylog {
-        .bkImage(-447);
-        &:hover {
-          .hoverBkImage(-447);
-        }
-      }
-      .relationship {
-        .bkImage(-496);
-        &:hover {
-          .hoverBkImage(-496);
-        }
-      }
-
-      .member {
-        .bkImage(-545);
-        &:hover {
-          .hoverBkImage(-545);
-        }
-      }
-
-      .classes {
-        .bkImage(-594);
-        &:hover {
-          .hoverBkImage(-594);
-        }
-      }
-
-      .employee {
-        .bkImage(-643);
-        &:hover {
-          .hoverBkImage(-643);
-        }
-      }
-
-      .intro {
-        .bkImage(-692);
-        &:hover {
-          .hoverBkImage(-692);
-        }
-      }
-    }
-    .active .news {
-      .hoverBkImage(-86);
-    }
-    .active .conversation {
-      .hoverBkImage(-136);
-    }
-    .active .assess {
-      .hoverBkImage(-186);
-    }
-    .active .cookbook {
-      .hoverBkImage(-236);
-    }
-    .active .schedule {
-      .hoverBkImage(-285);
-    }
-    .active .assignment {
-      .hoverBkImage(-334);
-    }
-    .active .history {
-      .hoverBkImage(-382);
-    }
-
-    .active .dailylog {
-      .hoverBkImage(-447);
-    }
-    .active .relationship {
-      .hoverBkImage(-496);
-    }
-    .active .member {
-      .hoverBkImage(-545);
-    }
-    .active .classes {
-      .hoverBkImage(-594);
-    }
-    .active .employee {
-      .hoverBkImage(-643);
-    }
-    .active .intro {
-      .hoverBkImage(-692);
-    }
   }
-
+  .modules-list-container .modules-list .action {
+    display: block;
+  }
+  .modules-list-container .modules-list .btn {
+    min-height: 47px;
+    min-width: 223px;
+    width: 223px;
+  }
+  .modules-list-container .modules-list .btn span {
+    display: none;
+  }
+  .modules-list-container .modules-list .news {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -86px;
+  }
+  .modules-list-container .modules-list .news:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -86px;
+  }
+  .modules-list-container .modules-list .conversation {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -136px;
+  }
+  .modules-list-container .modules-list .conversation:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -136px;
+  }
+  .modules-list-container .modules-list .assess {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -186px;
+  }
+  .modules-list-container .modules-list .assess:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -186px;
+  }
+  .modules-list-container .modules-list .cookbook {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -236px;
+  }
+  .modules-list-container .modules-list .cookbook:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -236px;
+  }
+  .modules-list-container .modules-list .schedule {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -285px;
+  }
+  .modules-list-container .modules-list .schedule:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -285px;
+  }
+  .modules-list-container .modules-list .assignment {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -334px;
+  }
+  .modules-list-container .modules-list .assignment:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -334px;
+  }
+  .modules-list-container .modules-list .history {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -382px;
+  }
+  .modules-list-container .modules-list .history:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -382px;
+  }
+  .modules-list-container .modules-list .placeholder {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px 0px;
+  }
+  .modules-list-container .modules-list .dailylog {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -447px;
+  }
+  .modules-list-container .modules-list .dailylog:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -447px;
+  }
+  .modules-list-container .modules-list .relationship {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -496px;
+  }
+  .modules-list-container .modules-list .relationship:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -496px;
+  }
+  .modules-list-container .modules-list .member {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -545px;
+  }
+  .modules-list-container .modules-list .member:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -545px;
+  }
+  .modules-list-container .modules-list .classes {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -594px;
+  }
+  .modules-list-container .modules-list .classes:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -594px;
+  }
+  .modules-list-container .modules-list .employee {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -643px;
+  }
+  .modules-list-container .modules-list .employee:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -643px;
+  }
+  .modules-list-container .modules-list .intro {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -692px;
+  }
+  .modules-list-container .modules-list .intro:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -692px;
+  }
+  .modules-list-container .active .news {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -86px;
+  }
+  .modules-list-container .active .conversation {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -136px;
+  }
+  .modules-list-container .active .assess {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -186px;
+  }
+  .modules-list-container .active .cookbook {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -236px;
+  }
+  .modules-list-container .active .schedule {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -285px;
+  }
+  .modules-list-container .active .assignment {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -334px;
+  }
+  .modules-list-container .active .history {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -382px;
+  }
+  .modules-list-container .active .dailylog {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -447px;
+  }
+  .modules-list-container .active .relationship {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -496px;
+  }
+  .modules-list-container .active .member {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -545px;
+  }
+  .modules-list-container .active .classes {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -594px;
+  }
+  .modules-list-container .active .employee {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -643px;
+  }
+  .modules-list-container .active .intro {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -692px;
+  }
 }
-
 @media screen and (max-width: 768px) {
   .navbar {
     margin-top: -78px;
-    .admin-features {
-      display: block;
-    }
   }
-
+  .navbar .admin-features {
+    display: block;
+  }
   .modules-list-container {
     margin-top: 150px;
-    .btn.placeholder {
-      display: none;
-    }
   }
-
+  .modules-list-container .btn.placeholder {
+    display: none;
+  }
   .module-view-container {
     margin-top: 50px;
   }

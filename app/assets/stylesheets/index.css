@@ -1,70 +1,80 @@
+util.print: Use console.log instead
 .hero {
   width: 90%;
 }
-
-
-#full-screen-slider{
+#full-screen-slider {
   width: 1276px;
   margin: 0 auto;
 }
-
 #main {
   margin-top: 10px;
   position: relative;
 }
-
 .prompting {
   display: none;
 }
-
 .login-entry {
   background-image: url('../../images/btn.png');
   width: 164px;
   height: 56px;
   display: block;
-  &:hover {
-    background-image: url('../../images/btn1.png');
-  }
-  .content {
-    display: none;
-  }
 }
-
+.login-entry:hover {
+  background-image: url('../../images/btn1.png');
+}
+.login-entry .content {
+  display: none;
+}
 .image-intro {
   width: 1090px;
   margin: 0 auto;
 }
-
-
-
 .service-phone {
   margin-top: 40px;
   margin-bottom: 55px;
-  .service-phone-hr {
-    line-height: 84px;
-    height: 84px;
-    background: url(../../images/fn-icon-phone.png) no-repeat center;
-    .service-phone-line {
-      height: 1px;
-      background: #ccc;
-      width: 430px;
-      margin-top: 41px;
-    }
-  }
-  p {
-    margin-top: 25px;
-    text-align: center;
-    span {
-      font-size: 24px;
-    }
-    .service-phone-title {
-      color: #acacac;
-    }
-    .service-phone-number {
-      color: #666666;
-    }
-  }
 }
-
-@import "qr-code.less";
-
+.service-phone .service-phone-hr {
+  line-height: 84px;
+  height: 84px;
+  background: url(../../images/fn-icon-phone.png) no-repeat center;
+}
+.service-phone .service-phone-hr .service-phone-line {
+  height: 1px;
+  background: #ccc;
+  width: 430px;
+  margin-top: 41px;
+}
+.service-phone p {
+  margin-top: 25px;
+  text-align: center;
+}
+.service-phone p span {
+  font-size: 24px;
+}
+.service-phone p .service-phone-title {
+  color: #acacac;
+}
+.service-phone p .service-phone-number {
+  color: #666666;
+}
+.qr-code-box {
+  z-index: 300;
+  position: absolute;
+  top: 100px;
+}
+.qr-code-box .qr-code {
+  width: 143px;
+  height: 143px;
+  background: transparent url(../../images/homepage-qr.png) no-repeat;
+}
+.qr-code-box .download-link {
+  width: 143px;
+  height: 50px;
+  cursor: pointer;
+}
+.qr-code-box .download-link.android {
+  background: transparent url(../../images/homepage-qr.png) no-repeat 0 -165px;
+}
+.qr-code-box .download-link.iphone {
+  background: transparent url(../../images/homepage-qr.png) no-repeat 0 -214px;
+}

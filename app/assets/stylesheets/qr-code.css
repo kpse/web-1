@@ -1,21 +1,22 @@
+util.print: Use console.log instead
 .qr-code-box {
   z-index: 300;
   position: absolute;
   top: 100px;
-  .qr-code {
-    width: 143px;
-    height: 143px;
-    background: transparent url(../../images/homepage-qr.png) no-repeat;
-  }
-  .download-link {
-    width: 143px;
-    height: 50px;
-    cursor: pointer;
-    &.android {
-      background: transparent url(../../images/homepage-qr.png) no-repeat 0 -165px;
-    }
-    &.iphone {
-      background: transparent url(../../images/homepage-qr.png) no-repeat  0 -214px;
-    }
-  }
+}
+.qr-code-box .qr-code {
+  width: 143px;
+  height: 143px;
+  background: transparent url(../../images/homepage-qr.png) no-repeat;
+}
+.qr-code-box .download-link {
+  width: 143px;
+  height: 50px;
+  cursor: pointer;
+}
+.qr-code-box .download-link.android {
+  background: transparent url(../../images/homepage-qr.png) no-repeat 0 -165px;
+}
+.qr-code-box .download-link.iphone {
+  background: transparent url(../../images/homepage-qr.png) no-repeat 0 -214px;
 }

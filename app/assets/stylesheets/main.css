@@ -1,17 +1,14 @@
-.static-container {
-  .header {
-    background: none;
-    height: 55px;
-  }
-  .prompting {
-    display: none;
-  }
+util.print: Use console.log instead
+.static-container .header {
+  background: none;
+  height: 55px;
 }
-
+.static-container .prompting {
+  display: none;
+}
 .logo {
   margin-left: 385px;
 }
-
 .title {
   font-size: 16px;
   line-height: 40px;
@@ -19,92 +16,84 @@
   height: 40px;
   vertical-align: middle;
 }
-
 .login-entry {
   background-image: url('../../images/btn.png');
   width: 164px;
   height: 56px;
   display: block;
-  &:hover {
-    background-image: url('../../images/btn1.png');
-  }
-  .content {
-    display: none;
-  }
 }
-
+.login-entry:hover {
+  background-image: url('../../images/btn1.png');
+}
+.login-entry .content {
+  display: none;
+}
 .app-download {
   margin-top: 10px;
   margin-left: -40px;
-  li {
-    list-style: none;
-    border-bottom: 1px solid;
-    margin-bottom: 20px;
-    height: 58px;
-    a {
-      display: block;
-      height: 45px;
-      line-height: 45px;
-      padding-left: 60px;
-      vertical-align: middle;
-      span {
-        font-size: 28px;
-        color: #000;
-        line-height: 45px;
-        vertical-align: middle;
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-      .download {
-        margin-right: 50px;
-      }
-    }
-    &.app-download-android a {
-      background: url(/assets/images/fn-icon-android.jpg) no-repeat left center;
-    }
-    &.app-download-iphone {
-      a {
-        background: url(/assets/images/fn-icon-iphone.jpg) no-repeat left center;
-      }
-    }
-  }
-
 }
-
+.app-download li {
+  list-style: none;
+  border-bottom: 1px solid;
+  margin-bottom: 20px;
+  height: 58px;
+}
+.app-download li a {
+  display: block;
+  height: 45px;
+  line-height: 45px;
+  padding-left: 60px;
+  vertical-align: middle;
+}
+.app-download li a span {
+  font-size: 28px;
+  color: #000;
+  line-height: 45px;
+  vertical-align: middle;
+}
+.app-download li a span:hover {
+  text-decoration: underline;
+}
+.app-download li a .download {
+  margin-right: 50px;
+}
+.app-download li.app-download-android a {
+  background: url(/assets/images/fn-icon-android.jpg) no-repeat left center;
+}
+.app-download li.app-download-iphone a {
+  background: url(/assets/images/fn-icon-iphone.jpg) no-repeat left center;
+}
 .service-phone {
   margin: 0;
   text-align: center;
-  .service-phone-number {
-    display: inline-block;
-    width: 100%;
-    color: #666666;
-    .service-phone-line {
-      background: #ccc;
-      width: 328px;
-    }
-  }
-  p {
-    display: inline-block;
-    margin-top: 25px;
-    text-align: center;
-    span {
-      font-size: 24px;
-    }
-    .service-phone-title {
-      color: #acacac;
-    }
-  }
 }
-
+.service-phone .service-phone-number {
+  display: inline-block;
+  width: 100%;
+  color: #666666;
+}
+.service-phone .service-phone-number .service-phone-line {
+  background: #ccc;
+  width: 328px;
+}
+.service-phone p {
+  display: inline-block;
+  margin-top: 25px;
+  text-align: center;
+}
+.service-phone p span {
+  font-size: 24px;
+}
+.service-phone p .service-phone-title {
+  color: #acacac;
+}
 .footer {
   background: #f1f1f1;
   padding-top: 45px;
   padding-bottom: 40px;
-  p {
-    color: #777777;
-    text-align: center;
-    font-size: 12px;
-  }
 }
-
+.footer p {
+  color: #777777;
+  text-align: center;
+  font-size: 12px;
+}

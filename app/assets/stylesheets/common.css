@@ -1,304 +1,537 @@
+util.print: Use console.log instead
 /*
   Allow angular.js to be loaded in body, hiding cloaked elements until
   templates compile.  The !important is important given that there may be
   other selectors that are more specific or come later and might alter display.
  */
-[ng\:cloak], [ng-cloak], .ng-cloak {
+[ng\:cloak],
+[ng-cloak],
+.ng-cloak {
   display: none !important;
 }
 .help-block.error,
 .error-field {
   color: red;
 }
-
 .main-body {
   margin: 0;
   padding: 0;
-
-  .main-view,
-  .modal {
-    max-width: 1200px;
-    max-height: 860px;
-    margin: 0 auto;
-
-    .newsletters {
-      max-width: 700px;
-      .read-true p {
-        color: gainsboro;
-      }
-      .read-false p {
-        color: blue;
-      }
-      .read-flag {
-        margin-left: 150px;
-      }
-    }
-
-    .main-frame {
-      margin-left: 30px;
-      .btn-primary {
-        background-color: rgb(5, 104, 244);
-      }
-      .btn-danger {
-        background-color: rgb(214, 73, 40);
-      }
-      .btn-warning {
-        background-color: rgb(254, 185, 0);
-      }
-      .btn-success {
-        background-color: rgb(28, 150, 75);
-      }
-    }
-
-    .loading,
-    .uploading {
-      width: 55px;
-      height: 55px;
-      background-image: url('../../images/loading.gif');
-      background-size: 55px 55px;
-      margin-left: 200px;
-    }
-
-    .uploading {
-      margin: 0;
-    }
-
-    .product-logo-container {
-      float: left;
-      width: 240px;
-      height: 124px;
-      .product-logo {
-        width: 179px;
-        height: 124px;
-        background-image: url('../../images/logo.png');
-        background-size: 179px 124px;
-        margin-left: 14px;
-        position: absolute;
-        z-index: 20;
-      }
-      .rainbow-logo {
-        width: 163px;
-        height: 100px;
-        background: url('../../images/rainbow2.png') no-repeat 0 0;
-        background-size: 146px 74px;
-        margin-left: 90px;
-        position: absolute;
-        z-index: 10;
-      }
-
-    }
-
-    .header {
-      height: 121px;
-      margin-left: -30px;
-      background: #e0dfe4 url(../../images/header-bg.png) no-repeat;
-      -moz-border-radius-topleft: 15px;
-      -moz-border-radius-topright: 15px;
-      -webkit-border-top-left-radius: 15px;
-      -webkit-border-top-right-radius: 15px;
-      .title {
-        float: left;
-        width: 571px;
-        height: 124px;
-        color: rgb(103, 77, 52);
-        margin-left: 20px;
-      }
-      .app-qr-code {
-        float: right;
-        width: 139px;
-        height: 139px;
-      }
-
-      .admin-user-portrait-container {
-        .portrait {
-          max-height: 121px;
-          max-width: 121px;
-          float: right;
-        }
-      }
-    }
-
-    .navbar {
-      background-color: #e0dfe4;
-      border: none;
-      right: 24px;
-      .navbar-form.navbar-right {
-        width: 322px;
-      }
-    }
-
-    .user-menu {
-      right: 40px;
-    }
-
-    .action {
-      min-width: 125px;
-      .btn {
-        background-color: wheat;
-      }
-    }
-
-    .alert.alert-dismissable {
-      .close {
-        display: none;
-      }
-    }
-
-    .control-label.highlight {
-      color: red;
-    }
-
-    .image-container,
-    .image-preview {
-      .assignment-image,
-      .message-image {
-        max-height: 220px;
-        max-width: 220px;
-      }
-      .message-audio {
-        max-height: 150px;
-        max-width: 150px;
-      }
-      .assess-image {
-        max-height: 180px;
-        max-width: 180px;
-      }
-      &.image-110 {
-
-        .message-image {
-          max-height: 110px;
-          max-width: 110px;
-        }
-        .message-audio {
-          max-height: 80px;
-          max-width: 80px;
-        }
-      }
-      .conversation-audio {
-        max-height: 80px;
-        max-width: 80px;
-      }
-      .news-image {
-        max-height: 200px;
-      }
-    }
-
-    .rating,
-    .editable {
-      cursor: pointer;
-    }
-    .row.principal {
-      background: wheat;
-    }
-
-    .modal-backdrop.am-fade {
-      opacity: .5;
-      transition: opacity .15s linear;
-      &.ng-enter {
-        opacity: 0;
-        &.ng-enter-active {
-          opacity: .5;
-        }
-      }
-      &.ng-leave {
-        opacity: .5;
-        &.ng-leave-active {
-          opacity: 0;
-        }
-      }
-    }
-
-    @import "left-panel-buttons.less";
+}
+.main-body .main-view,
+.main-body .modal {
+  max-width: 1200px;
+  max-height: 860px;
+  margin: 0 auto;
+}
+.main-body .main-view .newsletters,
+.main-body .modal .newsletters {
+  max-width: 700px;
+}
+.main-body .main-view .newsletters .read-true p,
+.main-body .modal .newsletters .read-true p {
+  color: gainsboro;
+}
+.main-body .main-view .newsletters .read-false p,
+.main-body .modal .newsletters .read-false p {
+  color: blue;
+}
+.main-body .main-view .newsletters .read-flag,
+.main-body .modal .newsletters .read-flag {
+  margin-left: 150px;
+}
+.main-body .main-view .main-frame,
+.main-body .modal .main-frame {
+  margin-left: 30px;
+}
+.main-body .main-view .main-frame .btn-primary,
+.main-body .modal .main-frame .btn-primary {
+  background-color: #0568f4;
+}
+.main-body .main-view .main-frame .btn-danger,
+.main-body .modal .main-frame .btn-danger {
+  background-color: #d64928;
+}
+.main-body .main-view .main-frame .btn-warning,
+.main-body .modal .main-frame .btn-warning {
+  background-color: #feb900;
+}
+.main-body .main-view .main-frame .btn-success,
+.main-body .modal .main-frame .btn-success {
+  background-color: #1c964b;
+}
+.main-body .main-view .loading,
+.main-body .modal .loading,
+.main-body .main-view .uploading,
+.main-body .modal .uploading {
+  width: 55px;
+  height: 55px;
+  background-image: url('../../images/loading.gif');
+  background-size: 55px 55px;
+  margin-left: 200px;
+}
+.main-body .main-view .uploading,
+.main-body .modal .uploading {
+  margin: 0;
+}
+.main-body .main-view .product-logo-container,
+.main-body .modal .product-logo-container {
+  float: left;
+  width: 240px;
+  height: 124px;
+}
+.main-body .main-view .product-logo-container .product-logo,
+.main-body .modal .product-logo-container .product-logo {
+  width: 179px;
+  height: 124px;
+  background-image: url('../../images/logo.png');
+  background-size: 179px 124px;
+  margin-left: 14px;
+  position: absolute;
+  z-index: 20;
+}
+.main-body .main-view .product-logo-container .rainbow-logo,
+.main-body .modal .product-logo-container .rainbow-logo {
+  width: 163px;
+  height: 100px;
+  background: url('../../images/rainbow2.png') no-repeat 0 0;
+  background-size: 146px 74px;
+  margin-left: 90px;
+  position: absolute;
+  z-index: 10;
+}
+.main-body .main-view .header,
+.main-body .modal .header {
+  height: 121px;
+  margin-left: -30px;
+  background: #e0dfe4 url(../../images/header-bg.png) no-repeat;
+  -moz-border-radius-topleft: 15px;
+  -moz-border-radius-topright: 15px;
+  -webkit-border-top-left-radius: 15px;
+  -webkit-border-top-right-radius: 15px;
+}
+.main-body .main-view .header .title,
+.main-body .modal .header .title {
+  float: left;
+  width: 571px;
+  height: 124px;
+  color: #674d34;
+  margin-left: 20px;
+}
+.main-body .main-view .header .app-qr-code,
+.main-body .modal .header .app-qr-code {
+  float: right;
+  width: 139px;
+  height: 139px;
+}
+.main-body .main-view .header .admin-user-portrait-container .portrait,
+.main-body .modal .header .admin-user-portrait-container .portrait {
+  max-height: 121px;
+  max-width: 121px;
+  float: right;
+}
+.main-body .main-view .navbar,
+.main-body .modal .navbar {
+  background-color: #e0dfe4;
+  border: none;
+  right: 24px;
+}
+.main-body .main-view .navbar .navbar-form.navbar-right,
+.main-body .modal .navbar .navbar-form.navbar-right {
+  width: 322px;
+}
+.main-body .main-view .user-menu,
+.main-body .modal .user-menu {
+  right: 40px;
+}
+.main-body .main-view .action,
+.main-body .modal .action {
+  min-width: 125px;
+}
+.main-body .main-view .action .btn,
+.main-body .modal .action .btn {
+  background-color: wheat;
+}
+.main-body .main-view .alert.alert-dismissable .close,
+.main-body .modal .alert.alert-dismissable .close {
+  display: none;
+}
+.main-body .main-view .control-label.highlight,
+.main-body .modal .control-label.highlight {
+  color: red;
+}
+.main-body .main-view .image-container .assignment-image,
+.main-body .modal .image-container .assignment-image,
+.main-body .main-view .image-preview .assignment-image,
+.main-body .modal .image-preview .assignment-image,
+.main-body .main-view .image-container .message-image,
+.main-body .modal .image-container .message-image,
+.main-body .main-view .image-preview .message-image,
+.main-body .modal .image-preview .message-image {
+  max-height: 220px;
+  max-width: 220px;
+}
+.main-body .main-view .image-container .message-audio,
+.main-body .modal .image-container .message-audio,
+.main-body .main-view .image-preview .message-audio,
+.main-body .modal .image-preview .message-audio {
+  max-height: 150px;
+  max-width: 150px;
+}
+.main-body .main-view .image-container .assess-image,
+.main-body .modal .image-container .assess-image,
+.main-body .main-view .image-preview .assess-image,
+.main-body .modal .image-preview .assess-image {
+  max-height: 180px;
+  max-width: 180px;
+}
+.main-body .main-view .image-container.image-110 .message-image,
+.main-body .modal .image-container.image-110 .message-image,
+.main-body .main-view .image-preview.image-110 .message-image,
+.main-body .modal .image-preview.image-110 .message-image {
+  max-height: 110px;
+  max-width: 110px;
+}
+.main-body .main-view .image-container.image-110 .message-audio,
+.main-body .modal .image-container.image-110 .message-audio,
+.main-body .main-view .image-preview.image-110 .message-audio,
+.main-body .modal .image-preview.image-110 .message-audio {
+  max-height: 80px;
+  max-width: 80px;
+}
+.main-body .main-view .image-container .conversation-audio,
+.main-body .modal .image-container .conversation-audio,
+.main-body .main-view .image-preview .conversation-audio,
+.main-body .modal .image-preview .conversation-audio {
+  max-height: 80px;
+  max-width: 80px;
+}
+.main-body .main-view .image-container .news-image,
+.main-body .modal .image-container .news-image,
+.main-body .main-view .image-preview .news-image,
+.main-body .modal .image-preview .news-image {
+  max-height: 200px;
+}
+.main-body .main-view .rating,
+.main-body .modal .rating,
+.main-body .main-view .editable,
+.main-body .modal .editable {
+  cursor: pointer;
+}
+.main-body .main-view .row.principal,
+.main-body .modal .row.principal {
+  background: wheat;
+}
+.main-body .main-view .modal-backdrop.am-fade,
+.main-body .modal .modal-backdrop.am-fade {
+  opacity: .5;
+  transition: opacity .15s linear;
+}
+.main-body .main-view .modal-backdrop.am-fade.ng-enter,
+.main-body .modal .modal-backdrop.am-fade.ng-enter {
+  opacity: 0;
+}
+.main-body .main-view .modal-backdrop.am-fade.ng-enter.ng-enter-active,
+.main-body .modal .modal-backdrop.am-fade.ng-enter.ng-enter-active {
+  opacity: .5;
+}
+.main-body .main-view .modal-backdrop.am-fade.ng-leave,
+.main-body .modal .modal-backdrop.am-fade.ng-leave {
+  opacity: .5;
+}
+.main-body .main-view .modal-backdrop.am-fade.ng-leave.ng-leave-active,
+.main-body .modal .modal-backdrop.am-fade.ng-leave.ng-leave-active {
+  opacity: 0;
+}
+@media screen and (min-width: 769px) {
+  .main-body .main-view .module-view-container,
+  .main-body .modal .module-view-container {
+    float: right;
+    width: 963px;
+    height: 739px;
+    top: 121px;
+    position: absolute;
+    margin-left: 222px;
   }
-
-  .modal.center .modal-dialog {
-    max-width: 1000px;
-    max-height: 1000px;
-    width: 85%;
-    height: 85%;
-    .modal-content {
-      max-height: 760px;
-      height: 100%;
-      .modal-body {
-        overflow-y: scroll;
-        height: 100%;
-
-        .select-button.active {
-          background-color: #47a447;
-        }
-
-        .datepicker-input {
-          width: 100%;
-        }
-
-        .datepicker-button {
-          margin: -34px 0 0 0;
-          float: right;
-        }
-
-
-      }
-    }
+  .main-body .main-view .modules-list-container,
+  .main-body .modal .modules-list-container {
+    background: #f8f8f8 url(../../images/tabs-bg.png) no-repeat;
+    min-width: 252px;
+    max-width: 252px;
+    margin-left: -30px;
+    height: 739px;
   }
-  .portrait-container {
-    margin-left: 100px;
-    vertical-align: middle;
-    .portrait {
-      max-height: 220px;
-      max-width: 180px;
-    }
-    .portrait-preview {
-      max-height: 110px;
-      max-width: 90px;
-    }
+  .main-body .main-view .modules-list-container .modules-list .action,
+  .main-body .modal .modules-list-container .modules-list .action {
+    display: block;
+  }
+  .main-body .main-view .modules-list-container .modules-list .btn,
+  .main-body .modal .modules-list-container .modules-list .btn {
+    min-height: 47px;
+    min-width: 223px;
+    width: 223px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .btn span,
+  .main-body .modal .modules-list-container .modules-list .btn span {
+    display: none;
+  }
+  .main-body .main-view .modules-list-container .modules-list .news,
+  .main-body .modal .modules-list-container .modules-list .news {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -86px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .news:hover,
+  .main-body .modal .modules-list-container .modules-list .news:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -86px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .conversation,
+  .main-body .modal .modules-list-container .modules-list .conversation {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -136px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .conversation:hover,
+  .main-body .modal .modules-list-container .modules-list .conversation:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -136px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .assess,
+  .main-body .modal .modules-list-container .modules-list .assess {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -186px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .assess:hover,
+  .main-body .modal .modules-list-container .modules-list .assess:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -186px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .cookbook,
+  .main-body .modal .modules-list-container .modules-list .cookbook {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -236px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .cookbook:hover,
+  .main-body .modal .modules-list-container .modules-list .cookbook:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -236px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .schedule,
+  .main-body .modal .modules-list-container .modules-list .schedule {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -285px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .schedule:hover,
+  .main-body .modal .modules-list-container .modules-list .schedule:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -285px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .assignment,
+  .main-body .modal .modules-list-container .modules-list .assignment {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -334px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .assignment:hover,
+  .main-body .modal .modules-list-container .modules-list .assignment:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -334px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .history,
+  .main-body .modal .modules-list-container .modules-list .history {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -382px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .history:hover,
+  .main-body .modal .modules-list-container .modules-list .history:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -382px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .placeholder,
+  .main-body .modal .modules-list-container .modules-list .placeholder {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px 0px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .dailylog,
+  .main-body .modal .modules-list-container .modules-list .dailylog {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -447px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .dailylog:hover,
+  .main-body .modal .modules-list-container .modules-list .dailylog:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -447px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .relationship,
+  .main-body .modal .modules-list-container .modules-list .relationship {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -496px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .relationship:hover,
+  .main-body .modal .modules-list-container .modules-list .relationship:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -496px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .member,
+  .main-body .modal .modules-list-container .modules-list .member {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -545px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .member:hover,
+  .main-body .modal .modules-list-container .modules-list .member:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -545px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .classes,
+  .main-body .modal .modules-list-container .modules-list .classes {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -594px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .classes:hover,
+  .main-body .modal .modules-list-container .modules-list .classes:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -594px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .employee,
+  .main-body .modal .modules-list-container .modules-list .employee {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -643px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .employee:hover,
+  .main-body .modal .modules-list-container .modules-list .employee:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -643px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .intro,
+  .main-body .modal .modules-list-container .modules-list .intro {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -692px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .intro:hover,
+  .main-body .modal .modules-list-container .modules-list .intro:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -692px;
+  }
+  .main-body .main-view .modules-list-container .active .news,
+  .main-body .modal .modules-list-container .active .news {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -86px;
+  }
+  .main-body .main-view .modules-list-container .active .conversation,
+  .main-body .modal .modules-list-container .active .conversation {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -136px;
+  }
+  .main-body .main-view .modules-list-container .active .assess,
+  .main-body .modal .modules-list-container .active .assess {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -186px;
+  }
+  .main-body .main-view .modules-list-container .active .cookbook,
+  .main-body .modal .modules-list-container .active .cookbook {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -236px;
+  }
+  .main-body .main-view .modules-list-container .active .schedule,
+  .main-body .modal .modules-list-container .active .schedule {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -285px;
+  }
+  .main-body .main-view .modules-list-container .active .assignment,
+  .main-body .modal .modules-list-container .active .assignment {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -334px;
+  }
+  .main-body .main-view .modules-list-container .active .history,
+  .main-body .modal .modules-list-container .active .history {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -382px;
+  }
+  .main-body .main-view .modules-list-container .active .dailylog,
+  .main-body .modal .modules-list-container .active .dailylog {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -447px;
+  }
+  .main-body .main-view .modules-list-container .active .relationship,
+  .main-body .modal .modules-list-container .active .relationship {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -496px;
+  }
+  .main-body .main-view .modules-list-container .active .member,
+  .main-body .modal .modules-list-container .active .member {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -545px;
+  }
+  .main-body .main-view .modules-list-container .active .classes,
+  .main-body .modal .modules-list-container .active .classes {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -594px;
+  }
+  .main-body .main-view .modules-list-container .active .employee,
+  .main-body .modal .modules-list-container .active .employee {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -643px;
+  }
+  .main-body .main-view .modules-list-container .active .intro,
+  .main-body .modal .modules-list-container .active .intro {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -692px;
   }
 }
-
+@media screen and (max-width: 768px) {
+  .main-body .main-view .navbar,
+  .main-body .modal .navbar {
+    margin-top: -78px;
+  }
+  .main-body .main-view .navbar .admin-features,
+  .main-body .modal .navbar .admin-features {
+    display: block;
+  }
+  .main-body .main-view .modules-list-container,
+  .main-body .modal .modules-list-container {
+    margin-top: 150px;
+  }
+  .main-body .main-view .modules-list-container .btn.placeholder,
+  .main-body .modal .modules-list-container .btn.placeholder {
+    display: none;
+  }
+  .main-body .main-view .module-view-container,
+  .main-body .modal .module-view-container {
+    margin-top: 50px;
+  }
+}
+.main-body .modal.center .modal-dialog {
+  max-width: 1000px;
+  max-height: 1000px;
+  width: 85%;
+  height: 85%;
+}
+.main-body .modal.center .modal-dialog .modal-content {
+  max-height: 760px;
+  height: 100%;
+}
+.main-body .modal.center .modal-dialog .modal-content .modal-body {
+  overflow-y: scroll;
+  height: 100%;
+}
+.main-body .modal.center .modal-dialog .modal-content .modal-body .select-button.active {
+  background-color: #47a447;
+}
+.main-body .modal.center .modal-dialog .modal-content .modal-body .datepicker-input {
+  width: 100%;
+}
+.main-body .modal.center .modal-dialog .modal-content .modal-body .datepicker-button {
+  margin: -34px 0 0 0;
+  float: right;
+}
+.main-body .portrait-container {
+  margin-left: 100px;
+  vertical-align: middle;
+}
+.main-body .portrait-container .portrait {
+  max-height: 220px;
+  max-width: 180px;
+}
+.main-body .portrait-container .portrait-preview {
+  max-height: 110px;
+  max-width: 90px;
+}
 @media screen and (max-width: 768px) {
   html {
     overflow-x: hidden;
   }
-
   .main-body {
     overflow-x: hidden;
-    .main-view {
-      .main-frame {
-        margin: 0;
-      }
-      .header {
-        background: #e0dfe4 none;
-        .admin-user-portrait-container {
-          margin-top: -83px;
-        }
-        .admin-user-info-container {
-          min-height: 110px;
-        }
-        .admin-features {
-          min-height: 110px;
-          .navbar-form {
-            border: none;
-          }
-        }
-
-      }
-      .modules-list-container {
-        margin: 10px 0 0 0;
-        padding: 0;
-        width: 100%;
-      }
-    }
-    .modal.center .modal-dialog {
-      width: 100%;
-      height: 100%;
-      .modal-body {
-        top: 3px;
-        left: 0;
-      }
-    }
-    .message-input {
-      width: 100%;
-    }
+  }
+  .main-body .main-view .main-frame {
+    margin: 0;
+  }
+  .main-body .main-view .header {
+    background: #e0dfe4 none;
+  }
+  .main-body .main-view .header .admin-user-portrait-container {
+    margin-top: -83px;
+  }
+  .main-body .main-view .header .admin-user-info-container {
+    min-height: 110px;
+  }
+  .main-body .main-view .header .admin-features {
+    min-height: 110px;
+  }
+  .main-body .main-view .header .admin-features .navbar-form {
+    border: none;
+  }
+  .main-body .main-view .modules-list-container {
+    margin: 10px 0 0 0;
+    padding: 0;
+    width: 100%;
+  }
+  .main-body .modal.center .modal-dialog {
+    width: 100%;
+    height: 100%;
+  }
+  .main-body .modal.center .modal-dialog .modal-body {
+    top: 3px;
+    left: 0;
+  }
+  .main-body .message-input {
+    width: 100%;
   }
 }
-
-

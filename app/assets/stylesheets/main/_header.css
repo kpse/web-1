@@ -1,24 +1,111 @@
-// -----------------------------------
-// HEADER
-// -----------------------------------
-// author: mda@zenexity.com - 2011
-// -----------------------------------
-@import '../libs/_reset.less';
-@import '../libs/_mate.less';
-@import '../libs/_theme.less';
-
-body {
-  & > header {
-    box-sizing: border-box;
-    padding: 10px;
-    z-index: 9;
-    .gradient(@headerLight, @headerDark);
-    box-shadow: 0 0 7px rgba(0,0,0,.8),
-    inset 0 1px 0 rgba(255,255,255,.2),
-    inset 0 -1px 0 rgba(0,0,0,.8);
-  }
+util.print: Use console.log instead
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+font,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
 }
-
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+caption,
+th,
+td {
+  text-align: left;
+  font-weight: normal;
+}
+form legend {
+  display: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+}
+blockquote,
+q {
+  quotes: "" "";
+}
+ol,
+ul {
+  list-style: none;
+}
+hr {
+  display: none;
+  visibility: hidden;
+}
+body > header {
+  box-sizing: border-box;
+  padding: 10px;
+  z-index: 9;
+  background: #445868;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#445868), to(#2a3a48));
+  background-image: -moz-linear-gradient(top, #445868, #2a3a48);
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.8);
+}
 .main-entry {
   color: #fff;
   font-weight: bold;
@@ -26,7 +113,7 @@ body {
   text-transform: uppercase;
   letter-spacing: -2px;
   text-shadow: 1px 1px 0 #000;
-  span {
-    color: @activeColor;
-  }
+}
+.main-entry span {
+  color: #5daad5;
 }

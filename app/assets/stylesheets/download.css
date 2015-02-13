@@ -1,11 +1,8 @@
+util.print: Use console.log instead
 .login-entry {
-    display: none;
+  display: none;
 }
-
-html, body {
+html,
+body {
   max-width: 1116px;
 }
-
-
-
-
