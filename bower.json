@@ -19,7 +19,8 @@
     "angular-emoji-filter": "*",
     "js-xls": "~0.7",
     "js-xlsx": "~0.7",
-    "ng-csv": "*"
+    "ng-csv": "*",
+    "ng-stats": "*"
   },
   "devDependencies": {
     "angular-mocks": "1.3.13",
@@ -81,6 +82,9 @@
         "dist/*.full.min.js",
         "dist/*.full.min.map"
       ]
+    },
+    "ng-stats": {
+      ".": "dist/*.js"
     },
     "angular-mocks": {
       "../../test/assets/config": "angular-mocks.js"
