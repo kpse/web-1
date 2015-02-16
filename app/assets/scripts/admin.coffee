@@ -5,8 +5,8 @@ angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics
 angular.module('kulebaoAdmin',
   ['kulebaoApp', 'ui.bootstrap', 'ui.mask', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap', 'mgcrea.ngStrap.helpers.dimensions',
    'ngCookies'])
-.config ['$stateProvider', '$urlRouterProvider',
-  ($stateProvider, $urlRouterProvider) ->
+.config ['$stateProvider', '$urlRouterProvider', '$compileProvider',
+  ($stateProvider, $urlRouterProvider, $compileProvider) ->
     $stateProvider
     .state 'kindergarten',
       url: '/kindergarten/:kindergarten',
@@ -227,7 +227,7 @@ angular.module('kulebaoAdmin',
     $urlRouterProvider.otherwise ($injector, $location) ->
       $location.path '/default' if $location.path().indexOf('#/kindergarten/') < 0
 
-
+    $compileProvider.debugInfoEnabled(false);
 ]
 .config(($modalProvider) ->
   angular.extend $modalProvider.defaults,
