@@ -29,7 +29,6 @@ angular.module('kulebaoAdmin')
 
       scope.refresh = (callback)->
         scope.loading = true
-        scope.backend = true
         scope.disableMemberEditing = false
         SchoolConfig.get school_id: stateParams.kindergarten, (data)->
           backendConfig = _.find data['config'], (item) -> item.name == 'backend'
@@ -42,6 +41,7 @@ angular.module('kulebaoAdmin')
           callback() if callback?
           scope.loading = false
 
+      scope.backend = true
       scope.refresh()
 
       scope.createParent = ->
