@@ -16,7 +16,8 @@
   </thead>
   <tbody>
   <tr ng-repeat="e in employees | filter: searchText | orderBy:['-rank.rank', 'school_id']" class="row" ng-class="{editable: edit}" ng-click="edit(e)">
-    <td class="col-xs-3">{{::e.school_id == 0 ? '跨学校' : e.school_id}}</td>
+    <td class="col-xs-3" ng-show="e.school_id == 0" >跨学校</td>
+    <td class="col-xs-3" ng-hide="e.school_id == 0" ><a ng-href="/admin#/kindergarten/{{::e.school_id}}/employee/detail" ng-click="$event.stopPropagation()">{{::e.school_id}}</a></td>
     <td class="col-xs-3">{{::e.name}}</td>
     <td class="col-xs-3">{{::e.rank.role}}</td>
     <td class="col-xs-3">
