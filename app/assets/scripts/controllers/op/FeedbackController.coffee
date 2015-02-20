@@ -11,8 +11,12 @@ angular.module('kulebaoOp').controller 'OpFeedbackCtrl',
         {name: '已处理', type: 'done'}
       ]
 
+      scope.navigateTo = (source) ->
+        $state.go('main.feedback.source.list', source: source.type) if stateParams.source != source.type
+
       $state.go('main.feedback.source.list', source: scope.sources[0].type) unless stateParams.source?
 
+      scope.current_source = stateParams.source if stateParams.source?
   ]
 
 .controller 'OpFeedbackSourceCtrl',

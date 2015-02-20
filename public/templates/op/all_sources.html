@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs">
-  <li ng-repeat="s in sources" ui-sref-active="active">
-    <a ui-sref="main.feedback.source.list({source:s.type})">{{s.name}}</a>
+  <li ng-repeat="s in sources" ng-class="{active: {{s.type == current_source}}}">
+    <a ng-click="navigateTo(s)">{{s.name}}</a>
   </li>
 </ul>
 <div class="source-view" ui-view></div>
