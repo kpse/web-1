@@ -1,13 +1,13 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3>{{child.name}}最近的表现</h3>
+    <h3>{{::child.name}}最近的表现</h3>
   </div>
 
   <div class="panel-body">
     <div class="row">
       <div class="form-group col-xs-5">
         <div class="image-preview">
-          <img class="assess-image img-responsive" ng-src="{{child.portrait || '/assets/images/portrait_placeholder.png'}}"
+          <img class="assess-image img-responsive" ng-src="{{::child.portrait || '/assets/images/portrait_placeholder.png'}}"
                alt="照片"/>
         </div>
       </div>
