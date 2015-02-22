@@ -1,10 +1,12 @@
 package controllers
 
+import play.api.cache.Cache
 import play.api.mvc.Controller
 import models._
 import play.api.libs.json.Json
 import models.DailyLogStats
 import models.Statistics
+import play.api.Play.current
 
 
 object StatisticsController extends Controller with Secured {
@@ -15,7 +17,10 @@ object StatisticsController extends Controller with Secured {
 
   def countSession(schoolId: Long) = IsOperator {
     u => _ =>
-      Ok(Json.toJson(ChatSession.countInSchool(schoolId)))
+      val value: Statistics = Cache.getOrElse[Statistics](s"sessionCountIn$schoolId", 3600 * 24) {
+        ChatSession.countInSchool(schoolId)
+      }
+      Ok(Json.toJson(value))
   }
 
   def countGrowingHistory(schoolId: Long) = IsOperator {
