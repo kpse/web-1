@@ -5,9 +5,11 @@
     <input ng-model="searchText"/>
     <span>输入内容进行查找</span>
   </div>
-  <button type="submit" class="btn btn-primary pull-right adding-for-individual" ng-disabled="loading"
-          ng-click="addClass()">创建新班级
-  </button>
+  <form class="form well no-padding">
+    <button type="submit" class="btn btn-primary adding-for-individual" ng-disabled="loading"
+            ng-click="addClass()">创建新班级
+    </button>
+  </form>
   <div class="loading" ng-show="loading"></div>
   <table class="table table-hover table-condensed employee-list">
     <thead>

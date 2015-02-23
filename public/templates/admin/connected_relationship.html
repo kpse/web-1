@@ -1,11 +1,13 @@
 <ul class="nav nav-tabs">
-  <li ng-repeat="type in types" ng-class="{active: {{type.url == current_type}}}">
-    <a ng-click="navigateTo(type)">{{type.name}}</a>
+  <li ng-repeat="type in types" ng-class="{active: {{::type.url == current_type}}}">
+    <a ng-click="navigateTo(type)">{{::type.name}}</a>
   </li>
 </ul>
-<button class="btn btn-success" ng-click="newChild()">创建小孩信息</button>
-<button class="btn btn-primary" ng-click="newParent()">创建家长关联到小孩</button>
-<button class="btn btn-warning" ng-click="newRelationship()">创建卡片（关联小孩和家长）</button>
+<form class="form well">
+  <button class="btn btn-success" ng-click="newChild()">创建小孩信息</button>
+  <button class="btn btn-primary" ng-click="newParent()">创建家长关联到小孩</button>
+  <button class="btn btn-warning" ng-click="newRelationship()">创建卡片（关联小孩和家长）</button>
+</form>
 <div class="clearfix"></div>
 
 <div class="connect-in-class-view" ui-view></div>
