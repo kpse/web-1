@@ -1,9 +1,10 @@
 package controllers
 
-import play.api.mvc._
 import models.DailyLog
+import play.api.cache.Cache
 import play.api.libs.json.Json
-import models.json_models.{IOSField, CheckNotification}
+import play.api.mvc._
+import play.api.Play.current
 
 object DailyLogController extends Controller with Secured {
 
@@ -15,8 +16,10 @@ object DailyLogController extends Controller with Secured {
   }
 
   def indexInClasses(kg: Long, classIds: String) = IsAuthenticated {
-    u=>
-      _=>
-      Ok(Json.toJson(DailyLog.lastCheckInClasses(kg, classIds)))
+    u => _ =>
+      val value: List[DailyLog] = Cache.getOrElse[List[DailyLog]](s"indexInSchool$kg-classes$classIds", 600) {
+        DailyLog.lastCheckInClasses(kg, classIds)
+      }
+      Ok(Json.toJson(value))
   }
 }
