@@ -25,12 +25,18 @@ object StatisticsController extends Controller with Secured {
 
   def countGrowingHistory(schoolId: Long) = IsOperator {
     u => _ =>
-      Ok(Json.toJson(ChatSession.countGrowingHistory(schoolId)))
+      val value: Statistics = Cache.getOrElse[Statistics](s"growingIn$schoolId", 3600 * 24) {
+        ChatSession.countGrowingHistory(schoolId)
+      }
+      Ok(Json.toJson(value))
   }
 
   def countDailyLogHistory(schoolId: Long) = IsAuthenticated {
     u => _ =>
-      Ok(Json.toJson(DailyLog.countHistory(schoolId)))
+      val value: List[DailyLogStats] = Cache.getOrElse[List[DailyLogStats]](s"dailyLogCountIn$schoolId", 3600 * 24) {
+        DailyLog.countHistory(schoolId)
+      }
+      Ok(Json.toJson(value))
   }
 
   def countAssignmentHistory(schoolId: Long, employeeId: Option[String]) = IsAuthenticated {
