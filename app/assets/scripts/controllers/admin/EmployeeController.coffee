@@ -10,10 +10,13 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
         scope.loading = true
         scope.employees = SchoolEmployee.query school_id: $stateParams.kindergarten, (data)->
           scope.employees = _.reject data, (employee) -> employee.id == scope.adminUser.id
-          _.forEach scope.employees, (e) ->
-            e.subordinates = ClassManager.query school_id: $stateParams.kindergarten, phone: e.phone, ->
-              e.displayClasses = (_.map e.subordinates, (s) -> s.name).join(',')
-          scope.loading = false
+          all = _.map scope.employees, (e) ->
+            $q (resolve, reject) ->
+              e.subordinates = ClassManager.query school_id: $stateParams.kindergarten, phone: e.phone, ->
+                e.displayClasses = (_.map e.subordinates, (s) -> s.name).join(',')
+                resolve(e.subordinates)
+          $q.all(all).then ->
+            scope.loading = false
 
       scope.refresh()
 

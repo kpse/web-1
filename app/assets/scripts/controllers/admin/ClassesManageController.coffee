@@ -1,9 +1,9 @@
 'use strict'
 
 angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$modal', 'schoolEmployeesService',
+  ['$scope', '$rootScope', '$stateParams', '$modal', '$q', 'schoolEmployeesService',
    'classService', '$alert', 'classManagerService',
-    (scope, $rootScope, $stateParams, Modal, SchoolEmployee, Class, Alert, ClassManager) ->
+    (scope, $rootScope, $stateParams, Modal, $q, SchoolEmployee, Class, Alert, ClassManager) ->
       $rootScope.tabName = 'classes'
 
       scope.page =
@@ -17,10 +17,14 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
       scope.refresh = ->
         scope.page.loading = true
         scope.classes = Class.query school_id: $stateParams.kindergarten, ->
-          _.forEach scope.classes, (c) ->
-            manager = ClassManager.query c, ->
-              c.managers = _.map manager, (m) -> m.name
-          scope.page.loading = false
+          all = _.map scope.classes, (c) ->
+            $q (resolve, reject) ->
+              manager = ClassManager.query c, ->
+                c.managers = _.map manager, (m) -> m.name
+                resolve(c.managers)
+          $q.all(all).then ->
+            scope.page.loading = false
+
 
       scope.refresh()
 
