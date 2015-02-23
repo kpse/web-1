@@ -26,9 +26,9 @@
   <tbody>
   <tr ng-repeat="parent in parents | filter: searchText" class="row" ng-class="{'member-row': parent.member_status, 'editable': editParent}" ng-click="editParent(parent)">
     <td class="col-xs-2" ng-if="!backend" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="parent.checked" ng-change="singleSelection(parent)"/></td>
-    <td class="col-xs-2" ng-if="!backend">{{parent.name}}</td>
-    <td class="col-xs-2" ng-if="backend">{{parent.name}}</td>
-    <td class="col-xs-4">{{parent.phone | phone}}</td>
+    <td class="col-xs-2" ng-if="!backend">{{::parent.name}}</td>
+    <td class="col-xs-2" ng-if="backend">{{::parent.name}}</td>
+    <td class="col-xs-4">{{::parent.phone | phone}}</td>
 
     <td class="col-xs-4">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"

@@ -25,9 +25,9 @@
   <tbody>
   <tr ng-repeat="child in children | filter: searchText" class="row" ng-class="{'member-row': false, 'editable': editChild}" ng-click="editChild(child)">
     <td class="col-xs-2" ng-if="!backend" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="child.checked" ng-change="singleSelection(child)"/></td>
-    <td class="col-xs-2" ng-if="!backend">{{child.name}}</td>
-    <td class="col-xs-4" ng-if="backend">{{child.name}}</td>
-    <td class="col-xs-4">{{child.class_name}}</td>
+    <td class="col-xs-2" ng-if="!backend">{{::child.name}}</td>
+    <td class="col-xs-4" ng-if="backend">{{::child.name}}</td>
+    <td class="col-xs-4">{{::child.class_name}}</td>
 
 
     <td class="col-xs-4">
