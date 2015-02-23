@@ -6,7 +6,8 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
     (scope, $rootScope, $stateParams, Modal, SchoolEmployee, Class, Alert, ClassManager) ->
       $rootScope.tabName = 'classes'
 
-      scope.loading = true
+      scope.page =
+        loading : true
 
       SchoolEmployee.query school_id: $stateParams.kindergarten, (employees) ->
         scope.employees = _.map employees, (e) ->
@@ -14,12 +15,12 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
           e
 
       scope.refresh = ->
-        scope.loading = true
+        scope.page.loading = true
         scope.classes = Class.query school_id: $stateParams.kindergarten, ->
           _.forEach scope.classes, (c) ->
             manager = ClassManager.query c, ->
               c.managers = _.map manager, (m) -> m.name
-          scope.loading = false
+          scope.page.loading = false
 
       scope.refresh()
 
@@ -44,7 +45,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
         _.find scope.employees, (e) -> e.name == m
 
       scope.save = (clazz) ->
-        scope.loading = true
+        scope.page.loading = true
         managers = clazz.managers
         clazz.$save ->
           _.forEach managers, (m) ->
@@ -53,7 +54,6 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
             cm.$save()
           scope.refresh()
           scope.currentModal.hide()
-          scope.loading = false
 
       scope.isDuplicated = (clazz) ->
         return false if clazz.name is undefined
@@ -61,6 +61,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
           c.name == clazz.name && c.class_id != clazz.class_id
 
       scope.delete = (clazz) ->
+        scope.page.loading = true
         clazz.$delete ->
           scope.refresh()
         , (res) ->
@@ -73,8 +74,8 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
             container: '.panel-body'
             duration: 3
 
-      scope.nameOf = (employee_id) ->
+      scope.nameOf = (employeeId) ->
         employee = _.find scope.employees, (e) ->
-          e.id == employee_id
-        employee.name if employee
+          e.id == employeeId
+        employee.name if employee?
   ]
