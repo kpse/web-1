@@ -99,8 +99,8 @@
           <span>开通手机号管理</span>
         </a>
       </li>
-      <li class="action" ng-class="{active : isSelected('classes')}" ng-show="isSuperUser(adminUser)">
-        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/class" class="btn classes">
+      <li class="action" ui-sref-active="active" ng-show="isSuperUser(adminUser)">
+        <a ui-sref='kindergarten.classManagement({kindergarten: {{kindergarten.school_id}}})' class="btn classes">
           <span>班级管理</span>
         </a>
       </li>
@@ -109,8 +109,8 @@
           <span>教职员设置</span>
         </a>
       </li>
-      <li class="action" ng-class="{active : isSelected('intro')}">
-        <a ng-href="#/kindergarten/{{kindergarten.school_id}}/intro" class="btn intro">
+      <li class="action" ui-sref-active="active">
+        <a ui-sref='kindergarten.intro({kindergarten: {{kindergarten.school_id}}})' class="btn intro">
           <span>幼儿园简介</span>
         </a>
       </li>
