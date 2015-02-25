@@ -1,9 +1,12 @@
 angular.module('kulebao.services', ['ngResource'])
 angular.module('kulebao.directives', ['kulebao.services'])
 angular.module('kulebao.filters', ['kulebao.services'])
-angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics', 'kulebao.directives', 'kulebao.filters'])
+angular.module('kulebaoApp',
+  ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics', 'kulebao.directives',
+   'kulebao.filters'])
 angular.module('kulebaoAdmin',
-  ['kulebaoApp', 'ui.bootstrap', 'ui.mask', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap', 'mgcrea.ngStrap.helpers.dimensions',
+  ['kulebaoApp', 'ui.bootstrap', 'ui.mask', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap',
+   'mgcrea.ngStrap.helpers.dimensions',
    'ngCookies'])
 angular.module('kulebaoOp',
   ['kulebaoAdmin', 'emoji', 'ngCsv'])
@@ -15,7 +18,7 @@ angular.module('kulebaoOp',
       templateUrl: 'templates/op/main.html',
       controller: 'OpCtrl'
       resolve:
-        AdminUser : (employeeService) -> employeeService.get().$promise
+        AdminUser: (employeeService) -> employeeService.get().$promise
     .state 'main.app',
       url: '/app',
       templateUrl: 'templates/op/app_release.html',
@@ -145,7 +148,6 @@ angular.module('kulebaoOp',
     animation: 'am-fade'
     placement: 'center'
     backdrop: 'static'
-
 ).config ($alertProvider) ->
   angular.extend $alertProvider.defaults,
     animation: 'am-fade-and-slide-top'

@@ -1,82 +1,188 @@
-@import "btnUpload.less";
-
+util.print: Use console.log instead
+.btn-upload {
+  position: relative;
+  overflow: hidden;
+}
+.btn-upload input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  transform: translate(-300px, 0) scale(4);
+  font-size: 23px;
+  direction: ltr;
+  cursor: pointer;
+}
 .long-url {
   overflow-wrap: break-word;
 }
-
 .button-group {
   margin-top: 10px;
   position: relative;
 }
-
 .version-summary {
   min-height: 100px;
 }
-
 .expired {
   text-decoration: line-through;
   color: #808080;
 }
-
-.log-container {
-  pre {
-    max-height: 656px;
-    overflow-y: scroll;
-  }
+.log-container pre {
+  max-height: 656px;
+  overflow-y: scroll;
 }
-
 .chat-container {
   margin-left: 0;
   max-width: 963px;
-  .container {
-    min-height: 400px;
-    max-height: 545px;
-    overflow-y: scroll;
-    .history-sentence {
-      text-align: right;
-      list-style-type: none;
-      padding-left: 10px;
-      &.me {
-        text-align: left;
-      }
-      .content {
-        width: 90%;
-        &.left {
-          border-color: #bc8f8f;
-        }
-        &.left:before {
-         border-color: transparent #bc8f8f;
-        }
-      }
-    }
-
-  }
-  .members {
-    min-height: 400px;
-    .member-list {
-      padding-left: 0;
-      list-style: lower-alpha;
-      .me {
-         .btn-warning {
-           background-color: #008000;
-           border-color: #008000;
-         }
-      }
-    }
-  }
-  .message-input {
-    min-height: 100px;
-  }
 }
-
+.chat-container .container {
+  min-height: 400px;
+  max-height: 545px;
+  overflow-y: scroll;
+}
+.chat-container .container .history-sentence {
+  text-align: right;
+  list-style-type: none;
+  padding-left: 10px;
+}
+.chat-container .container .history-sentence.me {
+  text-align: left;
+}
+.chat-container .container .history-sentence .content {
+  width: 90%;
+}
+.chat-container .container .history-sentence .content.left {
+  border-color: #bc8f8f;
+}
+.chat-container .container .history-sentence .content.left:before {
+  border-color: transparent #bc8f8f;
+}
+.chat-container .members {
+  min-height: 400px;
+}
+.chat-container .members .member-list {
+  padding-left: 0;
+  list-style: lower-alpha;
+}
+.chat-container .members .member-list .me .btn-warning {
+  background-color: #008000;
+  border-color: #008000;
+}
+.chat-container .message-input {
+  min-height: 100px;
+}
 .footer {
   display: none;
 }
-
 .phone-management-panel {
   margin-left: 0;
   width: 963px;
 }
-
-@import "triangle-border.less";
-@import "animates.less";
+.triangle-border {
+  position: relative;
+  padding: 15px;
+  margin: 1em 0 3em;
+  border: 5px solid #5a8f00;
+  color: #333;
+  background: #fff;
+  /* css3 */
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
+.triangle-border.me {
+  background: greenyellow;
+}
+.triangle-border:before {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  /* value = - border-top-width - border-bottom-width */
+  left: 40px;
+  /* controls horizontal position */
+  border-width: 20px 20px 0;
+  border-style: solid;
+  border-color: #5a8f00 transparent;
+  /* reduce the damage in FF3.0 */
+  display: block;
+  width: 0;
+}
+/* creates the smaller  triangle */
+.triangle-border:after {
+  content: "";
+  position: absolute;
+  bottom: -13px;
+  /* value = - border-top-width - border-bottom-width */
+  left: 47px;
+  /* value = (:before left) + (:before border-left) - (:after border-left) */
+  border-width: 13px 13px 0;
+  border-style: solid;
+  border-color: #fff transparent;
+  /* reduce the damage in FF3.0 */
+  display: block;
+  width: 0;
+}
+/* creates the larger triangle */
+.triangle-border.left:before {
+  top: 10px;
+  /* controls vertical position */
+  bottom: auto;
+  left: -30px;
+  /* value = - border-left-width - border-right-width */
+  border-width: 15px 30px 15px 0;
+  border-color: transparent #5a8f00;
+}
+/* creates the smaller  triangle */
+.triangle-border.left:after {
+  top: 16px;
+  /* value = (:before top) + (:before border-top) - (:after border-top) */
+  bottom: auto;
+  left: -21px;
+  /* value = - border-left-width - border-right-width */
+  border-width: 9px 21px 9px 0;
+  border-color: transparent #fff;
+}
+/* creates the larger triangle */
+.triangle-border.right:before {
+  top: 10px;
+  /* controls vertical position */
+  bottom: auto;
+  left: auto;
+  right: -30px;
+  /* value = - border-left-width - border-right-width */
+  border-width: 15px 0 15px 30px;
+  border-color: transparent #5a8f00;
+}
+/* creates the smaller  triangle */
+.triangle-border.right:after {
+  top: 16px;
+  /* value = (:before top) + (:before border-top) - (:after border-top) */
+  bottom: auto;
+  left: auto;
+  right: -21px;
+  /* value = - border-left-width - border-right-width */
+  border-width: 9px 0 9px 21px;
+  border-color: transparent #fff;
+}
+[ui-view].ng-enter,
+[ui-view].ng-leave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+[ui-view].ng-enter {
+  opacity: 0;
+}
+[ui-view].ng-enter-active {
+  opacity: 1;
+}
+[ui-view].ng-leave {
+  opacity: 1;
+}
+[ui-view].ng-leave-active {
+  opacity: 0;
+}
