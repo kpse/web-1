@@ -1,7 +1,8 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
   ['$scope', '$rootScope', '$stateParams', '$cacheFactory', '$location', '$state', 'passwordService', '$modal',
-   'chargeService', '$alert', 'AdminUser', 'School', 'ClassesInSchool', 'schoolConfigService',
-    (scope, $rootScope, $stateParams, $cacheFactory, location, $state, Password, Modal, Charge, Alert, AdminUser, School, ClassesInSchool, SchoolConfig) ->
+   'chargeService', '$alert', 'AdminUser', 'School', 'ClassesInSchool', 'schoolConfigService', 'classService',
+    (scope, $rootScope, $stateParams, $cacheFactory, location, $state, Password, Modal, Charge,
+     Alert, AdminUser, School, ClassesInSchool, SchoolConfig, Classes) ->
 
       scope.adminUser = AdminUser
       scope.kindergarten = School
@@ -113,4 +114,8 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.operatorOnly = (user) ->
         user.privilege_group == 'operator'
 
+      scope.$on 'classUpdated', ->
+        Classes.query school_id: $stateParams.kindergarten, (data) ->
+          scope.kindergarten.classes = data
+          scope.classesScope = data
   ]

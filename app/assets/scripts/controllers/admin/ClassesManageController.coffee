@@ -52,10 +52,12 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
         scope.page.loading = true
         managers = clazz.managers
         clazz.$save ->
+          scope.$emit 'classUpdated'
           _.forEach managers, (m) ->
             cm = new ClassManager(getManager(m))
             cm.class_id = clazz.class_id
             cm.$save()
+
           scope.refresh()
           scope.currentModal.hide()
 
@@ -67,6 +69,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
       scope.delete = (clazz) ->
         scope.page.loading = true
         clazz.$delete ->
+          scope.$emit 'classUpdated'
           scope.refresh()
         , (res) ->
           Alert
@@ -77,6 +80,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
             show: true
             container: '.panel-body'
             duration: 3
+          scope.refresh()
 
       scope.nameOf = (employeeId) ->
         employee = _.find scope.employees, (e) ->

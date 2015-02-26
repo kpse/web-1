@@ -6,7 +6,7 @@
 
       <div class="col-sm-8">
         <input id="class-name" type="text" ng-model="currentClass.name" name="name"
-               class="editing-field form-control" ng-bk-focus required/>
+               class="editing-field form-control" ng-bk-focus required placeholder="输入班级名称" />
         <span class="error-field" ng-show="newClassForm.name.$dirty && isDuplicated(currentClass)">与已有班级名称重复！</span>
       </div>
     </div>
