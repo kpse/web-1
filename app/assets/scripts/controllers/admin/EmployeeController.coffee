@@ -23,7 +23,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
       scope.createEmployee = ->
         new SchoolEmployee
           school_id: parseInt $stateParams.kindergarten
-          birthday: '1980-01-01'
+          birthday: ''
           gender: 0
           login_password: ''
           login_name: ''
