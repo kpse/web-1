@@ -49,13 +49,13 @@ object School {
     implicit c =>
       clazz.class_id match {
         case Some(x) =>
-          SQL("select count(1) from classinfo where school_id={kg} and class_id <> {id} and class_name={name} ").on(
+          SQL("select count(1) from classinfo where school_id={kg} and class_id <> {id} and class_name={name} and status=1").on(
             'kg -> clazz.school_id,
             'id -> x,
             'name -> clazz.name
           ).as(get[Long]("count(1)") single) > 0
         case None =>
-          SQL("select count(1) from classinfo where school_id={kg} and class_name={name} ").on(
+          SQL("select count(1) from classinfo where school_id={kg} and class_name={name}  and status=1").on(
             'kg -> clazz.school_id,
             'name -> clazz.name
           ).as(get[Long]("count(1)") single) > 0
