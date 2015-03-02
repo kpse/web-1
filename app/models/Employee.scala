@@ -212,6 +212,8 @@ object Employee {
       classes map {
         c =>
           School.findClass(kg, Some(Integer.parseInt(c)))
+      } filter {
+        case Some(SchoolClass(_, _, _, _, status)) => status.getOrElse(0) == 1
       }
   }
 

@@ -10,7 +10,7 @@ import play.api.libs.json.Json
 
 case class School(school_id: Long, name: String)
 
-case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, managers: Option[List[String]] = None)
+case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, managers: Option[List[String]] = None, status: Option[Int] = None)
 
 case class ConfigItem(name: String, value: String) {
   def isExist(kg: Long) = DB.withConnection {
@@ -263,9 +263,10 @@ object School {
   val simple = {
     get[Int]("class_id") ~
       get[String]("school_id") ~
-      get[String]("class_name") map {
-      case id ~ school_id ~ name =>
-        SchoolClass(school_id.toLong, Some(id), name)
+      get[String]("class_name") ~
+      get[Byte]("status") map {
+      case id ~ school_id ~ name ~ status =>
+        SchoolClass(school_id.toLong, Some(id), name, None, Some(status))
     }
   }
 
