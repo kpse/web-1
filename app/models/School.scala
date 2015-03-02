@@ -264,7 +264,7 @@ object School {
     get[Int]("class_id") ~
       get[String]("school_id") ~
       get[String]("class_name") ~
-      get[Byte]("status") map {
+      get[Int]("status") map {
       case id ~ school_id ~ name ~ status =>
         SchoolClass(school_id.toLong, Some(id), name, None, Some(status))
     }

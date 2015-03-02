@@ -10,7 +10,7 @@ CREATE TABLE classinfo (
   school_id    VARCHAR(20)  NOT NULL,
   class_id    INT(11)  NOT NULL,
   class_name     VARCHAR(40) NOT NULL,
-  status       TINYINT      NOT NULL DEFAULT 1,
+  status       INT       NOT NULL DEFAULT 1,
   update_at BIGINT(20)             NOT NULL DEFAULT 0,
   PRIMARY KEY (uid)
 );
