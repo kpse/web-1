@@ -1,8 +1,8 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
-  ['$scope', '$rootScope', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
+  ['$scope', '$rootScope', '$filter', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
    '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location', 'schoolConfigService',
    'schoolConfigExtractService',
-    (scope, rootScope, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location, SchoolConfig, ConfigExtract) ->
+    (scope, rootScope, $filter, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location, SchoolConfig, ConfigExtract) ->
       scope.refresh = ->
         extractConfig = ConfigExtract
 
@@ -15,7 +15,9 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             kg.managers = Principal.query school_id: kg.school_id, ->
               _.map kg.managers, (p) ->
                 p.detail = Employee.get phone: p.phone
-            kg.charge = Charge.query school_id: kg.school_id
+            Charge.query school_id: kg.school_id, (data) ->
+              kg.charge = data[0]
+              kg.charge.expire = new Date(data[0].expire_date)
 
 
             SchoolConfig.get school_id: kg.school_id, (data)->
@@ -92,6 +94,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             admin_password: '',
           charge:
             school_id: id
+            expire: new Date("#{new Date().getFullYear() + 1}-01-01")
             expire_date: "#{new Date().getFullYear() + 1}-01-01"
             total_phone_number: 0
             status: 1
@@ -118,6 +121,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           duration: 3
 
       scope.saveSchool = (school) ->
+        school.charge.expire_date = $filter('date')(school.charge.expire, 'yyyy-MM-dd', '+0800')
         AdminCreating.save school, ->
           scope.refresh()
           scope.currentModal.hide()

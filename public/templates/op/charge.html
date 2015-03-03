@@ -17,19 +17,19 @@
   </thead>
   <tbody>
   <tr ng-repeat="kg in kindergartens | filter: searchText" class="row"
-      ng-class="{editable: edit, expired: kg.charge[0].status==0}" ng-click="edit(kg)">
+      ng-class="{editable: edit, expired: kg.charge.status==0}" ng-click="edit(kg)">
     <td class="col-xs-3"><a ng-href="/admin#/kindergarten/{{kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{kg.school_id}}</a>
     </td>
     <td class="col-xs-3">{{kg.name}}</td>
-    <td class="col-xs-1">{{kg.charge[0].total_phone_number}}</td>
-    <td class="col-xs-1">{{kg.videoProvider.token ? kg.charge[0].total_video_account : '未开通'}}</td>
-    <td class="col-xs-3">{{kg.charge[0].expire_date}}</td>
+    <td class="col-xs-1">{{kg.charge.total_phone_number}}</td>
+    <td class="col-xs-1">{{kg.videoProvider.token ? kg.charge.total_video_account : '未开通'}}</td>
+    <td class="col-xs-3">{{kg.charge.expire | date: 'yyyy-MM-dd'}}</td>
     <td class="col-xs-2">
-      <button ng-show="kg.charge[0].status==1" class="btn btn-xs btn-danger" ng-confirm-msg="你确定要让{{kg.name}}的所有账号过期吗?"
-              ng-confirm-click="disable(kg.charge[0])">立刻过期
+      <button ng-show="kg.charge.status==1" class="btn btn-xs btn-danger" ng-confirm-msg="你确定要让{{kg.name}}的所有账号过期吗?"
+              ng-confirm-click="disable(kg.charge)">立刻过期
       </button>
-      <button ng-hide="kg.charge[0].status==1" class="btn btn-xs btn-success"
-              ng-click="enable(kg.charge[0]);$event.stopPropagation()">激活
+      <button ng-hide="kg.charge.status==1" class="btn btn-xs btn-success"
+              ng-click="enable(kg.charge);$event.stopPropagation()">激活
       </button>
     </td>
   </tr>

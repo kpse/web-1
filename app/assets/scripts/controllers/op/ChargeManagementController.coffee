@@ -1,11 +1,13 @@
 angular.module('kulebaoOp').controller 'OpChargeCtrl',
-  ['$scope', '$rootScope', '$location', 'schoolService', 'classService', '$modal', 'chargeService',
+  ['$scope', '$rootScope', '$location', '$filter','schoolService', 'classService', '$modal', 'chargeService',
    'videoProviderService',
-    (scope, rootScope, $location, School, Clazz, Modal, Charge, VideoProvider) ->
+    (scope, rootScope, $location, $filter, School, Clazz, Modal, Charge, VideoProvider) ->
       scope.refresh = ->
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->
-            kg.charge = Charge.query school_id: kg.school_id
+            Charge.query school_id: kg.school_id, (data) ->
+              kg.charge = data[0]
+              kg.charge.expire = new Date(data[0].expire_date)
             kg.videoProvider = VideoProvider.get school_id: kg.school_id
 
       scope.refresh()
@@ -13,7 +15,7 @@ angular.module('kulebaoOp').controller 'OpChargeCtrl',
       rootScope.tabName = 'charge'
 
       scope.edit = (kg) ->
-        scope.charge = angular.copy kg.charge[0]
+        scope.charge = angular.copy kg.charge
         scope.kg = kg
         scope.currentModal = Modal
           scope: scope
@@ -30,6 +32,7 @@ angular.module('kulebaoOp').controller 'OpChargeCtrl',
           scope.refresh()
 
       scope.save = (charge) ->
+        charge.expire_date = $filter('date')(charge.expire, 'yyyy-MM-dd', '+0800')
         charge.$save ->
           scope.refresh()
           scope.currentModal.hide()
