@@ -41,41 +41,65 @@ object StatisticsController extends Controller with Secured {
 
   def countAssignmentHistory(schoolId: Long, employeeId: Option[String]) = IsAuthenticated {
     u => _ =>
-      Ok(Json.toJson(ScoreItem.countHistory("assignment")(schoolId, employeeId)))
+      val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]](s"assignmentCountIn$schoolId-employee$employeeId", 3600 * 24) {
+        ScoreItem.countHistory("assignment")(schoolId, employeeId)
+      }
+      Ok(Json.toJson(value))
   }
 
   def countAssessHistory(schoolId: Long, employeeId: Option[String]) = IsAuthenticated {
     u => _ =>
-      Ok(Json.toJson(ScoreItem.countHistory("assess")(schoolId, employeeId)))
+      val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]](s"assessCountIn$schoolId-employee$employeeId", 3600 * 24) {
+        ScoreItem.countHistory("assess")(schoolId, employeeId)
+      }
+      Ok(Json.toJson(value))
   }
 
   def countConversationHistory(schoolId: Long, employeeId: Option[String]) = IsAuthenticated {
     u => _ =>
-      Ok(Json.toJson(ScoreItem.countHistory("sessionlog", "sender")(schoolId, employeeId)))
+      val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]](s"sessionlogCountIn$schoolId-employee$employeeId", 3600 * 24) {
+        ScoreItem.countHistory("sessionlog", "sender")(schoolId, employeeId)
+      }
+      Ok(Json.toJson(value))
   }
 
   def countNewsHistory(schoolId: Long, employeeId: Option[String]) = IsAuthenticated {
     u => _ =>
-      Ok(Json.toJson(ScoreItem.countHistory("news")(schoolId, employeeId)))
+      val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]](s"newsCountIn$schoolId-employee$employeeId", 3600 * 24) {
+        ScoreItem.countHistory("news")(schoolId, employeeId)
+      }
+      Ok(Json.toJson(value))
   }
 
   def countAllAssignment() = IsOperator {
     u => _ =>
-      Ok(Json.toJson(ScoreItem.countAllHistory("assignment")))
+      val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]]("assignmentCount", 3600 * 24) {
+        ScoreItem.countAllHistory("assignment")
+      }
+      Ok(Json.toJson(value))
   }
 
   def countAllAssess() = IsOperator {
     u => _ =>
-      Ok(Json.toJson(ScoreItem.countAllHistory("assess")))
+      val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]]("assessCount", 3600 * 24) {
+        ScoreItem.countAllHistory("assess")
+      }
+      Ok(Json.toJson(value))
   }
 
   def countAllConversation() = IsOperator {
     u => _ =>
-      Ok(Json.toJson(ScoreItem.countAllHistory("sessionlog", "sender")))
+      val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]]("sessionlogCount", 3600 * 24) {
+        ScoreItem.countAllHistory("sessionlog", "sender")
+      }
+      Ok(Json.toJson(value))
   }
 
   def countAllNews() = IsOperator {
     u => _ =>
-      Ok(Json.toJson(ScoreItem.countAllHistory("news")))
+      val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]]("newsCount", 3600 * 24) {
+        ScoreItem.countAllHistory("news")
+      }
+      Ok(Json.toJson(value))
   }
 }
