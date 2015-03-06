@@ -63,7 +63,13 @@ object EmployeeController extends Controller with Secured {
 
   def deleteInSchool(kg: Long, phone: String) = IsPrincipal {
     u => _ =>
-      Ok(Json.toJson(Employee.deleteInSchool(kg, phone)))
+      Employee.deleteInSchool(kg, phone) match {
+        case Some(x) =>
+          Ok(Json.toJson(new SuccessResponse))
+        case None =>
+          BadRequest(Json.toJson(ErrorResponse("删除失败,请与管理员联系(Cannot be deleted).", 2)))
+      }
+
   }
 
   def createOrUpdateInSchool(kg: Long, phone: String) = IsAuthenticated(parse.json) {

@@ -352,13 +352,28 @@ object Employee {
       show(employee.phone)
   }
 
-  def deleteInSchool(kg: Long, phone: String) = DB.withConnection {
+  def deleteInSchool(kg: Long, phone: String): Option[Employee] = DB.withTransaction {
     implicit c =>
-      SQL("update employeeinfo set status=0 where phone={phone} and school_id={kg}")
-        .on(
-          'kg -> kg.toString,
-          'phone -> phone
-        ).executeUpdate()
+      val result: Option[Employee] = phoneSearch(phone)
+      try {
+        result map {
+          employee =>
+            SQL("update employeeinfo set status=0 where employee_id={id} and school_id={kg}")
+              .on(
+                'kg -> kg.toString,
+                'id -> employee.id
+              ).executeUpdate()
+            SQL("update privilege set status=0 where school_id={kg} and employee_id={id}")
+              .on('kg -> kg, 'id -> employee.id).executeUpdate()
+        }
+        c.commit()
+        result
+      }
+      catch {
+        case e: Throwable =>
+          c.rollback()
+          return None
+      }
   }
 
   def generatePhoneQuery(phones: Option[String]): String = {

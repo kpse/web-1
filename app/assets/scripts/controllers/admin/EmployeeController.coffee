@@ -56,7 +56,14 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
 
       scope.delete = (employee) ->
         employee.$delete ->
-          scope.refresh()
+            scope.refresh()
+          , (res) ->
+            Alert
+              title: '老师信息删除失败'
+              content: res.data.error_msg
+              placement: "top-left"
+              container: '.panel-body'
+
 
       scope.buttonLabel = '上传头像'
 
