@@ -43,11 +43,11 @@ object EmployeeController extends Controller with Secured {
       request =>
         request.body.validate[Employee].map {
           case (employee) if Employee.phoneExists(employee.phone) =>
-            BadRequest(loggedJson(ErrorResponse("老师的电话重复，请检查输入。")))
+            BadRequest(loggedJson(ErrorResponse("老师的电话重复，请检查输入。", 3)))
           case (reCreation) if Employee.hasBeenDeleted(reCreation.phone) =>
             Ok(loggedJson(Employee.reCreateByPhone(reCreation)))
           case (employee) if Employee.loginNameExists(employee.login_name) =>
-            BadRequest(loggedJson(ErrorResponse(employee.login_name + "已占用，建议用学校拼音缩写加数字来组织登录名。")))
+            BadRequest(loggedJson(ErrorResponse(employee.login_name + "已占用，建议用学校拼音缩写加数字来组织登录名。", 4)))
           case (employee) =>
             Ok(loggedJson(Employee.create(employee)))
         }.recoverTotal {
@@ -84,11 +84,11 @@ object EmployeeController extends Controller with Secured {
           case (reCreation) if Employee.hasBeenDeleted(reCreation.phone) =>
             Ok(loggedJson(Employee.reCreateByPhone(reCreation)))
           case (other) if !(userId.equals(other.id) || Employee.isSuperUser(userId.getOrElse(""), kg)) =>
-            Unauthorized(loggedJson(ErrorResponse("您无权修改其他老师的信息。")))
+            Unauthorized(loggedJson(ErrorResponse("您无权修改其他老师的信息。", 41)))
           case (phoneDuplicated) if Employee.phoneExists(phoneDuplicated.phone) && !Employee.idExists(phoneDuplicated.id) =>
-            BadRequest(loggedJson(ErrorResponse("已有老师使用此电话%s，请检查输入。".format(phoneDuplicated.phone))))
+            BadRequest(loggedJson(ErrorResponse("已有老师使用此电话%s，请检查输入。".format(phoneDuplicated.phone), 42)))
           case (loginNameDuplicated) if Employee.loginNameExists(loginNameDuplicated.login_name) && !Employee.idExists(loginNameDuplicated.id) =>
-            BadRequest(loggedJson(ErrorResponse(loginNameDuplicated.login_name + "已占用，建议用学校拼音缩写加数字来组织登录名。")))
+            BadRequest(loggedJson(ErrorResponse(loginNameDuplicated.login_name + "已占用，建议用学校拼音缩写加数字来组织登录名。", 43)))
           case (existing) if Employee.idExists(existing.id) =>
             Ok(loggedJson(Employee.update(existing)))
           case (newOne) =>
@@ -117,11 +117,11 @@ object EmployeeController extends Controller with Secured {
         Logger.info(request.body.toString())
         request.body.validate[EmployeePassword].map {
           case (employee) if employee.old_password.equalsIgnoreCase(employee.new_password) =>
-            BadRequest(loggedJson(ErrorResponse("新旧密码一样。")))
+            BadRequest(loggedJson(ErrorResponse("新旧密码一样。", 11)))
           case (employee) if !Employee.oldPasswordMatch(employee) =>
-            BadRequest(loggedJson(ErrorResponse("旧密码错误。")))
+            BadRequest(loggedJson(ErrorResponse("旧密码错误。", 12)))
           case (employee) if !PasswordHelper.isValid(employee.new_password) =>
-            BadRequest(loggedJson(ErrorResponse(PasswordHelper.ErrorMessage)))
+            BadRequest(loggedJson(ErrorResponse(PasswordHelper.ErrorMessage, 13)))
           case (employee) =>
             Logger.info(employee.toString)
             Employee.changPassword(kg, phone, employee)
