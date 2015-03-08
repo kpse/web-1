@@ -84,11 +84,11 @@ object EmployeeController extends Controller with Secured {
           case (reCreation) if Employee.hasBeenDeleted(reCreation.phone) =>
             Ok(loggedJson(Employee.reCreateByPhone(reCreation)))
           case (other) if !(userId.equals(other.id) || Employee.isSuperUser(userId.getOrElse(""), kg)) =>
-            Unauthorized(loggedJson(ErrorResponse("您无权修改其他老师的信息。", 41)))
+            Unauthorized(loggedJson(ErrorResponse("您无权修改其他老师的信息。(not authorized to change other teacher's information)", 41)))
           case (phoneDuplicated) if Employee.phoneExists(phoneDuplicated.phone) && !Employee.idExists(phoneDuplicated.id) =>
-            BadRequest(loggedJson(ErrorResponse("已有老师使用此电话%s，请检查输入。".format(phoneDuplicated.phone), 42)))
+            BadRequest(loggedJson(ErrorResponse("已有老师使用此电话%s，请检查输入。(phone number is occupied)".format(phoneDuplicated.phone), 42)))
           case (loginNameDuplicated) if Employee.loginNameExists(loginNameDuplicated.login_name) && !Employee.idExists(loginNameDuplicated.id) =>
-            BadRequest(loggedJson(ErrorResponse(loginNameDuplicated.login_name + "已占用，建议用学校拼音缩写加数字来组织登录名。", 43)))
+            BadRequest(loggedJson(ErrorResponse(loginNameDuplicated.login_name + "已占用，建议用学校拼音缩写加数字来组织登录名。(login name is occupied)", 43)))
           case (existing) if Employee.idExists(existing.id) =>
             Ok(loggedJson(Employee.update(existing)))
           case (newOne) =>
@@ -155,12 +155,11 @@ object EmployeeController extends Controller with Secured {
   def managedClass(kg: Long, phone: String) = IsAuthenticated {
     username =>
       _ =>
-        Employee.show(phone).fold(Ok(loggedJson(List[SchoolClass]())))({
+        Employee.show(phone).fold(Ok(Json.toJson(List[SchoolClass]())))({
           case (principal) if Employee.isSuperUser(principal.id.getOrElse(""), kg) =>
-            Ok(loggedJson(School.allClasses(kg)))
+            Ok(Json.toJson(School.allClasses(kg)))
           case teacher =>
-            Logger.info(teacher.toString)
-            Ok(loggedJson(Employee.managedClass(kg, teacher)))
+            Ok(Json.toJson(Employee.managedClass(kg, teacher)))
         })
   }
 
