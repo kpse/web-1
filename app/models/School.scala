@@ -109,9 +109,12 @@ object School {
         SQL("delete from relationmap where parent_id in (select parent_id from parentinfo where school_id={kg})")
           .on('kg -> kg.toString).execute()
 
+        SQL("delete from privilege where school_id={kg} and `group`='teacher'")
+          .on('kg -> kg.toString).execute()
+
         List("classinfo", "childinfo", "parentinfo", "news",
-          "scheduleinfo", "cookbookinfo", "employeeinfo", "dailylog", "conversation",
-          "assignment", "assess", "privilege", "chargeinfo").map {
+          "scheduleinfo", "cookbookinfo", "dailylog", "conversation",
+          "assignment", "assess").map {
           table =>
             SQL("delete from " + table + " where school_id={kg}")
               .on('kg -> kg.toString).execute()

@@ -209,6 +209,11 @@ POST          /api/v1/batch_import/children                                     
 POST          /api/v1/batch_import/employees                                     controllers.BatchImportController.employees
 POST          /api/v1/batch_import/relationships                                 controllers.BatchImportController.relationships
 
+POST          /api/v1/batch_import/:kg/parents                                   controllers.BatchImportController.parentsInSchool(kg: Long)
+POST          /api/v1/batch_import/:kg/children                                  controllers.BatchImportController.childrenInSchool(kg: Long)
+POST          /api/v1/batch_import/:kg/employees                                 controllers.BatchImportController.employeesInSchool(kg: Long)
+POST          /api/v1/batch_import/:kg/relationships                             controllers.BatchImportController.relationshipsInSchool(kg: Long)
+
 POST          /api/v1/batch_delete/parents                                       controllers.BatchDeleteController.deleteParents
 
 GET           /api/v1/test/force_update                                          controllers.TestInterfaceController.forceUpdate

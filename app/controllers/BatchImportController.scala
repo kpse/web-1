@@ -1,8 +1,8 @@
 package controllers
 
-import play.api.mvc.Controller
+import play.api.mvc.{SimpleResult, Request, Controller}
 import models._
-import play.api.libs.json.{JsError, Json}
+import play.api.libs.json.{JsValue, JsError, Json}
 import models.ImportedParent
 import models.SuccessResponse
 import models.BatchImportReport
@@ -17,8 +17,7 @@ object BatchImportController extends Controller with Secured {
   implicit val read4 = Json.reads[ImportedRelationship]
   implicit val write = Json.writes[BatchImportReport]
   implicit val write1 = Json.writes[SuccessResponse]
-
-  def parents = OperatorPage(parse.json) {
+  val p: (String) => (Request[JsValue]) => SimpleResult = {
     u => request =>
       request.body.validate[List[ImportedParent]].map {
         case (parents) =>
@@ -28,7 +27,8 @@ object BatchImportController extends Controller with Secured {
       }
   }
 
-  def children = OperatorPage(parse.json) {
+
+  val c: (String) => (Request[JsValue]) => SimpleResult = {
     u => request =>
       request.body.validate[List[ImportedChild]].map {
         case (children) =>
@@ -38,7 +38,7 @@ object BatchImportController extends Controller with Secured {
       }
   }
 
-  def employees = OperatorPage(parse.json) {
+  val e: (String) => (Request[JsValue]) => SimpleResult = {
     u => request =>
       request.body.validate[List[Employee]].map {
         case (employees) =>
@@ -48,7 +48,7 @@ object BatchImportController extends Controller with Secured {
       }
   }
 
-  def relationships = OperatorPage(parse.json) {
+  val r: (String) => (Request[JsValue]) => SimpleResult = {
     u => request =>
       request.body.validate[List[ImportedRelationship]].map {
         case (relationships) =>
@@ -57,4 +57,20 @@ object BatchImportController extends Controller with Secured {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
+
+  def parents = OperatorPage(parse.json)(p)
+
+  def children = OperatorPage(parse.json)(c)
+
+  def employees = OperatorPage(parse.json)(e)
+
+  def relationships = OperatorPage(parse.json)(r)
+
+  def parentsInSchool(kg: Long) = IsPrincipal(parse.json)(p)
+
+  def childrenInSchool(kg: Long) = IsPrincipal(parse.json)(c)
+
+  def employeesInSchool(kg: Long) = IsPrincipal(parse.json)(e)
+
+  def relationshipsInSchool(kg: Long) = IsPrincipal(parse.json)(r)
 }

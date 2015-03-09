@@ -100,9 +100,11 @@ trait Secured {
     id match {
       case Some(op) =>
         val Pattern = "/kindergarten/(\\d+).*".r
+        val PrincipalImport = "/api/v1/batch_import/(\\d+).*".r
         request.path match {
           case path if Employee.canAccess(id) => user
           case Pattern(c) if Employee.isPrincipal(op, c.toLong) => user
+          case PrincipalImport(c) if Employee.isPrincipal(op, c.toLong) => user
           case _ => None
         }
       case _ => None
