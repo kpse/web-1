@@ -3,6 +3,9 @@
 angular.module('kulebao.services')
 .factory 'batchDataService', ['$resource',
   ($resource) ->
-    (type) ->
-      $resource "/api/v1/batch_import/#{type}"
+    (type, school) ->
+      if school?
+        $resource "/api/v1/batch_import/#{school}/#{type}"
+      else
+        $resource "/api/v1/batch_import/#{type}"
 ]

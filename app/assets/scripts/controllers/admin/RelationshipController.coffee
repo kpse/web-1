@@ -35,8 +35,7 @@ angular.module('kulebaoAdmin')
           backendConfig? && scope.backend = backendConfig.value == 'true'
           disableMemberEditingConfig = _.find data['config'], (item) -> item.name == 'disableMemberEditing'
           disableMemberEditingConfig? && scope.disableMemberEditing = disableMemberEditingConfig.value == 'true'
-#          scope.types.pop() if scope.backend or (!scope.backend and !scope.isSuperUser())
-          scope.types.pop() unless scope.adminUser.privilege_group == 'operator'
+          scope.types.pop() if scope.backend or (!scope.backend and !scope.isSuperUser())
           scope.config =
             deletable : scope.adminUser.privilege_group == 'operator' || !scope.backend
 
@@ -413,9 +412,9 @@ angular.module('kulebaoAdmin')
 
         location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/1000/list")
 
-      BatchParents = BatchData('parents')
-      BatchChildren = BatchData('children')
-      BatchRelationship = BatchData('relationships')
+      BatchParents = BatchData('parents', stateParams.kindergarten)
+      BatchChildren = BatchData('children', stateParams.kindergarten)
+      BatchRelationship = BatchData('relationships', stateParams.kindergarten)
 
       classOfName = (name) ->
         _.find scope.classesScope, (c) ->
@@ -471,7 +470,7 @@ angular.module('kulebaoAdmin')
               success = _.every q, (f) -> f.error_code == 0
               if success
                 $timeout ->
-                    location.path "kindergarten/#{stateParams.kindergarten}/relationship/type/connected"
+                    $state.go('kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: 'connected'})
                   , 200
                 $state.reload()
               else
@@ -490,13 +489,13 @@ angular.module('kulebaoAdmin')
 
 .controller 'ImportPreviewRelationshipCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', '$modal',
-    (scope, rootScope, stateParams, location, Modal) ->
+    '$location', '$state', '$modal',
+    (scope, rootScope, stateParams, location, $state, Modal) ->
       scope.loading = false
       scope.current_class = parseInt stateParams.class_id
       schoolId = parseInt stateParams.kindergarten
 
-      location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport") unless scope.excel?
+      $state.go('kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: 'batchImport'}) unless scope.excel?
 
       classOfId = (id) ->
         _.find scope.classesScope, (c) ->
