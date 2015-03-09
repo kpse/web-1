@@ -1,22 +1,24 @@
 <button ng-disabled="!hasSelection(relationships)" class="btn btn-danger" ng-confirm-msg="你确定要删除吗?"
-        ng-confirm-click="multipleDelete()" ng-show="adminUser.privilege_group == 'operator' || !backend">删除选中项
+        ng-confirm-click="multipleDelete()" ng-show="config.deletable">删除选中项
 </button>
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
+    <th class="col-xs-1" ng-if="config.deletable"><input type="checkbox" ng-model="selection.allCheck" ng-change="checkAll(selection.allCheck)"/> 全选</th>
     <th class="col-xs-2" ng-if="backend">卡号</th>
-    <th class="col-xs-2" ng-if="!backend"><input type="checkbox" ng-model="selection.allCheck" ng-change="checkAll(selection.allCheck)"/> 全选</th>
-    <th class="col-xs-1">班级</th>
+    <th class="col-xs-1" ng-if="backend">班级</th>
+    <th class="col-xs-3" ng-if="!backend">班级</th>
     <th class="col-xs-1">小孩姓名</th>
     <th class="col-xs-1">家长姓名</th>
     <th class="col-xs-2">电话号码</th>
-    <th class="col-xs-2">关系</th>
+    <th class="col-xs-1">关系</th>
     <th class="col-xs-4">操作</th>
   </tr>
   </thead>
   <tbody>
   <div class="loading" ng-show="loading"></div>
   <tr ng-repeat="r in relationships | filter: searchText" class="row">
+    <td class="col-xs-1" ng-if="config.deletable"><input type="checkbox" ng-model="r.checked" ng-change="singleSelection(r)"/></td>
     <td class="col-xs-2" ng-hide="cardNumberEditing=={{::r.card}}" ng-if="backend"><a ng-click="editing(r)">{{::r.card}}</a></td>
     <td class="col-xs-2" ng-show="cardNumberEditing=={{::r.card}}" ng-if="backend">
       <input class="form-control" ui-mask="{{'99999-99999'}}" ng-model="r.card">
@@ -24,23 +26,22 @@
         <span class="glyphicon glyphicon-ok" ng-click="updateCardNumber(r)"></span></button>
       <button class="inline-btn cancel-btn btn btn-xs btn-warning">
         <span class="glyphicon glyphicon-remove" ng-click="cancelEditing(r)"></span></button></td>
-    <td class="col-xs-2" ng-if="!backend"><input type="checkbox" ng-model="r.checked" ng-change="singleSelection(r)"/></td>
     <td class="col-xs-1">{{::r.child.class_name}}</td>
     <td class="col-xs-1"><a ng-click="editChild(r.child)">{{::r.child.name}}</a></td>
     <td class="col-xs-1"><a ng-click="editParent(r.parent)">{{::r.parent.name}}</a></td>
     <td class="col-xs-2">{{::r.parent.phone | phone}}</td>
-    <td class="col-xs-2">{{::r.relationship}}</td>
+    <td class="col-xs-1">{{::r.relationship}}</td>
 
 
     <td class="col-xs-4">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
-              ng-confirm-click="delete(r.card)" ng-show="adminUser.privilege_group == 'operator' || !backend">删除
+              ng-confirm-click="delete(r.card)" ng-show="config.deletable">删除
       </button>
       <button class="btn btn-xs btn-info" ng-click="sendMessage(r, 1)" ng-show="adminUser.privilege_group == 'operator'">到校刷卡
       </button>
       <button class="btn btn-xs btn-warning" ng-click="sendMessage(r, 0)" ng-show="adminUser.privilege_group == 'operator'">离开刷卡
       </button>
-      <span ng-hide="adminUser.privilege_group == 'operator' || !backend">该数据导入自安全系统</span>
+      <span ng-hide="config.deletable">该数据导入自安全系统</span>
     </td>
   </tr>
   </tbody>

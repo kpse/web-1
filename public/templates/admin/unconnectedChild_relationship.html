@@ -10,30 +10,30 @@
 <div class="loading" ng-show="loading"></div>
 <br/>
 <button ng-disabled="!hasSelection(children)" class="btn btn-danger" ng-confirm-msg="你确定要删除吗?"
-        ng-confirm-click="multipleDelete()" ng-show="adminUser.privilege_group == 'operator' || !backend">删除选中项
+        ng-confirm-click="multipleDelete()" ng-show="config.deletable">删除选中项
 </button>
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class="col-xs-2" ng-if="!backend"><input type="checkbox" ng-model="selection.allCheck" ng-change="checkAll(selection.allCheck)"/> 全选</th>
-    <th class="col-xs-2" ng-if="!backend">小孩姓名</th>
-    <th class="col-xs-4" ng-if="backend">小孩姓名</th>
+    <th class="col-xs-2" ng-if="config.deletable"><input type="checkbox" ng-model="selection.allCheck" ng-change="checkAll(selection.allCheck)"/> 全选</th>
+    <th class="col-xs-2" ng-if="config.deletable">小孩姓名</th>
+    <th class="col-xs-4" ng-if="!config.deletable && backend">小孩姓名</th>
     <th class="col-xs-4">班级</th>
     <th class="col-xs-4">操作</th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="child in children | filter: searchText" class="row" ng-class="{'member-row': false, 'editable': editChild}" ng-click="editChild(child)">
-    <td class="col-xs-2" ng-if="!backend" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="child.checked" ng-change="singleSelection(child)"/></td>
-    <td class="col-xs-2" ng-if="!backend">{{::child.name}}</td>
-    <td class="col-xs-4" ng-if="backend">{{::child.name}}</td>
+    <td class="col-xs-2" ng-if="config.deletable" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="child.checked" ng-change="singleSelection(child)"/></td>
+    <td class="col-xs-2" ng-if="config.deletable">{{::child.name}}</td>
+    <td class="col-xs-4" ng-if="!config.deletable && backend">{{::child.name}}</td>
     <td class="col-xs-4">{{::child.class_name}}</td>
 
 
     <td class="col-xs-4">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
-              ng-confirm-click="delete(child)" ng-show="adminUser.privilege_group == 'operator'">删除</button>
-      <span ng-hide="adminUser.privilege_group == 'operator'">该数据导入自安全系统</span>
+              ng-confirm-click="delete(child)" ng-show="config.deletable">删除</button>
+      <span ng-hide="config.deletable">该数据导入自安全系统</span>
     </td>
   </tr>
   </tbody>

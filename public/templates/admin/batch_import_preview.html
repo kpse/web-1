@@ -3,11 +3,11 @@
         ng-confirm-click="applyAllChange()">覆盖已有数据
 </button>
 <div class="loading" ng-show="loading"></div>
-<div class="alert alert-danger" role="alert" ng-if="errorNumbers">
+<div class="alert alert-danger" role="alert" ng-if="errorNumbers.length > 0">
   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
   <span>以下号码已存在于其他学校,请检查并修改excel内容后再导入</span>
   <ul>
-    <li ng-repeat="phone in errorNumbers">{{phone}}</li>
+    <li ng-repeat="phone in errorNumbers">{{::phone}}</li>
   </ul>
 </div>
 <div class="sub-view" ui-view></div>
