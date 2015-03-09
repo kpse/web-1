@@ -35,7 +35,8 @@ angular.module('kulebaoAdmin')
           backendConfig? && scope.backend = backendConfig.value == 'true'
           disableMemberEditingConfig = _.find data['config'], (item) -> item.name == 'disableMemberEditing'
           disableMemberEditingConfig? && scope.disableMemberEditing = disableMemberEditingConfig.value == 'true'
-          scope.types.pop() if scope.backend or (!scope.backend and !scope.isSuperUser())
+#          scope.types.pop() if scope.backend or (!scope.backend and !scope.isSuperUser())
+          scope.types.pop() unless scope.adminUser.privilege_group == 'operator'
 
         scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
           callback() if callback?
