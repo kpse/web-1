@@ -83,10 +83,20 @@ object School {
         .on('kg -> kg.toString).execute()
   }
 
+  def cleanSchoolData(kg: Long) = DB.withConnection {
+    implicit c =>
+    List("employeeinfo", "privilege", "chargeinfo").map {
+      table =>
+        SQL("delete from " + table + " where school_id={kg}")
+          .on('kg -> kg.toString).execute()
+    }
+  }
+
   def delete(kg: Long) = DB.withTransaction {
     implicit c =>
 
       try {
+        cleanSchoolClassesData(kg)
         cleanSchoolData(kg)
         deleteSchool(kg)
         c.commit()
@@ -98,7 +108,7 @@ object School {
       }
   }
 
-  def cleanSchoolData(kg: Long) = DB.withTransaction {
+  def cleanSchoolClassesData(kg: Long) = DB.withTransaction {
     implicit c =>
 
       try {

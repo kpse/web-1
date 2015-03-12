@@ -102,7 +102,7 @@ object ClassController extends Controller with Secured {
 
   def removeAll(kg: Long) = IsPrincipal {
     u => _ =>
-      School.cleanSchoolData(kg)
+      School.cleanSchoolClassesData(kg)
       Ok(Json.toJson(new SuccessResponse))
   }
 }
