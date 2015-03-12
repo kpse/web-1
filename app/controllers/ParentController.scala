@@ -109,7 +109,8 @@ object ParentController extends Controller with Secured {
 
   def delete(kg: Long, phone: String) = IsLoggedIn {
     u => _ =>
-      Parent.delete(kg)(phone)
+      val parent: Option[Parent] = Parent.delete(kg)(phone)
+      parent map {case p => VideoMember.delete(kg, p.parent_id.getOrElse("null"))}
       Ok(Json.toJson(new SuccessResponse))
   }
 

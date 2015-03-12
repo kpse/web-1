@@ -276,14 +276,14 @@ object Parent {
       SQL(fullStructureSql + " and p.phone={phone}")
         .on('kg -> kg,
           'phone -> phone)
-        .as(withRelationship.singleOpt)
+        .as(withRelationship singleOpt)
   }
 
   def delete(kg: Long)(phone: String) = DB.withConnection {
     implicit c =>
       SQL("update parentinfo set status=0 where phone={phone}")
-        .on('phone -> phone
-        ).executeUpdate
+        .on('phone -> phone).executeUpdate
+      phoneSearch(phone)
   }
 
   def findById(kg: Long)(id: Long) = DB.withConnection {
