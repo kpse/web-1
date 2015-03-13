@@ -39,7 +39,7 @@ angular.module('kulebaoOp').controller 'OpVideoMemberInClassCtrl',
         _.forEach all, (p) ->
           Parent.get school_id: stateParams.school_id, id: p.id, type: 'p', (data)->
             p.detail = data
-            p.reltaionship = Relationship.query school_id: stateParams.school_id, parent: p.detail.phone if parent: p.detail.phone?
+            p.reltaionship = Relationship.query school_id: stateParams.school_id, parent: p.detail.phone if p.detail.phone?
         scope.loading = false
 
       scope.display = (p) ->
