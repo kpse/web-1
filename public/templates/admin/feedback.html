@@ -1,19 +1,22 @@
 <div class="panel panel-default">
   <form class="form-horizontal" role="form" name="feedbackForm">
     <div class="panel-heading">
+      <h3>反馈/吐槽</h3>
       <div class="form-group">
-        <label class="control-label col-xs-2">联系方式{{message.phone}}</label>
+        <label class="control-label col-xs-2">联系方式</label>
+
+        <span class="form-control-static col-xs-6">{{message.phone}}</span>
       </div>
     </div>
     <div class="panel-body">
 
-      <div class="form-group col-sm-6">
+      <div class="form-group col-sm-6" ng-show="false">
         <div class="image-container">
           <img class="message-image img-responsive" ng-src="{{compress(message.image, 0, 200)}}"
                alt="图片"/></div>
       </div>
 
-      <div class="col-sm-6">
+      <div class="col-sm-6" ng-show="false">
         <div class="form-group">
           <label for="message-pic" class="col-sm-4 control-label">上传</label>
 
@@ -44,7 +47,8 @@
       <div class="btn-group">
         <button class="btn btn-default" ng-click="$hide()">{{ news.published ? '关闭' : '取消' }}</button>
 
-        <button class="btn btn-info" ng-disabled="feedbackForm.$invalid || uploading" ng-click="postFeedback(message)">保存
+        <button class="btn btn-info" ng-disabled="feedbackForm.$invalid || uploading" ng-click="postFeedback(message)">
+          保存
         </button>
       </div>
     </div>

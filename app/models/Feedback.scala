@@ -8,7 +8,7 @@ import anorm.~
 import play.Logger
 
 
-case class Feedback(id: Option[Long], phone: String, content: String, timestamp: Option[Long], comment: Option[String], source: Option[String] = None) {
+case class Feedback(id: Option[Long], phone: String, content: String, timestamp: Option[Long], comment: Option[String], source: Option[String] = None, image: Option[String] = None) {
   def create = DB.withConnection {
     implicit c =>
       SQL("insert into feedback (phone, content, source, comment, update_at) values ({phone}, {content}, {source}, {comment}, {timestamp})")
@@ -32,6 +32,7 @@ object Feedback {
           'comment -> feedback.comment.getOrElse("")).executeUpdate()
   }
 
+  //TODO: add image field
   val simple = {
     get[Option[Long]]("uid") ~
       get[String]("phone") ~
