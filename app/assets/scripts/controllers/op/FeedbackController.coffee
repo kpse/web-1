@@ -8,6 +8,7 @@ angular.module('kulebaoOp').controller 'OpFeedbackCtrl',
         {name: '安卓教师', type: 'android_teacher'}
         {name: '苹果家长', type: 'ios_parent'}
         {name: '苹果教师', type: 'ios_teacher'}
+        {name: '网页', type: 'web'}
         {name: '已处理', type: 'done'}
       ]
 
