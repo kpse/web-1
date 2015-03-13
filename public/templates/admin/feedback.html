@@ -1,0 +1,53 @@
+<div class="panel panel-default">
+  <form class="form-horizontal" role="form" name="feedbackForm">
+    <div class="panel-heading">
+      <div class="form-group">
+        <label class="control-label col-xs-2">联系方式{{message.phone}}</label>
+      </div>
+    </div>
+    <div class="panel-body">
+
+      <div class="form-group col-sm-6">
+        <div class="image-container">
+          <img class="message-image img-responsive" ng-src="{{compress(message.image, 0, 200)}}"
+               alt="图片"/></div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="message-pic" class="col-sm-4 control-label">上传</label>
+
+          <div class="col-sm-8">
+            <kl-file-upload ng-model="message" user="adminUser.id"></kl-file-upload>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="form-group news-content">
+        <label for="content" class="control-label">反馈内容</label>
+        <br/>
+        <small ng-show="news.content.length >= 0">还可以输入{{ 2000 - news.content.length}}个字</small>
+        <span class="error-field"
+              ng-show="feedbackForm.content.$dirty && feedbackForm.content.$error.required">请填写正文内容</span>
+      <span class="error-field"
+            ng-show="feedbackForm.content.$dirty && feedbackForm.content.$error.maxlength">正文内容请不要超过2000个字符</span>
+        <textarea ng-disabled="news.published" id="content" name="content" ng-model="message.content"
+                  class="editing-content form-control" ng-maxlength="2000" placeholder="添加内容" required/>
+      </div>
+
+    </div>
+
+    <div class="panel-footer">
+      <div class="loading" ng-show="loading"></div>
+      <div class="btn-group">
+        <button class="btn btn-default" ng-click="$hide()">{{ news.published ? '关闭' : '取消' }}</button>
+
+        <button class="btn btn-info" ng-disabled="feedbackForm.$invalid || uploading" ng-click="postFeedback(message)">保存
+        </button>
+      </div>
+    </div>
+  </form>
+
+</div>

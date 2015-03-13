@@ -1,8 +1,8 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
   ['$scope', '$rootScope', '$stateParams', '$cacheFactory', '$location', '$state', 'passwordService', '$modal',
-   'chargeService', '$alert', 'AdminUser', 'School', 'ClassesInSchool', 'schoolConfigService', 'classService',
+   'chargeService', '$alert', 'AdminUser', 'School', 'ClassesInSchool', 'schoolConfigService', 'classService', 'imageCompressService',
     (scope, $rootScope, $stateParams, $cacheFactory, location, $state, Password, Modal, Charge,
-     Alert, AdminUser, School, ClassesInSchool, SchoolConfig, Classes) ->
+     Alert, AdminUser, School, ClassesInSchool, SchoolConfig, Classes, Compress) ->
 
       scope.adminUser = AdminUser
       scope.kindergarten = School
@@ -118,4 +118,20 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         Classes.query school_id: $stateParams.kindergarten, (data) ->
           scope.kindergarten.classes = data
           scope.classesScope = data
+
+      scope.feedback = ->
+        scope.message =
+          content: ''
+          timestamp: ''
+          phone: scope.adminUser.phone
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/admin/feedback.html'
+
+      scope.postFeedback = (message) ->
+        scope.currentModal.hide()
+
+      scope.compress = (url, width, height) ->
+        Compress.compress(url, width, height)
+
   ]

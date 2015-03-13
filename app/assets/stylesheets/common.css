@@ -535,3 +535,12 @@ util.print: Use console.log instead
     width: 100%;
   }
 }
+.feedback {
+  position: fixed;
+  top: 200px;
+  right: 10px;
+  background: no-repeat url(../../images/feedback.gif) -9px -25px;
+  background-size: 156px 101px;
+  width: 139px;
+  height: 45px;
+}
