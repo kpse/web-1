@@ -1,0 +1,27 @@
+<div class="loading" ng-show="loading"></div>
+<h3>公告: {{current_news.title}} 的家长回执</h3>
+<div class="panel panel-default">
+  <form class="form-horizontal" role="form" name="newsForm">
+
+    <div class="news-feedback-container row">
+      <div class="specification pull-left col-xs-5">
+        <div>图例说明：<span>所有家长的回执</span></div>
+        <button class="news-feedback-status form-control col-xs-1 read">已 读</button>
+        <button class="news-feedback-status form-control col-xs-1 unread">未 读</button>
+      </div>
+
+      <div class="news-feedback col-xs-11 row well">
+        <button ng-repeat="f in news_feedbacks | filter: searchText | orderBy:'read':true"
+                class="news-feedback-status form-control col-xs-1"
+                ng-class="{read: f.read, unread: !f.read}"
+          >{{f.name}}
+        </button>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <div class="btn-group">
+        <button class="btn btn-primary" ng-click="$hide()">关闭</button>
+      </div>
+    </div>
+  </form>
+</div>

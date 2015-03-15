@@ -114,4 +114,12 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
         clazz = _.find scope.classesScope, (c) ->
           c.class_id == class_id
         clazz.name if clazz isnt undefined
+
+      scope.showFeedbacks = (news) ->
+        scope.currentModal.hide()
+        scope.news_feedbacks = [{parent_id: '2_93740362_123', name: '李毅', read: true}, {parent_id: '2_93740362_456', name: '玄哥', read: false}]
+        scope.current_news = news
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/admin/news_feedbacks.html'
   ]

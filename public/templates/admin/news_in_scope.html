@@ -16,6 +16,7 @@
           <div class="form-group">
             <p class="form-control-static">范围： {{nameOf(news.class_id) || '全校'}}</p>
             <p class="form-control-static" ng-show="news.publisher.name">发布者： {{news.publisher.name}}</p>
+            <p class="form-control-static" ng-show="news.feedback_required"><span class="glyphicon glyphicon-share-alt"></span>需要回执</p>
           </div>
         </div>
       </div>

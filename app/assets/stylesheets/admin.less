@@ -147,6 +147,29 @@
   }
 }
 
+.news-feedback-container {
+  margin-left: 10px;
+  .news-feedback {
+    margin:10px 10px;
+  }
+  .news-feedback-status {
+    cursor: default;
+    color: #ffffff;
+    max-width: 100px;
+    &.read {
+      background-color: #228b22;
+    }
+    &.unread {
+      background-color: #808080;
+    }
+  }
+  .specification {
+    .news-feedback-status{
+      cursor: default;
+    }
+  }
+}
+
 .bar-image-container {
   .bar-image {
     height: 400px;

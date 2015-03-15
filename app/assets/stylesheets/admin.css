@@ -112,6 +112,26 @@ util.print: Use console.log instead
 .dailylog-container .specification .child-in-status {
   cursor: default;
 }
+.news-feedback-container {
+  margin-left: 10px;
+}
+.news-feedback-container .news-feedback {
+  margin: 10px 10px;
+}
+.news-feedback-container .news-feedback-status {
+  cursor: default;
+  color: #ffffff;
+  max-width: 100px;
+}
+.news-feedback-container .news-feedback-status.read {
+  background-color: #228b22;
+}
+.news-feedback-container .news-feedback-status.unread {
+  background-color: #808080;
+}
+.news-feedback-container .specification .news-feedback-status {
+  cursor: default;
+}
 .bar-image-container .bar-image {
   height: 400px;
 }
