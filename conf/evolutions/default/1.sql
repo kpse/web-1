@@ -10,6 +10,7 @@ CREATE TABLE news (
   update_at BIGINT         NOT NULL DEFAULT 0,
   published INT          NOT NULL DEFAULT 0,
   publisher_id VARCHAR(40),
+  feedback_required INT DEFAULT 0,
   status    INT          NOT NULL DEFAULT 1,
   PRIMARY KEY (uid)
 );

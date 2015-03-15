@@ -11,6 +11,7 @@
           <span class="error-field"
                 ng-show="newsForm.title.$dirty && newsForm.title.$error.maxlength">标题请不要超过15个字符</span>
         </div>
+        <div class="col-xs-3"><input type="checkbox" ng-model="news.feedback_required" ng-disabled="news.published">需要回执</div>
       </div>
     </div>
     <div class="panel-body">
