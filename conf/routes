@@ -264,6 +264,9 @@ POST          /api/v2/admin_password_reset/:phone                               
 POST          /api/v2/member/:phone                                              controllers.MemberController.create(phone: String)
 DELETE        /api/v2/member/:phone                                              controllers.MemberController.delete(phone: String)
 
+
+GET           /api/v2/login_token/:phone                                         controllers.LoginTokenController.tokenOf(phone: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                      controllers.Static.at(path="/public/images", file)

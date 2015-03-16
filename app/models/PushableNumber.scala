@@ -1,10 +1,13 @@
 package models
 
-import play.api.db.DB
-import anorm._
 import anorm.SqlParser._
-import play.api.Play.current
+import anorm._
 import models.json_models.BindingNumber
+import play.api.Play.current
+import play.api.db.DB
+import play.api.libs.json.Json
+
+case class PushAccount(token: String, accountid: String, pushId: String, channelId: String, password: String, active: Boolean, device: String)
 
 case class PushableNumber(phone: String) {
 
@@ -25,10 +28,30 @@ case class PushableNumber(phone: String) {
           'accountid -> phone
         ).as(get[Long]("count(1)") single) > 0
   }
+
+  def token = DB.withConnection {
+    implicit c =>
+      SQL("select * from accountinfo where accountid={phone}")
+        .on('phone -> phone)
+        .as(simple singleOpt)
+  }
+
+  val simple = {
+    get[String]("accountid") ~
+      get[String]("password") ~
+      get[String]("pushid") ~
+      get[Int]("active") ~
+      get[Long]("pwd_change_time") ~
+      get[Int]("device") map {
+      case id ~ pw ~ pushid ~ active ~ token ~ device =>
+        PushAccount(token.toString, id, pushid, "", pw, active == 1, if (device == 4) "iOS" else "Android")
+    }
+  }
 }
 
 object PushableNumber {
   implicit def convertPhoneToPushableNumber(phone: String) = PushableNumber(phone)
+  implicit val writePushAccount = Json.writes[PushAccount]
 
   def updateTokenAfterBinding(binding: BindingNumber, updateTime: Long) = DB.withConnection {
     implicit c =>
@@ -48,4 +71,7 @@ object PushableNumber {
       case _ => 3
     }
   }
+
+
+
 }
