@@ -23,9 +23,9 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
   ]
 
 .controller 'BulletinCtrl',
-  ['$scope', '$rootScope', 'adminNewsService',
-   '$stateParams', '$modal', 'adminNewsPreview', 'senderService', 'newsReadService',
-    (scope, $rootScope, adminNewsService, stateParams, Modal, NewsPreivew, Sender, NewsRead) ->
+  ['$scope', '$rootScope', '$q', 'adminNewsService',
+   '$stateParams', '$modal', 'adminNewsPreview', 'senderService', 'newsReadService', 'parentService',
+    (scope, $rootScope, $q, adminNewsService, stateParams, Modal, NewsPreivew, Sender, NewsRead, Parent) ->
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
@@ -117,9 +117,13 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
       scope.showFeedbacks = (news) ->
         scope.currentModal.hide()
-        NewsRead.query news, (data)->
-          allReaders = _.map data, (d) -> _.extend(d, read:true)
-          scope.news_feedbacks =  _.union allReaders, [{parent_id: '225549', name: '总是读了', read: true}, {parent_id: '22554', name: '从来不读', read: false}]
+        queue = [Parent.query(school_id: stateParams.kindergarten, class_id: if news.class_id == 0 then undefined else news.class_id).$promise,
+                               NewsRead.query(news).$promise
+                ]
+        $q.all(queue).then (q) ->
+          allReaders = _.map q[1], (d) -> _.extend(d, read:true)
+          unreadParents = _.reject q[0], (p) -> _.some allReaders, (r) -> r.parent_id == p.parent_id
+          scope.news_feedbacks =  _.union allReaders, unreadParents
         scope.current_news = news
         scope.currentModal = Modal
           scope: scope

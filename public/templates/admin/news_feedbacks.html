@@ -11,7 +11,7 @@
       </div>
 
       <div class="news-feedback col-xs-11 row well">
-        <button ng-repeat="f in news_feedbacks | filter: searchText | orderBy:'read':true"
+        <button ng-repeat="f in news_feedbacks | filter: searchText | orderBy:'read'"
                 class="news-feedback-status form-control col-xs-1"
                 ng-class="{read: f.read, unread: !f.read}"
           >{{f.name}}
