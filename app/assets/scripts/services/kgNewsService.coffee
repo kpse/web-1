@@ -1,7 +1,4 @@
 'use strict'
-
-
-
 newsService = ($resource) ->
   $resource '/kindergarten/:school_id/news/:news_id',
     {
@@ -30,8 +27,16 @@ readingStatService = ($resource) ->
       readingCount: method: 'GET'
     }
 
+newsReadService = ($resource) ->
+  $resource '/api/v2/kindergarten/:school_id/news/:news_id/reader',
+    {
+      school_id: '@school_id'
+      news_id: '@news_id'
+    }
+
 
 angular.module('kulebao.services')
 .factory('newsService', ['$resource', newsService])
 .factory('readService', ['$resource', readService])
 .factory('readingStatService', ['$resource', readingStatService])
+.factory('newsReadService', ['$resource', newsReadService])

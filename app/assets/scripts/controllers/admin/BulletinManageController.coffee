@@ -24,8 +24,8 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
 .controller 'BulletinCtrl',
   ['$scope', '$rootScope', 'adminNewsService',
-   '$stateParams', '$modal', 'adminNewsPreview', 'senderService',
-    (scope, $rootScope, adminNewsService, stateParams, Modal, NewsPreivew, Sender) ->
+   '$stateParams', '$modal', 'adminNewsPreview', 'senderService', 'newsReadService',
+    (scope, $rootScope, adminNewsService, stateParams, Modal, NewsPreivew, Sender, NewsRead) ->
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
@@ -117,7 +117,9 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
       scope.showFeedbacks = (news) ->
         scope.currentModal.hide()
-        scope.news_feedbacks = [{parent_id: '2_93740362_123', name: '李毅', read: true}, {parent_id: '2_93740362_456', name: '玄哥', read: false}]
+        NewsRead.query news, (data)->
+          allReaders = _.map data, (d) -> _.extend(d, read:true)
+          scope.news_feedbacks =  _.union allReaders, [{parent_id: '225549', name: '总是读了', read: true}, {parent_id: '22554', name: '从来不读', read: false}]
         scope.current_news = news
         scope.currentModal = Modal
           scope: scope
