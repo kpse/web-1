@@ -9,6 +9,7 @@ import anorm.~
 import java.util.Date
 import models.helper.TimeHelper.any2DateTime
 import models.helper.PasswordHelper.generateNewPassword
+import play.api.libs.json.Json
 
 
 case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String], gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int], company: Option[String] = None, video_member_status: Option[Long] = None) {
@@ -65,6 +66,10 @@ case class EmployeePhoneCheck(id: Option[String], phone: String) extends PhoneCh
 }
 
 object Parent {
+
+  implicit val writeParent = Json.writes[Parent]
+  implicit val readParent = Json.reads[Parent]
+
   def idSearch(id: String): Option[Parent] = DB.withConnection {
     implicit c =>
       SQL("select * from parentinfo p where p.parent_id={id}")

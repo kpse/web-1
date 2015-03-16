@@ -1,12 +1,14 @@
 package controllers
 
+import play.api.Logger
 import play.api.mvc._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsError, Json}
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
 import models.SuccessResponse
 import models.NewsPreview
+import models.Parent._
 
 object NewsController extends Controller with Secured {
   implicit val writes = Json.writes[News]
@@ -125,4 +127,25 @@ object NewsController extends Controller with Secured {
       }
   }
 
+  def read(kg: Long, newsId: Long) = IsLoggedIn(parse.json) {
+    u =>
+      request =>
+        Logger.info(request.body.toString())
+        request.body.validate[Parent].map {
+          case (otherSchool) if !otherSchool.school_id.equals(kg) =>
+            BadRequest(Json.toJson(ErrorResponse("无权阅读该公告.(Unauthenticated reading)")))
+          case (parent) if parent.parent_id.isEmpty =>
+            BadRequest(Json.toJson(ErrorResponse(s"无效的家长$parent.(The parent information is invalid)")))
+          case (parent) =>
+            ReadNews.markRead((parent.parent_id.getOrElse("noId"), kg, newsId))
+            Ok(Json.toJson(new SuccessResponse))
+        }.recoverTotal {
+          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        }
+  }
+
+  def allReaders(kg: Long, newsId: Long) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(ReadNews.allReaders(kg, newsId)))
+  }
 }

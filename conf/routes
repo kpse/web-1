@@ -267,6 +267,10 @@ DELETE        /api/v2/member/:phone                                             
 
 GET           /api/v2/login_token/:phone                                         controllers.LoginTokenController.tokenOf(phone: String)
 
+#news read mark
+GET           /api/v2/kindergarten/:kg/news/:newsId/reader                       controllers.NewsController.allReaders(kg: Long, newsId: Long)
+POST          /api/v2/kindergarten/:kg/news/:newsId/reader                       controllers.NewsController.read(kg: Long, newsId: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                      controllers.Static.at(path="/public/images", file)
