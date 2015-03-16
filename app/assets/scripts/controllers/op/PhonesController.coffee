@@ -54,11 +54,12 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
   ]
 
 .controller 'OpShowPhoneCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', '$alert', 'phoneManageService', 'schoolService', 'videoMemberService', 'parentPasswordService',
-    (scope, rootScope, stateParams, location, Alert, Phone, School, VideoMember, ParentPassword) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', '$alert', 'phoneManageService', 'schoolService', 'videoMemberService', 'parentPasswordService', 'pushAccountService'
+    (scope, rootScope, stateParams, location, Alert, Phone, School, VideoMember, ParentPassword, PushAccount) ->
       scope.parent = Phone.get phone: stateParams.phone, ->
         scope.school = School.get school_id: scope.parent.school_id
         scope.parent.videoMember = VideoMember.get school_id: scope.parent.school_id, id: scope.parent.parent_id
+        scope.parent.pushAccount = PushAccount.get phone: stateParams.phone
 
       scope.delete = (parent)->
         Phone.delete parent, ->

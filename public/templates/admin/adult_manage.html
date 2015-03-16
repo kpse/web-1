@@ -85,6 +85,31 @@
       </div>
     </div>
 
+    <div class="col-sm-12" ng-show="parent.pushAccount">
+      <div class="form-group">
+        <label for="parent-pushid" class="col-sm-2 control-label">pushid</label>
+
+        <div class="col-sm-4">
+          <p class="form-control-static">{{parent.pushAccount.pushId}}</p>
+        </div>
+        <label for="parent-token" class="col-sm-2 control-label">bind token</label>
+
+        <div class="col-sm-4">
+          <p class="form-control-static">{{parent.pushAccount.token}}</p>
+        </div>
+        <label for="parent-device" class="col-sm-2 control-label">设备</label>
+
+        <div class="col-sm-4">
+          <p class="form-control-static">{{parent.pushAccount.device}}</p>
+        </div>
+        <label for="parent-password" class="col-sm-2 control-label">加密密码</label>
+
+        <div class="col-sm-4">
+          <p class="form-control-static">{{parent.pushAccount.password}}</p>
+        </div>
+      </div>
+    </div>
+
     <div class="col-sm-4">
       <div class="form-group">
         <div class="btn-group pull-right">
