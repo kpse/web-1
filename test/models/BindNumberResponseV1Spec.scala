@@ -41,7 +41,7 @@ class BindNumberResponseV1Spec extends Specification with TestSupport {
 
     }
 
-    "fail with 3 for second binding" in new WithApplication {
+    "success in repeat bindings" in new WithApplication {
 
       private val response = BindingV1(BindingNumber("13279491366", "123", "", Some("android"), "1386849160798"))
 
@@ -50,7 +50,7 @@ class BindNumberResponseV1Spec extends Specification with TestSupport {
 
       private val response2 = BindingV1(BindingNumber("13279491366", "123", "", Some("android"), "1386849160798"))
 
-      response2.error_code must equalTo(3)
+      response2.error_code must equalTo(0)
 
     }
 

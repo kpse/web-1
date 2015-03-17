@@ -57,9 +57,7 @@ object BindingV1 {
         ).as(response(updateTime) singleOpt)
       Logger.info(row.toString)
       row match {
-        case Some(r) =>
-          updateTokenAfterBinding(request, updateTime)
-          r
+        case Some(r) => r
         case res if res.isEmpty && request.phonenum.existsDisregardingToken("0,1") =>
           BindingResponseV1(3)
         case res if res.isEmpty && request.phonenum.isExpired("2") =>
