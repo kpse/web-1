@@ -19,7 +19,7 @@ class BindNumberResponseSpec extends Specification with TestSupport {
       private val response = Binding(BindingNumber("13408654683", "123", "", Some("android"), "0"))
 
       response.error_code must equalTo(0)
-      response.access_token must not equalTo "0"
+      response.access_token must equalTo("0")
 
     }
 

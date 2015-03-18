@@ -33,7 +33,6 @@ object Binding {
   @Deprecated
   def apply(request: BindingNumber) = DB.withConnection {
     implicit c =>
-      val updateTime = System.currentTimeMillis
       val row = SQL("select a.*, p.name, p.school_id, s.name " +
         "from accountinfo a, parentinfo p, schoolinfo s, chargeinfo c " +
         "where s.school_id=p.school_id and a.accountid = p.phone and c.school_id=p.school_id " +
@@ -42,7 +41,7 @@ object Binding {
         .on(
           'accountid -> request.phonenum,
           'token -> request.access_token.toLong
-        ).as(response(updateTime.toString) singleOpt)
+        ).as(response(request.access_token) singleOpt)
       Logger.info(row.toString)
       row match {
         case Some(r) => r
