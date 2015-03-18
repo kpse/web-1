@@ -270,6 +270,13 @@ GET           /api/v2/login_token/:phone                                        
 #news read mark
 GET           /api/v2/kindergarten/:kg/news/:newsId/reader                       controllers.NewsController.allReaders(kg: Long, newsId: Long)
 POST          /api/v2/kindergarten/:kg/news/:newsId/reader                       controllers.NewsController.read(kg: Long, newsId: Long)
+#news v2
+GET           /api/v2/kindergarten/:kg/news                                      controllers.V2.NewsControllerV2.index(kg: Long, from: Option[Long], to: Option[Long], most:Option[Int], class_id: Option[String], tag: Option[Boolean])
+GET           /api/v2/kindergarten/:kg/news/:newsId                              controllers.V2.NewsControllerV2.show(kg: Long, newsId: Long, tag: Option[Boolean])
+POST          /api/v2/kindergarten/:kg/news                                      controllers.V2.NewsControllerV2.create(kg: Long)
+POST          /api/v2/kindergarten/:kg/news/:newsId                              controllers.V2.NewsControllerV2.update(kg: Long, newsId: Long)
+DELETE        /api/v2/kindergarten/:kg/news/:newsId                              controllers.V2.NewsControllerV2.delete(kg: Long, newsId: Long)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.VersionedAssets.at(file: controllers.VersionedAsset)

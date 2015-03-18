@@ -7,7 +7,7 @@ import anorm.~
 import play.api.Play.current
 import models.helper.RangerHelper.rangerQuery
 
-case class News(news_id: Long, school_id: Long, title: String, content: String, timestamp: Long, published: Boolean, notice_type: Int, class_id: Option[Int], image: Option[String], publisher_id: Option[String] = None, feedback_required: Option[Boolean] = Some(false))
+case class News(news_id: Option[Long], school_id: Long, title: String, content: String, timestamp: Option[Long], published: Boolean, notice_type: Option[Int], class_id: Option[Int], image: Option[String], publisher_id: Option[String] = None, feedback_required: Option[Boolean] = Some(false), tags: List[String] = List())
 
 case class NewsPreview(id: Long)
 
@@ -81,7 +81,7 @@ object News {
   }
 
 
-  val NOTICE_TYPE_SCHOOL_INFO = 2
+  val NOTICE_TYPE_SCHOOL_INFO = Some(2)
 
   val simple = {
     get[Long]("uid") ~
@@ -95,9 +95,9 @@ object News {
       get[Option[Int]]("feedback_required") ~
       get[Option[String]]("image") map {
       case id ~ school_id ~ title ~ content ~ timestamp ~ classId ~ 1 ~ publisher_id ~ feedback ~ image =>
-        News(id, school_id.toLong, title, content, timestamp, true, NOTICE_TYPE_SCHOOL_INFO, classId, Some(image.getOrElse("")), publisher_id, Some(feedback == Some(1)))
+        News(Some(id), school_id.toLong, title, content, Some(timestamp), true, NOTICE_TYPE_SCHOOL_INFO, classId, Some(image.getOrElse("")), publisher_id, Some(feedback == Some(1)))
       case id ~ school_id ~ title ~ content ~ timestamp ~ classId ~ 0 ~ publisher_id ~ feedback ~ image =>
-        News(id, school_id.toLong, title, content, timestamp, false, NOTICE_TYPE_SCHOOL_INFO, classId, Some(image.getOrElse("")), publisher_id, Some(feedback == Some(1)))
+        News(Some(id), school_id.toLong, title, content, Some(timestamp), false, NOTICE_TYPE_SCHOOL_INFO, classId, Some(image.getOrElse("")), publisher_id, Some(feedback == Some(1)))
     }
   }
 
