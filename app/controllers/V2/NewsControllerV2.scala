@@ -4,8 +4,10 @@ import controllers.Secured
 import models.V2.NewsV2
 import models.V2.NewsV2._
 import models.{SuccessResponse, _}
+import play.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
+import controllers.helper.JsonLogger.loggedJson
 
 object NewsControllerV2 extends Controller with Secured {
   implicit val writes = Json.writes[News]
@@ -17,7 +19,8 @@ object NewsControllerV2 extends Controller with Secured {
       tag match {
         case Some(true) =>
           val jsons = NewsV2.allSortedWithTag(kg, classId, from, to).take(most.getOrElse(25))
-          Ok(Json.toJson(jsons))
+          Logger.info("123321")
+          Ok(loggedJson(jsons))
         case _ =>
           val jsons = News.allSorted(kg, classId, from, to).take(most.getOrElse(25))
           Ok(Json.toJson(jsons))
