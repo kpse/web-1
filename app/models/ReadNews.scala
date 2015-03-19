@@ -9,11 +9,18 @@ import play.api.Play.current
 case class ReadNews(uid: Long, school_id: Long, parent_id: String, news_id: Long, readTime: Long)
 
 object ReadNews {
+  def oneReader(kg: Long, newsId: Long, parentId: String) = DB.withConnection {
+    implicit c =>
+      val readNews: Option[ReadNews] = SQL("select * from newsRead where school_id={kg} and news_id={id} and parent_id={p}")
+        .on('kg -> kg, 'id -> newsId, 'p -> parentId)
+        .as(simple singleOpt)
+      readNews.map(r => Parent.findById(kg, r.parent_id))
+  }
+
   def allReaders(kg: Long, newsId: Long) = DB.withConnection {
     implicit c =>
       val readNews: List[ReadNews] = SQL("select * from newsRead where school_id={kg} and news_id={id}")
-        .on('kg -> kg)
-        .on('id -> newsId)
+        .on('kg -> kg, 'id -> newsId)
         .as(simple *)
       readNews.map( r => Parent.findById(kg, r.parent_id))
   }

@@ -9,6 +9,11 @@ CREATE TABLE newsread (
   PRIMARY KEY (uid)
 );
 
+INSERT INTO newsread (school_id, parent_id, news_id) VALUES
+('93740362', '2_93740362_123', 6),
+('93740362', '2_93740362_456', 6),
+('93740362', '2_93740362_792', 6);
+
 # --- !Downs
 
 DROP TABLE IF EXISTS newsread;

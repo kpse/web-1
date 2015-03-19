@@ -39,6 +39,7 @@ INSERT INTO news (uid, school_id, title, content, update_at, published, publishe
    1388634400007, 0, '3_93740362_1122');
 
 update news set image='http://www.jslfgz.com.cn/UploadFiles/xxgl/2013/4/201342395834.jpg' where uid=7;
+update news set feedback_required=1 where uid=6;
 
 # --- !Downs
 

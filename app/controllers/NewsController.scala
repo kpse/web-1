@@ -148,4 +148,16 @@ object NewsController extends Controller with Secured {
     u => _ =>
       Ok(Json.toJson(ReadNews.allReaders(kg, newsId)))
   }
+
+  def oneReader(kg: Long, newsId: Long, parentId: String) = IsLoggedIn {
+    u => _ =>
+      val reader: Option[Option[Parent]] = ReadNews.oneReader(kg, newsId, parentId)
+      reader match {
+        case Some(Some(x)) =>
+          Ok(Json.toJson(x))
+        case _ =>
+          NotFound(Json.toJson(ErrorResponse("No such reader.")))
+      }
+
+  }
 }
