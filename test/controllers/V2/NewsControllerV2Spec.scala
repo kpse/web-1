@@ -107,7 +107,7 @@ class NewsControllerV2Spec extends Specification with TestSupport {
           Some(777666),
           None,
           Some("3_93740362_1122"), Some(false), List("作业", "活动")))
-      val newsResponse = route(adminRequest(POST, "/api/v2/kindergarten/93740362/news").withJsonBody(requestBody)).get
+      val newsResponse = route(adminRequest(POST, "/api/v2/kindergarten/93740362/admin/3_93740362_1122/news").withJsonBody(requestBody)).get
 
       status(newsResponse) must equalTo(OK)
       val lastCreated: JsValue = Json.parse(contentAsString(newsResponse))
@@ -136,7 +136,7 @@ class NewsControllerV2Spec extends Specification with TestSupport {
           Some(777666),
           None,
           Some("3_93740362_1122"), Some(false), List("作业", "活动")))
-      val newsResponse = route(adminRequest(POST, "/api/v2/kindergarten/93740362/news/7").withJsonBody(requestBody)).get
+      val newsResponse = route(adminRequest(POST, "/api/v2/kindergarten/93740362/admin/3_93740362_1122/news/7").withJsonBody(requestBody)).get
 
       status(newsResponse) must equalTo(OK)
 

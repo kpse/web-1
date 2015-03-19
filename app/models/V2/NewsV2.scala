@@ -9,6 +9,9 @@ import play.api.Play.current
 import play.api.libs.json.Json
 
 object NewsV2 {
+  def allIncludeNonPublished(kg: Long, classIds: Option[String], restricted: Boolean, from: Option[Long], to: Option[Long]) =
+    News.allIncludeNonPublished(kg, classIds, restricted, from, to) map tags
+
   implicit val readNews = Json.reads[News]
 
   def saveTags(news: News) = DB.withConnection {
