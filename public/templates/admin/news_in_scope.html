@@ -7,16 +7,17 @@
     <li class="list-group-item read-{{news.read}} news-item"
         ng-repeat="news in newsletters | filter: searchText | orderBy:'timestamp':true" ng-click="edit(news)" ng-class="{editable: edit}">
       <div>
-        <div class="btn-group col-xs-6">
+        <div class="btn-group col-xs-5">
           <button class="btn btn-danger" ng-confirm-msg="你确定要删除吗?" ng-confirm-click="deleteNews(news)">删除
           </button>
           <button class="btn btn-primary" ng-show="!news.published" ng-click="publish(news);$event.stopPropagation()">发布</button>
         </div>
-        <div class="col-xs-6">
-          <div class="form-group">
-            <p class="form-control-static">范围： {{nameOf(news.class_id) || '全校'}}</p>
-            <p class="form-control-static" ng-show="news.publisher.name">发布者： {{news.publisher.name}}</p>
-            <p class="form-control-static" ng-show="news.feedback_required"><span class="glyphicon glyphicon-share-alt"></span>需要回执</p>
+        <div class="col-xs-7">
+          <div class="form-group row">
+            <p class="form-control-static col-xs-4">范围：{{nameOf(news.class_id) || '全校'}}</p>
+            <p class="form-control-static col-xs-3" ng-show="news.publisher.name">发布者：{{news.publisher.name}}</p>
+            <p class="form-control-static col-xs-2" ng-show="news.feedback_required"><span class="glyphicon glyphicon-share-alt"></span>需要回执</p>
+            <p class="form-control-static col-xs-4" ng-show="news.tags.length > 0">标签：{{printTags(news.tags)}}</p>
           </div>
         </div>
       </div>

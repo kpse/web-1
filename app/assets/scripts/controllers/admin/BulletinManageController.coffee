@@ -23,13 +23,14 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
   ]
 
 .controller 'BulletinCtrl',
-  ['$scope', '$rootScope', '$q', 'adminNewsService',
+  ['$scope', '$rootScope', '$q', 'adminNewsServiceV2',
    '$stateParams', '$modal', 'adminNewsPreview', 'senderService', 'newsReadService', 'parentService',
     (scope, $rootScope, $q, adminNewsService, stateParams, Modal, NewsPreivew, Sender, NewsRead, Parent) ->
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
       scope.itemsPerPage = 8
+      scope.allTags = ['作业', '活动', '备忘']
 
       scope.refresh = ->
         page = scope.currentPage
@@ -128,4 +129,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/news_feedbacks.html'
+
+      scope.printTags = (tags) ->
+        tags.join ', '
   ]
