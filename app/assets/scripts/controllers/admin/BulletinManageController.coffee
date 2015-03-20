@@ -25,7 +25,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 .controller 'BulletinCtrl',
   ['$scope', '$rootScope', '$q', 'adminNewsServiceV2',
    '$stateParams', '$modal', 'adminNewsPreview', 'senderService', 'newsReadService', 'parentService',
-    (scope, $rootScope, $q, adminNewsService, stateParams, Modal, NewsPreivew, Sender, NewsRead, Parent) ->
+    (scope, $rootScope, $q, AdminNews, stateParams, Modal, NewsPreivew, Sender, NewsRead, Parent) ->
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
@@ -44,7 +44,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
             scope.totalItems = scope.preview.length
             startIndex = (page - 1) * scope.itemsPerPage
             last = scope.preview[startIndex...startIndex + scope.itemsPerPage][0].id if scope.preview.length > 0
-            scope.newsletters = adminNewsService.query
+            scope.newsletters = AdminNews.query
               school_id: stateParams.kindergarten
               publisher_id: scope.adminUser.id
               class_id: stateParams.class
@@ -71,10 +71,12 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
           scope.refresh()
 
       scope.createNews = ->
-        new adminNewsService
+        new AdminNews
           school_id: scope.kindergarten.school_id
           class_id: scope.current_class
           publisher_id: scope.adminUser.id
+          published: false
+          tags: []
 
       scope.create = ->
         scope.news = scope.createNews()

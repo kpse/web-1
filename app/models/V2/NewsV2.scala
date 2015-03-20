@@ -3,6 +3,7 @@ package models.V2
 import anorm.SqlParser._
 import anorm._
 import models.News
+import play.Logger
 import play.api.db.DB
 import anorm.~
 import play.api.Play.current
@@ -35,18 +36,20 @@ object NewsV2 {
               'title -> news.title,
               'publisher_id -> news.publisher_id,
               'timestamp -> System.currentTimeMillis,
-              'published -> news.published,
+              'published -> (if (news.published) 1 else 0),
               'class_id -> news.class_id,
               'image -> news.image,
-              'feedback_required -> news.feedback_required
+              'feedback_required -> (if (news.feedback_required.getOrElse(false)) 1 else 0)
             ).executeInsert()
         createdId map (id => saveTags(news.copy(news_id = Some(id))))
         c.commit()
       }
       catch {
         case t: Throwable =>
+          Logger.info(s"creating rollback:${t.getMessage}")
           c.rollback()
       }
+      Logger.info(s"created news id: $createdId")
       showWithTag(news.school_id, createdId.getOrElse(-1))
   }
 
@@ -59,19 +62,21 @@ object NewsV2 {
             'title -> news.title,
             'id -> news.news_id,
             'publisher_id -> news.publisher_id,
-            'published -> news.published,
+            'published -> (if (news.published) 1 else 0),
             'timestamp -> System.currentTimeMillis,
             'class_id -> news.class_id,
             'image -> news.image,
-            'feedback_required -> news.feedback_required
+            'feedback_required -> (if (news.feedback_required.getOrElse(false)) 1 else 0)
           ).executeUpdate()
         saveTags(news)
         c.commit()
       }
       catch {
         case t: Throwable =>
+          Logger.info(s"updating rollback:${t.getMessage}")
           c.rollback()
       }
+      Logger.info(s"update news.news_id: ${news.news_id}")
       showWithTag(news.school_id, news.news_id.getOrElse(0))
   }
 
