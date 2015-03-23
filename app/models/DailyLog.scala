@@ -41,7 +41,7 @@ object DailyLog {
     dayBounds.foldRight(List[DailyLogStats]())({ (day: (Long, Long), all: List[DailyLogStats]) => all ::: singleDayLog(kg, day._2, day._1)})
   }
 
-  def generateClassQuery(classes: String) = " child_id IN ( SELECT child_id FROM childinfo WHERE school_id={kg} AND class_id IN (%s)) ".format(classes)
+  def generateClassQuery(classes: String) = " child_id IN ( SELECT child_id FROM childinfo WHERE school_id={kg} AND class_id IN (%s) AND status=1) ".format(classes)
 
   def lastCheckInClasses(kg: Long, classes: String) = DB.withConnection {
     implicit c =>
