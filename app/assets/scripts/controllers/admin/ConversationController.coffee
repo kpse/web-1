@@ -51,12 +51,13 @@ angular.module('kulebaoAdmin')
     (scope, rootScope, stateParams, location, $http, Message, Child, Modal, Popover, Tooltip, Sender, ReaderLog) ->
 
       scope.loading = true
+      scope.noMore = false
       scope.child = Child.bind(school_id: stateParams.kindergarten, child_id: stateParams.child_id).get ->
         scope.refresh()
 
-      scope.refresh = ->
+      scope.refresh = (most=25) ->
         scope.loading = true
-        scope.conversations = Message.bind(school_id: stateParams.kindergarten, topic: scope.child.child_id).query ->
+        scope.conversations = Message.bind(school_id: stateParams.kindergarten, topic: scope.child.child_id, most: most).query ->
           _.forEach scope.conversations, (c) ->
             c.sender.info = Sender.bind(school_id: stateParams.kindergarten, id: c.sender.id, type: c.sender.type).get ->
               c.sender.name = c.sender.info.name
@@ -68,6 +69,7 @@ angular.module('kulebaoAdmin')
               reader: scope.adminUser.id
               session_id: scope.conversations[scope.conversations.length - 1].id
             r.$save()
+          scope.noMore = scope.conversations.length < most
           scope.loading = false
 
       scope.newMessage = ->
@@ -113,4 +115,8 @@ angular.module('kulebaoAdmin')
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/add_message.html'
+
+      scope.loadMore = (current) ->
+        scope.refresh(current.length + 25)
+
   ]
