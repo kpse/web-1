@@ -144,6 +144,9 @@ util.print: Use console.log instead
 .no-padding {
   padding: 0;
 }
+.load-more-area {
+  margin-bottom: 0;
+}
 .axis path,
 .axis line {
   fill: none;

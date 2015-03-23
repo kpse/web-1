@@ -10,7 +10,7 @@ class ChatSessionSpec extends Specification with TestSupport {
 
       private val index = ChatSession.index(93740362L, "1_93740362_9982", None, None)
 
-      index.size must equalTo(5)
+      index.size must equalTo(39)
       index(0).topic must equalTo("1_93740362_9982")
       index(0).timestamp must greaterThan(index(2).timestamp)
 
@@ -20,7 +20,7 @@ class ChatSessionSpec extends Specification with TestSupport {
 
       private val index = ChatSession.index(93740362L, "1_93740362_9982", Some(1), None)
 
-      index.size must equalTo(5)
+      index.size must equalTo(39)
       index(0).topic must equalTo("1_93740362_9982")
       index(0).id must greaterThan(index(1).id)
 

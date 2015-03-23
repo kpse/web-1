@@ -50,7 +50,7 @@ class SessionControllerSpec extends Specification with TestSupport {
 
     "be able to delete by owner teacher" in new WithApplication {
 
-      val response = route(ownerTeacherRequest(DELETE, "/kindergarten/93740362/session/1_93740362_9982/record/5")).get
+      val response = route(ownerTeacherRequest(DELETE, "/kindergarten/93740362/session/1_93740362_9982/record/39")).get
 
       status(response) must equalTo(OK)
     }
