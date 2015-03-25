@@ -1,16 +1,21 @@
 package models
 
 import anorm.SqlParser._
-import anorm._
-import play.api.db.DB
-import anorm.~
+import anorm.{~, _}
 import play.api.Play.current
+import play.api.db.DB
 
-case class AppPackage(version_code: Int, url: String, file_size: Long, version_name: String, summary: String, release_time: Long, package_type: Option[String] = None)
+case class AppPackage(version_code: Int, url: String, file_size: Long, version_name: String, summary: String, release_time: Long, package_type: Option[String] = None, id: Option[Long])
 
 case class AppUpgradeResponse(error_code: Int, url: Option[String], size: Option[Long], version: Option[String], summary: Option[String], package_type: Option[String] = None)
 
 object AppPackage {
+  def delete(id: Long) = DB.withConnection {
+    implicit c =>
+      SQL("delete from appinfo where uid={id}")
+        .on('id -> id).execute()
+  }
+
 
   def forceUpdate = latest(Some("parent")).fold(new ForceUpdateResponse)({
     case lastPackage: AppPackage =>
@@ -47,7 +52,7 @@ object AppPackage {
       get[Long]("file_size") ~
       get[Long]("release_time") map {
       case uid ~ code ~ url ~ name ~ summary ~ pkgType ~ size ~ release =>
-        AppPackage(code, url, size, name, summary, release, pkgType)
+        AppPackage(code, url, size, name, summary, release, pkgType, Some(uid))
     }
   }
 

@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc.{SimpleResult, Action, Controller}
 import play.api.data.Form
 import play.api.data.Forms._
-import models.AppPackage
+import models.{ErrorResponse, SuccessResponse, AppPackage}
 import play.api.libs.json.Json
 
 object AppPackageController extends Controller with Secured {
@@ -68,4 +68,17 @@ object AppPackageController extends Controller with Secured {
       case _ => Ok(Json.toJson(AppPackage.latest(userType)))
     })
   }
+
+  def delete(packageId: Long) = IsOperator {
+    u => _ =>
+      val delete1: Boolean = AppPackage.delete(packageId)
+      delete1 match {
+        case true =>
+          Ok(Json.toJson(new SuccessResponse))
+        case false =>
+          Ok(Json.toJson(ErrorResponse("App deleting error..")))
+      }
+
+  }
+
 }
