@@ -1,7 +1,11 @@
-<h2>当前App版本</h2>
-<div class="well old-version">
+<h2 ng-show="lastApp.id">当前App版本</h2>
+<div class="well old-version" ng-show="lastApp.id">
   <form role="form" class="upload-form form-horizontal">
-
+    <td class="col-xs-2">
+      <button class="btn btn-lg btn-danger" ng-confirm-msg="这个操作将彻底删除版本{{lastApp.version_code}}，确定继续?"
+              ng-confirm-click="delete(lastApp);$event.stopPropagation()">删除
+      </button>
+    </td>
     <div class="form-group">
       <label for="store-version-code" class="col-sm-4 control-label">版本序号</label>
 

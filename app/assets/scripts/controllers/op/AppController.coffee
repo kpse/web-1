@@ -31,8 +31,8 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
   ]
 
 .controller 'OpAppDetailCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'appUploadService',
-    (scope, $rootScope, $stateParams, remoteFileSetter) ->
+  ['$scope', '$rootScope', '$stateParams', '$state', 'appUploadService',
+    (scope, $rootScope, $stateParams, $state, remoteFileSetter) ->
       scope.lastApp = scope.PackageService.latest ->
         scope.app = scope.createPkg()
         scope.app.version_code = scope.lastApp.version_code + 1
@@ -53,6 +53,9 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
       scope.cleanFields = ->
         scope.app = createPkg()
 
+      scope.delete = (pkg) ->
+        pkg.$delete ->
+          $state.reload()
   ]
 
 
