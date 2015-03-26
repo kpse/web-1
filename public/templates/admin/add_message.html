@@ -1,28 +1,25 @@
 <div class="panel panel-default add-message-panel">
-  <h3>与{{child.name}}的家长的通讯记录</h3>
-
-  <form class="form-horizontal" role="form" name="messageForm">
-    <div class="panel-heading">
-      <div class="chat-history">
-        <table class="table table-hover table-condensed">
-          <thead>
-          <tr class="row">
-            <th class="col-xs-2">发言人</th>
-            <th class="col-xs-7">通讯内容</th>
-            <th class="col-xs-3">通讯时间</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr ng-repeat="c in conversations | filter: searchText " class="row" ng-click="preview(c, {reply: false})">
-            <td class="col-xs-2">{{c.sender.name}}</td>
-            <td class="col-xs-7">{{c.content | truncate:50}}</td>
-            <td class="col-xs-3">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}收到</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="panel-body">
+  <div class="panel-heading">与{{child.name}}的家长的通讯记录</h3></div>
+  <div class="chat-history">
+    <table class="table table-hover table-condensed">
+      <thead>
+      <tr class="row">
+        <th class="col-xs-2">发言人</th>
+        <th class="col-xs-7">通讯内容</th>
+        <th class="col-xs-3">通讯时间</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="c in conversations | filter: searchText " class="row" ng-click="preview(c, {reply: false})">
+        <td class="col-xs-2">{{c.sender.name}}</td>
+        <td class="col-xs-7">{{c.content | truncate:50}}</td>
+        <td class="col-xs-3">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}收到</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="panel-body">
+    <form class="form-horizontal" role="form" name="messageForm">
       <label for="content" class="control-label">回复内容</label>
       <br/>
       <small ng-show="message.content.length >= 0">还可以输入{{ 500 - message.content.length}}个字</small>
@@ -48,15 +45,16 @@
           <kl-file-upload ng-model="message.media" user="adminUser.id" field-name="url"></kl-file-upload>
         </div>
       </div>
-    </div>
-    <div class="panel-footer">
-      <div class="loading" ng-show="loading"></div>
-      <div class="btn-group">
-        <button class="btn btn-default" ng-click="$hide()">取消</button>
-        <button class="btn btn-info" ng-disabled="messageForm.$invalid || uploading" ng-click="send(message) && $hide()">发送
-        </button>
-      </div>
-    </div>
-  </form>
 
+      <div class="panel-footer">
+        <div class="loading" ng-show="loading"></div>
+        <div class="btn-group">
+          <button class="btn btn-default" ng-click="$hide()">取消</button>
+          <button class="btn btn-info" ng-disabled="messageForm.$invalid || uploading"
+                  ng-click="send(message) && $hide()">发送
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>

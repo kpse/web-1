@@ -459,16 +459,14 @@ util.print: Use console.log instead
 }
 .main-body .modal.center .modal-dialog {
   max-width: 1000px;
-  max-height: 1000px;
+  max-height: 760px;
   width: 85%;
-  height: 85%;
 }
 .main-body .modal.center .modal-dialog .modal-content {
   max-height: 760px;
-  height: 100%;
 }
 .main-body .modal.center .modal-dialog .modal-content .modal-body {
-  overflow-y: scroll;
+  overflow-y: auto;
   height: 100%;
 }
 .main-body .modal.center .modal-dialog .modal-content .modal-body .select-button.active {
@@ -480,6 +478,24 @@ util.print: Use console.log instead
 .main-body .modal.center .modal-dialog .modal-content .modal-body .datepicker-button {
   margin: -34px 0 0 0;
   float: right;
+}
+.main-body .modal.center .modal-dialog .modal-content .modal-body .message-content {
+  max-width: 936px;
+}
+.main-body .modal.center .modal-dialog .modal-content .modal-body .message-content.viewing-content {
+  max-height: 300px;
+}
+.main-body .modal.center .modal-dialog .modal-content .modal-body .message-content.editing-content {
+  max-height: 200px;
+}
+.main-body .modal.center .modal-dialog .modal-content .modal-body .news-content {
+  max-width: 966px;
+}
+.main-body .modal.center .modal-dialog .modal-content .modal-body .news-content.editing-content {
+  max-height: 280px;
+}
+.main-body .modal.center .modal-dialog .modal-content .modal-body .title-line {
+  margin-top: 7px;
 }
 .main-body .portrait-container {
   margin-left: 100px;

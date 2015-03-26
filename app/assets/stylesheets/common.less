@@ -214,14 +214,12 @@
 
   .modal.center .modal-dialog {
     max-width: 1000px;
-    max-height: 1000px;
+    max-height: 760px;
     width: 85%;
-    height: 85%;
     .modal-content {
       max-height: 760px;
-      height: 100%;
       .modal-body {
-        overflow-y: scroll;
+        overflow-y: auto;
         height: 100%;
 
         .select-button.active {
@@ -237,7 +235,25 @@
           float: right;
         }
 
+        .message-content {
+          max-width: 936px;
+          &.viewing-content {
+            max-height: 300px;
+          }
+          &.editing-content {
+            max-height: 200px;
+          }
+        }
 
+        .news-content {
+          max-width: 966px;
+          &.editing-content {
+            max-height: 280px;
+          }
+        }
+        .title-line {
+          margin-top: 7px;
+        }
       }
     }
   }

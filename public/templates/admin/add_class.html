@@ -1,34 +1,37 @@
-<div class="panel-body">
-  <form class="form-horizontal row" role="form" name="newClassForm">
+<div class="panel panel-default">
+  <div class="panel-heading">班级编辑</div>
+  <div class="panel-body">
+    <form class="form-horizontal row" role="form" name="newClassForm">
 
-    <div class="form-group">
-      <label for="class-name" class="col-sm-2 control-label">班级名称</label>
+      <div class="form-group">
+        <label for="class-name" class="col-sm-2 control-label">班级名称</label>
 
-      <div class="col-sm-8">
-        <input id="class-name" type="text" ng-model="currentClass.name" name="name"
-               class="editing-field form-control" ng-bk-focus required placeholder="输入班级名称" />
-        <span class="error-field" ng-show="newClassForm.name.$dirty && isDuplicated(currentClass)">与已有班级名称重复！</span>
+        <div class="col-sm-8">
+          <input id="class-name" type="text" ng-model="currentClass.name" name="name"
+                 class="editing-field form-control" ng-bk-focus required placeholder="输入班级名称"/>
+          <span class="error-field" ng-show="newClassForm.name.$dirty && isDuplicated(currentClass)">与已有班级名称重复！</span>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label for="teacher" class="col-sm-2 control-label">负责老师</label>
+      <div class="form-group">
+        <label for="teacher" class="col-sm-2 control-label">负责老师</label>
 
-      <div class="col-sm-8">
-        <button type="button" class="btn btn-default" ng-model="currentClass.managers" data-html="1" data-multiple="1"
-                placeholder="请选择负责老师"
-                ng-click="$event.stopPropagation()" ng-options="e.name as e.name for e in employees" bs-select></button>
+        <div class="col-sm-8">
+          <button type="button" class="btn btn-default" ng-model="currentClass.managers" data-html="1" data-multiple="1"
+                  placeholder="请选择负责老师"
+                  ng-click="$event.stopPropagation()" ng-options="e.name as e.name for e in employees"
+                  bs-select></button>
+        </div>
       </div>
-    </div>
 
 
-    <div class="form-group">
-      <a class="btn btn-warning pull-right adding-button"
-         ng-disabled="newClassForm.$invalid || isDuplicated(currentClass) || loading"
-         ng-click="save(currentClass)">保存</a>
-      <a class="btn btn-default pull-right adding-button"
-         ng-click="$hide()">取消</a>
-    </div>
-  </form>
+      <div class="form-group">
+        <a class="btn btn-warning pull-right adding-button"
+           ng-disabled="newClassForm.$invalid || isDuplicated(currentClass) || loading"
+           ng-click="save(currentClass)">保存</a>
+        <a class="btn btn-default pull-right adding-button"
+           ng-click="$hide()">取消</a>
+      </div>
+    </form>
+  </div>
 </div>
-

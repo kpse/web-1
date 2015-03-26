@@ -1,33 +1,31 @@
 <div class="panel panel-default">
-  <form class="form-horizontal" role="form" name="newsForm">
-    <div class="panel-heading">
-      <div class="form-group">
-        <label for="title" class="control-label col-xs-2">公告标题</label>
+  <div class="form-group">
+    <label for="title" class="control-label col-xs-2 title-line">公告标题</label>
 
-        <div class="col-xs-4">
-          <input ng-bk-focus id="title" name="title" ng-model="news.title" class="form-control"
-                 ng-maxlength="15" placeholder="添加标题" ng-disabled="news.published" required/>
-          <span class="error-field" ng-show="newsForm.title.$dirty && newsForm.title.$error.required">请填写标题</span>
+    <div class="col-xs-4">
+      <input ng-bk-focus id="title" name="title" ng-model="news.title" class="form-control"
+             ng-maxlength="15" placeholder="添加标题" ng-disabled="news.published" required/>
+      <span class="error-field" ng-show="newsForm.title.$dirty && newsForm.title.$error.required">请填写标题</span>
           <span class="error-field"
                 ng-show="newsForm.title.$dirty && newsForm.title.$error.maxlength">标题请不要超过15个字符</span>
-        </div>
-        <div class="form-group col-xs-3">
-          <div ng-hide="news.published">
-            <input type="checkbox" ng-model="news.feedback_required"
-                                                                ng-disabled="news.published">
-            <label class="control-label">需要回执</label></div>
-          <div class="col-xs-3" ng-show="news.feedback_required && news.published"><a
-            ng-click="showFeedbacks(news)"><label class="control-label">查看回执</label></a></div>
-        </div>
-        <div class="form-group col-xs-3">
-            <button type="button" class="btn btn-default" ng-model="news.tags" data-html="1" data-multiple="1"
-                    placeholder="添加需要的标签"
-                    ng-click="$event.stopPropagation()" ng-options="t for t in allTags" bs-select></button>
-        </div>
-      </div>
     </div>
-    <div class="panel-body">
+    <div class="form-group col-xs-3">
+      <div ng-hide="news.published">
+        <input type="checkbox" ng-model="news.feedback_required"
+               ng-disabled="news.published">
+        <label class="control-label title-line">需要回执</label></div>
+      <div class="col-xs-5" ng-show="news.feedback_required && news.published"><a
+        ng-click="showFeedbacks(news)"><label class="control-label title-line">查看回执</label></a></div>
+    </div>
+    <div class="form-group col-xs-3">
+      <button type="button" class="btn btn-default" ng-model="news.tags" data-html="1" data-multiple="1"
+              placeholder="添加需要的标签" ng-disabled="news.published"
+              ng-click="$event.stopPropagation()" ng-options="t for t in allTags" bs-select></button>
+    </div>
+  </div>
 
+  <div class="panel-body">
+    <form class="form-horizontal" role="form" name="newsForm">
       <div class="form-group col-sm-6">
         <div class="image-container">
           <img class="news-image img-responsive" ng-src="{{compress(news.image, 0, 200)}}"
@@ -64,30 +62,30 @@
       <span class="error-field"
             ng-show="newsForm.content.$dirty && newsForm.content.$error.maxlength">正文内容请不要超过2000个字符</span>
         <textarea ng-disabled="news.published" id="content" name="content" ng-model="news.content"
-                  class="editing-content form-control" ng-maxlength="2000" placeholder="添加内容" required/>
+                  class="editing-content form-control news-content" ng-maxlength="2000" placeholder="添加内容" required/>
       </div>
 
-    </div>
 
-    <div class="panel-footer">
-      <div ng-show="news.published" class="issue-date">{{news.publisher_id ? news.publisher.name : ''}}于{{news.timestamp
-        | date:'yyyy年MM月dd日 HH:mm'}}发布
+      <div class="panel-footer">
+        <div ng-show="news.published" class="issue-date">{{news.publisher_id ? news.publisher.name :
+          ''}}于{{news.timestamp
+          | date:'yyyy年MM月dd日 HH:mm'}}发布
+        </div>
+        <div ng-hide="news.published" class="issue-date">未发布</div>
+        <div class="loading" ng-show="loading"></div>
+        <div class="btn-group">
+          <button class="btn btn-default" ng-click="$hide()">{{ news.published ? '关闭' : '取消' }}</button>
+          <button class="btn btn-primary" ng-disabled="newsForm.$invalid || uploading" ng-hide="news.published"
+                  ng-click="publish(news)">发布
+          </button>
+          <button class="btn btn-danger" ng-show="news.published || news.news_id" ng-confirm-msg="你确定要删除吗?"
+                  ng-confirm-click="remove(news)">删除
+          </button>
+          <button class="btn btn-info" ng-disabled="newsForm.$invalid || uploading" ng-hide="news.published"
+                  ng-click="save(news)">保存
+          </button>
+        </div>
       </div>
-      <div ng-hide="news.published" class="issue-date">未发布</div>
-      <div class="loading" ng-show="loading"></div>
-      <div class="btn-group">
-        <button class="btn btn-default" ng-click="$hide()">{{ news.published ? '关闭' : '取消' }}</button>
-        <button class="btn btn-primary" ng-disabled="newsForm.$invalid || uploading" ng-hide="news.published"
-                ng-click="publish(news)">发布
-        </button>
-        <button class="btn btn-danger" ng-show="news.published || news.news_id" ng-confirm-msg="你确定要删除吗?"
-                ng-confirm-click="remove(news)">删除
-        </button>
-        <button class="btn btn-info" ng-disabled="newsForm.$invalid || uploading" ng-hide="news.published"
-                ng-click="save(news)">保存
-        </button>
-      </div>
-    </div>
-  </form>
-
+    </form>
+  </div>
 </div>

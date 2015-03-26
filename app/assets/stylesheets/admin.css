@@ -8,7 +8,7 @@ util.print: Use console.log instead
   margin-top: 5px;
 }
 .adding-button {
-  margin: 10px 10px;
+  margin: 10px 20px;
 }
 .creating-summary .summary-title {
   margin-top: -10px;
