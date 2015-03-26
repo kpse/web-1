@@ -15,11 +15,6 @@ object SchoolSummaryController extends Controller with Secured {
   implicit val writes4 = Json.writes[ErrorResponse]
   implicit val writes5 = Json.writes[SuccessResponse]
 
-  implicit val read2 = Json.reads[SchoolIntroDetail]
-  implicit val read4 = Json.reads[PrincipalOfSchool]
-  implicit val read5 = Json.reads[ChargeInfo]
-  implicit val read6 = Json.reads[CreatingSchool]
-
   def preview(kg: Long) = IsLoggedIn {
     u => _ =>
       Ok(Json.toJson(SchoolIntro.preview(kg)))

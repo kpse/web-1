@@ -25,6 +25,12 @@ object SchoolIntro {
   implicit val configItemReader = Json.reads[ConfigItem]
   implicit val schoolIntroWrites = Json.writes[SchoolIntro]
   implicit val schoolIntroRead1 = Json.reads[SchoolIntro]
+  implicit val principalOfSchoolRead = Json.reads[PrincipalOfSchool]
+  implicit val principalOfSchoolWrite = Json.writes[PrincipalOfSchool]
+  implicit val chargeInfoRead = Json.reads[ChargeInfo]
+  implicit val chargeInfoWrite = Json.writes[ChargeInfo]
+  implicit val creatingSchoolRead = Json.reads[CreatingSchool]
+  implicit val creatingSchoolWrite = Json.writes[CreatingSchool]
 
   def adminExists(adminLogin: String) = DB.withConnection {
     implicit c =>
