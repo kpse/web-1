@@ -2,6 +2,14 @@ angular.module('kulebaoOp').controller 'OpPrincipalCtrl',
   ['$scope', '$rootScope', 'schoolService', 'classService', 'allEmployeesService', '$modal',
     (scope, rootScope, School, Clazz, Employee, Modal) ->
       rootScope.tabName = 'principal'
+      scope.levels = ['校长','老师', '超级管理员']
+      scope.current_employee_role = scope.levels[0]
+
+      scope.display = (role) ->
+        scope.current_employee_role = role
+        scope.refresh()
+
+
 
       displayRole = (employee) ->
         switch employee.privilege_group
@@ -16,7 +24,7 @@ angular.module('kulebaoOp').controller 'OpPrincipalCtrl',
           _.forEach scope.employees, (e) -> e.rank = displayRole(e)
           scope.loading = false
 
-      scope.refresh()
+      scope.display('校长')
 
       scope.edit = (employee) ->
         scope.employee = angular.copy employee
