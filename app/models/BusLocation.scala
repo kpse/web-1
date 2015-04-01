@@ -9,8 +9,8 @@ import anorm.SqlParser._
 import anorm.~
 import play.api.Play.current
 
-case class BusLocation(school_id: Long, driver_id: String, latitude: Double, longitude: Double, direction: Float,
-                       radius: Float, address: Option[String], child_id: Option[String] = None, timestamp: Option[Long] = None, status: Option[Int] = None)
+case class BusLocation(school_id: Long, driver_id: String, latitude: Double, longitude: Double, direction: Double,
+                       radius: Double, address: Option[String], child_id: Option[String] = None, timestamp: Option[Long] = None, status: Option[Int] = None)
 
 object BusLocation {
   implicit val busLocationReads = Json.reads[BusLocation]
@@ -27,7 +27,7 @@ object BusLocation {
       get[Int]("status") ~
       get[Long]("received_at") map {
       case kg ~ driver ~ la ~ lg ~ dir ~ radius ~ address ~ status ~ time =>
-        BusLocation(kg.toLong, driver, la, lg, dir.toFloat, radius.toFloat, address, childId, Some(time), Some(status))
+        BusLocation(kg.toLong, driver, la, lg, dir, radius, address, childId, Some(time), Some(status))
     }
   }
 
