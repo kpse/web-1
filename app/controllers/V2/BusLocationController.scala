@@ -63,7 +63,7 @@ object BusLocationController extends Controller with Secured  {
     u => request =>
       request.body.validate[List[CheckInfo]].map {
         case (cards) =>
-          cards map ((checkInfo:CheckInfo) => BusLocation.checkOut(kg, driverId, checkInfo.card_no))
+          cards map ((checkInfo:CheckInfo) => Relationship.getChildIdByCard(checkInfo.card_no) map (BusLocation.checkOut(kg, driverId, _)))
           Ok(Json.toJson(SuccessResponse(s"一共${cards.length}名学生下车(${cards.length} students get off the bus.)")))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
