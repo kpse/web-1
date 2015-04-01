@@ -9,7 +9,6 @@ import org.joda.time.DateTime
 import models.{Advertisement, DailyLog}
 
 case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long)
-case class BusCheckInfo(school_id: Long, bus_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long)
 
 case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String, pushid: String, record_url: String, parent_name: String, device: Int, aps: Option[IOSField], ad: Option[String] = None)
 

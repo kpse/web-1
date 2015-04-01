@@ -3,313 +3,313 @@
 # ~~~~
 
 # Authentication
-GET           /login                                                                        controllers.Auth.login
-POST          /login                                                                        controllers.Auth.authenticate
-GET           /logout                                                                       controllers.Auth.logout
-GET           /forgotten                                                                    controllers.Application.forgotten
+GET           /login                                                               controllers.Auth.login
+POST          /login                                                               controllers.Auth.authenticate
+GET           /logout                                                              controllers.Auth.logout
+GET           /forgotten                                                           controllers.Application.forgotten
 
 # Home page
-GET           /                                                                             controllers.Application.index
-GET           /admin                                                                        controllers.Application.admin
-GET           /operation                                                                    controllers.Application.operation
-GET           /download_log                                                                 controllers.Application.downloadLog
-GET           /track_logging                                                                controllers.Application.continuousLogging
+GET           /                                                                    controllers.Application.index
+GET           /admin                                                               controllers.Application.admin
+GET           /operation                                                           controllers.Application.operation
+GET           /download_log                                                        controllers.Application.downloadLog
+GET           /track_logging                                                       controllers.Application.continuousLogging
 
-GET           /captcha                                                                      controllers.ReCaptchaController.captchaView
+GET           /captcha                                                             controllers.ReCaptchaController.captchaView
 
-POST          /login.do                                                                     controllers.Authentication.login
-POST          /checkphonenum.do                                                             controllers.Authentication.validateNumber
-POST          /receiveBindInfo.do                                                           controllers.Authentication.bindNumber
-POST          /resetpwd.do                                                                  controllers.Authentication.resetPassword
-POST          /changepwd.do                                                                 controllers.Authentication.changePassword
-GET           /upgrade                                                                      controllers.Authentication.parentHasUpdate(version: Long)
-GET           /teacher_upgrade                                                              controllers.Authentication.teacherHasUpdate(version: Long)
-POST          /employee_login.do                                                            controllers.Authentication.employeeLogin
-POST          /employee_resetpwd.do                                                         controllers.Authentication.employeeResetPassword
+POST          /login.do                                                            controllers.Authentication.login
+POST          /checkphonenum.do                                                    controllers.Authentication.validateNumber
+POST          /receiveBindInfo.do                                                  controllers.Authentication.bindNumber
+POST          /resetpwd.do                                                         controllers.Authentication.resetPassword
+POST          /changepwd.do                                                        controllers.Authentication.changePassword
+GET           /upgrade                                                             controllers.Authentication.parentHasUpdate(version: Long)
+GET           /teacher_upgrade                                                     controllers.Authentication.teacherHasUpdate(version: Long)
+POST          /employee_login.do                                                   controllers.Authentication.employeeLogin
+POST          /employee_resetpwd.do                                                controllers.Authentication.employeeResetPassword
 
-GET           /kindergarten/:kg                                                             controllers.SchoolSummaryController.show(kg: Long)
-GET           /kindergarten/:kg/detail                                                      controllers.SchoolSummaryController.detail(kg: Long)
-POST          /kindergarten/:kg                                                             controllers.SchoolSummaryController.update(kg: Long)
-DELETE        /kindergarten/:kg                                                             controllers.SchoolSummaryController.delete(kg: Long)
-GET           /kindergarten/:kg/preview                                                     controllers.SchoolSummaryController.preview(kg: Long)
-GET           /kindergarten                                                                 controllers.SchoolSummaryController.index
-POST          /kindergarten                                                                 controllers.SchoolSummaryController.create
+GET           /kindergarten/:kg                                                    controllers.SchoolSummaryController.show(kg: Long)
+GET           /kindergarten/:kg/detail                                             controllers.SchoolSummaryController.detail(kg: Long)
+POST          /kindergarten/:kg                                                    controllers.SchoolSummaryController.update(kg: Long)
+DELETE        /kindergarten/:kg                                                    controllers.SchoolSummaryController.delete(kg: Long)
+GET           /kindergarten/:kg/preview                                            controllers.SchoolSummaryController.preview(kg: Long)
+GET           /kindergarten                                                        controllers.SchoolSummaryController.index
+POST          /kindergarten                                                        controllers.SchoolSummaryController.create
 
-GET           /kindergarten/:kg/class                                                       controllers.ClassController.index(kg: Long)
-POST          /kindergarten/:kg/class                                                       controllers.ClassController.create(kg: Long)
-POST          /kindergarten/:kg/class/:classId                                              controllers.ClassController.update(kg: Long, classId: Long)
-DELETE        /kindergarten/:kg/class/:classId                                              controllers.ClassController.delete(kg: Long, classId: Long)
-DELETE        /kindergarten/:kg/class                                                       controllers.ClassController.removeAll(kg: Long)
-GET           /kindergarten/:kg/class/:classId/manager                                      controllers.ClassController.managers(kg: Long, classId: Long)
-POST          /kindergarten/:kg/class/:classId/manager                                      controllers.ClassController.createManager(kg: Long, classId: Long)
+GET           /kindergarten/:kg/class                                              controllers.ClassController.index(kg: Long)
+POST          /kindergarten/:kg/class                                              controllers.ClassController.create(kg: Long)
+POST          /kindergarten/:kg/class/:classId                                     controllers.ClassController.update(kg: Long, classId: Long)
+DELETE        /kindergarten/:kg/class/:classId                                     controllers.ClassController.delete(kg: Long, classId: Long)
+DELETE        /kindergarten/:kg/class                                              controllers.ClassController.removeAll(kg: Long)
+GET           /kindergarten/:kg/class/:classId/manager                             controllers.ClassController.managers(kg: Long, classId: Long)
+POST          /kindergarten/:kg/class/:classId/manager                             controllers.ClassController.createManager(kg: Long, classId: Long)
 
-GET           /kindergarten/:kg/news                                                        controllers.NewsController.index(kg: Long, from: Option[Long], to: Option[Long], most:Option[Int], class_id: Option[String])
-GET           /kindergarten/:kg/news/:newsId                                                controllers.NewsController.show(kg: Long, newsId: Long)
-POST          /kindergarten/:kg/news/:newsId                                                controllers.NewsController.update(kg: Long, newsId: Long)
-DELETE        /kindergarten/:kg/news/:newsId                                                controllers.NewsController.deleteOne(kg: Long, newsId: Long)
-GET           /kindergarten/:kg/admin/:adminId/news                                         controllers.NewsController.indexWithNonPublished(kg: Long, adminId: String, class_id: Option[String], restrict: Option[Boolean], from: Option[Long], to: Option[Long], most:Option[Int])
-GET           /kindergarten/:kg/admin/:adminId/news/preview                                 controllers.NewsController.previewNonPublished(kg: Long, adminId: String, class_id: Option[String], restrict: Option[Boolean])
-POST          /kindergarten/:kg/admin/:adminId/news                                         controllers.NewsController.create(kg: Long, adminId: String)
-POST          /kindergarten/:kg/admin/:adminId/news/:newsId                                 controllers.NewsController.adminUpdate(kg: Long, adminId: String, newsId: Long)
-DELETE        /kindergarten/:kg/admin/:adminId/news/:newsId                                 controllers.NewsController.delete(kg: Long, adminId: String, newsId: Long)
+GET           /kindergarten/:kg/news                                               controllers.NewsController.index(kg: Long, from: Option[Long], to: Option[Long], most:Option[Int], class_id: Option[String])
+GET           /kindergarten/:kg/news/:newsId                                       controllers.NewsController.show(kg: Long, newsId: Long)
+POST          /kindergarten/:kg/news/:newsId                                       controllers.NewsController.update(kg: Long, newsId: Long)
+DELETE        /kindergarten/:kg/news/:newsId                                       controllers.NewsController.deleteOne(kg: Long, newsId: Long)
+GET           /kindergarten/:kg/admin/:adminId/news                                controllers.NewsController.indexWithNonPublished(kg: Long, adminId: String, class_id: Option[String], restrict: Option[Boolean], from: Option[Long], to: Option[Long], most:Option[Int])
+GET           /kindergarten/:kg/admin/:adminId/news/preview                        controllers.NewsController.previewNonPublished(kg: Long, adminId: String, class_id: Option[String], restrict: Option[Boolean])
+POST          /kindergarten/:kg/admin/:adminId/news                                controllers.NewsController.create(kg: Long, adminId: String)
+POST          /kindergarten/:kg/admin/:adminId/news/:newsId                        controllers.NewsController.adminUpdate(kg: Long, adminId: String, newsId: Long)
+DELETE        /kindergarten/:kg/admin/:adminId/news/:newsId                        controllers.NewsController.delete(kg: Long, adminId: String, newsId: Long)
 
-GET           /kindergarten/:kg/parent                                                      controllers.ParentController.index(kg: Long, class_id: Option[Long], member: Option[Boolean], connected: Option[Boolean])
-POST          /kindergarten/:kg/parent                                                      controllers.ParentController.create(kg: Long)
-GET           /kindergarten/:kg/parent/:phone                                               controllers.ParentController.show(kg: Long, phone: String)
-POST          /kindergarten/:kg/parent/:phone                                               controllers.ParentController.update(kg: Long, phone: String)
-DELETE        /kindergarten/:kg/parent/:phone                                               controllers.ParentController.delete(kg: Long, phone: String)
+GET           /kindergarten/:kg/parent                                             controllers.ParentController.index(kg: Long, class_id: Option[Long], member: Option[Boolean], connected: Option[Boolean])
+POST          /kindergarten/:kg/parent                                             controllers.ParentController.create(kg: Long)
+GET           /kindergarten/:kg/parent/:phone                                      controllers.ParentController.show(kg: Long, phone: String)
+POST          /kindergarten/:kg/parent/:phone                                      controllers.ParentController.update(kg: Long, phone: String)
+DELETE        /kindergarten/:kg/parent/:phone                                      controllers.ParentController.delete(kg: Long, phone: String)
 
-GET           /kindergarten/:kg/parent/:parentId/news                                       controllers.ReadingNewsController.index(kg: Long, parentId: String)
-POST          /kindergarten/:kg/parent/:parentId/news/:newsId                               controllers.ReadingNewsController.create(kg: Long, parentId: Long, newsId: Long)
+GET           /kindergarten/:kg/parent/:parentId/news                              controllers.ReadingNewsController.index(kg: Long, parentId: String)
+POST          /kindergarten/:kg/parent/:parentId/news/:newsId                      controllers.ReadingNewsController.create(kg: Long, parentId: Long, newsId: Long)
 
-GET           /kindergarten/:kg/child/:childId/dailylog                                     controllers.DailyLogController.index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int])
-GET           /kindergarten/:kg/dailylog                                                    controllers.DailyLogController.indexInClasses(kg: Long, class_id: String)
+GET           /kindergarten/:kg/child/:childId/dailylog                            controllers.DailyLogController.index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /kindergarten/:kg/dailylog                                           controllers.DailyLogController.indexInClasses(kg: Long, class_id: String)
 
-GET           /kindergarten/:kg/admin/:adminId/news_reading_count/:newsId                   controllers.ReadingNewsController.countReading(kg: Long, adminId: Long, newsId: Long)
+GET           /kindergarten/:kg/admin/:adminId/news_reading_count/:newsId          controllers.ReadingNewsController.countReading(kg: Long, adminId: Long, newsId: Long)
 
-GET           /kindergarten/:kg/class/:classId/schedule                                     controllers.ScheduleController.index(kg: Long, classId: Long)
-GET           /kindergarten/:kg/class/:classId/schedule/preview                             controllers.ScheduleController.preview(kg: Long, classId: Long)
-GET           /kindergarten/:kg/class/:classId/schedule/:scheduleId                         controllers.ScheduleController.show(kg: Long, classId: Long, scheduleId: Long)
-POST          /kindergarten/:kg/class/:classId/schedule/:scheduleId                         controllers.ScheduleController.update(kg: Long, classId: Long, scheduleId: Long)
-POST          /kindergarten/:kg/class/:classId/schedule                                     controllers.ScheduleController.create(kg: Long, classId: Long)
+GET           /kindergarten/:kg/class/:classId/schedule                            controllers.ScheduleController.index(kg: Long, classId: Long)
+GET           /kindergarten/:kg/class/:classId/schedule/preview                    controllers.ScheduleController.preview(kg: Long, classId: Long)
+GET           /kindergarten/:kg/class/:classId/schedule/:scheduleId                controllers.ScheduleController.show(kg: Long, classId: Long, scheduleId: Long)
+POST          /kindergarten/:kg/class/:classId/schedule/:scheduleId                controllers.ScheduleController.update(kg: Long, classId: Long, scheduleId: Long)
+POST          /kindergarten/:kg/class/:classId/schedule                            controllers.ScheduleController.create(kg: Long, classId: Long)
 
-GET           /kindergarten/:kg/child                                                       controllers.ChildController.indexInSchool(kg: Long, class_id: Option[String], connected: Option[Boolean])
-GET           /kindergarten/:kg/child/:childId                                              controllers.ChildController.showInfo(kg: Long, childId: String)
-POST          /kindergarten/:kg/child                                                       controllers.ChildController.createOrUpdate(kg: Long)
-POST          /kindergarten/:kg/child/:childId                                              controllers.ChildController.update2(kg: Long, childId: String)
-DELETE        /kindergarten/:kg/child/:childId                                              controllers.ChildController.delete(kg: Long, childId: String)
+GET           /kindergarten/:kg/child                                              controllers.ChildController.indexInSchool(kg: Long, class_id: Option[String], connected: Option[Boolean])
+GET           /kindergarten/:kg/child/:childId                                     controllers.ChildController.showInfo(kg: Long, childId: String)
+POST          /kindergarten/:kg/child                                              controllers.ChildController.createOrUpdate(kg: Long)
+POST          /kindergarten/:kg/child/:childId                                     controllers.ChildController.update2(kg: Long, childId: String)
+DELETE        /kindergarten/:kg/child/:childId                                     controllers.ChildController.delete(kg: Long, childId: String)
 
-GET           /kindergarten/:kg/cookbook                                                    controllers.CookbookController.index(kg: Long)
-GET           /kindergarten/:kg/cookbook/preview                                            controllers.CookbookController.preview(kg: Long)
-GET           /kindergarten/:kg/cookbook/:cookbookId                                        controllers.CookbookController.show(kg: Long, cookbookId: Long)
-POST          /kindergarten/:kg/cookbook/:cookbookId                                        controllers.CookbookController.update(kg: Long, cookbookId: Long)
-POST          /kindergarten/:kg/cookbook                                                    controllers.CookbookController.create(kg: Long)
-
-
-POST          /kindergarten/:kg/check                                                       controllers.PushController.forwardSwipe(kg: Long)
-GET           /kindergarten/:kg/card/:cardId                                                controllers.CheckInController.show(kg: Long, cardId: String)
-GET           /kindergarten/:kg/card                                                        controllers.CheckInController.index(kg: Long)
-
-GET           /kindergarten/:kg/relationship                                                controllers.RelationshipController.index(kg: Long, parent: Option[String], child: Option[String], class_id: Option[Long])
-GET           /kindergarten/:kg/relationship/:card                                          controllers.RelationshipController.show(kg: Long, card: String)
-POST          /kindergarten/:kg/relationship/:card                                          controllers.RelationshipController.createOrUpdate(kg: Long, card: String)
-POST          /kindergarten/:kg/relationship                                                controllers.RelationshipController.create(kg: Long)
-DELETE        /kindergarten/:kg/relationship/:card                                          controllers.RelationshipController.delete(kg: Long, card: String)
-
-GET           /kindergarten/:kg/assignment                                                  controllers.AssignmentController.index(kg: Long, class_id: Option[String], from: Option[Long], to: Option[Long], most: Option[Int])
-POST          /kindergarten/:kg/assignment                                                  controllers.AssignmentController.create(kg: Long)
-POST          /kindergarten/:kg/assignment/:assignmentId                                    controllers.AssignmentController.update(kg: Long, assignmentId: Long)
-
-GET           /kindergarten/:kg/history/:topicId/record                                     controllers.SessionController.history(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String])
-DELETE        /kindergarten/:kg/history/:topicId/record/:id                                 controllers.SessionController.deleteHistory(kg: Long, topicId: String, id: Long)
-POST          /kindergarten/:kg/history/:topicId/record                                     controllers.SessionController.createHistory(kg: Long, topicId: String, retrieve_recent_from: Option[Long])
-GET           /kindergarten/:kg/history/:topicId/statistics                                 controllers.SessionController.statistics(kg: Long, topicId: String, year: String)
-
-POST          /kindergarten/:kg/history                                                     controllers.SessionController.batchCreate(kg: Long, child_id: String)
+GET           /kindergarten/:kg/cookbook                                           controllers.CookbookController.index(kg: Long)
+GET           /kindergarten/:kg/cookbook/preview                                   controllers.CookbookController.preview(kg: Long)
+GET           /kindergarten/:kg/cookbook/:cookbookId                               controllers.CookbookController.show(kg: Long, cookbookId: Long)
+POST          /kindergarten/:kg/cookbook/:cookbookId                               controllers.CookbookController.update(kg: Long, cookbookId: Long)
+POST          /kindergarten/:kg/cookbook                                           controllers.CookbookController.create(kg: Long)
 
 
-GET           /kindergarten/:kg/session/:topicId/record                                     controllers.SessionController.index(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int])
-DELETE        /kindergarten/:kg/session/:topicId/record/:id                                 controllers.SessionController.delete(kg: Long, topicId: String, id: Long)
-POST          /kindergarten/:kg/session/:topicId/record                                     controllers.SessionController.create(kg: Long, topicId: String, retrieve_recent_from: Option[Long])
-GET           /kindergarten/:kg/session                                                     controllers.SessionController.indexInClasses(kg: Long, class_id: String)
+POST          /kindergarten/:kg/check                                              controllers.PushController.forwardSwipe(kg: Long)
+GET           /kindergarten/:kg/card/:cardId                                       controllers.CheckInController.show(kg: Long, cardId: String)
+GET           /kindergarten/:kg/card                                               controllers.CheckInController.index(kg: Long)
 
-GET           /kindergarten/:kg/sender/:senderId                                            controllers.SessionController.senderDetail(kg: Long, senderId: String, type: String)
+GET           /kindergarten/:kg/relationship                                       controllers.RelationshipController.index(kg: Long, parent: Option[String], child: Option[String], class_id: Option[Long])
+GET           /kindergarten/:kg/relationship/:card                                 controllers.RelationshipController.show(kg: Long, card: String)
+POST          /kindergarten/:kg/relationship/:card                                 controllers.RelationshipController.createOrUpdate(kg: Long, card: String)
+POST          /kindergarten/:kg/relationship                                       controllers.RelationshipController.create(kg: Long)
+DELETE        /kindergarten/:kg/relationship/:card                                 controllers.RelationshipController.delete(kg: Long, card: String)
 
-GET           /kindergarten/:kg/session/:topicId/reader/:readerId                           controllers.ReaderController.lastRead(kg: Long, topicId: String, readerId: String)
-POST          /kindergarten/:kg/session/:topicId/reader/:readerId                           controllers.ReaderController.markRead(kg: Long, topicId: String, readerId: String)
+GET           /kindergarten/:kg/assignment                                         controllers.AssignmentController.index(kg: Long, class_id: Option[String], from: Option[Long], to: Option[Long], most: Option[Int])
+POST          /kindergarten/:kg/assignment                                         controllers.AssignmentController.create(kg: Long)
+POST          /kindergarten/:kg/assignment/:assignmentId                           controllers.AssignmentController.update(kg: Long, assignmentId: Long)
 
-GET           /kindergarten/:kg/child/:childId/assess                                       controllers.AssessController.index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /kindergarten/:kg/history/:topicId/record                            controllers.SessionController.history(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String])
+DELETE        /kindergarten/:kg/history/:topicId/record/:id                        controllers.SessionController.deleteHistory(kg: Long, topicId: String, id: Long)
+POST          /kindergarten/:kg/history/:topicId/record                            controllers.SessionController.createHistory(kg: Long, topicId: String, retrieve_recent_from: Option[Long])
+GET           /kindergarten/:kg/history/:topicId/statistics                        controllers.SessionController.statistics(kg: Long, topicId: String, year: String)
 
-POST          /kindergarten/:kg/child/:childId/assess                                       controllers.AssessController.createOrUpdate(kg: Long, childId: String)
-DELETE        /kindergarten/:kg/child/:childId/assess/:assessId                             controllers.AssessController.delete(kg: Long, childId: String, assessId: Long)
-POST          /kindergarten/:kg/assessments                                                 controllers.AssessController.batchCreate(kg: Long)
+POST          /kindergarten/:kg/history                                            controllers.SessionController.batchCreate(kg: Long, child_id: String)
 
 
-GET           /kindergarten/:kg/employee                                                    controllers.EmployeeController.indexInSchool(kg: Long, phone: Option[String])
-GET           /kindergarten/:kg/employee/:phone                                             controllers.EmployeeController.showInSchool(kg: Long, phone: String)
-DELETE        /kindergarten/:kg/employee/:phone                                             controllers.EmployeeController.deleteInSchool(kg: Long, phone: String)
-POST          /kindergarten/:kg/employee/:phone                                             controllers.EmployeeController.createOrUpdateInSchool(kg: Long, phone: String)
-POST          /kindergarten/:kg/employee/:phone/password                                    controllers.EmployeeController.changePassword(kg: Long, phone: String)
+GET           /kindergarten/:kg/session/:topicId/record                            controllers.SessionController.index(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int])
+DELETE        /kindergarten/:kg/session/:topicId/record/:id                        controllers.SessionController.delete(kg: Long, topicId: String, id: Long)
+POST          /kindergarten/:kg/session/:topicId/record                            controllers.SessionController.create(kg: Long, topicId: String, retrieve_recent_from: Option[Long])
+GET           /kindergarten/:kg/session                                            controllers.SessionController.indexInClasses(kg: Long, class_id: String)
 
-GET           /kindergarten/:kg/employee/:phone/class                                       controllers.EmployeeController.managedClass(kg: Long, phone: String)
+GET           /kindergarten/:kg/sender/:senderId                                   controllers.SessionController.senderDetail(kg: Long, senderId: String, type: String)
 
-POST          /kindergarten/:kg/principal                                                   controllers.EmployeeController.createPrincipal(kg: Long)
-GET           /kindergarten/:kg/principal                                                   controllers.PrivilegeController.index(kg: Long)
+GET           /kindergarten/:kg/session/:topicId/reader/:readerId                  controllers.ReaderController.lastRead(kg: Long, topicId: String, readerId: String)
+POST          /kindergarten/:kg/session/:topicId/reader/:readerId                  controllers.ReaderController.markRead(kg: Long, topicId: String, readerId: String)
 
-POST          /kindergarten/:kg/charge                                                      controllers.ChargeController.update(kg: Long)
-GET           /kindergarten/:kg/charge                                                      controllers.ChargeController.index(kg: Long)
-DELETE        /kindergarten/:kg/charge                                                      controllers.ChargeController.delete(kg: Long)
+GET           /kindergarten/:kg/child/:childId/assess                              controllers.AssessController.index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int])
 
-GET           /kindergarten/:kg/active                                                      controllers.ChargeController.activeCount(kg: Long)
+POST          /kindergarten/:kg/child/:childId/assess                              controllers.AssessController.createOrUpdate(kg: Long, childId: String)
+DELETE        /kindergarten/:kg/child/:childId/assess/:assessId                    controllers.AssessController.delete(kg: Long, childId: String, assessId: Long)
+POST          /kindergarten/:kg/assessments                                        controllers.AssessController.batchCreate(kg: Long)
 
-GET           /employee                                                                     controllers.EmployeeController.index
-POST          /employee                                                                     controllers.EmployeeController.create
-POST          /employee/:phone                                                              controllers.EmployeeController.updateOrCreate(phone: String)
-GET           /employee/:phone                                                              controllers.EmployeeController.show(phone: String)
-DELETE        /employee/:phone                                                              controllers.EmployeeController.permanentRemove(phone: String)
-GET           /employee_password/:phone                                                     controllers.EmployeeController.check(phone: String)
-POST          /employee_password/:phone                                                     controllers.EmployeeController.resetPassword(phone: String)
 
-GET           /phone/:phone                                                                 controllers.PhoneManagementController.show(phone: String)
-DELETE        /phone/:phone                                                                 controllers.PhoneManagementController.delete(phone: String)
+GET           /kindergarten/:kg/employee                                           controllers.EmployeeController.indexInSchool(kg: Long, phone: Option[String])
+GET           /kindergarten/:kg/employee/:phone                                    controllers.EmployeeController.showInSchool(kg: Long, phone: String)
+DELETE        /kindergarten/:kg/employee/:phone                                    controllers.EmployeeController.deleteInSchool(kg: Long, phone: String)
+POST          /kindergarten/:kg/employee/:phone                                    controllers.EmployeeController.createOrUpdateInSchool(kg: Long, phone: String)
+POST          /kindergarten/:kg/employee/:phone/password                           controllers.EmployeeController.changePassword(kg: Long, phone: String)
 
-GET           /app_package                                                                  controllers.AppPackageController.last(redirect: Option[String])
-POST          /app_package                                                                  controllers.AppPackageController.create
-DELETE        /app_package/:packageId                                                       controllers.AppPackageController.delete(packageId: Long)
-GET           /app_package/download                                                         controllers.AppPackageController.download
-GET           /teacher_app_package/download                                                 controllers.AppPackageController.downloadTeacherClient
+GET           /kindergarten/:kg/employee/:phone/class                              controllers.EmployeeController.managedClass(kg: Long, phone: String)
 
-POST          /ws/broadcast                                                                 controllers.WSController.sendBroadcastMessage
+POST          /kindergarten/:kg/principal                                          controllers.EmployeeController.createPrincipal(kg: Long)
+GET           /kindergarten/:kg/principal                                          controllers.PrivilegeController.index(kg: Long)
 
-GET           /ws/fileToken                                                                 controllers.WSController.generateToken(bucket: String, key: Option[String])
-GET           /ws/safe_file_token                                                           controllers.WSController.generateEncodeToken(bucket: String, key: Option[String])
-POST          /ws/safe_file_token                                                           controllers.WSController.generateSafeToken()
+POST          /kindergarten/:kg/charge                                             controllers.ChargeController.update(kg: Long)
+GET           /kindergarten/:kg/charge                                             controllers.ChargeController.index(kg: Long)
+DELETE        /kindergarten/:kg/charge                                             controllers.ChargeController.delete(kg: Long)
 
-GET           /ws/verify/phone                                                              controllers.SMSController.checkVerificationCode
-GET           /ws/verify/phone/:phone                                                       controllers.SMSController.sendVerificationCode(phone: String)
-POST          /ws/verify/phone/:phone                                                       controllers.SMSController.verify(phone: String)
+GET           /kindergarten/:kg/active                                             controllers.ChargeController.activeCount(kg: Long)
 
-POST          /feedback                                                                     controllers.FeedbackController.create
-POST          /feedback/:id                                                                 controllers.FeedbackController.update(id: Long)
-GET           /feedback                                                                     controllers.FeedbackController.index(source: Option[String])
+GET           /employee                                                            controllers.EmployeeController.index
+POST          /employee                                                            controllers.EmployeeController.create
+POST          /employee/:phone                                                     controllers.EmployeeController.updateOrCreate(phone: String)
+GET           /employee/:phone                                                     controllers.EmployeeController.show(phone: String)
+DELETE        /employee/:phone                                                     controllers.EmployeeController.permanentRemove(phone: String)
+GET           /employee_password/:phone                                            controllers.EmployeeController.check(phone: String)
+POST          /employee_password/:phone                                            controllers.EmployeeController.resetPassword(phone: String)
 
-GET           /push                                                                         controllers.PushController.test
-GET           /push/group                                                                   controllers.PushController.testGroup(newsId: Option[Long])
+GET           /phone/:phone                                                        controllers.PhoneManagementController.show(phone: String)
+DELETE        /phone/:phone                                                        controllers.PhoneManagementController.delete(phone: String)
 
-GET           /cheatCode                                                                    controllers.CheatingController.show
-POST          /cheatCode                                                                    controllers.CheatingController.create
-DELETE        /cheatCode                                                                    controllers.CheatingController.delete
+GET           /app_package                                                         controllers.AppPackageController.last(redirect: Option[String])
+POST          /app_package                                                         controllers.AppPackageController.create
+DELETE        /app_package/:packageId                                              controllers.AppPackageController.delete(packageId: Long)
+GET           /app_package/download                                                controllers.AppPackageController.download
+GET           /teacher_app_package/download                                        controllers.AppPackageController.downloadTeacherClient
 
-GET           /api/v1/statistics/session/:schoolId                                          controllers.StatisticsController.countSession(schoolId: Long)
-GET           /api/v1/statistics/history/:schoolId                                          controllers.StatisticsController.countGrowingHistory(schoolId: Long)
-GET           /api/v1/statistics/dailylog/:schoolId                                         controllers.StatisticsController.countDailyLogHistory(schoolId: Long)
-GET           /api/v1/statistics/assignment/:schoolId                                       controllers.StatisticsController.countAssignmentHistory(schoolId: Long, employee_id: Option[String])
-GET           /api/v1/statistics/assess/:schoolId                                           controllers.StatisticsController.countAssessHistory(schoolId: Long, employee_id: Option[String])
-GET           /api/v1/statistics/conversation/:schoolId                                     controllers.StatisticsController.countConversationHistory(schoolId: Long, employee_id: Option[String])
-GET           /api/v1/statistics/news/:schoolId                                             controllers.StatisticsController.countNewsHistory(schoolId: Long, employee_id: Option[String])
+POST          /ws/broadcast                                                        controllers.WSController.sendBroadcastMessage
 
-GET           /api/v1/statistics/assignment                                                 controllers.StatisticsController.countAllAssignment
-GET           /api/v1/statistics/assess                                                     controllers.StatisticsController.countAllAssess
-GET           /api/v1/statistics/conversation                                               controllers.StatisticsController.countAllConversation
-GET           /api/v1/statistics/news                                                       controllers.StatisticsController.countAllNews
+GET           /ws/fileToken                                                        controllers.WSController.generateToken(bucket: String, key: Option[String])
+GET           /ws/safe_file_token                                                  controllers.WSController.generateEncodeToken(bucket: String, key: Option[String])
+POST          /ws/safe_file_token                                                  controllers.WSController.generateSafeToken()
 
-GET           /api/v1/logging                                                               controllers.Application.logging
-GET           /api/v1/chat_client                                                           controllers.ChatController.chat(username)
+GET           /ws/verify/phone                                                     controllers.SMSController.checkVerificationCode
+GET           /ws/verify/phone/:phone                                              controllers.SMSController.sendVerificationCode(phone: String)
+POST          /ws/verify/phone/:phone                                              controllers.SMSController.verify(phone: String)
 
-GET           /api/v1/captcha                                                               controllers.ReCaptchaController.captcha
+POST          /feedback                                                            controllers.FeedbackController.create
+POST          /feedback/:id                                                        controllers.FeedbackController.update(id: Long)
+GET           /feedback                                                            controllers.FeedbackController.index(source: Option[String])
 
-GET           /api/v1/device                                                                controllers.MacAddressController.index
-GET           /api/v1/device/:device                                                        controllers.MacAddressController.show(device: String)
-DELETE        /api/v1/device/:deviceId                                                      controllers.MacAddressController.delete(deviceId: Long)
-POST          /api/v1/device                                                                controllers.MacAddressController.create
-POST          /api/v1/device/:device                                                        controllers.MacAddressController.update(device: String)
+GET           /push                                                                controllers.PushController.test
+GET           /push/group                                                          controllers.PushController.testGroup(newsId: Option[Long])
 
-GET           /api/v1/teacher_app_package                                                   controllers.AppPackageController.lastTeacherApp(redirect: Option[String])
-DELETE        /api/v1/teacher_app_package/:packageId                                        controllers.AppPackageController.delete(packageId: Long)
-POST          /api/v1/batch_import/parents                                                  controllers.BatchImportController.parents
-POST          /api/v1/batch_import/children                                                 controllers.BatchImportController.children
-POST          /api/v1/batch_import/employees                                                controllers.BatchImportController.employees
-POST          /api/v1/batch_import/relationships                                            controllers.BatchImportController.relationships
+GET           /cheatCode                                                           controllers.CheatingController.show
+POST          /cheatCode                                                           controllers.CheatingController.create
+DELETE        /cheatCode                                                           controllers.CheatingController.delete
 
-POST          /api/v1/batch_import/:kg/parents                                              controllers.BatchImportController.parentsInSchool(kg: Long)
-POST          /api/v1/batch_import/:kg/children                                             controllers.BatchImportController.childrenInSchool(kg: Long)
-POST          /api/v1/batch_import/:kg/employees                                            controllers.BatchImportController.employeesInSchool(kg: Long)
-POST          /api/v1/batch_import/:kg/relationships                                        controllers.BatchImportController.relationshipsInSchool(kg: Long)
+GET           /api/v1/statistics/session/:schoolId                                 controllers.StatisticsController.countSession(schoolId: Long)
+GET           /api/v1/statistics/history/:schoolId                                 controllers.StatisticsController.countGrowingHistory(schoolId: Long)
+GET           /api/v1/statistics/dailylog/:schoolId                                controllers.StatisticsController.countDailyLogHistory(schoolId: Long)
+GET           /api/v1/statistics/assignment/:schoolId                              controllers.StatisticsController.countAssignmentHistory(schoolId: Long, employee_id: Option[String])
+GET           /api/v1/statistics/assess/:schoolId                                  controllers.StatisticsController.countAssessHistory(schoolId: Long, employee_id: Option[String])
+GET           /api/v1/statistics/conversation/:schoolId                            controllers.StatisticsController.countConversationHistory(schoolId: Long, employee_id: Option[String])
+GET           /api/v1/statistics/news/:schoolId                                    controllers.StatisticsController.countNewsHistory(schoolId: Long, employee_id: Option[String])
 
-POST          /api/v1/batch_delete/parents                                                  controllers.BatchDeleteController.deleteParents
+GET           /api/v1/statistics/assignment                                        controllers.StatisticsController.countAllAssignment
+GET           /api/v1/statistics/assess                                            controllers.StatisticsController.countAllAssess
+GET           /api/v1/statistics/conversation                                      controllers.StatisticsController.countAllConversation
+GET           /api/v1/statistics/news                                              controllers.StatisticsController.countAllNews
 
-GET           /api/v1/test/force_update                                                     controllers.TestInterfaceController.forceUpdate
-POST          /api/v1/binding                                                               controllers.Authentication.bindNumberV1
+GET           /api/v1/logging                                                      controllers.Application.logging
+GET           /api/v1/chat_client                                                  controllers.ChatController.chat(username)
 
-POST          /api/v1/phone_check/:phone                                                    controllers.ParentController.isGoodToUse(phone: String, employee: Option[String])
-POST          /api/v1/kindergarten/:kg/phone_check/:phone                                   controllers.ParentController.isGoodToUseInSchool(kg: Long, phone: String, employee: Option[String])
-POST          /api/v1/card_check                                                            controllers.RelationshipController.isGoodToUse
+GET           /api/v1/captcha                                                      controllers.ReCaptchaController.captcha
 
-POST          /api/v1/video_provider/:kg                                                    controllers.VideoProviderController.create(kg: Long)
-GET           /api/v1/video_provider/:kg                                                    controllers.VideoProviderController.show(kg: Long)
-GET           /api/v1/video_provider                                                        controllers.VideoProviderController.index
+GET           /api/v1/device                                                       controllers.MacAddressController.index
+GET           /api/v1/device/:device                                               controllers.MacAddressController.show(device: String)
+DELETE        /api/v1/device/:deviceId                                             controllers.MacAddressController.delete(deviceId: Long)
+POST          /api/v1/device                                                       controllers.MacAddressController.create
+POST          /api/v1/device/:device                                               controllers.MacAddressController.update(device: String)
 
-GET           /api/v1/video_member                                                          controllers.VideoMemberController.externalIndex(token: String)
-GET           /api/v1/video_member/available/:kg                                            controllers.VideoMemberController.available(kg: Long)
+GET           /api/v1/teacher_app_package                                          controllers.AppPackageController.lastTeacherApp(redirect: Option[String])
+DELETE        /api/v1/teacher_app_package/:packageId                               controllers.AppPackageController.delete(packageId: Long)
+POST          /api/v1/batch_import/parents                                         controllers.BatchImportController.parents
+POST          /api/v1/batch_import/children                                        controllers.BatchImportController.children
+POST          /api/v1/batch_import/employees                                       controllers.BatchImportController.employees
+POST          /api/v1/batch_import/relationships                                   controllers.BatchImportController.relationships
 
-GET           /api/v1/kindergarten/:kg/video_member/default                                 controllers.VideoMemberController.default(kg: Long)
-GET           /api/v1/kindergarten/:kg/video_member                                         controllers.VideoMemberController.index(kg: Long)
-GET           /api/v1/kindergarten/:kg/video_member/:id                                     controllers.VideoMemberController.show(kg: Long, id: String)
-POST          /api/v1/kindergarten/:kg/video_member                                         controllers.VideoMemberController.create(kg: Long)
-POST          /api/v1/kindergarten/:kg/video_member/:id                                     controllers.VideoMemberController.update(kg: Long, id: String)
-DELETE        /api/v1/kindergarten/:kg/video_member/:id                                     controllers.VideoMemberController.delete(kg: Long, id: String)
+POST          /api/v1/batch_import/:kg/parents                                     controllers.BatchImportController.parentsInSchool(kg: Long)
+POST          /api/v1/batch_import/:kg/children                                    controllers.BatchImportController.childrenInSchool(kg: Long)
+POST          /api/v1/batch_import/:kg/employees                                   controllers.BatchImportController.employeesInSchool(kg: Long)
+POST          /api/v1/batch_import/:kg/relationships                               controllers.BatchImportController.relationshipsInSchool(kg: Long)
 
-GET           /api/v1/kindergarten/:kg/ad                                                   controllers.ADController.index(kg: Long)
-POST          /api/v1/kindergarten/:kg/ad                                                   controllers.ADController.create(kg: Long)
-GET           /api/v1/kindergarten/:kg/ad/:id                                               controllers.ADController.show(kg: Long, id: Long)
-POST          /api/v1/kindergarten/:kg/ad/:id                                               controllers.ADController.update(kg: Long, id: Long)
-DELETE        /api/v1/kindergarten/:kg/ad/:id                                               controllers.ADController.delete(kg: Long, id: Long)
+POST          /api/v1/batch_delete/parents                                         controllers.BatchDeleteController.deleteParents
+
+GET           /api/v1/test/force_update                                            controllers.TestInterfaceController.forceUpdate
+POST          /api/v1/binding                                                      controllers.Authentication.bindNumberV1
+
+POST          /api/v1/phone_check/:phone                                           controllers.ParentController.isGoodToUse(phone: String, employee: Option[String])
+POST          /api/v1/kindergarten/:kg/phone_check/:phone                          controllers.ParentController.isGoodToUseInSchool(kg: Long, phone: String, employee: Option[String])
+POST          /api/v1/card_check                                                   controllers.RelationshipController.isGoodToUse
+
+POST          /api/v1/video_provider/:kg                                           controllers.VideoProviderController.create(kg: Long)
+GET           /api/v1/video_provider/:kg                                           controllers.VideoProviderController.show(kg: Long)
+GET           /api/v1/video_provider                                               controllers.VideoProviderController.index
+
+GET           /api/v1/video_member                                                 controllers.VideoMemberController.externalIndex(token: String)
+GET           /api/v1/video_member/available/:kg                                   controllers.VideoMemberController.available(kg: Long)
+
+GET           /api/v1/kindergarten/:kg/video_member/default                        controllers.VideoMemberController.default(kg: Long)
+GET           /api/v1/kindergarten/:kg/video_member                                controllers.VideoMemberController.index(kg: Long)
+GET           /api/v1/kindergarten/:kg/video_member/:id                            controllers.VideoMemberController.show(kg: Long, id: String)
+POST          /api/v1/kindergarten/:kg/video_member                                controllers.VideoMemberController.create(kg: Long)
+POST          /api/v1/kindergarten/:kg/video_member/:id                            controllers.VideoMemberController.update(kg: Long, id: String)
+DELETE        /api/v1/kindergarten/:kg/video_member/:id                            controllers.VideoMemberController.delete(kg: Long, id: String)
+
+GET           /api/v1/kindergarten/:kg/ad                                          controllers.ADController.index(kg: Long)
+POST          /api/v1/kindergarten/:kg/ad                                          controllers.ADController.create(kg: Long)
+GET           /api/v1/kindergarten/:kg/ad/:id                                      controllers.ADController.show(kg: Long, id: Long)
+POST          /api/v1/kindergarten/:kg/ad/:id                                      controllers.ADController.update(kg: Long, id: Long)
+DELETE        /api/v1/kindergarten/:kg/ad/:id                                      controllers.ADController.delete(kg: Long, id: Long)
 
 #Location API
-GET           /api/v1/kindergarten/:kg/location/:child_id                                   controllers.LocationController.show(kg: Long, child_id: String)
+GET           /api/v1/kindergarten/:kg/location/:child_id                          controllers.LocationController.show(kg: Long, child_id: String)
 
-GET           /api/v2/location/:deviceId/record                                             controllers.LocationController.history(deviceId: String, from: Option[String], to: Option[String], most: Option[Int])
+GET           /api/v2/location/:deviceId/record                                    controllers.LocationController.history(deviceId: String, from: Option[String], to: Option[String], most: Option[Int])
 
-GET           /api/v2/location/:deviceId/status/power                                       controllers.LocationController.status(deviceId: String)
+GET           /api/v2/location/:deviceId/status/power                              controllers.LocationController.status(deviceId: String)
 
 #Bus Location API
-GET           /api/v2/kindergarten/:kg/bus_driver/:driverId/location                        controllers.V2.BusLocationController.index(kg: Long, driverId: String)
-POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/location                        controllers.V2.BusLocationController.create(kg: Long, driverId: String)
+GET           /api/v2/kindergarten/:kg/bus_driver/:driverId/location               controllers.V2.BusLocationController.index(kg: Long, driverId: String)
+POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/location               controllers.V2.BusLocationController.create(kg: Long, driverId: String)
 
-GET           /api/v2/kindergarten/:kg/last_bus_location/:childId                           controllers.V2.BusLocationController.childOnBus(kg: Long, childId: String)
-POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/child/:childId/check_in         controllers.V2.BusLocationController.checkIn(kg: Long, driverId: String, childId: String)
-POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/child/:childId/check_out        controllers.V2.BusLocationController.checkOut(kg: Long, driverId: String, childId: String)
-POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/batch_check_out                 controllers.V2.BusLocationController.batchCheckOut(kg: Long, driverId: String)
+GET           /api/v2/kindergarten/:kg/last_bus_location/:childId                  controllers.V2.BusLocationController.childOnBus(kg: Long, childId: String)
+POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/check_in               controllers.V2.BusLocationController.checkIn(kg: Long, driverId: String)
+POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/check_out              controllers.V2.BusLocationController.checkOut(kg: Long, driverId: String)
+POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/batch_check_out        controllers.V2.BusLocationController.batchCheckOut(kg: Long, driverId: String)
 
 #Check in history
-POST          /api/v2/kindergarten/:kg/check_history                                        controllers.PushController.saveOnly(kg: Long)
+POST          /api/v2/kindergarten/:kg/check_history                               controllers.PushController.saveOnly(kg: Long)
 
 #School config
-GET           /api/v2/school_config/:kg                                                     controllers.SchoolSummaryController.config(kg: Long)
-POST          /api/v2/school_config/:kg                                                     controllers.SchoolSummaryController.addConfig(kg: Long)
+GET           /api/v2/school_config/:kg                                            controllers.SchoolSummaryController.config(kg: Long)
+POST          /api/v2/school_config/:kg                                            controllers.SchoolSummaryController.addConfig(kg: Long)
 
-GET           /api/v2/relationship/:card                                                    controllers.RelationshipController.search(card: String)
+GET           /api/v2/relationship/:card                                           controllers.RelationshipController.search(card: String)
 
-POST          /api/v2/admin_password_reset/:phone                                           controllers.Authentication.adminReset(phone: String)
+POST          /api/v2/admin_password_reset/:phone                                  controllers.Authentication.adminReset(phone: String)
 
-POST          /api/v2/member/:phone                                                         controllers.MemberController.create(phone: String)
-DELETE        /api/v2/member/:phone                                                         controllers.MemberController.delete(phone: String)
+POST          /api/v2/member/:phone                                                controllers.MemberController.create(phone: String)
+DELETE        /api/v2/member/:phone                                                controllers.MemberController.delete(phone: String)
 
 
-GET           /api/v2/login_token/:phone                                                    controllers.LoginTokenController.tokenOf(phone: String)
+GET           /api/v2/login_token/:phone                                           controllers.LoginTokenController.tokenOf(phone: String)
 
 #news read mark
-GET           /api/v2/kindergarten/:kg/news/:newsId/reader/:parentId                        controllers.NewsController.oneReader(kg: Long, newsId: Long, parentId: String)
-GET           /api/v2/kindergarten/:kg/news/:newsId/reader                                  controllers.NewsController.allReaders(kg: Long, newsId: Long)
-POST          /api/v2/kindergarten/:kg/news/:newsId/reader                                  controllers.NewsController.read(kg: Long, newsId: Long)
+GET           /api/v2/kindergarten/:kg/news/:newsId/reader/:parentId               controllers.NewsController.oneReader(kg: Long, newsId: Long, parentId: String)
+GET           /api/v2/kindergarten/:kg/news/:newsId/reader                         controllers.NewsController.allReaders(kg: Long, newsId: Long)
+POST          /api/v2/kindergarten/:kg/news/:newsId/reader                         controllers.NewsController.read(kg: Long, newsId: Long)
 #news v2
-GET           /api/v2/kindergarten/:kg/news                                                 controllers.V2.NewsControllerV2.index(kg: Long, from: Option[Long], to: Option[Long], most:Option[Int], class_id: Option[String], tag: Option[Boolean])
-GET           /api/v2/kindergarten/:kg/news/:newsId                                         controllers.V2.NewsControllerV2.show(kg: Long, newsId: Long, tag: Option[Boolean])
+GET           /api/v2/kindergarten/:kg/news                                        controllers.V2.NewsControllerV2.index(kg: Long, from: Option[Long], to: Option[Long], most:Option[Int], class_id: Option[String], tag: Option[Boolean])
+GET           /api/v2/kindergarten/:kg/news/:newsId                                controllers.V2.NewsControllerV2.show(kg: Long, newsId: Long, tag: Option[Boolean])
 
-DELETE        /api/v2/kindergarten/:kg/admin/:adminId/news/:newsId                          controllers.V2.NewsControllerV2.delete(kg: Long, adminId: String, newsId: Long)
-POST          /api/v2/kindergarten/:kg/admin/:adminId/news/:newsId                          controllers.V2.NewsControllerV2.update(kg: Long, adminId: String, newsId: Long)
-POST          /api/v2/kindergarten/:kg/admin/:adminId/news                                  controllers.V2.NewsControllerV2.create(kg: Long, adminId: String)
-GET           /api/v2/kindergarten/:kg/admin/:adminId/news                                  controllers.V2.NewsControllerV2.indexWithNonPublished(kg: Long, adminId: String, class_id: Option[String], restrict: Option[Boolean], from: Option[Long], to: Option[Long], most:Option[Int])
+DELETE        /api/v2/kindergarten/:kg/admin/:adminId/news/:newsId                 controllers.V2.NewsControllerV2.delete(kg: Long, adminId: String, newsId: Long)
+POST          /api/v2/kindergarten/:kg/admin/:adminId/news/:newsId                 controllers.V2.NewsControllerV2.update(kg: Long, adminId: String, newsId: Long)
+POST          /api/v2/kindergarten/:kg/admin/:adminId/news                         controllers.V2.NewsControllerV2.create(kg: Long, adminId: String)
+GET           /api/v2/kindergarten/:kg/admin/:adminId/news                         controllers.V2.NewsControllerV2.indexWithNonPublished(kg: Long, adminId: String, class_id: Option[String], restrict: Option[Boolean], from: Option[Long], to: Option[Long], most:Option[Int])
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file                                                                 controllers.VersionedAssets.at(file: controllers.VersionedAsset)
-GET           /images/*file                                                                 controllers.Static.at(path="/public/images", file)
+GET           /assets/*file                                                        controllers.VersionedAssets.at(file: controllers.VersionedAsset)
+GET           /images/*file                                                        controllers.Static.at(path="/public/images", file)
 
 #anglarjs template pages
-GET           /templates/*file                                                              controllers.Static.at(path="/public/templates", file)
-GET           /*college/templates/*file                                                     controllers.Static.ignoreCollege(path="/public/templates", file, college)
+GET           /templates/*file                                                     controllers.Static.at(path="/public/templates", file)
+GET           /*college/templates/*file                                            controllers.Static.ignoreCollege(path="/public/templates", file, college)
 
 #weixin api
 
-GET           /api/weixin/entry                                                             controllers.WeiXinController.entry(signature: String, timestamp: Long, nonce: String, echostr: String)
-POST          /api/weixin/entry                                                             controllers.WeiXinController.handle
+GET           /api/weixin/entry                                                    controllers.WeiXinController.entry(signature: String, timestamp: Long, nonce: String, echostr: String)
+POST          /api/weixin/entry                                                    controllers.WeiXinController.handle
 
 #deprecated
-GET           /kindergarten/:kg/parent/:parentId/child                                      controllers.ChildController.index(kg: Long, parentId: String)
-GET           /kindergarten/:kg/parent/:parentId/child/:childId                             controllers.ChildController.show(kg: Long, parentId: String, childId: String)
+GET           /kindergarten/:kg/parent/:parentId/child                             controllers.ChildController.index(kg: Long, parentId: String)
+GET           /kindergarten/:kg/parent/:parentId/child/:childId                    controllers.ChildController.show(kg: Long, parentId: String, childId: String)
 
-GET           /kindergarten/:kg/conversation/:phone                                         controllers.ConversationController.index(kg: Long, phone: String, from: Option[Long], to: Option[Long], most: Option[Int])
-POST          /kindergarten/:kg/conversation/:phone                                         controllers.ConversationController.create(kg: Long, phone: String, retrieve_recent_from: Option[Long])
+GET           /kindergarten/:kg/conversation/:phone                                controllers.ConversationController.index(kg: Long, phone: String, from: Option[Long], to: Option[Long], most: Option[Int])
+POST          /kindergarten/:kg/conversation/:phone                                controllers.ConversationController.create(kg: Long, phone: String, retrieve_recent_from: Option[Long])
 
-GET           /ws/swipe                                                                     controllers.WSController.call
-POST          /ws/swipe                                                                     controllers.WSController.sendMessage
+GET           /ws/swipe                                                            controllers.WSController.call
+POST          /ws/swipe                                                            controllers.WSController.sendMessage

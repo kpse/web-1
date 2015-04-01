@@ -106,6 +106,14 @@ object Relationship {
       option
   }
 
+  def getChildIdByCard(card: String) = DB.withConnection {
+    implicit c =>
+      val option = SQL("select child_id from relationmap where status=1 and card_num={card} limit 1")
+        .on('card -> card).as(get[String]("child_id") singleOpt)
+      Logger.info(s"find child ${option.toString} by $card")
+      option
+  }
+
   def delete(kg: Long, card: String) = DB.withConnection {
     implicit c =>
       SQL("delete from relationmap where card_num={card}")

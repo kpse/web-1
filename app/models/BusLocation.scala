@@ -55,13 +55,11 @@ object BusLocation {
           'dir -> location.direction, 'ra -> location.radius, 'address -> location.address, 'time -> System.currentTimeMillis).executeInsert()
   }
 
-  def BatchCheckOut(kg: Long, employeeId: String, children: List[String]) = ???
-
-  def checkIn(kg: Long, employeeId: String, childId: String) = DB.withConnection {
+  def checkIn(kg: Long, employeeId: String, childId: String, card: String) = DB.withConnection {
     implicit c =>
       SQL("insert into childrenonbus (school_id, employee_id, child_id, card, received_at) values " +
         "({kg}, {driver}, {child}, {card}, {time})")
-        .on('kg -> kg, 'driver -> employeeId, 'child -> childId, 'time -> System.currentTimeMillis, 'card -> "").executeInsert()
+        .on('kg -> kg, 'driver -> employeeId, 'child -> childId, 'time -> System.currentTimeMillis, 'card -> card).executeInsert()
   }
 
   def checkOut(kg: Long, employeeId: String, childId: String) = DB.withConnection {
@@ -69,5 +67,4 @@ object BusLocation {
       SQL("update childrenonbus set status=0, received_at={time} where school_id={kg} and employee_id={driver} and child_id={child} ")
         .on('kg -> kg, 'driver -> employeeId, 'child -> childId, 'time -> System.currentTimeMillis).executeInsert()
   }
-
 }
