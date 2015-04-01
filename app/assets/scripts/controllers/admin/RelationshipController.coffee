@@ -327,6 +327,22 @@ angular.module('kulebaoAdmin')
         $http({method: 'POST', url: '/kindergarten/' + stateParams.kindergarten + '/check', data: check}).success (data) ->
           alert 'error_code:' + data.error_code
 
+      mockDriverId = -> '3_2088_1427118225700'
+
+      host = ->
+        if location.host() == 'localhost' then "http://localhost:9000" else "#{location.protocol()}://#{location.host()}"
+
+      mockDriverLocationReport = ->
+        data = {"school_id":parseInt(stateParams.kindergarten),"driver_id":mockDriverId(),"latitude":108.883425,"longitude":134.253351,"direction":180.89999389648438,"radius":0.8999999761581421,"address":"地球1"}
+        $http {method: 'POST', url: "/api/v2/kindergarten/#{stateParams.kindergarten}/bus_driver/#{mockDriverId()}/location", data: data}
+
+      scope.sendBusMessage = (relationship, type) ->
+        check = generateCheckingInfo(relationship.card, relationship.parent.name, type)
+        method = if type == 11 then 'check_in' else 'check_out'
+        mockDriverLocationReport()
+        $http({method: 'POST', url: "/api/v2/kindergarten/#{stateParams.kindergarten}/bus_driver/#{mockDriverId()}/#{method}", data: check}).success (data) ->
+          alert "bus driver is : 3_2088_1427118225700, check child status by url: #{host()}/api/v2/kindergarten/#{stateParams.kindergarten}/last_bus_location/#{relationship.child.child_id}"
+
       scope.delete = (card) ->
         Relationship.delete school_id: stateParams.kindergarten, card: card, ->
           scope.refreshRelationship()

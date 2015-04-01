@@ -37,9 +37,13 @@
       <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
               ng-confirm-click="delete(r.card)" ng-show="config.deletable">删除
       </button>
-      <button class="btn btn-xs btn-info" ng-click="sendMessage(r, 1)" ng-show="adminUser.privilege_group == 'operator'">到校刷卡
+      <button class="btn btn-xs btn-info" ng-click="sendMessage(r, 1)" ng-show="adminUser.privilege_group == 'operator'">到校
       </button>
-      <button class="btn btn-xs btn-warning" ng-click="sendMessage(r, 0)" ng-show="adminUser.privilege_group == 'operator'">离开刷卡
+      <button class="btn btn-xs btn-warning" ng-click="sendMessage(r, 0)" ng-show="adminUser.privilege_group == 'operator'">离开
+      </button>
+      <button class="btn btn-xs btn-info" ng-click="sendBusMessage(r, 11)" ng-show="adminUser.privilege_group == 'operator'">上车
+      </button>
+      <button class="btn btn-xs btn-warning" ng-click="sendBusMessage(r, 10)" ng-show="adminUser.privilege_group == 'operator'">下车
       </button>
       <span ng-hide="config.deletable">该数据导入自安全系统</span>
     </td>
