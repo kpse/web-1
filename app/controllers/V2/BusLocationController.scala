@@ -1,7 +1,8 @@
 package controllers.V2
 
 import controllers.Secured
-import models.json_models.CheckInfo
+import models.json_models.{CheckChildInfo, CheckInfo}
+import models.json_models.CheckingMessage._
 import models.{Relationship, BusLocation, ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
@@ -26,8 +27,10 @@ object BusLocationController extends Controller with Secured  {
   def childOnBus(kg: Long, childId: String) = IsLoggedIn {
     u => _ =>
       BusLocation.child(kg, childId) match {
-        case Some(x) if x.status == Some(0) =>
-          NotFound(Json.toJson(ErrorResponse(s"今天${childId}已下车(Got off the school bus already today.)")))
+        case Some(x) if x.status == Some(2) =>
+          NotFound(Json.toJson(ErrorResponse(s"今天早上${childId}已到校(Attended to school today.)", 2)))
+        case Some(x) if x.status == Some(4) =>
+          NotFound(Json.toJson(ErrorResponse(s"今天下午${childId}已到站下车(Got off the school bus already today.)", 4)))
         case Some(x) =>
           Ok(Json.toJson(x))
         case None =>
@@ -35,7 +38,6 @@ object BusLocationController extends Controller with Secured  {
       }
       
   }
-  implicit val read = Json.reads[CheckInfo]
 
   def checkIn(kg: Long, driverId: String) = IsLoggedIn(parse.json) {
     u => request =>
@@ -53,6 +55,28 @@ object BusLocationController extends Controller with Secured  {
         request.body.validate[CheckInfo].map {
           case (check) =>
             Relationship.getChildIdByCard(check.card_no) map (BusLocation.checkOut(kg, driverId, _))
+            Ok(Json.toJson(new SuccessResponse))
+        }.recoverTotal {
+          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        }
+  }
+
+  def childIn(kg: Long, driverId: String) = IsLoggedIn(parse.json) {
+    u => request =>
+      request.body.validate[CheckChildInfo].map {
+        case (check) =>
+          BusLocation.childrenOnBus(kg, driverId, check.child_id, "")
+          Ok(Json.toJson(new SuccessResponse))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
+
+  def childOut(kg: Long, driverId: String) = IsLoggedIn(parse.json) {
+      u => request =>
+        request.body.validate[CheckChildInfo].map {
+          case (check) =>
+            BusLocation.childrenOffBus(kg, driverId, check.child_id)
             Ok(Json.toJson(new SuccessResponse))
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))

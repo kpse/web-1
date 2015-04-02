@@ -7,14 +7,21 @@ import anorm.SqlParser._
 import anorm.~
 import org.joda.time.DateTime
 import models.{Advertisement, DailyLog}
+import play.api.libs.json.Json
 
 case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long)
+case class CheckChildInfo(school_id: Long, child_id: String, check_type: Int, timestamp: Long)
 
 case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String, pushid: String, record_url: String, parent_name: String, device: Int, aps: Option[IOSField], ad: Option[String] = None)
 
 case class IOSField(alert: String, sound: String = "", badge: Int = 1)
 
 object CheckingMessage {
+  implicit val checkChildInfoReads = Json.reads[CheckChildInfo]
+  implicit val checkChildInfoWrites = Json.writes[CheckChildInfo]
+  implicit val checkInfoReads = Json.reads[CheckInfo]
+  implicit val checkInfoWrites = Json.writes[CheckInfo]
+
   def convert(request: CheckInfo): List[CheckNotification] = DB.withConnection {
     implicit c =>
       def generateNotice(childName: String): IOSField = {

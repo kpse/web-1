@@ -261,6 +261,10 @@ POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/check_in            
 POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/check_out              controllers.V2.BusLocationController.checkOut(kg: Long, driverId: String)
 POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/batch_check_out        controllers.V2.BusLocationController.batchCheckOut(kg: Long, driverId: String)
 
+POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/child_off_bus              controllers.V2.BusLocationController.childOut(kg: Long, driverId: String)
+POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/child_on_bus               controllers.V2.BusLocationController.childIn(kg: Long, driverId: String)
+
+
 #Check in history
 POST          /api/v2/kindergarten/:kg/check_history                               controllers.PushController.saveOnly(kg: Long)
 
