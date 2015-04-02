@@ -41,9 +41,13 @@
       </button>
       <button class="btn btn-xs btn-warning" ng-click="sendMessage(r, 0)" ng-show="adminUser.privilege_group == 'operator'">离开
       </button>
-      <button class="btn btn-xs btn-info" ng-click="sendBusMessage(r, 11)" ng-show="adminUser.privilege_group == 'operator'">上车
+      <button class="btn btn-xs btn-danger" ng-click="sendBusMessage(r, 11)" ng-show="adminUser.privilege_group == 'operator'">上午上车
       </button>
-      <button class="btn btn-xs btn-warning" ng-click="sendBusMessage(r, 10)" ng-show="adminUser.privilege_group == 'operator'">下车
+      <button class="btn btn-xs btn-info" ng-click="sendBusMessage(r, 21)" ng-show="adminUser.privilege_group == 'operator'">上午下车
+      </button>
+      <button class="btn btn-xs btn-success" ng-click="sendBusMessage(r, 20)" ng-show="adminUser.privilege_group == 'operator'">下午上车
+      </button>
+      <button class="btn btn-xs btn-warning" ng-click="sendBusMessage(r, 10)" ng-show="adminUser.privilege_group == 'operator'">下午下车
       </button>
       <span ng-hide="config.deletable">该数据导入自安全系统</span>
     </td>

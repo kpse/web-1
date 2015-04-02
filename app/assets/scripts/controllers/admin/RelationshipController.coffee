@@ -313,6 +313,12 @@ angular.module('kulebaoAdmin')
 
       scope.refreshRelationship()
 
+      generateChildCheckingInfo = (child, type) ->
+        school_id: parseInt(stateParams.kindergarten)
+        child_id: child.child_id
+        check_type: type
+        timestamp: new Date().getTime()
+
       generateCheckingInfo = (card, name, type) ->
         school_id: parseInt(stateParams.kindergarten)
         card_no: card
@@ -337,8 +343,17 @@ angular.module('kulebaoAdmin')
         $http {method: 'POST', url: "/api/v2/kindergarten/#{stateParams.kindergarten}/bus_driver/#{mockDriverId()}/location", data: data}
 
       scope.sendBusMessage = (relationship, type) ->
-        check = generateCheckingInfo(relationship.card, relationship.parent.name, type)
-        method = if type == 11 then 'check_in' else 'check_out'
+        check = switch type
+          when 10,11 then generateCheckingInfo(relationship.card, relationship.parent.name, type)
+          when 20,21 then generateChildCheckingInfo(relationship.child, type)
+
+        method = switch type
+          when 10 then 'check_out'
+          when 11 then 'check_in'
+          when 20 then 'child_on_bus'
+          when 21 then 'child_off_bus'
+          else ''
+
         mockDriverLocationReport()
         $http({method: 'POST', url: "/api/v2/kindergarten/#{stateParams.kindergarten}/bus_driver/#{mockDriverId()}/#{method}", data: check}).success (data) ->
           alert "bus driver is : 3_2088_1427118225700, check child status by url: #{host()}/api/v2/kindergarten/#{stateParams.kindergarten}/last_bus_location/#{relationship.child.child_id}"
