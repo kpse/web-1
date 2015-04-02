@@ -7,6 +7,7 @@ import models.json_models.SchoolIntro._
 import play.Logger
 import models._
 import models.School._
+import controllers.helper.JsonLogger.loggedJson
 
 object SchoolSummaryController extends Controller with Secured {
   implicit val writes1 = Json.writes[SchoolIntroPreviewResponse]
@@ -81,7 +82,7 @@ object SchoolSummaryController extends Controller with Secured {
 
   def config(kg: Long) = IsAuthenticated {
     u => request =>
-      Ok(Json.toJson(School.config(kg)))
+      Ok(loggedJson(School.config(kg)))
   }
 
   def addConfig(kg: Long) = IsOperator(parse.json) {
