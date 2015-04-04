@@ -10,9 +10,10 @@ import models.{Advertisement, DailyLog}
 import play.api.libs.json.Json
 
 case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long)
+
 case class CheckChildInfo(school_id: Long, child_id: String, check_type: Int, timestamp: Long)
 
-case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String, pushid: String, record_url: String, parent_name: String, device: Int, aps: Option[IOSField], ad: Option[String] = None)
+case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String, pushid: String, channelid: String, record_url: String, parent_name: String, device: Int, aps: Option[IOSField], ad: Option[String] = None)
 
 case class IOSField(alert: String, sound: String = "", badge: Int = 1)
 
@@ -31,27 +32,28 @@ object CheckingMessage {
       }
 
       def advertisementOf(schoolId: Long): String = Advertisement.index(schoolId) match {
-        case x::xs => x.name
+        case x :: xs => x.name
         case _ => "幼乐宝"
       }
 
       val simple = {
         get[String]("child_id") ~
           get[String]("pushid") ~
+          get[String]("channelid") ~
           get[String]("parent_name") ~
           get[String]("childinfo.name") ~
           get[Int]("device") map {
-          case child_id ~ pushid ~ name ~ childName ~ 3 =>
-            CheckNotification(request.timestamp, request.notice_type, child_id, pushid, request.record_url, name, 3, None, Some(advertisementOf(request.school_id)))
-          case child_id ~ pushid ~ name ~ childName ~ 4 =>
-            CheckNotification(request.timestamp, request.notice_type, child_id, pushid, request.record_url, name, 4,
+          case child_id ~ pushid ~ channelid ~ name ~ childName ~ 3 =>
+            CheckNotification(request.timestamp, request.notice_type, child_id, pushid, channelid, request.record_url, name, 3, None, Some(advertisementOf(request.school_id)))
+          case child_id ~ pushid ~ channelid ~ name ~ childName ~ 4 =>
+            CheckNotification(request.timestamp, request.notice_type, child_id, pushid, channelid, request.record_url, name, 4,
               Some(generateNotice(childName)), Some(advertisementOf(request.school_id)))
         }
 
       }
       SQL(
         """
-          |select a.pushid, c.child_id, c.name,
+          |select a.pushid, c.child_id, c.name, a.channelid,
           |  (select p.name from parentinfo p, relationmap r where p.parent_id = r.parent_id and r.card_num={card_num}) as parent_name,
           |  a.device from accountinfo a, childinfo c, parentinfo p, relationmap r
           |where p.parent_id = r.parent_id and r.child_id = c.child_id and
