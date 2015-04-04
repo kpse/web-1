@@ -53,13 +53,13 @@ object PushableNumber {
   implicit def convertPhoneToPushableNumber(phone: String) = PushableNumber(phone)
   implicit val writePushAccount = Json.writes[PushAccount]
 
-  def updateTokenAfterBinding(binding: BindingNumber, updateTime: Long) = DB.withConnection {
+  def updateTokenAfterBinding(binding: BindingNumber) = DB.withConnection {
     implicit c =>
-      SQL("update accountinfo set pushid={pushid}, device={device}, active=1, " +
-        "pwd_change_time={timestamp} where accountid={accountid}")
+      SQL("update accountinfo set pushid={pushid}, device={device}, active=1, channelid={channelid} " +
+        " where accountid={accountid}")
         .on('accountid -> binding.phonenum,
           'pushid -> binding.user_id,
-          'timestamp -> updateTime,
+          'channelid -> binding.channel_id,
           'device -> convertToCode(binding.device_type)
         ).executeUpdate
   }

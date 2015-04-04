@@ -1,14 +1,12 @@
 package models.json_models
 
-import play.api.db.DB
-import anorm._
 import anorm.SqlParser._
+import anorm.{~, _}
+import models.MemberPhoneNumber.convertPhoneToMemberPhoneNumber
+import models.PushableNumber._
 import play.api.Logger
 import play.api.Play.current
-import anorm.~
-import scala.Some
-import models.PushableNumber.{updateTokenAfterBinding, convertPhoneToPushableNumber}
-import models.MemberPhoneNumber.convertPhoneToMemberPhoneNumber
+import play.api.db.DB
 
 case class BindingNumber(phonenum: String, user_id: String, channel_id: String, device_type: Option[String], access_token: String)
 
@@ -44,7 +42,9 @@ object Binding {
         ).as(response(request.access_token) singleOpt)
       Logger.info(row.toString)
       row match {
-        case Some(r) => r
+        case Some(r) =>
+          updateTokenAfterBinding(request)
+          r
         case res if res.isEmpty && request.phonenum.existsDisregardingToken =>
           BindNumberResponse(3)
         case res if res.isEmpty && request.phonenum.isExpired =>
