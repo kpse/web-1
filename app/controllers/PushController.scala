@@ -79,7 +79,9 @@ object PushController extends Controller {
     //device_type => 1: web 2: pc 3:android 4:ios 5:wp
     request.setDeviceType(new Integer(check.device))
     request.setDeployStatus(deployStatus)
-    request.setChannelId(check.channelid.toLong)
+    if (check.channelid.toLong > 0) {
+      request.setChannelId(check.channelid.toLong)
+    }
     request.setUserId(check.pushid)
     request.setMessageType(messageType(check.device))
     Logger.info(Json.toJson(check).toString())

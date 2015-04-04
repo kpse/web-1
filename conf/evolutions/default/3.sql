@@ -5,7 +5,7 @@ CREATE TABLE accountinfo (
   accountid      varchar(16) NOT NULL,
   password varchar(32) NOT NULL,
   pushid   varchar(20) NOT NULL DEFAULT '',
-  channelid   varchar(20) NOT NULL DEFAULT '',
+  channelid   varchar(20) NOT NULL DEFAULT '0',
   active  INT NOT NULL DEFAULT 0,
   pwd_change_time bigint(20) NOT NULL DEFAULT 0,
   device INT NOT NULL DEFAULT 3,
