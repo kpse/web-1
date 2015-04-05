@@ -10,6 +10,7 @@ angular.module('kulebao.services')
         news_id: '@news_id'
       }
 ]
+
 .factory 'adminNewsPreview', ['$resource', ($resource) ->
   $resource '/kindergarten/:school_id/admin/:publisher_id/news/preview',
     {
@@ -17,6 +18,7 @@ angular.module('kulebao.services')
       publisher_id: '@publisher_id'
     }
 ]
+
 .factory 'adminNewsServiceV2', ['$resource',
   ($resource) ->
     $resource '/api/v2/kindergarten/:school_id/admin/:publisher_id/news/:news_id',
