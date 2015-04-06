@@ -1,9 +1,11 @@
 package controllers.V2
 
+import controllers.PushController.createSwipeMessage
 import controllers.Secured
-import models.json_models.{CheckChildInfo, CheckInfo}
+import models.json_models.{CheckingMessage, CheckChildInfo, CheckInfo}
 import models.json_models.CheckingMessage._
-import models.{Relationship, BusLocation, ErrorResponse, SuccessResponse}
+import models._
+import play.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
@@ -44,10 +46,31 @@ object BusLocationController extends Controller with Secured  {
       request.body.validate[CheckInfo].map {
         case (check) =>
           Relationship.getChildIdByCard(check.card_no) map (BusLocation.checkIn(kg, driverId, _, check.card_no))
+          pushToParents(check.copy(notice_type = 10))
           Ok(Json.toJson(new SuccessResponse))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
+  }
+
+  def pushToParents(check: CheckInfo): Unit = {
+    val messages = CheckingMessage.convert(check)
+    DailyLog.create(messages, check)
+    Logger.info("bus location push messages : " + messages)
+    messages map {
+      m =>
+        createSwipeMessage(m)
+    }
+  }
+
+  def pushToParents2(check: CheckChildInfo): Unit = {
+    val messages = CheckingMessage.convertChildCheck(check)
+    DailyLog.create(messages, check.toCheckInfo)
+    Logger.info("bus location push messages : " + messages)
+    messages map {
+      m =>
+        createSwipeMessage(m)
+    }
   }
 
   def checkOut(kg: Long, driverId: String) = IsLoggedIn(parse.json) {
@@ -55,6 +78,7 @@ object BusLocationController extends Controller with Secured  {
         request.body.validate[CheckInfo].map {
           case (check) =>
             Relationship.getChildIdByCard(check.card_no) map (BusLocation.checkOut(kg, driverId, _))
+            pushToParents(check.copy(notice_type = 13))
             Ok(Json.toJson(new SuccessResponse))
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -66,6 +90,7 @@ object BusLocationController extends Controller with Secured  {
       request.body.validate[CheckChildInfo].map {
         case (check) =>
           BusLocation.childrenOnBus(kg, driverId, check.child_id, "")
+          pushToParents2(check.copy(check_type = 12))
           Ok(Json.toJson(new SuccessResponse))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -77,6 +102,7 @@ object BusLocationController extends Controller with Secured  {
         request.body.validate[CheckChildInfo].map {
           case (check) =>
             BusLocation.childrenOffBus(kg, driverId, check.child_id)
+            pushToParents2(check.copy(check_type = 11))
             Ok(Json.toJson(new SuccessResponse))
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
