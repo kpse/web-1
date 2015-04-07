@@ -10,6 +10,15 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           _.map all, (value, key) ->
             {name: key, value: value}
 
+        scope.defaultConfig =
+          backend: 'true'
+          hideVideo: 'false'
+          disableMemberEditing: 'false'
+          bus: 'false'
+
+        scope.filterConfig = (config, index) ->
+          scope.defaultConfig[config.name] != config.value
+
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->
             kg.managers = Principal.query school_id: kg.school_id, ->
@@ -22,9 +31,11 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
             SchoolConfig.get school_id: kg.school_id, (data)->
               kg.config =
-                backend: extractConfig data['config'], 'backend', 'true'
-                hideVideo: extractConfig data['config'], 'hideVideo', 'false'
-                disableMemberEditing: extractConfig data['config'], 'disableMemberEditing', 'false'
+                backend: extractConfig data['config'], 'backend', scope.defaultConfig['backend']
+                hideVideo: extractConfig data['config'], 'hideVideo', scope.defaultConfig['hideVideo']
+                disableMemberEditing: extractConfig data['config'], 'disableMemberEditing', scope.defaultConfig['disableMemberEditing']
+                bus: extractConfig data['config'], 'bus', scope.defaultConfig['bus']
+              kg.configArray = scope.generateConfigArray(kg.config)
 
           scope.admins = Employee.query()
 
@@ -148,5 +159,11 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         13 + _.max _.map schools, (c) ->
           c.school_id
 
+      scope.displayIcon = (type) ->
+        switch type
+          when 'backend' then 'glyphicon-tower'
+          when 'hideVideo' then 'glyphicon-facetime-video'
+          when 'disableMemberEditing' then 'glyphicon-ban-circle'
+          when 'bus' then 'glyphicon-record'
   ]
 

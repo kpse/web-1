@@ -12,23 +12,26 @@
 <table class="table table-hover table-condensed schools-list">
   <thead>
   <tr class="row">
-    <th class="col-xs-2">学校编号</th>
+    <th class="col-xs-1">学校编号</th>
     <th class="col-xs-3">学校全名</th>
     <th class="col-xs-2">显示名称</th>
-    <th class="col-xs-3">管理员</th>
+    <th class="col-xs-2">管理员</th>
+    <th class="col-xs-2">配置</th>
     <th class="col-xs-2">操作</th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="kg in kindergartens | filter: searchText | orderBy: 'school_id'" class="row" ng-class="{editable: editSchool, expired: kg.charge[0].status==0}" ng-click="editSchool(kg)">
-    <td class="col-xs-2"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
+    <td class="col-xs-1"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
     <td class="col-xs-3">{{::kg.full_name}}</td>
     <td class="col-xs-2">{{::kg.name}}</td>
-    <td class="col-xs-3">
+    <td class="col-xs-2">
       <p ng-repeat="m in kg.managers"><a ng-click="edit(m);$event.stopPropagation()">{{::m.detail.name}}</a></p>
       <p ng-show="kg.managers.length == 0">还没有管理员，<a class="dropdown" ng-click="addManager(kg);$event.stopPropagation()">增加</a>一个</p>
       </td>
-
+    <td class="col-xs-2">
+      <span ng-repeat="kgConfig in kg.configArray | filter: filterConfig" class="glyphicon {{displayIcon(kgConfig.name)}}"></span>
+    </td>
     <td class="col-xs-2">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="这个操作将彻底删除{{::kg.name}}的所有数据，确定继续?"
               ng-confirm-click="delete(kg);$event.stopPropagation()">删除
