@@ -65,7 +65,7 @@
       ]
     },
     "bootstrap": {
-      "fonts": "dist/fonts/*.{eot,svg,ttf,woff}",
+      "fonts": "dist/fonts/*.{eot,svg,ttf,woff,woff2}",
       "css": "dist/css/*.{min.css, map}",
       ".": "dist/js/*.min.js{,.map}"
     },

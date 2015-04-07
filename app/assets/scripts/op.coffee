@@ -5,7 +5,7 @@ angular.module('kulebaoApp',
   ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics', 'kulebao.directives',
    'kulebao.filters'])
 angular.module('kulebaoAdmin',
-  ['kulebaoApp', 'ui.bootstrap', 'ui.mask', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap',
+  ['kulebaoApp', 'ui.mask', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap',
    'mgcrea.ngStrap.helpers.dimensions',
    'ngCookies'])
 angular.module('kulebaoOp',
