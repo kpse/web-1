@@ -80,7 +80,7 @@ object SchoolIntro {
             'time -> time
           ).executeInsert()
         SQL("insert into classinfo (school_id, class_id, class_name) " +
-          " values ({school_id}, 1, '默认班级')")
+          " values ({school_id}, 321, '默认班级')")
           .on(
             'school_id -> school.school_id.toString
           ).executeInsert()
