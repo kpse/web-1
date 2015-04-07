@@ -85,7 +85,7 @@ class DataImportingSpec extends Specification with TestSupport {
       private val classResponse: Response = waitForSingleWSCall(wsCall(classCheckingUrl).get())
 
       classResponse.status must equalTo(200)
-      Json.parse(classResponse.body).as[List[SchoolClass]].size must beEqualTo(27)
+      Json.parse(classResponse.body).as[List[SchoolClass]].size must beEqualTo(28)
       (Json.parse(classResponse.body)(0) \ "school_id").as[Long] must beEqualTo(schoolId)
 
       private val childrenResponse: Response = waitForSingleWSCall(wsCall(childCheckingUrl).get())
