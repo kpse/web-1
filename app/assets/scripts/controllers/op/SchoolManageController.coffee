@@ -165,5 +165,12 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           when 'hideVideo' then 'glyphicon-facetime-video'
           when 'disableMemberEditing' then 'glyphicon-ban-circle'
           when 'bus' then 'glyphicon-record'
+
+      scope.titleOf = (config) ->
+          switch config.name
+            when 'backend' then '无安全系统'
+            when 'hideVideo' then '不显示视频图标'
+            when 'disableMemberEditing' then '不允许学校开通或关闭会员'
+            when 'bus' then '激活校车定位功能'
   ]
 

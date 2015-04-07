@@ -30,7 +30,7 @@
       <p ng-show="kg.managers.length == 0">还没有管理员，<a class="dropdown" ng-click="addManager(kg);$event.stopPropagation()">增加</a>一个</p>
       </td>
     <td class="col-xs-2">
-      <span ng-repeat="kgConfig in kg.configArray | filter: filterConfig" class="glyphicon {{displayIcon(kgConfig.name)}}"></span>
+      <span ng-repeat="kgConfig in kg.configArray | filter: filterConfig" class="glyphicon {{displayIcon(kgConfig.name)}}" data-trigger="hover" bs-tooltip data-title="{{titleOf(kgConfig)}}"></span>
     </td>
     <td class="col-xs-2">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="这个操作将彻底删除{{::kg.name}}的所有数据，确定继续?"
