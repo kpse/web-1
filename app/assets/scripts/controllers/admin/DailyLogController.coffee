@@ -85,4 +85,14 @@ angular.module('kulebaoAdmin')
         scope.managers = Manager.query school_id: stateParams.kindergarten, class_id: stateParams.class_id
 
       scope.allLogs = DailyLog.query school_id: stateParams.kindergarten, child_id: stateParams.child_id
+
+      scope.displayType = (type) ->
+        switch type
+          when 0 then '到校'
+          when 1 then '离校'
+          when 10 then '早上上车'
+          when 11 then '早上下车'
+          when 12 then '下午上车'
+          when 13 then '下午下车'
+
   ]

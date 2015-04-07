@@ -31,7 +31,7 @@
     <tbody>
     <tr ng-repeat="log in allLogs | filter: searchText" class="row">
       <td class="col-xs-4">于{{log.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</td>
-      <td class="col-xs-2">{{log.notice_type == 1 ? '到校' : '离校' }}</td>
+      <td class="col-xs-2">{{displayType(log.notice_type)}}</td>
       <td class="col-xs-2">{{log.parent_name}}</td>
       <th class="col-xs-5">
         <div class="image-preview">
