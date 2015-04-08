@@ -23,9 +23,12 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         location.path "/#{res.status}"
 
       scope.disableMemberEditing = false
+      scope.bus = false
       SchoolConfig.get school_id: $stateParams.kindergarten, (data)->
         config = _.find data['config'], (item) -> item.name == 'disableMemberEditing'
         config? && scope.disableMemberEditing = config.value == 'true'
+        config2 = _.find data['config'], (item) -> item.name == 'bus'
+        config2? && scope.bus = config2.value == 'true'
 
       scope.isSelected = (tab)->
         tab is $rootScope.tabName
