@@ -26,6 +26,9 @@ util.print: Use console.log instead
   .modules-list-container .modules-list .btn span {
     display: none;
   }
+  .modules-list-container .modules-list .btn span.force-show {
+    display: inline;
+  }
   .modules-list-container .modules-list .news {
     background: #34393D url(../../images/left-btns.png) no-repeat -15px -86px;
   }

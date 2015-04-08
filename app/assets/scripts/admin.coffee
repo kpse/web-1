@@ -180,6 +180,11 @@ angular.module('kulebaoAdmin',
       templateUrl: 'templates/admin/classes_management.html',
       controller: 'ClassesManagementCtrl'
 
+    .state 'kindergarten.bus',
+      url: '/bus',
+      templateUrl: 'templates/admin/search_panel.html',
+      controller: 'BusLocationCtrl'
+
     .state 'kindergarten.dailylog',
       url: '/dailylog',
       templateUrl: 'templates/admin/search_panel.html',

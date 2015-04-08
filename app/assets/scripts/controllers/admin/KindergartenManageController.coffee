@@ -68,6 +68,8 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.goEmployeeList = ->
         $state.go 'kindergarten.employee.detail', kindergarten: $stateParams.kindergarten unless $state.includes 'kindergarten.employee', kindergarten: $stateParams.kindergarten
 
+      scope.goBusLocation = ->
+        $state.go 'kindergarten.bus', kindergarten: $stateParams.kindergarten unless $state.includes 'kindergarten.bus', kindergarten: $stateParams.kindergarten
 
       scope.changePassword = (user) ->
         scope.user = angular.copy user

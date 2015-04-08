@@ -89,6 +89,12 @@
         </a>
       </li>
 
+      <li class="action" ng-class="{active : isSelected('bus-location')}">
+        <a ng-click="goBusLocation()" class="btn bus-location">
+          <span class="force-show">班车记录</span>
+        </a>
+      </li>
+
       <li class="action" ng-class="{active : isSelected('relationship')}">
         <a class="btn relationship" ng-click="goRelationshipManagement()">
           <span>幼儿园档案管理</span>

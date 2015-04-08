@@ -274,6 +274,10 @@ util.print: Use console.log instead
   .main-body .modal .modules-list-container .modules-list .btn span {
     display: none;
   }
+  .main-body .main-view .modules-list-container .modules-list .btn span.force-show,
+  .main-body .modal .modules-list-container .modules-list .btn span.force-show {
+    display: inline;
+  }
   .main-body .main-view .modules-list-container .modules-list .news,
   .main-body .modal .modules-list-container .modules-list .news {
     background: #34393D url(../../images/left-btns.png) no-repeat -15px -86px;
