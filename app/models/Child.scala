@@ -163,11 +163,12 @@ object Children {
       get[Int]("childinfo.class_id") ~
       get[String]("classinfo.class_name") ~
       get[Option[String]]("childinfo.address") ~
-      get[Long]("childinfo.update_at") map {
+      get[Long]("childinfo.update_at") ~
+      get[Int]("childinfo.status") map {
       case schoolId ~ childId ~ childName ~ nick ~ icon_url ~ childGender
-        ~ childBirthday ~ classId ~ className ~ address ~ t =>
+        ~ childBirthday ~ classId ~ className ~ address ~ t ~ status =>
         ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt,
-          Some(icon_url.getOrElse("")), classId, Some(className), Some(t), Some(schoolId.toLong), address)
+          Some(icon_url.getOrElse("")), classId, Some(className), Some(t), Some(schoolId.toLong), address, Some(status))
     }
   }
 
