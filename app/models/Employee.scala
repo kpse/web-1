@@ -10,6 +10,7 @@ import models.helper.TimeHelper.any2DateTime
 import play.Logger
 import play.api.Play.current
 import play.api.db.DB
+import play.api.libs.json.Json
 
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
@@ -130,6 +131,17 @@ case class EmployeePassword(employee_id: String, school_id: Long, phone: String,
 case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String)
 
 object Employee {
+
+  implicit val writeEmployee = Json.writes[Employee]
+  implicit val readEmployee = Json.reads[Employee]
+
+  def removed(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select * from employeeinfo where school_id={kg} and status=0")
+        .on('kg -> kg.toString)
+        .as(simple *)
+  }
+
 
   def permanentRemove(phone: String) = DB.withConnection {
     implicit c =>

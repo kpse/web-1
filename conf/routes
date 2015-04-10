@@ -261,8 +261,8 @@ POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/check_in            
 POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/check_out              controllers.V2.BusLocationController.checkOut(kg: Long, driverId: String)
 POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/batch_check_out        controllers.V2.BusLocationController.batchCheckOut(kg: Long, driverId: String)
 
-POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/child_off_bus              controllers.V2.BusLocationController.childOut(kg: Long, driverId: String)
-POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/child_on_bus               controllers.V2.BusLocationController.childIn(kg: Long, driverId: String)
+POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/child_off_bus          controllers.V2.BusLocationController.childOut(kg: Long, driverId: String)
+POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/child_on_bus           controllers.V2.BusLocationController.childIn(kg: Long, driverId: String)
 
 
 #Check in history
@@ -294,6 +294,10 @@ DELETE        /api/v2/kindergarten/:kg/admin/:adminId/news/:newsId              
 POST          /api/v2/kindergarten/:kg/admin/:adminId/news/:newsId                 controllers.V2.NewsControllerV2.update(kg: Long, adminId: String, newsId: Long)
 POST          /api/v2/kindergarten/:kg/admin/:adminId/news                         controllers.V2.NewsControllerV2.create(kg: Long, adminId: String)
 GET           /api/v2/kindergarten/:kg/admin/:adminId/news                         controllers.V2.NewsControllerV2.indexWithNonPublished(kg: Long, adminId: String, class_id: Option[String], restrict: Option[Boolean], from: Option[Long], to: Option[Long], most:Option[Int])
+
+GET           /api/v2/kindergarten/:kg/removed_parents                             controllers.V2.RemoveListController.parents(kg: Long)
+GET           /api/v2/kindergarten/:kg/removed_employees                           controllers.V2.RemoveListController.employees(kg: Long)
+GET           /api/v2/kindergarten/:kg/removed_children                            controllers.V2.RemoveListController.children(kg: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                        controllers.VersionedAssets.at(file: controllers.VersionedAsset)

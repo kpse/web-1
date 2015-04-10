@@ -499,6 +499,13 @@ object Parent {
       }
   }
 
+  def removed(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select * from parentinfo where school_id={kg} and status=0")
+        .on('kg -> kg.toString)
+        .as(simple *)
+  }
+
 }
 
 object Relative {

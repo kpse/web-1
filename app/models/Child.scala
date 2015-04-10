@@ -1,18 +1,32 @@
 package models
 
-import play.api.db.DB
-import anorm._
-import anorm.SqlParser._
-import play.api.Play.current
 import java.util.Date
-import play.Logger
+
+import anorm.SqlParser._
+import anorm._
 import models.helper.TimeHelper.any2DateTime
+import play.Logger
+import play.api.Play.current
+import play.api.db.DB
+import play.api.libs.json.Json
 
 case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String,
                      gender: Int, portrait: Option[String], class_id: Int, class_name: Option[String],
                      timestamp: Option[Long], school_id: Option[Long], address: Option[String] = None, status: Option[Int] = Some(1))
 
 object Children {
+
+  implicit val writeChildInfo = Json.writes[ChildInfo]
+  implicit val readChildInfo = Json.reads[ChildInfo]
+
+  def removed(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select c.*, c2.class_name from childinfo c, classinfo c2 where " +
+        "c.status=0 and c.class_id=c2.class_id and c.school_id=c2.school_id")
+        .on('kg -> kg.toString)
+        .as(childInformation *)
+  }
+
   def idSearch(id: String): Option[ChildInfo] = DB.withConnection {
     implicit c =>
       SQL("select c.*, c2.class_name from childinfo c, classinfo c2 " +
