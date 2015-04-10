@@ -18,7 +18,7 @@ CREATE TABLE employeeinfo (
   school_id   VARCHAR(20) NOT NULL,
   login_password    varchar(32) NOT NULL,
   login_name    varchar(32) NOT NULL,
-  status      TINYINT          NOT NULL DEFAULT 1,
+  status      INT          NOT NULL DEFAULT 1,
   update_at   BIGINT(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (uid),
   UNIQUE KEY (login_name),

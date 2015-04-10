@@ -448,9 +448,10 @@ object Employee {
       get[Date]("birthday") ~
       get[String]("school_id") ~
       get[String]("login_name") ~
-      get[Long]("update_at") map {
-      case id ~ name ~ phone ~ gender ~ workgroup ~ workduty ~ url ~ birthday ~ kg ~ loginName ~ timestamp =>
-        Employee(Some(id), name, phone, gender, workgroup, workduty, Some(url.getOrElse("")), birthday.toDateOnly, kg.toLong, loginName, Some(timestamp), groupOf(id, kg.toLong))
+      get[Long]("update_at") ~
+      get[Int]("status") map {
+      case id ~ name ~ phone ~ gender ~ workgroup ~ workduty ~ url ~ birthday ~ kg ~ loginName ~ timestamp ~ status =>
+        Employee(Some(id), name, phone, gender, workgroup, workduty, Some(url.getOrElse("")), birthday.toDateOnly, kg.toLong, loginName, Some(timestamp), groupOf(id, kg.toLong), Some(status))
     }
   }
 
