@@ -370,10 +370,11 @@ object Employee {
       try {
         result map {
           employee =>
-            SQL("update employeeinfo set status=0 where employee_id={id} and school_id={kg}")
+            SQL("update employeeinfo set status=0, update_at={update_at} where employee_id={id} and school_id={kg}")
               .on(
                 'kg -> kg.toString,
-                'id -> employee.id
+                'id -> employee.id,
+                'update_at -> System.currentTimeMillis
               ).executeUpdate()
             SQL("update privilege set status=0 where school_id={kg} and employee_id={id}")
               .on('kg -> kg, 'id -> employee.id).executeUpdate()

@@ -286,8 +286,8 @@ object Parent {
 
   def delete(kg: Long)(phone: String) = DB.withConnection {
     implicit c =>
-      SQL("update parentinfo set status=0 where phone={phone}")
-        .on('phone -> phone).executeUpdate
+      SQL("update parentinfo set status=0, update_at={update_at} where phone={phone}")
+        .on('phone -> phone, 'update_at -> System.currentTimeMillis).executeUpdate
       phoneSearch(phone)
   }
 
