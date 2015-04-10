@@ -40,16 +40,14 @@ angular.module('kulebaoOp').controller 'OpVideoMemberInClassCtrl',
                 p.detail = data
                 p.reltaionship = Relationship.query school_id: stateParams.school_id, parent: p.detail.phone if p.detail.phone?
             scope.loading = false
+          scope.currentClass = _.find scope.kindergarten.classes, (c) -> c.class_id == parseInt scope.current_class
+
 
       scope.display = (p) ->
         p.reltaionship? && p.reltaionship.$resolved && p.reltaionship[0].child.class_id == parseInt stateParams.class_id
 
       scope.accountsInSchool = (parents, classId) ->
         _.map (_.filter parents, (f) -> !classId? || scope.display(f)), (p) -> 'account': p.account, 'password': p.password
-
-      scope.pickClassName = (classes, classId) ->
-        currentClass = _.find classes, (c) -> c.class_id == parseInt classId
-        currentClass.name || classId
 
       scope.downloadEnabled = (parents)->
         _.any parents, (f) -> scope.display(f)
