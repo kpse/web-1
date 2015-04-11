@@ -1,33 +1,43 @@
 <div class="loading" ng-show="loading"></div>
 <h3>已开通的手机列表 {{currentClass().name}}共{{membersInClass.length}}人</h3>
 <table class="table table-hover table-condensed">
+  <button ng-hide="membersInClass.length == 0" ng-disabled="!hasSelection(membersInClass)" class="btn btn-danger btn-xs" ng-confirm-msg="你确定要批量取消会员吗?"
+          ng-confirm-click="multipleSuspend()">批量取消会员
+  </button>
   <thead>
   <tr class="row">
-    <th class="col-xs-4">手机号码</th>
+    <th class="col-xs-1"><input type="checkbox" ng-model="selection.allMemberCheck" ng-change="checkAllMembers(selection.allMemberCheck)"/> 全选</th>
+    <th class="col-xs-3">手机号码</th>
     <th class="col-xs-4">家长姓名</th>
     <th class="col-xs-4">小孩</th>
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="a in membersInClass | filter: searchText" class="row" ng-click="reject(a)" ng-class="{editable: reject}">
-    <td class="col-xs-4">{{a.phone}}</td>
+  <tr ng-repeat="a in membersInClass | filter: searchText" class="row" ng-class="{editable: reject}" ng-click="toggle(a);singleSelection(a, membersInClass)">
+    <td class="col-xs-1"><input type="checkbox" ng-model="a.checked" ng-click="toggle(a);singleSelection(a, membersInClass);e.stopPropagation()" /></td>
+    <td class="col-xs-3">{{a.phone}}</td>
     <td class="col-xs-4">{{a.name}}</td>
     <td class="col-xs-4">{{a.children.join(',')}}</td>
   </tr>
   </tbody>
 </table>
-<h3 ng-hide="nonMembers.length == 0">未开通的手机列表({{nonMembersInClass.length}}人)</h3>
-<table ng-hide="nonMembers.length == 0" class="table table-hover table-condensed">
+<h3 ng-hide="nonMembersInClass.length == 0">未开通的手机列表({{nonMembersInClass.length}}人)</h3>
+<table ng-hide="nonMembersInClass.length == 0" class="table table-hover table-condensed">
+  <button ng-hide="nonMembersInClass.length == 0" ng-disabled="!hasSelection(nonMembersInClass)" class="btn btn-success btn-xs" ng-confirm-msg="你确定要批量开通会员吗?"
+          ng-confirm-click="multiplePrompt()">批量提升会员
+  </button>
   <thead>
   <tr class="row">
-    <th class="col-xs-4">手机号码</th>
+    <th class="col-xs-1"><input type="checkbox" ng-model="selection.allNonMemberCheck" ng-change="checkAllNonMembers(selection.allNonMemberCheck)"/> 全选</th>
+    <th class="col-xs-3">手机号码</th>
     <th class="col-xs-4">家长姓名</th>
     <th class="col-xs-4">小孩</th>
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="a in nonMembersInClass | filter: searchText" class="row" ng-class="{editable: promote}" ng-click="promote(a)">
-    <td class="col-xs-4">{{a.phone}}</td>
+  <tr ng-repeat="a in nonMembersInClass | filter: searchText" class="row" ng-class="{editable: promote}" ng-click="toggle(a);singleSelection(a, nonMembersInClass)">
+    <td class="col-xs-1"><input type="checkbox" ng-model="a.checked" ng-click="toggle(a);singleSelection(a, nonMembersInClass);e.stopPropagation()" /></td>
+    <td class="col-xs-3">{{a.phone}}</td>
     <td class="col-xs-4">{{a.name}}</td>
     <td class="col-xs-4">{{a.children.join(',')}}</td>
   </tr>
