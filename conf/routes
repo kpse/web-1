@@ -295,6 +295,7 @@ POST          /api/v2/kindergarten/:kg/admin/:adminId/news/:newsId              
 POST          /api/v2/kindergarten/:kg/admin/:adminId/news                         controllers.V2.NewsControllerV2.create(kg: Long, adminId: String)
 GET           /api/v2/kindergarten/:kg/admin/:adminId/news                         controllers.V2.NewsControllerV2.indexWithNonPublished(kg: Long, adminId: String, class_id: Option[String], restrict: Option[Boolean], from: Option[Long], to: Option[Long], most:Option[Int])
 
+#removed lists
 GET           /api/v2/kindergarten/:kg/removed_parents                             controllers.V2.RemoveListController.parents(kg: Long)
 GET           /api/v2/kindergarten/:kg/removed_employees                           controllers.V2.RemoveListController.employees(kg: Long)
 GET           /api/v2/kindergarten/:kg/removed_children                            controllers.V2.RemoveListController.children(kg: Long)

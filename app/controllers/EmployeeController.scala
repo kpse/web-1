@@ -63,11 +63,17 @@ object EmployeeController extends Controller with Secured {
 
   def deleteInSchool(kg: Long, phone: String) = IsPrincipal {
     u => _ =>
-      Employee.deleteInSchool(kg, phone) match {
-        case Some(x) =>
-          Ok(Json.toJson(new SuccessResponse))
-        case None =>
-          BadRequest(Json.toJson(ErrorResponse("删除失败,请与管理员联系(Cannot be deleted).", 2)))
+      Logger.info(u)
+      Employee.show(phone) match {
+        case employee if employee.nonEmpty && employee.get.login_name.equalsIgnoreCase(u) =>
+          Unauthorized(Json.toJson(ErrorResponse("您要删除自己的账号吗? 请与管理员联系(Cannot delete him/herself).", 3)))
+        case _ =>
+          Employee.deleteInSchool(kg, phone) match {
+            case Some(x) =>
+              Ok(Json.toJson(new SuccessResponse))
+            case None =>
+              BadRequest(Json.toJson(ErrorResponse("删除失败,请与管理员联系(Cannot be deleted).", 2)))
+          }
       }
 
   }
@@ -133,7 +139,12 @@ object EmployeeController extends Controller with Secured {
 
   def showInSchool(kg: Long, phone: String) = IsLoggedIn {
     u => _ =>
-      Ok(loggedJson(Employee.show(phone)))
+      Employee.show(phone) match {
+        case Some(employee) =>
+          Ok(loggedJson(employee))
+        case None =>
+          NotFound(s"没有找到对应的老师.(No such employee with cellphone number $phone)")
+      }
   }
 
   def check(phone: String) = Action {

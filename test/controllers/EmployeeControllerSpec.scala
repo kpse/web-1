@@ -60,5 +60,25 @@ class EmployeeControllerSpec extends Specification with TestSupport {
       status(response) must equalTo(UNAUTHORIZED)
 
     }
+
+    "be able to delete in school employees" in new WithServer {
+
+      val response = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/23258249821")).get
+
+      status(response) must equalTo(OK)
+
+      val response2 = route(principalLoggedRequest(GET, "/kindergarten/93740362/employee/23258249821")).get
+
+      status(response2) must equalTo(NOT_FOUND)
+
+    }
+
+    "never delete the account itself" in new WithServer {
+
+      val response = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/13258249821")).get
+
+      status(response) must equalTo(UNAUTHORIZED)
+
+    }
   }
 }
