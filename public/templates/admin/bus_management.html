@@ -1,0 +1,43 @@
+<ul class="nav nav-tabs">
+  <li>
+    <a ng-click="navigateToPlan()">乘车计划</a>
+  </li>
+  <li class="active">
+    <a>车辆管理</a>
+  </li>
+</ul>
+<button class="btn btn-success" ng-click="addBus()">添加班车</button>
+<div class="loading" ng-show="loading"></div>
+<table class="table table-hover table-condensed">
+  <thead>
+  <tr class="row">
+    <th class="col-xs-1">班车号</th>
+    <th class="col-xs-1">驾驶员</th>
+    <th class="col-xs-2">早上路线</th>
+    <th class="col-xs-2">下午路线</th>
+    <th class="col-xs-1">早上出发时间</th>
+    <th class="col-xs-1">早上到达时间</th>
+    <th class="col-xs-1">下午出发时间</th>
+    <th class="col-xs-1">下午出发时间</th>
+    <th class="col-xs-1">当前位置</th>
+    <th class="col-xs-1">操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="bus in allBuses | filter: searchText" class="row">
+    <td class="col-xs-1">{{bus.id}}</td>
+    <td class="col-xs-1">{{bus.driver.name}}</td>
+    <td class="col-xs-2">{{bus.morningPath}}</td>
+    <td class="col-xs-2">{{reverse(bus.morningPath)}}</td>
+    <td class="col-xs-1">8:00</td>
+    <td class="col-xs-1">9:00</td>
+    <td class="col-xs-1">15:30</td>
+    <td class="col-xs-1">16:10</td>
+    <td class="col-xs-1"><a ng-click="mapOf(bus)">地图</a></td>
+    <td class="col-xs-1">
+      <button class="btn btn-danger btn-xs" ng-confirm-msg="你确定要删除吗?"
+              ng-confirm-click="deleteBus(bus)">删除</button>
+    </td>
+  </tr>
+  </tbody>
+</table>

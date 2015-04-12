@@ -264,7 +264,7 @@ POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/batch_check_out     
 POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/child_off_bus          controllers.V2.BusLocationController.childOut(kg: Long, driverId: String)
 POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/child_on_bus           controllers.V2.BusLocationController.childIn(kg: Long, driverId: String)
 
-GET           /api/v2/kindergarten/:kg/bus_driver/:driverId/plans                   controllers.V2.ChildrenPlanController.index(kg: Long, driverId: String)
+GET           /api/v2/kindergarten/:kg/bus_driver/:driverId/plans                  controllers.V2.ChildrenPlanController.index(kg: Long, driverId: String)
 GET           /api/v2/kindergarten/:kg/child/:childId/plan                         controllers.V2.ChildrenPlanController.show(kg: Long, childId: String)
 POST          /api/v2/kindergarten/:kg/child/:childId/plan                         controllers.V2.ChildrenPlanController.createOrUpdate(kg: Long, childId: String)
 DELETE        /api/v2/kindergarten/:kg/child/:childId/plan                         controllers.V2.ChildrenPlanController.delete(kg: Long, childId: String)
