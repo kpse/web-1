@@ -96,13 +96,13 @@ object ParentController extends Controller with Secured {
     case (error) if Parent.existsInOtherSchool(kg, error) =>
       BadRequest(Json.toJson(ErrorResponse("手机号码‘%s’已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998".format(error.phone))))
     case (error) if error.parent_id.isDefined && error.duplicatedPhoneWithOthers =>
-      BadRequest(Json.toJson(ErrorResponse("手机号码‘%s’已经存在，请检查输入号码是否正确".format(error.phone))))
-    case (parent) if !Parent.idExists(parent.parent_id) && parent.status.equals(Some(0)) =>
+      BadRequest(Json.toJson(ErrorResponse(s"手机号码‘${error.phone}’已经存在，请检查输入号码是否正确")))
+    case (deletedParent) if !Parent.idExists(deletedParent.parent_id) && deletedParent.status.equals(Some(0)) =>
       Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
-    case (parent) if Parent.idExists(parent.parent_id) =>
-      Ok(Json.toJson(Parent.update(parent)))
-    case (parent) if Parent.phoneExists(kg, parent.phone) =>
-      Ok(Json.toJson(Parent.updateWithPhone(kg, parent)))
+    case (update) if Parent.idExists(update.parent_id) =>
+      Ok(Json.toJson(Parent.update(update)))
+    case (phoneUpdate) if Parent.phoneExists(kg, phoneUpdate.phone) =>
+      Ok(Json.toJson(Parent.updateWithPhone(kg, phoneUpdate)))
     case (newParent) =>
       Ok(Json.toJson(Parent.create(kg, newParent)))
   }
@@ -145,9 +145,11 @@ object ParentController extends Controller with Secured {
   }
   def numberCheck[T](person: PhoneCheck[T], exist: Option[T]) = exist.fold(Ok(Json.toJson(new SuccessResponse("号码不存在。"))))({
     case p if person.isTheSame(p) =>
-      Ok(Json.toJson(SuccessResponse("号码已存在，且与id匹配。")))
+      Ok(Json.toJson(SuccessResponse("号码已存在，且与id匹配。(phone number matches id)")))
+    case p if person.isDeleted(p) =>
+      Ok(Json.toJson(SuccessResponse("号码已被删除，可以使用。(number has been deleted)")))
     case _ =>
-      Ok(Json.toJson(ErrorResponse("号码与id不匹配。")))
+      Ok(Json.toJson(ErrorResponse("号码与id不匹配。(phone number does not match id)")))
   })
 
   def isGoodToUseInSchool(kg: Long, phone: String, isEmployee: Option[String]) = IsAuthenticated(parse.json) {

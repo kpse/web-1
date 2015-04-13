@@ -43,6 +43,7 @@ case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait:
 
 trait PhoneCheck[T] {
   def isTheSame(t: T): Boolean
+  def isDeleted(t: T): Boolean
 }
 
 case class ParentPhoneCheck(id: Option[String], phone: String) extends PhoneCheck[Parent] {
@@ -53,6 +54,7 @@ case class ParentPhoneCheck(id: Option[String], phone: String) extends PhoneChec
   }
 
   def isTheSame(parent: Parent) = parent.parent_id.equals(id)
+  def isDeleted(parent: Parent) = parent.status == Some(0)
 }
 
 case class EmployeePhoneCheck(id: Option[String], phone: String) extends PhoneCheck[Employee] {
@@ -63,6 +65,7 @@ case class EmployeePhoneCheck(id: Option[String], phone: String) extends PhoneCh
   }
 
   def isTheSame(employee: Employee) = employee.id.equals(id)
+  def isDeleted(employee: Employee) = employee.status == Some(0)
 }
 
 object Parent {
