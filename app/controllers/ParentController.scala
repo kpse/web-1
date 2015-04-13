@@ -101,8 +101,16 @@ object ParentController extends Controller with Secured {
       Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
     case (update) if Parent.idExists(update.parent_id) =>
       Ok(Json.toJson(Parent.update(update)))
+    case (phoneReuse) if phoneReuse.parent_id.nonEmpty && Parent.phoneDeleted(kg, phoneReuse.phone) =>
+      Ok(Json.toJson(phoneReuse.reusePhone))
     case (phoneUpdate) if Parent.phoneExists(kg, phoneUpdate.phone) =>
-      Ok(Json.toJson(Parent.updateWithPhone(kg, phoneUpdate)))
+      Parent.updateWithPhone(kg, phoneUpdate) match {
+        case Some(parent) =>
+          Ok(Json.toJson(parent))
+        case None =>
+          InternalServerError(Json.toJson(ErrorResponse("覆盖已有号码失败。(failing to override existing phone number)")))
+      }
+
     case (newParent) =>
       Ok(Json.toJson(Parent.create(kg, newParent)))
   }

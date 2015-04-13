@@ -25,6 +25,7 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
   def duplicatedPhoneWithOthers: Boolean = {
     Parent.phoneSearch(phone) match {
       case Some(p) if p.parent_id.equals(parent_id) => false
+      case Some(p) if p.status == Some(0) => false
       case None => false
       case _ => true
     }
@@ -36,6 +37,41 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
 
   def isAVideoMember: Boolean = {
     video_member_status.getOrElse(0) == 1
+  }
+
+  def fake(phone: String) = phone.replaceFirst("^\\d", "f")
+
+  def reusePhone: Option[Parent] = DB.withTransaction {
+    implicit c =>
+      try {
+        SQL("update parentinfo set phone={fakeNumber} where phone={phone} and school_id={kg} and status=0")
+          .on('phone -> phone, 'kg -> school_id, 'fakeNumber -> fake(phone)).executeUpdate()
+        SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status) " +
+          "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member})")
+          .on(
+            'name -> name,
+            'parent_id -> parent_id,
+            'relationship -> "",
+            'phone -> phone,
+            'gender -> gender,
+            'company -> company,
+            'picurl -> portrait.getOrElse(""),
+            'birthday -> birthday,
+            'school_id -> school_id,
+            'status -> 1,
+            'member -> member_status.getOrElse(0),
+            'timestamp -> timestamp).executeInsert()
+        c.commit()
+        Parent.show(school_id, phone)
+      }
+      catch {
+        case t: Throwable =>
+          Logger.info(t.toString)
+          Logger.info(t.getLocalizedMessage)
+          c.rollback()
+          None
+      }
+
   }
 }
 
@@ -181,6 +217,15 @@ object Parent {
   def phoneExists(kg: Long, phone: String): Boolean = DB.withConnection {
     implicit c =>
       SQL("select count(1) as count from parentinfo where phone={phone} and school_id={kg}")
+        .on(
+          'phone -> phone,
+          'kg -> kg.toString
+        ).as(get[Long]("count") single) > 0
+  }
+
+  def phoneDeleted(kg: Long, phone: String): Boolean = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) as count from parentinfo where phone={phone} and school_id={kg} and status=0")
         .on(
           'phone -> phone,
           'kg -> kg.toString
