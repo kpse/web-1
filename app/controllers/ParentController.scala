@@ -99,18 +99,29 @@ object ParentController extends Controller with Secured {
       BadRequest(Json.toJson(ErrorResponse(s"手机号码‘${error.phone}’已经存在，请检查输入号码是否正确")))
     case (deletedParent) if !Parent.idExists(deletedParent.parent_id) && deletedParent.status.equals(Some(0)) =>
       Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
+    case (phoneTransfer) if Parent.idExists(phoneTransfer.parent_id) && Parent.phoneDeleted(kg, phoneTransfer.phone) =>
+      phoneTransfer.transfer match {
+        case Some(p) =>
+          Ok(Json.toJson(p))
+        case None =>
+          InternalServerError(Json.toJson(ErrorResponse(s"交换已有号码失败。(failed exchanging existing phone number to parent ${phoneTransfer.parent_id})")))
+      }
     case (update) if Parent.idExists(update.parent_id) =>
       Ok(Json.toJson(Parent.update(update)))
     case (phoneReuse) if phoneReuse.parent_id.nonEmpty && Parent.phoneDeleted(kg, phoneReuse.phone) =>
-      Ok(Json.toJson(phoneReuse.reusePhone))
+      phoneReuse.reusePhone match {
+        case Some(p) =>
+          Ok(Json.toJson(p))
+        case None =>
+          InternalServerError(Json.toJson(ErrorResponse("覆盖已有号码失败。(failed overriding existing phone number)")))
+      }
     case (phoneUpdate) if Parent.phoneExists(kg, phoneUpdate.phone) =>
       Parent.updateWithPhone(kg, phoneUpdate) match {
-        case Some(parent) =>
-          Ok(Json.toJson(parent))
+        case Some(p) =>
+          Ok(Json.toJson(p))
         case None =>
-          InternalServerError(Json.toJson(ErrorResponse("覆盖已有号码失败。(failing to override existing phone number)")))
+          InternalServerError(Json.toJson(ErrorResponse("按号码更新失败。(failed updating by existing phone number)")))
       }
-
     case (newParent) =>
       Ok(Json.toJson(Parent.create(kg, newParent)))
   }

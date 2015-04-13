@@ -39,13 +39,10 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
     video_member_status.getOrElse(0) == 1
   }
 
-  def fake(phone: String) = phone.replaceFirst("^\\d", "f")
-
   def reusePhone: Option[Parent] = DB.withTransaction {
     implicit c =>
       try {
-        SQL("update parentinfo set phone={fakeNumber} where phone={phone} and school_id={kg} and status=0")
-          .on('phone -> phone, 'kg -> school_id, 'fakeNumber -> fake(phone)).executeUpdate()
+        sanitizePhoneNumber.executeUpdate()
         SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status) " +
           "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member})")
           .on(
@@ -61,6 +58,44 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
             'status -> 1,
             'member -> member_status.getOrElse(0),
             'timestamp -> timestamp).executeInsert()
+        c.commit()
+        Parent.show(school_id, phone)
+      }
+      catch {
+        case t: Throwable =>
+          Logger.info(t.toString)
+          Logger.info(t.getLocalizedMessage)
+          c.rollback()
+          None
+      }
+
+  }
+
+  def sanitizePhoneNumber = {
+    def fakeNumber = java.util.UUID.randomUUID.toString.take(11)
+    SQL("update parentinfo set phone={fakeNumber} where phone={phone} and school_id={kg} and status=0")
+      .on('phone -> phone, 'kg -> school_id, 'fakeNumber -> fakeNumber)
+  }
+
+  def transfer = DB.withTransaction {
+    implicit c =>
+      try {
+        sanitizePhoneNumber.executeUpdate()
+        SQL("update parentinfo set name={name}, " +
+          "phone={phone}, gender={gender}, company={company}, " +
+          "picurl={picurl}, birthday={birthday}, " +
+          "update_at={timestamp}, member_status={member}, status={status}, school_id={kg} where parent_id={parent_id}")
+          .on('name -> name,
+            'phone -> phone,
+            'gender -> gender,
+            'company -> company,
+            'kg -> school_id.toString,
+            'picurl -> portrait.getOrElse(""),
+            'birthday -> birthday,
+            'parent_id -> parent_id,
+            'member -> member_status.getOrElse(0),
+            'status -> status.getOrElse(1),
+            'timestamp -> timestamp).executeUpdate()
         c.commit()
         Parent.show(school_id, phone)
       }
