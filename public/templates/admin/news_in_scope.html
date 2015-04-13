@@ -16,12 +16,12 @@
           <div class="form-group row">
             <p class="form-control-static col-xs-4">范围：{{nameOf(news.class_id) || '全校'}}</p>
             <p class="form-control-static col-xs-3" ng-show="news.publisher.name">发布者：{{news.publisher.name}}</p>
-            <p class="form-control-static col-xs-2" ng-show="news.feedback_required">
+            <p class="form-control-static col-xs-2" ng-show="news.feedback_required" ng-if="false">
               <span class="glyphicon glyphicon-share-alt"></span>
               <a ng-show="news.published" ng-click="showFeedbacks(news);$event.stopPropagation()">需要回执</a>
               <span ng-show="!news.published">需要回执</span>
             </p>
-            <p class="form-control-static col-xs-4" ng-show="news.tags.length > 0">标签：{{printTags(news.tags)}}</p>
+            <p ng-if="false" class="form-control-static col-xs-4" ng-show="news.tags.length > 0">标签：{{printTags(news.tags)}}</p>
           </div>
         </div>
       </div>
