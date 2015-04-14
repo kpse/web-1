@@ -99,7 +99,7 @@ trait Secured {
     val id: Option[String] = request.session.get("id")
     id match {
       case Some(op) =>
-        val Pattern = "/kindergarten/(\\d+).*".r
+        val Pattern = "^(?:/api/v\\d+)?/kindergarten/(\\d+).*".r
         val PrincipalImport = "/api/v1/batch_import/(\\d+).*".r
         request.path match {
           case path if Employee.canAccess(id) => user
