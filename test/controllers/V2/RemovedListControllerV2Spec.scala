@@ -77,5 +77,20 @@ class RemovedListControllerV2Spec extends Specification with TestSupport {
       (array(0) \ "id").as[String] must equalTo("3_93740362_1022")
 
     }
+
+    "list deleted classes for principals" in new WithApplication {
+
+      val deleted = route(principalRequest(DELETE, "/kindergarten/93740362/class/777667")).get
+
+      status(deleted) must equalTo(OK)
+
+      val response = route(principalRequest(GET, "/api/v2/kindergarten/93740362/removed_classes")).get
+
+      status(response) must equalTo(OK)
+
+      private val array: JsArray = Json.parse(contentAsString(response)).as[JsArray]
+      (array(0) \ "class_id").as[Int] must equalTo(777667)
+
+    }
   }
 }
