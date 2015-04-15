@@ -225,7 +225,7 @@ object Employee {
         c =>
           School.findClass(kg, Some(Integer.parseInt(c)))
       } filter {
-        case Some(SchoolClass(_, _, _, _, status)) => status.getOrElse(0) == 1
+        case Some(SchoolClass(_, _, _, _, status, _)) => status.getOrElse(0) == 1
       }
   }
 

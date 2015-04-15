@@ -10,7 +10,7 @@ import play.api.libs.json.Json
 
 case class School(school_id: Long, name: String)
 
-case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, managers: Option[List[String]] = None, status: Option[Int] = None)
+case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, managers: Option[List[String]] = None, status: Option[Int] = None, updated_at: Option[Long] = None)
 
 case class ConfigItem(name: String, value: String) {
   def isExist(kg: Long) = DB.withConnection {
@@ -22,9 +22,9 @@ case class ConfigItem(name: String, value: String) {
 
   def update(kg: Long) = DB.withConnection {
     implicit c =>
-      SQL("update schoolconfig set value={value}" +
+      SQL("update schoolconfig set value={value}, update_at={time}" +
         " where school_id = {kg} and name={name}")
-        .on('kg -> kg.toString, 'name -> name, 'value -> value).executeUpdate()
+        .on('kg -> kg.toString, 'name -> name, 'value -> value, 'time -> System.currentTimeMillis).executeUpdate()
   }
 
   def create(kg: Long) = DB.withConnection {
@@ -40,6 +40,7 @@ case class SchoolConfig(school_id: Long, config: List[ConfigItem])
 
 object School {
   implicit val schoolClassWriter = Json.writes[SchoolClass]
+  implicit val schoolClassReader = Json.reads[SchoolClass]
   implicit val configItemWriter = Json.writes[ConfigItem]
   implicit val configItemReader = Json.reads[ConfigItem]
   implicit val schoolConfigWriter = Json.writes[SchoolConfig]
@@ -85,11 +86,11 @@ object School {
 
   def cleanSchoolData(kg: Long) = DB.withConnection {
     implicit c =>
-    List("employeeinfo", "privilege", "chargeinfo").map {
-      table =>
-        SQL("delete from " + table + " where school_id={kg}")
-          .on('kg -> kg.toString).execute()
-    }
+      List("employeeinfo", "privilege", "chargeinfo").map {
+        table =>
+          SQL("delete from " + table + " where school_id={kg}")
+            .on('kg -> kg.toString).execute()
+      }
   }
 
   def delete(kg: Long) = DB.withTransaction {
@@ -192,6 +193,14 @@ object School {
         ).execute()
   }
 
+  def removedClasses(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select * from classinfo where status=0 and school_id = {kg}")
+        .on(
+          'kg -> kg.toString
+        ).as(simple *)
+  }
+
   def findClass(kg: Long, id: Option[Int]) = DB.withConnection {
     implicit c =>
       SQL("select * from classinfo where " +
@@ -277,9 +286,10 @@ object School {
     get[Int]("class_id") ~
       get[String]("school_id") ~
       get[String]("class_name") ~
+      get[Long]("update_at") ~
       get[Int]("status") map {
-      case id ~ school_id ~ name ~ status =>
-        SchoolClass(school_id.toLong, Some(id), name, None, Some(status))
+      case id ~ school_id ~ name ~ updatedAt ~ status =>
+        SchoolClass(school_id.toLong, Some(id), name, None, Some(status), Some(updatedAt))
     }
   }
 

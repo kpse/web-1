@@ -303,6 +303,7 @@ GET           /api/v2/kindergarten/:kg/admin/:adminId/news                      
 GET           /api/v2/kindergarten/:kg/removed_parents                             controllers.V2.RemoveListController.parents(kg: Long)
 GET           /api/v2/kindergarten/:kg/removed_employees                           controllers.V2.RemoveListController.employees(kg: Long)
 GET           /api/v2/kindergarten/:kg/removed_children                            controllers.V2.RemoveListController.children(kg: Long)
+GET           /api/v2/kindergarten/:kg/removed_classes                             controllers.V2.RemoveListController.classes(kg: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                        controllers.VersionedAssets.at(file: controllers.VersionedAsset)

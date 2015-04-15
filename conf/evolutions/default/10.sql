@@ -26,6 +26,8 @@ INSERT INTO classinfo (school_id, class_id, class_name) VALUES
   ('93740562', 11, '怪兽班'),
   ('93740562', 22, '奇迹班');
 
+INSERT INTO classinfo (school_id, class_id, class_name, status) VALUES
+  ('93740362', 777889, '已删除班', 0);
 # --- !Downs
 
 DROP TABLE IF EXISTS classinfo;
