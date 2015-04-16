@@ -14,7 +14,7 @@
   <tr class="row">
     <th class="col-xs-3">学校</th>
     <th class="col-xs-3">老师姓名</th>
-    <th class="col-xs-3">职务</th>
+    <th class="col-xs-3">登录名</th>
     <th class="col-xs-3">操作</th>
   </tr>
   </thead>
@@ -23,7 +23,7 @@
     <td class="col-xs-3" ng-show="e.school_id == 0" >跨学校</td>
     <td class="col-xs-3" ng-hide="e.school_id == 0" ><a ng-href="/admin#/kindergarten/{{::e.school_id}}/employee/detail" ng-click="$event.stopPropagation()">{{::e.school_id}}</a></td>
     <td class="col-xs-3">{{::e.name}}</td>
-    <td class="col-xs-3">{{::e.rank.role}}</td>
+    <td class="col-xs-3">{{::e.login_name}}</td>
     <td class="col-xs-3">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
               ng-confirm-click="delete(e);$event.stopPropagation()">删除
