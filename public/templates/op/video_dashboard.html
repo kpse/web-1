@@ -17,8 +17,8 @@
    <tr ng-repeat="kg in kindergartens | filter: searchText" class="row" ng-class="{editable: detail}" ng-click="detail(kg)">
     <td class="col-xs-2"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
     <td class="col-xs-4"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{::kg.full_name}}</a></td>
-    <td class="col-xs-3">{{::kg.charge[0].total_video_account}}</td>
-    <td class="col-xs-3">{{::kg.videoMember.length}}</td>
+    <td class="col-xs-3">{{kg.charge[0].total_video_account}}</td>
+    <td class="col-xs-3">{{kg.videoMember.length}}</td>
   </tr>
   </tbody>
 </table>
