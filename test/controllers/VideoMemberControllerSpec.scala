@@ -65,7 +65,7 @@ class VideoMemberControllerSpec extends Specification with TestSupport {
 
     "not be created if account duplicated" in new WithApplication {
 
-      private val json: JsValue = Json.toJson(VideoMember("1993", Some("132"), None, Some(93740362)))
+      private val json: JsValue = Json.toJson(VideoMember("1993", Some("699A1A35755AF4940F2726AA291028E5"), None, Some(93740362)))
 
       val createResponse = route(ownerTeacherRequest(POST, "/api/v1/kindergarten/93740362/video_member").withBody(json)).get
 
@@ -75,11 +75,31 @@ class VideoMemberControllerSpec extends Specification with TestSupport {
 
     "not be updated if account duplicated" in new WithApplication {
 
-      private val json: JsValue = Json.toJson(VideoMember("14", Some("132"), None, Some(93740362)))
+      private val json: JsValue = Json.toJson(VideoMember("14", Some("699A1A35755AF4940F2726AA291028E5"), None, Some(93740362)))
 
       val createResponse = route(ownerTeacherRequest(POST, "/api/v1/kindergarten/93740362/video_member/14").withBody(json)).get
 
       status(createResponse) must equalTo(BAD_REQUEST)
+
+    }
+
+    "pass checking with existing account" in new WithApplication {
+
+      val checkResponse = route(ownerTeacherRequest(GET, "/api/v1/kindergarten/93740362/check_video_member?account=699A1A35755AF4940F2726AA291028E5")).get
+
+      status(checkResponse) must equalTo(OK)
+      private val parsed: JsValue = Json.parse(contentAsString(checkResponse))
+      (parsed \ "error_code").as[Int] must equalTo(0)
+
+    }
+
+    "not pass checking with non-existing account" in new WithApplication {
+
+      val checkResponse = route(ownerTeacherRequest(GET, "/api/v1/kindergarten/93740362/check_video_member?account=123")).get
+
+      status(checkResponse) must equalTo(OK)
+      private val parsed: JsValue = Json.parse(contentAsString(checkResponse))
+      (parsed \ "error_code").as[Int] must equalTo(1)
 
     }
 
