@@ -6,8 +6,8 @@
 
       <div class="col-sm-8">
         <input id="school-id" type="number" ng-model="school.school_id" name="id"
-               class="editing-field form-control" ng-bk-focus required ng-change="idChange(school)"/>
-        <span class="error-field" ng-show="newSchoolForm.id.$dirty && isSchoolDuplicated(school, 'school_id')">与已有学校ID重复！</span>
+               class="editing-field form-control" ng-bk-focus required ng-change="isSchoolIdDuplicated(school.school_id, newSchoolForm.id);idChange(school)"/>
+        <span class="error-field" ng-show="newSchoolForm.id.$dirty && newSchoolForm.id.$error.unique"><i class="glyphicon glyphicon-info-sign"></i>与已有学校ID重复！</span>
       </div>
     </div>
 
@@ -15,9 +15,9 @@
       <label for="school-full-name" class="col-sm-2 control-label">学校全称</label>
 
       <div class="col-sm-8">
-        <input id="school-full-name" type="text" ng-model="school.full_name" name="full_name"
-               class="editing-field form-control" placeholder="供超级后台管理员区分学校用,不会显示在客户端" required/>
-        <span class="error-field" ng-show="newSchoolForm.full_name.$dirty && isSchoolDuplicated(school, 'full_name')">与已有学校全称重复！</span>
+        <input id="school-full-name" type="text" ng-model="school.full_name" name="fullName"
+               class="editing-field form-control" placeholder="供超级后台管理员区分学校用,不会显示在客户端"  ng-change="isSchoolDuplicated(school, 'full_name', newSchoolForm.fullName)" required/>
+        <span class="error-field" ng-show="newSchoolForm.fullName.$dirty && newSchoolForm.fullName.$error.unique"><i class="glyphicon glyphicon-info-sign"></i>与已有学校全称重复！</span>
       </div>
     </div>
 
@@ -26,8 +26,8 @@
 
       <div class="col-sm-8">
         <input id="school-name" type="text" ng-model="school.name" name="name"
-               class="editing-field form-control" placeholder="显示在客户端的学校名称,不能超过8个汉字" required ng-maxlength="8"/>
-        <span class="error-field" ng-show="newSchoolForm.name.$error.maxlength">学校显示名称不能超过8个字符</span>
+               class="editing-field form-control" placeholder="显示在客户端的学校名称,不能超过8个汉字" required maxlength="8"/>
+        <span class="error-field" ng-show="newSchoolForm.name.$dirty && newSchoolForm.name.$error.maxlength"><i class="glyphicon glyphicon-info-sign"></i>学校显示名称不能超过8个字符</span>
       </div>
     </div>
 
@@ -37,8 +37,8 @@
 
       <div class="col-sm-8">
         <input id="school-cell-phone" type="text" ng-model="school.phone" name="phone"
-               class="editing-field form-control" placeholder="11位数字手机号,不能与现有老师的手机重复" required ng-pattern="/^\d{11}$/"/>
-        <span class="error-field" ng-show="newSchoolForm.phone.$error.pattern">错误的手机号码，应该是11位数字</span>
+               class="editing-field form-control" placeholder="11位数字手机号,不能与现有老师的手机重复" required ng-pattern="/^\d{11}$/" maxlength="11"/>
+        <span class="error-field" ng-show="newSchoolForm.phone.$dirty && newSchoolForm.phone.$error.pattern"><i class="glyphicon glyphicon-info-sign"></i>错误的手机号码，应该是11位数字</span>
       </div>
     </div>
 
@@ -57,7 +57,7 @@
       <div class="col-sm-8">
         <input id="admin-name" type="text" ng-model="school.principal.admin_login" name="adminLogin"
                class="editing-field form-control" required ng-pattern="/^\w{3,16}$/" />
-        <span class="error-field" ng-show="newSchoolForm.adminLogin.$dirty && newSchoolForm.adminLogin.$error.pattern">登录名只能由3到16位数字和字母组成，不能包含特殊字符或者中文。</span>
+        <span class="error-field" ng-show="newSchoolForm.adminLogin.$dirty && newSchoolForm.adminLogin.$error.pattern"><i class="glyphicon glyphicon-info-sign"></i>登录名只能由3到16位数字和字母组成，不能包含特殊字符或者中文。</span>
       </div>
     </div>
     <div class="form-group">
@@ -66,8 +66,8 @@
       <div class="col-sm-8">
         <input id="admin-password" type="password" ng-model="school.principal.admin_password" name="adminPassword"
                class="editing-field form-control" ng-minlength="6" required/>
-        <span class="error-field" ng-show="newSchoolForm.adminPassword.$dirty && newSchoolForm.adminPassword.$error.required">请给出登陆密码</span>
-        <span class="error-field" ng-show="newSchoolForm.adminPassword.$dirty && newSchoolForm.adminPassword.$error.minlength">密码至少6位</span>
+        <span class="error-field" ng-show="newSchoolForm.adminPassword.$dirty && newSchoolForm.adminPassword.$error.required"><i class="glyphicon glyphicon-info-sign"></i>请给出登陆密码</span>
+        <span class="error-field" ng-show="newSchoolForm.adminPassword.$dirty && newSchoolForm.adminPassword.$error.minlength"><i class="glyphicon glyphicon-info-sign"></i>密码至少6位</span>
       </div>
     </div>
     <div class="form-group">
@@ -76,8 +76,8 @@
       <div class="col-sm-8">
         <input id="admin-password-confirm" type="password" ng-model="school.principal.admin_password_confirm" name="adminPasswordConfirm"
                class="editing-field form-control" ng-minlength="6" required/>
-        <span class="error-field" ng-show="newSchoolForm.adminPasswordConfirm.$dirty && school.principal.admin_password != school.principal.admin_password_confirm">两次输入不一致。</span>
-        <span class="error-field" ng-show="newSchoolForm.adminPasswordConfirm.$dirty && newSchoolForm.adminPasswordConfirm.$error.required">请再次填写密码</span>
+        <span class="error-field" ng-show="newSchoolForm.adminPasswordConfirm.$dirty && school.principal.admin_password != school.principal.admin_password_confirm"><i class="glyphicon glyphicon-info-sign"></i>两次输入不一致。</span>
+        <span class="error-field" ng-show="newSchoolForm.adminPasswordConfirm.$dirty && newSchoolForm.adminPasswordConfirm.$error.required"><i class="glyphicon glyphicon-info-sign"></i>请再次填写密码</span>
       </div>
     </div>
 
@@ -112,7 +112,7 @@
 
     <div class="form-group">
       <a class="btn btn-warning pull-right adding-button"
-         ng-disabled="newSchoolForm.$invalid || isSchoolDuplicated(school) || school.admin_password != school.admin_password_confirm"
+         ng-disabled="newSchoolForm.$invalid || school.admin_password != school.admin_password_confirm"
          ng-click="saveSchool(school)">保存</a>
       <a class="btn btn-default pull-right adding-button"
          ng-click="$hide()">取消</a>

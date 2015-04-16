@@ -151,10 +151,22 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             scope.refresh()
             scope.currentModal.hide()
 
-      scope.isSchoolDuplicated = (school, field) ->
-        return false if school[field] is undefined
-        undefined isnt _.find scope.kindergartens, (k) ->
-          k[field] == school[field] && k.school_id isnt k.school_id
+      scope.isSchoolDuplicated = (school, field, form) ->
+        return if !school[field]? or !form?
+        target = _.find scope.kindergartens, (k) ->
+          k[field] == school[field] && school.school_id isnt k.school_id
+        if target?
+          form.$setValidity 'unique', false
+        else
+          form.$setValidity 'unique', true
+
+      scope.isSchoolIdDuplicated = (id, form) ->
+        return unless form?
+        target = _.find scope.kindergartens, (k) -> id == k.school_id
+        if target?
+          form.$setValidity 'unique', false
+        else
+          form.$setValidity 'unique', true
 
       nextId = (schools)->
         13 + _.max _.map schools, (c) ->
