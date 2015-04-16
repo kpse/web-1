@@ -87,4 +87,16 @@ object VideoMemberController extends Controller with Secured {
     u => _ =>
       Ok(Json.toJson(VideoMember.default(kg)))
   }
+
+  def check(kg: Long, account: String) = IsLoggedIn {
+    u => _ =>
+      VideoMember.accountExists(kg, account) match {
+        case true =>
+          Ok(Json.toJson(new SuccessResponse))
+        case false =>
+          Ok(Json.toJson(ErrorResponse(s"没有这个账号${account}。(no such account)")))
+      }
+
+  }
+
 }

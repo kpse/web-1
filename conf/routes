@@ -238,6 +238,7 @@ GET           /api/v1/kindergarten/:kg/video_member/:id                         
 POST          /api/v1/kindergarten/:kg/video_member                                controllers.VideoMemberController.create(kg: Long)
 POST          /api/v1/kindergarten/:kg/video_member/:id                            controllers.VideoMemberController.update(kg: Long, id: String)
 DELETE        /api/v1/kindergarten/:kg/video_member/:id                            controllers.VideoMemberController.delete(kg: Long, id: String)
+GET           /api/v1/kindergarten/:kg/check_video_member                          controllers.VideoMemberController.check(kg: Long, account: String)
 
 GET           /api/v1/kindergarten/:kg/ad                                          controllers.ADController.index(kg: Long)
 POST          /api/v1/kindergarten/:kg/ad                                          controllers.ADController.create(kg: Long)

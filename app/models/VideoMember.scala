@@ -104,6 +104,12 @@ object VideoMember {
         .on('kg -> kg).as(availableCounting(kg) single)
   }
 
+  def accountExists(kg: Long, account: String) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from videomembers where school_id={kg} and account={account}")
+        .on('kg -> kg, 'account -> account).as(get[Long]("count(1)") single) > 0
+  }
+
   def limitExceed(kg: Long): Boolean = available(kg).count <= 0
 }
 
