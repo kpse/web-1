@@ -100,6 +100,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         id = nextId(scope.kindergartens)
         new School
           school_id: id
+          address: ''
           principal:
             admin_login: "admin#{id}"
             admin_password: '',
