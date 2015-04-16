@@ -141,10 +141,10 @@ angular.module('kulebaoAdmin')
         Alert
           title: '保存' + obj + '失败'
           content: res.data.error_msg
-          placement: "top-left"
+          placement: "top"
           type: "danger"
-          container: '.panel-body'
-          duration: 3
+          container: '.modal-dialog .panel-body'
+          duration: 30
 
       scope.saveParent = (parent) ->
         saveHook = parent.saveHook

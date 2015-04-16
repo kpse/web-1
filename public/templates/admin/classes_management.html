@@ -5,13 +5,13 @@
     <input ng-model="searchText"/>
     <span>输入内容进行查找</span>
   </div>
-  <form class="form well no-padding">
+  <form class="form well no-padding classes-management-form">
     <button type="submit" class="btn btn-primary adding-for-individual" ng-disabled="page.loading"
             ng-click="addClass()">创建新班级
     </button>
   </form>
   <div class="loading" ng-show="page.loading"></div>
-  <table class="table table-hover table-condensed employee-list" ng-hide="page.loading">
+  <table class="table table-hover table-condensed classes-list" ng-hide="page.loading">
     <thead>
     <tr class="row">
       <th class="col-xs-4">班级名称</th>

@@ -73,11 +73,11 @@ angular.module('kulebaoAdmin')
 
       scope.promote = (parent) ->
         if scope.exceed()
-          deferred = $q.defer();
-          $timeout ->
-              scope.noPromotion()
-            , 100
-          deferred.promise
+          $q (resolve, reject) ->
+            $timeout ->
+                scope.noPromotion()
+                reject()
+              , 100
         else
           parent.member_status = 1
           parent.$save(school_id: stateParams.kindergarten).$promise

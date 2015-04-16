@@ -75,7 +75,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
           Alert
             title: '无法删除'
             content: res.data.error_msg
-            placement: "top-left"
+            placement: "top"
             type: "danger"
             show: true
             container: '.panel-body'
