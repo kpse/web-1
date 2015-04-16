@@ -13,7 +13,9 @@ CREATE TABLE schoolinfo (
   phone       VARCHAR(16) NOT NULL,
   logo_url    VARCHAR(256),
   update_at   BIGINT     NOT NULL,
-  PRIMARY KEY (uid)
+  PRIMARY KEY (uid),
+  UNIQUE (full_name),
+  UNIQUE (school_id)
 );
 
 INSERT INTO schoolinfo (uid, school_id, province, city, full_name, description, logo_url, phone, update_at, token, name) VALUES

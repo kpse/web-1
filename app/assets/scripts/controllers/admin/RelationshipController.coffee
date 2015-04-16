@@ -144,7 +144,7 @@ angular.module('kulebaoAdmin')
           placement: "top"
           type: "danger"
           container: '.modal-dialog .panel-body'
-          duration: 30
+          duration: 3
 
       scope.saveParent = (parent) ->
         saveHook = parent.saveHook

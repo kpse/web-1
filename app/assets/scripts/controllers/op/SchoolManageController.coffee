@@ -125,11 +125,11 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
       handleError = (res) ->
         Alert
           title: '无法保存学校信息'
-          content: res.data.error_msg
-          placement: "top-left"
+          content: if res.data.error_msg? then res.data.error_msg else res.data
+          placement: "top"
           type: "danger"
           show: true
-          container: '.panel-body'
+          container: '.modal-dialog .panel-body'
           duration: 3
 
       scope.saveSchool = (school) ->

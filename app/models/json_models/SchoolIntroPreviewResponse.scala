@@ -90,7 +90,7 @@ object SchoolIntro {
         case t: Throwable =>
           Logger.info("error %s".format(t.toString))
           c.rollback()
-          throw new IllegalArgumentException("创建学校失败。", t)
+          throw new IllegalArgumentException(s"创建学校失败。\n${t.getMessage}", t)
       }
       detail(school.school_id)
   }
