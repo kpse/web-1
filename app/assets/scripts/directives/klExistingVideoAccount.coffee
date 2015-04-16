@@ -1,34 +1,32 @@
 'use strict'
 
-angular.module("kulebao.directives").directive "klUnique",
-  ['phoneCheckService',
-    (PhoneCheck) ->
+angular.module("kulebao.directives").directive "klExistingVideoAccount",
+  ['videoMemberCheckingService',
+    (VideoMember) ->
       return (
         restrict: "A"
         require: 'ngModel'
         scope:
-          klUnique: "="
-          uniqueType: "@"
-          uniqueIdentity: "@"
+          ngModel: '='
+          parent: '='
 
-        link: (scope, element, attrs, c) ->
-          scope.id = scope.uniqueIdentity || 'parent_id'
-          scope.$watch 'klUnique.phone', (n) ->
-            if !n? || n.length == 0
-              c.$setValidity 'unique', true
+        link: (scope, element, attrs, form) ->
+          scope.$watch attrs.ngModel, (n) ->
+            if !n? || n.length < 32
+              form.$setValidity 'notExisting', true
             else
-              scope.check(scope.klUnique)
+              scope.check(scope.ngModel)
 
 
-          scope.check = (person) ->
-            return unless person?
-            PhoneCheck.check id: person[scope.id], phone: person.phone, employee: scope.uniqueType, ((valid)->
+          scope.check = (account) ->
+            return unless account?
+            VideoMember.get account: account, school_id: scope.parent.school_id, ((valid)->
               if valid.error_code == 0
-                c.$setValidity 'unique', true
+                form.$setValidity 'notExisting', true
               else
-                c.$setValidity 'unique', false
+                form.$setValidity 'notExisting', false
             ), ->
-              c.$setValidity 'unique', false
+              form.$setValidity 'notExisting', false
 
       )
   ]

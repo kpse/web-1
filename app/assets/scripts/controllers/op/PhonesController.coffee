@@ -54,12 +54,13 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
   ]
 
 .controller 'OpShowPhoneCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', '$alert', 'phoneManageService', 'schoolService', 'videoMemberService', 'parentPasswordService', 'pushAccountService'
-    (scope, rootScope, stateParams, location, Alert, Phone, School, VideoMember, ParentPassword, PushAccount) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', '$alert', '$state', 'phoneManageService', 'schoolService', 'videoMemberService', 'parentPasswordService', 'pushAccountService'
+    (scope, rootScope, stateParams, location, Alert, $state, Phone, School, VideoMember, ParentPassword, PushAccount) ->
       scope.parent = Phone.get phone: stateParams.phone, ->
         scope.school = School.get school_id: scope.parent.school_id
         scope.parent.videoMember = VideoMember.get school_id: scope.parent.school_id, id: scope.parent.parent_id
         scope.parent.pushAccount = PushAccount.get phone: stateParams.phone
+        scope.parent.pickingAccount = false
 
       scope.delete = (parent)->
         Phone.delete parent, ->
@@ -88,6 +89,11 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
               type: "danger"
               container: '.well'
               duration: 3
+
+
+      scope.saveAccount = (parent) ->
+        _.extend(parent.videoMember, school_id: parent.school_id, id: parent.parent_id).$save ->
+          $state.reload()
   ]
 
 .controller 'OpShowTeacherCtrl',

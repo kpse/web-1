@@ -35,3 +35,11 @@ angular.module('kulebao.services')
       id: '@id'
     }
 ]
+
+angular.module('kulebao.services')
+.factory 'videoMemberCheckingService', ['$resource', ($resource) ->
+  $resource '/api/v1/kindergarten/:school_id/check_video_member',
+    {
+      school_id: '@school_id'
+    }
+]
