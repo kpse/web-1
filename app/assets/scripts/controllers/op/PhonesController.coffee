@@ -54,18 +54,21 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
   ]
 
 .controller 'OpShowPhoneCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', '$alert', '$state', 'phoneManageService', 'schoolService', 'videoMemberService', 'parentPasswordService', 'pushAccountService'
-    (scope, rootScope, stateParams, location, Alert, $state, Phone, School, VideoMember, ParentPassword, PushAccount) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', '$alert', '$state', 'phoneManageService', 'schoolService',
+   'videoMemberService', 'parentPasswordService', 'pushAccountService', 'parentService',
+    (scope, rootScope, stateParams, location, Alert, $state, Phone, School, VideoMember, ParentPassword, PushAccount, Parent) ->
       scope.parent = Phone.get phone: stateParams.phone, ->
         scope.school = School.get school_id: scope.parent.school_id
         scope.parent.videoMember = VideoMember.get school_id: scope.parent.school_id, id: scope.parent.parent_id
         scope.parent.pushAccount = PushAccount.get phone: stateParams.phone
         scope.parent.pickingAccount = false
 
-      scope.delete = (parent)->
+      scope.delete = (parent) ->
         Phone.delete parent, ->
           scope.alertDelete(parent)
           scope.cancel()
+
+      scope.deletable = (parent) -> parent.status == 1
 
       scope.goToSchool = ->
         location.path '/main/phone_management'
@@ -82,9 +85,9 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
             type: "success"
             container: '.well'
             duration: 3
-          , Alert
+          , (res) -> Alert
               title: '密码重置失败'
-              content: "问下开发看看后台日志吧"
+              content: if res.data.error_msg? then res.data.error_msg else res.data
               placement: "top"
               type: "danger"
               container: '.well'
@@ -94,6 +97,21 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
       scope.saveAccount = (parent) ->
         _.extend(parent.videoMember, school_id: parent.school_id, id: parent.parent_id).$save ->
           $state.reload()
+
+      scope.allowRevive = (parent) -> parent.status == 0 && parent.phone.match(/\d{11}/)?
+
+      scope.revive = (parent) ->
+        if scope.allowRevive(parent)
+          parent.status = 1
+          Parent.save parent, ->
+              $state.reload()
+            , (res) -> Alert
+              title: '家长恢复失败'
+              content: if res.data.error_msg? then res.data.error_msg else res.data
+              placement: "top"
+              type: "danger"
+              container: '.phone-management-detail .panel-body'
+              duration: 3
   ]
 
 .controller 'OpShowTeacherCtrl',

@@ -23,7 +23,7 @@
         <label for="parent-gender" class="col-sm-4 control-label">性别</label>
 
         <div class="col-sm-8">
-          <p class="form-control-static">{{ parent.gender == 0 ? '女': '男'}}</p>
+          <p class="form-control-static">{{parent.gender == 0 ? '女': '男'}}</p>
         </div>
       </div>
       <div class="form-group">
@@ -39,7 +39,7 @@
         <label for="parent-member" class="col-sm-4 control-label">会员</label>
 
         <div class="col-sm-8">
-          <p class="form-control-static">{{ parent.member_status == 0 ? '未开通': '已开通'}}</p>
+          <p class="form-control-static">{{parent.member_status == 0 ? '未开通': '已开通'}}</p>
         </div>
       </div>
 
@@ -116,6 +116,11 @@
         <div class="col-sm-4">
           <p class="form-control-static">{{parent.pushAccount.password}}</p>
         </div>
+        <label for="parent-status" class="col-sm-2 control-label">状态</label>
+
+        <div class="col-sm-4">
+          <p class="form-control-static parent-status" ng-class="{removed: parent.status==0}">{{parent.status == 0 ? '已删除' : '正常'}}</p>
+        </div>
       </div>
     </div>
 
@@ -124,11 +129,14 @@
         <div class="btn-group pull-right">
           <a class="btn btn-default adding-button"
              ng-click="cancel()">取消</a>
-          <button class="btn btn-danger" ng-confirm-msg="你确定要删除吗?"
-                  ng-confirm-click="delete(parent)">删除
+          <button ng-show="deletable(parent)" class="btn btn-danger" ng-confirm-msg="你确定要永久删除吗?（这种删除是无法恢复的）"
+                  ng-confirm-click="delete(parent)">永久删除
           </button>
           <button ng-show="resetPassword" class="btn btn-warning" ng-confirm-msg="你确定要重置密码吗?"
                   ng-confirm-click="resetPassword(parent)">重置密码
+          </button>
+          <button ng-show="allowRevive(parent)" class="btn btn-info" ng-confirm-msg="你确定要恢复这个家长吗?"
+                  ng-confirm-click="revive(parent)">原地复活
           </button>
         </div>
       </div>

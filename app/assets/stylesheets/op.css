@@ -80,6 +80,9 @@ util.print: Use console.log instead
   margin-left: 0;
   width: 963px;
 }
+.parent-status.removed {
+  text-decoration: line-through;
+}
 .triangle-border {
   position: relative;
   padding: 15px;
