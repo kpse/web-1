@@ -36,7 +36,7 @@ case class ChildrenPlan(id: Option[Long], driver_id: String, child_id: String, s
           'time -> currentTime
         ).executeUpdate()
       updated match {
-        case i if i > 0 => Some(copy(timestamp = Some(currentTime)))
+        case i if i > 0 => ChildrenPlan.show(school_id, child_id)
         case _ => None
       }
   }
