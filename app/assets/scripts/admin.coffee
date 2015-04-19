@@ -3,7 +3,7 @@ angular.module('kulebao.directives', ['kulebao.services'])
 angular.module('kulebao.filters', ['kulebao.services'])
 angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics', 'kulebao.directives', 'kulebao.filters'])
 angular.module('kulebaoAdmin',
-  ['kulebaoApp', 'ui.bootstrap', 'ui.mask', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap', 'mgcrea.ngStrap.helpers.dimensions', 'mgcrea.ngStrap.tooltip',
+  ['kulebaoApp', 'ui.bootstrap', 'ui.mask', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap', 'mgcrea.ngStrap.helpers.dimensions', 'mgcrea.ngStrap.tooltip', 'ngDragDrop',
    'ngCookies', 'ui.calendar'])
 .config ['$stateProvider', '$urlRouterProvider', '$compileProvider',
   ($stateProvider, $urlRouterProvider, $compileProvider) ->

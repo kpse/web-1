@@ -15,5 +15,12 @@ angular.module('kulebao.services')
       id: '@id'
     }
 ]
+.factory 'childrenPlanService', ['$resource', ($resource) ->
+  $resource "/api/v2/kindergarten/:school_id/child/:child_id/plan",
+    {
+      school_id: '@school_id'
+      child_id: '@child_id'
+    }
+]
 
 

@@ -7,22 +7,60 @@
   </li>
 </ul>
 <ul class="nav nav-tabs" ng-show="allBuses.length > 0">
-  <li ng-repeat="bus in allBuses" ng-class="{active: bus.id == currentBus.id}">
+  <li ng-repeat="bus in allBuses | orderBy:'id'" ng-class="{active: bus.id == currentBus.id}">
     <a ng-click="navigateTo(bus)">{{bus.name}}</a>
   </li>
 </ul>
 <div class="loading" ng-show="loading"></div>
 <div class="panel panel-default">
   <h3>乘坐计划</h3>
-  <p>点击学生名牌进行操作</p>
-  <div class="panel-body row">
-    <div class="well col-xs-offset-1 col-xs-10">
-    <a ng-repeat="child in currentBus.plans" class="btn btn-info btn-xs col-xs-1" bs-dropdown="childDropDown(child)">{{child.name}}
-    </a>
-  </div>
-  </div>
 
-  <button class="btn btn-success"
-          ng-click="addChildPlan(currentBus.driver)">添加小孩
-  </button>
+  <p>点击学生名牌进行操作</p>
+
+  <div class="panel-body">
+    <div class="row" ng-hide="addingPlan">
+      <div class="well col-xs-offset-1 col-xs-10">
+        <div ng-repeat="child in currentBus.plans" class="btn btn-info btn-xs col-xs-1"
+             bs-dropdown="childDropDown(child)"
+             ng-show="child.name">{{child.name}}
+        </div>
+      </div>
+    </div>
+
+    <div class="row" jqyoui-droppable="{onDrop: 'dropInBus', beforeDrop: 'beforeDropInBus'}" data-drop="true" data-jqyoui-options="{revert: 'invalid'}"
+         ng-model="currentBus.plans" ng-show="addingPlan">
+      <div class="well col-xs-offset-1 col-xs-10">
+        <div ng-repeat="child in currentBus.plans" class="btn btn-info btn-xs col-xs-1" data-drag="true"
+             data-jqyoui-options="{revert: 'invalid'}" ng-model="child" jqyoui-draggable
+             bs-dropdown="childDropDown(child)"
+             ng-show="child.name">{{child.name}}
+        </div>
+      </div>
+    </div>
+
+
+    <button class="btn btn-success" ng-hide="addingPlan"
+            ng-click="addChildPlan()">添加小孩
+    </button>
+    <button class="btn btn-warning" ng-show="addingPlan"
+            ng-click="saveChildPlan(currentBus.driver)">保存
+    </button>
+    <button class="btn btn-info" ng-show="addingPlan"
+            ng-click="cancelEditingPlan()">取消
+    </button>
+
+    <h3 ng-show="addingPlan">拖到学生名牌到本次班车</h3>
+
+    <div class="row" data-drop="{{addingPlan}}" data-jqyoui-options="{revert: 'invalid'}" ng-model="waitingChildren"
+         jqyoui-droppable="{onDrop: 'dropInWaiting', beforeDrop: 'beforeDropInWaiting'}" style="height:50px;">
+      <div class="well col-xs-offset-1 col-xs-10" ng-show="addingPlan">
+        <div ng-repeat="waitingChild in waitingChildren" class="btn btn-success btn-xs col-xs-1"
+             data-drag="{{addingPlan}}"
+             data-jqyoui-options="{revert: 'invalid'}" ng-model="waitingChild" jqyoui-draggable
+             ng-show="waitingChild.name">
+          {{waitingChild.name}}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

@@ -24,15 +24,26 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'BusPlansCtrl',
-  [ '$scope', '$rootScope', '$stateParams', 'busDriverService', 'childService', 'schoolBusService',
-    (scope, rootScope, stateParams, BusDriver, Child, Bus) ->
+  [ '$scope', '$rootScope', '$stateParams', '$q', 'busDriverService', 'childService', 'schoolBusService', 'childrenPlanService',
+    (scope, rootScope, stateParams, $q, BusDriver, Child, Bus, Plan) ->
       scope.loading = false
 
+      findChild = (id) ->
+        _.find scope.allChildren, (c) -> c.child_id == id
+
       scope.refresh = ->
-        scope.allBuses = Bus.query school_id: stateParams.kindergarten, ->
+        busQ = Bus.query(school_id: stateParams.kindergarten).$promise
+        childQ = Child.query(school_id: stateParams.kindergarten).$promise
+        $q.all([busQ, childQ]).then (q) ->
+          scope.allBuses = q[0]
+          scope.allChildren = q[1]
           scope.currentBus = _.find scope.allBuses, (bus) -> bus.driver.id == stateParams.driver
           BusDriver.query school_id: stateParams.kindergarten, driver: scope.currentBus.driver.id, (data) ->
-            scope.currentBus.plans = _.map data, (plan) -> Child.get school_id: plan.school_id, child_id: plan.child_id
+            scope.currentBus.plans = _.map data, (plan) -> findChild(plan.child_id)
+            scope.waitingChildren = scope.childrenWithoutPlan()
+
+      scope.childrenWithoutPlan = ->
+        _.reject scope.allChildren, (c) -> _.any scope.currentBus.plans, (p) -> p.child_id == c.child_id
 
       scope.refresh()
       scope.childDropDown = (child) ->
@@ -54,12 +65,54 @@ angular.module('kulebaoAdmin')
           }
         ]
 
-      scope.addChildPlan = (driver) -> alert("添加一个小孩给驾驶员#{driver.name}")
+      scope.cancelEditingPlan = ->
+        scope.addingPlan = false
+        scope.refresh()
+        scope.backupPlans = []
+
+      scope.saveChildPlan = (driver) ->
+        scope.loading = false
+        scope.addingPlan = false
+        queue = _.map scope.currentBus.plans, (p) ->
+          plan = new Plan
+            driver_id: driver.id
+            school_id: driver.school_id
+            child_id: p.child_id
+          plan.$save().$promise
+        removedQueue = _(scope.backupPlans).chain().reject((ea) -> _.any scope.currentBus.plans, (eb) -> ea.child_id == eb.child_id)
+        .map((p) -> Plan.delete(driver_id: driver.id, school_id: driver.school_id, child_id: p.child_id).$promise).compact().value()
+
+        $q.all(queue.concat(removedQueue)).then ->
+          scope.refresh()
+
+      scope.addChildPlan = ->
+        scope.addingPlan = true
+        scope.backupPlans = angular.copy scope.currentBus.plans
+
       scope.delete = (child) -> alert("删除小孩#{child.name}")
       scope.show = (child) -> alert("详细信息#{child.name}")
       scope.switchBus = (child) -> alert("切换到其他班车#{child.name}")
       scope.showBusLog = (child) -> alert("查看#{child.name}的乘车历史记录")
 
+      scope.beforeDropInBus = (event, dropped) ->
+        $q (resolve, reject) ->
+          if (_.any scope.currentBus.plans, (r) -> r.name == dropped.draggable[0].innerText)
+            reject()
+          else
+            resolve()
+
+      scope.beforeDropInWaiting = (event, dropped) ->
+        $q (resolve, reject) ->
+          if (_.any scope.waitingChildren, (r) -> r.name == dropped.draggable[0].innerText)
+            reject()
+          else
+            resolve()
+
+      scope.dropInBus = (event, dropped) ->
+        scope.waitingChildren = _.reject scope.waitingChildren, (r) -> r.name == dropped.draggable[0].innerText
+
+      scope.dropInWaiting = (event, dropped) ->
+        scope.currentBus.plans = _.reject scope.currentBus.plans, (r) -> r.name == dropped.draggable[0].innerText
   ]
 
 .controller 'BusManagementCtrl',
@@ -92,7 +145,7 @@ angular.module('kulebaoAdmin')
           scope.currentModal.hide()
           scope.refresh()
 
-      isADriver = (employee) -> undefined isnt _.find scope.allBuses, (f) -> f.driver.id == employee.id
+      isADriver = (employee) -> _.any scope.allBuses, (f) -> f.driver.id == employee.id
       availableDriver = (employees) -> _.filter employees, (d) -> !isADriver(d)
 
       scope.refresh = ->
