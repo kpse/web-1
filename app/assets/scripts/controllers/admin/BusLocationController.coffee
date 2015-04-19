@@ -84,7 +84,9 @@ angular.module('kulebaoAdmin')
           scope: scope
           contentTemplate: 'templates/admin/add_bus.html'
 
-      scope.deleteBus = (bus) -> alert("删除班车#{bus.id}")
+      scope.deleteBus = (bus) ->
+        bus.$delete ->
+          scope.refresh()
       scope.saveBus = (bus) ->
         bus.$save ->
           scope.currentModal.hide()
