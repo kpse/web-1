@@ -27,12 +27,12 @@
   <tr ng-repeat="bus in allBuses | filter: searchText" class="row">
     <td class="col-xs-1">{{bus.id}}</td>
     <td class="col-xs-1">{{bus.driver.name}}</td>
-    <td class="col-xs-2">{{bus.morningPath}}</td>
-    <td class="col-xs-2">{{reverse(bus.morningPath)}}</td>
-    <td class="col-xs-1">8:00</td>
-    <td class="col-xs-1">9:00</td>
-    <td class="col-xs-1">15:30</td>
-    <td class="col-xs-1">16:10</td>
+    <td class="col-xs-2">{{bus.morning_path}}</td>
+    <td class="col-xs-2">{{bus.evening_path}}</td>
+    <td class="col-xs-1">{{bus.morning_start}}</td>
+    <td class="col-xs-1">{{bus.morning_end}}</td>
+    <td class="col-xs-1">{{bus.evening_start}}</td>
+    <td class="col-xs-1">{{bus.evening_end}}</td>
     <td class="col-xs-1"><a ng-click="mapOf(bus)">地图</a></td>
     <td class="col-xs-1">
       <button class="btn btn-danger btn-xs" ng-confirm-msg="你确定要删除吗?"

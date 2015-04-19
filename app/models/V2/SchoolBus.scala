@@ -7,7 +7,7 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
-case class SchoolBus(id: Option[Long], name: String, driver: Option[Employee], school_id: Long, morningPath: String, eveningPath: String, morningStart: String, morningEnd: String, eveningStart: String, eveningEnd: String, updated_at: Option[Long], status: Option[Int] = Some(1)) {
+case class SchoolBus(id: Option[Long], name: String, driver: Option[Employee], school_id: Long, morning_path: String, evening_path: String, morning_start: String, morning_end: String, evening_start: String, evening_end: String, updated_at: Option[Long], status: Option[Int] = Some(1)) {
   def create: Option[SchoolBus] = DB.withConnection {
     implicit c =>
       val currentTime = System.currentTimeMillis
@@ -17,12 +17,12 @@ case class SchoolBus(id: Option[Long], name: String, driver: Option[Employee], s
           'kg -> school_id,
           'name -> name,
           'driver -> pickDriverId(driver),
-          'morningPath -> morningPath,
-          'eveningPath -> eveningPath,
-          'morningStart -> morningStart,
-          'morningEnd -> morningEnd,
-          'eveningStart -> eveningStart,
-          'eveningEnd -> eveningEnd,
+          'morningPath -> morning_path,
+          'eveningPath -> evening_path,
+          'morningStart -> morning_start,
+          'morningEnd -> morning_end,
+          'eveningStart -> evening_start,
+          'eveningEnd -> evening_end,
           'time -> currentTime
         ).executeInsert()
       id match {
@@ -43,12 +43,12 @@ case class SchoolBus(id: Option[Long], name: String, driver: Option[Employee], s
             'kg -> school_id,
             'name -> name,
             'driver -> pickDriverId(driver),
-            'morningPath -> morningPath,
-            'eveningPath -> eveningPath,
-            'morningStart -> morningStart,
-            'morningEnd -> morningEnd,
-            'eveningStart -> eveningStart,
-            'eveningEnd -> eveningEnd,
+            'morningPath -> morning_path,
+            'eveningPath -> evening_path,
+            'morningStart -> morning_start,
+            'morningEnd -> morning_end,
+            'eveningStart -> evening_start,
+            'eveningEnd -> evening_end,
             'time -> currentTime
           ).executeUpdate()
         updated match {

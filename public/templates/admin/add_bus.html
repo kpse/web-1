@@ -1,0 +1,90 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3>新建班车</h3>
+  </div>
+
+  <div class="panel-body">
+    <form class="form-horizontal row" role="form" name="newBusForm">
+      <div class="form-group">
+        <label for="bus-name" class="col-sm-3 control-label">班车标示名</label>
+
+        <div class="col-sm-6">
+          <input id="bus-name" ng-model="newBus.name" placeholder="班车名称"
+                 class="editing-field form-control" required/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="bus-driver" class="col-sm-3 control-label">班车司机</label>
+
+        <div class="col-sm-6">
+          <button type="button" class="btn btn-default" ng-model="newBus.driver" data-html="1"
+                  placeholder="请选择驾驶员老师"
+                  ng-click="$event.stopPropagation()" ng-options="d as d.name for d in drivers"
+                  bs-select></button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="bus-morning-path" class="col-sm-3 control-label">早上行车路线(使用'-'分隔)</label>
+
+        <div class="col-sm-6">
+          <input id="bus-morning-path" ng-model="newBus.morning_path" placeholder="早上行车路线"
+                 class="editing-field form-control" required/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="bus-evening-path" class="col-sm-3 control-label">放学行车路线(使用'-'分隔)</label>
+
+        <div class="col-sm-6">
+          <input id="bus-evening-path" ng-model="newBus.evening_path" placeholder="早上行车路线"
+                 class="editing-field form-control" required/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="bus-m-start" class="col-sm-3 control-label">早上发车时间</label>
+
+        <div class="col-sm-6">
+          <input id="bus-m-start" ng-model="newBus.morning_start" placeholder="早上发车时间"
+                 class="editing-field form-control" required/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="bus-m-start" class="col-sm-3 control-label">早上到达时间</label>
+
+        <div class="col-sm-6">
+          <input id="bus-m-end" ng-model="newBus.morning_end" placeholder="早上到达时间"
+                 class="editing-field form-control" required/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="bus-e-start" class="col-sm-3 control-label">放学发车时间</label>
+
+        <div class="col-sm-6">
+          <input id="bus-e-start" ng-model="newBus.evening_start" placeholder="放学发车时间"
+                 class="editing-field form-control" required/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="bus-e-end" class="col-sm-3 control-label">放学到达时间</label>
+
+        <div class="col-sm-6">
+          <input id="bus-e-end" ng-model="newBus.evening_end" placeholder="放学到达时间"
+                 class="editing-field form-control" required/>
+        </div>
+      </div>
+
+    </form>
+
+
+  </div>
+  <div class="clearfix"></div>
+  <div class="panel-footer">
+    <div class="loading" ng-show="loading"></div>
+    <div class="btn-group">
+      <button class="btn btn-default" ng-click="$hide()">取消</button>
+      <button class="btn btn-info" ng-disabled="newBusForm.$invalid" ng-click="saveBus(newBus)">保存</button>
+    </div>
+  </div>
+
+</div>

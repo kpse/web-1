@@ -14,7 +14,7 @@ CREATE TABLE schoolbus (
   updated_at BIGINT               DEFAULT 0,
   status    INT DEFAULT 1,
   PRIMARY KEY (uid),
-  UNIQUE (school_id, employee_id),
+  UNIQUE (school_id, employee_id)
 );
 
 INSERT INTO schoolbus (school_id, employee_id, name, morning_path, evening_path, morning_start, morning_end, evening_start, evening_end, updated_at, status) VALUES
