@@ -18,55 +18,51 @@ angular.module('kulebaoAdmin')
       scope.allBuses = [{
         id: "1",
         driver:
-          name: '老张'
+          name: '富贵'
           phone: '13222228888'
-          employee_id: '3_93740362_11222'
+          employee_id: '3_93740362_9977'
         morningPath: 'P-Y-T-H-O-N'
         currentLocation:
           latitude: 123.1111232
           longitude: 321.2131231
           radius: 0.12312
           direction: 0.12312
-        plans:
-          [
-            {name: '小王'},
-            {name: '小宋'},
-            {name: '小李'},
-            {name: '小代'}
-          ]
+        plans:[]
       },{
         id: "2",
         driver:
           name: '老王'
           phone: '13222229999'
-          employee_id: '3_93740362_9977'
+          employee_id: '3_93740362_1022'
         morningPath: 'R-U-B-Y'
         currentLocation:
           latitude: 123.1111232
           longitude: 321.2131231
           radius: 0.12312
           direction: 0.12312
-        plans:
-          [
-            {name: '小魏'},
-            {name: '小舒'},
-            {name: '小吴'},
-            {name: '小群'}
-          ]
+        plans:[]
       }]
 
       scope.navigateTo = (bus) ->
         $state.go('kindergarten.bus.plans.driver', kindergarten: stateParams.kindergarten, driver: bus.driver.employee_id)
+
+      scope.navigateTo(scope.allBuses[0]) unless scope.currentBus?
   ]
 
 .controller 'BusPlansCtrl',
-  [ '$scope', '$rootScope', '$stateParams',
-    (scope, rootScope, stateParams) ->
+  [ '$scope', '$rootScope', '$stateParams', 'busDriverService', 'childService',
+    (scope, rootScope, stateParams, BusDriver, Child) ->
       scope.loading = false
       scope.currentBus = _.find scope.allBuses, (bus) -> bus.driver.employee_id == stateParams.driver
+
+      scope.refresh = ->
+        BusDriver.query school_id: stateParams.kindergarten, driver: scope.currentBus.driver.employee_id, (data) ->
+          scope.currentBus.plans = _.map data, (plan) -> Child.get school_id: plan.school_id, child_id: plan.child_id
+
+      scope.refresh()
+
       scope.addChildPlan = (driver) ->
 
-      scope.navigateTo(scope.allBuses[0]) unless scope.currentBus?
   ]
 
 .controller 'BusManagementCtrl',

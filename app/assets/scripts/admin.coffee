@@ -187,7 +187,7 @@ angular.module('kulebaoAdmin',
     .state 'kindergarten.bus.plans',
       url: '/plan'
       templateUrl: 'templates/admin/bus_plans.html'
-      controller: 'BusPlansCtrl'
+      controller: 'BusLocationCtrl'
     .state 'kindergarten.bus.plans.driver',
       url: '/driver/:driver'
       templateUrl: 'templates/admin/bus_driver_plan.html'
