@@ -5,7 +5,6 @@ import controllers.Secured
 import models.V2.ChildrenPlan
 import models.V2.ChildrenPlan._
 import models._
-import play.api.http.Status._
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Controller, SimpleResult}
 
@@ -35,7 +34,7 @@ object ChildrenPlanController extends Controller with Secured {
         case Some(p) =>
           Ok(Json.toJson(p))
         case None =>
-          NotFound(Json.toJson(ErrorResponse("${childId}没有对应的乘车计划。(No such chilren plan)")))
+          NotFound(Json.toJson(ErrorResponse("${childId}没有对应的乘车计划。(No such children plan)")))
       }
   }
 

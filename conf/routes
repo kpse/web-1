@@ -271,6 +271,11 @@ POST          /api/v2/kindergarten/:kg/child/:childId/plan                      
 DELETE        /api/v2/kindergarten/:kg/child/:childId/plan                         controllers.V2.ChildrenPlanController.delete(kg: Long, childId: String)
 POST          /api/v2/kindergarten/:kg/children_plans                              controllers.V2.ChildrenPlanController.batch(kg: Long)
 
+POST          /api/v2/kindergarten/:kg/bus                                         controllers.V2.SchoolBusController.create(kg: Long)
+GET           /api/v2/kindergarten/:kg/bus                                         controllers.V2.SchoolBusController.index(kg: Long)
+GET           /api/v2/kindergarten/:kg/bus/:id                                     controllers.V2.SchoolBusController.show(kg: Long, id: Long)
+DELETE        /api/v2/kindergarten/:kg/bus/:id                                     controllers.V2.SchoolBusController.delete(kg: Long, id: Long)
+
 #Check in history
 POST          /api/v2/kindergarten/:kg/check_history                               controllers.PushController.saveOnly(kg: Long)
 
