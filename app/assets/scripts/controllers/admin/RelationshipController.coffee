@@ -339,7 +339,7 @@ angular.module('kulebaoAdmin')
         if location.host() == 'localhost' then "http://localhost:9000" else "#{location.protocol()}://#{location.host()}"
 
       mockDriverLocationReport = ->
-        data = {"school_id":parseInt(stateParams.kindergarten),"driver_id":mockDriverId(),"latitude":108.883425,"longitude":134.253351,"direction":180.89999389648438,"radius":0.8999999761581421,"address":"地球1"}
+        data = {"school_id":parseInt(stateParams.kindergarten),"driver_id":mockDriverId(),"latitude":30.739469,"longitude":104.179257,"direction":180.89999389648438,"radius":0.8999999761581421,"address":"地球1"}
         $http {method: 'POST', url: "/api/v2/kindergarten/#{stateParams.kindergarten}/bus_driver/#{mockDriverId()}/location", data: data}
 
       scope.sendBusMessage = (relationship, type) ->
