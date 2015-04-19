@@ -8,7 +8,7 @@
 </ul>
 <ul class="nav nav-tabs" ng-show="allBuses.length > 0">
   <li ng-repeat="bus in allBuses" ng-class="{active: bus.id == currentBus.id}">
-    <a ng-click="navigateTo(bus)">{{bus.id}}号车</a>
+    <a ng-click="navigateTo(bus)">{{bus.name}}</a>
   </li>
 </ul>
 <div class="loading" ng-show="loading"></div>

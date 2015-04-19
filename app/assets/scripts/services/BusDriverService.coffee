@@ -8,5 +8,12 @@ angular.module('kulebao.services')
       driver: '@driver_id'
     }
 ]
+.factory 'schoolBusService', ['$resource', ($resource) ->
+  $resource "/api/v2/kindergarten/:school_id/bus/:id",
+    {
+      school_id: '@school_id'
+      id: '@id'
+    }
+]
 
 

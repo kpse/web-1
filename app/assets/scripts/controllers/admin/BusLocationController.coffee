@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin')
 .controller 'BusLocationCtrl',
-  [ '$scope', '$rootScope', '$stateParams', '$state',
-    (scope, rootScope, stateParams, $state) ->
+  [ '$scope', '$rootScope', '$stateParams', '$state', 'schoolBusService',
+    (scope, rootScope, stateParams, $state, Bus) ->
       rootScope.tabName = 'bus-location'
       scope.heading = '班车信息查询'
 
@@ -15,50 +15,24 @@ angular.module('kulebaoAdmin')
       scope.reverse = (path) ->
         path.split('-').reverse().join('-')
 
-      scope.allBuses = [{
-        id: "1",
-        driver:
-          name: '富贵'
-          phone: '13222228888'
-          employee_id: '3_93740362_9977'
-        morningPath: 'P-Y-T-H-O-N'
-        currentLocation:
-          latitude: 123.1111232
-          longitude: 321.2131231
-          radius: 0.12312
-          direction: 0.12312
-        plans:[]
-      },{
-        id: "2",
-        driver:
-          name: '老王'
-          phone: '13222229999'
-          employee_id: '3_93740362_1022'
-        morningPath: 'R-U-B-Y'
-        currentLocation:
-          latitude: 123.1111232
-          longitude: 321.2131231
-          radius: 0.12312
-          direction: 0.12312
-        plans:[]
-      }]
+      scope.allBuses = Bus.query school_id: stateParams.kindergarten, ->
+        scope.navigateTo(scope.allBuses[0]) if scope.allBuses.length > 0
 
       scope.navigateTo = (bus) ->
-        $state.go('kindergarten.bus.plans.driver', kindergarten: stateParams.kindergarten, driver: bus.driver.employee_id)
+        $state.go('kindergarten.bus.plans.driver', kindergarten: stateParams.kindergarten, driver: bus.driver.id)
 
-      scope.navigateTo(scope.allBuses[0]) if scope.allBuses.length > 0
   ]
 
 .controller 'BusPlansCtrl',
-  [ '$scope', '$rootScope', '$stateParams', 'busDriverService', 'childService',
-    (scope, rootScope, stateParams, BusDriver, Child) ->
+  [ '$scope', '$rootScope', '$stateParams', 'busDriverService', 'childService', 'schoolBusService',
+    (scope, rootScope, stateParams, BusDriver, Child, Bus) ->
       scope.loading = false
-      scope.currentBus = _.find scope.allBuses, (bus) -> bus.driver.employee_id == stateParams.driver
 
       scope.refresh = ->
-        return unless scope.currentBus?
-        BusDriver.query school_id: stateParams.kindergarten, driver: scope.currentBus.driver.employee_id, (data) ->
-          scope.currentBus.plans = _.map data, (plan) -> Child.get school_id: plan.school_id, child_id: plan.child_id
+        scope.allBuses = Bus.query school_id: stateParams.kindergarten, ->
+          scope.currentBus = _.find scope.allBuses, (bus) -> bus.driver.id == stateParams.driver
+          BusDriver.query school_id: stateParams.kindergarten, driver: scope.currentBus.driver.id, (data) ->
+            scope.currentBus.plans = _.map data, (plan) -> Child.get school_id: plan.school_id, child_id: plan.child_id
 
       scope.refresh()
 
@@ -84,12 +58,17 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'BusManagementCtrl',
-  [ '$scope', '$rootScope', '$stateParams',
-    (scope, rootScope, stateParams) ->
+  [ '$scope', '$rootScope', '$stateParams', 'schoolBusService',
+    (scope, rootScope, stateParams, Bus) ->
       scope.mapOf = (bus) ->
         console.log bus.currentLocation
+
       scope.addBus = -> alert("添加班车")
 
       scope.deleteBus = (bus) -> alert("删除班车#{bus.id}")
 
+      scope.refresh = ->
+        scope.allBuses = Bus.query school_id: stateParams.kindergarten
+
+      scope.refresh()
   ]
