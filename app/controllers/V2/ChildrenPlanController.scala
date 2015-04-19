@@ -50,11 +50,6 @@ object ChildrenPlanController extends Controller with Secured {
       BadRequest(Json.toJson(ErrorResponse("错误的学校id.(Wrong school id in creating/updating children plan)")))
   }
 
-  def guardDriverId(driverId: String): PartialFunction[ChildrenPlan, SimpleResult] = {
-    case (plan) if plan.driver_id != driverId =>
-      BadRequest(Json.toJson(ErrorResponse("错误的驾驶员id.(Wrong driver id in creating/updating children plan)")))
-  }
-
   def guardChildId(childId: String): PartialFunction[ChildrenPlan, SimpleResult] = {
     case (plan) if plan.child_id != childId =>
       BadRequest(Json.toJson(ErrorResponse("错误的小孩id.(Wrong child id in creating/updating children plan)")))

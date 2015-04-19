@@ -66,10 +66,12 @@ object ChildrenPlan {
 
   def delete(kg: Long, childId: String) = DB.withConnection {
     implicit c =>
-      SQL("update from childrenbusplan set status=0, updated_at={time} " +
+      val currentTime = System.currentTimeMillis
+      SQL("update childrenbusplan set status=0, updated_at={time} " +
         "where school_id={kg} and child_id={child} and status=1")
         .on(
           'kg -> kg.toString,
+          'time -> currentTime,
           'child -> childId
         ).execute()
   }
