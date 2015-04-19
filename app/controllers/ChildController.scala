@@ -52,7 +52,7 @@ object ChildController extends Controller with Secured {
     u => _ =>
       Children.info(kg.toLong, childId) match {
         case Some(one: ChildInfo) => Ok(Json.toJson(one))
-        case None => BadRequest
+        case None => NotFound(Json.toJson(ErrorResponse(s"没有找到小孩${childId}。(no such child)")))
       }
   }
 
