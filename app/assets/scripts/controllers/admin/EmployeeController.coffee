@@ -103,6 +103,9 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
 
       scope.selection =
         allCheck: false
+
+      scope.checkName = (employee, form) ->
+        form.$setValidity 'unique', !_.any scope.employees, (e) -> e.name == employee.name
   ]
 
 .controller 'EmployeesScoreCtrl',

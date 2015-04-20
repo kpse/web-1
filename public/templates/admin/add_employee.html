@@ -19,8 +19,9 @@
         <label for="employee-name" class="col-sm-4 control-label">老师姓名</label>
 
         <div class="col-sm-8">
-          <input id="employee-name" ng-model="employee.name" placeholder="请输入姓名"
-                 class="editing-field form-control" required/>
+          <input id="employee-name" ng-model="employee.name" placeholder="请输入姓名" name="name"
+                 class="editing-field form-control" required ng-change="checkName(employee, newEmployeeForm.name)"/>
+          <span class="error-field" ng-show="newEmployeeForm.name.$dirty && newEmployeeForm.name.$error.unique">已存在重名老师，建议增加数字或其他字符以便混淆。</span>
         </div>
       </div>
 
