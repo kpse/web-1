@@ -24,9 +24,9 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'BusPlansCtrl',
-  [ '$scope', '$rootScope', '$stateParams', '$q', '$state', '$animate', '$modal',
+  [ '$scope', '$rootScope', '$stateParams', '$q', '$state', '$animate', '$modal', '$dropdown',
     'busDriverService', 'childService', 'schoolBusService', 'childrenPlanService',
-    (scope, rootScope, stateParams, $q, $state, $animate, $modal, BusDriver, Child, Bus, Plan) ->
+    (scope, rootScope, stateParams, $q, $state, $animate, $modal, $dropdown, BusDriver, Child, Bus, Plan) ->
       scope.loading = false
 
       findChild = (id) ->
@@ -56,15 +56,21 @@ angular.module('kulebaoAdmin')
             "text": '查看乘车记录',
             "click": "showBusLog(child)"
           },{
-            "text": '切换班车',
-            "click": "switchBus(child)"
-          },{
-          "divider": true
+            "divider": true
           },{
             "text": '删除',
             "click": "delete(child)"
+          },{
+          "divider": true
           }
-        ]
+        ].concat scope.busesDropDown(child)
+
+      scope.busesDropDown = (child) ->
+        _.map (_.reject scope.allBuses, (b1) -> b1.id == scope.currentBus.id), (b) ->
+          {
+            text: "切换到班车:#{b.name}"
+            click: "transferTo(child, #{b.id})"
+          }
 
       scope.cancelEditingPlan = ->
         scope.addingPlan = false
@@ -110,7 +116,13 @@ angular.module('kulebaoAdmin')
           scope.currentModal.hide()
           scope.refresh()
 
-      scope.switchBus = (child) -> alert("切换到其他班车#{child.name}")
+      scope.transferTo = (child, busId) ->
+        bus = _.find scope.allBuses, (b) -> b.id == busId
+        $animate.enabled false
+        Plan.save driver_id: bus.driver.id, school_id: bus.driver.school_id, child_id: child.child_id, ->
+          $animate.enabled true
+          scope.refresh()
+
       scope.showBusLog = (child) ->
         $state.go('kindergarten.bus.plans.driver.child', kindergarten: child.school_id, driver: scope.currentBus.driver.id, child: child.child_id)
 
