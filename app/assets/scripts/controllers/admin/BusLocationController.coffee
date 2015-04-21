@@ -24,9 +24,9 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'BusPlansCtrl',
-  [ '$scope', '$rootScope', '$stateParams', '$q', '$state',
+  [ '$scope', '$rootScope', '$stateParams', '$q', '$state', '$animate', '$modal',
     'busDriverService', 'childService', 'schoolBusService', 'childrenPlanService',
-    (scope, rootScope, stateParams, $q, $state, BusDriver, Child, Bus, Plan) ->
+    (scope, rootScope, stateParams, $q, $state, $animate, $modal, BusDriver, Child, Bus, Plan) ->
       scope.loading = false
 
       findChild = (id) ->
@@ -90,8 +90,26 @@ angular.module('kulebaoAdmin')
         scope.addingPlan = true
         scope.backupPlans = angular.copy scope.currentBus.plans
 
-      scope.delete = (child) -> alert("删除小孩#{child.name}")
-      scope.show = (child) -> alert("详细信息#{child.name}")
+      scope.delete = (child) ->
+        #TODO: why animation exception here? need more investigate
+        $animate.enabled false
+        Plan.delete driver_id: scope.currentBus.driver.id, school_id: scope.currentBus.driver.school_id, child_id: child.child_id, ->
+          scope.currentBus.plans = _.reject scope.currentBus.plans, (p) -> p.child_id == child.child_id
+          $animate.enabled true
+
+
+      scope.show = (child) ->
+        scope.child = angular.copy child
+        scope.onlySave = true
+        scope.currentModal = $modal
+          scope: scope
+          contentTemplate: 'templates/admin/add_child.html'
+
+      scope.saveChild = (child) ->
+        Child.save child, ->
+          scope.currentModal.hide()
+          scope.refresh()
+
       scope.switchBus = (child) -> alert("切换到其他班车#{child.name}")
       scope.showBusLog = (child) ->
         $state.go('kindergarten.bus.plans.driver.child', kindergarten: child.school_id, driver: scope.currentBus.driver.id, child: child.child_id)

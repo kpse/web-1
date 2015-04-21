@@ -94,7 +94,14 @@
       <div class="col-sm-offset-6 col-sm-6">
         <div class="form-group">
           <div class="loading" ng-show="saving"></div>
-          <div class="btn-group dropup pull-right">
+          <div class="btn-group dropup pull-right" ng-if="onlySave">
+            <a class="btn btn-success adding-button"
+               ng-click="saveChild(child)"
+               ng-disabled="newChildForm.$pristine || newChildForm.$invalid || uploading">保存</a>
+            <a class="btn btn-default adding-button" ng-disabled="saving"
+               ng-click="$hide()">关闭</a>
+          </div>
+          <div class="btn-group dropup pull-right" ng-if="!onlySave">
             <a class="btn btn-success adding-button dropdown-toggle"
                data-toggle="dropdown"
                ng-disabled=" newChildForm.$invalid || uploading">保存</a>
