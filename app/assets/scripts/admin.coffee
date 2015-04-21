@@ -192,6 +192,10 @@ angular.module('kulebaoAdmin',
       url: '/driver/:driver'
       templateUrl: 'templates/admin/bus_driver_plan.html'
       controller: 'BusPlansCtrl'
+    .state 'kindergarten.bus.plans.driver.child',
+      url: '/child/:child'
+      templateUrl: 'templates/admin/dailylog_of_child.html'
+      controller: 'ChildBusPlansCtrl'
     .state 'kindergarten.bus.management',
       url: '/management'
       templateUrl: 'templates/admin/bus_management.html'

@@ -83,6 +83,7 @@ angular.module('kulebaoAdmin')
       scope.child = Child.get school_id: stateParams.kindergarten, child_id: stateParams.child_id, ->
         scope.relationships = Relationship.query school_id: stateParams.kindergarten, child: scope.child.child_id
         scope.managers = Manager.query school_id: stateParams.kindergarten, class_id: stateParams.class_id
+        scope.heading = "#{scope.child.name}小朋友的到校和离校记录"
 
       scope.allLogs = DailyLog.query school_id: stateParams.kindergarten, child_id: stateParams.child_id
 

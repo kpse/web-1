@@ -16,7 +16,7 @@ angular.module('kulebaoAdmin')
         path.split('-').reverse().join('-')
 
       scope.allBuses = Bus.query school_id: stateParams.kindergarten, ->
-        scope.navigateTo(scope.allBuses[0]) if scope.allBuses.length > 0
+        scope.navigateTo(scope.allBuses[0]) if scope.allBuses.length > 0 && !$state.includes('kindergarten.bus.plans.driver')
 
       scope.navigateTo = (bus) ->
         $state.go('kindergarten.bus.plans.driver', kindergarten: stateParams.kindergarten, driver: bus.driver.id)
@@ -24,8 +24,9 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'BusPlansCtrl',
-  [ '$scope', '$rootScope', '$stateParams', '$q', 'busDriverService', 'childService', 'schoolBusService', 'childrenPlanService',
-    (scope, rootScope, stateParams, $q, BusDriver, Child, Bus, Plan) ->
+  [ '$scope', '$rootScope', '$stateParams', '$q', '$state',
+    'busDriverService', 'childService', 'schoolBusService', 'childrenPlanService',
+    (scope, rootScope, stateParams, $q, $state, BusDriver, Child, Bus, Plan) ->
       scope.loading = false
 
       findChild = (id) ->
@@ -92,7 +93,8 @@ angular.module('kulebaoAdmin')
       scope.delete = (child) -> alert("删除小孩#{child.name}")
       scope.show = (child) -> alert("详细信息#{child.name}")
       scope.switchBus = (child) -> alert("切换到其他班车#{child.name}")
-      scope.showBusLog = (child) -> alert("查看#{child.name}的乘车历史记录")
+      scope.showBusLog = (child) ->
+        $state.go('kindergarten.bus.plans.driver.child', kindergarten: child.school_id, driver: scope.currentBus.driver.id, child: child.child_id)
 
       scope.beforeDropInBus = (event, dropped) ->
         $q (resolve, reject) ->
@@ -158,4 +160,37 @@ angular.module('kulebaoAdmin')
             e
 
       scope.refresh()
+  ]
+
+.controller 'ChildBusPlansCtrl',
+  [ '$scope', '$rootScope', '$stateParams',
+    '$state', '$q', 'childService', 'singleDailyLogService', 'relationshipService',
+    'classManagerService',
+    (scope, rootScope, stateParams, $state, $q, Child, DailyLog, Relationship, Manager) ->
+
+      retrieveChild = ->
+        if scope.allChildren?
+          $q (resolve, reject) ->
+            child = _.find scope.allChildren, (c) -> c.child_id == stateParams.child
+            resolve(child)
+        else
+          Child.get(school_id: stateParams.kindergarten, child_id: stateParams.child).$promise
+      retrieveChild().then (data)->
+        scope.child = data
+        scope.heading = "#{scope.child.name}的乘车记录"
+        scope.relationships = Relationship.query school_id: stateParams.kindergarten, child: scope.child.child_id
+        scope.managers = Manager.query school_id: stateParams.kindergarten, class_id: scope.child.class_id
+
+        DailyLog.query school_id: stateParams.kindergarten, child_id: stateParams.child, (data) ->
+          scope.allLogs = _.filter data, (l) -> l.notice_type > 3
+
+      scope.displayType = (type) ->
+        switch type
+          when 0 then '到校'
+          when 1 then '离校'
+          when 10 then '早上上车'
+          when 11 then '早上下车'
+          when 12 then '下午上车'
+          when 13 then '下午下车'
+
   ]
