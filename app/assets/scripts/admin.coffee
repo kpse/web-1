@@ -4,7 +4,7 @@ angular.module('kulebao.filters', ['kulebao.services'])
 angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics', 'kulebao.directives', 'kulebao.filters'])
 angular.module('kulebaoAdmin',
   ['kulebaoApp', 'ui.bootstrap', 'ui.mask', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap', 'mgcrea.ngStrap.helpers.dimensions', 'mgcrea.ngStrap.tooltip', 'ngDragDrop',
-   'ngCookies', 'ui.calendar'])
+   'ngCookies', 'ui.calendar', 'ui.map'])
 .config ['$stateProvider', '$urlRouterProvider', '$compileProvider',
   ($stateProvider, $urlRouterProvider, $compileProvider) ->
     $stateProvider
@@ -264,3 +264,8 @@ angular.module('kulebaoAdmin',
     show: true
     container: '.main-view'
     duration: 3
+.config ['uiMapLoadParamsProvider', (uiMapLoadParamsProvider) ->
+  uiMapLoadParamsProvider.setParams
+    v: '2.0' # 版本号
+    ak: 'FeQbDkv37HUZvIGqnm6TXF5B' # 你的地图密钥
+]

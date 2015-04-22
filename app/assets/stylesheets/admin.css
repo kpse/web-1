@@ -143,6 +143,10 @@ util.print: Use console.log instead
 .load-more-area {
   margin-bottom: 0;
 }
+.map-canvas {
+  width: 100%;
+  height: 500px;
+}
 .axis path,
 .axis line {
   fill: none;

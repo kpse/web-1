@@ -150,9 +150,20 @@ angular.module('kulebaoAdmin')
 .controller 'BusManagementCtrl',
   [ '$scope', '$rootScope', '$stateParams', '$modal', 'schoolBusService', 'schoolEmployeesService', 'busLocationService',
     (scope, rootScope, stateParams, Modal, Bus, Driver, Location) ->
+      delete scope.mapOptions
       scope.mapOf = (bus) ->
+        scope.loading = true
         Location.query school_id: stateParams.kindergarten, driver_id: bus.driver.id, (data)->
           console.log data[0]
+          currentLocation = data[0]
+          scope.mapOptions =
+            mapType: BMap.MapType.BMAP_PERSPECTIVE_MAP
+            # ui map config
+            ngCenter:
+              lat: currentLocation.latitude,
+              lng: currentLocation.longitude
+            ngZoom: 7
+          scope.loading = false
 
       createBus = ->
         new Bus
