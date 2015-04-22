@@ -51,7 +51,6 @@ class BusLocationControllerSpec extends Specification with TestSupport {
 
     }
 
-
     "be access across drivers and parents" in new WithApplication {
       val childId: String = "1_1391836223533"
 

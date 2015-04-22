@@ -10,7 +10,7 @@ import anorm.~
 import play.api.Play.current
 
 case class BusLocation(school_id: Long, driver_id: String, latitude: Double, longitude: Double, direction: Double,
-                       radius: Double, address: Option[String], child_id: Option[String] = None, timestamp: Option[Long] = None, status: Option[Int] = None)
+                       radius: Double, address: Option[String], child_id: Option[String] = None, timestamp: Option[Long] = None, status: Option[Int] = None, onBoard: Option[Boolean] = Some(true))
 
 object BusLocation {
   implicit val busLocationReads = Json.reads[BusLocation]
@@ -31,20 +31,39 @@ object BusLocation {
     }
   }
 
+  def plan(childId: Option[String]) = simple(childId)
+
   def index(kg: Long, driverId: String) = DB.withConnection {
     implicit c =>
       val beginOfDay: Long = DateTime.now().withTimeAtStartOfDay().getMillis
       Logger.info(s"beginOfDay=$beginOfDay")
-      SQL("select * from buslocation where school_id={kg} and employee_id={id} and received_at > {day} order by uid DESC limit 1").on('kg -> kg, 'id -> driverId, 'day -> beginOfDay).as(simple(None) *)
+      SQL("select * from buslocation where school_id={kg} and employee_id={id} and received_at > {day} order by uid DESC limit 1")
+        .on('kg -> kg, 'id -> driverId, 'day -> beginOfDay).as(simple(None) *)
   }
 
   def child(kg: Long, childId: String) = DB.withConnection {
     implicit c =>
       val beginOfDay: Long = DateTime.now().withTimeAtStartOfDay().getMillis
       Logger.info(s"beginOfDay=$beginOfDay")
-      SQL("select b.*, c.status from buslocation b, childrenonbus c where b.school_id={kg} and c.child_id={id} and b.school_id=c.school_id and b.employee_id=c.employee_id " +
+      val current: Option[BusLocation] = SQL("select b.*, c.status from buslocation b, childrenonbus c where b.school_id={kg} and c.child_id={id} and b.school_id=c.school_id and b.employee_id=c.employee_id " +
         "and b.received_at > {day} and c.received_at > {day} order by b.uid DESC limit 1")
         .on('kg -> kg, 'id -> childId, 'day -> beginOfDay).as(simple(Some(childId)) singleOpt)
+      current match {
+        case Some(location) => Some(location)
+        case None => incomingBusLocation(kg, childId)
+      }
+  }
+
+  def incomingBusLocation(kg: Long, childId: String) = DB.withConnection {
+    implicit c =>
+      val beginOfDay: Long = DateTime.now().withTimeAtStartOfDay().getMillis
+      val planned: Option[BusLocation] = SQL("select b.*, c.status from buslocation b, childrenbusplan c where b.school_id={kg} and c.child_id={id} and b.school_id=c.school_id and b.employee_id=c.employee_id " +
+        "and b.received_at > {day} and c.status=1 order by b.uid DESC limit 1")
+        .on('kg -> kg, 'id -> childId, 'day -> beginOfDay).as(simple(Some(childId)) singleOpt)
+      planned match {
+        case Some(location) => Some(location.copy(onBoard = Some(false)))
+        case None => None
+      }
   }
 
   def create(kg: Long, employeeId: String, location: BusLocation) = DB.withConnection {
