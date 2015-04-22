@@ -47,7 +47,7 @@ class ChildrenPlanControllerSpec extends Specification with TestSupport {
 
     "report planned bus location before on boarding" in new WithApplication {
       val childId: String = "1_93740362_778"
-      val driver: String = "3_93740362_11322"
+      val driver: String = "someDriver"
 
       val checkResponse1 = route(parentRequest(GET, s"/api/v2/kindergarten/93740362/last_bus_location/$childId")).get
 
@@ -63,6 +63,7 @@ class ChildrenPlanControllerSpec extends Specification with TestSupport {
       private val json1: JsValue = Json.toJson(BusLocation(93740362, driver, 100.11, 2, 3, 4, Some("address"), None, None))
       val locationResponse = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver}/location").withBody(json1)).get
 
+      (Json.parse(contentAsString(locationResponse)) \ "error_code").as[Long] must be equalTo(0)
       val checkAgain = route(parentRequest(GET, s"/api/v2/kindergarten/93740362/last_bus_location/$childId")).get
 
       status(checkAgain) must equalTo(OK)

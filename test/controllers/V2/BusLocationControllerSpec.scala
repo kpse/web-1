@@ -52,21 +52,23 @@ class BusLocationControllerSpec extends Specification with TestSupport {
     }
 
     "be access across drivers and parents" in new WithApplication {
-      val childId: String = "1_1391836223533"
+      val childId: String = "1_93740362_374"
+      val driver: String = "someOne"
+      val cardOfChild: String = "0001234580"
 
       val checkResponse1 = route(parentRequest(GET, s"/api/v2/kindergarten/93740362/last_bus_location/$childId")).get
 
       status(checkResponse1) must equalTo(NOT_FOUND)
       (Json.parse(contentAsString(checkResponse1)) \ "error_code").as[Int] must equalTo(1)
 
-      private val json2: JsValue = Json.toJson(CheckInfo(93740362, "0001234567", 1, 2, "", 0))
-      val checkInResponse = route(driverRequest(POST, "/api/v2/kindergarten/93740362/bus_driver/3_93740362_11322/check_in").withBody(json2)).get
+      private val json2: JsValue = Json.toJson(CheckInfo(93740362, cardOfChild, 1, 2, "", 0))
+      val checkInResponse = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver}/check_in").withBody(json2)).get
 
       status(checkInResponse) must equalTo(OK)
       (Json.parse(contentAsString(checkResponse1)) \ "error_code").as[Int] must equalTo(1)
 
-      private val json1: JsValue = Json.toJson(BusLocation(93740362, "3_93740362_11322", 100.11, 2, 3, 4, Some("address"), None, None))
-      val locationResponse = route(driverRequest(POST, "/api/v2/kindergarten/93740362/bus_driver/3_93740362_11322/location").withBody(json1)).get
+      private val json1: JsValue = Json.toJson(BusLocation(93740362, driver, 100.11, 2, 3, 4, Some("address"), None, None))
+      val locationResponse = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver}/location").withBody(json1)).get
 
       status(locationResponse) must equalTo(OK)
       (Json.parse(contentAsString(locationResponse)) \ "error_code").as[Int] must equalTo(0)
@@ -77,13 +79,13 @@ class BusLocationControllerSpec extends Specification with TestSupport {
       (Json.parse(contentAsString(checkResponse2)) \ "latitude").as[Double] must equalTo(100.11)
 
       private val json4: JsValue = Json.toJson(CheckChildInfo(93740362, childId, 1, 2))
-      val offTheBus = route(driverRequest(POST, "/api/v2/kindergarten/93740362/bus_driver/3_93740362_11322/child_off_bus").withBody(json4)).get
+      val offTheBus = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver}/child_off_bus").withBody(json4)).get
 
       status(offTheBus) must equalTo(OK)
       (Json.parse(contentAsString(offTheBus)) \ "error_code").as[Int] must equalTo(0)
 
-      private val json5: JsValue = Json.toJson(BusLocation(93740362, "3_93740362_11322", 1, 99.991, 3, 4, Some("address"), None, None))
-      val locationResponse2 = route(driverRequest(POST, "/api/v2/kindergarten/93740362/bus_driver/3_93740362_11322/location").withBody(json5)).get
+      private val json5: JsValue = Json.toJson(BusLocation(93740362, driver, 1, 99.991, 3, 4, Some("address"), None, None))
+      val locationResponse2 = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver}/location").withBody(json5)).get
 
       status(locationResponse2) must equalTo(OK)
 
@@ -94,7 +96,7 @@ class BusLocationControllerSpec extends Specification with TestSupport {
 
 
       private val json6: JsValue = Json.toJson(CheckChildInfo(93740362, childId, 1, 2))
-      val backOnTheBus = route(driverRequest(POST, "/api/v2/kindergarten/93740362/bus_driver/3_93740362_11322/child_on_bus").withBody(json6)).get
+      val backOnTheBus = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver}/child_on_bus").withBody(json6)).get
 
       status(backOnTheBus) must equalTo(OK)
       (Json.parse(contentAsString(backOnTheBus)) \ "error_code").as[Int] must equalTo(0)
@@ -106,8 +108,8 @@ class BusLocationControllerSpec extends Specification with TestSupport {
       (Json.parse(contentAsString(checkResponse4)) \ "longitude").as[Double] must equalTo(99.991)
 
 
-      private val json7: JsValue = Json.toJson(CheckInfo(93740362, "0001234567", 1, 2, "", 0))
-      val arriveHome = route(driverRequest(POST, "/api/v2/kindergarten/93740362/bus_driver/3_93740362_11322/check_out").withBody(json7)).get
+      private val json7: JsValue = Json.toJson(CheckInfo(93740362, cardOfChild, 1, 2, "", 0))
+      val arriveHome = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver}/check_out").withBody(json7)).get
 
       status(backOnTheBus) must equalTo(OK)
       (Json.parse(contentAsString(backOnTheBus)) \ "error_code").as[Int] must equalTo(0)
