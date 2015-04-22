@@ -35,7 +35,7 @@ object BusLocation {
     implicit c =>
       val beginOfDay: Long = DateTime.now().withTimeAtStartOfDay().getMillis
       Logger.info(s"beginOfDay=$beginOfDay")
-      SQL("select * from buslocation where school_id={kg} and employee_id={id} and received_at > {day}").on('kg -> kg, 'id -> driverId, 'day -> beginOfDay).as(simple(None) *)
+      SQL("select * from buslocation where school_id={kg} and employee_id={id} and received_at > {day} order by uid DESC limit 1").on('kg -> kg, 'id -> driverId, 'day -> beginOfDay).as(simple(None) *)
   }
 
   def child(kg: Long, childId: String) = DB.withConnection {

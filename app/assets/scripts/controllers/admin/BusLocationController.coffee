@@ -148,10 +148,11 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'BusManagementCtrl',
-  [ '$scope', '$rootScope', '$stateParams', '$modal', 'schoolBusService', 'schoolEmployeesService'
-    (scope, rootScope, stateParams, Modal, Bus, Driver) ->
+  [ '$scope', '$rootScope', '$stateParams', '$modal', 'schoolBusService', 'schoolEmployeesService', 'busLocationService',
+    (scope, rootScope, stateParams, Modal, Bus, Driver, Location) ->
       scope.mapOf = (bus) ->
-        console.log bus.currentLocation
+        Location.query school_id: stateParams.kindergarten, driver_id: bus.driver.id, (data)->
+          console.log data[0]
 
       createBus = ->
         new Bus
