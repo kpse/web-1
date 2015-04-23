@@ -23,7 +23,6 @@
     "ng-stats": "*",
     "angular-ui-calendar": "~0.8.1",
     "angular-dragdrop": "*",
-    "angular-ui-map-baidu": "~1.1.6",
     "angular-ui-utils": "bower"
   },
   "devDependencies": {
@@ -101,9 +100,6 @@
     },
     "angular-dragdrop": {
       ".": "src/*.min.js"
-    },
-    "angular-ui-map-baidu": {
-      ".": "ui-map.js"
     },
     "angular-ui-utils": {
       ".": "*.min.js"

@@ -4,7 +4,7 @@ angular.module('kulebao.filters', ['kulebao.services'])
 angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics', 'angulartics.google.analytics', 'kulebao.directives', 'kulebao.filters'])
 angular.module('kulebaoAdmin',
   ['kulebaoApp', 'ui.bootstrap', 'ui.mask', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap', 'mgcrea.ngStrap.helpers.dimensions', 'mgcrea.ngStrap.tooltip', 'ngDragDrop',
-   'ngCookies', 'ui.calendar', 'ui.map'])
+   'ngCookies', 'ui.calendar'])
 .config ['$stateProvider', '$urlRouterProvider', '$compileProvider',
   ($stateProvider, $urlRouterProvider, $compileProvider) ->
     $stateProvider
@@ -200,6 +200,10 @@ angular.module('kulebaoAdmin',
       url: '/management'
       templateUrl: 'templates/admin/bus_management.html'
       controller: 'BusManagementCtrl'
+    .state 'kindergarten.bus.management.map',
+      url: '/map/:driver'
+      templateUrl: 'templates/admin/bus_management_map.html'
+      controller: 'BusOnTheMapCtrl'
 
     .state 'kindergarten.dailylog',
       url: '/dailylog',
@@ -264,8 +268,3 @@ angular.module('kulebaoAdmin',
     show: true
     container: '.main-view'
     duration: 3
-.config ['uiMapLoadParamsProvider', (uiMapLoadParamsProvider) ->
-  uiMapLoadParamsProvider.setParams
-    v: '2.0' # 版本号
-    ak: 'FeQbDkv37HUZvIGqnm6TXF5B' # 你的地图密钥
-]
