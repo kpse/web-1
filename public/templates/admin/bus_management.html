@@ -37,6 +37,8 @@
     <td class="col-xs-1">
       <button class="btn btn-danger btn-xs" ng-confirm-msg="你确定要删除吗?"
               ng-confirm-click="deleteBus(bus)">删除</button>
+      <button class="btn btn-xs btn-success" ng-click="movingTest(bus)" ng-show="adminUser.privilege_group == 'operator'">发车
+      </button>
     </td>
   </tr>
   </tbody>
