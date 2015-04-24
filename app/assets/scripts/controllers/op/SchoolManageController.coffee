@@ -134,6 +134,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
       scope.saveSchool = (school) ->
         school.charge.expire_date = $filter('date')(school.charge.expire, 'yyyy-MM-dd', '+0800')
+        school.phone = school.principal.phone unless school.phone? && school.phone.length > 0
         AdminCreating.save school, ->
           scope.refresh()
           scope.currentModal.hide()
