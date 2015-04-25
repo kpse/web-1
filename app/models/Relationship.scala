@@ -184,7 +184,9 @@ object Relationship {
 
   def index(kg: Long, parent: Option[String], child: Option[String], classId: Option[Long]) = DB.withConnection {
     implicit c =>
-      SQL(generateQuery(parent, child, classId))
+      val query: String = generateQuery(parent, child, classId)
+      Logger.info(query)
+      SQL(query)
         .on(
           'kg -> kg.toString,
           'phone -> parent,
@@ -197,15 +199,19 @@ object Relationship {
   def generateQuery(parent: Option[String], child: Option[String], classId: Option[Long]) = {
     var sql = "select r.* from relationmap r, childinfo c, parentinfo p where r.child_id=c.child_id and p.parent_id=r.parent_id" +
       " and p.school_id={kg} and p.status=1 and r.status=1 and p.school_id=c.school_id and c.status=1 "
-    parent map {
+    val morethanOneChild = "^([\\w_]+)(,[\\w_]+)*$".r
+    val oneChild = "^([\\w_]+)$".r
+    parent foreach {
       phone =>
         sql += " and p.phone={phone}"
     }
-    child map {
-      child_id =>
-        sql += " and c.child_id={child_id}"
+    child foreach {
+      case oneChild(one) =>
+        sql += " and r.child_id={child_id}"
+      case morethanOneChild(args @ _*) =>
+        sql += s" and r.child_id in ('${args.map(_.replaceFirst("^,", "")).mkString("','")}')"
     }
-    classId map {
+    classId foreach {
       child_id =>
         sql += " and c.class_id={class_id}"
     }
