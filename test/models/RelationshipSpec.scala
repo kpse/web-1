@@ -34,6 +34,17 @@ class RelationshipSpec extends Specification with TestSupport {
 
     }
 
+    "report index by multiple children's id" in new WithApplication {
+
+      private val index = Relationship.index(93740362, None, Some("1_93740362_374,1_93740362_456"), None)
+
+      index.size must equalTo(3)
+      index(0).child.get.child_id must beSome("1_93740362_456")
+      index(1).child.get.child_id must beSome("1_93740362_374")
+      index(2).child.get.child_id must beSome("1_93740362_374")
+
+    }
+
     "report index within class" in new WithApplication {
 
       private val index = Relationship.index(93740362, None, None, Some(777999))
