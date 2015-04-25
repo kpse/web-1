@@ -33,6 +33,7 @@ angular.module('kulebaoAdmin')
         _.find scope.allChildren, (c) -> c.child_id == id
 
       scope.refresh = ->
+        scope.loading = true
         busQ = Bus.query(school_id: stateParams.kindergarten).$promise
         childQ = Child.query(school_id: stateParams.kindergarten).$promise
         $q.all([busQ, childQ]).then (q) ->
@@ -42,6 +43,7 @@ angular.module('kulebaoAdmin')
           BusDriver.query school_id: stateParams.kindergarten, driver: scope.currentBus.driver.id, (data) ->
             scope.currentBus.plans = _.map data, (plan) -> findChild(plan.child_id)
             scope.waitingChildren = scope.childrenWithoutPlan()
+          scope.loading = false
 
       scope.childrenWithoutPlan = ->
         _.reject scope.allChildren, (c) ->
