@@ -44,7 +44,8 @@ angular.module('kulebaoAdmin')
             scope.waitingChildren = scope.childrenWithoutPlan()
 
       scope.childrenWithoutPlan = ->
-        _.reject scope.allChildren, (c) -> _.any scope.currentBus.plans, (p) -> p.child_id == c.child_id
+        _.reject scope.allChildren, (c) ->
+          _.any scope.currentBus.plans, (p) -> p.child_id == c.child_id
 
       scope.refresh()
       scope.childDropDown = (child) ->
