@@ -52,9 +52,9 @@ class BusLocationControllerSpec extends Specification with TestSupport {
     }
 
     "be access across drivers and parents" in new WithApplication {
-      val childId: String = "1_93740362_374"
+      val childId: String = "1_93740362_778"
       val driver: String = "someOne"
-      val cardOfChild: String = "0001234580"
+      val cardOfChild: String = "0001234570"
 
       val checkResponse1 = route(parentRequest(GET, s"/api/v2/kindergarten/93740362/last_bus_location/$childId")).get
 

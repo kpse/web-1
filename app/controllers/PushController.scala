@@ -123,8 +123,11 @@ object PushController extends Controller {
     channelClient
   }
 
-  def createSwipeMessage(check: CheckNotification) = {
-    runWithLog(check, triggerSinglePush)
+  def createSwipeMessage(check: CheckNotification) = check.pushid match {
+    case p if p.length > 0 =>
+      runWithLog(check, triggerSinglePush)
+    case _ =>
+      Logger.info("No pushid available.")
   }
 
   def forwardSwipe(kg: Long) = Action(parse.json) {
