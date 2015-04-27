@@ -142,4 +142,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)
 
+      scope.conversation =
+        missedCount: 0
+
   ]

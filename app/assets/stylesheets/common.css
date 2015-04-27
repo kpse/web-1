@@ -473,6 +473,13 @@ util.print: Use console.log instead
     margin-top: 50px;
   }
 }
+.main-body .main-view .action .badge,
+.main-body .modal .action .badge {
+  margin-left: 185px;
+  display: inline;
+  background-color: white;
+  color: red;
+}
 .main-body .modal.center .modal-dialog {
   max-width: 1000px;
   max-height: 760px;

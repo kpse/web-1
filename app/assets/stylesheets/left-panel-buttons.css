@@ -176,3 +176,9 @@ util.print: Use console.log instead
     margin-top: 50px;
   }
 }
+.action .badge {
+  margin-left: 185px;
+  display: inline;
+  background-color: white;
+  color: red;
+}
