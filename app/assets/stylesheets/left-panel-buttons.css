@@ -75,40 +75,46 @@ util.print: Use console.log instead
     background: #34393D url(../../images/left-btns.png) no-repeat -15px 0px;
   }
   .modules-list-container .modules-list .dailylog {
-    background: #34393D url(../../images/left-btns.png) no-repeat -15px -447px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -475px;
   }
   .modules-list-container .modules-list .dailylog:hover {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -447px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -475px;
+  }
+  .modules-list-container .modules-list .bus-location {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -525px;
+  }
+  .modules-list-container .modules-list .bus-location:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -525px;
   }
   .modules-list-container .modules-list .relationship {
-    background: #34393D url(../../images/left-btns.png) no-repeat -15px -496px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -575px;
   }
   .modules-list-container .modules-list .relationship:hover {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -496px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -575px;
   }
   .modules-list-container .modules-list .member {
-    background: #34393D url(../../images/left-btns.png) no-repeat -15px -545px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -624px;
   }
   .modules-list-container .modules-list .member:hover {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -545px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -624px;
   }
   .modules-list-container .modules-list .classes {
-    background: #34393D url(../../images/left-btns.png) no-repeat -15px -594px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -673px;
   }
   .modules-list-container .modules-list .classes:hover {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -594px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -673px;
   }
   .modules-list-container .modules-list .employee {
-    background: #34393D url(../../images/left-btns.png) no-repeat -15px -643px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -722px;
   }
   .modules-list-container .modules-list .employee:hover {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -643px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -722px;
   }
   .modules-list-container .modules-list .intro {
-    background: #34393D url(../../images/left-btns.png) no-repeat -15px -692px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -771px;
   }
   .modules-list-container .modules-list .intro:hover {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -692px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -771px;
   }
   .modules-list-container .active .news {
     background: #34393D url(../../images/left-btns.png) no-repeat -239px -86px;
@@ -132,22 +138,25 @@ util.print: Use console.log instead
     background: #34393D url(../../images/left-btns.png) no-repeat -239px -382px;
   }
   .modules-list-container .active .dailylog {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -447px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -475px;
+  }
+  .modules-list-container .active .bus-location {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -525px;
   }
   .modules-list-container .active .relationship {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -496px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -575px;
   }
   .modules-list-container .active .member {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -545px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -624px;
   }
   .modules-list-container .active .classes {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -594px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -673px;
   }
   .modules-list-container .active .employee {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -643px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -722px;
   }
   .modules-list-container .active .intro {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -692px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -771px;
   }
 }
 @media screen and (max-width: 768px) {
