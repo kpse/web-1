@@ -1,9 +1,9 @@
 angular.module('kulebaoAdmin').controller 'KgManageCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$cacheFactory', '$location', '$state', 'passwordService', '$modal',
+  ['$scope', '$rootScope', '$stateParams', '$cacheFactory', '$location', '$state', '$q', 'passwordService', '$modal',
    'chargeService', '$alert', 'AdminUser', 'School', 'ClassesInSchool', 'schoolConfigService', 'classService',
-   'imageCompressService', 'feedbackService',
-    (scope, $rootScope, $stateParams, $cacheFactory, location, $state, Password, Modal, Charge,
-     Alert, AdminUser, School, ClassesInSchool, SchoolConfig, Classes, Compress, Feedback) ->
+   'imageCompressService', 'feedbackService', 'employeeSessionService', 'employeeReadService',
+    (scope, $rootScope, $stateParams, $cacheFactory, location, $state, $q, Password, Modal, Charge,
+     Alert, AdminUser, School, ClassesInSchool, SchoolConfig, Classes, Compress, Feedback, EmployeeSession, EmployeeRead) ->
 
       scope.adminUser = AdminUser
       scope.kindergarten = School
@@ -142,7 +142,18 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)
 
+      refreshCount = ->
+        queue = [EmployeeSession.query(school_id: scope.kindergarten.school_id, reader: scope.adminUser.id).$promise,
+          EmployeeRead.query(school_id: scope.kindergarten.school_id, reader: scope.adminUser.id).$promise]
+        $q.all(queue).then (q)->
+          result = _.countBy (_.sortBy (_.groupBy (q[0].concat q[1]), (e) -> e.topic), (s) -> if s.id? then 0 else 1), (p) -> p[0].id > p[1].session_id
+          scope.conversation.missedCount = result[true]
+          console.log(scope.conversation.missedCount)
+
       scope.conversation =
         missedCount: 0
 
+      refreshCount()
+      scope.$on 'sessionRead', ->
+        refreshCount()
   ]
