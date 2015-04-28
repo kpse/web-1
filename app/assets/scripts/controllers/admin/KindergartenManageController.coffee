@@ -146,7 +146,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         queue = [EmployeeSession.query(school_id: scope.kindergarten.school_id, reader: scope.adminUser.id).$promise,
           EmployeeRead.query(school_id: scope.kindergarten.school_id, reader: scope.adminUser.id).$promise]
         $q.all(queue).then (q)->
-          result = _.countBy (_.sortBy (_.groupBy (q[0].concat q[1]), (e) -> e.topic), (s) -> if s.id? then 0 else 1), (p) -> p[0].id > p[1].session_id
+          result = _.countBy (_.sortBy (_.groupBy (q[0].concat q[1]), (e) -> e.topic), (s) -> if s.id? then 0 else 1), (p) -> !p[1]? || p[0].id > p[1].session_id
           scope.conversation.missedCount = result[true]
           console.log(scope.conversation.missedCount)
 
