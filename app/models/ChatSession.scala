@@ -104,15 +104,26 @@ object ChatSession {
 
   def generateClassQuery(classes: String): String = "class_id in (%s)".format(classes)
 
-  def lastMessageInClasses(kg: Long, classes: String) = DB.withConnection {
+  def lastMessageInClasses(kg: Long, classes: Option[String]) = DB.withConnection {
     implicit c =>
-      SQL("select * from sessionlog s," +
-        "(select session_id, MAX(update_at) last from sessionlog where status=1 and " +
-        "session_id in (select child_id from childinfo where " + generateClassQuery(classes) + " and school_id={kg} and status=1) " +
-        "group by session_id) a where a.last=s.update_at")
-        .on(
-          'kg -> kg.toString
-        ).as(simple() *)
+      classes match {
+        case Some(ids) =>
+          SQL("select * from sessionlog s," +
+            "(select session_id, MAX(update_at) last from sessionlog where status=1 and " +
+            "session_id in (select child_id from childinfo where " + generateClassQuery(ids) + " school_id={kg} and status=1) " +
+            "group by session_id) a where a.last=s.update_at and s.session_id = a.session_id")
+            .on(
+              'kg -> kg.toString
+            ).as(simple() *)
+        case None =>
+          SQL("select * from sessionlog s," +
+            "(select session_id, MAX(update_at) last from sessionlog where status=1 and school_id={kg} and session_id not like 'h_%' " +
+            "group by session_id) a where a.last=s.update_at and s.session_id = a.session_id")
+            .on(
+              'kg -> kg.toString
+            ).as(simple() *)
+      }
+
   }
 
   def splitMedium(urls: String, types: String): Option[List[MediaContent]] = urls match {

@@ -312,6 +312,10 @@ GET           /api/v2/kindergarten/:kg/removed_employees                        
 GET           /api/v2/kindergarten/:kg/removed_children                            controllers.V2.RemoveListController.children(kg: Long)
 GET           /api/v2/kindergarten/:kg/removed_classes                             controllers.V2.RemoveListController.classes(kg: Long)
 
+#employee session read
+GET           /api/v2/kindergarten/:kg/employee/:employeeId/read_session           controllers.ReaderController.employeeLastRead(kg: Long, employeeId: String)
+GET           /api/v2/kindergarten/:kg/employee/:employeeId/session                controllers.SessionController.employeeList(kg: Long, employeeId: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                        controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                        controllers.Static.at(path="/public/images", file)

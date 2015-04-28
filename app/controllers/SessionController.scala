@@ -52,7 +52,7 @@ object SessionController extends Controller with Secured {
   def indexInClasses(kg: Long, classIds: String) = IsAuthenticated {
     u =>
       _ =>
-        Ok(Json.toJson(ChatSession.lastMessageInClasses(kg, classIds)))
+        Ok(Json.toJson(ChatSession.lastMessageInClasses(kg, Some(classIds))))
   }
 
   def senderDetail(kg: Long, senderId: String, senderType: String) = IsAuthenticated {
@@ -115,4 +115,14 @@ object SessionController extends Controller with Secured {
         Ok(Json.toJson(ChatSession.groupByMonth(kg, "h_%s".format(topicId), year)))
   }
 
+  def employeeList(kg: Long, employeeId: String) = IsLoggedIn {
+    u => _ =>
+      val accesses: List[UserAccess] = UserAccess.queryByUsername(u, kg)
+      UserAccess.isSupervisor(accesses) match {
+        case true =>
+          Ok(Json.toJson(ChatSession.lastMessageInClasses(kg, None)))
+        case false =>
+          Ok(Json.toJson(ChatSession.lastMessageInClasses(kg, Some(UserAccess.allClasses(accesses)))))
+      }
+  }
 }

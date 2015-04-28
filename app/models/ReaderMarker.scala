@@ -8,6 +8,8 @@ import anorm.SqlParser._
 case class ReaderRecord(school_id: Long, reader: String, topic: String, session_id: Long, timestamp: Option[Long] = Some(0))
 
 object ReaderMarker {
+  def employeeRead(kg: Long, employeeId: String) = List[ReaderRecord]()
+
 
   def recordExists(record: ReaderRecord) = DB.withConnection {
     implicit c =>
