@@ -11,7 +11,7 @@
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class="col-xs-1">班车号</th>
+    <th class="col-xs-1">名称</th>
     <th class="col-xs-1">驾驶员</th>
     <th class="col-xs-2">早上路线</th>
     <th class="col-xs-2">下午路线</th>
@@ -25,7 +25,7 @@
   </thead>
   <tbody>
   <tr ng-repeat="bus in allBuses | filter: searchText | orderBy:'id'" class="row">
-    <td class="col-xs-1">{{bus.id}}</td>
+    <td class="col-xs-1">{{bus.name}}</td>
     <td class="col-xs-1">{{bus.driver.name}}</td>
     <td class="col-xs-2">{{bus.morning_path}}</td>
     <td class="col-xs-2">{{bus.evening_path}}</td>
