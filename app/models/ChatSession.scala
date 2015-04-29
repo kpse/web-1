@@ -102,7 +102,7 @@ object ChatSession {
     }
   }
 
-  def generateClassQuery(classes: String): String = "class_id in (%s)".format(classes)
+  def generateClassQuery(classes: String): String = "class_id in (%s) and ".format(classes)
 
   def lastMessageInClasses(kg: Long, classes: Option[String]) = DB.withConnection {
     implicit c =>
