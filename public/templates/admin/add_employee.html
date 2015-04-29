@@ -60,6 +60,14 @@
         </div>
       </div>
 
+      <div class="form-group" ng-show="employee.created_at">
+        <label for="created-at" class="col-sm-4 control-label">创建时间</label>
+
+        <div class="col-sm-8">
+          <p id="created-at" class="form-control-static">{{employee.created_at | date:'yyyy年MM月dd日 HH:mm'}}</p>
+        </div>
+      </div>
+
       <div kl-score-board ng-model="employee" ng-if="employee.id"></div>
     </div>
 

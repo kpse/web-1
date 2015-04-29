@@ -13,6 +13,7 @@ CREATE TABLE schoolinfo (
   phone       VARCHAR(16) NOT NULL,
   logo_url    VARCHAR(256),
   update_at   BIGINT     NOT NULL,
+  created_at   BIGINT     DEFAULT 0,
   PRIMARY KEY (uid),
   UNIQUE (full_name),
   UNIQUE (school_id)

@@ -9,7 +9,7 @@ import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
 
-case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: String, school_logo_url: String, name: String, token: Option[String], address: Option[String], full_name: Option[String], properties: Option[List[ConfigItem]] = None)
+case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: String, school_logo_url: String, name: String, token: Option[String], address: Option[String], full_name: Option[String], properties: Option[List[ConfigItem]] = None, created_at: Option[Long] = None)
 
 case class CreatingSchool(school_id: Long, phone: String, name: String, token: String, principal: PrincipalOfSchool, charge: ChargeInfo, address: String, full_name: Option[String])
 
@@ -46,11 +46,12 @@ object SchoolIntro {
     implicit c =>
       try {
         val time = System.currentTimeMillis
-        SQL("insert into schoolinfo (school_id, province, city, address, name, description, logo_url, phone, update_at, token, full_name) " +
-          " values ({school_id}, '', '', {address}, {name}, '', '', {phone}, {timestamp}, {token}, {full_name})")
+        SQL("insert into schoolinfo (school_id, province, city, address, name, description, logo_url, phone, update_at, token, full_name, created_at) " +
+          " values ({school_id}, '', '', {address}, {name}, '', '', {phone}, {timestamp}, {token}, {full_name}, {created})")
           .on(
             'school_id -> school.school_id.toString,
             'timestamp -> time,
+            'created -> time,
             'name -> school.name,
             'address -> school.address,
             'phone -> school.phone,
@@ -162,6 +163,7 @@ object SchoolIntro {
   val sample = {
     get[String]("school_id") ~
       get[String]("phone") ~
+      get[Long]("created_at") ~
       get[Long]("update_at") ~
       get[String]("description") ~
       get[String]("logo_url") ~
@@ -169,9 +171,9 @@ object SchoolIntro {
       get[String]("full_name") ~
       get[Option[String]]("token") ~
       get[Option[String]]("address") map {
-      case id ~ phone ~ timestamp ~ desc ~ logoUrl ~ name ~ fullName ~ token ~ address =>
+      case id ~ phone ~ created ~ timestamp ~ desc ~ logoUrl ~ name ~ fullName ~ token ~ address =>
         val config: SchoolConfig = School.config(id.toLong)
-        SchoolIntro(id.toLong, phone, timestamp, desc, logoUrl, name, token, address, Some(fullName), Some(config.config))
+        SchoolIntro(id.toLong, phone, timestamp, desc, logoUrl, name, token, address, Some(fullName), Some(config.config), Some(created))
     }
 
   }

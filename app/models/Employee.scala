@@ -15,7 +15,7 @@ import play.api.libs.json.Json
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
-                    login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1)) {
+                    login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1), created_at: Option[Long] = None) {
   def update = DB.withConnection {
     implicit c =>
       id map {
@@ -46,8 +46,10 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
     implicit c =>
       val employeeId = id.getOrElse("3_%d_%d".format(school_id, System.currentTimeMillis))
       try {
-        val inserted: Option[Long] = SQL("insert into employeeinfo (name, phone, gender, workgroup, workduty, picurl, birthday, school_id, login_name, login_password, update_at, employee_id) " +
-          "values ({name},{phone},{gender},{workgroup},{workduty},{portrait},{birthday},{school_id},{login_name},{login_password},{update_at}, {employee_id})")
+        val inserted: Option[Long] = SQL("insert into employeeinfo (name, phone, gender, workgroup, workduty, picurl, " +
+          "birthday, school_id, login_name, login_password, update_at, employee_id, created_at) " +
+          "values ({name},{phone},{gender},{workgroup},{workduty},{portrait},{birthday},{school_id}," +
+          "{login_name},{login_password},{update_at}, {employee_id}, {created})")
           .on(
             'employee_id -> employeeId,
             'name -> name,
@@ -56,11 +58,12 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
             'workgroup -> workgroup,
             'workduty -> workduty,
             'portrait -> portrait,
-            'birthday -> birthday,
+            'birthday -> birthday.toString,
             'school_id -> school_id,
             'login_name -> login_name,
             'login_password -> md5(phone),
-            'update_at -> System.currentTimeMillis
+            'update_at -> System.currentTimeMillis,
+            'created -> System.currentTimeMillis
           ).executeInsert()
         c.commit()
         inserted.flatMap {
@@ -449,9 +452,10 @@ object Employee {
       get[String]("school_id") ~
       get[String]("login_name") ~
       get[Long]("update_at") ~
+      get[Long]("created_at") ~
       get[Int]("status") map {
-      case id ~ name ~ phone ~ gender ~ workgroup ~ workduty ~ url ~ birthday ~ kg ~ loginName ~ timestamp ~ status =>
-        Employee(Some(id), name, phone, gender, workgroup, workduty, Some(url.getOrElse("")), birthday.toDateOnly, kg.toLong, loginName, Some(timestamp), groupOf(id, kg.toLong), Some(status))
+      case id ~ name ~ phone ~ gender ~ workgroup ~ workduty ~ url ~ birthday ~ kg ~ loginName ~ timestamp ~ created ~ status =>
+        Employee(Some(id), name, phone, gender, workgroup, workduty, Some(url.getOrElse("")), birthday.toDateOnly, kg.toLong, loginName, Some(timestamp), groupOf(id, kg.toLong), Some(status), Some(created))
     }
   }
 

@@ -19,6 +19,7 @@ CREATE TABLE childinfo (
   nick varchar(20) NOT NULL DEFAULT ''  ,
   status       INT      NOT NULL DEFAULT 1,
   update_at BIGINT NOT NULL DEFAULT 0,
+  created_at   BIGINT     DEFAULT 0,
   PRIMARY KEY (uid)
 );
 

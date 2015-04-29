@@ -14,6 +14,7 @@ CREATE TABLE parentinfo (
   member_status       INT      NOT NULL DEFAULT 1,
   status       INT      NOT NULL DEFAULT 1,
   update_at       BIGINT      NOT NULL DEFAULT 0,
+  created_at   BIGINT     DEFAULT 0,
   UNIQUE (phone),
   PRIMARY KEY (uid)
 );

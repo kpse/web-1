@@ -16,7 +16,7 @@ case class ImportedParent(id: String, school_id: Long, name: String, phone: Stri
   }
 
   def transform = {
-    Parent(Some(id), school_id, name, phone, portrait, gender, birthday, None, member_status, status, company)
+    Parent(Some(id), school_id, name, phone, portrait, gender, birthday, None, member_status, status, company, None, timestamp)
   }
 
   def importing = exists match {
@@ -45,7 +45,7 @@ case class ImportedChild(id: String, name: String, nick: String, birthday: Strin
                          gender: Int, portrait: Option[String], class_id: Int,
                          timestamp: Option[Long], school_id: Option[Long], address: Option[String] = None, status: Option[Int] = Some(1)) {
   def transform = {
-    ChildInfo(Some(id), name, nick, birthday, gender, portrait, class_id, None, None, school_id, address, status)
+    ChildInfo(Some(id), name, nick, birthday, gender, portrait, class_id, None, timestamp, school_id, address, status, timestamp)
   }
 
   def exists = DB.withConnection {

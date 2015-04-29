@@ -12,7 +12,7 @@ import play.api.libs.json.Json
 
 case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String,
                      gender: Int, portrait: Option[String], class_id: Int, class_name: Option[String],
-                     timestamp: Option[Long], school_id: Option[Long], address: Option[String] = None, status: Option[Int] = Some(1))
+                     timestamp: Option[Long], school_id: Option[Long], address: Option[String] = None, status: Option[Int] = Some(1), created_at: Option[Long] = None)
 
 object Children {
 
@@ -114,9 +114,9 @@ object Children {
         val timestamp = System.currentTimeMillis
         val childId = child.child_id.getOrElse("2_%d_%d".format(kg,timestamp%100000))
         val childUid: Option[Long] = SQL("INSERT INTO childinfo(name, child_id, student_id, gender, classname, picurl, birthday, " +
-          "indate, school_id, address, stu_type, hukou, social_id, nick, status, update_at, class_id) " +
+          "indate, school_id, address, stu_type, hukou, social_id, nick, status, update_at, class_id, created_at) " +
           "VALUES ({name},{child_id},{student_id},{gender},{classname},{picurl},{birthday},{indate}," +
-          "{school_id},{address},{stu_type},{hukou},{social_id},{nick},{status},{timestamp},{class_id})")
+          "{school_id},{address},{stu_type},{hukou},{social_id},{nick},{status},{timestamp},{class_id},{created})")
           .on(
             'name -> child.name,
             'child_id -> childId,
@@ -134,7 +134,8 @@ object Children {
             'nick -> child.nick,
             'status -> 1,
             'class_id -> child.class_id,
-            'timestamp -> timestamp).executeInsert()
+            'timestamp -> timestamp,
+            'created -> timestamp).executeInsert()
         Logger.info("created childinfo %s".format(childUid))
         c.commit()
         childUid.flatMap {
@@ -164,11 +165,12 @@ object Children {
       get[String]("classinfo.class_name") ~
       get[Option[String]]("childinfo.address") ~
       get[Long]("childinfo.update_at") ~
+      get[Long]("childinfo.created_at") ~
       get[Int]("childinfo.status") map {
       case schoolId ~ childId ~ childName ~ nick ~ icon_url ~ childGender
-        ~ childBirthday ~ classId ~ className ~ address ~ t ~ status =>
+        ~ childBirthday ~ classId ~ className ~ address ~ t ~ created ~ status =>
         ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt,
-          Some(icon_url.getOrElse("")), classId, Some(className), Some(t), Some(schoolId.toLong), address, Some(status))
+          Some(icon_url.getOrElse("")), classId, Some(className), Some(t), Some(schoolId.toLong), address, Some(status), Some(created))
     }
   }
 

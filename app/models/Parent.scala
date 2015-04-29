@@ -12,7 +12,7 @@ import models.helper.PasswordHelper.generateNewPassword
 import play.api.libs.json.Json
 
 
-case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String], gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int], company: Option[String] = None, video_member_status: Option[Long] = None) {
+case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String], gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int], company: Option[String] = None, video_member_status: Option[Long] = None, created_at: Option[Long]) {
   def hasHistory(historyId: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from sessionlog where uid={id} and sender={sender}")
@@ -43,8 +43,8 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
     implicit c =>
       try {
         sanitizePhoneNumber.executeUpdate()
-        SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status) " +
-          "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member})")
+        SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status, created_at) " +
+          "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member}, {created})")
           .on(
             'name -> name,
             'parent_id -> parent_id,
@@ -57,7 +57,8 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
             'school_id -> school_id,
             'status -> 1,
             'member -> member_status.getOrElse(0),
-            'timestamp -> timestamp).executeInsert()
+            'timestamp -> timestamp,
+            'created -> timestamp).executeInsert()
         c.commit()
         Parent.show(school_id, phone)
       }
@@ -114,6 +115,7 @@ case class ParentInfo(id: Option[Long], birthday: String, gender: Int, portrait:
 
 trait PhoneCheck[T] {
   def isTheSame(t: T): Boolean
+
   def isDeleted(t: T): Boolean
 }
 
@@ -125,6 +127,7 @@ case class ParentPhoneCheck(id: Option[String], phone: String) extends PhoneChec
   }
 
   def isTheSame(parent: Parent) = parent.parent_id.equals(id)
+
   def isDeleted(parent: Parent) = parent.status == Some(0)
 }
 
@@ -136,6 +139,7 @@ case class EmployeePhoneCheck(id: Option[String], phone: String) extends PhoneCh
   }
 
   def isTheSame(employee: Employee) = employee.id.equals(id)
+
   def isDeleted(employee: Employee) = employee.status == Some(0)
 }
 
@@ -395,8 +399,8 @@ object Parent {
       val timestamp = System.currentTimeMillis
       val parent_id = parent.parent_id.getOrElse("1_%d_%d".format(kg, timestamp % 100000))
       try {
-        val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status) " +
-          "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member})")
+        val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status, created_at) " +
+          "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member},{created})")
           .on(
             'name -> parent.name,
             'parent_id -> parent_id,
@@ -409,7 +413,8 @@ object Parent {
             'school_id -> kg.toString,
             'status -> 1,
             'member -> parent.member_status.getOrElse(0),
-            'timestamp -> timestamp).executeInsert()
+            'timestamp -> timestamp,
+            'created -> timestamp).executeInsert()
         Logger.info("created parent %s".format(createdId))
         val accountinfoUid = createPushAccount(parent)
         Logger.info("created accountinfo %s".format(accountinfoUid))
@@ -514,9 +519,10 @@ object Parent {
       get[Int]("member_status") ~
       get[Int]("parentinfo.status") ~
       get[Option[String]]("parentinfo.company") ~
-      get[Long]("parentinfo.update_at") map {
-      case id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday ~ member ~ status ~ company ~ t =>
-        Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t), Some(member), Some(status), company)
+      get[Long]("parentinfo.update_at") ~
+      get[Long]("parentinfo.created_at") map {
+      case id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday ~ member ~ status ~ company ~ t ~ created =>
+        Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t), Some(member), Some(status), company, None, Some(created))
     }
   }
 

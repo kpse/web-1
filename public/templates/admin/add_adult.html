@@ -105,6 +105,13 @@
                    class="editing-field form-control"/>
           </div>
         </div>
+        <div class="form-group" ng-show="parent.created_at">
+          <label for="created-at" class="col-sm-2 control-label">创建时间</label>
+
+          <div class="col-sm-8">
+            <p id="created-at" class="form-control-static">{{parent.created_at | date:'yyyy年MM月dd日 HH:mm'}}</p>
+          </div>
+        </div>
       </div>
       <div class="col-sm-offset-4 col-sm-8">
         <div class="form-group">
