@@ -42,6 +42,7 @@ object SchoolBusController extends Controller with Secured {
   def handleCreation(kg: Long): PartialFunction[SchoolBus, SimpleResult] = {
     guardSchoolId(kg) orElse
     guardEmployee(kg) orElse
+      reviveBus orElse
       updateBus orElse
       createBus
   }
@@ -75,6 +76,16 @@ object SchoolBusController extends Controller with Secured {
           Ok(Json.toJson(p))
         case None =>
           InternalServerError(Json.toJson(ErrorResponse("更新校车失败, 请联系管理员.(Error in creating school bus)")))
+      }
+  }
+
+  val reviveBus: PartialFunction[SchoolBus, SimpleResult] = {
+    case (bus) if bus.deleted =>
+      bus.revive match {
+        case Some(p) =>
+          Ok(Json.toJson(p))
+        case None =>
+          InternalServerError(Json.toJson(ErrorResponse("重新创建校车失败, 请联系管理员.(Error in re-creating school bus)")))
       }
   }
 }

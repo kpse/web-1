@@ -1,5 +1,7 @@
 package models.V2
 
+import java.io.Serializable
+
 import anorm.SqlParser._
 import anorm._
 import models.Employee
@@ -8,6 +10,31 @@ import play.api.libs.json.Json
 import play.api.Play.current
 
 case class SchoolBus(id: Option[Long], name: String, driver: Option[Employee], school_id: Long, morning_path: String, evening_path: String, morning_start: String, morning_end: String, evening_start: String, evening_end: String, updated_at: Option[Long], status: Option[Int] = Some(1)) {
+  def revive: Option[SchoolBus] = DB.withConnection {
+    implicit c =>
+      val currentTime = System.currentTimeMillis
+      val updated: Int = SQL("update schoolbus set updated_at={time}, status=1, " +
+        "morning_path={morningPath}, evening_path={eveningPath}, morning_start={morningStart}, morning_end={morningEnd}, " +
+        "evening_start={eveningStart}, evening_end={eveningEnd} where school_id={kg} and employee_id={driver}")
+        .on(
+          'kg -> school_id,
+          'name -> name,
+          'driver -> pickDriverId(driver),
+          'morningPath -> morning_path,
+          'eveningPath -> evening_path,
+          'morningStart -> morning_start,
+          'morningEnd -> morning_end,
+          'eveningStart -> evening_start,
+          'eveningEnd -> evening_end,
+          'time -> currentTime
+        ).executeUpdate()
+      updated match {
+        case i if i > 0 => SchoolBus.findByDriver(school_id, pickDriverId(driver))
+        case _ => None
+      }
+
+  }
+
   def create: Option[SchoolBus] = DB.withConnection {
     implicit c =>
       val currentTime = System.currentTimeMillis
@@ -33,33 +60,34 @@ case class SchoolBus(id: Option[Long], name: String, driver: Option[Employee], s
 
   def update: Option[SchoolBus] = DB.withConnection {
     implicit c =>
-      id.map { (index) =>
-        val currentTime = System.currentTimeMillis
-        val updated: Int = SQL("update schoolbus set employee_id={driver}, updated_at={time}, status=1, " +
-          "morning_path={morningPath}, evening_path={eveningPath}, morning_start={morningStart}, morning_end={morningEnd}, " +
-          "evening_start={eveningStart}, evening_end={eveningEnd} where school_id={kg} and uid={id}")
-          .on(
-            'id -> index,
-            'kg -> school_id,
-            'name -> name,
-            'driver -> pickDriverId(driver),
-            'morningPath -> morning_path,
-            'eveningPath -> evening_path,
-            'morningStart -> morning_start,
-            'morningEnd -> morning_end,
-            'eveningStart -> evening_start,
-            'eveningEnd -> evening_end,
-            'time -> currentTime
-          ).executeUpdate()
-        updated match {
-          case i if i > 0 => SchoolBus.show(school_id, index)
-          case _ => None
-        }
+      id.map {
+        (index) =>
+          val currentTime = System.currentTimeMillis
+          val updated: Int = SQL("update schoolbus set employee_id={driver}, updated_at={time}, status=1, " +
+            "morning_path={morningPath}, evening_path={eveningPath}, morning_start={morningStart}, morning_end={morningEnd}, " +
+            "evening_start={eveningStart}, evening_end={eveningEnd} where school_id={kg} and uid={id}")
+            .on(
+              'id -> index,
+              'kg -> school_id,
+              'name -> name,
+              'driver -> pickDriverId(driver),
+              'morningPath -> morning_path,
+              'eveningPath -> evening_path,
+              'morningStart -> morning_start,
+              'morningEnd -> morning_end,
+              'eveningStart -> evening_start,
+              'eveningEnd -> evening_end,
+              'time -> currentTime
+            ).executeUpdate()
+          updated match {
+            case i if i > 0 => SchoolBus.show(school_id, index)
+            case _ => None
+          }
       }.getOrElse(None)
   }
 
-  private def pickDriverId(driver: Option[Employee]) = driver match {
-    case Some(d) => d.id
+  private def pickDriverId(driver: Option[Employee]): String = driver match {
+    case Some(d) => d.id.getOrElse("")
     case None => ""
   }
 
@@ -70,6 +98,20 @@ case class SchoolBus(id: Option[Long], name: String, driver: Option[Employee], s
           'kg -> school_id.toString,
           'id -> id
         ).as(get[Long]("count(1)") single) > 0
+  }
+
+  def deleted = DB.withConnection {
+    implicit c =>
+      driver match {
+        case Some(empl) =>
+          SQL("select count(1) from schoolbus where school_id={kg} and employee_id={driver}")
+            .on(
+              'kg -> school_id.toString,
+              'driver -> empl.id
+            ).as(get[Long]("count(1)") single) > 0
+        case None => false
+      }
+
   }
 }
 
@@ -91,6 +133,14 @@ object SchoolBus {
       SQL("select * from schoolbus where school_id={kg} and uid={id}")
         .on('kg -> kg.toString,
           'id -> id)
+        .as(simple singleOpt)
+  }
+
+  def findByDriver(kg: Long, driverId: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from schoolbus where school_id={kg} and employee_id={id}")
+        .on('kg -> kg.toString,
+          'id -> driverId)
         .as(simple singleOpt)
   }
 
