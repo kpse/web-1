@@ -13,7 +13,7 @@ case class SchoolBus(id: Option[Long], name: String, driver: Option[Employee], s
   def revive: Option[SchoolBus] = DB.withConnection {
     implicit c =>
       val currentTime = System.currentTimeMillis
-      val updated: Int = SQL("update schoolbus set updated_at={time}, status=1, " +
+      val updated: Int = SQL("update schoolbus set name={name}, updated_at={time}, status=1, " +
         "morning_path={morningPath}, evening_path={eveningPath}, morning_start={morningStart}, morning_end={morningEnd}, " +
         "evening_start={eveningStart}, evening_end={eveningEnd} where school_id={kg} and employee_id={driver}")
         .on(
@@ -63,7 +63,7 @@ case class SchoolBus(id: Option[Long], name: String, driver: Option[Employee], s
       id.map {
         (index) =>
           val currentTime = System.currentTimeMillis
-          val updated: Int = SQL("update schoolbus set employee_id={driver}, updated_at={time}, status=1, " +
+          val updated: Int = SQL("update schoolbus set employee_id={driver}, updated_at={time}, status=1, name={name}, " +
             "morning_path={morningPath}, evening_path={eveningPath}, morning_start={morningStart}, morning_end={morningEnd}, " +
             "evening_start={eveningStart}, evening_end={eveningEnd} where school_id={kg} and uid={id}")
             .on(
