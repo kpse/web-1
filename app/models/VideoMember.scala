@@ -68,7 +68,7 @@ object VideoMember {
 
   def delete(kg: Long, id: String) = DB.withConnection {
     implicit c =>
-      SQL("update videomembers set status=0 where school_id={kg} and parent_id={id}")
+      SQL("update videomembers set status=0 where school_id={kg} and parent_id={id} and status=1")
         .on('kg -> kg, 'id -> id).executeUpdate()
   }
 
