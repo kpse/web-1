@@ -27,8 +27,8 @@
       </div>
     </div>
 
-    <div class="row" jqyoui-droppable="{onDrop: 'dropInBus', beforeDrop: 'beforeDropInBus'}" data-drop="true"
-         data-jqyoui-options="{revert: 'invalid'}" style="min-height:100px;"
+    <div class="row children-droppable" jqyoui-droppable="{onDrop: 'dropInBus', beforeDrop: 'beforeDropInBus'}" data-drop="true"
+         data-jqyoui-options="{revert: 'invalid'}"
          ng-model="currentBus.plans" ng-show="addingPlan">
       <div class="well col-xs-offset-1 col-xs-10">
         <div ng-repeat="child in currentBus.plans track by child.child_id" class="btn btn-info btn-xs col-xs-1"
@@ -55,8 +55,8 @@
     <div ng-show="addingPlan"><p>图例（不同颜色的名牌表示）：</p>
     <button class="btn btn-success btn-xs col-xs-2">无乘车计划</button>
     <button class="btn btn-success btn-xs col-xs-2 plan">已乘坐其他班车</button></div>
-    <div class="row" data-drop="{{addingPlan}}" data-jqyoui-options="{revert: 'invalid'}" ng-model="waitingChildren"
-         jqyoui-droppable="{onDrop: 'dropInWaiting', beforeDrop: 'beforeDropInWaiting'}" style="min-height:100px;">
+    <div class="row children-droppable" data-drop="{{addingPlan}}" data-jqyoui-options="{revert: 'invalid'}" ng-model="waitingChildren"
+         jqyoui-droppable="{onDrop: 'dropInWaiting', beforeDrop: 'beforeDropInWaiting'}">
       <div class="well col-xs-offset-1 col-xs-10" ng-show="addingPlan">
         <div ng-repeat="clazz in allClasses track by clazz.class_id" >
         <div class="clearfix"></div>
