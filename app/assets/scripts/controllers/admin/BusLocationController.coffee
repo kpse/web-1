@@ -25,25 +25,37 @@ angular.module('kulebaoAdmin')
 
 .controller 'BusPlansCtrl',
   [ '$scope', '$rootScope', '$stateParams', '$q', '$state', '$animate', '$modal', '$dropdown',
-    'busDriverService', 'childService', 'schoolBusService', 'childrenPlanService',
-    (scope, rootScope, stateParams, $q, $state, $animate, $modal, $dropdown, BusDriver, Child, Bus, Plan) ->
+    'busDriverService', 'childService', 'schoolBusService', 'childrenPlanService', 'classService',
+    (scope, rootScope, stateParams, $q, $state, $animate, $modal, $dropdown, BusDriver, Child, Bus, Plan, Classes) ->
       scope.loading = false
 
       findChild = (id) ->
         _.find scope.allChildren, (c) -> c.child_id == id
 
+      scope.allChildren = []
+      scope.currentBus =
+        plans: []
       scope.refresh = ->
         scope.loading = true
         busQ = Bus.query(school_id: stateParams.kindergarten).$promise
         childQ = Child.query(school_id: stateParams.kindergarten).$promise
-        $q.all([busQ, childQ]).then (q) ->
+        classQ = Classes.query(school_id: stateParams.kindergarten).$promise
+        $q.all([busQ, childQ, classQ]).then (q) ->
           scope.allBuses = q[0]
           scope.allChildren = q[1]
+          scope.allClasses = q[2]
           scope.currentBus = _.find scope.allBuses, (bus) -> bus.driver.id == stateParams.driver
           BusDriver.query school_id: stateParams.kindergarten, driver: scope.currentBus.driver.id, (data) ->
             scope.currentBus.plans = _.map data, (plan) -> findChild(plan.child_id)
             scope.waitingChildren = scope.childrenWithoutPlan()
+            _.forEach scope.waitingChildren, (c) -> Plan.get c, (-> c.hasPlan = true), (-> c.hasPlan = false)
           scope.loading = false
+
+      scope.inClass = (clazz, children) ->
+        _.filter children, (c) -> c.class_id == clazz.class_id
+
+      scope.hasChild = (clazz, children) ->
+        _.some children, (c) -> c.class_id == clazz.class_id
 
       scope.childrenWithoutPlan = ->
         _.reject scope.allChildren, (c) ->

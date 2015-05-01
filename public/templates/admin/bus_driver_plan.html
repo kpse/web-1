@@ -27,10 +27,12 @@
       </div>
     </div>
 
-    <div class="row" jqyoui-droppable="{onDrop: 'dropInBus', beforeDrop: 'beforeDropInBus'}" data-drop="true" data-jqyoui-options="{revert: 'invalid'}"
+    <div class="row" jqyoui-droppable="{onDrop: 'dropInBus', beforeDrop: 'beforeDropInBus'}" data-drop="true"
+         data-jqyoui-options="{revert: 'invalid'}"
          ng-model="currentBus.plans" ng-show="addingPlan">
       <div class="well col-xs-offset-1 col-xs-10">
-        <div ng-repeat="child in currentBus.plans track by child.child_id" class="btn btn-info btn-xs col-xs-1" data-drag="true"
+        <div ng-repeat="child in currentBus.plans track by child.child_id" class="btn btn-info btn-xs col-xs-1"
+             data-drag="true"
              data-jqyoui-options="{revert: 'invalid'}" ng-model="child" jqyoui-draggable
              bs-dropdown="childDropDown(child)"
              ng-show="child.name">{{child.name}}
@@ -50,19 +52,28 @@
     </button>
 
     <h3 ng-show="addingPlan">拖到学生名牌到本次班车</h3>
-
+    <div ng-show="addingPlan"><p>图例（不同颜色的名牌表示）：</p>
+    <button class="btn btn-success btn-xs col-xs-2">无乘车计划</button>
+    <button class="btn btn-success btn-xs col-xs-2 plan">已乘坐其他班车</button></div>
     <div class="row" data-drop="{{addingPlan}}" data-jqyoui-options="{revert: 'invalid'}" ng-model="waitingChildren"
          jqyoui-droppable="{onDrop: 'dropInWaiting', beforeDrop: 'beforeDropInWaiting'}" style="height:50px;">
       <div class="well col-xs-offset-1 col-xs-10" ng-show="addingPlan">
-        <div ng-repeat="waitingChild in waitingChildren track by waitingChild.child_id" class="btn btn-success btn-xs col-xs-1"
+        <div ng-repeat="clazz in allClasses track by clazz.class_id" >
+        <div class="clearfix"></div>
+        <h4 ng-show="hasChild(clazz, childrenWithoutPlan())">{{clazz.name}}</h4>
+        <div ng-repeat="waitingChild in inClass(clazz, childrenWithoutPlan()) track by waitingChild.child_id"
+             class="btn btn-success btn-xs col-xs-1"
+             ng-class="{plan: waitingChild.hasPlan}"
              data-drag="{{addingPlan}}"
              data-jqyoui-options="{revert: 'invalid'}" ng-model="waitingChild" jqyoui-draggable
              ng-show="waitingChild.name">
           {{waitingChild.name}}
         </div>
       </div>
+
     </div>
   </div>
-  <div ui-view></div>
+</div>
+<div ui-view></div>
 </div>
 

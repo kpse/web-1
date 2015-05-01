@@ -148,6 +148,10 @@ util.print: Use console.log instead
   width: 100%;
   height: 500px;
 }
+.bus-plan-view .btn-success.plan {
+  background-color: #feb900 !important;
+  border-color: #feb900 !important;
+}
 .axis path,
 .axis line {
   fill: none;
