@@ -1,11 +1,9 @@
 package controllers.V3
 
 import controllers.Secured
-import models.{Parent, ChildInfo, SuccessResponse}
+import models.{Parent, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
-import models.Children.readChildInfo
-import models.Children.writeChildInfo
 
 case class ParentExt(display_name: Option[String], social_id: Option[String], nationality: Option[String], fix_line: Option[String], memo: Option[String])
 

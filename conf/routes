@@ -342,6 +342,12 @@ POST          /api/v3/kindergarten/:kg/card                                     
 POST          /api/v3/kindergarten/:kg/card/:id                                    controllers.V3.CardController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/card/:id                                    controllers.V3.CardController.delete(kg: Long, id: Long)
 
+GET           /api/v3/kindergarten/:kg/checkin                                     controllers.V3.CardRecordController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/checkin/:id                                 controllers.V3.CardRecordController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/checkin                                     controllers.V3.CardRecordController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/checkin/:id                                 controllers.V3.CardRecordController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/checkin/:id                                 controllers.V3.CardRecordController.delete(kg: Long, id: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                        controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                        controllers.Static.at(path="/public/images", file)

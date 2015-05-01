@@ -1,11 +1,9 @@
 package controllers.V3
 
 import controllers.Secured
-import models.{Employee, Parent, ChildInfo, SuccessResponse}
+import models.{Employee, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
-import models.Children.readChildInfo
-import models.Children.writeChildInfo
 
 case class EmployeeExt(display_name: Option[String], social_id: Option[String], nationality: Option[String], Residence_place: Option[String],
                        ethnos: Option[String], marriage: Option[Int], education: Option[String], fix_line: Option[String], memo: Option[String],
