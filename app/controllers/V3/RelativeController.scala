@@ -13,11 +13,11 @@ case class Relative(id: Option[Long], basic: Parent, ext: ParentExt)
 
 object RelativeController extends Controller with Secured {
 
-  implicit val writeStudentExt = Json.writes[ParentExt]
-  implicit val readStudentExt = Json.reads[ParentExt]
+  implicit val writeParentExt = Json.writes[ParentExt]
+  implicit val readParentExt = Json.reads[ParentExt]
 
-  implicit val writeStudent = Json.writes[Relative]
-  implicit val readStudent = Json.reads[Relative]
+  implicit val writeRelative = Json.writes[Relative]
+  implicit val readRelative = Json.reads[Relative]
 
   def info(kg: Long, id: Long): Parent = Parent(Some(s"2_${kg}_${id}"), kg, "老王", "13991855476",
     Some("http://suoqin-test.u.qiniudn.com/FhdoadN7g_dk3CZBaKi2Q-yG6hEI"), 1, "1979-01-01", Some(1427817610000L),

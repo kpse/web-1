@@ -324,11 +324,17 @@ POST          /api/v3/kindergarten/:kg/student                                  
 POST          /api/v3/kindergarten/:kg/student/:id                                 controllers.V3.StudentController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/student/:id                                 controllers.V3.StudentController.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/relative                                     controllers.V3.RelativeController.index(kg: Long)
-GET           /api/v3/kindergarten/:kg/relative/:id                                 controllers.V3.RelativeController.show(kg: Long, id: Long)
-POST          /api/v3/kindergarten/:kg/relative                                     controllers.V3.RelativeController.create(kg: Long)
-POST          /api/v3/kindergarten/:kg/relative/:id                                 controllers.V3.RelativeController.update(kg: Long, id: Long)
-DELETE        /api/v3/kindergarten/:kg/relative/:id                                 controllers.V3.RelativeController.delete(kg: Long, id: Long)
+GET           /api/v3/kindergarten/:kg/relative                                    controllers.V3.RelativeController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/relative/:id                                controllers.V3.RelativeController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/relative                                    controllers.V3.RelativeController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/relative/:id                                controllers.V3.RelativeController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/relative/:id                                controllers.V3.RelativeController.delete(kg: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/employee                                    controllers.V3.EmployeeControllerV3.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/employee/:id                                controllers.V3.EmployeeControllerV3.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/employee                                    controllers.V3.EmployeeControllerV3.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/employee/:id                                controllers.V3.EmployeeControllerV3.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/employee/:id                                controllers.V3.EmployeeControllerV3.delete(kg: Long, id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                        controllers.VersionedAssets.at(file: controllers.VersionedAsset)
