@@ -316,6 +316,14 @@ GET           /api/v2/kindergarten/:kg/removed_classes                          
 GET           /api/v2/kindergarten/:kg/employee/:employeeId/read_session           controllers.ReaderController.employeeLastRead(kg: Long, employeeId: String)
 GET           /api/v2/kindergarten/:kg/employee/:employeeId/session                controllers.SessionController.employeeList(kg: Long, employeeId: String)
 
+#v3 integrate with c# client
+
+GET           /api/v3/kindergarten/:kg/student                                     controllers.V3.StudentController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/student/:id                                 controllers.V3.StudentController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/student                                     controllers.V3.StudentController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/student/:id                                 controllers.V3.StudentController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/student/:id                                 controllers.V3.StudentController.delete(kg: Long, id: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                        controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                        controllers.Static.at(path="/public/images", file)
