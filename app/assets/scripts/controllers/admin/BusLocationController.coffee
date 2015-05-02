@@ -169,7 +169,7 @@ angular.module('kulebaoAdmin')
         $state.go 'kindergarten.bus.management.map', kindergarten: stateParams.kindergarten, driver: bus.driver.id
 
       scope.movingTest = (bus) ->
-        Location.save data = {"school_id":bus.driver.school_id,"driver_id":bus.driver.id,"latitude":39.915,"longitude":116.404,"direction":180.89999389648438,"radius":0.8999999761581421,"address":"天安门"}, ->
+        Location.save {"school_id":bus.driver.school_id,"driver_id":bus.driver.id,"latitude":39.915,"longitude":116.404,"direction":180.89999389648438,"radius":0.8999999761581421,"address":"天安门"}, ->
           alert "#{bus.name}已到达天安门。"
 
       createBus = ->
@@ -196,7 +196,7 @@ angular.module('kulebaoAdmin')
           scope.currentModal.hide()
           scope.refresh()
 
-      isADriver = (employee) -> _.any scope.allBuses, (f) -> f.driver.id == employee.id
+      isADriver = (employee) -> _.any scope.allBuses, (f) -> f.driver? && f.driver.id == employee.id
       availableDriver = (employees) -> _.reject employees, (d) -> isADriver(d)
 
       scope.refresh = ->

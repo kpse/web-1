@@ -41,7 +41,8 @@ object SchoolBusController extends Controller with Secured {
 
   def handleCreation(kg: Long): PartialFunction[SchoolBus, SimpleResult] = {
     guardSchoolId(kg) orElse
-    guardEmployee(kg) orElse
+      guardBus(kg) orElse
+      guardEmployee(kg) orElse
       reviveBus orElse
       updateBus orElse
       createBus
@@ -52,11 +53,26 @@ object SchoolBusController extends Controller with Secured {
       BadRequest(Json.toJson(ErrorResponse("错误的学校id.(Wrong school id in creating/updating school bus)")))
   }
 
+  def driverNotMatchBus(bus: SchoolBus) = bus.id.nonEmpty && bus.driver.nonEmpty && bus.driver.get.id.nonEmpty && SchoolBus.driverDoesNotMatch(bus.driver.get.id.get, bus.id.get)
+
+  def driverIsExisting(bus: SchoolBus) = bus.driver.nonEmpty && bus.driver.get.id.nonEmpty && SchoolBus.driverIsExisting(bus.driver.get.id.getOrElse(""))
+
+  def guardBus(kg: Long): PartialFunction[SchoolBus, SimpleResult] = {
+    case (bus) if bus.id.nonEmpty && !bus.exists =>
+      BadRequest(Json.toJson(ErrorResponse("班车不存在.(no such school bus)")))
+    case (bus) if bus.nameDuplicated =>
+      BadRequest(Json.toJson(ErrorResponse(s"班车名${bus.name}已经存在.(Duplicated school bus name)")))
+  }
+
   def guardEmployee(kg: Long): PartialFunction[SchoolBus, SimpleResult] = {
-    case (plan) if plan.driver.isEmpty =>
+    case (bus) if bus.driver.isEmpty =>
       BadRequest(Json.toJson(ErrorResponse("请提供的驾驶员信息.(no teacher in creating/updating school bus)")))
-    case (plan) if Employee.phoneSearch(plan.driver.get.phone).isEmpty =>
+    case (bus) if Employee.phoneSearch(bus.driver.get.phone).isEmpty =>
       BadRequest(Json.toJson(ErrorResponse("该学校不存在的驾驶员.(Wrong teacher in creating/updating school bus)")))
+    case (bus) if driverIsExisting(bus) && bus.id.isEmpty =>
+      BadRequest(Json.toJson(ErrorResponse(s"该驾驶员${bus.driver.get.id.get}正在驾驶其他车辆.(current driver is existing)")))
+    case (bus) if driverIsExisting(bus) && driverNotMatchBus(bus) =>
+      BadRequest(Json.toJson(ErrorResponse(s"该驾驶员${bus.driver.get.id.get}正在驾驶其他车辆.(current driver is existing)")))
   }
 
   val createBus: PartialFunction[SchoolBus, SimpleResult] = {

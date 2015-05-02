@@ -1,15 +1,33 @@
 package models.V2
 
-import java.io.Serializable
-
 import anorm.SqlParser._
 import anorm._
 import models.Employee
+import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
-import play.api.Play.current
 
 case class SchoolBus(id: Option[Long], name: String, driver: Option[Employee], school_id: Long, morning_path: String, evening_path: String, morning_start: String, morning_end: String, evening_start: String, evening_end: String, updated_at: Option[Long], status: Option[Int] = Some(1)) {
+
+  def nameDuplicated = DB.withConnection {
+    implicit c =>
+      id match {
+        case Some(existingId) =>
+          SQL("select count(1) from schoolbus where school_id={kg} and name={name} and uid<>{id}")
+            .on(
+              'kg -> school_id.toString,
+              'name -> name,
+              'id -> existingId
+            ).as(get[Long]("count(1)") single) > 0
+        case None =>
+          SQL("select count(1) from schoolbus where school_id={kg} and name={name}")
+            .on(
+              'kg -> school_id.toString,
+              'name -> name
+            ).as(get[Long]("count(1)") single) > 0
+      }
+  }
+
   def revive: Option[SchoolBus] = DB.withConnection {
     implicit c =>
       val currentTime = System.currentTimeMillis
@@ -104,7 +122,7 @@ case class SchoolBus(id: Option[Long], name: String, driver: Option[Employee], s
     implicit c =>
       driver match {
         case Some(empl) =>
-          SQL("select count(1) from schoolbus where school_id={kg} and employee_id={driver}")
+          SQL("select count(1) from schoolbus where school_id={kg} and employee_id={driver} and status=0")
             .on(
               'kg -> school_id.toString,
               'driver -> empl.id
@@ -119,6 +137,22 @@ object SchoolBus {
   implicit val writeSchoolBus = Json.writes[SchoolBus]
   implicit val readSchoolBus = Json.reads[SchoolBus]
 
+  def driverIsExisting(driverId: String): Boolean = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from schoolbus where employee_id={driver} and status=1")
+        .on('driver -> driverId)
+        .as(get[Long]("count(1)") single) > 0
+  }
+
+
+
+  def driverDoesNotMatch(driverId: String, busId: Long): Boolean = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from schoolbus where employee_id={driver} and uid={bus} and status=1")
+        .on('driver -> driverId,
+          'bus -> busId)
+        .as(get[Long]("count(1)") single) == 0
+  }
 
   def delete(kg: Long, id: Long) = DB.withConnection {
     implicit c =>
