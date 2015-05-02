@@ -26,7 +26,8 @@ object SchoolBusController extends Controller with Secured {
 
   def delete(kg: Long, busId: Long) = IsLoggedIn {
     u => _ =>
-      Ok(Json.toJson(SchoolBus.delete(kg, busId)))
+      SchoolBus.delete(kg, busId)
+      Ok(Json.toJson(new SuccessResponse()))
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) {

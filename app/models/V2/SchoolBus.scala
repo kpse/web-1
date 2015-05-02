@@ -3,6 +3,7 @@ package models.V2
 import anorm.SqlParser._
 import anorm._
 import models.Employee
+import play.Logger
 import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
@@ -154,12 +155,27 @@ object SchoolBus {
         .as(get[Long]("count(1)") single) == 0
   }
 
-  def delete(kg: Long, id: Long) = DB.withConnection {
+  def delete(kg: Long, id: Long) = DB.withTransaction {
     implicit c =>
-      SQL("update schoolbus set status=0 where school_id={kg} and uid={id} and status=1")
-        .on('kg -> kg.toString,
-          'id -> id)
-        .executeUpdate()
+      try {
+        SQL("update schoolbus set status=0 where school_id={kg} and uid={id} and status=1")
+          .on('kg -> kg.toString,
+            'id -> id)
+          .executeUpdate()
+        val updated: Int = SQL("update childrenbusplan set status=0 where school_id={kg} and employee_id=(select employee_id from schoolbus where school_id={kg} and uid={id} ) and status=1")
+          .on('kg -> kg.toString,
+            'id -> id)
+          .executeUpdate()
+        c.commit()
+        updated
+      }
+      catch {
+        case t: Throwable =>
+          Logger.info(t.getLocalizedMessage)
+          Logger.info(t.getMessage)
+          c.rollback()
+          0
+      }
   }
 
   def show(kg: Long, id: Long) = DB.withConnection {
