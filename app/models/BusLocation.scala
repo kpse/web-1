@@ -74,18 +74,18 @@ object BusLocation {
           'dir -> location.direction, 'ra -> location.radius, 'address -> location.address, 'time -> System.currentTimeMillis).executeInsert()
   }
 
-  def childrenOnBus(kg: Long, employeeId: String, childId: String, card: String) = checkIn(kg, employeeId, childId, card, 3)
+  def childrenOnBus(kg: Long, employeeId: String, childId: String, card: String, time: Long) = checkIn(kg, employeeId, childId, card, time, 3)
 
-  def checkIn(kg: Long, employeeId: String, childId: String, card: String, targetStatus: Int = 1) = DB.withConnection {
+  def checkIn(kg: Long, employeeId: String, childId: String, card: String, time: Long, targetStatus: Int = 1) = DB.withConnection {
     implicit c =>
       SQL("insert into childrenonbus (school_id, employee_id, child_id, card, received_at, status) values " +
         "({kg}, {driver}, {child}, {card}, {time}, {status})")
-        .on('kg -> kg, 'driver -> employeeId, 'child -> childId, 'status -> targetStatus, 'time -> System.currentTimeMillis, 'card -> card).executeInsert()
+        .on('kg -> kg, 'driver -> employeeId, 'child -> childId, 'status -> targetStatus, 'time -> time, 'card -> card).executeInsert()
   }
 
-  def childrenOffBus(kg: Long, employeeId: String, childId: String) = checkOut(kg, employeeId, childId, 2)
+  def childrenOffBus(kg: Long, employeeId: String, childId: String, time: Long) = checkOut(kg, employeeId, childId, time, 2)
 
-  def checkOut(kg: Long, employeeId: String, childId: String, targetStatus: Int = 4) = DB.withConnection {
+  def checkOut(kg: Long, employeeId: String, childId: String, time: Long, targetStatus: Int = 4) = DB.withConnection {
     implicit c =>
       SQL("update childrenonbus set status={status}, received_at={time} where school_id={kg} and employee_id={driver} and child_id={child} ")
         .on('kg -> kg, 'driver -> employeeId, 'child -> childId, 'status -> targetStatus, 'time -> System.currentTimeMillis).executeInsert()

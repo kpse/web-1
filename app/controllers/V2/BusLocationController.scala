@@ -45,8 +45,9 @@ object BusLocationController extends Controller with Secured  {
     u => request =>
       request.body.validate[CheckInfo].map {
         case (check) =>
-          Relationship.getChildIdByCard(check.card_no) map (BusLocation.checkIn(kg, driverId, _, check.card_no))
-          pushToParents(check.copy(notice_type = 10))
+          val millis: Long = System.currentTimeMillis
+          Relationship.getChildIdByCard(check.card_no) map (BusLocation.checkIn(kg, driverId, _, check.card_no, millis))
+          pushToParents(check.copy(notice_type = 10, timestamp = millis))
           Ok(Json.toJson(new SuccessResponse))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -77,8 +78,9 @@ object BusLocationController extends Controller with Secured  {
       u => request =>
         request.body.validate[CheckInfo].map {
           case (check) =>
-            Relationship.getChildIdByCard(check.card_no) map (BusLocation.checkOut(kg, driverId, _))
-            pushToParents(check.copy(notice_type = 13))
+            val millis: Long = System.currentTimeMillis
+            Relationship.getChildIdByCard(check.card_no) map (BusLocation.checkOut(kg, driverId, _, millis))
+            pushToParents(check.copy(notice_type = 13, timestamp = millis))
             Ok(Json.toJson(new SuccessResponse))
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -89,8 +91,9 @@ object BusLocationController extends Controller with Secured  {
     u => request =>
       request.body.validate[CheckChildInfo].map {
         case (check) =>
-          BusLocation.childrenOnBus(kg, driverId, check.child_id, "")
-          pushToParents2(check.copy(check_type = 12))
+          val millis: Long = System.currentTimeMillis
+          BusLocation.childrenOnBus(kg, driverId, check.child_id, "", millis)
+          pushToParents2(check.copy(check_type = 12, timestamp = millis))
           Ok(Json.toJson(new SuccessResponse))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -101,8 +104,9 @@ object BusLocationController extends Controller with Secured  {
       u => request =>
         request.body.validate[CheckChildInfo].map {
           case (check) =>
-            BusLocation.childrenOffBus(kg, driverId, check.child_id)
-            pushToParents2(check.copy(check_type = 11))
+            val millis: Long = System.currentTimeMillis
+            BusLocation.childrenOffBus(kg, driverId, check.child_id, millis)
+            pushToParents2(check.copy(check_type = 11, timestamp = millis))
             Ok(Json.toJson(new SuccessResponse))
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -113,7 +117,8 @@ object BusLocationController extends Controller with Secured  {
     u => request =>
       request.body.validate[List[CheckInfo]].map {
         case (cards) =>
-          cards map ((checkInfo:CheckInfo) => Relationship.getChildIdByCard(checkInfo.card_no) map (BusLocation.checkOut(kg, driverId, _)))
+          val millis: Long = System.currentTimeMillis
+          cards map ((checkInfo:CheckInfo) => Relationship.getChildIdByCard(checkInfo.card_no) map (BusLocation.checkOut(kg, driverId, _, millis)))
           Ok(Json.toJson(SuccessResponse(s"一共${cards.length}名学生下车(${cards.length} students get off the bus.)")))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
