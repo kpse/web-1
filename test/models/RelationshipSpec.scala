@@ -74,5 +74,12 @@ class RelationshipSpec extends Specification with TestSupport {
 
     }
 
+    "be query by multiple child ids" in new WithApplication {
+
+      private val query = Relationship.index(93740362, None, Some("1_93740362_374,1_93740362_456,1_93740362_778"), None)
+
+      query.size must be greaterThanOrEqualTo(3)
+    }
+
   }
 }

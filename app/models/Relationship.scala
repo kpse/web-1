@@ -209,7 +209,7 @@ object Relationship {
       case oneChild(one) =>
         sql += " and r.child_id={child_id}"
       case morethanOneChild(args @ _*) =>
-        sql += s" and r.child_id in ('${args.map(_.replaceFirst("^,", "")).mkString("','")}')"
+        sql += s" and r.child_id in ('${child.get.split(",").mkString("','")}')"
     }
     classId foreach {
       child_id =>
