@@ -197,16 +197,16 @@ angular.module('kulebaoAdmin')
           scope.refresh()
 
       isADriver = (employee) -> _.any scope.allBuses, (f) -> f.driver.id == employee.id
-      availableDriver = (employees) -> _.filter employees, (d) -> !isADriver(d)
+      availableDriver = (employees) -> _.reject employees, (d) -> isADriver(d)
 
       scope.refresh = ->
         scope.loading = true
         scope.allBuses = Bus.query school_id: stateParams.kindergarten, ->
-          scope.loading = false
         Driver.query school_id: stateParams.kindergarten, (employees) ->
           scope.drivers = _.map availableDriver(employees), (e) ->
             e.value = e.name
             e
+          scope.loading = false
 
       scope.refresh()
   ]
