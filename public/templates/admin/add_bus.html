@@ -21,7 +21,7 @@
           <button type="button" class="btn btn-default" ng-model="newBus.driver" data-html="1"
                   placeholder="请选择驾驶员老师"
                   ng-click="$event.stopPropagation()" ng-options="d as d.name for d in drivers"
-                  bs-select></button>
+                  bs-select required></button>
         </div>
       </div>
 
@@ -83,7 +83,7 @@
     <div class="loading" ng-show="loading"></div>
     <div class="btn-group">
       <button class="btn btn-default" ng-click="$hide()">取消</button>
-      <button class="btn btn-info" ng-disabled="newBusForm.$invalid" ng-click="saveBus(newBus)">保存</button>
+      <button class="btn btn-info" ng-disabled="newBusForm.$invalid || loading" ng-click="saveBus(newBus)">保存</button>
     </div>
   </div>
 
