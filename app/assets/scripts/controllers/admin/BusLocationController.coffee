@@ -24,9 +24,9 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'BusPlansCtrl',
-  [ '$scope', '$rootScope', '$stateParams', '$q', '$state', '$animate', '$modal', '$dropdown',
+  [ '$scope', '$rootScope', '$stateParams', '$q', '$state', '$animate', '$modal', '$dropdown', '$timeout',
     'busDriverService', 'childService', 'schoolBusService', 'childrenPlanService', 'classService',
-    (scope, rootScope, stateParams, $q, $state, $animate, $modal, $dropdown, BusDriver, Child, Bus, Plan, Classes) ->
+    (scope, rootScope, stateParams, $q, $state, $animate, $modal, $dropdown, $timeout, BusDriver, Child, Bus, Plan, Classes) ->
       scope.loading = false
 
       findChild = (id) ->
@@ -93,7 +93,7 @@ angular.module('kulebaoAdmin')
         scope.backupPlans = []
 
       scope.saveChildPlan = (driver) ->
-        scope.loading = false
+        scope.loading = true
         scope.addingPlan = false
         queue = _.map scope.currentBus.plans, (p) ->
           plan = new Plan
@@ -105,7 +105,9 @@ angular.module('kulebaoAdmin')
         .map((p) -> Plan.delete(driver_id: driver.id, school_id: driver.school_id, child_id: p.child_id).$promise).compact().value()
 
         $q.all(queue.concat(removedQueue)).then ->
-          scope.refresh()
+          $timeout ->
+              scope.refresh()
+            , 1500
 
       scope.addChildPlan = ->
         scope.addingPlan = true
