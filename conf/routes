@@ -378,6 +378,18 @@ POST          /api/v3/kindergarten/:kg/sms_group                                
 POST          /api/v3/kindergarten/:kg/sms_group/:id                               controllers.V3.SmsGroupManagementController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/sms_group/:id                               controllers.V3.SmsGroupManagementController.delete(kg: Long, id: Long)
 
+GET           /api/v3/kindergarten/:kg/hardware                                    controllers.V3.HardwareController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/hardware/:id                                controllers.V3.HardwareController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/hardware                                    controllers.V3.HardwareController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/hardware/:id                                controllers.V3.HardwareController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/hardware/:id                                controllers.V3.HardwareController.delete(kg: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/multi_channel                               controllers.V3.MultiChannelController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/multi_channel/:id                           controllers.V3.MultiChannelController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/multi_channel                               controllers.V3.MultiChannelController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/multi_channel/:id                           controllers.V3.MultiChannelController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/multi_channel/:id                           controllers.V3.MultiChannelController.delete(kg: Long, id: Long)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                        controllers.VersionedAssets.at(file: controllers.VersionedAsset)
