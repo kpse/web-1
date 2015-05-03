@@ -390,6 +390,12 @@ POST          /api/v3/kindergarten/:kg/multi_channel                            
 POST          /api/v3/kindergarten/:kg/multi_channel/:id                           controllers.V3.MultiChannelController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/multi_channel/:id                           controllers.V3.MultiChannelController.delete(kg: Long, id: Long)
 
+GET           /api/v3/kindergarten/:kg/user_privilege                               controllers.V3.UserPrivilegeController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/user_privilege/:id                           controllers.V3.UserPrivilegeController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/user_privilege                               controllers.V3.UserPrivilegeController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/user_privilege/:id                           controllers.V3.UserPrivilegeController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/user_privilege/:id                           controllers.V3.UserPrivilegeController.delete(kg: Long, id: Long)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                        controllers.VersionedAssets.at(file: controllers.VersionedAsset)
