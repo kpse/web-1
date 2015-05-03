@@ -22,7 +22,7 @@ object WorkCheckController extends Controller with Secured {
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(WorkCheck(Some(1), Some(1), Some(1), Some("老宋"), Some(8), Some(59), Some(17), Some(0), Some(1), Some("2015-04-01"), Some(1))))
+    Ok(Json.toJson(WorkCheck(Some(id), Some(1), Some(1), Some("老宋"), Some(8), Some(59), Some(17), Some(0), Some(1), Some("2015-04-01"), Some(1))))
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
