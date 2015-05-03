@@ -114,7 +114,7 @@ angular.module('kulebaoAdmin')
         scope.backupPlans = angular.copy scope.currentBus.plans
 
       scope.delete = (child) ->
-        #TODO: why animation exception here? need more investigate
+        #TODO: why animation exception here? need more investigation
         $animate.enabled false
         Plan.delete driver_id: scope.currentBus.driver.id, school_id: scope.currentBus.driver.school_id, child_id: child.child_id, ->
           scope.currentBus.plans = _.reject scope.currentBus.plans, (p) -> p.child_id == child.child_id

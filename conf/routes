@@ -348,6 +348,18 @@ POST          /api/v3/kindergarten/:kg/checkin                                  
 POST          /api/v3/kindergarten/:kg/checkin/:id                                 controllers.V3.CardRecordController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/checkin/:id                                 controllers.V3.CardRecordController.delete(kg: Long, id: Long)
 
+GET           /api/v3/kindergarten/:kg/error_card                                  controllers.V3.ErrorCardRecordController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/error_card/:id                              controllers.V3.ErrorCardRecordController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/error_card                                  controllers.V3.ErrorCardRecordController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/error_card/:id                              controllers.V3.ErrorCardRecordController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/error_card/:id                              controllers.V3.ErrorCardRecordController.delete(kg: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/work_check                                  controllers.V3.WorkCheckController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/work_check/:id                              controllers.V3.WorkCheckController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/work_check                                  controllers.V3.WorkCheckController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/work_check/:id                              controllers.V3.WorkCheckController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/work_check/:id                              controllers.V3.WorkCheckController.delete(kg: Long, id: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                        controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                        controllers.Static.at(path="/public/images", file)

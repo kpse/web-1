@@ -61,3 +61,41 @@ WorkCheck char(1)实时算出的考勤结果，如果不用实时计算的结果
 
 
 */
+
+object ErrorCardRecordController extends Controller with Secured {
+
+  implicit val writeCardRecordV3 = Json.writes[CardRecordV3]
+  implicit val readCardRecordV3 = Json.reads[CardRecordV3]
+
+  def index(kg: Long) = IsLoggedIn { u => _ =>
+    val time = System.currentTimeMillis
+    Ok(Json.toJson(List(CardRecordV3(Some(1), CheckInfo(kg, "1112223334", 1, 1, "https://dn-cocobabys.qbox.me/big_shots.jpg", time), Some(1), Some("错卡备注")))))
+  }
+
+  def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    val time = System.currentTimeMillis
+    Ok(Json.toJson(CardRecordV3(Some(id), CheckInfo(kg, "1112223334", 1, 1, "https://dn-cocobabys.qbox.me/big_shots.jpg", time), Some(1), Some("错卡备注"))))
+  }
+
+  def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
+    request.body.validate[CardRecordV3].map {
+      case (s) =>
+        Ok(Json.toJson(s))
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
+
+  def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
+    request.body.validate[CardRecordV3].map {
+      case (s) =>
+        Ok(Json.toJson(s))
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
+
+  def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(new SuccessResponse()))
+  }
+}
