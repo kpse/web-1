@@ -432,6 +432,35 @@ POST          /api/v3/kindergarten/:kg/employee/:employeeId/review              
 POST          /api/v3/kindergarten/:kg/employee/:employeeId/review/:id                    controllers.V3.EmployeeReviewController.update(kg: Long, employeeId: String, id: Long)
 DELETE        /api/v3/kindergarten/:kg/employee/:employeeId/review/:id                    controllers.V3.EmployeeReviewController.delete(kg: Long, employeeId: String, id: Long)
 
+GET           /api/v3/kindergarten/:kg/financial_project                                  controllers.V3.FinancialProjectController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/financial_project/:id                              controllers.V3.FinancialProjectController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/financial_project                                  controllers.V3.FinancialProjectController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/financial_project/:id                              controllers.V3.FinancialProjectController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/financial_project/:id                              controllers.V3.FinancialProjectController.delete(kg: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/financial_project_group                            controllers.V3.FinancialProjectGroupController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/financial_project_group/:id                        controllers.V3.FinancialProjectGroupController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/financial_project_group                            controllers.V3.FinancialProjectGroupController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/financial_project_group/:id                        controllers.V3.FinancialProjectGroupController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/financial_project_group/:id                        controllers.V3.FinancialProjectGroupController.delete(kg: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/financial_receipt                                  controllers.V3.FinancialReceiptController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/financial_receipt/:id                              controllers.V3.FinancialReceiptController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/financial_receipt                                  controllers.V3.FinancialReceiptController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/financial_receipt/:id                              controllers.V3.FinancialReceiptController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/financial_receipt/:id                              controllers.V3.FinancialReceiptController.delete(kg: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/financial_receipt_item                             controllers.V3.FinancialReceiptItemController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/financial_receipt_item/:id                         controllers.V3.FinancialReceiptItemController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/financial_receipt_item                             controllers.V3.FinancialReceiptItemController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/financial_receipt_item/:id                         controllers.V3.FinancialReceiptItemController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/financial_receipt_item/:id                         controllers.V3.FinancialReceiptItemController.delete(kg: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/financial_recipient                                controllers.V3.FinancialRecipientController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/financial_recipient/:id                            controllers.V3.FinancialRecipientController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/financial_recipient                                controllers.V3.FinancialRecipientController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/financial_recipient/:id                            controllers.V3.FinancialRecipientController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/financial_recipient/:id                            controllers.V3.FinancialRecipientController.delete(kg: Long, id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                               controllers.VersionedAssets.at(file: controllers.VersionedAsset)
