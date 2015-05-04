@@ -426,6 +426,12 @@ POST          /api/v3/kindergarten/:kg/student/:studentId/health_check          
 POST          /api/v3/kindergarten/:kg/student/:studentId/health_check/:id                controllers.V3.StudentHealthCheckController.update(kg: Long, studentId: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/student/:studentId/health_check/:id                controllers.V3.StudentHealthCheckController.delete(kg: Long, studentId: Long, id: Long)
 
+GET           /api/v3/kindergarten/:kg/employee/:employeeId/review                        controllers.V3.EmployeeReviewController.index(kg: Long, employeeId: String)
+GET           /api/v3/kindergarten/:kg/employee/:employeeId/review/:id                    controllers.V3.EmployeeReviewController.show(kg: Long, employeeId: String, id: Long)
+POST          /api/v3/kindergarten/:kg/employee/:employeeId/review                        controllers.V3.EmployeeReviewController.create(kg: Long, employeeId: String)
+POST          /api/v3/kindergarten/:kg/employee/:employeeId/review/:id                    controllers.V3.EmployeeReviewController.update(kg: Long, employeeId: String, id: Long)
+DELETE        /api/v3/kindergarten/:kg/employee/:employeeId/review/:id                    controllers.V3.EmployeeReviewController.delete(kg: Long, employeeId: String, id: Long)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                               controllers.VersionedAssets.at(file: controllers.VersionedAsset)
