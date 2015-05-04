@@ -492,6 +492,30 @@ POST          /api/v3/kindergarten/:kg/stocking/:stockingId/detail              
 POST          /api/v3/kindergarten/:kg/stocking/:stockingId/detail/:id                    controllers.V3.StockingDetailController.update(kg: Long, stockingId: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/stocking/:stockingId/detail/:id                    controllers.V3.StockingDetailController.delete(kg: Long, stockingId: Long, id: Long)
 
+GET           /api/v3/kindergarten/:kg/diet_nutrition                                     controllers.V3.DietNutritionController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/diet_nutrition/:id                                 controllers.V3.DietNutritionController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/diet_nutrition                                     controllers.V3.DietNutritionController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/diet_nutrition/:id                                 controllers.V3.DietNutritionController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/diet_nutrition/:id                                 controllers.V3.DietNutritionController.delete(kg: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/menu                                               controllers.V3.DietMenuController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/menu/:id                                           controllers.V3.DietMenuController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/menu                                               controllers.V3.DietMenuController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/menu/:id                                           controllers.V3.DietMenuController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/menu/:id                                           controllers.V3.DietMenuController.delete(kg: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/menu/:menuId/arrangement                           controllers.V3.DietMenuArrangementController.index(kg: Long, menuId: Long)
+GET           /api/v3/kindergarten/:kg/menu/:menuId/arrangement/:id                       controllers.V3.DietMenuArrangementController.show(kg: Long, menuId: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/menu/:menuId/arrangement                           controllers.V3.DietMenuArrangementController.create(kg: Long, menuId: Long)
+POST          /api/v3/kindergarten/:kg/menu/:menuId/arrangement/:id                       controllers.V3.DietMenuArrangementController.update(kg: Long, menuId: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/menu/:menuId/arrangement/:id                       controllers.V3.DietMenuArrangementController.delete(kg: Long, menuId: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/diet_grade                                         controllers.V3.DietGradeController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/diet_grade/:id                                     controllers.V3.DietGradeController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/diet_grade                                         controllers.V3.DietGradeController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/diet_grade/:id                                     controllers.V3.DietGradeController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/diet_grade/:id                                     controllers.V3.DietGradeController.delete(kg: Long, id: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                               controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                               controllers.Static.at(path="/public/images", file)
