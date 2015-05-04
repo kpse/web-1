@@ -462,6 +462,36 @@ POST          /api/v3/kindergarten/:kg/financial_recipient                      
 POST          /api/v3/kindergarten/:kg/financial_recipient/:id                            controllers.V3.FinancialRecipientController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/financial_recipient/:id                            controllers.V3.FinancialRecipientController.delete(kg: Long, id: Long)
 
+GET           /api/v3/kindergarten/:kg/warehouse                                          controllers.V3.WarehouseController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/warehouse/:id                                      controllers.V3.WarehouseController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/warehouse                                          controllers.V3.WarehouseController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/warehouse/:id                                      controllers.V3.WarehouseController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/warehouse/:id                                      controllers.V3.WarehouseController.delete(kg: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/warehouse/:warehouseId/inventory                   controllers.V3.WarehouseInventoryController.index(kg: Long, warehouseId: Long)
+GET           /api/v3/kindergarten/:kg/warehouse/:warehouseId/inventory/:id               controllers.V3.WarehouseInventoryController.show(kg: Long, warehouseId: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/warehouse/:warehouseId/inventory                   controllers.V3.WarehouseInventoryController.create(kg: Long, warehouseId: Long)
+POST          /api/v3/kindergarten/:kg/warehouse/:warehouseId/inventory/:id               controllers.V3.WarehouseInventoryController.update(kg: Long, warehouseId: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/warehouse/:warehouseId/inventory/:id               controllers.V3.WarehouseInventoryController.delete(kg: Long, warehouseId: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/warehouse/:warehouseId/goods                       controllers.V3.GoodsController.index(kg: Long, warehouseId: Long)
+GET           /api/v3/kindergarten/:kg/warehouse/:warehouseId/goods/:id                   controllers.V3.GoodsController.show(kg: Long, warehouseId: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/warehouse/:warehouseId/goods                       controllers.V3.GoodsController.create(kg: Long, warehouseId: Long)
+POST          /api/v3/kindergarten/:kg/warehouse/:warehouseId/goods/:id                   controllers.V3.GoodsController.update(kg: Long, warehouseId: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/warehouse/:warehouseId/goods/:id                   controllers.V3.GoodsController.delete(kg: Long, warehouseId: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/warehouse/:warehouseId/stocking                    controllers.V3.StockingController.index(kg: Long, warehouseId: Long)
+GET           /api/v3/kindergarten/:kg/warehouse/:warehouseId/stocking/:id                controllers.V3.StockingController.show(kg: Long, warehouseId: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/warehouse/:warehouseId/stocking                    controllers.V3.StockingController.create(kg: Long, warehouseId: Long)
+POST          /api/v3/kindergarten/:kg/warehouse/:warehouseId/stocking/:id                controllers.V3.StockingController.update(kg: Long, warehouseId: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/warehouse/:warehouseId/stocking/:id                controllers.V3.StockingController.delete(kg: Long, warehouseId: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/stocking/:stockingId/detail                        controllers.V3.StockingDetailController.index(kg: Long, stockingId: Long)
+GET           /api/v3/kindergarten/:kg/stocking/:stockingId/detail/:id                    controllers.V3.StockingDetailController.show(kg: Long, stockingId: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/stocking/:stockingId/detail                        controllers.V3.StockingDetailController.create(kg: Long, stockingId: Long)
+POST          /api/v3/kindergarten/:kg/stocking/:stockingId/detail/:id                    controllers.V3.StockingDetailController.update(kg: Long, stockingId: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/stocking/:stockingId/detail/:id                    controllers.V3.StockingDetailController.delete(kg: Long, stockingId: Long, id: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                               controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                               controllers.Static.at(path="/public/images", file)
