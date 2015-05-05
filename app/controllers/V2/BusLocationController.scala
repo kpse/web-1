@@ -9,7 +9,7 @@ import play.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
-object BusLocationController extends Controller with Secured  {
+object BusLocationController extends Controller with Secured {
   def index(kg: Long, driverId: String) = IsLoggedIn {
     u => _ =>
       Ok(Json.toJson(BusLocation.index(kg, driverId)))
@@ -38,7 +38,7 @@ object BusLocationController extends Controller with Secured  {
         case None =>
           NotFound(Json.toJson(ErrorResponse(s"今天没有${childId}的乘车记录(No riding records today.)")))
       }
-      
+
   }
 
   def checkIn(kg: Long, driverId: String) = IsLoggedIn(parse.json) {
@@ -75,16 +75,16 @@ object BusLocationController extends Controller with Secured  {
   }
 
   def checkOut(kg: Long, driverId: String) = IsLoggedIn(parse.json) {
-      u => request =>
-        request.body.validate[CheckInfo].map {
-          case (check) =>
-            val millis: Long = System.currentTimeMillis
-            Relationship.getChildIdByCard(check.card_no) map (BusLocation.checkOut(kg, driverId, _, millis))
-            pushToParents(check.copy(notice_type = 13, timestamp = millis))
-            Ok(Json.toJson(new SuccessResponse))
-        }.recoverTotal {
-          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-        }
+    u => request =>
+      request.body.validate[CheckInfo].map {
+        case (check) =>
+          val millis: Long = System.currentTimeMillis
+          Relationship.getChildIdByCard(check.card_no) map (BusLocation.checkOut(kg, driverId, _, millis))
+          pushToParents(check.copy(notice_type = 13, timestamp = millis))
+          Ok(Json.toJson(new SuccessResponse))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
   }
 
   def childIn(kg: Long, driverId: String) = IsLoggedIn(parse.json) {
@@ -101,25 +101,47 @@ object BusLocationController extends Controller with Secured  {
   }
 
   def childOut(kg: Long, driverId: String) = IsLoggedIn(parse.json) {
-      u => request =>
-        request.body.validate[CheckChildInfo].map {
-          case (check) =>
-            val millis: Long = System.currentTimeMillis
-            BusLocation.childrenOffBus(kg, driverId, check.child_id, millis)
-            pushToParents2(check.copy(check_type = 11, timestamp = millis))
-            Ok(Json.toJson(new SuccessResponse))
-        }.recoverTotal {
-          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-        }
+    u => request =>
+      request.body.validate[CheckChildInfo].map {
+        case (check) =>
+          val millis: Long = System.currentTimeMillis
+          BusLocation.childrenOffBus(kg, driverId, check.child_id, millis)
+          pushToParents2(check.copy(check_type = 11, timestamp = millis))
+          Ok(Json.toJson(new SuccessResponse))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
   }
 
   def batchCheckOut(kg: Long, driverId: String) = IsLoggedIn(parse.json) {
     u => request =>
-      request.body.validate[List[CheckInfo]].map {
-        case (cards) =>
+      request.body.validate[List[CheckChildInfo]].map {
+        case (checks) =>
           val millis: Long = System.currentTimeMillis
-          cards map ((checkInfo:CheckInfo) => Relationship.getChildIdByCard(checkInfo.card_no) map (BusLocation.checkOut(kg, driverId, _, millis)))
-          Ok(Json.toJson(SuccessResponse(s"一共${cards.length}名学生下车(${cards.length} students get off the bus.)")))
+          checks foreach {
+            (check: CheckChildInfo) =>
+              val millis: Long = System.currentTimeMillis
+              BusLocation.childrenOffBus(kg, driverId, check.child_id, millis)
+              pushToParents2(check.copy(check_type = 11, timestamp = millis))
+          }
+          Ok(Json.toJson(SuccessResponse(s"今天早上一共${checks.length}名学生到校下车(${checks.length} students get off the bus.)")))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
+
+  def batchCheckIn(kg: Long, driverId: String) = IsLoggedIn(parse.json) {
+    u => request =>
+      request.body.validate[List[CheckChildInfo]].map {
+        case (checks) =>
+          val millis: Long = System.currentTimeMillis
+          checks foreach {
+            (check: CheckChildInfo) =>
+              val millis: Long = System.currentTimeMillis
+              BusLocation.childrenOnBus(kg, driverId, check.child_id, "", millis)
+              pushToParents2(check.copy(check_type = 12, timestamp = millis))
+          }
+          Ok(Json.toJson(SuccessResponse(s"今天下午一共${checks.length}名学生离校上车(${checks.length} students get on the bus.)")))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
