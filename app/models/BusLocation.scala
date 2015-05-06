@@ -45,8 +45,9 @@ object BusLocation {
     implicit c =>
       val beginOfDay: Long = DateTime.now().withTimeAtStartOfDay().getMillis
       Logger.info(s"beginOfDay=$beginOfDay")
-      val current: Option[BusLocation] = SQL("select b.*, c.status from buslocation b, childrenonbus c where b.school_id={kg} and c.child_id={id} and b.school_id=c.school_id and b.employee_id=c.employee_id " +
-        "and b.received_at > {day} and c.received_at > {day} order by b.uid DESC limit 1")
+      val current: Option[BusLocation] = SQL("select b.school_id, b.employee_id, latitude, longitude, direction, radius, address, b.received_at, c.status from buslocation b,  " +
+        "(select employee_id, status from childrenonbus where school_id={kg} and child_id={id} and received_at > {day} order by uid DESC limit 1) c" +
+        " where b.school_id={kg} and b.employee_id=c.employee_id and b.received_at > {day} order by b.uid DESC limit 1")
         .on('kg -> kg, 'id -> childId, 'day -> beginOfDay).as(simple(Some(childId)) singleOpt)
       current match {
         case Some(location) => Some(location)
@@ -87,7 +88,8 @@ object BusLocation {
 
   def checkOut(kg: Long, employeeId: String, childId: String, time: Long, targetStatus: Int = 4) = DB.withConnection {
     implicit c =>
-      SQL("update childrenonbus set status={status}, received_at={time} where school_id={kg} and employee_id={driver} and child_id={child} ")
+      SQL("insert into childrenonbus (school_id, employee_id, child_id, card, received_at, status) values " +
+        "({kg}, {driver}, {child}, '', {time}, {status})")
         .on('kg -> kg, 'driver -> employeeId, 'child -> childId, 'status -> targetStatus, 'time -> System.currentTimeMillis).executeInsert()
   }
 }
