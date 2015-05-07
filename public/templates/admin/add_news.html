@@ -11,7 +11,7 @@
           <span class="error-field"
                 ng-show="newsForm.title.$dirty && newsForm.title.$error.maxlength">标题请不要超过15个字符</span>
       </div>
-      <div class="form-group col-xs-3" ng-if="false">
+      <div class="form-group col-xs-3">
         <div ng-hide="news.published">
           <input type="checkbox" ng-model="news.feedback_required"
                  ng-disabled="news.published">
@@ -19,7 +19,7 @@
         <div class="col-xs-5" ng-show="news.feedback_required && news.published"><a
           ng-click="showFeedbacks(news)"><label class="control-label title-line">查看回执</label></a></div>
       </div>
-      <div class="form-group col-xs-3" ng-if="false">
+      <div class="form-group col-xs-3">
         <button type="button" class="btn btn-default" ng-model="news.tags" data-html="1" data-multiple="1"
                 placeholder="添加需要的标签" ng-disabled="news.published"
                 ng-click="$event.stopPropagation()" ng-options="t for t in allTags" bs-select></button>
