@@ -46,7 +46,7 @@ angular.module('kulebaoAdmin')
           scope.allClasses = q[2]
           scope.currentBus = _.find scope.allBuses, (bus) -> bus.driver.id == stateParams.driver
           BusDriver.query school_id: stateParams.kindergarten, driver: scope.currentBus.driver.id, (data) ->
-            scope.currentBus.plans = _.map data, (plan) -> findChild(plan.child_id)
+            scope.currentBus.plans = _.filter (_.map data, (plan) -> findChild(plan.child_id)), (p) -> p?
             scope.waitingChildren = scope.childrenWithoutPlan()
             _.forEach scope.waitingChildren, (c) -> Plan.get c, (-> c.hasPlan = true), (-> c.hasPlan = false)
           scope.loading = false
