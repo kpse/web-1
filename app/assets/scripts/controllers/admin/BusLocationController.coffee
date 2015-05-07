@@ -237,8 +237,6 @@ angular.module('kulebaoAdmin')
 
       scope.displayType = (type) ->
         switch type
-          when 0 then '到校'
-          when 1 then '离校'
           when 10 then '早上上车'
           when 11 then '早上下车'
           when 12 then '下午上车'
