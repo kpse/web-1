@@ -23,7 +23,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
       scope.createEmployee = ->
         new SchoolEmployee
           school_id: parseInt $stateParams.kindergarten
-          birthday: ''
+          birthday: '1980-01-01'
           gender: 0
           login_password: ''
           login_name: ''
@@ -52,7 +52,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
             title: '老师信息保存失败'
             content: res.data.error_msg
             placement: "top-left"
-            container: '.panel-body'
+            container: '.modal-body.panel-body'
 
       scope.delete = (employee) ->
         employee.$delete ->
