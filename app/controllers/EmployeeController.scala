@@ -49,7 +49,11 @@ object EmployeeController extends Controller with Secured {
           case (employee) if Employee.loginNameExists(employee.login_name) =>
             BadRequest(loggedJson(ErrorResponse(employee.login_name + "已占用，建议用学校拼音缩写加数字来组织登录名。", 4)))
           case (employee) =>
-            Ok(loggedJson(Employee.create(employee)))
+            val created: Option[Employee] = Employee.create(employee)
+            created match {
+              case Some(x) => Ok(loggedJson(x))
+              case None => InternalServerError(loggedJson(ErrorResponse("创建教师失败，请与管理员联系。", 5)))
+            }
         }.recoverTotal {
           e => BadRequest("Detected error:" + loggedErrorJson(e))
         }
