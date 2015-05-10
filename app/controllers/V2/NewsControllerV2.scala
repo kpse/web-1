@@ -29,10 +29,14 @@ object NewsControllerV2 extends Controller with Secured {
     u => _ =>
       tag match {
         case Some(true) =>
-          val jsons = NewsV2.showWithTag(kg, newsId)
-          Ok(Json.toJson(jsons))
+          NewsV2.showWithTag(kg, newsId) match {
+            case Some(x) =>
+              Ok(Json.toJson(x))
+            case None =>
+              InternalServerError(Json.toJson(ErrorResponse("显示带标签的公告失败，请与管理员联系(Fail to display tagged news)", 11)))
+          }
         case _ =>
-          News.findById(kg, newsId).fold(NotFound(""))(news =>
+          News.findById(kg, newsId).fold(NotFound(Json.toJson(ErrorResponse("没有指定的公告(No such news)", 12))))(news =>
             Ok(Json.toJson(news)))
       }
   }
@@ -43,9 +47,9 @@ object NewsControllerV2 extends Controller with Secured {
       request =>
         request.body.validate[News].map {
           case (news) if !Employee.canAccess(Some(employeeId), kg) =>
-            Forbidden(Json.toJson(ErrorResponse("您无权修改学校公告。(no authority to update)")))
+            Forbidden(Json.toJson(ErrorResponse("您无权修改学校公告。(no authority to update)", 21)))
           case (news) if news.news_id.getOrElse(0) != newsId =>
-            BadRequest(Json.toJson(ErrorResponse("公告ID不匹配URL.(url and news id are not matched)")))
+            BadRequest(Json.toJson(ErrorResponse("公告ID不匹配URL.(url and news id are not matched)", 22)))
           case (news) =>
             Ok(Json.toJson(NewsV2.update(news)))
         }.recoverTotal {
@@ -57,11 +61,16 @@ object NewsControllerV2 extends Controller with Secured {
     u => request =>
       request.body.validate[News].map {
         case (news) if !Employee.canAccess(Some(employeeId), kg) =>
-          Forbidden(Json.toJson(ErrorResponse("您无权创建学校公告。(no authority to create)")))
+          Forbidden(Json.toJson(ErrorResponse("您无权创建学校公告。(no authority to create)", 31)))
         case (news) if !news.publisher_id.getOrElse("").equals(employeeId) =>
-          Forbidden(Json.toJson(ErrorResponse("发布ID错误。(publisher id does not match)")))
+          Forbidden(Json.toJson(ErrorResponse("发布ID错误。(publisher id does not match)", 32)))
         case (news) =>
-          Ok(Json.toJson(NewsV2.create(news.copy(news_id = None))))
+          NewsV2.create(news.copy(news_id = None)) match {
+            case Some(x) =>
+              Ok(Json.toJson(x))
+            case None =>
+              InternalServerError(Json.toJson(ErrorResponse("创建公告失败，请与管理员联系(Fail to create news)", 33)))
+          }
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
@@ -70,7 +79,7 @@ object NewsControllerV2 extends Controller with Secured {
   def delete(kg: Long, employeeId: String, newsId: Long) = IsLoggedIn {
     u => _ =>
       Employee.canAccess(Some(employeeId), kg) match {
-        case false => Forbidden(Json.toJson(ErrorResponse("您无权删除学校公告。(no authority to delete)")))
+        case false => Forbidden(Json.toJson(ErrorResponse("您无权删除学校公告。(no authority to delete)", 41)))
         case true =>
           NewsV2.delete(newsId)
           Ok(Json.toJson(new SuccessResponse))
@@ -81,7 +90,7 @@ object NewsControllerV2 extends Controller with Secured {
   def indexWithNonPublished(kg: Long, employeeId: String, class_id: Option[String], restrict: Option[Boolean], from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn {
     u => _ =>
       Employee.canAccess(Some(employeeId), kg) match {
-        case false => Forbidden(Json.toJson(ErrorResponse("您无权查看学校公告。(no authority to read)")))
+        case false => Forbidden(Json.toJson(ErrorResponse("您无权查看学校公告。(no authority to read)", 51)))
         case true =>
           val jsons = NewsV2.allIncludeNonPublished(kg, class_id, restrict.getOrElse(false), from, to).take(most.getOrElse(25))
           Ok(Json.toJson(jsons))
