@@ -518,6 +518,9 @@ POST          /api/v3/kindergarten/:kg/diet_grade                               
 POST          /api/v3/kindergarten/:kg/diet_grade/:id                                     controllers.V3.DietGradeController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/diet_grade/:id                                     controllers.V3.DietGradeController.delete(kg: Long, id: Long)
 
+#check binding history
+GET        /api/v3/binding_history/:phone                                              controllers.Authentication.bindingHistory(phone: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                               controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                               controllers.Static.at(path="/public/images", file)

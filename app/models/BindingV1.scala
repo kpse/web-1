@@ -9,6 +9,7 @@ import models.PushableNumber.updateTokenAfterBinding
 import play.api.Logger
 import play.api.Play.current
 import play.api.db.DB
+import play.api.libs.json.Json
 
 
 case class BindingResponseV1(error_code: Int,
@@ -27,9 +28,13 @@ case class MemberStatus(status: Int){
   }
 }
 
+case class BindingHistory(id: Option[Long], phone: String, access_token: String,
+                          device_type: String, version_code: String, updated_at: Long)
+
 object BindingV1 {
 
   implicit def convertToMemberStatus(status: Int) = MemberStatus(status)
+  implicit val writeBindingHistory = Json.writes[BindingHistory]
 
   def response(updateTime: Long) = {
     get[String]("accountid") ~
@@ -78,6 +83,24 @@ object BindingV1 {
           'version -> version,
           'time -> System.currentTimeMillis()
         ).executeInsert()
+  }
+
+  def history(phone: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from bindinghistory where phone={phone} order by uid DESC limit 1")
+        .on('phone -> phone).as(simpleHistory singleOpt)
+  }
+
+  val simpleHistory = {
+    get[Long]("uid") ~
+    get[String]("phone") ~
+    get[String]("access_token") ~
+    get[String]("device_type") ~
+    get[String]("version_code") ~
+    get[Long]("updated_at") map {
+      case id ~ phone ~ token ~ device ~ version ~ time =>
+        BindingHistory(Some(id), phone, token, device, version, time)
+    }
   }
 
 

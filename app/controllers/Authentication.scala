@@ -4,6 +4,7 @@ import controllers.helper.JsonLogger._
 import models.{AppUpgradeResponse, ErrorResponse, _}
 import models.helper.PasswordHelper
 import models.json_models.{BindingNumber, ChangePassword, CheckPhone, CheckPhoneResponse, MobileLogin, ResetPassword, _}
+import models.BindingV1.writeBindingHistory
 import play.api.Logger
 import play.api.libs.json._
 import play.api.mvc.{SimpleResult, _}
@@ -200,4 +201,15 @@ object Authentication extends Controller with Secured {
         e => BadRequest("Detected error:" + loggedErrorJson(e))
       }
   }
+
+  def bindingHistory(phone: String) = IsOperator {
+    u => request =>
+      BindingV1.history(phone) match {
+        case Some(x) =>
+          Ok(Json.toJson(x))
+        case None =>
+          NotFound(s"No binding record for phone $phone.")
+      }
+  }
+
 }
