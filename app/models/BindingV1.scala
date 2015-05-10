@@ -66,4 +66,19 @@ object BindingV1 {
           BindingResponseV1(1)
       }
   }
+
+  def record(number: BindingNumber, version: String) = DB.withConnection {
+    implicit c =>
+      SQL("insert into bindinghistory (phone, device_type, access_token, version_code, updated_at) values " +
+        "({phone}, {device}, {token}, {version}, {time})")
+        .on(
+          'phone -> number.phonenum,
+          'device -> number.device_type.getOrElse("unknown"),
+          'token -> number.access_token,
+          'version -> version,
+          'time -> System.currentTimeMillis()
+        ).executeInsert()
+  }
+
+
 }

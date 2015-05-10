@@ -172,6 +172,8 @@ object Authentication extends Controller with Secured {
       request.body.validate[BindingNumber].map {
         case (login) =>
           Logger.info(login.toString)
+
+          BindingV1.record(login, request.headers.get("versioncode").getOrElse("unknown"))
           val result = BindingV1(login)
           result match {
             case success if success.error_code == 0 =>
