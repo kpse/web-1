@@ -121,6 +121,16 @@
         <div class="col-sm-4">
           <p class="form-control-static parent-status" ng-class="{removed: parent.status==0}">{{parent.status == 0 ? '已删除' : '正常'}}</p>
         </div>
+        <label for="parent-app-version" class="col-sm-2 control-label" ng-show="parent.bindings" >已安装版本号</label>
+
+        <div class="col-sm-4">
+          <p class="form-control-static parent-app-version">{{parent.bindings.version_code}}</p>
+        </div>
+        <label for="parent-last-binding" class="col-sm-2 control-label" ng-show="parent.bindings">最后一次bind</label>
+
+        <div class="col-sm-4">
+          <p class="form-control-static parent-last-binding">{{parent.bindings.updated_at | date:'yyyy年MM月dd日 HH:mm' }}</p>
+        </div>
       </div>
     </div>
 

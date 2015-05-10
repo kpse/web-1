@@ -62,6 +62,9 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
         scope.parent.videoMember = VideoMember.get school_id: scope.parent.school_id, id: scope.parent.parent_id
         scope.parent.pushAccount = PushAccount.get phone: stateParams.phone
         scope.parent.pickingAccount = false
+        scope.parent.bindings =
+          version_code: '87'
+          updated_at: 128182318382
 
       scope.delete = (parent) ->
         Phone.delete parent, ->
