@@ -7,7 +7,8 @@ CREATE TABLE bindinghistory (
   access_token VARCHAR(40) NOT NULL,
   version_code VARCHAR(10) NOT NULL,
   updated_at BIGINT               DEFAULT 0,
-  PRIMARY KEY (uid)
+  PRIMARY KEY (uid),
+  INDEX (phone)
 );
 
 # --- !Downs
