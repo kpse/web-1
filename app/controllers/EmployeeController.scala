@@ -102,7 +102,14 @@ object EmployeeController extends Controller with Secured {
           case (existing) if Employee.idExists(existing.id) =>
             Ok(loggedJson(Employee.update(existing)))
           case (newOne) =>
-            Ok(loggedJson(Employee.create(newOne)))
+            val created: Option[Employee] = Employee.create(newOne)
+            created match {
+              case Some(x) =>
+                Ok(loggedJson(created))
+              case None =>
+                InternalServerError(loggedJson(ErrorResponse("创建老师失败，请联系管理员。(Error in creating employee, please contact admin for detail)", 44)))
+            }
+
         }.recoverTotal {
           e => BadRequest("Detected error:" + loggedErrorJson(e))
         }
