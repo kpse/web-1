@@ -45,6 +45,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
       rootScope.tabName = 'school'
 
       scope.editSchool = (kg) ->
+        scope.advancedEdting = false
         kg.charges = Charge.query school_id: kg.school_id, ->
           kg.charge = kg.charges[0]
           kg.principal =
@@ -186,5 +187,12 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             when 'hideVideo' then '不显示视频图标'
             when 'disableMemberEditing' then '不允许学校开通或关闭会员'
             when 'bus' then '激活校车定位功能'
+
+      scope.advancedEdting = false
+      scope.advanced = ->
+        scope.advancedEdting = true
+      scope.simpleDialog = ->
+        scope.advancedEdting = false
+
   ]
 
