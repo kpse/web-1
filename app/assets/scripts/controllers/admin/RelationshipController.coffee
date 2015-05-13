@@ -8,7 +8,7 @@ angular.module('kulebaoAdmin')
       rootScope.tabName = 'relationship'
       scope.heading = '管理幼儿及家长基础档案信息'
 
-      scope.types = [
+      scope.allTypes = -> [
         {
           name: '已关联'
           url: 'connected'
@@ -35,6 +35,7 @@ angular.module('kulebaoAdmin')
           backendConfig? && scope.backend = backendConfig.value == 'true'
           disableMemberEditingConfig = _.find data['config'], (item) -> item.name == 'disableMemberEditing'
           disableMemberEditingConfig? && scope.disableMemberEditing = disableMemberEditingConfig.value == 'true'
+          scope.types = scope.allTypes()
           scope.types.pop() if scope.backend or (!scope.backend and !scope.isSuperUser())
           scope.config =
             deletable : scope.adminUser.privilege_group == 'operator' || !scope.backend
