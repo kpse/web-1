@@ -35,7 +35,7 @@ class RelationshipControllerSpec extends Specification with TestSupport {
     }
 
     "be updated with same information" in new WithApplication {
-      private val jsBody = createRelationship("0001234567", "13408654680", "1_1391836223533", 1)
+      private val jsBody = createAExistingRelationship("0001234567", "13408654680", "1_1391836223533", 1)
       val res = route(loggedRequest(POST, "/kindergarten/93740362/relationship/0001234567").withBody(jsBody)).get
 
       status(res) must equalTo(OK)
@@ -45,16 +45,56 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       (response \ "card").as[String] must equalTo("0001234567")
     }
 
+
+
+
+    "reuse deleted card" in new WithApplication {
+      val cardNumber: String = "0001234999"
+      val parentPhone: String = "13408654680"
+      val child_id: String = "1_93740362_9982"
+
+      private val jsBody = createANewRelationship(cardNumber, parentPhone, child_id)
+      val res = route(loggedRequest(POST, "/kindergarten/93740362/relationship/" + cardNumber).withBody(jsBody)).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome("application/json")
+
+      val oldCard: JsValue = Json.parse(contentAsString(res))
+      (oldCard \ "card").as[String] must equalTo(cardNumber)
+      (oldCard \ "parent" \ "parent_id").as[String] must equalTo("2_93740362_789")
+      (oldCard \ "child" \ "child_id").as[String] must equalTo(child_id)
+
+      val res2 = route(loggedRequest(DELETE, "/kindergarten/93740362/relationship/" + cardNumber)).get
+      status(res2) must equalTo(OK)
+
+      private val newRelationship = createANewRelationship(cardNumber, parentPhone, "1_93740362_778")
+      val res3 = route(loggedRequest(POST, "/kindergarten/93740362/relationship/" + cardNumber).withBody(newRelationship)).get
+
+      status(res3) must equalTo(OK)
+      contentType(res3) must beSome("application/json")
+      val newCard: JsValue = Json.parse(contentAsString(res3))
+      (newCard \ "card").as[String] must equalTo(cardNumber)
+      (newCard \ "parent" \ "parent_id").as[String] must equalTo("2_93740362_789")
+      (newCard \ "child"  \ "child_id").as[String] must equalTo("1_93740362_778")
+    }
+
   }
 
   implicit val write1 = Json.writes[Parent]
   implicit val write2 = Json.writes[ChildInfo]
   implicit val write3 = Json.writes[Relationship]
 
-  def createRelationship(card: String, phone: String, childId: String, id: Long): JsValue = {
+  def createAExistingRelationship(card: String, phone: String, childId: String, id: Long): JsValue = {
     Json.toJson(Relationship(
       Some(Parent(None, 0, "", phone, None, 0, "", None, None, None, None)),
       Some(ChildInfo(Some(childId), "", "", "", 0, None, 0, None, None, None)),
       card, "妈妈", Some(id)))
+  }
+
+  def createANewRelationship(card: String, phone: String, childId: String): JsValue = {
+    Json.toJson(Relationship(
+      Some(Parent(None, 0, "", phone, None, 0, "", None, None, None, None)),
+      Some(ChildInfo(Some(childId), "", "", "", 0, None, 0, None, None, None)),
+      card, "妈妈", None))
   }
 }

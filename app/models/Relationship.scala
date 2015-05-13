@@ -1,5 +1,7 @@
 package models
 
+import java.sql.Connection
+
 import play.api.Play.current
 import play.api.db.DB
 import anorm._
@@ -13,6 +15,13 @@ case class Relationship(parent: Option[Parent], child: Option[ChildInfo], card: 
 case class RelationshipIdentity(id: Long, card: String)
 
 object Relationship {
+  def deleted(card: String): Boolean = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from relationmap where card_num={card} and status=0")
+        .on('card -> card)
+        .as(get[Long]("count(1)") single) > 0
+  }
+
   def search(cardNumber: String) = DB.withConnection {
     implicit c =>
       SQL("select * from relationmap where card_num={card}").on('card -> cardNumber).as(searchSample singleOpt)
@@ -74,6 +83,22 @@ object Relationship {
           'kg -> kg.toString,
           'card -> card,
           'id -> id
+        ).executeUpdate()
+      show(kg, card)
+  }
+
+  def reuseDeletedCard(kg: Long, card: String, relationship: String, phone: String, childId: String) = DB.withConnection {
+    implicit c =>
+      SQL("update relationmap set child_id={child_id}, " +
+        "parent_id=(select parent_id from parentinfo where phone={phone} and school_id={kg}), " +
+        "relationship={relationship}, status=1 " +
+        "where card_num={card} and status=0")
+        .on(
+          'phone -> phone,
+          'child_id -> childId,
+          'relationship -> relationship,
+          'kg -> kg.toString,
+          'card -> card
         ).executeUpdate()
       show(kg, card)
   }

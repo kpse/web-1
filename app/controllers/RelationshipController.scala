@@ -1,7 +1,7 @@
 package controllers
 
 import controllers.helper.JsonLogger._
-import models.{ChildInfo, ErrorResponse, _}
+import models._
 import play.Logger
 import play.api.libs.json.{JsError, JsValue, Json}
 import play.api.mvc.Controller
@@ -42,7 +42,7 @@ object RelationshipController extends Controller with Secured {
           case exists if exists && uid.isEmpty && existingCard.nonEmpty && !existingCard.equals(Some(card)) =>
             BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。(Duplicated relationship)")))
           case exists if exists && uid.isDefined =>
-            Logger.info("update existing 1")
+            Logger.info("update existing 1, reusing existing card")
             Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, uid.get)))
           case exists if exists && uid.isEmpty =>
             BadRequest(loggedJson(ErrorResponse(s"创建关系失败，${card}号卡已经关联过家长。(Card is connected to parent before)")))
@@ -51,6 +51,9 @@ object RelationshipController extends Controller with Secured {
           case exists if !exists && uid.isDefined =>
             Logger.info("update existing 2")
             Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, uid.get)))
+          case exists if !exists && uid.isEmpty && Relationship.deleted(card) =>
+            Logger.info("update existing 3, reusing deleted card")
+            Ok(Json.toJson(Relationship.reuseDeletedCard(kg, card, relationship, phone, childId)))
           case exists if !exists && uid.isEmpty =>
             Logger.info("create new")
             Ok(Json.toJson(Relationship.create(kg, card, relationship, phone, childId)))
