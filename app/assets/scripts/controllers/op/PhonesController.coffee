@@ -9,7 +9,7 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
           content: '请修改条件进行查找。'
           placement: "top-left"
           type: "danger"
-          container: '.well'
+          container: '.module-view .well'
           duration: 3
 
       cardNotFound = (card) ->
@@ -18,7 +18,7 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
           content: '请修改条件进行查找。'
           placement: "top-left"
           type: "danger"
-          container: '.well'
+          container: '.module-view .well'
           duration: 3
 
       scope.query = (phone) ->
@@ -46,7 +46,7 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
           content: "手机号为#{person.phone}的#{type}已经删除。"
           placement: "top"
           type: "danger"
-          container: '.well'
+          container: '.module-view .well'
           duration: 3
 
       scope.cancel = ->
@@ -85,14 +85,14 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
             content: "手机号为#{person.phone}的家长密码重置为手机号码后八位。"
             placement: "top"
             type: "success"
-            container: '.well'
+            container: '.module-view .well'
             duration: 3
           , (res) -> Alert
               title: '密码重置失败'
               content: if res.data.error_msg? then res.data.error_msg else res.data
               placement: "top"
               type: "danger"
-              container: '.well'
+              container: '.module-view .well'
               duration: 3
 
 
@@ -139,15 +139,29 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
             content: "登录名为#{person.login_name}的教师密码重置为手机号码后八位。"
             placement: "top"
             type: "success"
-            container: '.well'
+            container: '.module-view .well'
             duration: 3
   ]
 
 .controller 'OpShowCardCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'relationshipSearchService', 'schoolService',
-    (scope, rootScope, stateParams, location, Relationship, School) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', '$state', '$alert', 'relationshipSearchService', 'schoolService',
+    (scope, rootScope, stateParams, location, $state, Alert, RelationshipManager, School) ->
 
-      scope.relationship = Relationship.get card: stateParams.card, ->
-        scope.school = School.get school_id: scope.relationship.parent.school_id
+      scope.relationship = RelationshipManager.get card: stateParams.card, ->
+          scope.school = School.get school_id: scope.relationship.parent.school_id
+        , (res) ->
+          $state.go 'main.phone_management'
+
+      scope.deleteRelationship = (r) ->
+        RelationshipManager.delete r, ->
+          Alert
+            title: '关系（卡片）删除成功'
+            content: "卡号为#{r.card}的卡片已经删除。"
+            placement: "top"
+            type: "success"
+            container: '.module-view .well'
+            duration: 3
+          $state.reload()
+
   ]
 

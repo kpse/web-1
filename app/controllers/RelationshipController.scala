@@ -113,4 +113,14 @@ object RelationshipController extends Controller with Secured {
       }
 
   }
+
+  def permanentRemove(card: String) = IsOperator {
+    u => _ =>
+      Relationship.search(card) match {
+        case Some(r) =>
+          Ok(Json.toJson(Relationship.delete(0, card)))
+        case None =>
+          NotFound
+      }
+  }
 }
