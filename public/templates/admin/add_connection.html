@@ -9,8 +9,8 @@
 
           <div class="col-sm-8">
             <input  id="parent-card" ng-model="relationship.card" ng-bk-focus name="card"
-                   class="editing-field form-control" ng-required="{{backend}}" ui-mask="{{'99999-99999'}}"/>
-            <span class="error-field" ng-show="newRelationshipForm.card.$dirty && isCardDuplicated(relationship.card)">与现有卡号重复！</span>
+                   class="editing-field form-control" ng-required="{{backend}}" ui-mask="{{'99999-99999'}}" kl-unique-card="relationship"/>
+            <span class="error-field" ng-show="newRelationshipForm.card.$dirty && newRelationshipForm.card.$error.unique">与现有卡号重复！</span>
           </div>
         </div>
 
