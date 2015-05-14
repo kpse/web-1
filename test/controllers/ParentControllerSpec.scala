@@ -61,7 +61,7 @@ class ParentControllerSpec extends Specification with TestSupport {
       val jsonResponse: JsValue = Json.parse(contentAsString(response))
       jsonResponse match {
         case JsArray(arr) =>
-          arr.length must lessThan(8)
+          arr.length must equalTo(8)
           (arr(0) \ "parent_id").as[String] must equalTo("2_93740362_789")
         case _ => failure
       }
