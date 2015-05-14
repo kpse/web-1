@@ -67,6 +67,17 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       (response \ "error_code").as[Int] must equalTo(1)
     }
 
+    "allow relationship with card and corresponding id" in new WithApplication {
+
+      private val jsBody = createAExistingRelationship("0001234567", "13408654680", "1_1391836223533", 1)
+      val res = route(loggedRequest(POST, "/api/v1/card_check").withBody(jsBody)).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res))
+      (response \ "error_code").as[Int] must equalTo(0)
+    }
+
     "allow to reuse deleted card" in new WithApplication {
 
       private val jsBody = deletedCard

@@ -98,8 +98,15 @@ object RelationshipController extends Controller with Secured {
     u => request =>
       request.body.validate[Relationship].map {
         case (relationship) if Relationship.deleted(relationship.card) => Ok(Json.toJson(new SuccessResponse("已删除卡片，可重用。(Reuse deleted card)")))
-        case (relationship) if Relationship.search(relationship.card).nonEmpty =>
-          Ok(Json.toJson(new ErrorResponse(s"卡号${relationship.card}已使用，不允许覆盖。(Current card is in using)")))
+        case (relationship) =>
+          Relationship.search(relationship.card) match {
+            case Some(x) if relationship.id.nonEmpty && x.id == relationship.id =>
+              Ok(Json.toJson(new SuccessResponse(s"卡号${relationship.card}与id${relationship.id}关系未改变。(Current card unchanged)")))
+            case Some(x) =>
+              Ok(Json.toJson(new ErrorResponse(s"卡号${relationship.card}已使用，不允许覆盖。(Current card is in using)")))
+            case None =>
+              Ok(Json.toJson(new SuccessResponse("无此卡号，可重用。(Available card number)")))
+          }
         case _ => Ok(Json.toJson(new SuccessResponse("无此卡号，可重用。(Available card number)")))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
