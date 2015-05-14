@@ -97,7 +97,10 @@ object RelationshipController extends Controller with Secured {
   def isGoodToUse = IsAuthenticated(parse.json) {
     u => request =>
       request.body.validate[Relationship].map {
-        case (relationship) => NotFound
+        case (relationship) if Relationship.deleted(relationship.card) => Ok(Json.toJson(new SuccessResponse("已删除卡片，可重用。(Reuse deleted card)")))
+        case (relationship) if Relationship.search(relationship.card).nonEmpty =>
+          Ok(Json.toJson(new ErrorResponse(s"卡号${relationship.card}已使用，不允许覆盖。(Current card is in using)")))
+        case _ => Ok(Json.toJson(new SuccessResponse("无此卡号，可重用。(Available card number)")))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }

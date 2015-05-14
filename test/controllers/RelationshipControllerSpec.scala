@@ -45,8 +45,38 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       (response \ "card").as[String] must equalTo("0001234567")
     }
 
+    "check card is good to use" in new WithApplication {
 
+      private val jsBody = newCard
+      val res = route(loggedRequest(POST, "/api/v1/card_check").withBody(jsBody)).get
 
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res))
+      (response \ "error_code").as[Int] must equalTo(0)
+    }
+
+    "complain about card is used" in new WithApplication {
+
+      private val jsBody = existingCard
+      val res = route(loggedRequest(POST, "/api/v1/card_check").withBody(jsBody)).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res))
+      (response \ "error_code").as[Int] must equalTo(1)
+    }
+
+    "allow to reuse deleted card" in new WithApplication {
+
+      private val jsBody = deletedCard
+      val res = route(loggedRequest(POST, "/api/v1/card_check").withBody(jsBody)).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res))
+      (response \ "error_code").as[Int] must equalTo(0)
+    }
 
     "reuse deleted card" in new WithApplication {
       val cardNumber: String = "0001234999"
@@ -96,5 +126,22 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       Some(Parent(None, 0, "", phone, None, 0, "", None, None, None, None)),
       Some(ChildInfo(Some(childId), "", "", "", 0, None, 0, None, None, None)),
       card, "妈妈", None))
+  }
+
+  def createCard(card: String) = Json.toJson(Relationship(
+    Some(Parent(None, 0, "", "", None, 0, "", None, None, None, None)),
+    Some(ChildInfo(Some(""), "", "", "", 0, None, 0, None, None, None)),
+    card, "", None))
+
+  def newCard: JsValue = {
+    createCard("9991234567")
+  }
+
+  def deletedCard: JsValue = {
+    createCard("0091234567")
+  }
+
+  def existingCard: JsValue = {
+    createCard("0001234567")
   }
 }
