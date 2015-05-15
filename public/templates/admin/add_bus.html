@@ -17,7 +17,7 @@
       <div class="form-group">
         <label for="bus-driver" class="col-sm-3 control-label">班车司机</label>
 
-        <div class="col-sm-6">
+        <div class="col-sm-6 teacher-list">
           <button type="button" class="btn btn-default" ng-model="newBus.driver" data-html="1"
                   placeholder="请选择驾驶员老师"
                   ng-click="$event.stopPropagation()" ng-options="d as d.name for d in drivers"
