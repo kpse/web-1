@@ -47,7 +47,7 @@ object RelationshipController extends Controller with Secured {
           case exists if exists && uid.isEmpty =>
             BadRequest(loggedJson(ErrorResponse(s"创建关系失败，${card}号卡已经关联过家长。(Card is connected to parent before)")))
           case exists if !exists && uid.isDefined && Relationship.cardExists(card, None) =>
-            BadRequest(loggedJson(ErrorResponse("修改关系失败，${card}号卡已经关联过家长。(Card is connected to parent before)")))
+            BadRequest(loggedJson(ErrorResponse(s"修改关系失败，${card}号卡已经关联过家长。(Card is connected to parent before)")))
           case exists if !exists && uid.isDefined =>
             Logger.info("update existing 2")
             Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, uid.get)))

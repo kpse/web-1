@@ -155,6 +155,17 @@ util.print: Use console.log instead
 .children-droppable {
   min-height: 100px;
 }
+.modal-body {
+  overflow-y: hidden;
+  min-height: 525px;
+}
+.modal-body .form-horizontal {
+  min-height: 400px;
+}
+.modal-body .teacher-list .dropdown-menu {
+  overflow-y: scroll;
+  max-height: 360px;
+}
 .axis path,
 .axis line {
   fill: none;

@@ -16,7 +16,7 @@
       <div class="form-group">
         <label for="teacher" class="col-sm-2 control-label">负责老师</label>
 
-        <div class="col-sm-8">
+        <div class="col-sm-8 teacher-list">
           <button type="button" class="btn btn-default" ng-model="currentClass.managers" data-html="1" data-multiple="1"
                   placeholder="请选择负责老师"
                   ng-click="$event.stopPropagation()" ng-options="e.name as e.name for e in employees"
