@@ -19,7 +19,7 @@ class RelationshipSpec extends Specification with TestSupport {
       private val index = Relationship.index(93740362, Some("13408654681"), None, None)
 
       index.size must beGreaterThan(1)
-      index(0).parent.get.phone must equalTo("13408654681")
+      index.head.parent.get.phone must equalTo("13408654681")
       index(1).parent.get.phone must equalTo("13408654681")
 
     }
@@ -29,7 +29,7 @@ class RelationshipSpec extends Specification with TestSupport {
       private val index = Relationship.index(93740362, None, Some("1_93740362_374"), None)
 
       index.size must equalTo(2)
-      index(0).child.get.child_id must beSome("1_93740362_374")
+      index.head.child.get.child_id must beSome("1_93740362_374")
       index(1).child.get.child_id must beSome("1_93740362_374")
 
     }
@@ -39,7 +39,7 @@ class RelationshipSpec extends Specification with TestSupport {
       private val index = Relationship.index(93740362, None, Some("1_93740362_374,1_93740362_456"), None)
 
       index.size must equalTo(3)
-      index(0).child.get.child_id must beSome("1_93740362_456")
+      index.head.child.get.child_id must beSome("1_93740362_456")
       index(1).child.get.child_id must beSome("1_93740362_374")
       index(2).child.get.child_id must beSome("1_93740362_374")
 
@@ -50,7 +50,7 @@ class RelationshipSpec extends Specification with TestSupport {
       private val index = Relationship.index(93740362, None, None, Some(777999))
 
       index.size must beGreaterThan(1)
-      index(0).child.get.class_id must equalTo(777999)
+      index.head.child.get.class_id must equalTo(777999)
       index(1).child.get.class_id must equalTo(777999)
 
     }
