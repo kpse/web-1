@@ -50,8 +50,8 @@
         <div class="col-sm-8" >
           <p class="form-control-static" ng-show="parent.videoMember.account && !parent.pickingAccount">{{parent.videoMember.account}}</p>
           <p class="form-control-static" ng-hide="parent.videoMember.account || parent.pickingAccount">未开通，点击<a ng-click="parent.pickingAccount = true">分配</a>账号</p>
-          <input kl-existing-video-account ng-show="parent.pickingAccount" class="form-control" name="account" ng-minlength="32"
-                                               maxlength="32" placeholder="粘贴账号" ng-model="parent.videoMember.account" parent="parent" required/>
+          <input kl-existing-video-account ng-show="parent.pickingAccount" class="form-control" name="account" ng-minlength="24"
+                                               maxlength="24" placeholder="粘贴账号" ng-model="parent.videoMember.account" parent="parent" required/>
           <span class="error-field" ng-show="editAdultForm.account.$dirty && editAdultForm.account.$error.notExisting"><i class="glyphicon glyphicon-info-sign"></i>这个账号不存在，只能重用已有的账号</span>
           <span class="error-field" ng-show="editAdultForm.account.$dirty && editAdultForm.account.$error.required"><i class="glyphicon glyphicon-info-sign"></i>账号不能为空</span>
           <span class="error-field" ng-show="editAdultForm.account.$dirty && editAdultForm.account.$error.minLength"><i class="glyphicon glyphicon-info-sign"></i>账号必须32位长</span>
