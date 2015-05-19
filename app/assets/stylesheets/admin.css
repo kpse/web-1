@@ -63,7 +63,8 @@ util.print: Use console.log instead
 }
 .chat-history {
   overflow: auto;
-  height: 250px;
+  max-height: 250px;
+  min-height: 100px;
 }
 .longer-history {
   height: 450px;
@@ -158,6 +159,7 @@ util.print: Use console.log instead
 .modal-body {
   overflow-y: hidden;
   min-height: 525px;
+  max-height: 700px;
 }
 .modal-body .form-horizontal {
   min-height: 400px;
@@ -165,6 +167,9 @@ util.print: Use console.log instead
 .modal-body .teacher-list .dropdown-menu {
   overflow-y: scroll;
   max-height: 360px;
+}
+.modal-body .image-preview {
+  padding-top: 15px;
 }
 .axis path,
 .axis line {

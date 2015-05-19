@@ -83,7 +83,8 @@
 
 .chat-history {
   overflow: auto;
-  height: 250px;
+  max-height: 250px;
+  min-height: 100px;
 }
 
 .longer-history {
@@ -202,12 +203,16 @@
 .modal-body {
   overflow-y: hidden;
   min-height: 525px;
+  max-height: 700px;
   .form-horizontal {
     min-height: 400px;
   }
   .teacher-list .dropdown-menu {
     overflow-y: scroll;
     max-height: 360px;
+  }
+  .image-preview {
+    padding-top: 15px;
   }
 }
 
