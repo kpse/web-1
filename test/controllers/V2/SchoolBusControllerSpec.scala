@@ -8,7 +8,8 @@ import models.{Employee, BusLocation, Parent, ParentPhoneCheck}
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
-import play.api.libs.json.{JsValue, Json}
+import play.Logger
+import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
@@ -26,6 +27,10 @@ class SchoolBusControllerSpec extends Specification with TestSupport {
     FakeRequest(method, url).withSession("username" -> "13408654680", "token" -> "1386849160798")
   }
 
+  def principalRequest(method: String, url: String) = {
+    FakeRequest(method, url).withSession("username" -> "login_name", "id" -> "3_93740362_1122")
+  }
+
   "SchoolBus" should {
     "check authentication first" in new WithApplication {
 
@@ -33,7 +38,7 @@ class SchoolBusControllerSpec extends Specification with TestSupport {
       val response2 = route(FakeRequest(GET, "/api/v2/kindergarten/93740362/bus/1")).get
       val response3 = route(FakeRequest(DELETE, "/api/v2/kindergarten/93740362/bus/1")).get
 
-      private val json1: JsValue = Json.toJson(SchoolBus(Some(1), "bus1", Some(Employee(None, "driver1", "12343212344", 1, "", "", None, "", 93740362, "login1", None, None)), 93740362, "A-B-C", "A-B-C", "", "", "", "", None, None))
+      private val json1: JsValue = Json.toJson(SchoolBus(Some(1), "bus1", Some(someDriver), 93740362, "A-B-C", "A-B-C", "", "", "", "", None, None))
       val response4 = route(FakeRequest(POST, "/api/v2/kindergarten/93740362/bus").withBody(json1)).get
 
       status(response1) must equalTo(UNAUTHORIZED)
@@ -42,5 +47,21 @@ class SchoolBusControllerSpec extends Specification with TestSupport {
       status(response4) must equalTo(UNAUTHORIZED)
     }
 
+    "should be created by teacher" in new WithApplication {
+
+      private val json1: JsValue = Json.toJson(SchoolBus(Some(1), "bus1", Some(someDriver), 93740362, "A-B-C", "A-B-C", "", "", "", "", None, None))
+      val response1 = route(principalRequest(POST, "/api/v2/kindergarten/93740362/bus").withBody(json1)).get
+                          Logger.info(contentAsString(response1))
+      status(response1) must equalTo(OK)
+      private val res: JsValue = Json.parse(contentAsString(response1))
+      (res \ "id").as[Long] must greaterThanOrEqualTo(1L)
+      (res \ "name").as[String] must beEqualTo("bus1")
+      (res \ "driver" \ "id").as[String] must beEqualTo("3_93740362_3344")
+    }
+
+  }
+
+  def someDriver: Employee = {
+    Employee(Some("3_93740362_3344"), "driver1", "13708089040", 1, "", "", None, "", 93740362, "login1", None, None)
   }
 }
