@@ -27,10 +27,15 @@ angular.module('kulebaoOp').controller 'OpVideoMemberInSchoolCtrl',
   ]
 
 angular.module('kulebaoOp').controller 'OpVideoMemberInClassCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'videoMemberService', 'senderService',
+  ['$scope', '$rootScope', '$stateParams', '$location', '$filter', 'schoolService', 'videoMemberService', 'senderService',
    'relationshipService', 'classService',
-    (scope, rootScope, stateParams, $location, School, VideoMember, Parent, Relationship, Class) ->
+    (scope, rootScope, stateParams, $location, $filter, School, VideoMember, Parent, Relationship, Class) ->
       scope.loading = true
+      extendFilterFriendlyProperties = (p) ->
+        p.phone = p.detail.phone
+        p.formattedPhone = $filter('phone')(p.detail.phone)
+        p
+
       scope.current_class = stateParams.class_id
       scope.kindergarten = School.get school_id: stateParams.school_id, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.school_id, ->
@@ -39,6 +44,7 @@ angular.module('kulebaoOp').controller 'OpVideoMemberInClassCtrl',
               Parent.get school_id: stateParams.school_id, id: p.id, type: 'p', (data)->
                 p.detail = data
                 p.reltaionship = Relationship.query school_id: stateParams.school_id, parent: p.detail.phone if p.detail.phone?
+                extendFilterFriendlyProperties(p)
             scope.loading = false
           scope.currentClass = _.find scope.kindergarten.classes, (c) -> c.class_id == parseInt scope.current_class
 
