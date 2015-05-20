@@ -23,7 +23,7 @@ angular.module("kulebao.directives").directive "klMediaPreview",
               url
 
           scope.isImage = (url) ->
-            url && /\.(jpg|png)$/.test(url)
+            url && /\.(jpg|png)$/i.test(url)
 
           scope.isAudio = (url) ->
             url && !scope.isImage(url)

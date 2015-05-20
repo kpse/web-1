@@ -107,9 +107,9 @@ angular.module('kulebaoAdmin')
           scope.currentModal.hide()
 
       scope.detectType = (url) ->
-        if url && url.match /\.(jpg|png)$/
+        if url && url.match /\.(jpg|png)$/i
           'image'
-        else if url && url.match /\.(mp3|mp4|amr)$/
+        else if url && url.match /\.(mp3|mp4|amr)$/i
           'audio'
         else
           'unknown'
