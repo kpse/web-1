@@ -19,6 +19,14 @@ case class MediaContent(url: String, `type`: Option[String] = Some("image"))
 case class SessionInMonth(month: String, count: Long)
 
 object ChatSession {
+  def allHistoryImages(kg: Long, timestamp: Long): List[String] = DB.withConnection {
+    implicit c =>
+      val urls: List[String] = SQL("SELECT media_url FROM sessionlog where school_id = {kg} and update_at > {time} and session_id like 'h_%' and media_type like '%image%'")
+        .on('kg -> kg, 'time -> timestamp)
+        .as(get[String]("media_url") *)
+      urls flatMap (_.split("  ")) filter (_.length > 0)
+  }
+
   def countGrowingHistory(kg: Long) = DB.withConnection {
     implicit c =>
       val count: Long = SQL("select count(1) from sessionlog where school_id={kg} and session_id like 'h_%'").on('kg -> kg).as(get[Long]("count(1)") single)
@@ -156,6 +164,7 @@ object ChatSession {
   val typeSeparator = ","
 
   def joinMediumUrls(medium: List[MediaContent]): String = medium.map(_.url).mkString(urlSeparator)
+
   def joinMediumTypes(medium: List[MediaContent]): String = medium.map(_.`type`.getOrElse("image")).mkString(typeSeparator)
 
   def create(kg: Long, session: ChatSession, originId: String) = DB.withConnection {
