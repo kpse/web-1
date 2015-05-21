@@ -51,12 +51,29 @@ class SchoolBusControllerSpec extends Specification with TestSupport {
 
       private val json1: JsValue = Json.toJson(SchoolBus(Some(1), "bus1", Some(someDriver), 93740362, "A-B-C", "A-B-C", "", "", "", "", None, None))
       val response1 = route(principalRequest(POST, "/api/v2/kindergarten/93740362/bus").withBody(json1)).get
-                          Logger.info(contentAsString(response1))
       status(response1) must equalTo(OK)
       private val res: JsValue = Json.parse(contentAsString(response1))
       (res \ "id").as[Long] must greaterThanOrEqualTo(1L)
       (res \ "name").as[String] must beEqualTo("bus1")
       (res \ "driver" \ "id").as[String] must beEqualTo("3_93740362_3344")
+    }
+
+    "should be deleted by teacher" in new WithApplication {
+
+      val all = route(principalRequest(GET, "/api/v2/kindergarten/93740362/bus")).get
+      status(all) must equalTo(OK)
+
+      private val beforeDeleting: JsArray = Json.parse(contentAsString(all)).as[JsArray]
+
+      val response1 = route(principalRequest(DELETE, "/api/v2/kindergarten/93740362/bus/1")).get
+      status(response1) must equalTo(OK)
+
+      val allAfter = route(principalRequest(GET, "/api/v2/kindergarten/93740362/bus")).get
+      status(allAfter) must equalTo(OK)
+
+      private val afterDeleting: JsArray = Json.parse(contentAsString(allAfter)).as[JsArray]
+      afterDeleting.value.length must beEqualTo(beforeDeleting.value.length - 1)
+
     }
 
   }
