@@ -76,6 +76,29 @@ class SchoolBusControllerSpec extends Specification with TestSupport {
 
     }
 
+    "should be empty after re-creation" in new WithApplication {
+
+      val response1 = route(principalRequest(GET, "/api/v2/kindergarten/93740362/bus/1")).get
+      status(response1) must equalTo(OK)
+      private val res: JsValue = Json.parse(contentAsString(response1))
+      private val driver: Employee = (res \ "driver").as[Employee]
+
+      val allPlansBeforeDeleting = route(principalRequest(GET, s"/api/v2/kindergarten/93740362/bus_driver/${driver.id.get}/plans")).get
+      private val plans: JsArray = Json.parse(contentAsString(allPlansBeforeDeleting)).as[JsArray]
+      plans.value.length must beGreaterThan(0)
+
+      val deleteResponse = route(principalRequest(DELETE, s"/api/v2/kindergarten/93740362/bus/1")).get
+      status(deleteResponse) must equalTo(OK)
+
+      private val json1: JsValue = Json.toJson(SchoolBus(None, "bus1", Some(driver), 93740362, "A-B-C", "A-B-C", "", "", "", "", None, None))
+      val recreate = route(principalRequest(POST, "/api/v2/kindergarten/93740362/bus").withBody(json1)).get
+      status(recreate) must equalTo(OK)
+
+      val allPlansAfterDeleting = route(principalRequest(GET, s"/api/v2/kindergarten/93740362/bus_driver/${driver.id}/plans")).get
+      private val plans2: JsArray = Json.parse(contentAsString(allPlansAfterDeleting)).as[JsArray]
+      plans2.value.length must equalTo(0)
+    }
+
   }
 
   def someDriver: Employee = {
