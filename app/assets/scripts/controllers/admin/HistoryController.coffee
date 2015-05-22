@@ -95,7 +95,9 @@ angular.module('kulebaoAdmin')
         msg.$save ->
           scope.refresh()
 
-      scope.messageEditing = ->
+      scope.messageEditing = (message) ->
+        scope.disableUploading = false
+        scope.message = angular.copy message
         scope.currentModal = Modal
           scope: scope
           keyboard: false
