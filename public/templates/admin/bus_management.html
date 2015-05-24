@@ -24,7 +24,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="bus in allBuses | filter: searchText | orderBy:'id'" class="row">
+  <tr ng-repeat="bus in allBuses | filter: searchText | orderBy:'id'" class="row" ng-class="{editable: editBus}" ng-click="editBus(bus)" >
     <td class="col-xs-1">{{bus.name}}</td>
     <td class="col-xs-1">{{bus.driver.name}}</td>
     <td class="col-xs-2">{{bus.morning_path}}</td>

@@ -190,6 +190,13 @@ angular.module('kulebaoAdmin')
           scope: scope
           contentTemplate: 'templates/admin/add_bus.html'
 
+      scope.editBus = (bus)->
+        scope.newBus = angular.copy bus
+        scope.newBus.driver.value = scope.newBus.driver.name
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/admin/add_bus.html'
+
       scope.deleteBus = (bus) ->
         bus.$delete ->
           scope.refresh()
