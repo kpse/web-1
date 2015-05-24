@@ -39,6 +39,15 @@ object SchoolBusController extends Controller with Secured {
       }
   }
 
+  def update(kg: Long, id: Long) = IsLoggedIn(parse.json) {
+    u => request =>
+      request.body.validate[SchoolBus].map {
+        handleUpdate(kg, id)
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
+
 
   def handleCreation(kg: Long): PartialFunction[SchoolBus, SimpleResult] = {
     guardSchoolId(kg) orElse
@@ -47,6 +56,15 @@ object SchoolBusController extends Controller with Secured {
       reviveBus orElse
       updateBus orElse
       createBus
+  }
+
+  def handleUpdate(kg: Long, id: Long): PartialFunction[SchoolBus, SimpleResult] = {
+    guardSchoolId(kg) orElse
+      guardBus(kg) orElse
+      guardBusId(id) orElse
+      guardEmployee(kg) orElse
+      reviveBus orElse
+      updateBus
   }
 
   def guardSchoolId(kg: Long): PartialFunction[SchoolBus, SimpleResult] = {
@@ -63,6 +81,11 @@ object SchoolBusController extends Controller with Secured {
       BadRequest(Json.toJson(ErrorResponse("班车不存在.(no such school bus)")))
     case (bus) if bus.nameDuplicated =>
       BadRequest(Json.toJson(ErrorResponse(s"班车名${bus.name}已经存在.(Duplicated school bus name)")))
+  }
+
+  def guardBusId(id: Long): PartialFunction[SchoolBus, SimpleResult] = {
+    case (bus) if bus.id.getOrElse(-1) != id =>
+      BadRequest(Json.toJson(ErrorResponse("错误的班车ID.(no such school bus id)")))
   }
 
   def guardEmployee(kg: Long): PartialFunction[SchoolBus, SimpleResult] = {

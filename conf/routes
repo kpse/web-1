@@ -276,6 +276,7 @@ POST          /api/v2/kindergarten/:kg/children_plans                           
 POST          /api/v2/kindergarten/:kg/bus                                                controllers.V2.SchoolBusController.create(kg: Long)
 GET           /api/v2/kindergarten/:kg/bus                                                controllers.V2.SchoolBusController.index(kg: Long)
 GET           /api/v2/kindergarten/:kg/bus/:id                                            controllers.V2.SchoolBusController.show(kg: Long, id: Long)
+POST          /api/v2/kindergarten/:kg/bus/:id                                            controllers.V2.SchoolBusController.update(kg: Long, id: Long)
 DELETE        /api/v2/kindergarten/:kg/bus/:id                                            controllers.V2.SchoolBusController.delete(kg: Long, id: Long)
 
 #Check in history
