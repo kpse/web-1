@@ -19,7 +19,7 @@
         <div class="col-sm-8 teacher-list">
           <button type="button" class="btn btn-default" ng-model="currentClass.managers" data-html="1" data-multiple="1"
                   placeholder="请选择负责老师"
-                  ng-click="$event.stopPropagation()" ng-options="e.name as e.name for e in employees"
+                  ng-click="$event.stopPropagation()" bs-options="e.name as e.name for e in employees"
                   bs-select></button>
         </div>
       </div>

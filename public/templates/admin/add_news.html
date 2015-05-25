@@ -22,7 +22,7 @@
       <div class="form-group col-xs-3">
         <button type="button" class="btn btn-default" ng-model="news.tags" data-html="1" data-multiple="1"
                 placeholder="添加需要的标签" ng-disabled="news.published"
-                ng-click="$event.stopPropagation()" ng-options="t for t in allTags" bs-select></button>
+                ng-click="$event.stopPropagation()" bs-options="t for t in allTags" bs-select></button>
       </div>
     </div>
     <form class="form-horizontal" role="form" name="newsForm">
