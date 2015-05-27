@@ -33,11 +33,11 @@
     <td class="col-xs-1">{{bus.morning_end}}</td>
     <td class="col-xs-1">{{bus.evening_start}}</td>
     <td class="col-xs-1">{{bus.evening_end}}</td>
-    <td class="col-xs-1"><a ng-click="mapOf(bus)">地图</a></td>
+    <td class="col-xs-1"><a ng-click="mapOf(bus);$event.stopPropagation()">地图</a></td>
     <td class="col-xs-1">
       <button class="btn btn-danger btn-xs" ng-confirm-msg="你确定要删除吗?"
               ng-confirm-click="deleteBus(bus)">删除</button>
-      <button class="btn btn-xs btn-success" ng-click="movingTest(bus)" ng-show="adminUser.privilege_group == 'operator'">发车
+      <button class="btn btn-xs btn-success" ng-click="movingTest(bus);$event.stopPropagation()" ng-show="adminUser.privilege_group == 'operator'">发车
       </button>
     </td>
   </tr>
