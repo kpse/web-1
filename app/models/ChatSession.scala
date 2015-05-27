@@ -215,4 +215,22 @@ object ChatSession {
         ).as(simple() *)
   }
 
+  def showHistory(kg: Long, topicId: String, id: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select * from sessionlog where status=1 and school_id={kg} and session_id={topic} and uid={id}")
+        .on(
+          'kg -> kg.toString,
+          'id -> id,
+          'topic -> s"h_$topicId"
+        ).as(simple(Some("^h_")) singleOpt)
+  }
+
+  def findHistoryById(id: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select * from sessionlog where uid={id}")
+        .on(
+          'id -> id
+        ).as(simple(Some("^h_")) singleOpt)
+  }
+
 }
