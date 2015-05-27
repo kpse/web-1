@@ -199,7 +199,7 @@ angular.module('kulebaoAdmin')
 
       scope.deleteBus = (bus) ->
         bus.$delete ->
-          scope.refresh()
+          scope.navigateToCreating()
       scope.saveBus = (bus) ->
         bus.$save ->
           scope.currentModal.hide()
