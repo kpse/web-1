@@ -102,6 +102,7 @@ POST          /kindergarten/:kg/assignment/:assignmentId                        
 
 GET           /kindergarten/:kg/history/:topicId/record                                   controllers.SessionController.history(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String])
 DELETE        /kindergarten/:kg/history/:topicId/record/:id                               controllers.SessionController.deleteHistory(kg: Long, topicId: String, id: Long)
+POST          /kindergarten/:kg/history/:topicId/record/:id                               controllers.SessionController.updateHistory(kg: Long, topicId: String, id: Long)
 POST          /kindergarten/:kg/history/:topicId/record                                   controllers.SessionController.createHistory(kg: Long, topicId: String, retrieve_recent_from: Option[Long])
 GET           /kindergarten/:kg/history/:topicId/statistics                               controllers.SessionController.statistics(kg: Long, topicId: String, year: String)
 

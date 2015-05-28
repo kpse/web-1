@@ -29,7 +29,7 @@ object SessionController extends Controller with Secured {
       Ok(Json.toJson(ChatSession.index(kg, topicId, from, to).take(most.getOrElse(25)).sortBy(_.id)))
   }
 
-  def reviseTopic(topic: String, c: ChatSession): ChatSession = ChatSession(topic, c.timestamp, c.id, c.content, c.media, c.sender, c.medium)
+  def reviseTopic(topic: String, c: ChatSession): ChatSession = c.copy(topic = topic)
 
   def create(kg: Long, sessionId: String, retrieveRecentFrom: Option[Long]) = IsAuthenticated(parse.json) {
     u =>
@@ -94,6 +94,19 @@ object SessionController extends Controller with Secured {
   }
 
   def deleteHistory(kg: Long, topicId: String, id: Long) = delete(kg, "h_%s".format(topicId), id)
+
+  def updateHistory(kg: Long, topicId: String, id: Long) = IsLoggedIn(parse.json) {
+    u =>
+      request =>
+        Logger.info(request.body.toString())
+        request.body.validate[ChatSession].map {
+          case (message) =>
+            val updated = ChatSession.update(kg, message.copy(topic = topicId), message.topic, id)
+            Ok(Json.toJson(updated))
+        }.recoverTotal {
+          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        }
+  }
 
   def delete(kg: Long, topicId: String, id: Long) = IsAuthenticated {
     user => _ =>

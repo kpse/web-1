@@ -167,6 +167,46 @@ object ChatSession {
 
   def joinMediumTypes(medium: List[MediaContent]): String = medium.map(_.`type`.getOrElse("image")).mkString(typeSeparator)
 
+  def update(kg: Long, session: ChatSession, topic: String, id: Long) = DB.withConnection {
+    implicit c =>
+      val time = System.currentTimeMillis
+
+      val medium = session.medium
+      val stmt: String = "update sessionlog set content={content}, media_url={url}, media_type={media_type}, sender={sender}, update_at={update_at}, sender_type={sender_type} " +
+        "where uid = {id} and session_id={topic} and school_id={kg}"
+      medium match {
+        case many if many.nonEmpty =>
+          val count = SQL(stmt).on(
+            'kg -> kg.toString,
+            'id -> id,
+            'topic -> s"h_${session.topic}",
+            'content -> session.content,
+            'url -> joinMediumUrls(many.get),
+            'media_type -> joinMediumTypes(many.get),
+            'sender -> session.sender.id,
+            'sender_type -> session.sender.`type`,
+            'update_at -> time
+          ).executeUpdate()
+          Logger.info(s"update history $count")
+          session.copy(timestamp = Some(time))
+        case _ =>
+          val media = session.media.getOrElse(MediaContent(""))
+          val count = SQL(stmt).on(
+            'kg -> kg.toString,
+            'id -> id,
+            'topic -> session.topic,
+            'content -> session.content,
+            'url -> media.url,
+            'media_type -> media.`type`,
+            'sender -> session.sender.id,
+            'sender_type -> session.sender.`type`,
+            'update_at -> time
+          ).executeUpdate()
+          Logger.info(s"update session $count")
+          session.copy(timestamp = Some(time))
+      }
+  }
+
   def create(kg: Long, session: ChatSession, originId: String) = DB.withConnection {
     implicit c =>
       val time = System.currentTimeMillis
