@@ -185,12 +185,14 @@ angular.module('kulebaoAdmin')
           evening_end: '16:30'
 
       scope.addBus = ->
+        scope.pageTitle = '新建班车'
         scope.newBus = createBus()
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/add_bus.html'
 
       scope.editBus = (bus)->
+        scope.pageTitle = '编辑班车'
         scope.newBus = angular.copy bus
         scope.newBus.driver.value = scope.newBus.driver.name
         scope.currentModal = Modal
