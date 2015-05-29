@@ -30,6 +30,12 @@ object SharePage {
         .on('t -> token).as(simple singleOpt)
   }
 
+  def findByOriginalId(originalId: Long): Option[SharePage] = DB.withConnection {
+    implicit c =>
+      SQL("select * from sharedpages where original_id={id}")
+        .on('id -> originalId).as(simple singleOpt)
+  }
+
   val simple = {
     get[Long]("uid") ~
     get[String]("token") ~

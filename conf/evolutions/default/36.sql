@@ -8,7 +8,8 @@ CREATE TABLE sharedpages (
   created_at BIGINT               DEFAULT 0,
   status    INT DEFAULT 1,
   PRIMARY KEY (uid),
-  UNIQUE (token)
+  UNIQUE (token),
+  UNIQUE (original_id)
 );
 
 INSERT INTO sharedpages (token, original_id, comment, created_at) VALUES
