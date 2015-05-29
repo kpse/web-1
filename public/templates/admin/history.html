@@ -1,32 +1,43 @@
 <div class="loading" ng-show="loading"></div>
 <h3>{{child.name}}小朋友的成长记录</h3>
 <form class="form well">
-    <button ng-click="messageEditing(message)" class="btn btn-success">添加记录</button>
+  <button ng-click="messageEditing(message)" class="btn btn-success">添加记录</button>
 </form>
 
-<div class="chat-history longer-history"><table class="table table-hover table-condensed">
-  <thead>
-  <tr class="row">
-    <th class="col-xs-1">记录人</th>
-    <th class="col-xs-5">文字内容</th>
-    <th class="col-xs-4">图片</th>
-    <th class="col-xs-2">通讯时间</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr ng-repeat="c in conversations | filter: searchText | orderBy:'id':true " class="row" ng-click="preview(c)" ng-class="{editable: preview}">
-    <td class="col-xs-1">{{c.sender.name}}</td>
-    <td class="col-xs-5" ng-show="c.content">{{c.content | truncate:100 }}</td>
-    <td class="col-xs-5" ng-show="!c.content">N/A</td>
-    <th class="col-xs-4" ng-show="c.medium.length">
-      <div class="image-preview image-110">
-        <div kl-media-preview media="c.medium[0]" height="110"></div>
-        <div ng-show="!c.medium[0]">N/A</div>
-      </div>
-    </th>
-    <td class="col-xs-4" ng-show="!c.medium.length">N/A</td>
-    <td class="col-xs-2">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</td>
-  </tr>
-  </tbody>
-</table>
+<div class="chat-history longer-history">
+  <table class="table table-hover table-condensed">
+    <thead>
+    <tr class="row">
+      <th class="col-xs-1">记录人</th>
+      <th class="col-xs-4">文字内容</th>
+      <th class="col-xs-4">图片</th>
+      <th class="col-xs-2">通讯时间</th>
+      <th class="col-xs-1">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="c in conversations | filter: searchText | orderBy:'id':true " class="row" ng-click="preview(c)"
+        ng-class="{editable: preview}">
+      <td class="col-xs-1">{{c.sender.name}}</td>
+      <td class="col-xs-5" ng-show="c.content">{{c.content | truncate:100 }}</td>
+      <td class="col-xs-5" ng-show="!c.content">N/A</td>
+      <th class="col-xs-4" ng-show="c.medium.length">
+        <div class="image-preview image-110">
+          <div kl-media-preview media="c.medium[0]" height="110"></div>
+          <div ng-show="!c.medium[0]">N/A</div>
+        </div>
+      </th>
+      <td class="col-xs-4" ng-show="!c.medium.length">N/A</td>
+      <td class="col-xs-2">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</td>
+      <td class="col-xs-1">
+        <button class="btn btn-xs btn-success"
+                ng-click="share(c);$event.stopPropagation()">分享
+        </button>
+        <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
+                ng-confirm-click="delete(c);$event.stopPropagation()">删除
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 </div>

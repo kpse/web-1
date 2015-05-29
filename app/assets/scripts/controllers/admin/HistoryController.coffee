@@ -45,8 +45,8 @@ angular.module('kulebaoAdmin')
 .controller 'HistoryCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', '$http', 'historyService', 'childService', '$modal',
-    '$popover', '$tooltip', 'employeeService', 'uploadService', 'senderService', 'readRecordService',
-    (scope, rootScope, stateParams, location, $http, Message, Child, Modal, Popover, Tooltip, Employee, Upload, Sender, ReaderLog) ->
+    '$popover', '$tooltip', 'employeeService', 'uploadService', 'senderService', 'readRecordService', 'historyShareService',
+    (scope, rootScope, stateParams, location, $http, Message, Child, Modal, Popover, Tooltip, Employee, Upload, Sender, ReaderLog, Share) ->
       scope.adminUser = Employee.get()
 
       scope.loading = true
@@ -93,6 +93,23 @@ angular.module('kulebaoAdmin')
 
       scope.send = (msg) ->
         msg.$save ->
+          scope.refresh()
+
+      scope.delete = (msg) ->
+        msg.$delete ->
+          scope.refresh()
+
+      urlOfToken = (token) ->
+        if location.host() == 'localhost'
+          "#{location.protocol()}://#{location.host()}:#{location.port()}/s/#{token}"
+        else
+          "#{location.protocol()}://#{location.host()}/s/#{token}"
+
+      scope.share = (msg) ->
+        sharingMessage = _.extend msg, school_id: stateParams.kindergarten
+        Share.save sharingMessage, (data) ->
+          url = urlOfToken data.token
+          alert(url)
           scope.refresh()
 
       scope.messageEditing = (message) ->
