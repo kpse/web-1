@@ -11,6 +11,9 @@ CREATE TABLE sharedpages (
   UNIQUE (token)
 );
 
+INSERT INTO sharedpages (token, original_id, comment, created_at) VALUES
+('909585a6', 44, 'some comment', 1432875678536);
+
 # --- !Downs
 
 DROP TABLE IF EXISTS sharedpages;

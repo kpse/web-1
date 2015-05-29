@@ -6,7 +6,7 @@ import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
 
-case class SharePage(id: Option[Long], token: String, title: String, content: String, sender: Sender, medium: List[MediaContent], comment: Option[String])
+case class SharePage(id: Option[Long], token: String, title: String, content: String, sender: Sender, medium: List[MediaContent], comment: Option[String], timestamp: Long)
 
 object SharePage {
 
@@ -39,9 +39,9 @@ object SharePage {
       case id ~ token ~ origin ~ time ~ comment =>
         ChatSession.findHistoryById(origin) match {
           case Some(x) =>
-            SharePage(Some(id), token, "", x.content, x.sender, x.medium.getOrElse(List()), comment)
+            SharePage(Some(id), token, "", x.content, x.sender, x.medium.getOrElse(List()), comment, time)
           case None =>
-            SharePage(None, token, "", "", Sender(""), List(), None)
+            SharePage(None, token, "", "", Sender(""), List(), None, 0)
         }
 
     }

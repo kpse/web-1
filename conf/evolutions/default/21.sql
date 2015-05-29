@@ -21,7 +21,7 @@ CREATE TABLE sessionlog (
 
 INSERT INTO sessionlog (school_id, session_id, content, media_url, sender, update_at, sender_type)
 VALUES
-('93740362', 'h_1_93740362_9982', '2014年4月发一条成长记录', 'http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg', '2_93740362_792', 1397131200000, 'p'),
+('93740362', 'h_1_93740362_9982', '2014年4月发一条成长记录', 'http://suoqin-test.u.qiniudn.com/1D8530120BB9780D0A28F8283E117F13', '2_93740362_792', 1397131200000, 'p'),
 ('93740362', '1_93740362_9982', '老师你好，我们家王大侠怎么样。', 'http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg', '2_93740362_792', 1401120055960, 'p'),
 ('93740362', '1_93740362_9982', '家长你好，你家王大侠最近没有来。', 'http://kulebao-prod.qiniudn.com/%252F3_0_2%252F1111.jpg', '3_93740362_1122', 1401130055961, 't'),
 ('93740362', '1_93740362_9982', '娃他妈，怎么回事。1', '', '2_93740362_790', 1401140055960, 'p'),
@@ -64,7 +64,7 @@ VALUES
 ('93740362', 'h_1_93740362_9982', '小孩历史测试一张图片', 'http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg', '2_93740362_790', 1401160055960, 'p'),
 ('93740362', 'h_1_93740362_9982', '小孩历史测试三张图片', 'http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg', '2_93740362_790', 1401170055960, 'p'),
 ('93740362', 'h_1_93740362_9982', '小孩历史测试五张图片', 'http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg', '2_93740362_790', 1401180055960, 'p'),
-('93740362', 'h_1_93740362_9982', '小孩历史测试九张图片', 'http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg  http://kulebao-prod.qiniudn.com/%252F3_0_1%252Fimage.jpg', '2_93740362_790', 1401190055960, 'p');
+('93740362', 'h_1_93740362_9982', '小孩历史测试九张图片', 'http://suoqin-test.u.qiniudn.com/1D8530120BB9780D0A28F8283E117F13  http://suoqin-test.u.qiniudn.com/Fg-mbGk1uDMQ4vbq6ltp-1CQaYy7  http://suoqin-test.u.qiniudn.com/FgcUqyUTooTJAl-MKNadIrkUQqIY  http://suoqin-test.u.qiniudn.com/Fget0Tx492DJofAy-ZeUg1SANJ4X  http://suoqin-test.u.qiniudn.com/FhFa41APn3S4YjlHdjeCW-Y-s8Xn  http://suoqin-test.u.qiniudn.com/FhLi-ycQqha-NgVvf-F8-EbBj70d  http://suoqin-test.u.qiniudn.com/FhdoadN7g_dk3CZBaKi2Q-yG6hEI  http://suoqin-test.u.qiniudn.com/FhpSlUf4WSwseguFUjCVRmavsBsh  http://suoqin-test.u.qiniudn.com/FhqOjy0qA83mzmDkcp1QfGLRmsif', '2_93740362_790', 1401190055960, 'p');
 INSERT INTO sessionlog (school_id, session_id, content, media_url, sender, update_at, sender_type, media_type)
 VALUES
 ('93740362', 'h_1_93740362_9982', '小孩历史测试一条声音', 'https://dn-kulebao.qbox.me/3_93740362_9972%252FfireEffect.mp3', '2_93740362_790', 1401190155960, 'p', 'audio'),

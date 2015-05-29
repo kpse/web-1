@@ -1,6 +1,7 @@
 package controllers
 
-import models.{ChatSession, ErrorResponse, SharePage}
+import controllers.SessionController._
+import models._
 import models.SharePage._
 import play.api.libs.json.Json
 import play.api.mvc._
