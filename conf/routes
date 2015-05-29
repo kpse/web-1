@@ -527,7 +527,7 @@ GET           /api/v3/binding_history/:phone                                    
 #urls in history records
 GET           /api/v3/kindergarten/:kg/history_image                                      controllers.V3.HistoryImagesController.index(kg: Long, from: Long)
 
-POST          /api/v3/kindergarten/:kg/history/:topicId/record/:id                        controllers.ShareLinksController.create(kg: Long, topicId: String, id: Long)
+POST          /api/v3/kindergarten/:kg/history/:topicId/record/:id/share                  controllers.ShareLinksController.create(kg: Long, topicId: String, id: Long)
 GET           /s/:token                                                                   controllers.ShareLinksController.page(token: String)
 
 # Map static resources from the /public folder to the /assets URL path
