@@ -124,9 +124,9 @@ object ChatSession {
               'kg -> kg.toString
             ).as(simple() *)
         case None =>
-          SQL("select * from sessionlog s," +
-            "(select session_id, MAX(update_at) last from sessionlog where status=1 and school_id={kg} and session_id not like 'h_%' " +
-            "group by session_id) a where a.last=s.update_at and s.session_id = a.session_id")
+          SQL("select s.* from sessionlog s," +
+            "(select session_id, MAX(update_at) last from sessionlog where status=1 and school_id={kg} group by session_id) a, " +
+            "childinfo c where a.last=s.update_at and s.session_id = a.session_id and s.session_id = c.child_id and c.status=1")
             .on(
               'kg -> kg.toString
             ).as(simple() *)
