@@ -543,6 +543,8 @@ GET           /*college/templates/*file                                         
 GET           /api/weixin/entry                                                           controllers.WeiXinController.entry(signature: String, timestamp: Long, nonce: String, echostr: String)
 POST          /api/weixin/entry                                                           controllers.WeiXinController.handle
 
+GET           /api/v3/weixin_jsticket                                                     controllers.WeiXinController.ticket()
+
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                    controllers.ChildController.index(kg: Long, parentId: String)
 GET           /kindergarten/:kg/parent/:parentId/child/:childId                           controllers.ChildController.show(kg: Long, parentId: String, childId: String)

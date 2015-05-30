@@ -2,7 +2,7 @@ package controllers
 
 import play.api.mvc.{Action, Controller}
 import play.Logger
-import play.api.libs.json.JsObject
+import play.api.libs.json.{Json, JsObject}
 import play.api.libs.ws.WS
 import play.api.Play
 import play.cache.Cache
@@ -10,7 +10,7 @@ import scala.concurrent.{ExecutionContext, Promise, Future}
 import scala.concurrent.duration._
 import ExecutionContext.Implicits.global
 
-object WeiXinController extends Controller {
+object WeiXinController extends Controller with Secured {
 
   import scala.xml._
 
@@ -174,7 +174,7 @@ object WeiXinController extends Controller {
   def queryUserInfo(openId: String) = {
     getToken.map {
       token =>
-        val url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s".format(token, openId)
+        val url = s"https://api.weixin.qq.com/cgi-bin/user/info?access_token=$token&openid=$openId"
         Logger.info(url)
         WS.url(url).get().map {
           response =>
@@ -183,4 +183,33 @@ object WeiXinController extends Controller {
     }
   }
 
+  def queryTicket: Future[String] = {
+    Cache.get("weixin_ticket") match {
+      case ticket: String if !ticket.isEmpty =>
+        val promise = Promise[String]()
+        promise.success(ticket)
+        promise.future
+      case _ =>
+        getToken.flatMap {
+          token =>
+            val url = s"https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=$token&type=jsapi"
+            Logger.info(url)
+            WS.url(url).get().map {
+              response =>
+                val ticket: String = (response.json \ "ticket").as[String]
+                Cache.set("weixin_ticket", ticket, 7200)
+                ticket
+            }
+        }
+    }
+  }
+
+  case class WeiXinTicket(ticket: String)
+  implicit  val writeWeiXinTicket = Json.writes[WeiXinTicket]
+  def ticket = Action.async {
+      queryTicket.map {
+        t =>
+          Ok(Json.toJson(WeiXinTicket(t)))
+      }
+  }
 }
