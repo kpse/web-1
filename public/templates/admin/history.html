@@ -30,7 +30,7 @@
       <td class="col-xs-4" ng-show="!c.medium.length">N/A</td>
       <td class="col-xs-2">于{{c.timestamp | date:'yyyy年MM月dd日 HH:mm'}}</td>
       <td class="col-xs-1">
-        <button class="btn btn-xs btn-success"
+        <button class="btn btn-xs btn-success" ng-show="adminUser.privilege_group == 'operator'"
                 ng-click="share(c);$event.stopPropagation()">分享
         </button>
         <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
