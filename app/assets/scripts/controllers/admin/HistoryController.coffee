@@ -101,9 +101,9 @@ angular.module('kulebaoAdmin')
 
       urlOfToken = (token) ->
         if location.host() == 'localhost'
-          "#{location.protocol()}://#{location.host()}:#{location.port()}/s/#{token}"
+          "http://#{location.host()}:#{location.port()}/s/#{token}"
         else
-          "#{location.protocol()}://#{location.host()}/s/#{token}"
+          "http://#{location.host()}/s/#{token}"
 
       scope.share = (msg) ->
         sharingMessage = _.extend msg, school_id: stateParams.kindergarten
