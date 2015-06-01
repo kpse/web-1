@@ -20,7 +20,7 @@ object SMSController extends Controller with Secured {
     implicit request =>
       floodProtect(phone) match {
         case (code: String) =>
-          Future.successful(BadRequest(Json.toJson(ErrorResponse("请求太频繁，目前限制为2分钟。(too frequently requests, current is 2 minutes)", 2))))
+          Future.successful(BadRequest(Json.toJson(ErrorResponse("请求太频繁，目前限制为2分钟。(too frequently requests, current is 2 minutes)"))))
         case null =>
           sendSMS(phone)
         case _ =>
