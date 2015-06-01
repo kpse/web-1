@@ -10,7 +10,7 @@ wxconfig2 =
   link: base
   imgUrl: 'http://7d9m4e.com1.z0.glb.clouddn.com/youlebao_logo.jpg'
 uri = window.location.href.split('#')[0]
-$.get "#{location.protocol}//#{location.host}/api/v3/weixin_signature?url=#{uri}", (data) ->
+$.get "#{location.protocol}//#{location.host}/api/v3/weixin_signature?url=#{encodeURIComponent(uri)}", (data) ->
   apilist = [
     'onMenuShareTimeline'
     'onMenuShareAppMessage'
