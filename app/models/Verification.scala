@@ -22,7 +22,7 @@ object Verification {
     val random = new Random(System.currentTimeMillis)
     val code = "%06d".format(random.nextInt(999999))
     Logger.info(phone + "'s code : " + code)
-    Cache.set(phone, code, 600)
+    Cache.set(phone, code, 120)
     code
   }
 

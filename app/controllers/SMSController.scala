@@ -20,11 +20,11 @@ object SMSController extends Controller with Secured {
     implicit request =>
       floodProtect(phone) match {
         case (code: String) =>
-          Future.successful(BadRequest(Json.toJson(ErrorResponse("请求太频繁。"))))
+          Future.successful(BadRequest(Json.toJson(ErrorResponse("请求太频繁。(too frequently requests)", 2))))
         case null =>
           sendSMS(phone)
         case _ =>
-          Future.successful(BadRequest(Json.toJson(ErrorResponse("短信发送出错。"))))
+          Future.successful(BadRequest(Json.toJson(ErrorResponse("短信发送出错。(other errors in sending SMS, contact admin please)", 3))))
       }
 
   }
@@ -43,7 +43,7 @@ object SMSController extends Controller with Secured {
           case List(num) if num > 0 =>
             Ok(Json.toJson(new SuccessResponse))
           case _ =>
-            Ok(Json.toJson(ErrorResponse("验证码发送失败。")))
+            Ok(Json.toJson(ErrorResponse("验证码发送失败。(sending error from mb345 side)", 4)))
         }
     }
   }
@@ -57,7 +57,7 @@ object SMSController extends Controller with Secured {
             case true =>
               Cache.remove(phone)
               Ok(Json.toJson(new SuccessResponse))
-            case false => Ok(Json.toJson(ErrorResponse("验证码校验失败。")))
+            case false => Ok(Json.toJson(ErrorResponse("验证码校验失败。(incorrect code)", 5)))
           }
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
