@@ -9,6 +9,7 @@ import play.cache.Cache
 import scala.concurrent.{ExecutionContext, Promise, Future}
 import scala.concurrent.duration._
 import ExecutionContext.Implicits.global
+import models.helper.MD5Helper.sha1
 
 object WeiXinController extends Controller with Secured {
 
@@ -211,5 +212,17 @@ object WeiXinController extends Controller with Secured {
         t =>
           Ok(Json.toJson(WeiXinTicket(t)))
       }
+  }
+
+  case class WeiXinSignature(jsapi_ticket: String, noncestr: String, timestamp: Long, url: String, signature: String)
+  implicit val writeWeiXinSignature = Json.writes[WeiXinSignature]
+  def signature(url: String) = Action.async {
+    queryTicket.map {
+      t =>
+        val noncestr = "daishuCocobabys2015"
+        val time = System.currentTimeMillis
+        val signature = sha1(s"jsapi_ticket=$t&noncestr=$noncestr&timestamp=$time&url=$url")
+        Ok(Json.toJson(WeiXinSignature(t, noncestr, time, url, signature)))
+    }
   }
 }

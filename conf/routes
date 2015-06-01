@@ -544,6 +544,7 @@ GET           /api/weixin/entry                                                 
 POST          /api/weixin/entry                                                           controllers.WeiXinController.handle
 
 GET           /api/v3/weixin_jsticket                                                     controllers.WeiXinController.ticket()
+GET           /api/v3/weixin_signature                                                    controllers.WeiXinController.signature(url: String)
 
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                    controllers.ChildController.index(kg: Long, parentId: String)
