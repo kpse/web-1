@@ -214,15 +214,16 @@ object WeiXinController extends Controller with Secured {
       }
   }
 
-  case class WeiXinSignature(jsapi_ticket: String, noncestr: String, timestamp: Long, url: String, signature: String)
+  case class WeiXinSignature(appid: String, jsapi_ticket: String, noncestr: String, timestamp: Long, url: String, signature: String)
   implicit val writeWeiXinSignature = Json.writes[WeiXinSignature]
   def signature(url: String) = Action.async {
     queryTicket.map {
       t =>
         val noncestr = "daishuCocobabys2015"
         val time = System.currentTimeMillis
+        val ak = Play.current.configuration.getString("weixin.ak").getOrElse("")
         val signature = sha1(s"jsapi_ticket=$t&noncestr=$noncestr&timestamp=$time&url=$url")
-        Ok(Json.toJson(WeiXinSignature(t, noncestr, time, url, signature)))
+        Ok(Json.toJson(WeiXinSignature(ak, t, noncestr, time, url, signature)))
     }
   }
 }
