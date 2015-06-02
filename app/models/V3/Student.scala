@@ -7,16 +7,166 @@ import anorm._
 import models.{Children, ChildInfo}
 import models.Children._
 import models.helper.TimeHelper.any2DateTime
+import models.helper.TimeHelper.parseShortDate
+import play.Logger
 import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
 case class StudentExt(display_name: Option[String], former_name: Option[String], student_id: Option[String], social_id: Option[String], residence_place: Option[String],
                       residence_type: Option[String], nationality: Option[String], original_place: Option[String], ethnos: Option[String],
-                      student_type: Option[Int], inDate: Option[String], interest: Option[String], bed_number: Option[String], memo: Option[String],
+                      student_type: Option[Int], in_date: Option[String], interest: Option[String], bed_number: Option[String], memo: Option[String],
                       bus_status: Option[Int], medical_history: Option[String])
 
-case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt])
+case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt]) {
+  def update: Option[Student] = DB.withTransaction {
+    implicit c =>
+      try {
+        val timestamp = System.currentTimeMillis
+        val kg: Long = basic.school_id.getOrElse(0)
+        val childId = basic.child_id.getOrElse("2_%d_%d".format(kg, timestamp%100000))
+        SQL("update childinfo set name={name}, child_id={child_id}, student_id={student_id}, " +
+          "gender={gender}, classname={classname}, picurl={picurl}, birthday={birthday}, " +
+          "indate={indate}, school_id={school_id}, address={address}, stu_type={stu_type}, hukou={hukou}, " +
+          "social_id={social_id}, nick={nick}, status=1, update_at={timestamp}, class_id={class_id} " +
+          " where uid={id}")
+          .on(
+            'id -> id,
+            'name -> basic.name,
+            'child_id -> childId,
+            'student_id -> s"$timestamp".take(5),
+            'gender -> basic.gender,
+            'classname -> "",
+            'picurl -> basic.portrait.getOrElse(""),
+            'birthday -> basic.birthday,
+            'indate -> basic.birthday,
+            'school_id -> basic.school_id.getOrElse(0),
+            'address -> basic.address,
+            'stu_type -> 2,
+            'hukou -> 1,
+            'social_id -> "social_id",
+            'nick -> basic.nick,
+            'status -> 1,
+            'class_id -> basic.class_id,
+            'timestamp -> timestamp).executeInsert()
+        ext map {
+          case info =>
+            SQL("update studentext set display_name={display}, former_name={former_name}, student_id={student_id}, social_id={social_id}, " +
+              "residence_place={residence_place}, residence_type={residence_type}, nationality={nationality}, " +
+              "original_place={original_place}, ethnos={ethnos}, student_type={student_type}, in_date={in_date}, interest={interest}, " +
+              "bed_number={bed_number}, memo={memo}, bus_status={bus_status}, medical_history={medical_history} " +
+              " where base_id={base_id}")
+              .on(
+                'base_id -> id,
+                'display -> info.display_name,
+                'former_name -> info.former_name,
+                'student_id -> info.student_id,
+                'social_id -> info.social_id,
+                'residence_place -> info.residence_place,
+                'residence_type -> info.residence_type,
+                'nationality -> info.nationality,
+                'original_place -> info.original_place,
+                'ethnos -> info.ethnos,
+                'student_type -> info.student_type,
+                'in_date -> parseShortDate(info.in_date.getOrElse("1970-01-01")).toDate.getTime,
+                'interest -> info.interest,
+                'bed_number -> info.bed_number,
+                'memo -> info.memo,
+                'bus_status -> info.bus_status,
+                'medical_history -> info.medical_history
+              ).executeInsert()
+        }
+        c.commit()
+        val info: Option[ChildInfo] = Children.findById(kg, id.get)
+        Logger.info(info.toString)
+        ext match {
+          case Some(x) =>
+            Some(Student(id, info.get, Some(x)))
+          case None =>
+            Some(Student(id, info.get, None))
+        }
+      }
+      catch {
+        case t: Throwable =>
+          Logger.info(t.getLocalizedMessage)
+          c.rollback()
+          None
+      }
+  }
+
+  def create: Option[Student] = DB.withTransaction {
+    implicit c =>
+      try {
+        val timestamp = System.currentTimeMillis
+        val kg: Long = basic.school_id.getOrElse(0)
+        val childId = basic.child_id.getOrElse("2_%d_%d".format(kg, timestamp%100000))
+        val childUid: Option[Long] = SQL("INSERT INTO childinfo(name, child_id, student_id, gender, classname, picurl, birthday, " +
+          "indate, school_id, address, stu_type, hukou, social_id, nick, status, update_at, class_id, created_at) " +
+          "VALUES ({name},{child_id},{student_id},{gender},{classname},{picurl},{birthday},{indate}," +
+          "{school_id},{address},{stu_type},{hukou},{social_id},{nick},{status},{timestamp},{class_id},{created})")
+          .on(
+            'name -> basic.name,
+            'child_id -> childId,
+            'student_id -> s"$timestamp".take(5),
+            'gender -> basic.gender,
+            'classname -> "",
+            'picurl -> basic.portrait.getOrElse(""),
+            'birthday -> basic.birthday,
+            'indate -> basic.birthday,
+            'school_id -> basic.school_id.getOrElse(0),
+            'address -> basic.address,
+            'stu_type -> 2,
+            'hukou -> 1,
+            'social_id -> "social_id",
+            'nick -> basic.nick,
+            'status -> 1,
+            'class_id -> basic.class_id,
+            'timestamp -> timestamp,
+            'created -> timestamp).executeInsert()
+        ext map {
+          case info =>
+            SQL("insert into studentext (base_id, display_name, former_name, student_id, social_id, residence_place, residence_type, nationality, " +
+              "original_place, ethnos, student_type, in_date, interest, bed_number, memo, bus_status, medical_history) values (" +
+              "{base_id}, {display}, {former_name}, {student_id}, {social_id}, {residence_place}, {residence_type}, {nationality}, " +
+              "{original_place}, {ethnos}, {student_type}, {in_date}, {interest}, {bed_number}, {memo}, {bus_status}, {medical_history})")
+              .on(
+                'base_id -> childUid.get,
+                'display -> info.display_name,
+                'former_name -> info.former_name,
+                'student_id -> info.student_id,
+                'social_id -> info.social_id,
+                'residence_place -> info.residence_place,
+                'residence_type -> info.residence_type,
+                'nationality -> info.nationality,
+                'original_place -> info.original_place,
+                'ethnos -> info.ethnos,
+                'student_type -> info.student_type,
+                'in_date -> parseShortDate(info.in_date.getOrElse("1970-01-01")).toDate.getTime,
+                'interest -> info.interest,
+                'bed_number -> info.bed_number,
+                'memo -> info.memo,
+                'bus_status -> info.bus_status,
+                'medical_history -> info.medical_history
+              ).executeInsert()
+        }
+        c.commit()
+        val info: Option[ChildInfo] = Children.findById(kg, childUid.get)
+        Logger.info(info.toString)
+        ext match {
+          case Some(x) =>
+            Some(Student(childUid, info.get, Some(x)))
+          case None =>
+            Some(Student(childUid, info.get, None))
+        }
+      }
+      catch {
+        case t: Throwable =>
+          Logger.info(t.getLocalizedMessage)
+          c.rollback()
+          None
+      }
+  }
+}
 
 object Student {
   implicit val writeStudentExt = Json.writes[StudentExt]
@@ -58,6 +208,15 @@ object Student {
         .on(
           'id -> id
         ).as(simpleExt singleOpt)
+  }
+
+  def deleteById(kg: Long, id: Long) = DB.withConnection {
+    implicit c =>
+      SQL(s"update childinfo set status=0 where uid={id} and school_id={kg} and status=1")
+        .on(
+          'kg -> kg.toString,
+          'id -> id
+        ).executeUpdate()
   }
 
   val simple = {

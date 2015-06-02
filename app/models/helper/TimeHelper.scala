@@ -9,6 +9,10 @@ object TimeHelper {
     DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.000Z").parseDateTime(dateString)
   }
 
+  def parseShortDate(dateString: String): DateTime = {
+    DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(dateString)
+  }
+
   implicit def any2DateTime[A](date: A) = new AnyRef {
     def toDateOnly = new DateTime(date).toString(DateTimeFormat.forPattern("yyyy-MM-dd"))
     def toMonthOnly = new DateTime(date).toString(DateTimeFormat.forPattern("yyyy-MM"))

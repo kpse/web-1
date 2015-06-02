@@ -12,10 +12,9 @@ import play.api.libs.json.Json
 
 case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String,
                      gender: Int, portrait: Option[String], class_id: Int, class_name: Option[String],
-                     timestamp: Option[Long], school_id: Option[Long], address: Option[String] = None, status: Option[Int] = Some(1), created_at: Option[Long] = None)
+                     timestamp: Option[Long], school_id: Option[Long], address: Option[String] = None, status: Option[Int] = Some(1), created_at: Option[Long] = None, id: Option[Long]=None)
 
 object Children {
-
   implicit val writeChildInfo = Json.writes[ChildInfo]
   implicit val readChildInfo = Json.reads[ChildInfo]
 
@@ -139,9 +138,9 @@ object Children {
         Logger.info("created childinfo %s".format(childUid))
         c.commit()
         childUid.flatMap {
-          c =>
-            Logger.info("finding child %d".format(c))
-            findById(kg, c)
+          uid =>
+            Logger.info("finding child %d".format(uid))
+            findById(kg, uid)
         }
       }
       catch {
@@ -166,11 +165,12 @@ object Children {
       get[Option[String]]("childinfo.address") ~
       get[Long]("childinfo.update_at") ~
       get[Long]("childinfo.created_at") ~
+      get[Long]("childinfo.uid") ~
       get[Int]("childinfo.status") map {
       case schoolId ~ childId ~ childName ~ nick ~ icon_url ~ childGender
-        ~ childBirthday ~ classId ~ className ~ address ~ t ~ created ~ status =>
+        ~ childBirthday ~ classId ~ className ~ address ~ t ~ created ~ id ~ status =>
         ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt,
-          Some(icon_url.getOrElse("")), classId, Some(className), Some(t), Some(schoolId.toLong), address, Some(status), Some(created))
+          Some(icon_url.getOrElse("")), classId, Some(className), Some(t), Some(schoolId.toLong), address, Some(status), Some(created), Some(id))
     }
   }
 

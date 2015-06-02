@@ -2,7 +2,7 @@ package controllers.V3
 
 import controllers.Secured
 import models.V3.{Student, StudentExt}
-import models.{ChildInfo, SuccessResponse}
+import models.{ErrorResponse, Children, ChildInfo, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 import models.Children.readChildInfo
@@ -23,13 +23,21 @@ object StudentController extends Controller with Secured {
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Student.show(kg, id)))
+    Student.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的学生。(No such student)")))
+    }
+
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Student].map {
+      case (s) if s.ext.isEmpty =>
+        BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -37,14 +45,17 @@ object StudentController extends Controller with Secured {
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Student].map {
+      case (s) if s.ext.isEmpty =>
+        BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    Student.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
