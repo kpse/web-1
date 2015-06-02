@@ -217,6 +217,7 @@ object WeiXinController extends Controller with Secured {
   case class WeiXinSignature(appid: String, jsapi_ticket: String, noncestr: String, timestamp: Long, url: String, signature: String)
   implicit val writeWeiXinSignature = Json.writes[WeiXinSignature]
   def signature(url: String) = Action.async {
+    Logger.info(s"url: $url")
     queryTicket.map {
       t =>
         val noncestr = "daishuCocobabys2015"
