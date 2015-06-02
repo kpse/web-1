@@ -1,6 +1,7 @@
 package controllers.V3
 
 import controllers.Secured
+import models.V3.{StudentExt, Student}
 import models.{ChildInfo, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
@@ -282,11 +283,11 @@ object FinancialRecipientController extends Controller with Secured {
 
 
   def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(FinancialRecipient(Some(1), FinancialReceipt(Some(1), Some("123131312312"), Some("刷卡"), Some(321), Some(s"3_${kg}_1"), Some(System.currentTimeMillis)), Student(Some(1), info(kg, 1), ext)))))
+    Ok(Json.toJson(List(FinancialRecipient(Some(1), FinancialReceipt(Some(1), Some("123131312312"), Some("刷卡"), Some(321), Some(s"3_${kg}_1"), Some(System.currentTimeMillis)), Student(Some(1), info(kg, 1), Some(ext))))))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(FinancialRecipient(Some(1), FinancialReceipt(Some(1), Some("123131312312"), Some("刷卡"), Some(321), Some(s"3_${kg}_1"), Some(System.currentTimeMillis)), Student(Some(1), info(kg, 1), ext))))
+    Ok(Json.toJson(FinancialRecipient(Some(1), FinancialReceipt(Some(1), Some("123131312312"), Some("刷卡"), Some(321), Some(s"3_${kg}_1"), Some(System.currentTimeMillis)), Student(Some(1), info(kg, 1), Some(ext)))))
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>

@@ -323,7 +323,7 @@ GET           /api/v2/kindergarten/:kg/employee/:employeeId/session             
 
 #v3 integrate with c# client
 
-GET           /api/v3/kindergarten/:kg/student                                            controllers.V3.StudentController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/student                                            controllers.V3.StudentController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v3/kindergarten/:kg/student/:id                                        controllers.V3.StudentController.show(kg: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/student                                            controllers.V3.StudentController.create(kg: Long)
 POST          /api/v3/kindergarten/:kg/student/:id                                        controllers.V3.StudentController.update(kg: Long, id: Long)

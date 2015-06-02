@@ -1,26 +1,15 @@
 package controllers.V3
 
 import controllers.Secured
+import models.V3.{Student, StudentExt}
 import models.{ChildInfo, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 import models.Children.readChildInfo
 import models.Children.writeChildInfo
 
-case class StudentExt(display_name: Option[String], former_name: Option[String], student_id: Option[String], social_id: Option[String], Residence_place: Option[String],
-                      Residence_type: Option[String], nationality: Option[String], original_place: Option[String], ethnos: Option[String],
-                      student_type: Option[Int], InDate: Option[String], interest: Option[String], bed_number: Option[String], memo: Option[String],
-                      bus_status: Option[Int], medical_history: Option[String])
-
-case class Student(id: Option[Long], basic: ChildInfo, ext: StudentExt)
 
 object StudentController extends Controller with Secured {
-
-  implicit val writeStudentExt = Json.writes[StudentExt]
-  implicit val readStudentExt = Json.reads[StudentExt]
-
-  implicit val writeStudent = Json.writes[Student]
-  implicit val readStudent = Json.reads[Student]
 
   def info(kg: Long, id: Long): ChildInfo = ChildInfo(Some(s"1_${kg}_${id}"), "小明", "嘟嘟", "2013-01-01", 1,
     Some("http://suoqin-test.u.qiniudn.com/1D8530120BB9780D0A28F8283E117F13"), 1234, Some("苹果班"), Some(1427817610000L), Some(kg), Some("某个胡同"),
@@ -29,12 +18,12 @@ object StudentController extends Controller with Secured {
   val ext: StudentExt = StudentExt(Some("显示名"), Some("曾用名"), Some("3721"), Some("510122201301010274"), Some("四川双流"), Some("农村"),
     Some("中国"), Some("湖北武汉"), Some("傣族"), Some(1), Some("2015-09-01"), Some("骑马，打仗"), Some("1-2-3322"), Some("这家伙很懒，什么也没留下。"), Some(1), Some("青霉素过敏"))
 
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Student(Some(1), info(kg, 1), ext))))
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(Student.index(kg, from, to, most)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Student(Some(id), info(kg, id), ext)))
+    Ok(Json.toJson(Student.show(kg, id)))
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
