@@ -23,12 +23,6 @@ case class EmployeeV3(id: Option[Long], basic: Employee, ext: Option[EmployeeExt
         val updatedEmployee: Option[Employee] = Employee.update(basic)
         ext map {
           case info =>
-            /*
-* case class EmployeeExt(display_name: Option[String], social_id: Option[String], nationality: Option[String], original_place: Option[String],
-                     ethnos: Option[String], marriage: Option[Int], education: Option[String], fixed_line: Option[String], memo: Option[String],
-                     work_id: Option[String], work_group: Option[Int], in_date: Option[String], work_status: Option[String],
-                     work_duty: Option[String], work_title: Option[String], work_rank: Option[String], certification: Option[String])
-                     */
             SQL("update employeeext set display_name={display}, social_id={social_id}, nationality={nationality}, " +
               "original_place={original_place}, ethnos={ethnos}, marriage={marriage}, education={education}, fixed_line={fixed_line}, " +
               "memo={memo}, work_id={work_id}, work_group={work_group}, in_date={in_date}, work_status={work_status}, " +
@@ -171,6 +165,26 @@ object EmployeeV3 {
           'kg -> kg.toString,
           'id -> id
         ).executeUpdate()
+  }
+
+  def removeDirtyDataIfExists(r: EmployeeV3) = DB.withConnection {
+    implicit c =>
+      val deletableCondition: String = " where status=0 and school_id={kg} and (phone={phone} or employee_id={id} or login_name={login}) "
+      val execute1: Boolean = SQL(s"delete from employeeext where base_id in (select uid from employeeinfo $deletableCondition)")
+        .on(
+          'kg -> r.basic.school_id,
+          'id -> r.basic.id.getOrElse(""),
+          'login -> r.basic.login_name,
+          'phone -> r.basic.phone
+        ).execute()
+      val execute2: Boolean = SQL(s"delete from employeeinfo $deletableCondition")
+        .on(
+          'kg -> r.basic.school_id,
+          'id -> r.basic.id.getOrElse(""),
+          'login -> r.basic.login_name,
+          'phone -> r.basic.phone
+        ).execute()
+      Logger.info(s"employee removeDirtyDataIfExists ${r.basic}  $execute1 $execute2")
   }
 
   val simple = {

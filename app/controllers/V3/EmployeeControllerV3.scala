@@ -28,6 +28,7 @@ object EmployeeControllerV3 extends Controller with Secured {
       case (s) if s.basic.uid.nonEmpty || s.id.nonEmpty =>
         BadRequest(Json.toJson(ErrorResponse("有id的情况请用update接口。(use update when you have ID value)", 4)))
       case (s) =>
+        EmployeeV3.removeDirtyDataIfExists(s)
         Ok(Json.toJson(s.create))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
