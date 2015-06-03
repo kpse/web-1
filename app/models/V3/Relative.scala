@@ -135,6 +135,28 @@ object Relative {
         ).executeUpdate()
   }
 
+  def removeDirtyDataIfExists(r: Relative) = DB.withConnection {
+    implicit c =>
+      val deletableCondition: String = " where status=0 and school_id={kg} and (phone={phone} or parent_id={id}) "
+      val execute: Boolean = SQL(s"delete from accountinfo where accountid={phone}")
+        .on(
+          'phone -> r.basic.phone
+        ).execute()
+      val execute1: Boolean = SQL(s"delete from parentext where base_id in (select uid from parentinfo $deletableCondition)")
+        .on(
+          'kg -> r.basic.school_id,
+          'id -> r.basic.parent_id.getOrElse(""),
+          'phone -> r.basic.phone
+        ).execute()
+      val execute2: Boolean = SQL(s"delete from parentinfo $deletableCondition")
+        .on(
+          'kg -> r.basic.school_id,
+          'id -> r.basic.parent_id.getOrElse(""),
+          'phone -> r.basic.phone
+        ).execute()
+      Logger.info(s"relative removeDirtyDataIfExists ${r.basic} $execute $execute1 $execute2")
+  }
+
   val simple = {
     get[Long]("uid") ~
     get[String]("parent_id") ~

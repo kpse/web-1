@@ -27,6 +27,7 @@ object RelativeController extends Controller with Secured {
       case (s) if s.basic.id.nonEmpty || s.id.nonEmpty =>
         BadRequest(Json.toJson(ErrorResponse("有id的情况请用update接口。(use update when you have ID value)", 4)))
       case (s) =>
+        Relative.removeDirtyDataIfExists(s)
         Ok(Json.toJson(s.create))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
