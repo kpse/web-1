@@ -1,40 +1,33 @@
 package controllers.V3
 
 import controllers.Secured
-import models.{Parent, SuccessResponse}
+import models.V3.Relative
+import models.{ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
-case class ParentExt(display_name: Option[String], social_id: Option[String], nationality: Option[String], fix_line: Option[String], memo: Option[String])
-
-case class Relative(id: Option[Long], basic: Parent, ext: ParentExt)
-
 object RelativeController extends Controller with Secured {
-
-  implicit val writeParentExt = Json.writes[ParentExt]
-  implicit val readParentExt = Json.reads[ParentExt]
-
-  implicit val writeRelative = Json.writes[Relative]
-  implicit val readRelative = Json.reads[Relative]
-
-  def info(kg: Long, id: Long): Parent = Parent(Some(s"2_${kg}_${id}"), kg, "老王", "13991855476",
-    Some("http://suoqin-test.u.qiniudn.com/FhdoadN7g_dk3CZBaKi2Q-yG6hEI"), 1, "1979-01-01", Some(1427817610000L),
-    Some(1), Some(1), Some("可口可乐中国办事处"), Some(1417817610000L))
-
-  val ext: ParentExt = ParentExt(Some("大显示名"), Some("510122197801010274"), Some("中国"), Some("028-88884444"), Some("这家伙很懒，什么也没留下。"))
-
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Relative(Some(1), info(kg, 1), ext))))
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(Relative.index(kg, from, to, most)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Relative(Some(id), info(kg, id), ext)))
+    Relative.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的家长。(No such relative)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Relative].map {
+      case (s) if s.ext.isEmpty =>
+        BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
+      case (s) if s.basic.id.nonEmpty || s.id.nonEmpty =>
+        BadRequest(Json.toJson(ErrorResponse("有id的情况请用update接口。(use update when you have ID value)", 4)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -42,14 +35,21 @@ object RelativeController extends Controller with Secured {
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Relative].map {
+      case (s) if s.ext.isEmpty =>
+        BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
+      case (s) if s.id != s.basic.id  =>
+        BadRequest(Json.toJson(ErrorResponse("内外id不一致。(ids should be consistent)", 3)))
+      case (s) if s.id.isEmpty  =>
+        BadRequest(Json.toJson(ErrorResponse("没有id无法更新。(no id for update)", 5)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    Relative.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }

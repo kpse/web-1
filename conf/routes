@@ -329,7 +329,7 @@ POST          /api/v3/kindergarten/:kg/student                                  
 POST          /api/v3/kindergarten/:kg/student/:id                                        controllers.V3.StudentController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/student/:id                                        controllers.V3.StudentController.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/relative                                           controllers.V3.RelativeController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/relative                                           controllers.V3.RelativeController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v3/kindergarten/:kg/relative/:id                                       controllers.V3.RelativeController.show(kg: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/relative                                           controllers.V3.RelativeController.create(kg: Long)
 POST          /api/v3/kindergarten/:kg/relative/:id                                       controllers.V3.RelativeController.update(kg: Long, id: Long)

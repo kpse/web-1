@@ -12,7 +12,10 @@ import models.helper.PasswordHelper.generateNewPassword
 import play.api.libs.json.Json
 
 
-case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String], gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int], company: Option[String] = None, video_member_status: Option[Long] = None, created_at: Option[Long] = None) {
+case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String],
+                  gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int],
+                  company: Option[String] = None, video_member_status: Option[Long] = None, created_at: Option[Long] = None,
+                  id: Option[Long]=None) {
   def hasHistory(historyId: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from sessionlog where uid={id} and sender={sender}")
@@ -509,6 +512,7 @@ object Parent {
   }
 
   val simple = {
+    get[Long]("uid") ~
     get[String]("parent_id") ~
       get[String]("school_id") ~
       get[String]("parentinfo.name") ~
@@ -521,8 +525,8 @@ object Parent {
       get[Option[String]]("parentinfo.company") ~
       get[Long]("parentinfo.update_at") ~
       get[Long]("parentinfo.created_at") map {
-      case id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday ~ member ~ status ~ company ~ t ~ created =>
-        Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t), Some(member), Some(status), company, None, Some(created))
+      case uid ~ id ~ kg ~ name ~ phone ~ gender ~ portrait ~ birthday ~ member ~ status ~ company ~ t ~ created =>
+        Parent(Some(id), kg.toLong, name, phone, Some(portrait.getOrElse("")), gender, birthday.toDateOnly, Some(t), Some(member), Some(status), company, None, Some(created), Some(uid))
     }
   }
 
