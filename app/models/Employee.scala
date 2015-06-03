@@ -15,7 +15,7 @@ import play.api.libs.json.Json
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
-                    login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1), created_at: Option[Long] = None) {
+                    login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1), created_at: Option[Long] = None, uid: Option[Long]=None) {
   def update = DB.withConnection {
     implicit c =>
       id map {
@@ -441,6 +441,7 @@ object Employee {
   }
 
   val simple = {
+    get[Long]("uid") ~
     get[String]("employee_id") ~
       get[String]("name") ~
       get[String]("phone") ~
@@ -454,8 +455,9 @@ object Employee {
       get[Long]("update_at") ~
       get[Long]("created_at") ~
       get[Int]("status") map {
-      case id ~ name ~ phone ~ gender ~ workgroup ~ workduty ~ url ~ birthday ~ kg ~ loginName ~ timestamp ~ created ~ status =>
-        Employee(Some(id), name, phone, gender, workgroup, workduty, Some(url.getOrElse("")), birthday.toDateOnly, kg.toLong, loginName, Some(timestamp), groupOf(id, kg.toLong), Some(status), Some(created))
+      case uid ~ id ~ name ~ phone ~ gender ~ workgroup ~ workduty ~ url ~ birthday ~ kg ~ loginName ~ timestamp ~ created ~ status =>
+        Employee(Some(id), name, phone, gender, workgroup, workduty, Some(url.getOrElse("")), birthday.toDateOnly,
+          kg.toLong, loginName, Some(timestamp), groupOf(id, kg.toLong), Some(status), Some(created), Some(uid))
     }
   }
 

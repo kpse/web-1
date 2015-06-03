@@ -1,43 +1,34 @@
 package controllers.V3
 
 import controllers.Secured
-import models.{Employee, SuccessResponse}
+import controllers.V3.RelativeController._
+import models.V3.{Relative, EmployeeV3}
+import models.{ErrorResponse, Employee, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
-case class EmployeeExt(display_name: Option[String], social_id: Option[String], nationality: Option[String], Residence_place: Option[String],
-                       ethnos: Option[String], marriage: Option[Int], education: Option[String], fix_line: Option[String], memo: Option[String],
-                        work_id: Option[String], InDate: Option[String], work_status: Option[String], work_title: Option[String], work_rank: Option[String], certification: Option[String])
-
-case class EmployeeV3(id: Option[Long], basic: Employee, ext: EmployeeExt)
-
 object EmployeeControllerV3 extends Controller with Secured {
-
-  implicit val writeEmployeeExt = Json.writes[EmployeeExt]
-  implicit val readEmployeeExt = Json.reads[EmployeeExt]
-
-  implicit val writeEmployeeV3 = Json.writes[EmployeeV3]
-  implicit val readEmployeeV3 = Json.reads[EmployeeV3]
-
-  def info(kg: Long, id: Long): Employee = Employee(Some(s"3_${kg}_${id}"), "张曼玉", "13991855486", 1, "工作组", "校长",
-    Some("http://suoqin-test.u.qiniudn.com/FhdoadN7g_dk3CZBaKi2Q-yG6hEI"), "1979-01-01", kg, "loginAdmin", Some(1427817610000L), Some("principal"),
-    Some(1), Some(1417817610000L))
-
-  val ext: EmployeeExt = EmployeeExt(Some("老师显示名"), Some("510122197801010274"), Some("中国"), Some("山西大同"),
-    Some("布依族"), Some(0), Some("大学"), Some("028-99997777"), Some("这家伙很懒，什么也没留下。"), Some("44343312"), Some("2013-09-01"), Some("在职"), Some("高级职称"), Some("高级教师"), Some("幼师资格证"))
-
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(EmployeeV3(Some(1), info(kg, 1), ext))))
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(EmployeeV3.index(kg, from, to, most)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(EmployeeV3(Some(id), info(kg, id), ext)))
+    EmployeeV3.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的老师。(No such employee)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[EmployeeV3].map {
+      case (s) if s.ext.isEmpty =>
+        BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
+      case (s) if s.basic.uid.nonEmpty || s.id.nonEmpty =>
+        BadRequest(Json.toJson(ErrorResponse("有id的情况请用update接口。(use update when you have ID value)", 4)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -45,14 +36,21 @@ object EmployeeControllerV3 extends Controller with Secured {
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[EmployeeV3].map {
+      case (s) if s.ext.isEmpty =>
+        BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
+      case (s) if s.id != s.basic.uid  =>
+        BadRequest(Json.toJson(ErrorResponse("内外id不一致。(ids should be consistent)", 3)))
+      case (s) if s.id.isEmpty  =>
+        BadRequest(Json.toJson(ErrorResponse("没有id无法更新。(no id for update)", 5)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    EmployeeV3.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
