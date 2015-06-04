@@ -148,6 +148,9 @@
           <button ng-show="allowRevive(parent)" class="btn btn-info" ng-confirm-msg="你确定要恢复这个家长吗?"
                   ng-confirm-click="revive(parent)">原地复活
           </button>
+          <button ng-show="hasTeacherInfo" class="btn btn-success"
+                  ng-click="navigateTo(parent.phone, 'teacher')">编辑教师信息
+          </button>
         </div>
       </div>
     </div>

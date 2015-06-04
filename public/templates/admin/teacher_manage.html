@@ -83,6 +83,9 @@
           <button ng-show="resetPassword" class="btn btn-warning" ng-confirm-msg="你确定要重置密码吗?"
                   ng-confirm-click="resetPassword(teacher)">重置密码
           </button>
+          <button ng-show="hasParentInfo" class="btn btn-success"
+                  ng-click="navigateTo(teacher.phone)">编辑家长信息
+          </button>
         </div>
       </div>
     </div>

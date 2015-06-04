@@ -55,9 +55,11 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
 
 .controller 'OpShowPhoneCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', '$alert', '$state', 'phoneManageService', 'schoolService',
-   'videoMemberService', 'parentPasswordService', 'pushAccountService', 'parentService', 'bindingHistoryService',
+   'videoMemberService', 'parentPasswordService', 'pushAccountService', 'parentService', 'bindingHistoryService', 'allEmployeesService',
     (scope, rootScope, stateParams, location, Alert, $state, Phone, School, VideoMember, ParentPassword, PushAccount,
-     Parent, Binding) ->
+     Parent, Binding, Employee) ->
+      scope.teacher = Employee.get phone: stateParams.phone, ->
+        scope.hasTeacherInfo = true
       scope.parent = Phone.get phone: stateParams.phone, ->
         scope.school = School.get school_id: scope.parent.school_id
         scope.parent.videoMember = VideoMember.get school_id: scope.parent.school_id, id: scope.parent.parent_id
@@ -117,8 +119,10 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
   ]
 
 .controller 'OpShowTeacherCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', '$alert', 'allEmployeesService', 'schoolService', 'employeePhoneService',
-    (scope, rootScope, stateParams, location, Alert, Employee, School, EmployeePassword) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', '$alert', 'allEmployeesService', 'schoolService', 'employeePhoneService', 'phoneManageService',
+    (scope, rootScope, stateParams, location, Alert, Employee, School, EmployeePassword, Phone) ->
+      scope.parent = Phone.get phone: stateParams.phone, ->
+        scope.hasParentInfo = true
       scope.teacher = Employee.get phone: stateParams.phone, ->
         if scope.teacher.school_id > 0
           scope.school = School.get school_id: scope.teacher.school_id
