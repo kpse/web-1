@@ -16,7 +16,77 @@ import play.api.Play.current
 case class StudentExt(display_name: Option[String], former_name: Option[String], student_id: Option[String], social_id: Option[String], residence_place: Option[String],
                       residence_type: Option[String], nationality: Option[String], original_place: Option[String], ethnos: Option[String],
                       student_type: Option[Int], in_date: Option[String], interest: Option[String], bed_number: Option[String], memo: Option[String],
-                      bus_status: Option[Int], medical_history: Option[String])
+                      bus_status: Option[Int], medical_history: Option[String], base_id: Option[Long] = None, id: Option[Long] = None) {
+  def extExists = DB.withTransaction {
+    implicit c =>
+      SQL("select count(1) from studentext where base_id={base_id}")
+        .on(
+          'base_id -> base_id
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
+  def handleExt(id: Long) = extExists match {
+    case true =>
+      updateStudentExt(id)
+    case false =>
+      createStudentExt(id)
+  }
+
+  def updateStudentExt(id: Long) = DB.withTransaction {
+    implicit c =>
+      SQL("update studentext set display_name={display}, former_name={former_name}, student_id={student_id}, social_id={social_id}, " +
+        "residence_place={residence_place}, residence_type={residence_type}, nationality={nationality}, " +
+        "original_place={original_place}, ethnos={ethnos}, student_type={student_type}, in_date={in_date}, interest={interest}, " +
+        "bed_number={bed_number}, memo={memo}, bus_status={bus_status}, medical_history={medical_history} " +
+        " where base_id={base_id}")
+        .on(
+          'base_id -> id,
+          'display -> display_name,
+          'former_name -> former_name,
+          'student_id -> student_id,
+          'social_id -> social_id,
+          'residence_place -> residence_place,
+          'residence_type -> residence_type,
+          'nationality -> nationality,
+          'original_place -> original_place,
+          'ethnos -> ethnos,
+          'student_type -> student_type,
+          'in_date -> parseShortDate(in_date.getOrElse("1970-01-01")).toDate.getTime,
+          'interest -> interest,
+          'bed_number -> bed_number,
+          'memo -> memo,
+          'bus_status -> bus_status,
+          'medical_history -> medical_history
+        ).executeInsert()
+  }
+
+  def createStudentExt(id: Long) = DB.withTransaction {
+    implicit c =>
+      SQL("insert into studentext (base_id, display_name, former_name, student_id, social_id, residence_place, residence_type, nationality, " +
+        "original_place, ethnos, student_type, in_date, interest, bed_number, memo, bus_status, medical_history) values (" +
+        "{base_id}, {display}, {former_name}, {student_id}, {social_id}, {residence_place}, {residence_type}, {nationality}, " +
+        "{original_place}, {ethnos}, {student_type}, {in_date}, {interest}, {bed_number}, {memo}, {bus_status}, {medical_history})")
+        .on(
+          'base_id -> id,
+          'display -> display_name,
+          'former_name -> former_name,
+          'student_id -> student_id,
+          'social_id -> social_id,
+          'residence_place -> residence_place,
+          'residence_type -> residence_type,
+          'nationality -> nationality,
+          'original_place -> original_place,
+          'ethnos -> ethnos,
+          'student_type -> student_type,
+          'in_date -> parseShortDate(in_date.getOrElse("1970-01-01")).toDate.getTime,
+          'interest -> interest,
+          'bed_number -> bed_number,
+          'memo -> memo,
+          'bus_status -> bus_status,
+          'medical_history -> medical_history
+        ).executeInsert()
+  }
+}
 
 case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt]) {
   def update: Option[Student] = DB.withTransaction {
@@ -24,7 +94,7 @@ case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt]) 
       try {
         val timestamp = System.currentTimeMillis
         val kg: Long = basic.school_id.getOrElse(0)
-        val childId = basic.child_id.getOrElse("2_%d_%d".format(kg, timestamp%100000))
+        val childId = basic.child_id.getOrElse("2_%d_%d".format(kg, timestamp % 100000))
         SQL("update childinfo set name={name}, child_id={child_id}, student_id={student_id}, " +
           "gender={gender}, classname={classname}, picurl={picurl}, birthday={birthday}, " +
           "indate={indate}, school_id={school_id}, address={address}, stu_type={stu_type}, hukou={hukou}, " +
@@ -49,33 +119,7 @@ case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt]) 
             'status -> 1,
             'class_id -> basic.class_id,
             'timestamp -> timestamp).executeInsert()
-        ext map {
-          case info =>
-            SQL("update studentext set display_name={display}, former_name={former_name}, student_id={student_id}, social_id={social_id}, " +
-              "residence_place={residence_place}, residence_type={residence_type}, nationality={nationality}, " +
-              "original_place={original_place}, ethnos={ethnos}, student_type={student_type}, in_date={in_date}, interest={interest}, " +
-              "bed_number={bed_number}, memo={memo}, bus_status={bus_status}, medical_history={medical_history} " +
-              " where base_id={base_id}")
-              .on(
-                'base_id -> id,
-                'display -> info.display_name,
-                'former_name -> info.former_name,
-                'student_id -> info.student_id,
-                'social_id -> info.social_id,
-                'residence_place -> info.residence_place,
-                'residence_type -> info.residence_type,
-                'nationality -> info.nationality,
-                'original_place -> info.original_place,
-                'ethnos -> info.ethnos,
-                'student_type -> info.student_type,
-                'in_date -> parseShortDate(info.in_date.getOrElse("1970-01-01")).toDate.getTime,
-                'interest -> info.interest,
-                'bed_number -> info.bed_number,
-                'memo -> info.memo,
-                'bus_status -> info.bus_status,
-                'medical_history -> info.medical_history
-              ).executeInsert()
-        }
+        ext foreach (_.handleExt(id.get))
         c.commit()
         val info: Option[ChildInfo] = Children.findById(kg, id.get)
         Logger.info(info.toString)
@@ -99,7 +143,7 @@ case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt]) 
       try {
         val timestamp = System.currentTimeMillis
         val kg: Long = basic.school_id.getOrElse(0)
-        val childId = basic.child_id.getOrElse("2_%d_%d".format(kg, timestamp%100000))
+        val childId = basic.child_id.getOrElse("2_%d_%d".format(kg, timestamp % 100000))
         val childUid: Option[Long] = SQL("INSERT INTO childinfo(name, child_id, student_id, gender, classname, picurl, birthday, " +
           "indate, school_id, address, stu_type, hukou, social_id, nick, status, update_at, class_id, created_at) " +
           "VALUES ({name},{child_id},{student_id},{gender},{classname},{picurl},{birthday},{indate}," +
@@ -123,32 +167,7 @@ case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt]) 
             'class_id -> basic.class_id,
             'timestamp -> timestamp,
             'created -> timestamp).executeInsert()
-        ext map {
-          case info =>
-            SQL("insert into studentext (base_id, display_name, former_name, student_id, social_id, residence_place, residence_type, nationality, " +
-              "original_place, ethnos, student_type, in_date, interest, bed_number, memo, bus_status, medical_history) values (" +
-              "{base_id}, {display}, {former_name}, {student_id}, {social_id}, {residence_place}, {residence_type}, {nationality}, " +
-              "{original_place}, {ethnos}, {student_type}, {in_date}, {interest}, {bed_number}, {memo}, {bus_status}, {medical_history})")
-              .on(
-                'base_id -> childUid.get,
-                'display -> info.display_name,
-                'former_name -> info.former_name,
-                'student_id -> info.student_id,
-                'social_id -> info.social_id,
-                'residence_place -> info.residence_place,
-                'residence_type -> info.residence_type,
-                'nationality -> info.nationality,
-                'original_place -> info.original_place,
-                'ethnos -> info.ethnos,
-                'student_type -> info.student_type,
-                'in_date -> parseShortDate(info.in_date.getOrElse("1970-01-01")).toDate.getTime,
-                'interest -> info.interest,
-                'bed_number -> info.bed_number,
-                'memo -> info.memo,
-                'bus_status -> info.bus_status,
-                'medical_history -> info.medical_history
-              ).executeInsert()
-        }
+        ext foreach (_.handleExt(id.get))
         c.commit()
         val info: Option[ChildInfo] = Children.findById(kg, childUid.get)
         Logger.info(info.toString)
@@ -243,7 +262,9 @@ object Student {
   }
 
   val simpleExt = {
-    get[Option[String]]("display_name") ~
+    get[Long]("uid") ~
+      get[Long]("base_id") ~
+      get[Option[String]]("display_name") ~
       get[Option[String]]("former_name") ~
       get[Option[String]]("student_id") ~
       get[Option[String]]("social_id") ~
@@ -259,10 +280,10 @@ object Student {
       get[Option[String]]("memo") ~
       get[Option[Int]]("bus_status") ~
       get[Option[String]]("medical_history") map {
-      case display ~ former ~ studentId ~ socialId ~ resiPlace ~ resiType ~ nationality ~ originalPlace ~ ethnos ~ studentType
+      case id ~ bId ~ display ~ former ~ studentId ~ socialId ~ resiPlace ~ resiType ~ nationality ~ originalPlace ~ ethnos ~ studentType
         ~ inDate ~ bed ~ interest ~ memo ~ bus ~ medical =>
         StudentExt(display, former, studentId, socialId, resiPlace, resiType, nationality,
-          originalPlace, ethnos, studentType, Some(inDate.getOrElse(0).toDateOnly), interest, bed, memo, bus, medical)
+          originalPlace, ethnos, studentType, Some(inDate.getOrElse(0).toDateOnly), interest, bed, memo, bus, medical, Some(id), Some(bId))
     }
   }
 
