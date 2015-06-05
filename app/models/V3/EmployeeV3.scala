@@ -14,41 +14,86 @@ import play.api.libs.json.Json
 case class EmployeeExt(display_name: Option[String], social_id: Option[String], nationality: Option[String], original_place: Option[String],
                        ethnos: Option[String], marriage: Option[String], education: Option[String], fixed_line: Option[String], memo: Option[String],
                        work_id: Option[String], work_group: Option[Int], in_date: Option[String], work_status: Option[String],
-                       work_duty: Option[String], work_title: Option[String], work_rank: Option[String], certification: Option[String])
+                       work_duty: Option[String], work_title: Option[String], work_rank: Option[String], certification: Option[String]) {
+  def extExists(id: Long) = DB.withTransaction {
+    implicit c =>
+      SQL("select count(1) from employeeext where base_id={base_id}")
+        .on(
+          'base_id -> id
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
+  def handleExt(id: Long) = extExists(id) match {
+    case true =>
+      update(id)
+    case false =>
+      create(id)
+  }
+
+  def update(id: Long) = DB.withTransaction {
+    implicit c =>
+      SQL("update employeeext set display_name={display}, social_id={social_id}, nationality={nationality}, " +
+        "original_place={original_place}, ethnos={ethnos}, marriage={marriage}, education={education}, fixed_line={fixed_line}, " +
+        "memo={memo}, work_id={work_id}, work_group={work_group}, in_date={in_date}, work_status={work_status}, " +
+        "work_duty={work_duty}, work_title={work_title}, work_rank={work_rank}, certification={certification} " +
+        " where base_id={base_id}")
+        .on(
+          'base_id -> id,
+          'display -> display_name,
+          'social_id -> social_id,
+          'nationality -> nationality,
+          'original_place -> original_place,
+          'ethnos -> ethnos,
+          'marriage -> marriage,
+          'education -> education,
+          'fixed_line -> fixed_line,
+          'memo -> memo,
+          'work_id -> work_id,
+          'work_group -> work_group,
+          'in_date -> parseShortDate(in_date.getOrElse("1970-01-01")).toDate.getTime,
+          'work_status -> work_status,
+          'work_duty -> work_duty,
+          'work_title -> work_title,
+          'work_rank -> work_rank,
+          'certification -> certification
+        ).executeUpdate()
+  }
+
+  def create(id: Long) = DB.withTransaction {
+    implicit c =>
+      SQL("insert into employeeext (base_id, display_name, social_id, nationality, original_place, ethnos, marriage, " +
+        "education, fixed_line, memo, work_id, work_group, in_date, work_status, work_duty, work_title, work_rank, certification) values (" +
+        "{base_id}, {display}, {social_id}, {nationality}, {original_place}, {ethnos}, {marriage}, {education}, {fixed_line}, {memo}, " +
+        "{work_id}, {work_group}, {in_date}, {work_status}, {work_duty}, {work_title}, {work_rank}, {certification})")
+        .on(
+          'base_id -> id,
+          'display -> display_name,
+          'social_id -> social_id,
+          'nationality -> nationality,
+          'original_place -> original_place,
+          'ethnos -> ethnos,
+          'marriage -> marriage,
+          'education -> education,
+          'fixed_line -> fixed_line,
+          'memo -> memo,
+          'work_id -> work_id,
+          'work_group -> work_group,
+          'in_date -> parseShortDate(in_date.getOrElse("1970-01-01")).toDate.getTime,
+          'work_status -> work_status,
+          'work_duty -> work_duty,
+          'work_title -> work_title,
+          'work_rank -> work_rank,
+          'certification -> certification
+        ).executeInsert()
+  }
+}
 
 case class EmployeeV3(id: Option[Long], basic: Employee, ext: Option[EmployeeExt]) {
   def update: Option[EmployeeV3] = DB.withTransaction {
     implicit c =>
       try {
         val updatedEmployee: Option[Employee] = Employee.update(basic)
-        ext map {
-          case info =>
-            SQL("update employeeext set display_name={display}, social_id={social_id}, nationality={nationality}, " +
-              "original_place={original_place}, ethnos={ethnos}, marriage={marriage}, education={education}, fixed_line={fixed_line}, " +
-              "memo={memo}, work_id={work_id}, work_group={work_group}, in_date={in_date}, work_status={work_status}, " +
-              "work_duty={work_duty}, work_title={work_title}, work_rank={work_rank}, certification={certification} " +
-              " where base_id={base_id}")
-              .on(
-                'base_id -> updatedEmployee.get.uid,
-                'display -> info.display_name,
-                'social_id -> info.social_id,
-                'nationality -> info.nationality,
-                'original_place -> info.original_place,
-                'ethnos -> info.ethnos,
-                'marriage -> info.marriage,
-                'education -> info.education,
-                'fixed_line -> info.fixed_line,
-                'memo -> info.memo,
-                'work_id -> info.work_id,
-                'work_group -> info.work_group,
-                'in_date -> parseShortDate(info.in_date.getOrElse("1970-01-01")).toDate.getTime,
-                'work_status -> info.work_status,
-                'work_duty -> info.work_duty,
-                'work_title -> info.work_title,
-                'work_rank -> info.work_rank,
-                'certification -> info.certification
-              ).executeInsert()
-        }
+        ext foreach (_.handleExt(id.get))
         c.commit()
         Logger.info(updatedEmployee.toString)
         ext match {
@@ -70,33 +115,7 @@ case class EmployeeV3(id: Option[Long], basic: Employee, ext: Option[EmployeeExt
     implicit c =>
       try {
         val createdEmployee: Option[Employee] = Employee.create(basic)
-        ext map {
-          case info =>
-            SQL("insert into employeeext (base_id, display_name, social_id, nationality, original_place, ethnos, marriage, " +
-              "education, fixed_line, memo, work_id, work_group, in_date, work_status, work_duty, work_title, work_rank, certification) values (" +
-              "{base_id}, {display}, {social_id}, {nationality}, {original_place}, {ethnos}, {marriage}, {education}, {fixed_line}, {memo}, " +
-              "{work_id}, {work_group}, {in_date}, {work_status}, {work_duty}, {work_title}, {work_rank}, {certification})")
-              .on(
-                'base_id -> createdEmployee.get.uid,
-                'display -> info.display_name,
-                'social_id -> info.social_id,
-                'nationality -> info.nationality,
-                'original_place -> info.original_place,
-                'ethnos -> info.ethnos,
-                'marriage -> info.marriage,
-                'education -> info.education,
-                'fixed_line -> info.fixed_line,
-                'memo -> info.memo,
-                'work_id -> info.work_id,
-                'work_group -> info.work_group,
-                'in_date -> parseShortDate(info.in_date.getOrElse("1970-01-01")).toDate.getTime,
-                'work_status -> info.work_status,
-                'work_duty -> info.work_duty,
-                'work_title -> info.work_title,
-                'work_rank -> info.work_rank,
-                'certification -> info.certification
-              ).executeInsert()
-        }
+        ext foreach (_.handleExt(id.get))
         c.commit()
         Logger.info(createdEmployee.toString)
         ext match {

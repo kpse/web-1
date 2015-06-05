@@ -27,12 +27,12 @@ case class StudentExt(display_name: Option[String], former_name: Option[String],
 
   def handleExt(id: Long) = extExists(id) match {
     case true =>
-      updateStudentExt(id)
+      update(id)
     case false =>
-      createStudentExt(id)
+      create(id)
   }
 
-  def updateStudentExt(id: Long) = DB.withTransaction {
+  def update(id: Long) = DB.withTransaction {
     implicit c =>
       SQL("update studentext set display_name={display}, former_name={former_name}, student_id={student_id}, social_id={social_id}, " +
         "residence_place={residence_place}, residence_type={residence_type}, nationality={nationality}, " +
@@ -57,10 +57,10 @@ case class StudentExt(display_name: Option[String], former_name: Option[String],
           'memo -> memo,
           'bus_status -> bus_status,
           'medical_history -> medical_history
-        ).executeInsert()
+        ).executeUpdate()
   }
 
-  def createStudentExt(id: Long) = DB.withTransaction {
+  def create(id: Long) = DB.withTransaction {
     implicit c =>
       SQL("insert into studentext (base_id, display_name, former_name, student_id, social_id, residence_place, residence_type, nationality, " +
         "original_place, ethnos, student_type, in_date, interest, bed_number, memo, bus_status, medical_history) values (" +

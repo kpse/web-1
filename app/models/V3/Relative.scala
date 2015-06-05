@@ -5,33 +5,64 @@ import java.util.Date
 import anorm.SqlParser._
 import anorm._
 import models.Parent
-import models.helper.TimeHelper.any2DateTime
+import models.helper.TimeHelper._
 import play.Logger
 import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
 
-case class ParentExt(display_name: Option[String], social_id: Option[String], nationality: Option[String], fixed_line: Option[String], memo: Option[String])
+case class ParentExt(display_name: Option[String], social_id: Option[String], nationality: Option[String], fixed_line: Option[String], memo: Option[String]) {
+  def extExists(id: Long) = DB.withTransaction {
+    implicit c =>
+      SQL("select count(1) from parentext where base_id={base_id}")
+        .on(
+          'base_id -> id
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
+  def handleExt(id: Long) = extExists(id) match {
+    case true =>
+      update(id)
+    case false =>
+      create(id)
+  }
+
+  def update(id: Long) = DB.withTransaction {
+    implicit c =>
+      SQL("update parentext set display_name={display}, social_id={social_id}, " +
+        "nationality={nationality}, fixed_line={fixed_line}, memo={memo} " +
+        " where base_id={base_id}")
+        .on(
+          'base_id -> id,
+          'display -> display_name,
+          'social_id -> social_id,
+          'nationality -> nationality,
+          'fixed_line -> fixed_line,
+          'memo -> memo
+        ).executeUpdate()
+  }
+
+  def create(id: Long) = DB.withTransaction {
+    implicit c =>
+      SQL("insert into parentext (base_id, display_name, social_id, nationality, fixed_line, memo) values (" +
+        "{base_id}, {display}, {social_id}, {nationality}, {fixed_line}, {memo})")
+        .on(
+          'base_id -> id,
+          'display -> display_name,
+          'social_id -> social_id,
+          'nationality -> nationality,
+          'fixed_line -> fixed_line,
+          'memo -> memo
+        ).executeInsert()
+  }
+}
 
 case class Relative(id: Option[Long], basic: Parent, ext: Option[ParentExt]) {
   def update: Option[Relative] = DB.withTransaction {
     implicit c =>
       try {
         val updatedParent: Option[Parent] = Parent.update(basic)
-        ext map {
-          case info =>
-            SQL("update parentext set display_name={display}, social_id={social_id}, " +
-              "nationality={nationality}, fixed_line={fixed_line}, memo={memo} " +
-              " where base_id={base_id}")
-              .on(
-                'base_id -> updatedParent.get.id,
-                'display -> info.display_name,
-                'social_id -> info.social_id,
-                'nationality -> info.nationality,
-                'fixed_line -> info.fixed_line,
-                'memo -> info.memo
-              ).executeInsert()
-        }
+        ext foreach (_.handleExt(id.get))
         c.commit()
         Logger.info(updatedParent.toString)
         ext match {
@@ -53,19 +84,7 @@ case class Relative(id: Option[Long], basic: Parent, ext: Option[ParentExt]) {
     implicit c =>
       try {
         val createdParent: Option[Parent] = Parent.create(basic.school_id, basic)
-        ext map {
-          case info =>
-            SQL("insert into parentext (base_id, display_name, social_id, nationality, fixed_line, memo) values (" +
-              "{base_id}, {display}, {social_id}, {nationality}, {fixed_line}, {memo})")
-              .on(
-                'base_id -> createdParent.get.id,
-                'display -> info.display_name,
-                'social_id -> info.social_id,
-                'nationality -> info.nationality,
-                'fixed_line -> info.fixed_line,
-                'memo -> info.memo
-              ).executeInsert()
-        }
+        ext foreach (_.handleExt(id.get))
         c.commit()
         Logger.info(createdParent.toString)
         ext match {
@@ -159,7 +178,7 @@ object Relative {
 
   val simple = {
     get[Long]("uid") ~
-    get[String]("parent_id") ~
+      get[String]("parent_id") ~
       get[String]("school_id") ~
       get[String]("parentinfo.name") ~
       get[String]("phone") ~
