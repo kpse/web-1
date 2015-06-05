@@ -49,7 +49,7 @@ case class VideoMember(id: String, account: Option[String], password: Option[Str
 }
 
 object VideoMember {
-  def default(kg: Long) = VideoMember("default", Some("test123"), Some("123456"), Some(kg))
+  def default(kg: Long) = VideoMember("default", Some("8888"), Some("8888"), Some(kg))
 
   implicit val write = Json.writes[VideoMember]
   implicit val write2 = Json.writes[AvailableSlots]
@@ -87,7 +87,7 @@ object VideoMember {
 
   def fakeAccountAccordingSchool(kg: Long, id: String, account: String) = kg match {
     case 2046 => VideoMember(id, Some("cocbaby"), Some("13880498549"), Some(kg))
-    case 2001 => VideoMember(id, Some("test123"), Some("123456"), Some(kg))
+    case 2001 => default(2001)
     case _ => VideoMember(id, Some(account), passwordOfVideo, Some(kg))
   }
 
