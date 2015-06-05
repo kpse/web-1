@@ -3,6 +3,7 @@ package controllers.V3
 import controllers.Secured
 import models.V3.{Student, StudentExt}
 import models.{ErrorResponse, Children, ChildInfo, SuccessResponse}
+import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 import models.Children.readChildInfo
@@ -25,6 +26,7 @@ object StudentController extends Controller with Secured {
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
+    Logger.info(s"student create: ${request.body}")
     request.body.validate[Student].map {
       case (s) if s.ext.isEmpty =>
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
@@ -36,6 +38,7 @@ object StudentController extends Controller with Secured {
   }
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
+    Logger.info(s"student update: ${request.body}")
     request.body.validate[Student].map {
       case (s) if s.ext.isEmpty =>
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))

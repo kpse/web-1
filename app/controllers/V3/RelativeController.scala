@@ -3,6 +3,7 @@ package controllers.V3
 import controllers.Secured
 import models.V3.Relative
 import models.{ErrorResponse, SuccessResponse}
+import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
@@ -21,6 +22,7 @@ object RelativeController extends Controller with Secured {
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
+    Logger.info(s"relative create: ${request.body}")
     request.body.validate[Relative].map {
       case (s) if s.ext.isEmpty =>
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
@@ -35,6 +37,7 @@ object RelativeController extends Controller with Secured {
   }
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
+    Logger.info(s"relative update: ${request.body}")
     request.body.validate[Relative].map {
       case (s) if s.ext.isEmpty =>
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
