@@ -17,15 +17,15 @@ case class StudentExt(display_name: Option[String], former_name: Option[String],
                       residence_type: Option[String], nationality: Option[String], original_place: Option[String], ethnos: Option[String],
                       student_type: Option[Int], in_date: Option[String], interest: Option[String], bed_number: Option[String], memo: Option[String],
                       bus_status: Option[Int], medical_history: Option[String], base_id: Option[Long] = None, id: Option[Long] = None) {
-  def extExists = DB.withTransaction {
+  def extExists(id: Long) = DB.withTransaction {
     implicit c =>
       SQL("select count(1) from studentext where base_id={base_id}")
         .on(
-          'base_id -> base_id
+          'base_id -> id
         ).as(get[Long]("count(1)") single) > 0
   }
 
-  def handleExt(id: Long) = extExists match {
+  def handleExt(id: Long) = extExists(id) match {
     case true =>
       updateStudentExt(id)
     case false =>
