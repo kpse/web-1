@@ -400,13 +400,13 @@ object Parent {
   def create(kg: Long, parent: Parent) = DB.withTransaction {
     implicit c =>
       val timestamp = System.currentTimeMillis
-      val parent_id = parent.parent_id.getOrElse("1_%d_%d".format(kg, timestamp % 100000))
+      val parentId = parent.parent_id.getOrElse("1_%d_%d".format(kg, timestamp % 100000))
       try {
         val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status, created_at) " +
           "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member},{created})")
           .on(
             'name -> parent.name,
-            'parent_id -> parent_id,
+            'parent_id -> parentId,
             'relationship -> "",
             'phone -> parent.phone,
             'gender -> parent.gender,
@@ -418,12 +418,12 @@ object Parent {
             'member -> parent.member_status.getOrElse(0),
             'timestamp -> timestamp,
             'created -> timestamp).executeInsert()
-        Logger.info("created parent %s".format(createdId))
+        Logger.info(s"created parent uid=${createdId}, parent_id=${parentId}")
         val accountinfoUid = createPushAccount(parent)
         Logger.info("created accountinfo %s".format(accountinfoUid))
         c.commit()
         createdId.flatMap {
-          id => info(parent.school_id, parent_id)
+          id => info(parent.school_id, parentId)
         }
       }
       catch {

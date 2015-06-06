@@ -167,7 +167,7 @@ case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt]) 
             'class_id -> basic.class_id,
             'timestamp -> timestamp,
             'created -> timestamp).executeInsert()
-        ext foreach (_.handleExt(id.get))
+        ext foreach (_.handleExt(childUid.get))
         c.commit()
         val info: Option[ChildInfo] = Children.findById(kg, childUid.get)
         Logger.info(info.toString)

@@ -84,7 +84,7 @@ case class Relative(id: Option[Long], basic: Parent, ext: Option[ParentExt]) {
     implicit c =>
       try {
         val createdParent: Option[Parent] = Parent.create(basic.school_id, basic)
-        ext foreach (_.handleExt(id.get))
+        ext foreach (_.handleExt(createdParent.get.id.get))
         c.commit()
         Logger.info(createdParent.toString)
         ext match {

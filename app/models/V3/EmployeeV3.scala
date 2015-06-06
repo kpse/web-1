@@ -117,7 +117,7 @@ case class EmployeeV3(id: Option[Long], basic: Employee, ext: Option[EmployeeExt
     implicit c =>
       try {
         val createdEmployee: Option[Employee] = Employee.create(basic)
-        ext foreach (_.handleExt(id.get))
+        ext foreach (_.handleExt(createdEmployee.get.uid.get))
         c.commit()
         Logger.info(createdEmployee.toString)
         ext match {
