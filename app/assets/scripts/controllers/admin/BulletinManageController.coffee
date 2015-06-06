@@ -119,13 +119,13 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
         clazz.name if clazz isnt undefined
 
       scope.showFeedbacks = (news) ->
-        scope.currentModal.hide()
+        scope.currentModal.hide() if scope.currentModal?
         queue = [Parent.query(school_id: stateParams.kindergarten, class_id: if news.class_id == 0 then undefined else news.class_id).$promise,
                                NewsRead.query(news).$promise
                 ]
         $q.all(queue).then (q) ->
-          allReaders = _.map q[1], (d) -> _.extend(d, read:true)
-          unreadParents = _.reject q[0], (p) -> _.some allReaders, (r) -> r.parent_id == p.parent_id
+          allReaders = _.map (_.reject q[1], (r) -> !r.id?), (d) -> _.extend(d, read:true)
+          unreadParents = _.reject (_.reject q[0], (r) -> !r.id?), (p) -> _.some allReaders, (r) -> r.parent_id == p.parent_id
           scope.news_feedbacks =  _.union allReaders, unreadParents
         scope.current_news = news
         scope.currentModal = Modal
