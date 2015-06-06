@@ -12,8 +12,8 @@ import play.api.db.DB
 import play.api.libs.json.Json
 
 case class EmployeeExt(display_name: Option[String], social_id: Option[String], nationality: Option[String], original_place: Option[String],
-                       ethnos: Option[String], marriage: Option[String], education: Option[String], fixed_line: Option[String], memo: Option[String],
-                       work_id: Option[String], work_group: Option[Int], in_date: Option[String], work_status: Option[String],
+                       ethnos: Option[String], marriage: Option[String], education: Option[String], fixed_line: Option[String], address: Option[String],
+                       memo: Option[String], work_id: Option[String], work_group: Option[Int], in_date: Option[String], work_status: Option[String],
                        work_duty: Option[String], work_title: Option[String], work_rank: Option[String], certification: Option[String]) {
   def extExists(id: Long) = DB.withTransaction {
     implicit c =>
@@ -34,7 +34,7 @@ case class EmployeeExt(display_name: Option[String], social_id: Option[String], 
     implicit c =>
       SQL("update employeeext set display_name={display}, social_id={social_id}, nationality={nationality}, " +
         "original_place={original_place}, ethnos={ethnos}, marriage={marriage}, education={education}, fixed_line={fixed_line}, " +
-        "memo={memo}, work_id={work_id}, work_group={work_group}, in_date={in_date}, work_status={work_status}, " +
+        "address={address}, memo={memo}, work_id={work_id}, work_group={work_group}, in_date={in_date}, work_status={work_status}, " +
         "work_duty={work_duty}, work_title={work_title}, work_rank={work_rank}, certification={certification} " +
         " where base_id={base_id}")
         .on(
@@ -47,6 +47,7 @@ case class EmployeeExt(display_name: Option[String], social_id: Option[String], 
           'marriage -> marriage,
           'education -> education,
           'fixed_line -> fixed_line,
+          'address -> address,
           'memo -> memo,
           'work_id -> work_id,
           'work_group -> work_group,
@@ -62,8 +63,8 @@ case class EmployeeExt(display_name: Option[String], social_id: Option[String], 
   def create(id: Long) = DB.withTransaction {
     implicit c =>
       SQL("insert into employeeext (base_id, display_name, social_id, nationality, original_place, ethnos, marriage, " +
-        "education, fixed_line, memo, work_id, work_group, in_date, work_status, work_duty, work_title, work_rank, certification) values (" +
-        "{base_id}, {display}, {social_id}, {nationality}, {original_place}, {ethnos}, {marriage}, {education}, {fixed_line}, {memo}, " +
+        "education, fixed_line, address,memo, work_id, work_group, in_date, work_status, work_duty, work_title, work_rank, certification) values (" +
+        "{base_id}, {display}, {social_id}, {nationality}, {original_place}, {ethnos}, {marriage}, {education}, {fixed_line}, {address}, {memo}, " +
         "{work_id}, {work_group}, {in_date}, {work_status}, {work_duty}, {work_title}, {work_rank}, {certification})")
         .on(
           'base_id -> id,
@@ -75,6 +76,7 @@ case class EmployeeExt(display_name: Option[String], social_id: Option[String], 
           'marriage -> marriage,
           'education -> education,
           'fixed_line -> fixed_line,
+          'address -> address,
           'memo -> memo,
           'work_id -> work_id,
           'work_group -> work_group,
@@ -237,6 +239,7 @@ object EmployeeV3 {
       get[Option[String]]("marriage") ~
       get[Option[String]]("education") ~
       get[Option[String]]("fixed_line") ~
+      get[Option[String]]("address") ~
       get[Option[String]]("memo") ~
       get[Option[String]]("work_id") ~
       get[Option[Int]]("work_group") ~
@@ -246,10 +249,10 @@ object EmployeeV3 {
       get[Option[String]]("work_title") ~
       get[Option[String]]("work_rank") ~
       get[Option[String]]("certification") map {
-      case display ~ socialId ~ nationality ~ originalPlace ~ ethnos ~ marriage ~ education ~ fixedLine ~ memo ~
+      case display ~ socialId ~ nationality ~ originalPlace ~ ethnos ~ marriage ~ education ~ fixedLine ~ address ~ memo ~
         workId ~ workGroup ~ inDate ~ workStatus ~ workDuty ~ workTitle ~ workRank ~ cert =>
         EmployeeExt(display, socialId, nationality, originalPlace, ethnos, marriage, education,
-          fixedLine, memo, workId, workGroup, Some(inDate.getOrElse(0).toDateOnly), workStatus, workDuty, workTitle, workRank, cert)
+          fixedLine, address, memo, workId, workGroup, Some(inDate.getOrElse(0).toDateOnly), workStatus, workDuty, workTitle, workRank, cert)
     }
   }
 }

@@ -42,6 +42,7 @@ CREATE TABLE employeeext (
   marriage VARCHAR(20),
   education VARCHAR(20),
   fixed_line VARCHAR(20),
+  address VARCHAR(200),
   memo VARCHAR(512),
   work_id VARCHAR(20),
   work_group INT,
@@ -56,8 +57,8 @@ CREATE TABLE employeeext (
 );
 
 INSERT INTO employeeext (base_id, display_name, social_id, nationality, original_place, ethnos, marriage, education,
-fixed_line, memo, work_id, work_group, in_date, work_status, work_duty, work_title, work_rank, certification) VALUES
-(1, '小霸王', '510122195812310275', '中国', '双流华阳', '汉', '已婚', '本科', '028-88887777', '备注就是懒得很', '2123123', 1, 1387649057933, '在职', '园长', '高级职称', '三级教师', '两证齐全');
+fixed_line, address, memo, work_id, work_group, in_date, work_status, work_duty, work_title, work_rank, certification) VALUES
+(1, '小霸王', '510122195812310275', '中国', '双流华阳', '汉', '已婚', '本科', '028-88887777', '魔兽森林', '备注就是懒得很', '2123123', 1, 1387649057933, '在职', '园长', '高级职称', '三级教师', '两证齐全');
 
 # --- !Downs
 
