@@ -281,7 +281,7 @@ object Student {
       get[Option[Int]]("bus_status") ~
       get[Option[String]]("medical_history") map {
       case id ~ bId ~ display ~ former ~ studentId ~ socialId ~ resiPlace ~ resiType ~ nationality ~ originalPlace ~ ethnos ~ studentType
-        ~ inDate ~ bed ~ interest ~ memo ~ bus ~ medical =>
+        ~ inDate ~ interest ~ bed ~ memo ~ bus ~ medical =>
         StudentExt(display, former, studentId, socialId, resiPlace, resiType, nationality,
           originalPlace, ethnos, studentType, Some(inDate.getOrElse(0).toDateOnly), interest, bed, memo, bus, medical, Some(id), Some(bId))
     }
