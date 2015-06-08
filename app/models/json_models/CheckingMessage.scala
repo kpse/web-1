@@ -1,12 +1,12 @@
 package models.json_models
 
-import play.api.db.DB
-import anorm._
-import play.api.Play.current
 import anorm.SqlParser._
-import anorm.~
+import anorm.{~, _}
+import models.Advertisement
 import org.joda.time.DateTime
-import models.{Advertisement, DailyLog}
+import play.Logger
+import play.api.Play.current
+import play.api.db.DB
 import play.api.libs.json.Json
 
 /*  check_type & notice_type
@@ -18,29 +18,13 @@ import play.api.libs.json.Json
  13 get off bus at afternoon
 */
 
-case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long)
-
-case class CheckChildInfo(school_id: Long, child_id: String, check_type: Int, timestamp: Long) {
-  def toCheckInfo: CheckInfo =
-    CheckInfo(school_id, "", 0, check_type, "", System.currentTimeMillis)
-}
-
-case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String, pushid: String, channelid: String, record_url: String, parent_name: String, device: Int, aps: Option[IOSField], ad: Option[String] = None)
-
-case class IOSField(alert: String, sound: String = "", badge: Int = 1)
-
-object CheckingMessage {
-  implicit val checkChildInfoReads = Json.reads[CheckChildInfo]
-  implicit val checkChildInfoWrites = Json.writes[CheckChildInfo]
-  implicit val checkInfoReads = Json.reads[CheckInfo]
-  implicit val checkInfoWrites = Json.writes[CheckInfo]
-
-  def convert(request: CheckInfo): List[CheckNotification] = DB.withConnection {
+case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long, id: Option[Long] = None) {
+  def toNotifications: List[CheckNotification] = DB.withConnection {
     implicit c =>
       def generateNotice(childName: String): IOSField = {
-        IOSField("%s提醒您：您的孩子 %s 已于 %s 打卡%s。".format(advertisementOf(request.school_id), childName,
-          new DateTime(request.timestamp).toString("HH:mm:ss"),
-          if (request.notice_type == 1) "入园" else "离开幼儿园"))
+        IOSField("%s提醒您：您的孩子 %s 已于 %s 打卡%s。".format(CheckingMessage.advertisementOf(school_id), childName,
+          new DateTime(timestamp).toString("HH:mm:ss"),
+          if (notice_type == 1) "入园" else "离开幼儿园"))
       }
 
       val simpleCheck = {
@@ -51,10 +35,10 @@ object CheckingMessage {
           get[String]("childinfo.name") ~
           get[Int]("device") map {
           case child_id ~ pushid ~ channelid ~ name ~ childName ~ 3 =>
-            CheckNotification(request.timestamp, request.notice_type, child_id, pushid, channelid, request.record_url, name, 3, None, Some(advertisementOf(request.school_id)))
+            CheckNotification(timestamp, notice_type, child_id, pushid, channelid, record_url, name, 3, None, Some(CheckingMessage.advertisementOf(school_id)))
           case child_id ~ pushid ~ channelid ~ name ~ childName ~ 4 =>
-            CheckNotification(request.timestamp, request.notice_type, child_id, pushid, channelid, request.record_url, name, 4,
-              Some(generateNotice(childName)), Some(advertisementOf(request.school_id)))
+            CheckNotification(timestamp, notice_type, child_id, pushid, channelid, record_url, name, 4,
+              Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)))
         }
 
       }
@@ -67,16 +51,47 @@ object CheckingMessage {
           |p.phone = a.accountid and c.child_id in (select child_id from relationmap r where r.card_num={card_num})
         """.stripMargin)
         .on(
-          'card_num -> request.card_no
+          'card_num -> card_no
         ).as(simpleCheck *)
   }
+  def create = DB.withTransaction {
+    implicit c =>
+      save(toNotifications)
+  }
 
-  def convertChildCheck(request: CheckChildInfo) = DB.withConnection {
+  def save(notifications: List[CheckNotification]): Option[Long] = DB.withTransaction {
+    implicit c =>
+      Logger.info(s"messages in saving checking info: ${notifications}")
+      notifications match {
+        case x::xs =>
+          SQL("insert into dailylog (child_id, record_url, check_at, card_no, notice_type, school_id, parent_name) " +
+            "values ({child_id}, {url}, {check_at}, {card_no}, {notice_type}, {school_id}, {parent_name})")
+            .on(
+              'child_id -> x.child_id,
+              'url -> x.record_url,
+              'check_at -> x.timestamp,
+              'card_no -> card_no,
+              'notice_type -> notice_type,
+              'school_id -> school_id,
+              'parent_name -> x.parent_name
+            ).executeInsert()
+        case _ => None
+      }
+  }
+}
+
+case class CheckChildInfo(school_id: Long, child_id: String, check_type: Int, timestamp: Long) {
+  def create = toCheckInfo.create
+
+  def toCheckInfo: CheckInfo =
+    CheckInfo(school_id, "", 0, check_type, "", System.currentTimeMillis)
+
+  def toNotifications = DB.withConnection {
     implicit c =>
       def generateNotice(childName: String): IOSField = {
-        IOSField("%s提醒您：您的孩子 %s 已于 %s %s。".format(advertisementOf(request.school_id), childName,
-          new DateTime(request.timestamp).toString("HH:mm:ss"),
-          if (request.check_type == 11) "下车" else "上车"))
+        IOSField("%s提醒您：您的孩子 %s 已于 %s %s。".format(CheckingMessage.advertisementOf(school_id), childName,
+          new DateTime(timestamp).toString("HH:mm:ss"),
+          if (check_type == 11) "下车" else "上车"))
       }
 
       val simpleChildCheck = {
@@ -87,10 +102,10 @@ object CheckingMessage {
           get[String]("childinfo.name") ~
           get[Int]("device") map {
           case child_id ~ pushid ~ channelid ~ name ~ childName ~ 3 =>
-            CheckNotification(request.timestamp, request.check_type, child_id, pushid, channelid, "", name, 3, None, Some(advertisementOf(request.school_id)))
+            CheckNotification(timestamp, check_type, child_id, pushid, channelid, "", name, 3, None, Some(CheckingMessage.advertisementOf(school_id)))
           case child_id ~ pushid ~ channelid ~ name ~ childName ~ 4 =>
-            CheckNotification(request.timestamp, request.check_type, child_id, pushid, channelid, "", name, 4,
-              Some(generateNotice(childName)), Some(advertisementOf(request.school_id)))
+            CheckNotification(timestamp, check_type, child_id, pushid, channelid, "", name, 4,
+              Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)))
         }
 
       }
@@ -102,10 +117,23 @@ object CheckingMessage {
           |p.phone = a.accountid and c.child_id={child_id}
         """.stripMargin)
         .on(
-          'child_id -> request.child_id
+          'child_id -> child_id
         ).as(simpleChildCheck *)
   }
+}
 
+case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String, pushid: String, channelid: String, record_url: String, parent_name: String, device: Int, aps: Option[IOSField], ad: Option[String] = None)
+
+case class IOSField(alert: String, sound: String = "", badge: Int = 1)
+
+object CheckingMessage {
+  def convert(check: CheckInfo) = check.toNotifications
+  def convertChildCheck(check: CheckChildInfo) = check.toNotifications
+
+  implicit val checkChildInfoReads = Json.reads[CheckChildInfo]
+  implicit val checkChildInfoWrites = Json.writes[CheckChildInfo]
+  implicit val checkInfoReads = Json.reads[CheckInfo]
+  implicit val checkInfoWrites = Json.writes[CheckInfo]
 
   def advertisementOf(schoolId: Long): String = Advertisement.index(schoolId) match {
     case x :: xs => x.name

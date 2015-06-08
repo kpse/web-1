@@ -55,8 +55,8 @@ object BusLocationController extends Controller with Secured {
   }
 
   def pushToParents(check: CheckInfo): Unit = {
-    val messages = CheckingMessage.convert(check)
-    DailyLog.create(messages, check)
+    check.create
+    val messages = check.toNotifications
     Logger.info("bus location push messages : " + messages)
     messages map {
       m =>
@@ -65,8 +65,8 @@ object BusLocationController extends Controller with Secured {
   }
 
   def pushToParents2(check: CheckChildInfo): Unit = {
-    val messages = CheckingMessage.convertChildCheck(check)
-    DailyLog.create(messages, check.toCheckInfo)
+    check.create
+    val messages = check.toNotifications
     Logger.info("bus location push messages : " + messages)
     messages map {
       m =>

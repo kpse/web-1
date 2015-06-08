@@ -135,8 +135,8 @@ object PushController extends Controller {
       Logger.info("checking : " + request.body)
       request.body.validate[CheckInfo].map {
         case (check) =>
-          val messages = CheckingMessage.convert(check)
-          DailyLog.create(messages, check)
+          check.create
+          val messages = check.toNotifications
           Logger.info("messages : " + messages)
           messages map {
             m =>
@@ -153,12 +153,7 @@ object PushController extends Controller {
       Logger.info("checking history: " + request.body)
       request.body.validate[List[CheckInfo]].map {
         case (all) =>
-          all map {
-            check =>
-              val messages = CheckingMessage.convert(check)
-              DailyLog.create(messages, check)
-              Logger.info("messages : " + messages)
-          }
+          all foreach (_.create)
           Ok(Json.toJson(new SuccessResponse))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))

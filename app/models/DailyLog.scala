@@ -22,14 +22,14 @@ object DailyLog {
 
   def singleDay(kg: Long, startTimeStamp: Long) = {
     get[Int]("class_id") ~
-    get[Long]("count") map {
+      get[Long]("count") map {
       case id ~ count =>
         DailyLogStats(id, count, kg, new DateTime(startTimeStamp).toString(DateTimeFormat.forPattern("yyyy-MM-dd")))
     }
   }
 
   def singleDayLog(kg: Long, start: Long, end: Long) = DB.withConnection {
-    implicit c=>
+    implicit c =>
       Logger.info("select class_id, count(distinct d.child_id) as count from dailylog d, childinfo c where c.child_id=d.child_id and c.school_id=d.school_id and c.school_id=%s and check_at > %d and check_at < %d group by class_id".format(kg, start, end))
       SQL("select class_id, count(distinct d.child_id) as count from dailylog d, childinfo c where c.child_id=d.child_id and c.school_id=d.school_id and c.school_id={kg} and check_at > {start} and check_at < {end} group by class_id")
         .on('kg -> kg, 'start -> start, 'end -> end).as(singleDay(kg, start) *)
@@ -38,7 +38,7 @@ object DailyLog {
   def countHistory(kg: Long) = {
     val days: List[Long] = generateDays
     val dayBounds: List[(Long, Long)] = days.zip(days.tail).take(9)
-    dayBounds.foldRight(List[DailyLogStats]())({ (day: (Long, Long), all: List[DailyLogStats]) => all ::: singleDayLog(kg, day._2, day._1)})
+    dayBounds.foldRight(List[DailyLogStats]())({ (day: (Long, Long), all: List[DailyLogStats]) => all ::: singleDayLog(kg, day._2, day._1) })
   }
 
   def generateClassQuery(classes: String) = " child_id IN ( SELECT child_id FROM childinfo WHERE school_id={kg} AND class_id IN (%s) AND status=1) ".format(classes)
@@ -46,7 +46,7 @@ object DailyLog {
   def lastCheckInClasses(kg: Long, classes: String) = DB.withConnection {
     implicit c =>
       SQL("SELECT * FROM dailylog d, " +
-        " (SELECT MAX(check_at) last_check, child_id FROM `dailylog` WHERE school_id={kg} AND "+ generateClassQuery(classes) +
+        " (SELECT MAX(check_at) last_check, child_id FROM `dailylog` WHERE school_id={kg} AND " + generateClassQuery(classes) +
         "  AND check_at > {today} GROUP BY child_id) a " +
         " WHERE d.child_id=a.child_id AND d.check_at=a.last_check ")
         .on(
@@ -77,24 +77,24 @@ object DailyLog {
         ).as(simple *)
   }
 
-
-  def create(notifications: List[CheckNotification], request: CheckInfo) = DB.withConnection {
+  def show(kg: Long, id: Long) = DB.withConnection {
     implicit c =>
-      notifications match {
-        case x::xs =>
-          SQL("insert into dailylog (child_id, record_url, check_at, card_no, notice_type, school_id, parent_name) " +
-            "values ({child_id}, {url}, {check_at}, {card_no}, {notice_type}, {school_id}, {parent_name})")
-            .on(
-              'child_id -> x.child_id,
-              'url -> x.record_url,
-              'check_at -> x.timestamp,
-              'card_no -> request.card_no,
-              'notice_type -> request.notice_type,
-              'school_id -> request.school_id,
-              'parent_name -> x.parent_name
-            ).executeInsert()
-        case _ => None
-      }
+      SQL("select * from dailylog where uid={id} and school_id={school_id}")
+        .on(
+          'id -> id,
+          'school_id -> kg.toString
+        ).as(detail(kg) singleOpt)
+  }
+
+  def detail(kg: Long) = {
+    get[Long]("uid") ~
+      get[String]("card_no") ~
+      get[Long]("check_at") ~
+      get[String]("record_url") ~
+      get[Int]("notice_type") map {
+      case id ~ card ~ timestamp ~ url ~ notice_type =>
+        CheckInfo(kg, card, 0, notice_type, url, timestamp, Some(id))
+    }
   }
 
 }
