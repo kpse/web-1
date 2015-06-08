@@ -365,10 +365,9 @@ POST          /api/v3/kindergarten/:kg/work_check                               
 POST          /api/v3/kindergarten/:kg/work_check/:id                                     controllers.V3.WorkCheckController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/work_check/:id                                     controllers.V3.WorkCheckController.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/visitor                                            controllers.V3.VisitorController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/visitor                                            controllers.V3.VisitorController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v3/kindergarten/:kg/visitor/:id                                        controllers.V3.VisitorController.show(kg: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/visitor                                            controllers.V3.VisitorController.create(kg: Long)
-POST          /api/v3/kindergarten/:kg/visitor/:id                                        controllers.V3.VisitorController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/visitor/:id                                        controllers.V3.VisitorController.delete(kg: Long, id: Long)
 
 GET           /api/v3/kindergarten/:kg/sms                                                controllers.V3.SmsManagementController.index(kg: Long)

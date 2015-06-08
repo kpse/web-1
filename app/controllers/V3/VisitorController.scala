@@ -2,42 +2,29 @@ package controllers.V3
 
 import controllers.Secured
 import models.SuccessResponse
+import models.V3.Visitor
 import models.json_models.CheckInfo
 import models.json_models.CheckingMessage.checkInfoReads
 import models.json_models.CheckingMessage.checkInfoWrites
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
-case class Visitor(id: Option[Long], name: Option[String], certification_type: Option[String], certification_number: Option[String], reason: Option[String],
-                     time: Option[Long], quantity: Option[Int], visitor_user_id: Option[Long], visitor_user_type: Option[Int],
-                      memo: Option[String], photo_record: Option[String], SGID_picture: Option[String])
+
 
 object VisitorController extends Controller with Secured {
 
-  implicit val writeVisitor = Json.writes[Visitor]
-  implicit val readVisitor = Json.reads[Visitor]
-
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Visitor(Some(1), Some("老宋"), Some("身份证"), Some("510122198802282235"), Some("系统测试"), Some(System.currentTimeMillis), Some(3), Some(1), Some(1), Some("没有备注"), Some("https://dn-cocobabys.qbox.me/big_shots.jpg"), Some("https://dn-cocobabys.qbox.me/big_shots.jpg")))))
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(Visitor.index(kg, from, to, most)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Visitor(Some(id), Some("老宋"), Some("身份证"), Some("510122198802282235"), Some("系统测试"), Some(System.currentTimeMillis), Some(3), Some(1), Some(1), Some("没有备注"), Some("https://dn-cocobabys.qbox.me/big_shots.jpg"), Some("https://dn-cocobabys.qbox.me/big_shots.jpg"))))
+    Ok(Json.toJson(Visitor.show(kg, id)))
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Visitor].map {
       case (s) =>
-        Ok(Json.toJson(s))
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
-
-  def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
-    request.body.validate[Visitor].map {
-      case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
