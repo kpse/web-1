@@ -1,30 +1,24 @@
 package controllers.V3
 
 import controllers.Secured
-import models.{Employee, Parent, ChildInfo, SuccessResponse}
+import models.SuccessResponse
+import models.V3.CardV3
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
-import models.Children.readChildInfo
-import models.Children.writeChildInfo
-
-case class CardV3(id: Option[Long], number: String, origin: String)
 
 object CardController extends Controller with Secured {
-  implicit val writeCardV3 = Json.writes[CardV3]
-  implicit val readCardV3 = Json.reads[CardV3]
-
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(CardV3(Some(1), "321", "123"))))
+  def search(kg: Long, q: String) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(CardV3.search(kg, q)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(CardV3(Some(id), "321", "123")))
+    Ok(Json.toJson(CardV3.show(kg, id)))
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[CardV3].map {
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -33,13 +27,14 @@ object CardController extends Controller with Secured {
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[CardV3].map {
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    CardV3.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }

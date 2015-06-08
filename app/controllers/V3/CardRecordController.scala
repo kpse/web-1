@@ -46,6 +46,10 @@ object CardRecordController extends Controller with Secured {
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
     Ok(Json.toJson(new SuccessResponse()))
   }
+
+  def push(kg: Long) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(new SuccessResponse()))
+  }
 }
 
 /*
