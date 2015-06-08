@@ -347,19 +347,17 @@ POST          /api/v3/kindergarten/:kg/card                                     
 POST          /api/v3/kindergarten/:kg/card/:id                                           controllers.V3.CardController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/card/:id                                           controllers.V3.CardController.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/normal_card                                        controllers.V3.CardRecordController.index(kg: Long)
-GET           /api/v3/kindergarten/:kg/normal_card/:id                                    controllers.V3.CardRecordController.show(kg: Long, id: Long)
-POST          /api/v3/kindergarten/:kg/normal_card                                        controllers.V3.CardRecordController.create(kg: Long)
-POST          /api/v3/kindergarten/:kg/normal_card/:id                                    controllers.V3.CardRecordController.update(kg: Long, id: Long)
-DELETE        /api/v3/kindergarten/:kg/normal_card/:id                                    controllers.V3.CardRecordController.delete(kg: Long, id: Long)
+GET           /api/v3/kindergarten/:kg/normal_card                                        controllers.V3.CheckingRecordController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v3/kindergarten/:kg/normal_card/:id                                    controllers.V3.CheckingRecordController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/normal_card                                        controllers.V3.CheckingRecordController.create(kg: Long)
+DELETE        /api/v3/kindergarten/:kg/normal_card/:id                                    controllers.V3.CheckingRecordController.delete(kg: Long, id: Long)
 
-POST          /api/v3/kindergarten/:kg/notification                                       controllers.V3.CardRecordController.push(kg: Long)
+POST          /api/v3/kindergarten/:kg/notification                                       controllers.V3.CheckingRecordController.push(kg: Long)
 
-GET           /api/v3/kindergarten/:kg/error_card                                         controllers.V3.ErrorCardRecordController.index(kg: Long)
-GET           /api/v3/kindergarten/:kg/error_card/:id                                     controllers.V3.ErrorCardRecordController.show(kg: Long, id: Long)
-POST          /api/v3/kindergarten/:kg/error_card                                         controllers.V3.ErrorCardRecordController.create(kg: Long)
-POST          /api/v3/kindergarten/:kg/error_card/:id                                     controllers.V3.ErrorCardRecordController.update(kg: Long, id: Long)
-DELETE        /api/v3/kindergarten/:kg/error_card/:id                                     controllers.V3.ErrorCardRecordController.delete(kg: Long, id: Long)
+GET           /api/v3/kindergarten/:kg/error_card                                         controllers.V3.ErrorCheckingRecordController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v3/kindergarten/:kg/error_card/:id                                     controllers.V3.ErrorCheckingRecordController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/error_card                                         controllers.V3.ErrorCheckingRecordController.create(kg: Long)
+DELETE        /api/v3/kindergarten/:kg/error_card/:id                                     controllers.V3.ErrorCheckingRecordController.delete(kg: Long, id: Long)
 
 GET           /api/v3/kindergarten/:kg/work_check                                         controllers.V3.WorkCheckController.index(kg: Long)
 GET           /api/v3/kindergarten/:kg/work_check/:id                                     controllers.V3.WorkCheckController.show(kg: Long, id: Long)
