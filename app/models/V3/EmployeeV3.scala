@@ -145,8 +145,8 @@ object EmployeeV3 {
 
   def generateSpan(from: Option[Long], to: Option[Long], most: Option[Int]): String = {
     var result = ""
-    from foreach { _ => result = " and c.uid > {from} " }
-    to foreach { _ => result = s"$result and c.uid <= {to} " }
+    from foreach { _ => result = " and uid > {from} " }
+    to foreach { _ => result = s"$result and uid <= {to} " }
     s"$result limit ${most.getOrElse(25)}"
   }
 
