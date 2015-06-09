@@ -8,6 +8,7 @@ CREATE TABLE smsgroup (
   school_id   VARCHAR(20) NOT NULL,
   name   VARCHAR(20),
   created_at BIGINT,
+  status INT(4) DEFAULT 1,
   PRIMARY KEY (uid)
 );
 

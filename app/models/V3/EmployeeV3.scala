@@ -15,7 +15,7 @@ case class EmployeeExt(display_name: Option[String], social_id: Option[String], 
                        ethnos: Option[String], marriage: Option[String], education: Option[String], fixed_line: Option[String], address: Option[String],
                        memo: Option[String], work_id: Option[String], work_group: Option[Int], in_date: Option[String], work_status: Option[String],
                        work_duty: Option[String], work_title: Option[String], work_rank: Option[String], certification: Option[String]) {
-  def extExists(id: Long) = DB.withTransaction {
+  def extExists(id: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from employeeext where base_id={base_id}")
         .on(
@@ -30,7 +30,7 @@ case class EmployeeExt(display_name: Option[String], social_id: Option[String], 
       create(id)
   }
 
-  def update(id: Long) = DB.withTransaction {
+  def update(id: Long) = DB.withConnection {
     implicit c =>
       SQL("update employeeext set display_name={display}, social_id={social_id}, nationality={nationality}, " +
         "original_place={original_place}, ethnos={ethnos}, marriage={marriage}, education={education}, fixed_line={fixed_line}, " +
@@ -60,7 +60,7 @@ case class EmployeeExt(display_name: Option[String], social_id: Option[String], 
         ).executeUpdate()
   }
 
-  def create(id: Long) = DB.withTransaction {
+  def create(id: Long) = DB.withConnection {
     implicit c =>
       SQL("insert into employeeext (base_id, display_name, social_id, nationality, original_place, ethnos, marriage, " +
         "education, fixed_line, address,memo, work_id, work_group, in_date, work_status, work_duty, work_title, work_rank, certification) values (" +

@@ -9,15 +9,15 @@
 CREATE TABLE smsgroupmember (
   uid         INT(11) NOT NULL AUTO_INCREMENT,
   school_id   VARCHAR(20) NOT NULL,
-  user_id   INT(11),
-  user_type   INT(4),
+  group_id   INT(11) NOT NULL,
   name  VARCHAR(20),
   phone VARCHAR(20),
-  PRIMARY KEY (uid)
+  PRIMARY KEY (uid),
+  INDEX (group_id)
 );
 
-INSERT INTO smsgroupmember (school_id, user_id, user_type, name, phone) VALUES
-('93740362', 1, 1, '老赵', '13408654680');
+INSERT INTO smsgroupmember (school_id, group_id, name, phone) VALUES
+('93740362', 1, '老赵', '13408654680');
 
 # --- !Downs
 

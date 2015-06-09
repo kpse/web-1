@@ -1,32 +1,34 @@
 package controllers.V3
 
 import controllers.Secured
-import models.SuccessResponse
+import controllers.V3.CardController._
+import models.{ErrorResponse, SuccessResponse}
+import models.V3.{CardV3, SmsGroup, SmsGroupMember}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
-case class SmsGroupMember(id: Option[Long], name: Option[String], user_type: Option[Int], phone: Option[String])
-case class SmsGroup(id: Option[Long], name: Option[String], members: List[SmsGroupMember])
+
+
 
 object SmsGroupManagementController extends Controller with Secured {
 
-  implicit val writeSmsGroupMember = Json.writes[SmsGroupMember]
-  implicit val readSmsGroupMember = Json.reads[SmsGroupMember]
-  implicit val writeSmsGroup = Json.writes[SmsGroup]
-  implicit val readSmsGroup = Json.reads[SmsGroup]
-
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(SmsGroup(Some(1), Some("老宋"), List(SmsGroupMember(Some(1), Some("老宋"), Some(1), Some("13227882599")))))))
+    Ok(Json.toJson(SmsGroup.index(kg, from, to, most)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(SmsGroup(Some(id), Some("老宋"), List(SmsGroupMember(Some(1), Some("老宋"), Some(1), Some("13227882599"))))))
+    SmsGroup.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的短信分组。(No such sms group)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[SmsGroup].map {
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -35,13 +37,14 @@ object SmsGroupManagementController extends Controller with Secured {
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[SmsGroup].map {
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    SmsGroup.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
