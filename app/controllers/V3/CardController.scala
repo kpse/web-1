@@ -1,8 +1,8 @@
 package controllers.V3
 
 import controllers.Secured
-import models.SuccessResponse
 import models.V3.CardV3
+import models.{ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
@@ -12,7 +12,12 @@ object CardController extends Controller with Secured {
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(CardV3.show(kg, id)))
+    CardV3.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的卡。(No such card record)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>

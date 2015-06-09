@@ -1,9 +1,9 @@
 package controllers.V3
 
 import controllers.Secured
-import models.SuccessResponse
 import models.V3.{CheckingRecordV3, ErrorCheckingRecordV3}
 import models.json_models.CheckingMessage.checkInfoReads
+import models.{ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
@@ -14,7 +14,12 @@ object CheckingRecordController extends Controller with Secured {
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(CheckingRecordV3.show(kg, id)))
+    CheckingRecordV3.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的刷卡记录。(No such check-in record)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
@@ -57,7 +62,12 @@ object ErrorCheckingRecordController extends Controller with Secured {
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(ErrorCheckingRecordV3.show(kg, id)))
+    ErrorCheckingRecordV3.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的错误刷卡记录。(No such error check-in record)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
