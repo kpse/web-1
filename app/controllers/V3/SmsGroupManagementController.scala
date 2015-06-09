@@ -5,19 +5,22 @@ import models.SuccessResponse
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
-case class SmsGroup(id: Option[Long], name: Option[String], user_id: Option[Long], user_type: Option[Int], phone: Option[String])
+case class SmsGroupMember(id: Option[Long], name: Option[String], user_type: Option[Int], phone: Option[String])
+case class SmsGroup(id: Option[Long], name: Option[String], members: List[SmsGroupMember])
 
 object SmsGroupManagementController extends Controller with Secured {
 
+  implicit val writeSmsGroupMember = Json.writes[SmsGroupMember]
+  implicit val readSmsGroupMember = Json.reads[SmsGroupMember]
   implicit val writeSmsGroup = Json.writes[SmsGroup]
   implicit val readSmsGroup = Json.reads[SmsGroup]
 
   def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(SmsGroup(Some(1), Some("老宋"), Some(1), Some(1), Some("13227882599")))))
+    Ok(Json.toJson(List(SmsGroup(Some(1), Some("老宋"), List(SmsGroupMember(Some(1), Some("老宋"), Some(1), Some("13227882599")))))))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(SmsGroup(Some(id), Some("老宋"), Some(1), Some(1), Some("13227882599"))))
+    Ok(Json.toJson(SmsGroup(Some(id), Some("老宋"), List(SmsGroupMember(Some(1), Some("老宋"), Some(1), Some("13227882599"))))))
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>

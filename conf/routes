@@ -373,7 +373,6 @@ DELETE        /api/v3/kindergarten/:kg/visitor/:id                              
 GET           /api/v3/kindergarten/:kg/sms                                                controllers.V3.SmsManagementController.index(kg: Long)
 GET           /api/v3/kindergarten/:kg/sms/:id                                            controllers.V3.SmsManagementController.show(kg: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/sms                                                controllers.V3.SmsManagementController.create(kg: Long)
-POST          /api/v3/kindergarten/:kg/sms/:id                                            controllers.V3.SmsManagementController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/sms/:id                                            controllers.V3.SmsManagementController.delete(kg: Long, id: Long)
 
 GET           /api/v3/kindergarten/:kg/sms_group                                          controllers.V3.SmsGroupManagementController.index(kg: Long)

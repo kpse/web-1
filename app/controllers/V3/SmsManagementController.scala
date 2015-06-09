@@ -29,15 +29,6 @@ object SmsManagementController extends Controller with Secured {
     }
   }
 
-  def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
-    request.body.validate[SmsRecord].map {
-      case (s) =>
-        Ok(Json.toJson(s))
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
-
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
     Ok(Json.toJson(new SuccessResponse()))
   }
