@@ -370,12 +370,12 @@ GET           /api/v3/kindergarten/:kg/visitor/:id                              
 POST          /api/v3/kindergarten/:kg/visitor                                            controllers.V3.VisitorController.create(kg: Long)
 DELETE        /api/v3/kindergarten/:kg/visitor/:id                                        controllers.V3.VisitorController.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/sms                                                controllers.V3.SmsManagementController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/sms                                                controllers.V3.SmsManagementController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v3/kindergarten/:kg/sms/:id                                            controllers.V3.SmsManagementController.show(kg: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/sms                                                controllers.V3.SmsManagementController.create(kg: Long)
 DELETE        /api/v3/kindergarten/:kg/sms/:id                                            controllers.V3.SmsManagementController.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/sms_group                                          controllers.V3.SmsGroupManagementController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/sms_group                                          controllers.V3.SmsGroupManagementController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v3/kindergarten/:kg/sms_group/:id                                      controllers.V3.SmsGroupManagementController.show(kg: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/sms_group                                          controllers.V3.SmsGroupManagementController.create(kg: Long)
 POST          /api/v3/kindergarten/:kg/sms_group/:id                                      controllers.V3.SmsGroupManagementController.update(kg: Long, id: Long)

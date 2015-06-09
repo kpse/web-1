@@ -15,7 +15,7 @@ object SmsGroupManagementController extends Controller with Secured {
   implicit val writeSmsGroup = Json.writes[SmsGroup]
   implicit val readSmsGroup = Json.reads[SmsGroup]
 
-  def index(kg: Long) = IsLoggedIn { u => _ =>
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
     Ok(Json.toJson(List(SmsGroup(Some(1), Some("老宋"), List(SmsGroupMember(Some(1), Some("老宋"), Some(1), Some("13227882599")))))))
   }
 

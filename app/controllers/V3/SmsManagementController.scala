@@ -1,35 +1,37 @@
 package controllers.V3
 
 import controllers.Secured
-import models.SuccessResponse
+import models.V3.SmsRecord
+import models.{ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
-case class SmsRecord(id: Option[Long], phone_list: Option[String], content: Option[String], created_at: Option[Long])
-
 object SmsManagementController extends Controller with Secured {
 
-  implicit val writeSmsRecord = Json.writes[SmsRecord]
-  implicit val readSmsRecord = Json.reads[SmsRecord]
-
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(SmsRecord(Some(1), Some("13991855476,13991855477,13991855478"), Some("短信内容"), Some(System.currentTimeMillis)))))
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(SmsRecord.index(kg, from, to, most)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(SmsRecord(Some(id), Some("13991855476,13991855477,13991855478"), Some("短信内容"), Some(System.currentTimeMillis))))
+    SmsRecord.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的短信。(No such SMS record)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[SmsRecord].map {
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    SmsRecord.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
