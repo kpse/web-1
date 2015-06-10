@@ -11,12 +11,13 @@ case class Visitor(id: Option[Long], name: Option[String], certification_type: O
                    memo: Option[String], photo_record: Option[String], SGID_picture: Option[String]) {
   def create(kg: Long): Option[Visitor] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into visitor (school_id, certificate_type, certificate_number, reason, visited_at, quantity, visitor_user_id, visitor_user_type," +
-        "memo, photo_record, SGID_picture) values ({school_id}, {type}, {number}, {reason}, {time}, {quantity}, {visitor_user_id}, " +
+      val insert: Option[Long] = SQL("insert into visitor (school_id, name,certificate_type, certificate_number, reason, visited_at, quantity, visitor_user_id, visitor_user_type," +
+        "memo, photo_record, SGID_picture) values ({school_id}, {name}, {type}, {number}, {reason}, {time}, {quantity}, {visitor_user_id}, " +
         "{visitor_user_type}, {memo}, {photo_record}, {SGID_picture})")
         .on(
           'id -> id,
           'school_id -> kg,
+          'name -> name,
           'type -> certification_type,
           'number -> certification_type,
           'reason -> reason,
