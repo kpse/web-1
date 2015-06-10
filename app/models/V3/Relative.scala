@@ -5,6 +5,7 @@ import java.util.Date
 import anorm.SqlParser._
 import anorm._
 import models.Parent
+import models.helper.RangerHelper
 import models.helper.TimeHelper._
 import play.Logger
 import play.api.Play.current
@@ -109,16 +110,9 @@ object Relative {
   implicit val writeRelative = Json.writes[Relative]
   implicit val readRelative = Json.reads[Relative]
 
-  def generateSpan(from: Option[Long], to: Option[Long], most: Option[Int]): String = {
-    var result = ""
-    from foreach { _ => result = " and uid > {from} " }
-    to foreach { _ => result = s"$result and uid <= {to} " }
-    s"$result limit ${most.getOrElse(25)}"
-  }
-
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
     implicit c =>
-      val relatives: List[Relative] = SQL(s"select * from parentinfo where school_id={kg} and status=1 ${generateSpan(from, to, most)}")
+      val relatives: List[Relative] = SQL(s"select * from parentinfo where school_id={kg} and status=1 ${RangerHelper.generateSpan(from, to, most)}")
         .on(
           'kg -> kg.toString,
           'from -> from,

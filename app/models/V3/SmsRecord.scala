@@ -2,6 +2,7 @@ package models.V3
 
 import anorm.SqlParser._
 import anorm._
+import models.helper.RangerHelper
 import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
@@ -31,16 +32,9 @@ object SmsRecord {
   implicit val writeSmsRecord = Json.writes[SmsRecord]
   implicit val readSmsRecord = Json.reads[SmsRecord]
 
-  def generateSpan(from: Option[Long], to: Option[Long], most: Option[Int]): String = {
-    var result = ""
-    from foreach { _ => result = " and uid > {from} " }
-    to foreach { _ => result = s"$result and uid <= {to} " }
-    s"$result limit ${most.getOrElse(25)}"
-  }
-
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
     implicit c =>
-      SQL(s"select * from smsrecord where school_id={kg} ${generateSpan(from, to, most)}")
+      SQL(s"select * from smsrecord where school_id={kg} ${RangerHelper.generateSpan(from, to, most)}")
         .on(
           'kg -> kg.toString,
           'from -> from,

@@ -2,6 +2,7 @@ package models.V3
 
 import anorm.SqlParser._
 import anorm._
+import models.helper.RangerHelper
 import play.Logger
 import play.api.db.DB
 import play.api.libs.json.Json
@@ -100,9 +101,11 @@ object SmsGroup {
 
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
     implicit c =>
-      SQL(s"select * from smsgroup where school_id={kg} and status=1")
+      SQL(s"select * from smsgroup where school_id={kg} and status=1 ${RangerHelper.generateSpan(from, to, most)}")
         .on(
-          'kg -> kg.toString
+          'kg -> kg.toString,
+          'from -> from,
+          'to -> to
         ).as(simple(kg) *)
   }
 
