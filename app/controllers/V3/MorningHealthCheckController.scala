@@ -1,7 +1,10 @@
 package controllers.V3
 
 import controllers.Secured
-import models.SuccessResponse
+import controllers.V3.SmsGroupManagementController._
+import models.{ErrorResponse, SuccessResponse}
+import models.V3.{StudentHealthCheckDetail, HealthCheck}
+import models.V3.HealthCheck._
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
@@ -108,74 +111,26 @@ Memo nvarchar(500)备注
 )
  */
 
-case class HeadCheckResult(head_eye_left: Option[String], head_eye_right: Option[String], head_eye_trachoma: Option[String],
-                           head_eye_conjunctivitis: Option[String], head_ear_leftear: Option[String], head_ear_rightear: Option[String], head_tooth_qty: Option[String],
-                           head_tooth_caries: Option[String], head_tooth_periodontal: Option[String])
-
-case class SurgeryCheckResult(surgery_headcircumference: Option[String], surgery_chestcircumference: Option[String],
-                              surgery_limbs: Option[String], surgery_spine: Option[String], surgery_skin: Option[String], surgery_lymphaden: Option[String])
-
-case class MedicineCheckResult(medicine_lefttonsil: Option[String], medicine_righttonsil: Option[String], medicine_bloodpressure: Option[String], medicine_bloodtypesysno: Option[String],
-                               medicine_bloodtypename: Option[String], medicine_hemoglobin: Option[String], medicine_heart: Option[String], medicine_liver: Option[String],
-                               medicine_spleen: Option[String], medicine_lung: Option[String])
-
-case class OtherCheckResult(other_rickets_chongmen: Option[String], other_rickets_fangtou: Option[String],
-                            other_rickets_pingpongtou: Option[String], other_rickets_zhentu: Option[String], other_rickets_jixiong: Option[String], other_rickets_lechuanzhu: Option[String],
-                            other_rickets_haoshigou: Option[String], other_rickets_yijingduohan: Option[String], other_rickets_xo: Option[String], other_infantileparalysis: Option[String],
-                            other_ascarid: Option[String], other_skins: Option[String], other_deformity: Option[String], other_psychosis: Option[String],
-                            other_hernia: Option[String], other_others: Option[String])
-
-case class StudentHealthCheckDetail(id: Option[Long], record_name: Option[String], recorded_at: Option[Long], student_id: Option[Long], basic_height: Option[String],
-                                    basic_weight: Option[String], head: Option[HeadCheckResult], surgery: Option[SurgeryCheckResult], medicine: Option[MedicineCheckResult],
-                                    other: Option[OtherCheckResult], memo: Option[String])
-
 object StudentHealthCheckController extends Controller with Secured {
 
-  implicit val writeHeadCheckResult = Json.writes[HeadCheckResult]
-  implicit val readHeadCheckResult = Json.reads[HeadCheckResult]
-
-  implicit val writeSurgeryCheckResult = Json.writes[SurgeryCheckResult]
-  implicit val readSurgeryCheckResult = Json.reads[SurgeryCheckResult]
-
-  implicit val writeMedicineCheckResult = Json.writes[MedicineCheckResult]
-  implicit val readMedicineCheckResult = Json.reads[MedicineCheckResult]
-
-  implicit val writeOtherCheckResult = Json.writes[OtherCheckResult]
-  implicit val readOtherCheckResult = Json.reads[OtherCheckResult]
-
-  implicit val writeStudentHealthCheckDetail = Json.writes[StudentHealthCheckDetail]
-  implicit val readStudentHealthCheckDetail = Json.reads[StudentHealthCheckDetail]
-
-  def index(kg: Long, studentId: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(StudentHealthCheckDetail(Some(1), Some("一次结果"), Some(System.currentTimeMillis), Some(studentId),
-      Some("1.75cm"), Some("180kg"),
-      Some(HeadCheckResult(Some("5.0"), Some("4.8"), Some("无"), Some("无"), Some("无"), Some("无"),
-      Some("无"), Some("无"), Some("无"))),
-        Some(SurgeryCheckResult(Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"))),
-          Some(MedicineCheckResult(Some("无"),
-      Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"))),
-        Some(OtherCheckResult(Some("无"),
-      Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"),
-      Some("无"), Some("无"), Some("无"), Some("无"), Some("无"))), Some("备注")))))
+  def index(kg: Long, studentId: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(HealthCheck.index(kg, studentId, from, to, most)))
   }
 
   def show(kg: Long, studentId: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(StudentHealthCheckDetail(Some(id), Some("一次结果"), Some(System.currentTimeMillis), Some(studentId),
-      Some("1.75cm"), Some("180kg"),
-      Some(HeadCheckResult(Some("5.0"), Some("4.8"), Some("无"), Some("无"), Some("无"), Some("无"),
-        Some("无"), Some("无"), Some("无"))),
-      Some(SurgeryCheckResult(Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"))),
-      Some(MedicineCheckResult(Some("无"),
-        Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"))),
-      Some(OtherCheckResult(Some("无"),
-        Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"), Some("无"),
-        Some("无"), Some("无"), Some("无"), Some("无"), Some("无"))), Some("备注"))))
+    HealthCheck.show(kg, studentId, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的体检报告。(No such student health check result)")))
+    }
+
   }
 
   def create(kg: Long, studentId: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[StudentHealthCheckDetail].map {
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg, studentId)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -184,7 +139,7 @@ object StudentHealthCheckController extends Controller with Secured {
   def update(kg: Long, studentId: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[StudentHealthCheckDetail].map {
       case (s) =>
-        Ok(Json.toJson(s))
+        NotImplemented(Json.toJson(ErrorResponse("未实现。(please contact developer)", 9)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }

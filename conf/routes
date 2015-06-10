@@ -423,7 +423,7 @@ POST          /api/v3/kindergarten/:kg/student/:studentId/morning_health_check  
 POST          /api/v3/kindergarten/:kg/student/:studentId/morning_health_check/:id        controllers.V3.StudentMorningHealthCheckController.update(kg: Long, studentId: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/student/:studentId/morning_health_check/:id        controllers.V3.StudentMorningHealthCheckController.delete(kg: Long, studentId: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/student/:studentId/health_check                    controllers.V3.StudentHealthCheckController.index(kg: Long, studentId: Long)
+GET           /api/v3/kindergarten/:kg/student/:studentId/health_check                    controllers.V3.StudentHealthCheckController.index(kg: Long, studentId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v3/kindergarten/:kg/student/:studentId/health_check/:id                controllers.V3.StudentHealthCheckController.show(kg: Long, studentId: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/student/:studentId/health_check                    controllers.V3.StudentHealthCheckController.create(kg: Long, studentId: Long)
 POST          /api/v3/kindergarten/:kg/student/:studentId/health_check/:id                controllers.V3.StudentHealthCheckController.update(kg: Long, studentId: Long, id: Long)
