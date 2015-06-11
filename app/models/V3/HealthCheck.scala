@@ -68,7 +68,7 @@ case class StudentHealthCheckDetail(id: Option[Long], school_id: Option[Long], r
           'head_tooth_qty -> headData.head_tooth_qty,
           'head_tooth_periodontal -> headData.head_tooth_periodontal,
           'surgery_headcircumference -> surgeryData.surgery_headcircumference,
-          'surgery_chestcircumference -> surgeryData.surgery_headcircumference,
+          'surgery_chestcircumference -> surgeryData.surgery_chestcircumference,
           'surgery_limbs -> surgeryData.surgery_limbs,
           'surgery_spine -> surgeryData.surgery_spine,
           'surgery_skin -> surgeryData.surgery_skin,
@@ -213,7 +213,7 @@ object HealthCheck {
         other_rickets_xo ~ other_infantileparalysis ~ other_ascarid ~ other_skins ~ other_deformity ~ other_psychosis ~ other_hernia ~ other_others ~ memo =>
         StudentHealthCheckDetail(Some(id), Some(school_id.toLong), record_name, recorded_at, student_id, basic_height, basic_weight,
           Some(HeadCheckResult(head_eye_left, head_eye_right, head_eye_trachoma, head_eye_conjunctivitis, head_ear_leftear, head_ear_rightear,
-            head_tooth_caries, head_tooth_qty, head_tooth_periodontal)),
+            head_tooth_qty, head_tooth_caries, head_tooth_periodontal)),
           Some(SurgeryCheckResult(surgery_headcircumference, surgery_chestcircumference,
             surgery_limbs, surgery_spine, surgery_skin, surgery_lymphaden)),
           Some(MedicineCheckResult(medicine_lefttonsil, medicine_righttonsil,
