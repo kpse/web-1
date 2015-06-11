@@ -138,8 +138,12 @@ object StudentHealthCheckController extends Controller with Secured {
 
   def update(kg: Long, studentId: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[StudentHealthCheckDetail].map {
+      case (s) if s.id.isEmpty =>
+        BadRequest(Json.toJson(ErrorResponse("更新资源请带ID(update requires id)", 2)))
+      case (s) if s.id.get != id =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(ids are not matched)", 3)))
       case (s) =>
-        NotImplemented(Json.toJson(ErrorResponse("未实现。(please contact developer)", 9)))
+        Ok(Json.toJson(s.update(kg, studentId, id)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }

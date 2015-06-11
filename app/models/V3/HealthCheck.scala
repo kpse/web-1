@@ -103,6 +103,85 @@ case class StudentHealthCheckDetail(id: Option[Long], school_id: Option[Long], r
         ).executeInsert()
       HealthCheck.show(kg, studentId, insert.getOrElse(0))
   }
+
+
+  def update(kg: Long, studentId: Long, id: Long): Option[StudentHealthCheckDetail] = DB.withConnection {
+    implicit c =>
+      val headData: HeadCheckResult = head.getOrElse(HealthCheck.emptyHead)
+      val surgeryData: SurgeryCheckResult = surgery.getOrElse(HealthCheck.emptySurgery)
+      val medicineData: MedicineCheckResult = medicine.getOrElse(HealthCheck.emptyMedicine)
+      val otherData: OtherCheckResult = other.getOrElse(HealthCheck.emptyOther)
+      SQL("update healthcheckdetail set record_name={record_name}, recorded_at={recorded_at}, " +
+        "basic_height={basic_height}, basic_weight={basic_weight}, head_eye_left={head_eye_left}, head_eye_right={head_eye_right}, " +
+        "head_eye_trachoma={head_eye_trachoma}, head_eye_conjunctivitis={head_eye_conjunctivitis}," +
+        "head_ear_leftear={head_ear_leftear}, head_ear_rightear={head_ear_rightear}, head_tooth_caries={head_tooth_caries}, " +
+        "head_tooth_qty={head_tooth_qty}, head_tooth_periodontal={head_tooth_periodontal}, " +
+        "surgery_headcircumference={surgery_headcircumference}, surgery_chestcircumference={surgery_chestcircumference}, " +
+        "surgery_limbs={surgery_limbs}, surgery_spine={surgery_spine}, surgery_skin={surgery_skin}, surgery_lymphaden={surgery_lymphaden}, " +
+        "medicine_lefttonsil={medicine_lefttonsil}, medicine_righttonsil={medicine_righttonsil}, medicine_bloodpressure={medicine_bloodpressure}, " +
+        "medicine_bloodtype={medicine_bloodtype}, medicine_bloodtypename={medicine_bloodtypename}, " +
+        "medicine_hemoglobin={medicine_hemoglobin}, medicine_heart={medicine_heart}, medicine_liver={medicine_liver}, " +
+        "medicine_spleen={medicine_spleen}, medicine_lung={medicine_lung}, other_rickets_chongmen={other_rickets_chongmen}, " +
+        "other_rickets_fangtou={other_rickets_fangtou}, other_rickets_pingpongtou={other_rickets_pingpongtou}, " +
+        "other_rickets_zhentu={other_rickets_zhentu}, other_rickets_jixiong={other_rickets_jixiong}, " +
+        "other_rickets_lechuanzhu={other_rickets_lechuanzhu}, other_rickets_haoshigou={other_rickets_haoshigou}," +
+        "other_rickets_yijingduohan={other_rickets_yijingduohan}, other_rickets_xo={other_rickets_xo}, " +
+        "other_infantileparalysis={other_infantileparalysis}, other_ascarid={other_ascarid}, other_skins={other_skins}, " +
+        "other_deformity={other_deformity}, other_psychosis={other_psychosis}, other_hernia={other_hernia}, " +
+        "other_others={other_others}, memo={memo} where school_id={school_id} and uid={id} and student_id={student_id}")
+        .on(
+          'id -> id,
+          'school_id -> kg,
+          'record_name -> record_name,
+          'recorded_at -> recorded_at,
+          'student_id -> studentId,
+          'basic_height -> basic_height,
+          'basic_weight -> basic_weight,
+          'head_eye_left -> headData.head_eye_left,
+          'head_eye_right -> headData.head_eye_right,
+          'head_eye_trachoma -> headData.head_eye_trachoma,
+          'head_eye_conjunctivitis -> headData.head_eye_conjunctivitis,
+          'head_ear_leftear -> headData.head_ear_leftear,
+          'head_ear_rightear -> headData.head_ear_rightear,
+          'head_tooth_caries -> headData.head_tooth_caries,
+          'head_tooth_qty -> headData.head_tooth_qty,
+          'head_tooth_periodontal -> headData.head_tooth_periodontal,
+          'surgery_headcircumference -> surgeryData.surgery_headcircumference,
+          'surgery_chestcircumference -> surgeryData.surgery_chestcircumference,
+          'surgery_limbs -> surgeryData.surgery_limbs,
+          'surgery_spine -> surgeryData.surgery_spine,
+          'surgery_skin -> surgeryData.surgery_skin,
+          'surgery_lymphaden -> surgeryData.surgery_lymphaden,
+          'medicine_lefttonsil -> medicineData.medicine_lefttonsil,
+          'medicine_righttonsil -> medicineData.medicine_righttonsil,
+          'medicine_bloodpressure -> medicineData.medicine_bloodpressure,
+          'medicine_bloodtype -> medicineData.medicine_bloodtype,
+          'medicine_bloodtypename -> medicineData.medicine_bloodtypename,
+          'medicine_hemoglobin -> medicineData.medicine_hemoglobin,
+          'medicine_heart -> medicineData.medicine_heart,
+          'medicine_liver -> medicineData.medicine_liver,
+          'medicine_spleen -> medicineData.medicine_spleen,
+          'medicine_lung -> medicineData.medicine_lung,
+          'other_rickets_chongmen -> otherData.other_rickets_chongmen,
+          'other_rickets_fangtou -> otherData.other_rickets_fangtou,
+          'other_rickets_pingpongtou -> otherData.other_rickets_pingpongtou,
+          'other_rickets_zhentu -> otherData.other_rickets_zhentu,
+          'other_rickets_jixiong -> otherData.other_rickets_jixiong,
+          'other_rickets_lechuanzhu -> otherData.other_rickets_lechuanzhu,
+          'other_rickets_haoshigou -> otherData.other_rickets_haoshigou,
+          'other_rickets_yijingduohan -> otherData.other_rickets_yijingduohan,
+          'other_rickets_xo -> otherData.other_rickets_xo,
+          'other_infantileparalysis -> otherData.other_infantileparalysis,
+          'other_ascarid -> otherData.other_ascarid,
+          'other_skins -> otherData.other_skins,
+          'other_deformity -> otherData.other_deformity,
+          'other_psychosis -> otherData.other_psychosis,
+          'other_hernia -> otherData.other_hernia,
+          'other_others -> otherData.other_others,
+          'memo -> memo
+        ).executeUpdate()
+      HealthCheck.show(kg, studentId, id)
+  }
 }
 
 object HealthCheck {
