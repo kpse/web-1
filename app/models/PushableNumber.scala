@@ -11,6 +11,12 @@ case class PushAccount(token: String, accountid: String, pushId: String, channel
 
 case class PushableNumber(phone: String) {
 
+  def hasBeenDeleted = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from parentinfo where phone={phone} and status=1")
+        .on('phone -> phone).as(get[Long]("count(1)") single) == 0
+  }
+
   def existsInPushRecord = DB.withConnection {
     implicit c =>
       SQL("select count(1) from accountinfo where accountid={phone}")

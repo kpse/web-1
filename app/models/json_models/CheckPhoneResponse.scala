@@ -20,16 +20,13 @@ object Check {
       result match {
         case Some(x) =>
           CheckPhoneResponse("1102")
+        case None if request.phonenum.hasBeenDeleted =>
+          CheckPhoneResponse ("1100")
+        case None if request.phonenum.existsInPushRecord =>
+          CheckPhoneResponse("1101")
         case None =>
-          request.phonenum.existsInPushRecord match {
-            case false =>
-              CheckPhoneResponse("1100")
-            case true =>
-              CheckPhoneResponse("1101")
-          }
+          CheckPhoneResponse ("1100")
       }
   }
-
-
 
 }
