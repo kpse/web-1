@@ -27,11 +27,11 @@ class CheckPhoneResponseSpec extends Specification with TestSupport {
       response.check_phone_result must equalTo("1101")
     }
 
-    "response with 1101 when phone number has been soft deleted" in new WithApplication {
+    "response with 1100 when phone number has been soft deleted" in new WithApplication {
 
       private val response = Check(CheckPhone("22222222225"))
 
-      response.check_phone_result must equalTo("1101")
+      response.check_phone_result must equalTo("1100")
     }
 
   }
