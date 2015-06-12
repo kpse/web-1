@@ -48,9 +48,8 @@
 
           <div class="col-sm-8">
             <select id="target" class="form-control class-select" ng-model="news.class_id"
-                    ng-options="value.class_id as value.name for (key, value) in kindergarten.classes"
+                    ng-options="value.class_id as value.name for (key, value) in classesScope"
                     data-style="btn-primary" ng-disabled="news.published">
-              <option value="">-- 全校 --</option>
             </select>
           </div>
         </div>
@@ -76,7 +75,7 @@
         <div ng-hide="news.published" class="issue-date">未发布</div>
         <div class="loading" ng-show="loading"></div>
         <div class="btn-group">
-          <button class="btn btn-default" ng-click="$hide()">{{ news.published ? '关闭' : '取消' }}</button>
+          <button class="btn btn-default" ng-click="closeDialog(news)">{{ news.published ? '关闭' : '取消' }}</button>
           <button class="btn btn-primary" ng-disabled="newsForm.$invalid || uploading" ng-hide="news.published"
                   ng-click="publish(news)">发布
           </button>

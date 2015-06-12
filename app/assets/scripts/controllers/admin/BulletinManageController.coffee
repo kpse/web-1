@@ -63,7 +63,9 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
         news.published = true
         news.publisher_id = scope.adminUser.id
         news.$save ->
-          scope.refresh()
+          news.publisher_id = scope.adminUser.id
+          news.publisher =
+            name: scope.adminUser.name
 
       scope.deleteNews = (news) ->
         news.publisher_id = scope.adminUser.id
@@ -99,10 +101,15 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
             scope.currentPage = 1
             scope.refresh()
 
+      scope.closeDialog = (news) ->
+        scope.currentModal.hide()
+        scope.navigateTo(class_id: news.class_id) unless news.class_id == parseInt stateParams.class
+        firstPageOrCurrentPage(news)()
+
       scope.save = (news) ->
         goPage = firstPageOrCurrentPage(news)
-        news.publisher_id = scope.adminUser.id
         news.$save ->
+          scope.navigateTo(class_id: news.class_id) unless news.class_id == parseInt stateParams.class
           goPage()
           scope.currentModal.hide()
 
@@ -133,5 +140,5 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
           contentTemplate: 'templates/admin/news_feedbacks.html'
 
       scope.printTags = (tags) ->
-        tags.join ', '
+        if tags? then tags.join ', ' else ''
   ]
