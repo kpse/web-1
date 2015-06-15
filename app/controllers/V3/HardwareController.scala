@@ -1,29 +1,33 @@
 package controllers.V3
 
 import controllers.Secured
-import models.SuccessResponse
+import controllers.V3.CardController._
+import models.{ErrorResponse, SuccessResponse}
+import models.V3.{CardV3, Hardware}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
-case class Hardware(id: Option[Long], name: Option[String], ip: Option[String], port: Option[Int])
-
 object HardwareController extends Controller with Secured {
 
-  implicit val writeHardware = Json.writes[Hardware]
-  implicit val readHardware = Json.reads[Hardware]
-
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Hardware(Some(1), Some("门口机"), Some("192.168.0.1"), Some(8080)))))
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(Hardware.index(kg, from, to, most)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Hardware(Some(id), Some("门口机"), Some("192.168.0.1"), Some(8080))))
+    Hardware.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的设备。(No such hardware)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Hardware].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -31,14 +35,17 @@ object HardwareController extends Controller with Secured {
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Hardware].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    Hardware.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }

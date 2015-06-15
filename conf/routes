@@ -381,7 +381,7 @@ POST          /api/v3/kindergarten/:kg/sms_group                                
 POST          /api/v3/kindergarten/:kg/sms_group/:id                                      controllers.V3.SmsGroupManagementController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/sms_group/:id                                      controllers.V3.SmsGroupManagementController.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/hardware                                           controllers.V3.HardwareController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/hardware                                           controllers.V3.HardwareController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v3/kindergarten/:kg/hardware/:id                                       controllers.V3.HardwareController.show(kg: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/hardware                                           controllers.V3.HardwareController.create(kg: Long)
 POST          /api/v3/kindergarten/:kg/hardware/:id                                       controllers.V3.HardwareController.update(kg: Long, id: Long)
