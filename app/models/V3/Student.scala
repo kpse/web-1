@@ -197,7 +197,7 @@ object Student {
     var result = ""
     from foreach { _ => result = " and c.uid > {from} " }
     to foreach { _ => result = s"$result and c.uid <= {to} " }
-    s"$result limit ${most.getOrElse(25)}"
+    s"$result order by c.uid DESC limit ${most.getOrElse(25)}"
   }
 
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {

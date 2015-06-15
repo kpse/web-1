@@ -35,7 +35,7 @@ object RangerHelper {
     var result = ""
     from foreach { _ => result = " and uid > {from} " }
     to foreach { _ => result = s"$result and uid <= {to} " }
-    s"$result limit ${most.getOrElse(25)}"
+    s"$result order by uid DESC limit ${most.getOrElse(25)}"
   }
 
 }
