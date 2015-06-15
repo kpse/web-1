@@ -8,8 +8,7 @@ import ExecutionContext.Implicits.global
 import models.News
 import scala.Some
 import play.api.{Play, Logger}
-import com.qiniu.api.rs.PutPolicy
-import com.qiniu.api.auth.digest.Mac
+import com.qiniu.util.{StringMap, Auth}
 import java.net.URLEncoder
 ;
 
@@ -90,11 +89,9 @@ object WSController extends Controller {
     val ACCESS_KEY = Play.current.configuration.getString("oss.ak").getOrElse("")
     val SECRET_KEY = Play.current.configuration.getString("oss.sk").getOrElse("")
     Logger.info("ACCESS_KEY = %s, SECRET_KEY = %s".format(ACCESS_KEY, SECRET_KEY))
-    val putPolicy = new PutPolicy(bucket)
-    key.map { k => putPolicy.scope = bucket + ":" + k}
-    putPolicy.returnBody = "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"
-    val uptoken = putPolicy.token(new Mac(ACCESS_KEY, SECRET_KEY))
-    Ok(Json.toJson(UpToken(uptoken)))
+    val auth: Auth = com.qiniu.util.Auth.create(ACCESS_KEY, SECRET_KEY)
+    val upToken = auth.uploadToken(bucket, key.orNull, 3600, new StringMap().putNotEmpty("returnBody",  "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"))
+    Ok(Json.toJson(UpToken(upToken)))
   }
 
   def generateEncodeToken(bucket: String, key: Option[String]) = key match {
@@ -117,14 +114,12 @@ object WSController extends Controller {
       val ACCESS_KEY = Play.current.configuration.getString("oss.ak").getOrElse("")
       val SECRET_KEY = Play.current.configuration.getString("oss.sk").getOrElse("")
       Logger.info("ACCESS_KEY = %s, SECRET_KEY = %s".format(ACCESS_KEY, SECRET_KEY))
+      val auth: Auth = com.qiniu.util.Auth.create(ACCESS_KEY, SECRET_KEY)
       request.body.validate[Bucket].map {
         case (bucket) =>
-          val putPolicy = new PutPolicy(bucket.name)
-          putPolicy.scope = bucket.scope
-          Logger.info(s"scope = ${putPolicy.scope}")
-          putPolicy.returnBody = "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"
-          val uptoken = putPolicy.token(new Mac(ACCESS_KEY, SECRET_KEY))
-          Ok(Json.toJson(UpToken(uptoken)))
+          val upToken = auth.uploadToken(bucket.name, bucket.key, 3600, new StringMap().putNotEmpty("returnBody",  "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"))
+          Logger.info(s"scope = ${upToken}")
+          Ok(Json.toJson(UpToken(upToken)))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }

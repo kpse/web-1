@@ -11,7 +11,7 @@ libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "1.3.168",
   "mysql" % "mysql-connector-java" % "5.1.27",
   "commons-codec" % "commons-codec" % "1.7",
-  "com.qiniu" % "sdk" % "6.0.0",
+  "com.qiniu" % "qiniu-java-sdk" % "7.0.+",
   "joda-time" % "joda-time" % "2.3",
   "net.tanesha.recaptcha4j" % "recaptcha4j" % "0.0.7"
 )
