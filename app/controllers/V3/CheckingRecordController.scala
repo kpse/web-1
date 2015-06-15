@@ -3,12 +3,14 @@ package controllers.V3
 import controllers.Secured
 import models.V3.{CheckingRecordV3, ErrorCheckingRecordV3}
 import models.json_models.CheckingMessage.checkInfoReads
-import models.{ErrorResponse, SuccessResponse}
+import models.{Relationship, Card, ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
 object CheckingRecordController extends Controller with Secured {
+
   import models.V3.CheckingRecordV3.condition
+
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
     Ok(Json.toJson(CheckingRecordV3.index(kg, from, to, most)))
   }
@@ -24,6 +26,10 @@ object CheckingRecordController extends Controller with Secured {
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[CheckingRecordV3].map {
+      case (s) if s.check_info.school_id != kg =>
+        BadRequest(Json.toJson(ErrorResponse("学校不匹配(school_id is not matched)", 2)))
+      case (s) if !Relationship.cardExists(s.check_info.card_no, None) =>
+        BadRequest(Json.toJson(ErrorResponse("卡号不存在(card number does not exist)", 3)))
       case (s) =>
         Ok(Json.toJson(s.create))
     }.recoverTotal {
@@ -72,6 +78,10 @@ object ErrorCheckingRecordController extends Controller with Secured {
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[CheckingRecordV3].map {
+      case (s) if s.check_info.school_id != kg =>
+        BadRequest(Json.toJson(ErrorResponse("学校ID不匹配(school_id is not matched)", 2)))
+      case (s) if !Relationship.cardExists(s.check_info.card_no, None) =>
+        BadRequest(Json.toJson(ErrorResponse("卡号不存在(card number does not exist)", 3)))
       case (s) =>
         Ok(Json.toJson(s.createErrorRecord))
     }.recoverTotal {
