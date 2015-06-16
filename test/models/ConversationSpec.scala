@@ -32,9 +32,9 @@ class ConversationSpec extends Specification with TestSupport {
 
       private val index = Conversation.index(93740362L, "13408654680", None, Some(3))
 
-      index.size must equalTo(2)
+      index.size must equalTo(3)
       index(0).phone must equalTo("13408654680")
-      index(0).id must equalTo(Some(2))
+      index(0).id must equalTo(Some(3))
       index(0).id must greaterThan(index(1).id)
 
     }
@@ -45,11 +45,11 @@ class ConversationSpec extends Specification with TestSupport {
       index.size must equalTo(0)
     }
 
-    "report empty if to the beginning" in new WithApplication {
+    "report beginning if to the beginning" in new WithApplication {
 
       private val index = Conversation.index(93740362L, "13408654680", None, Some(1))
 
-      index.size must equalTo(0)
+      index.size must equalTo(1)
     }
   }
 
