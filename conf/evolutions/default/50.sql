@@ -7,7 +7,9 @@ CREATE TABLE workshiftdate (
   date VARCHAR(20),
   updated_at BIGINT,
   status INT(4) DEFAULT 1,
-  PRIMARY KEY (uid)
+  PRIMARY KEY (uid),
+  KEY (school_id),
+  KEY (base_id)
 );
 
 INSERT INTO workshiftdate (school_id, base_id, date, updated_at) VALUES

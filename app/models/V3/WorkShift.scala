@@ -8,7 +8,7 @@ import play.api.libs.json.Json
 import play.api.Play.current
 import scala.language.postfixOps
 
-case class WorkShiftDate(id: Option[Long], base_id: Option[Long], date: Option[String]) {
+case class WorkShiftDate(id: Option[Long], base_id: Option[Long], date: Option[String], status: Option[Int]) {
   def exists(id: Long) = DB.withTransaction {
     implicit c =>
       SQL("select count(1) from workshiftdate where uid={id}")
@@ -26,12 +26,13 @@ case class WorkShiftDate(id: Option[Long], base_id: Option[Long], date: Option[S
 
   def update(kg: Long): Option[WorkShiftDate] = DB.withConnection {
     implicit c =>
-      SQL("update workshiftdate set date={date}, updated_at={time} where school_id={school_id} and uid={id} and base_id={base_id}")
+      SQL("update workshiftdate set date={date}, updated_at={time}, status={status} where school_id={school_id} and uid={id} and base_id={base_id}")
         .on(
           'id -> id,
           'school_id -> kg,
           'base_id -> base_id,
           'date -> date,
+          'status -> status,
           'time -> System.currentTimeMillis
         ).executeUpdate()
       WorkShiftDate.show(kg, base_id.getOrElse(0), id.getOrElse(0))
@@ -39,12 +40,13 @@ case class WorkShiftDate(id: Option[Long], base_id: Option[Long], date: Option[S
 
   def create(kg: Long): Option[WorkShiftDate] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into workshiftdate (school_id, base_id, `date`, updated_at) values (" +
-        "{school_id}, {base_id}, {date}, {time})")
+      val insert: Option[Long] = SQL("insert into workshiftdate (school_id, base_id, `date`, status, updated_at) values (" +
+        "{school_id}, {base_id}, {date}, {status}, {time})")
         .on(
           'school_id -> kg,
           'base_id -> base_id,
           'date -> date,
+          'status -> status,
           'time -> System.currentTimeMillis
         ).executeInsert()
       WorkShiftDate.show(kg, base_id.getOrElse(0), insert.getOrElse(0))
@@ -182,7 +184,7 @@ object WorkShiftDate {
 
   def index(kg: Long, shiftId: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
     implicit c =>
-      SQL(s"select * from workshiftdate where school_id={kg} and base_id={base} and status=1 ${RangerHelper.generateSpan(from, to, most)}")
+      SQL(s"select * from workshiftdate where school_id={kg} and base_id={base} ${RangerHelper.generateSpan(from, to, most)}")
         .on(
           'kg -> kg.toString,
           'base -> shiftId,
@@ -193,7 +195,7 @@ object WorkShiftDate {
 
   def show(kg: Long, shiftId: Long, id: Long) = DB.withConnection {
     implicit c =>
-      SQL(s"select * from workshiftdate where school_id={kg} and uid={id} and base_id={base} and status=1")
+      SQL(s"select * from workshiftdate where school_id={kg} and uid={id} and base_id={base}")
         .on(
           'kg -> kg.toString,
           'base -> shiftId,
@@ -203,7 +205,7 @@ object WorkShiftDate {
 
   def deleteById(kg: Long, shiftId: Long, id: Long) = DB.withConnection {
     implicit c =>
-      SQL(s"update workshiftdate set status=0 where uid={id} and school_id={kg} and base_id={base} and status=1")
+      SQL(s"delete from workshiftdate where uid={id} and school_id={kg} and base_id={base}")
         .on(
           'kg -> kg.toString,
           'base -> shiftId,
@@ -214,9 +216,10 @@ object WorkShiftDate {
   def simple = {
     get[Long]("uid") ~
       get[Option[Long]]("base_id") ~
+      get[Option[Int]]("status") ~
       get[Option[String]]("date") map {
-      case id ~ base ~ date =>
-        WorkShiftDate(Some(id), base, date)
+      case id ~ base ~ status ~ date =>
+        WorkShiftDate(Some(id), base, date, status)
     }
   }
 }

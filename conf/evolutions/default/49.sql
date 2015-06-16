@@ -8,7 +8,9 @@ CREATE TABLE workerinshift (
   user_type   INT,
   updated_at BIGINT,
   status INT(4) DEFAULT 1,
-  PRIMARY KEY (uid)
+  PRIMARY KEY (uid),
+  KEY (school_id),
+  KEY (base_id)
 );
 
 INSERT INTO workerinshift (school_id, base_id, user_id, user_type, updated_at) VALUES

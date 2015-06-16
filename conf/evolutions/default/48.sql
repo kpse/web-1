@@ -9,7 +9,8 @@ CREATE TABLE workshift (
   same_day   INT(4),
   updated_at BIGINT,
   status INT(4) DEFAULT 1,
-  PRIMARY KEY (uid)
+  PRIMARY KEY (uid),
+  KEY (school_id)
 );
 
 INSERT INTO workshift (school_id, name, start_time, end_time, updated_at) VALUES
