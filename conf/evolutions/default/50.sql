@@ -6,6 +6,7 @@ CREATE TABLE workshiftdate (
   base_id INT(11),
   date VARCHAR(20),
   updated_at BIGINT,
+  shift_status INT(4) DEFAULT 1,
   status INT(4) DEFAULT 1,
   PRIMARY KEY (uid),
   KEY (school_id),

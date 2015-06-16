@@ -97,7 +97,7 @@ object WorkerInShiftController extends Controller with Secured {
       case (s) if s.base_id != Some(shiftId) =>
         BadRequest(Json.toJson(ErrorResponse("班次ID不匹配(shift id is not match)", 4)))
       case (s) =>
-        Ok(Json.toJson(s.create(kg)))
+        Ok(Json.toJson(s.create(kg, shiftId)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -110,7 +110,7 @@ object WorkerInShiftController extends Controller with Secured {
       case (s) if s.base_id != Some(shiftId) =>
         BadRequest(Json.toJson(ErrorResponse("班次ID不匹配(shift id is not match)", 4)))
       case (s) =>
-        Ok(Json.toJson(s.update(kg)))
+        Ok(Json.toJson(s.update(kg, shiftId)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -144,7 +144,7 @@ object WorkShiftDateController extends Controller with Secured {
       case (s) if s.base_id != Some(shiftId) =>
         BadRequest(Json.toJson(ErrorResponse("班次ID不匹配(shift id is not match)", 4)))
       case (s) =>
-        Ok(Json.toJson(s.create(kg)))
+        Ok(Json.toJson(s.create(kg, shiftId)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -157,7 +157,7 @@ object WorkShiftDateController extends Controller with Secured {
       case (s) if s.base_id != Some(shiftId) =>
         BadRequest(Json.toJson(ErrorResponse("班次ID不匹配(shift id is not match)", 4)))
       case (s) =>
-        Ok(Json.toJson(s.update(kg)))
+        Ok(Json.toJson(s.update(kg, shiftId)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }

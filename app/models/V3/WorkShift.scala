@@ -17,20 +17,20 @@ case class WorkShiftDate(id: Option[Long], base_id: Option[Long], date: Option[S
         ).as(get[Long]("count(1)") single) > 0
   }
 
-  def handle(id: Long) = exists(id) match {
+  def handle(id: Long, base: Long) = exists(id) match {
     case true =>
-      update(id)
+      update(id, base)
     case false =>
-      create(id)
+      create(id, base)
   }
 
-  def update(kg: Long): Option[WorkShiftDate] = DB.withConnection {
+  def update(kg: Long, base: Long): Option[WorkShiftDate] = DB.withConnection {
     implicit c =>
-      SQL("update workshiftdate set date={date}, updated_at={time}, status={status} where school_id={school_id} and uid={id} and base_id={base_id}")
+      SQL("update workshiftdate set date={date}, updated_at={time}, shift_status={status} where school_id={school_id} and uid={id} and base_id={base_id}")
         .on(
           'id -> id,
           'school_id -> kg,
-          'base_id -> base_id,
+          'base_id -> base,
           'date -> date,
           'status -> status,
           'time -> System.currentTimeMillis
@@ -38,13 +38,13 @@ case class WorkShiftDate(id: Option[Long], base_id: Option[Long], date: Option[S
       WorkShiftDate.show(kg, base_id.getOrElse(0), id.getOrElse(0))
   }
 
-  def create(kg: Long): Option[WorkShiftDate] = DB.withConnection {
+  def create(kg: Long, base: Long): Option[WorkShiftDate] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into workshiftdate (school_id, base_id, `date`, status, updated_at) values (" +
+      val insert: Option[Long] = SQL("insert into workshiftdate (school_id, base_id, `date`, shift_status, updated_at) values (" +
         "{school_id}, {base_id}, {date}, {status}, {time})")
         .on(
           'school_id -> kg,
-          'base_id -> base_id,
+          'base_id -> base,
           'date -> date,
           'status -> status,
           'time -> System.currentTimeMillis
@@ -62,21 +62,21 @@ case class WorkerInShift(id: Option[Long], base_id: Option[Long], user_id: Optio
         ).as(get[Long]("count(1)") single) > 0
   }
 
-  def handle(id: Long) = exists(id) match {
+  def handle(id: Long, base: Long) = exists(id) match {
     case true =>
-      update(id)
+      update(id, base)
     case false =>
-      create(id)
+      create(id, base)
   }
 
 
-  def update(kg: Long): Option[WorkerInShift] = DB.withConnection {
+  def update(kg: Long, base: Long): Option[WorkerInShift] = DB.withConnection {
     implicit c =>
       SQL("update workerinshift set name={name}, sn={sn}, updated_at={time} where school_id={school_id} and uid={id}")
         .on(
           'id -> id,
           'school_id -> kg,
-          'base -> base_id,
+          'base -> base,
           'user -> user_id,
           'type -> user_type,
           'time -> System.currentTimeMillis
@@ -84,13 +84,13 @@ case class WorkerInShift(id: Option[Long], base_id: Option[Long], user_id: Optio
       WorkerInShift.show(kg, base_id.getOrElse(0), id.getOrElse(0))
   }
 
-  def create(kg: Long): Option[WorkerInShift] = DB.withConnection {
+  def create(kg: Long, base: Long): Option[WorkerInShift] = DB.withConnection {
     implicit c =>
       val insert: Option[Long] = SQL("insert into workerinshift (school_id, base_id, user_id, user_type, updated_at) values (" +
         "{school_id}, {base}, {user}, {type}, {time})")
         .on(
           'school_id -> kg,
-          'base -> base_id,
+          'base -> base,
           'user -> user_id,
           'type -> user_type,
           'time -> System.currentTimeMillis
@@ -101,7 +101,6 @@ case class WorkerInShift(id: Option[Long], base_id: Option[Long], user_id: Optio
 
 
 case class WorkShift(id: Option[Long], shift_name: Option[String], start_time: Option[String], end_time: Option[String], is_same_day: Option[Int]) {
-
   def update(kg: Long): Option[WorkShift] = DB.withConnection {
     implicit c =>
       SQL("update workshift set name={name}, start_time={start}, end_time={end}, same_day={same}, updated_at={time} " +
@@ -184,7 +183,7 @@ object WorkShiftDate {
 
   def index(kg: Long, shiftId: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
     implicit c =>
-      SQL(s"select * from workshiftdate where school_id={kg} and base_id={base} ${RangerHelper.generateSpan(from, to, most)}")
+      SQL(s"select * from workshiftdate where school_id={kg} and base_id={base} and status=1 ${RangerHelper.generateSpan(from, to, most)}")
         .on(
           'kg -> kg.toString,
           'base -> shiftId,
@@ -195,7 +194,7 @@ object WorkShiftDate {
 
   def show(kg: Long, shiftId: Long, id: Long) = DB.withConnection {
     implicit c =>
-      SQL(s"select * from workshiftdate where school_id={kg} and uid={id} and base_id={base}")
+      SQL(s"select * from workshiftdate where school_id={kg} and uid={id} and base_id={base} and status=1")
         .on(
           'kg -> kg.toString,
           'base -> shiftId,
@@ -205,7 +204,7 @@ object WorkShiftDate {
 
   def deleteById(kg: Long, shiftId: Long, id: Long) = DB.withConnection {
     implicit c =>
-      SQL(s"delete from workshiftdate where uid={id} and school_id={kg} and base_id={base}")
+      SQL(s"update workshiftdate set status=0 where uid={id} and school_id={kg} and base_id={base} and status=1")
         .on(
           'kg -> kg.toString,
           'base -> shiftId,
@@ -216,7 +215,7 @@ object WorkShiftDate {
   def simple = {
     get[Long]("uid") ~
       get[Option[Long]]("base_id") ~
-      get[Option[Int]]("status") ~
+      get[Option[Int]]("shift_status") ~
       get[Option[String]]("date") map {
       case id ~ base ~ status ~ date =>
         WorkShiftDate(Some(id), base, date, status)
