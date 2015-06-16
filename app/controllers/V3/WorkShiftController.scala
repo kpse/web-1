@@ -27,6 +27,8 @@ object WorkShiftController extends Controller with Secured {
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[WorkShift].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
       case (s) =>
         Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
@@ -36,6 +38,8 @@ object WorkShiftController extends Controller with Secured {
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[WorkShift].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
       case (s) =>
         Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
@@ -82,12 +86,16 @@ object WorkerInShiftController extends Controller with Secured {
       case Some(x) =>
         Ok(Json.toJson(x))
       case None =>
-        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的班次。(No such work shift)")))
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的用户。(No such worker in that shift)")))
     }
   }
 
   def create(kg: Long, shiftId: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[WorkerInShift].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
+      case (s) if s.base_id != Some(shiftId) =>
+        BadRequest(Json.toJson(ErrorResponse("班次ID不匹配(shift id is not match)", 4)))
       case (s) =>
         Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
@@ -97,6 +105,10 @@ object WorkerInShiftController extends Controller with Secured {
 
   def update(kg: Long, shiftId: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[WorkerInShift].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
+      case (s) if s.base_id != Some(shiftId) =>
+        BadRequest(Json.toJson(ErrorResponse("班次ID不匹配(shift id is not match)", 4)))
       case (s) =>
         Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
@@ -121,12 +133,16 @@ object WorkShiftDateController extends Controller with Secured {
       case Some(x) =>
         Ok(Json.toJson(x))
       case None =>
-        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的班次。(No such work shift)")))
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的班次时间。(No such work shift date)")))
     }
   }
 
   def create(kg: Long, shiftId: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[WorkShiftDate].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
+      case (s) if s.base_id != Some(shiftId) =>
+        BadRequest(Json.toJson(ErrorResponse("班次ID不匹配(shift id is not match)", 4)))
       case (s) =>
         Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
@@ -136,6 +152,10 @@ object WorkShiftDateController extends Controller with Secured {
 
   def update(kg: Long, shiftId: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[WorkShiftDate].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
+      case (s) if s.base_id != Some(shiftId) =>
+        BadRequest(Json.toJson(ErrorResponse("班次ID不匹配(shift id is not match)", 4)))
       case (s) =>
         Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
