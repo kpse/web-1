@@ -11,9 +11,9 @@ class ConversationSpec extends Specification with TestSupport {
       private val index = Conversation.index(93740362L, "13408654680", None, None)
 
       index.size must equalTo(3)
-      index(0).phone must equalTo("13408654680")
-      index(0).id must equalTo(Some(3))
-      index(0).timestamp must greaterThan(index(2).timestamp)
+      index.head.phone must equalTo("13408654680")
+      index.head.id must equalTo(Some(3))
+      index.head.timestamp must greaterThan(index(2).timestamp)
 
     }
 
@@ -22,9 +22,9 @@ class ConversationSpec extends Specification with TestSupport {
       private val index = Conversation.index(93740362L, "13408654680", Some(1), None)
 
       index.size must equalTo(2)
-      index(0).phone must equalTo("13408654680")
-      index(0).id must equalTo(Some(3))
-      index(0).id must greaterThan(index(1).id)
+      index.head.phone must equalTo("13408654680")
+      index.head.id must equalTo(Some(3))
+      index.head.id must greaterThan(index(1).id)
 
     }
 
@@ -33,9 +33,9 @@ class ConversationSpec extends Specification with TestSupport {
       private val index = Conversation.index(93740362L, "13408654680", None, Some(3))
 
       index.size must equalTo(3)
-      index(0).phone must equalTo("13408654680")
-      index(0).id must equalTo(Some(3))
-      index(0).id must greaterThan(index(1).id)
+      index.head.phone must equalTo("13408654680")
+      index.head.id must equalTo(Some(3))
+      index.head.id must greaterThan(index(1).id)
 
     }
     "report empty if from the end" in new WithApplication {
