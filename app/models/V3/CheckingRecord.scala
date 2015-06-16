@@ -67,7 +67,7 @@ case class CheckingRecordV3(id: Option[Long], check_info: CheckInfo, create_user
 }
 
 object ErrorCheckingRecordV3 {
-  def errorChecked() : String = " and error_status=0"
+  def errorChecked(): String = " and error_status=0"
 
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = CheckingRecordV3.index(kg, from, to, most)(errorChecked)
 
@@ -80,13 +80,23 @@ object CheckingRecordV3 {
   implicit val writeCardRecordV3 = Json.writes[CheckingRecordV3]
   implicit val readCardRecordV3 = Json.reads[CheckingRecordV3]
 
-  implicit def condition() : String = " and error_status=1"
+  implicit def condition(): String = " and error_status=1"
 
   def generateSpan(from: Option[Long], to: Option[Long], most: Option[Int]): String = {
-    var result = ""
-    from foreach { _ => result = " and c.uid > {from} " }
-    to foreach { _ => result = s"$result and c.uid <= {to} " }
-    s"$result order by c.uid DESC limit ${most.getOrElse(25)}"
+    from.getOrElse(0L) + to.getOrElse(0L) match {
+      case range if range > 1388534400000L =>
+        var result = ""
+        from foreach { _ => result = " and d.check_at > {from} " }
+        to foreach { _ => result = s"$result and d.check_at <= {to} " }
+        s"$result order by c.uid DESC limit ${most.getOrElse(25)}"
+      case _ =>
+        var result = ""
+        from foreach { _ => result = " and c.uid > {from} " }
+        to foreach { _ => result = s"$result and c.uid <= {to} " }
+        s"$result order by c.uid DESC limit ${most.getOrElse(25)}"
+    }
+
+
   }
 
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])(implicit condition: () => String): List[CheckingRecordV3] = DB.withConnection {

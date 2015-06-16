@@ -4,14 +4,14 @@ object RangerHelper {
   def generateFrom(from: Option[Long], field: Option[String]) = {
     from map {
       f =>
-        " and %s > {from}".format(field.getOrElse("uid"))
+        s" and ${field.getOrElse("uid")} > {from}"
     }
   }
 
   def generateTo(to: Option[Long], field: Option[String]) = {
     to map {
       t =>
-        " and %s < {to}".format(field.getOrElse("uid"))
+        s" and ${field.getOrElse("uid")} <= {to}"
     }
   }
 
