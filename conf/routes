@@ -361,11 +361,23 @@ GET           /api/v3/kindergarten/:kg/error_card/:id                           
 POST          /api/v3/kindergarten/:kg/error_card                                         controllers.V3.ErrorCheckingRecordController.create(kg: Long)
 DELETE        /api/v3/kindergarten/:kg/error_card/:id                                     controllers.V3.ErrorCheckingRecordController.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/work_check                                         controllers.V3.WorkCheckController.index(kg: Long)
-GET           /api/v3/kindergarten/:kg/work_check/:id                                     controllers.V3.WorkCheckController.show(kg: Long, id: Long)
-POST          /api/v3/kindergarten/:kg/work_check                                         controllers.V3.WorkCheckController.create(kg: Long)
-POST          /api/v3/kindergarten/:kg/work_check/:id                                     controllers.V3.WorkCheckController.update(kg: Long, id: Long)
-DELETE        /api/v3/kindergarten/:kg/work_check/:id                                     controllers.V3.WorkCheckController.delete(kg: Long, id: Long)
+GET           /api/v3/kindergarten/:kg/work_shift                                         controllers.V3.WorkShiftController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v3/kindergarten/:kg/work_shift/:id                                     controllers.V3.WorkShiftController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/work_shift                                         controllers.V3.WorkShiftController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/work_shift/:id                                     controllers.V3.WorkShiftController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/work_shift/:id                                     controllers.V3.WorkShiftController.delete(kg: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/work_shift/:shiftId/user                           controllers.V3.WorkerInShiftController.index(kg: Long, shiftId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v3/kindergarten/:kg/work_shift/:shiftId/user/:id                       controllers.V3.WorkerInShiftController.show(kg: Long, shiftId: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/work_shift/:shiftId/user                           controllers.V3.WorkerInShiftController.create(kg: Long, shiftId: Long)
+POST          /api/v3/kindergarten/:kg/work_shift/:shiftId/user/:id                       controllers.V3.WorkerInShiftController.update(kg: Long, shiftId: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/work_shift/:shiftId/user/:id                       controllers.V3.WorkerInShiftController.delete(kg: Long, shiftId: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/work_shift/:shiftId/date                           controllers.V3.WorkShiftDateController.index(kg: Long, shiftId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v3/kindergarten/:kg/work_shift/:shiftId/date/:id                       controllers.V3.WorkShiftDateController.show(kg: Long, shiftId: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/work_shift/:shiftId/date                           controllers.V3.WorkShiftDateController.create(kg: Long, shiftId: Long)
+POST          /api/v3/kindergarten/:kg/work_shift/:shiftId/date/:id                       controllers.V3.WorkShiftDateController.update(kg: Long, shiftId: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/work_shift/:shiftId/date/:id                       controllers.V3.WorkShiftDateController.delete(kg: Long, shiftId: Long, id: Long)
 
 GET           /api/v3/kindergarten/:kg/visitor                                            controllers.V3.VisitorController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v3/kindergarten/:kg/visitor/:id                                        controllers.V3.VisitorController.show(kg: Long, id: Long)
