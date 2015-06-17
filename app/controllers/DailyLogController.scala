@@ -12,12 +12,15 @@ object DailyLogController extends Controller with Secured {
 
   def index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn {
     u => _ =>
-      Ok(Json.toJson(DailyLog.all(kg, childId, from, to).take(most.getOrElse(25))))
+      val all: List[DailyLog] = Cache.getOrElse[List[DailyLog]](s"allInSchool$kg-child$childId-from$from-to$to-most$most", 30) {
+        DailyLog.all(kg, childId, from, to, most)
+      }
+      Ok(Json.toJson(all))
   }
 
   def indexInClasses(kg: Long, classIds: String) = IsAuthenticated {
     u => _ =>
-      val value: List[DailyLog] = Cache.getOrElse[List[DailyLog]](s"indexInSchool$kg-classes$classIds", 600) {
+      val value: List[DailyLog] = Cache.getOrElse[List[DailyLog]](s"indexInSchool$kg-classes$classIds", 30) {
         DailyLog.lastCheckInClasses(kg, classIds)
       }
       Ok(Json.toJson(value))

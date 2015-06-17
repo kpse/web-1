@@ -85,11 +85,11 @@ object ChatSession {
     case None => ""
   }
 
-  def history(kg: Long, topicId: String, from: Option[Long], to: Option[Long], month: Option[String]) = DB.withConnection {
+  def history(kg: Long, topicId: String, from: Option[Long], to: Option[Long], month: Option[String], most: Option[Int]) = DB.withConnection {
     implicit c =>
       Logger.info("h_%s".format(topicId))
       SQL("select * from sessionlog where status=1 and school_id={kg} and session_id={id} " +
-        generateMonthQuery(month) + rangerQuery(from, to))
+        generateMonthQuery(month) + rangerQuery(from, to, most))
         .on(
           'kg -> kg.toString,
           'id -> "h_%s".format(topicId),
@@ -243,10 +243,10 @@ object ChatSession {
       }
   }
 
-  def index(kg: Long, sessionId: String, from: Option[Long], to: Option[Long]) = DB.withConnection {
+  def index(kg: Long, sessionId: String, from: Option[Long], to: Option[Long], most: Option[Int] = Some(25)) = DB.withConnection {
     implicit c =>
       SQL("select * from sessionlog where status=1 and school_id={kg} and session_id={id} " +
-        rangerQuery(from, to))
+        rangerQuery(from, to, most))
         .on(
           'kg -> kg.toString,
           'id -> sessionId,

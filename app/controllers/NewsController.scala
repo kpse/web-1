@@ -18,7 +18,7 @@ object NewsController extends Controller with Secured {
 
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int], classId: Option[String]) = IsLoggedIn {
     u => _ =>
-      val jsons = News.allSorted(kg, classId, from, to).take(most.getOrElse(25))
+      val jsons = News.allSorted(kg, classId, from, to, most)
       Ok(Json.toJson(jsons))
   }
 
@@ -70,7 +70,7 @@ object NewsController extends Controller with Secured {
       Employee.canAccess(Some(employeeId), kg) match {
         case false => Forbidden(Json.toJson(ErrorResponse("您无权查看学校公告。")))
         case true =>
-          val jsons = News.allIncludeNonPublished(kg, class_id, restrict.getOrElse(false), from, to).take(most.getOrElse(25))
+          val jsons = News.allIncludeNonPublished(kg, class_id, restrict.getOrElse(false), from, to, most)
           Ok(Json.toJson(jsons))
       }
   }

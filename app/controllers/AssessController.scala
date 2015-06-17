@@ -11,7 +11,7 @@ object AssessController extends Controller with Secured {
 
   def index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn {
     u => _ =>
-      Ok(Json.toJson(Assess.all(kg, childId, from, to).take(most.getOrElse(25))))
+      Ok(Json.toJson(Assess.all(kg, childId, from, to, most)))
   }
 
   implicit val read = Json.reads[Assess]

@@ -17,10 +17,10 @@ object NewsControllerV2 extends Controller with Secured {
     u => _ =>
       tag match {
         case Some(true) =>
-          val jsons = NewsV2.allSortedWithTag(kg, classId, from, to).take(most.getOrElse(25))
+          val jsons = NewsV2.allSortedWithTag(kg, classId, from, to, most)
           Ok(loggedJson(jsons))
         case _ =>
-          val jsons = News.allSorted(kg, classId, from, to).take(most.getOrElse(25))
+          val jsons = News.allSorted(kg, classId, from, to, most)
           Ok(Json.toJson(jsons))
       }
   }
@@ -92,7 +92,7 @@ object NewsControllerV2 extends Controller with Secured {
       Employee.canAccess(Some(employeeId), kg) match {
         case false => Forbidden(Json.toJson(ErrorResponse("您无权查看学校公告。(no authority to read)", 51)))
         case true =>
-          val jsons = NewsV2.allIncludeNonPublished(kg, class_id, restrict.getOrElse(false), from, to).take(most.getOrElse(25))
+          val jsons = NewsV2.allIncludeNonPublished(kg, class_id, restrict.getOrElse(false), from, to, most)
           Ok(Json.toJson(jsons))
       }
   }

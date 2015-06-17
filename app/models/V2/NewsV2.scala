@@ -10,8 +10,8 @@ import play.api.Play.current
 import play.api.libs.json.Json
 
 object NewsV2 {
-  def allIncludeNonPublished(kg: Long, classIds: Option[String], restricted: Boolean, from: Option[Long], to: Option[Long]) =
-    News.allIncludeNonPublished(kg, classIds, restricted, from, to) map tags
+  def allIncludeNonPublished(kg: Long, classIds: Option[String], restricted: Boolean, from: Option[Long], to: Option[Long], most: Option[Int]) =
+    News.allIncludeNonPublished(kg, classIds, restricted, from, to, most) map tags
 
   implicit val readNews = Json.reads[News]
 
@@ -116,6 +116,6 @@ object NewsV2 {
       }
   }
 
-  def allSortedWithTag(kg: Long, classIds: Option[String], from: Option[Long], to: Option[Long]): List[News] =
-    News.allSorted(kg, classIds, from, to) map tags
+  def allSortedWithTag(kg: Long, classIds: Option[String], from: Option[Long], to: Option[Long], most: Option[Int]): List[News] =
+    News.allSorted(kg, classIds, from, to, most) map tags
 }

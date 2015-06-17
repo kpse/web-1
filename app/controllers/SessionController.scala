@@ -26,7 +26,7 @@ object SessionController extends Controller with Secured {
 
   def index(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int]) = IsAuthenticated {
     u => _ =>
-      Ok(Json.toJson(ChatSession.index(kg, topicId, from, to).take(most.getOrElse(25)).sortBy(_.id)))
+      Ok(Json.toJson(ChatSession.index(kg, topicId, from, to, most).sortBy(_.id)))
   }
 
   def reviseTopic(topic: String, c: ChatSession): ChatSession = c.copy(topic = topic)
@@ -40,7 +40,7 @@ object SessionController extends Controller with Secured {
             val created = ChatSession.create(kg, reviseTopic(sessionId, message), message.topic)
             retrieveRecentFrom match {
               case Some(from) =>
-                Ok(Json.toJson(ChatSession.index(kg, sessionId, Some(from), None).take(25)))
+                Ok(Json.toJson(ChatSession.index(kg, sessionId, Some(from), None, Some(25))))
               case _ =>
                 Ok(Json.toJson(created))
             }
@@ -71,7 +71,7 @@ object SessionController extends Controller with Secured {
 
   def history(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String]) = IsAuthenticated {
     u => _ =>
-      Ok(Json.toJson(ChatSession.history(kg, topicId, from, to, month).take(most.getOrElse(25)).sortBy(_.id)))
+      Ok(Json.toJson(ChatSession.history(kg, topicId, from, to, month, most).sortBy(_.id)))
   }
 
   def createHistory(kg: Long, topicId: String, retrieveRecentFrom: Option[Long]) = create(kg, "h_%s".format(topicId), retrieveRecentFrom)

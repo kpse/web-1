@@ -110,18 +110,18 @@ object News {
         .as(simple *)
   }
 
-  def allSorted(kg: Long, classId: Option[String], from: Option[Long], to: Option[Long]): List[News] = DB.withConnection {
+  def allSorted(kg: Long, classId: Option[String], from: Option[Long], to: Option[Long], most: Option[Int]): List[News] = DB.withConnection {
     implicit c =>
       classId match {
         case Some(ids) =>
-          SQL(allNewsSql + " and class_id in (%s, 0) ".format(ids) + rangerQuery(from, to))
+          SQL(allNewsSql + " and class_id in (%s, 0) ".format(ids) + rangerQuery(from, to, most))
             .on(
               'kg -> kg.toString,
               'from -> from,
               'to -> to
             ).as(simple *)
         case None =>
-          SQL(allNewsSql + " and class_id=0 " + rangerQuery(from, to))
+          SQL(allNewsSql + " and class_id=0 " + rangerQuery(from, to, most))
             .on(
               'kg -> kg.toString,
               'from -> from,
@@ -142,9 +142,9 @@ object News {
     }
   }
 
-  def allIncludeNonPublished(kg: Long, classId: Option[String], restrict: Boolean, from: Option[Long], to: Option[Long]): List[News] = DB.withConnection {
+  def allIncludeNonPublished(kg: Long, classId: Option[String], restrict: Boolean, from: Option[Long], to: Option[Long], most: Option[Int]): List[News] = DB.withConnection {
     implicit c =>
-      SQL("select * from news where school_id={kg} and status=1 " + generateClassCondition(classId, restrict) + " " + rangerQuery(from, to))
+      SQL("select * from news where school_id={kg} and status=1 " + generateClassCondition(classId, restrict) + " " + rangerQuery(from, to, most))
         .on(
           'kg -> kg.toString,
           'from -> from,

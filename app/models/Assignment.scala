@@ -86,14 +86,14 @@ object Assignment {
     implicit c =>
       classId match {
         case Some(ids) =>
-          SQL("select * from assignment where school_id={kg} and class_id in (%s) ".format(ids) + rangerQuery(from, to))
+          SQL("select * from assignment where school_id={kg} and class_id in (%s) ".format(ids) + rangerQuery(from, to, most))
             .on(
               'kg -> kg.toString,
               'from -> from,
               'to -> to
             ).as(simple *)
         case None =>
-          SQL("select * from assignment where school_id={kg} " + rangerQuery(from, to))
+          SQL("select * from assignment where school_id={kg} " + rangerQuery(from, to, most))
             .on(
               'kg -> kg.toString,
               'from -> from,

@@ -10,7 +10,7 @@ import play.api.Play.current
 
 case class Assess(id: Option[Long], timestamp: Option[Long], publisher: String, comments: String,
                   emotion: Int, dining: Int, rest: Int, activity: Int, game: Int, exercise: Int,
-                  self_care: Int, manner: Int, child_id: String, school_id: Long, publisher_id: Option[String]=None) {
+                  self_care: Int, manner: Int, child_id: String, school_id: Long, publisher_id: Option[String] = None) {
 
   def exists = DB.withConnection {
     implicit c =>
@@ -83,7 +83,7 @@ object Assess {
       Some(assess)
   }
 
-  def createOrUpdate(kg: Long, childId: String, assess: Assess) : Option[Assess] = {
+  def createOrUpdate(kg: Long, childId: String, assess: Assess): Option[Assess] = {
     assess.id match {
       case Some(id) if assess.exists =>
         update(assess, kg, childId)
@@ -141,9 +141,9 @@ object Assess {
     }
   }
 
-  def all(kg: Long, childId: String, from: Option[Long], to: Option[Long]) = DB.withConnection {
+  def all(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int] = Some(25)) = DB.withConnection {
     implicit c =>
-      SQL("select * from assess where school_id={kg} and child_id={child_id} " + rangerQuery(from, to))
+      SQL(s"select * from assess where school_id={kg} and child_id={child_id} ${rangerQuery(from, to, most)}")
         .on(
           'kg -> kg.toString,
           'child_id -> childId,

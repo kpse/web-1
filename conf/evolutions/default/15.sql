@@ -6,16 +6,19 @@
 --
 
 CREATE TABLE dailylog (
-  uid         INT(11)          NOT NULL AUTO_INCREMENT,
-  school_id   VARCHAR(20) NOT NULL,
-  child_id varchar(40) NOT NULL,
-  parent_name VARCHAR(20) NOT NULL,
-  record_url TEXT DEFAULT '',
-  card_no varchar(20) NOT NULL,
-  card_type INT DEFAULT 0,
-  notice_type INT DEFAULT 0,
-  check_at   BIGINT(20) NOT NULL DEFAULT 0,
-  PRIMARY KEY (uid)
+  uid int(11) NOT NULL AUTO_INCREMENT,
+  school_id varchar(20)   NOT NULL,
+  child_id varchar(40)   NOT NULL,
+  parent_name varchar(20)   NOT NULL DEFAULT '',
+  record_url text  ,
+  card_no varchar(20)   NOT NULL,
+  card_type int(11) DEFAULT '0',
+  notice_type int(4) NOT NULL DEFAULT '0',
+  check_at bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (uid),
+  KEY check_at (check_at),
+  KEY school_id (school_id),
+  KEY child_id (child_id)
 );
 
 insert into dailylog (school_id, child_id, parent_name, card_no, check_at) values

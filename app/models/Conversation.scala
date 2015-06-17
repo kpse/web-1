@@ -31,7 +31,7 @@ object Conversation {
       case r: Relationship =>
         r.child.fold(List[ChatSession]())({
           case child =>
-            ChatSession.index(kg, child.child_id.getOrElse("0"), from, to).take(most.getOrElse(25))
+            ChatSession.index(kg, child.child_id.getOrElse("0"), from, to, most)
         })
     }.take(most.getOrElse(25)).map {
       case session =>
@@ -71,18 +71,4 @@ object Conversation {
         ).executeInsert()
       Conversation(conversation.phone, time, id, conversation.content, conversation.image, conversation.sender, conversation.sender_id)
   }
-
-  @Deprecated
-  def index(kg: Long, phone: String, from: Option[Long], to: Option[Long]) = DB.withConnection {
-    implicit c =>
-      SQL("select * from conversation where school_id={kg} and phone={phone} " +
-        rangerQuery(from, to))
-        .on(
-          'kg -> kg.toString,
-          'phone -> phone,
-          'from -> from,
-          'to -> to
-        ).as(simple *)
-  }
-
 }

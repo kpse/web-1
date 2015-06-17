@@ -12,6 +12,8 @@ import org.joda.time.DateTime
 import play.Logger
 import org.joda.time.format.DateTimeFormat
 
+import scala.language.postfixOps
+
 case class DailyLog(timestamp: Long, notice_type: Int, child_id: String, record_url: String, parent_name: String)
 
 case class DailyLogStats(class_id: Int, count: Long, school_id: Long, date: String)
@@ -66,9 +68,9 @@ object DailyLog {
     }
   }
 
-  def all(kg: Long, childId: String, from: Option[Long], to: Option[Long]) = DB.withConnection {
+  def all(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
     implicit c =>
-      SQL("select * from dailylog where child_id={child_id} and school_id={school_id} " + rangerQueryWithField(from, to, Some("check_at")))
+      SQL("select * from dailylog where child_id={child_id} and school_id={school_id} " + rangerQueryWithField(from, to, Some("check_at"), most))
         .on(
           'child_id -> childId,
           'school_id -> kg.toString,
