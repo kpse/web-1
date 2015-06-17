@@ -22,7 +22,7 @@ object QiniuHelper {
 
     val saveAs: String = UrlSafeBase64.encodeToString(bucket + ":" + key)
     Logger.info(s"saveAs: $saveAs")
-    val notifyURL = s"http://stage2.cocobabys.com/ws/notify_prefop?key=$saveAs"
+    val notifyURL = s"https://stage2.cocobabys.com/ws/notify_prefop?key=$saveAs"
     val force = true
     val pipeline = ""
 

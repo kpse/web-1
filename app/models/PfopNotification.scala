@@ -23,7 +23,7 @@ case class PfopNotificationItem(code: Int, desc: Option[String], cmd: Option[Str
 case class PfopNotification(code: Int, desc: Option[String], id: Option[String], inputBucket: Option[String], inputKey: Option[String], items: List[PfopNotificationItem], pipeline: Option[String], reqid: Option[String]) {
   def save(key: String) = DB.withConnection {
     implicit c =>
-      SQL("INSERT INTO pfopresult (code, process_key, input_bucket, input_key, desc, output_key, pipeline, reqid, updated_at) values " +
+      SQL("INSERT INTO pfopresult (`code`, process_key, input_bucket, input_key, `desc`, output_key, pipeline, reqid, updated_at) values " +
         "({code}, {process_key}, {input_bucket}, {input_key}, {desc}, {output_key}, {pipeline}, {reqid}, {updated_at})")
         .on('code -> code, 'process_key -> key, 'input_bucket -> inputBucket, 'input_key -> inputKey,
           'desc -> desc, 'output_key -> items.head.key, 'pipeline -> pipeline, 'reqid -> reqid, 'updated_at -> System.currentTimeMillis).executeInsert()
