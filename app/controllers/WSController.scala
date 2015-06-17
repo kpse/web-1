@@ -3,7 +3,9 @@ package controllers
 import java.net.URLEncoder
 import com.qiniu.util.{Auth => QiqiuAuth, StringMap}
 import controllers.helper.QiniuHelper
-import models.{Bucket, News, UpToken}
+import models.{PfopNotification, Bucket, News, UpToken}
+import models.PfopNotification.readPfopNotificationItem
+import models.PfopNotification.readPfopNotification
 import models.Bucket.writesUpToken
 import play.api.Logger
 import play.api.libs.json.{JsError, JsValue, Json}
@@ -125,8 +127,17 @@ object WSController extends Controller {
 
   }
 
-  def pfopNotify(key: String) = Action {
-    Logger.info(s"pfopNotify: $key")
-    Ok( s"""{"key": $key}""")
+  def pfopNotify(key: String) = Action(parse.json) {
+
+    implicit request =>
+      request.body.validate[PfopNotification].map {
+        case (p) =>
+          Logger.info(s"pfopNotify: $p for key $key")
+          p.save(key)
+          Ok( s"""{"key": $key}""")
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+
   }
 }
