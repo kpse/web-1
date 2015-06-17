@@ -4,6 +4,7 @@ import controllers.SessionController._
 import controllers.helper.QiniuHelper
 import models.SharePage._
 import models._
+import play.Logger
 import play.api.libs.json.Json
 import play.api.mvc._
 
@@ -26,7 +27,9 @@ object ShareLinksController extends Controller with Secured {
       p.medium foreach {
         case MediaContent(u, t) if t == Some("video") =>
           val b = Bucket.parse(u)
-          QiniuHelper.triggerPfop(b)
+          Logger.info(s"Bucket.parse : $b")
+          b foreach QiniuHelper.triggerPfop
+
       }
   }
 

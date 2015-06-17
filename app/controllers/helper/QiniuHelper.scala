@@ -34,13 +34,13 @@ object QiniuHelper {
     // 针对指定空间的文件触发 pfop 操作
     try {
       val id = operator.pfop(bucket, key, fops, params)
-      Logger.info(s"success: $id")
+      Logger.info(s"operator.pfop success: $id")
     }
     catch {
       case e: QiniuException =>
         val r = e.response
         // 请求失败时简单状态信息
-        Logger.info(r.toString)
+        Logger.info(s"operator.pfop failed: $r")
     }
   }
 }
