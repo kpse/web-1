@@ -10,6 +10,8 @@ import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
 
+import scala.language.postfixOps
+
 case class CheckingRecordV3(id: Option[Long], check_info: CheckInfo, create_user: Option[Long], memo: Option[String]) {
   def create: Option[CheckingRecordV3] = DB.withTransaction {
     implicit c =>

@@ -1,8 +1,9 @@
 package controllers
 
 import controllers.SessionController._
-import models._
+import controllers.helper.QiniuHelper
 import models.SharePage._
+import models._
 import play.api.libs.json.Json
 import play.api.mvc._
 
@@ -20,6 +21,15 @@ object ShareLinksController extends Controller with Secured {
 
   }
 
+  def triggerStreaming(page: Option[SharePage]) = page foreach {
+    case p =>
+      p.medium foreach {
+        case MediaContent(u, t) if t == Some("video") =>
+          val b = Bucket.parse(u)
+          QiniuHelper.triggerPfop(b)
+      }
+  }
+
   def create(kg: Long, topicId: String, id: Long) = IsLoggedIn {
     u => request =>
       ChatSession.showHistory(kg, topicId, id) match {
@@ -30,6 +40,7 @@ object ShareLinksController extends Controller with Secured {
               Ok(Json.toJson(item))
             case None =>
               val page: Option[SharePage] = SharePage.create(x)
+              triggerStreaming(page)
               Ok(Json.toJson(page))
           }
         case None =>

@@ -40,22 +40,18 @@
         @for(p <- page.medium) {
           @if(p.`type` == Some("video")) {
             <li class="share-video">
-              <div style="width: 640px; height: 360px; ">
-                <script type="text/javascript" src="http://219.232.161.204/libs/swfplayer/player/sewise.player.min.js"></script>
-                <script type="text/javascript">
-            SewisePlayer.setup({
-                server: "vod",
-                type: "mp4",
-                videourl: "@p.url",
-                skin: "vodWhite",
-                title: "@page.content",
-                lang: 'zh_CN',
-                fallbackurls:{
-                    ogg: "",
-                    webm: ""
-                }
-            });
-        </script>
+              <div class="video-player">
+                <link href="@routes.VersionedAssets.at("vendor/videojs/video-js.min.css")" rel="stylesheet">
+                <script src="@routes.VersionedAssets.at("vendor/videojs/video.js")"></script>
+                <video id="really-cool-video" class="video-js vjs-default-skin" controls
+                preload="auto" width="640" height="264" poster=""
+                data-setup='{}'>
+                  <source src="@p.url" type='video/mp4'>
+                  <p class="vjs-no-js">
+                    To view this video please enable JavaScript, and consider upgrading to a web browser
+                    that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                  </p>
+                </video>
               </div>
             </li>
           } else {

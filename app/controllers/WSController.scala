@@ -1,18 +1,18 @@
 package controllers
 
-import com.qiniu.common.QiniuException
-import com.qiniu.processing.OperationManager
-import play.api.mvc._
-import play.api.libs.ws._
-import play.api.libs.json.{JsError, JsValue, Json}
-import scala.concurrent.{Future, ExecutionContext}
-import ExecutionContext.Implicits.global
-import models.News
-import scala.Some
-import play.api.{Play, Logger}
-import com.qiniu.util.{UrlSafeBase64, StringMap, Auth => QiqiuAuth}
 import java.net.URLEncoder
-;
+import com.qiniu.util.{Auth => QiqiuAuth, StringMap}
+import controllers.helper.QiniuHelper
+import models.{Bucket, News, UpToken}
+import models.Bucket.writesUpToken
+import play.api.Logger
+import play.api.libs.json.{JsError, JsValue, Json}
+import play.api.libs.ws._
+import play.api.mvc._
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
+
 
 object WSController extends Controller {
 
@@ -81,13 +81,8 @@ object WSController extends Controller {
       }
   }
 
-  case class UpToken(token: String)
-
-
-  implicit val writes1 = Json.writes[UpToken]
-
   def generateToken(bucket: String, key: Option[String]) = Action {
-    val auth: QiqiuAuth = createAuth
+    val auth: QiqiuAuth = QiniuHelper.createAuth
     val upToken = auth.uploadToken(bucket, key.orNull, 3600, new StringMap().putNotEmpty("returnBody", "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"))
     Ok(Json.toJson(UpToken(upToken)))
   }
@@ -101,24 +96,11 @@ object WSController extends Controller {
       generateToken(bucket, None)
   }
 
-  case class Bucket(name: String, key: String) {
-    def scope = s"$name:$key"
-  }
-
-  implicit val read1 = Json.reads[Bucket]
-
-  def createAuth = {
-    val ACCESS_KEY = Play.current.configuration.getString("oss.ak").getOrElse("")
-    val SECRET_KEY = Play.current.configuration.getString("oss.sk").getOrElse("")
-    Logger.info("ACCESS_KEY = %s, SECRET_KEY = %s".format(ACCESS_KEY, SECRET_KEY))
-    QiqiuAuth.create(ACCESS_KEY, SECRET_KEY)
-  }
-
   def generateSafeToken = Action(parse.json) {
     implicit request =>
-      val auth: QiqiuAuth = createAuth
       request.body.validate[Bucket].map {
         case (bucket) =>
+          val auth: QiqiuAuth = QiniuHelper.createAuth
           val upToken = auth.uploadToken(bucket.name, bucket.key, 3600, new StringMap().putNotEmpty("returnBody", "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"))
           Logger.info(s"scope = ${upToken}")
           Ok(Json.toJson(UpToken(upToken)))
@@ -130,42 +112,16 @@ object WSController extends Controller {
 
   def pfop = Action(parse.json) {
     implicit request =>
-      val auth: QiqiuAuth = createAuth
-      val operater = new OperationManager(auth);
       request.body.validate[Bucket].map {
         case (b) =>
-          val bucket = b.name
-          val key = b.key
-
-          val notifyURL = s"http://www.cocobabys.com/ws/notify?key=$key";
-          val force = true;
-          val pipeline = "";
-
-          val params = new StringMap().putNotEmpty("notifyURL", "co")
-            .putWhen("force", 1, force).putNotEmpty("pipeline", pipeline)
-
-          var fops = "avthumb/mp4/vcodec/libx264/acodec/libfaac/stripmeta/1"
-          fops += "|saveas/" + UrlSafeBase64.encodeToString(bucket + ":" + key)
-
-
-          // 针对指定空间的文件触发 pfop 操作
-          try {
-            val id = operater.pfop(bucket, key, fops, params)
-            Logger.info(s"success: $id")
-          }
-          catch {
-            case e: QiniuException =>
-              val r = e.response
-              // 请求失败时简单状态信息
-              Logger.info(r.toString)
-          }
+          QiniuHelper.triggerPfop(b)
           Ok
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
     // 可通过下列地址查看处理状态信息。
     // 实际项目中设置 notifyURL，接受通知。通知内容和处理完成后的查看信息一致。
-    //String url = "http://api.qiniu.com/status/get/prefop?id=" + id;
+    //String url = "http://api.qiniu.com/status/get/prefop?id=" + id
 
   }
 
