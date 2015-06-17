@@ -136,10 +136,26 @@ case class WorkShift(id: Option[Long], shift_name: Option[String], start_time: O
 object WorkShift {
   implicit val writeWorkCheck = Json.writes[WorkShift]
   implicit val readWorkCheck = Json.reads[WorkShift]
+  implicit val timeSpanField = "updated_at"
+
+  def generateSpan(from: Option[Long], to: Option[Long], most: Option[Int])(implicit timeSpanField: String): String = {
+    from.getOrElse(0L) + to.getOrElse(0L) match {
+      case range if range > 1388534400000L =>
+        var result = ""
+        from foreach { _ => result = s" and $timeSpanField > {from} " }
+        to foreach { _ => result = s"$result and $timeSpanField <= {to} " }
+        s"$result order by uid DESC limit ${most.getOrElse(25)}"
+      case _ =>
+        var result = ""
+        from foreach { _ => result = " and uid > {from} " }
+        to foreach { _ => result = s"$result and uid <= {to} " }
+        s"$result order by uid DESC limit ${most.getOrElse(25)}"
+    }
+  }
 
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
     implicit c =>
-      SQL(s"select * from workshift where school_id={kg} and status=1 ${RangerHelper.generateSpan(from, to, most)}")
+      SQL(s"select * from workshift where school_id={kg} and status=1 ${generateSpan(from, to, most)}")
         .on(
           'kg -> kg.toString,
           'from -> from,

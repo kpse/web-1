@@ -14,8 +14,8 @@ CREATE TABLE workerinshift (
 );
 
 INSERT INTO workerinshift (school_id, base_id, user_id, user_type, updated_at) VALUES
-('93740362', 1, 1, 1, 1323390313123),
-('93740362', 1, 1, 2, 1323390313123);
+('93740362', 1, 1, 1, 1393390313123),
+('93740362', 1, 1, 2, 1393390313123);
 
 # --- !Downs
 
