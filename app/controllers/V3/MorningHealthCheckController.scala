@@ -94,7 +94,6 @@ object StudentMorningHealthCheckController extends Controller with Secured {
   }
 
   def delete(kg: Long, studentId: Long, id: Long) = IsLoggedIn { u => _ =>
-    HealthCheck.deleteById(kg, studentId, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
@@ -151,6 +150,7 @@ object StudentHealthCheckController extends Controller with Secured {
   }
 
   def delete(kg: Long, studentId: Long, id: Long) = IsLoggedIn { u => _ =>
+    HealthCheck.deleteById(kg, studentId, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
