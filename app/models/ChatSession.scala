@@ -1,14 +1,12 @@
 package models
 
-import play.api.Play.current
 import anorm.SqlParser._
-import anorm._
-import play.api.db.DB
+import anorm.{~, _}
 import models.helper.RangerHelper._
-import anorm.~
-import scala.Some
 import play.Logger
 import play.api.Play
+import play.api.Play.current
+import play.api.db.DB
 
 case class ChatSession(topic: String, timestamp: Option[Long], id: Option[Long], content: String, media: Option[MediaContent] = Some(MediaContent("")), sender: Sender, medium: Option[List[MediaContent]] = Some(List[MediaContent]()))
 
@@ -19,6 +17,19 @@ case class MediaContent(url: String, `type`: Option[String] = Some("image"))
 case class SessionInMonth(month: String, count: Long)
 
 object ChatSession {
+  def employeeHistory(kg: Long, employeeId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String]) = DB.withConnection {
+    implicit c =>
+      SQL("select * from sessionlog where status=1 and school_id={kg} and sender={sender} and session_id like 'h_%' " +
+        generateMonthQuery(month) + rangerQuery(from, to, most))
+        .on(
+          'kg -> kg.toString,
+          'sender -> employeeId,
+          'from -> from,
+          'to -> to,
+          'month -> month
+        ).as(simple(Some("^h_")) *)
+  }
+
   def allHistoryImages(kg: Long, timestamp: Long): List[String] = DB.withConnection {
     implicit c =>
       val urls: List[String] = SQL("SELECT media_url FROM sessionlog where school_id = {kg} and update_at > {time} and session_id like 'h_%' and media_type like '%image%'")

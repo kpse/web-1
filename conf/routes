@@ -542,6 +542,8 @@ GET           /api/v3/kindergarten/:kg/history_image                            
 POST          /api/v3/kindergarten/:kg/history/:topicId/record/:id/share                  controllers.ShareLinksController.create(kg: Long, topicId: String, id: Long)
 GET           /s/:token                                                                   controllers.ShareLinksController.page(token: String)
 
+GET           /api/v3/kindergarten/:kg/employee/:employeeId/history                       controllers.SessionController.historyOfEmployee(kg: Long, employeeId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String])
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                               controllers.VersionedAssets.at(file: controllers.VersionedAsset)
 GET           /images/*file                                                               controllers.Static.at(path="/public/images", file)

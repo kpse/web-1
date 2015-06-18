@@ -1,13 +1,10 @@
 package controllers
 
-import play.api.mvc.Controller
-import play.api.libs.json.{JsError, Json}
-import models._
-import play.Logger
-import models.MediaContent
-import models.Sender
-import scala.Some
 import controllers.helper.JsonLogger.loggedJson
+import models.{MediaContent, Sender, _}
+import play.Logger
+import play.api.libs.json.{JsError, Json}
+import play.api.mvc.Controller
 
 object SessionController extends Controller with Secured {
 
@@ -137,5 +134,10 @@ object SessionController extends Controller with Secured {
         case false =>
           Ok(Json.toJson(ChatSession.lastMessageInClasses(kg, Some(UserAccess.allClasses(accesses)))))
       }
+  }
+
+  def historyOfEmployee(kg: Long, employeeId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String]) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(ChatSession.employeeHistory(kg, employeeId, from, to, most, month)))
   }
 }
