@@ -419,11 +419,11 @@ POST          /api/v3/kindergarten/:kg/immune_record                            
 POST          /api/v3/kindergarten/:kg/immune_record/:id                                  controllers.V3.ImmuneRecordController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/immune_record/:id                                  controllers.V3.ImmuneRecordController.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/immune_student                                     controllers.V3.ImmuneStudentController.index(kg: Long)
-GET           /api/v3/kindergarten/:kg/immune_student/:id                                 controllers.V3.ImmuneStudentController.show(kg: Long, id: Long)
-POST          /api/v3/kindergarten/:kg/immune_student                                     controllers.V3.ImmuneStudentController.create(kg: Long)
-POST          /api/v3/kindergarten/:kg/immune_student/:id                                 controllers.V3.ImmuneStudentController.update(kg: Long, id: Long)
-DELETE        /api/v3/kindergarten/:kg/immune_student/:id                                 controllers.V3.ImmuneStudentController.delete(kg: Long, id: Long)
+GET           /api/v3/kindergarten/:kg/immune_record/:recodeId/student                    controllers.V3.ImmuneStudentController.index(kg: Long, recodeId: Long)
+GET           /api/v3/kindergarten/:kg/immune_record/:recodeId/student/:id                controllers.V3.ImmuneStudentController.show(kg: Long, recodeId: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/immune_record/:recodeId/student                    controllers.V3.ImmuneStudentController.create(kg: Long, recodeId: Long)
+POST          /api/v3/kindergarten/:kg/immune_record/:recodeId/student/:id                controllers.V3.ImmuneStudentController.update(kg: Long, recodeId: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/immune_record/:recodeId/student/:id                controllers.V3.ImmuneStudentController.delete(kg: Long, recodeId: Long, id: Long)
 
 GET           /api/v3/kindergarten/:kg/morning_health_check                               controllers.V3.MorningHealthCheckController.index(kg: Long)
 GET           /api/v3/kindergarten/:kg/morning_health_check/:id                           controllers.V3.MorningHealthCheckController.show(kg: Long, id: Long)

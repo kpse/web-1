@@ -13,15 +13,15 @@ object ImmuneStudentController extends Controller with Secured {
   implicit val writeImmuneStudent = Json.writes[ImmuneStudent]
   implicit val readImmuneStudent = Json.reads[ImmuneStudent]
 
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(ImmuneStudent(Some(1), Some(1), Some(1)))))
+  def index(kg: Long, recodeId: Long) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(List(ImmuneStudent(Some(1), Some(recodeId), Some(1)))))
   }
 
-  def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(ImmuneStudent(Some(id), Some(1), Some(1))))
+  def show(kg: Long, recodeId: Long, id: Long) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(ImmuneStudent(Some(id), Some(recodeId), Some(1))))
   }
 
-  def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
+  def create(kg: Long, recodeId: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[ImmuneStudent].map {
       case (s) =>
         Ok(Json.toJson(s))
@@ -30,7 +30,7 @@ object ImmuneStudentController extends Controller with Secured {
     }
   }
 
-  def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
+  def update(kg: Long, recodeId: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[ImmuneStudent].map {
       case (s) =>
         Ok(Json.toJson(s))
@@ -39,7 +39,7 @@ object ImmuneStudentController extends Controller with Secured {
     }
   }
 
-  def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+  def delete(kg: Long, recodeId: Long, id: Long) = IsLoggedIn { u => _ =>
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
