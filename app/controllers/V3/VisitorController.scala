@@ -1,7 +1,7 @@
 package controllers.V3
 
 import controllers.Secured
-import models.SuccessResponse
+import models.{ErrorResponse, SuccessResponse}
 import models.V3.Visitor
 import models.json_models.CheckInfo
 import models.json_models.CheckingMessage.checkInfoReads
@@ -18,7 +18,12 @@ object VisitorController extends Controller with Secured {
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Visitor.show(kg, id)))
+    Visitor.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的访客。(No such visitor)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
@@ -31,6 +36,7 @@ object VisitorController extends Controller with Secured {
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    Visitor.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
