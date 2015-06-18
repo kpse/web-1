@@ -7,6 +7,8 @@ import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
 
+import scala.language.postfixOps
+
 case class HeadCheckResult(head_eye_left: Option[String], head_eye_right: Option[String], head_eye_trachoma: Option[String],
                            head_eye_conjunctivitis: Option[String], head_ear_leftear: Option[String], head_ear_rightear: Option[String], head_tooth_qty: Option[String],
                            head_tooth_caries: Option[String], head_tooth_periodontal: Option[String])
