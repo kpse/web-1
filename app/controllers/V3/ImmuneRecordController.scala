@@ -1,33 +1,33 @@
 package controllers.V3
 
 import controllers.Secured
-import models.SuccessResponse
+import models.{ErrorResponse, SuccessResponse}
+import models.V3.{Immune, ImmuneRecord}
+import models.V3.ImmuneRecord._
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
-case class Immune(id: Option[Long], name: Option[String], memo: Option[String])
-
-case class ImmuneRecord(id: Option[Long], immune: Option[Immune], name: Option[String], description: Option[String], sub_id: Option[Long], sub_name: Option[String], memo: Option[String], created_at: Option[Long])
-
 object ImmuneRecordController extends Controller with Secured {
 
-  implicit val writeImmune = Json.writes[Immune]
-  implicit val readImmune = Json.reads[Immune]
-  implicit val writeImmuneRecord = Json.writes[ImmuneRecord]
-  implicit val readImmuneRecord = Json.reads[ImmuneRecord]
-
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(ImmuneRecord(Some(1), Some(Immune(Some(1), Some("乙脑"), Some("一岁；一岁半至两岁"))), Some("疫苗名字"), Some("疫苗描述"), Some(1), Some("子疫苗名字"), Some("一岁；一岁半至两岁"), Some(System.currentTimeMillis)))))
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(ImmuneRecord.index(kg, from, to, most)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(ImmuneRecord(Some(id), Some(Immune(Some(1), Some("乙脑"), Some("一岁；一岁半至两岁"))), Some("疫苗名字"), Some("疫苗描述"), Some(1), Some("子疫苗名字"), Some("一岁；一岁半至两岁"), Some(System.currentTimeMillis))))
+    ImmuneRecord.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的免疫记录。(No such immune record)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[ImmuneRecord].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -35,14 +35,19 @@ object ImmuneRecordController extends Controller with Secured {
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[ImmuneRecord].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
+      case (s) if !s.exists(kg) =>
+        BadRequest(Json.toJson(ErrorResponse(s"ID ${id} 不存在(id is not existing)", 4)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    ImmuneRecord.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }

@@ -413,7 +413,7 @@ POST          /api/v3/kindergarten/:kg/user_privilege                           
 POST          /api/v3/kindergarten/:kg/user_privilege/:id                                 controllers.V3.UserPrivilegeController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/user_privilege/:id                                 controllers.V3.UserPrivilegeController.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/immune_record                                      controllers.V3.ImmuneRecordController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/immune_record                                      controllers.V3.ImmuneRecordController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v3/kindergarten/:kg/immune_record/:id                                  controllers.V3.ImmuneRecordController.show(kg: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/immune_record                                      controllers.V3.ImmuneRecordController.create(kg: Long)
 POST          /api/v3/kindergarten/:kg/immune_record/:id                                  controllers.V3.ImmuneRecordController.update(kg: Long, id: Long)
