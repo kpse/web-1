@@ -38,8 +38,8 @@
 
           <div class="col-sm-8">
             <input id="school-cell-phone" type="text" ng-model="school.phone" name="phone"
-                   class="editing-field form-control" required ng-pattern="/^\d{11}$/"/>
-            <span class="error-field" ng-show="editSchoolForm.phone.$error.pattern">错误的手机号码，应该是11位数字</span>
+                   class="editing-field form-control" required ng-pattern="/^(\d{11}|0\d{2,3}\-\d{7,8})$/" maxlength="13"/>
+            <span class="error-field" ng-show="editSchoolForm.phone.$error.pattern">错误的电话，请用座机010-88886666或者手机格式1398886666</span>
           </div>
         </div>
 
