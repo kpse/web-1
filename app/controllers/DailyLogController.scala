@@ -12,8 +12,9 @@ object DailyLogController extends Controller with Secured {
 
   def index(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn {
     u => _ =>
-      val all: List[DailyLog] = Cache.getOrElse[List[DailyLog]](s"allInSchool$kg-child$childId-from$from-to$to-most$most", 30) {
-        DailyLog.all(kg, childId, from, to, most)
+      val noFutureRecord = to.getOrElse(System.currentTimeMillis)
+      val all: List[DailyLog] = Cache.getOrElse[List[DailyLog]](s"allInSchool$kg-child$childId-from$from-to$noFutureRecord-most$most", 30) {
+        DailyLog.all(kg, childId, from, Some(noFutureRecord), most)
       }
       Ok(Json.toJson(all))
   }

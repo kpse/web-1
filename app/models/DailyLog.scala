@@ -49,22 +49,23 @@ object DailyLog {
     implicit c =>
       SQL("SELECT * FROM dailylog d, " +
         " (SELECT MAX(check_at) last_check, child_id FROM `dailylog` WHERE school_id={kg} AND " + generateClassQuery(classes) +
-        "  AND check_at > {today} GROUP BY child_id) a " +
+        "  AND check_at > {today} AND check_at < {now} GROUP BY child_id) a " +
         " WHERE d.child_id=a.child_id AND d.check_at=a.last_check ")
         .on(
           'kg -> kg.toString,
-          'today -> DateTime.now().toLocalDate.toDateTimeAtStartOfDay.toInstant.getMillis
+          'today -> DateTime.now().toLocalDate.toDateTimeAtStartOfDay.toInstant.getMillis,
+          'now -> System.currentTimeMillis
         ).as(simple *)
   }
 
   val simple = {
     get[String]("child_id") ~
       get[Long]("check_at") ~
-      get[String]("record_url") ~
+      get[Option[String]]("record_url") ~
       get[Int]("notice_type") ~
       get[String]("parent_name") map {
       case child_id ~ timestamp ~ url ~ notice_type ~ name =>
-        DailyLog(timestamp, notice_type, child_id, url, name)
+        DailyLog(timestamp, notice_type, child_id, url.getOrElse(""), name)
     }
   }
 
