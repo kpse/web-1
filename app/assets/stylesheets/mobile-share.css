@@ -22,3 +22,6 @@ util.print: Use console.log instead
 .content {
   font-size: 16px;
 }
+#really-cool-video {
+  max-width: 100%;
+}
