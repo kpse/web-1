@@ -14,7 +14,7 @@ case class Feedback(id: Option[Long], phone: String, content: String, timestamp:
       SQL("insert into feedback (phone, content, source, comment, update_at, image) values ({phone}, {content}, {source}, {comment}, {timestamp}, {image})")
         .on('phone -> phone,
           'content -> content,
-          'source -> source.getOrElse("android parent"),
+          'source -> source.getOrElse("android_parent"),
           'comment -> comment.getOrElse(""),
           'image -> image.getOrElse(""),
           'timestamp -> System.currentTimeMillis).executeInsert()
@@ -29,7 +29,7 @@ object Feedback {
           'id -> feedback.id,
           'phone -> feedback.phone,
           'content -> feedback.content,
-          'source -> feedback.source.getOrElse("android parent"),
+          'source -> feedback.source.getOrElse("android_parent"),
           'image -> feedback.image.getOrElse(""),
           'comment -> feedback.comment.getOrElse("")).executeUpdate()
   }
