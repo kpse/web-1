@@ -5,7 +5,7 @@ import models.{ChildInfo, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
-case class Warehouse(id: Option[Long], warehouse_id: Option[Long], employee_id: Option[String])
+case class Warehouse(id: Option[Long], warehouse_id: Option[Long], employee_id: Option[String], name: Option[String], memo: Option[String])
 case class GoodsOrigin(id: Option[Long], name: Option[String], short_name: Option[String], warehouse_id: Option[Long], memo: Option[String])
 case class Goods(id: Option[Long], name: Option[String], short_name: Option[String], unit: Option[String], max_warning: Option[String],
                  min_warning: Option[String], warehouse_id: Option[Long], stock_place: Option[String], memo: Option[String], origin: Option[GoodsOrigin])
@@ -21,11 +21,11 @@ object WarehouseController extends Controller with Secured {
   implicit val readWarehouse = Json.reads[Warehouse]
 
   def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Warehouse(Some(1), Some(1), Some(s"3_${kg}_12312")))))
+    Ok(Json.toJson(List(Warehouse(Some(1), Some(1), Some(s"3_${kg}_12312"), Some("仓库"), Some("memo")))))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Warehouse(Some(1), Some(1), Some(s"3_${kg}_12312"))))
+    Ok(Json.toJson(Warehouse(Some(1), Some(1), Some(s"3_${kg}_12312"), Some("仓库"), Some("memo"))))
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
