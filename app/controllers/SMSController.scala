@@ -14,11 +14,16 @@ object SMSController extends Controller with Secured {
   implicit val write2 = Json.writes[ErrorResponse]
   implicit val read = Json.reads[Verification]
 
+  //special cellphone number without verification
+  Cache.set("12212345678", "968483")
+
   def floodProtect(phone: String) = Cache.get(phone)
 
   def sendVerificationCode(phone: String) = Action.async {
     implicit request =>
       floodProtect(phone) match {
+        case code if phone.equals("12212345678") =>
+          Future.successful(Ok(Json.toJson(new SuccessResponse)))
         case (code: String) =>
           Future.successful(BadRequest(Json.toJson(ErrorResponse("请求太频繁，目前限制为2分钟。(too frequently requests, current is 2 minutes)"))))
         case null =>
@@ -54,6 +59,8 @@ object SMSController extends Controller with Secured {
         case (v) =>
           Logger.info(v.toString)
           Verification.isMatched(v) match {
+            case verify if verify && v.phone.equals("12212345678") =>
+              Ok(Json.toJson(new SuccessResponse))
             case true =>
               Cache.remove(phone)
               Ok(Json.toJson(new SuccessResponse))
