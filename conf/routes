@@ -419,17 +419,11 @@ POST          /api/v3/kindergarten/:kg/immune_record                            
 POST          /api/v3/kindergarten/:kg/immune_record/:id                                  controllers.V3.ImmuneRecordController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/immune_record/:id                                  controllers.V3.ImmuneRecordController.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/morning_health_check                               controllers.V3.MorningHealthCheckController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/morning_health_check                               controllers.V3.MorningHealthCheckController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v3/kindergarten/:kg/morning_health_check/:id                           controllers.V3.MorningHealthCheckController.show(kg: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/morning_health_check                               controllers.V3.MorningHealthCheckController.create(kg: Long)
 POST          /api/v3/kindergarten/:kg/morning_health_check/:id                           controllers.V3.MorningHealthCheckController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/morning_health_check/:id                           controllers.V3.MorningHealthCheckController.delete(kg: Long, id: Long)
-
-GET           /api/v3/kindergarten/:kg/student/:studentId/morning_health_check            controllers.V3.StudentMorningHealthCheckController.index(kg: Long, studentId: Long)
-GET           /api/v3/kindergarten/:kg/student/:studentId/morning_health_check/:id        controllers.V3.StudentMorningHealthCheckController.show(kg: Long, studentId: Long, id: Long)
-POST          /api/v3/kindergarten/:kg/student/:studentId/morning_health_check            controllers.V3.StudentMorningHealthCheckController.create(kg: Long, studentId: Long)
-POST          /api/v3/kindergarten/:kg/student/:studentId/morning_health_check/:id        controllers.V3.StudentMorningHealthCheckController.update(kg: Long, studentId: Long, id: Long)
-DELETE        /api/v3/kindergarten/:kg/student/:studentId/morning_health_check/:id        controllers.V3.StudentMorningHealthCheckController.delete(kg: Long, studentId: Long, id: Long)
 
 GET           /api/v3/kindergarten/:kg/student/:studentId/health_check                    controllers.V3.StudentHealthCheckController.index(kg: Long, studentId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v3/kindergarten/:kg/student/:studentId/health_check/:id                controllers.V3.StudentHealthCheckController.show(kg: Long, studentId: Long, id: Long)

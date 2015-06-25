@@ -3,31 +3,32 @@ package controllers.V3
 import controllers.Secured
 import controllers.V3.SmsGroupManagementController._
 import models.{ErrorResponse, SuccessResponse}
-import models.V3.{StudentHealthCheckDetail, HealthCheck}
+import models.V3.{MorningHealthCheck, StudentHealthCheckDetail, HealthCheck}
 import models.V3.HealthCheck._
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
-
-case class MorningHealthCheck(id: Option[Long], recorder_id: Option[Long], writer_id: Option[Long], checked_at: Option[Long], memo: Option[String])
-
 object MorningHealthCheckController extends Controller with Secured {
 
-  implicit val writeMorningHealthCheck = Json.writes[MorningHealthCheck]
-  implicit val readMorningHealthCheck = Json.reads[MorningHealthCheck]
-
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(MorningHealthCheck(Some(1), Some(1), Some(1), Some(System.currentTimeMillis), Some("某次晨检")))))
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(MorningHealthCheck.index(kg, from, to, most)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(MorningHealthCheck(Some(id), Some(1), Some(1), Some(System.currentTimeMillis), Some("某次晨检"))))
+    MorningHealthCheck.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的晨检记录。(No such morning check record)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[MorningHealthCheck].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -35,14 +36,17 @@ object MorningHealthCheckController extends Controller with Secured {
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[MorningHealthCheck].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    MorningHealthCheck.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
@@ -57,46 +61,6 @@ RecorderSysNO int,操作老师编号
 WriterSysNO int填表老师编号
 )
 */
-
-case class StudentHealthCheck(id: Option[Long], record_id: Option[Long], student_id: Option[Long], temperature: Option[String],
-                              check_status_id: Option[Long], check_status_name: Option[String], relative_words: Option[String],
-                              memo: Option[String])
-
-object StudentMorningHealthCheckController extends Controller with Secured {
-
-  implicit val writeStudentHealthCheck = Json.writes[StudentHealthCheck]
-  implicit val readStudentHealthCheck = Json.reads[StudentHealthCheck]
-
-  def index(kg: Long, studentId: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(StudentHealthCheck(Some(1), Some(1), Some(studentId), Some("37.4C"), Some(1), Some("晨检结果名称"), Some("家长能说啥？"), Some("这次晨检的备忘")))))
-  }
-
-  def show(kg: Long, studentId: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(StudentHealthCheck(Some(id), Some(1), Some(studentId), Some("37.4C"), Some(1), Some("晨检结果名称"), Some("家长能说啥？"), Some("这次晨检的备忘"))))
-  }
-
-  def create(kg: Long, studentId: Long) = IsLoggedIn(parse.json) { u => request =>
-    request.body.validate[StudentHealthCheck].map {
-      case (s) =>
-        Ok(Json.toJson(s))
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
-
-  def update(kg: Long, studentId: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
-    request.body.validate[StudentHealthCheck].map {
-      case (s) =>
-        Ok(Json.toJson(s))
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
-
-  def delete(kg: Long, studentId: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(new SuccessResponse()))
-  }
-}
 
 /*
 create table IMSInfo.dbo.MorningCheckStudent(
