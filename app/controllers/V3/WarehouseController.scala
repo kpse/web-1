@@ -5,7 +5,8 @@ import models.{ChildInfo, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
-case class Warehouse(id: Option[Long], warehouse_id: Option[Long], employee_id: Option[String], name: Option[String], memo: Option[String])
+case class WarehouseKeeper(id: Option[Long], employee_id: Option[Long])
+case class Warehouse(id: Option[Long], warehouse_id: Option[Long], employees: Option[List[WarehouseKeeper]], name: Option[String], memo: Option[String])
 case class Goods(id: Option[Long], name: Option[String], short_name: Option[String], unit: Option[String], max_warning: Option[String],
                  min_warning: Option[String], warehouse_id: Option[Long], stock_place: Option[String], memo: Option[String], origin_id: Option[Long])
 case class Inventory(id: Option[Long], goods_id: Option[Long], goods_name: Option[String], warehouse_id: Option[Long], created_at: Option[Long], updated_at: Option[Long], quality: Option[Int], unit: Option[String])
@@ -16,15 +17,17 @@ case class StockingDetail(id: Option[Long], stocking_id: Option[Long], goods_id:
 
 object WarehouseController extends Controller with Secured {
 
+  implicit val writeWarehouseKeeper = Json.writes[WarehouseKeeper]
   implicit val writeWarehouse = Json.writes[Warehouse]
+  implicit val readWarehouseKeeper = Json.reads[WarehouseKeeper]
   implicit val readWarehouse = Json.reads[Warehouse]
 
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Warehouse(Some(1), Some(1), Some(s"3_${kg}_12312"), Some("仓库"), Some("memo")))))
+    Ok(Json.toJson(List(Warehouse(Some(1), Some(1), Some(List(WarehouseKeeper(Some(1), Some(1)), WarehouseKeeper(Some(2), Some(2)))), Some("仓库"), Some("memo")))))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Warehouse(Some(1), Some(1), Some(s"3_${kg}_12312"), Some("仓库"), Some("memo"))))
+    Ok(Json.toJson(Warehouse(Some(1), Some(1), Some(List(WarehouseKeeper(Some(1), Some(1)), WarehouseKeeper(Some(2), Some(2)), WarehouseKeeper(Some(3), Some(4)))), Some("仓库"), Some("memo"))))
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
