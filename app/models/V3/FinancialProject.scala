@@ -218,10 +218,14 @@ case class FinancialReceipt(id: Option[Long], serial_number: Option[String], stu
             'creator -> creator,
             'time -> System.currentTimeMillis
           ).executeUpdate()
-        items foreach {
-          _ foreach {
-            _.handle(kg, id.get)
-          }
+        id foreach {
+          case i =>
+            FinancialProject.clean(kg, i)
+            items foreach {
+              _ foreach {
+                _.handle(kg, id.get)
+              }
+            }
         }
         c.commit()
         FinancialReceipt.show(kg, id.getOrElse(0))
@@ -248,10 +252,14 @@ case class FinancialReceipt(id: Option[Long], serial_number: Option[String], stu
             'creator -> creator,
             'time -> System.currentTimeMillis
           ).executeInsert()
-        items foreach {
-          _ foreach {
-            _.handle(kg, insert.getOrElse(0))
-          }
+        insert foreach {
+          case i =>
+            FinancialProject.clean(kg, i)
+            items foreach {
+              _ foreach {
+                _.handle(kg, i)
+              }
+            }
         }
         c.commit()
         FinancialReceipt.show(kg, insert.getOrElse(0))
@@ -322,6 +330,15 @@ object FinancialProject {
         FinancialProject(Some(id), parent_id, group_id, name, short_name, project_id, total, memo)
     }
   }
+
+  def clean(kg: Long, base: Long) = DB.withTransaction {
+    implicit c =>
+      SQL(s"update financialproject set status=0 where school_id={kg} and status=1 and group_id={base}")
+        .on(
+          'kg -> kg.toString,
+          'base -> base
+        ).executeUpdate()
+  }
 }
 
 object FinancialProjectGroup {
@@ -355,6 +372,7 @@ object FinancialProjectGroup {
           'kg -> kg.toString,
           'id -> id
         ).executeUpdate()
+      FinancialProject.clean(kg, id)
   }
 
   val simple = {
@@ -395,6 +413,15 @@ object FinancialReceipt {
         ).as(itemSimple *)
   }
 
+  def cleanItems(kg: Long, base: Long) = DB.withTransaction {
+    implicit c =>
+      SQL(s"update financialreceiptitem set status=0 where school_id={kg} and status=1 and receipt_id={base}")
+        .on(
+          'kg -> kg.toString,
+          'base -> base
+        ).executeUpdate()
+  }
+
   def show(kg: Long, id: Long) = DB.withConnection {
     implicit c =>
       SQL(s"select * from financialreceipt where school_id={kg} and uid={id} and status=1")
@@ -411,11 +438,12 @@ object FinancialReceipt {
           'kg -> kg.toString,
           'id -> id
         ).executeUpdate()
+      cleanItems(kg, id)
   }
 
   val simple = {
     get[Long]("uid") ~
-    get[String]("school_id") ~
+      get[String]("school_id") ~
       get[Option[String]]("serial_number") ~
       get[Option[Long]]("student_id") ~
       get[Option[Int]]("payment_type") ~
