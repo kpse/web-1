@@ -10,7 +10,7 @@ import play.api.Play.current
 case class Immune(id: Option[Long], name: Option[String], memo: Option[String])
 
 case class ImmuneStudent(id: Option[Long], student_id: Long) {
-  def exists(id: Long) = DB.withTransaction {
+  def exists(id: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from studentimmunerecord where uid={id}")
         .on(
@@ -69,7 +69,7 @@ case class ImmuneRecord(id: Option[Long], immune: Option[Immune], name: Option[S
   }
 
 
-  def update(kg: Long): Option[ImmuneRecord] = DB.withConnection {
+  def update(kg: Long): Option[ImmuneRecord] = DB.withTransaction {
     implicit c =>
       try {
         SQL("update immunerecord set school_id={school_id}, immune_name={immune_name}, immune_memo={immune_memo}, name={name}, " +

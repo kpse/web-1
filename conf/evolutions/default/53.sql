@@ -5,8 +5,6 @@
 CREATE TABLE financialproject (
   uid         INT(11) NOT NULL AUTO_INCREMENT,
   school_id   VARCHAR(20) NOT NULL,
-  project_id VARCHAR(20),
-  group_id INT(11),
   parent_id INT(11),
   name   VARCHAR(50),
   short_name   VARCHAR(20),
@@ -15,12 +13,12 @@ CREATE TABLE financialproject (
   updated_at BIGINT,
   status INT(4) DEFAULT 1,
   PRIMARY KEY (uid),
-  KEY(school_id, group_id)
+  KEY(school_id)
 );
 
-INSERT INTO financialproject (school_id, parent_id, name, short_name, project_id, group_id, total, memo, updated_at) VALUES
-('93740362', 1, '打过没打过没打过没', '短打', 'aaa_1', 1, '99232', '这是memo', 1393395313123),
-('93740362', 2, '没打过没打过没打过', '长打', 'aaa_2', 1, '99333', '这是memo', 1393399313123);
+INSERT INTO financialproject (school_id, parent_id, name, short_name, total, memo, updated_at) VALUES
+('93740362', 1, '打过没打过没打过没', '短打', '99232', '这是memo', 1393395313123),
+('93740362', 2, '没打过没打过没打过', '长打', '99333', '这是memo', 1393399313123);
 
 # --- !Downs
 
