@@ -467,11 +467,17 @@ POST          /api/v3/kindergarten/:kg/financial_receipt                        
 POST          /api/v3/kindergarten/:kg/financial_receipt/:id                              controllers.V3.FinancialReceiptController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/financial_receipt/:id                              controllers.V3.FinancialReceiptController.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/warehouse                                          controllers.V3.WarehouseController.index(kg: Long)
+GET           /api/v3/kindergarten/:kg/warehouse                                          controllers.V3.WarehouseController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v3/kindergarten/:kg/warehouse/:id                                      controllers.V3.WarehouseController.show(kg: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/warehouse                                          controllers.V3.WarehouseController.create(kg: Long)
 POST          /api/v3/kindergarten/:kg/warehouse/:id                                      controllers.V3.WarehouseController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/warehouse/:id                                      controllers.V3.WarehouseController.delete(kg: Long, id: Long)
+
+GET           /api/v3/kindergarten/:kg/warehouse/:warehouseId/goods_origin                controllers.V3.WarehouseGoodsOriginController.index(kg: Long, warehouseId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v3/kindergarten/:kg/warehouse/:warehouseId/goods_origin/:id            controllers.V3.WarehouseGoodsOriginController.show(kg: Long, warehouseId: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/warehouse/:warehouseId/goods_origin                controllers.V3.WarehouseGoodsOriginController.create(kg: Long, warehouseId: Long)
+POST          /api/v3/kindergarten/:kg/warehouse/:warehouseId/goods_origin/:id            controllers.V3.WarehouseGoodsOriginController.update(kg: Long, warehouseId: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/warehouse/:warehouseId/goods_origin/:id            controllers.V3.WarehouseGoodsOriginController.delete(kg: Long, warehouseId: Long, id: Long)
 
 GET           /api/v3/kindergarten/:kg/warehouse/:warehouseId/inventory                   controllers.V3.WarehouseInventoryController.index(kg: Long, warehouseId: Long)
 GET           /api/v3/kindergarten/:kg/warehouse/:warehouseId/inventory/:id               controllers.V3.WarehouseInventoryController.show(kg: Long, warehouseId: Long, id: Long)

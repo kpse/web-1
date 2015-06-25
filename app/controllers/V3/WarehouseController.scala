@@ -6,9 +6,8 @@ import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
 case class Warehouse(id: Option[Long], warehouse_id: Option[Long], employee_id: Option[String], name: Option[String], memo: Option[String])
-case class GoodsOrigin(id: Option[Long], name: Option[String], short_name: Option[String], warehouse_id: Option[Long], memo: Option[String])
 case class Goods(id: Option[Long], name: Option[String], short_name: Option[String], unit: Option[String], max_warning: Option[String],
-                 min_warning: Option[String], warehouse_id: Option[Long], stock_place: Option[String], memo: Option[String], origin: Option[GoodsOrigin])
+                 min_warning: Option[String], warehouse_id: Option[Long], stock_place: Option[String], memo: Option[String], origin_id: Option[Long])
 case class Inventory(id: Option[Long], goods_id: Option[Long], goods_name: Option[String], warehouse_id: Option[Long], created_at: Option[Long], updated_at: Option[Long], quality: Option[Int], unit: Option[String])
 case class Stocking(id: Option[Long], `type`: Option[Int], invoice_type: Option[Int], invoice_name: Option[String], serial_number: Option[String], sn_base: Option[String],
                      creator: Option[String], created_at: Option[Long], employee_id: Option[String], warehouse_id: Option[Long], memo: Option[String])
@@ -20,7 +19,7 @@ object WarehouseController extends Controller with Secured {
   implicit val writeWarehouse = Json.writes[Warehouse]
   implicit val readWarehouse = Json.reads[Warehouse]
 
-  def index(kg: Long) = IsLoggedIn { u => _ =>
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
     Ok(Json.toJson(List(Warehouse(Some(1), Some(1), Some(s"3_${kg}_12312"), Some("仓库"), Some("memo")))))
   }
 
@@ -162,19 +161,17 @@ object WarehouseInventoryController extends Controller with Secured {
 
 object GoodsController extends Controller with Secured {
 
-  implicit val writeGoodsOrigin = Json.writes[GoodsOrigin]
-  implicit val readGoodsOrigin = Json.reads[GoodsOrigin]
   implicit val writeGoods = Json.writes[Goods]
   implicit val readGoods = Json.reads[Goods]
 
   def index(kg: Long, warehouseId: Long) = IsLoggedIn { u => _ =>
     Ok(Json.toJson(List(Goods(Some(1), Some("钢笔"), Some("笔"), Some("支"), Some("100"), Some("1000"), Some(warehouseId), Some("地板"), Some("存的是啥？"),
-      Some(GoodsOrigin(Some(1), Some("美利坚合众国"), Some("美国"), Some(warehouseId), Some("原产地")))))))
+      Some(1)))))
   }
 
   def show(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn { u => _ =>
     Ok(Json.toJson(Goods(Some(1), Some("钢笔"), Some("笔"), Some("支"), Some("100"), Some("1000"), Some(warehouseId), Some("地板"), Some("存的是啥？"),
-      Some(GoodsOrigin(Some(1), Some("美利坚合众国"), Some("美国"), Some(warehouseId), Some("原产地"))))))
+      Some(1))))
   }
 
   def create(kg: Long, warehouseId: Long) = IsLoggedIn(parse.json) { u => request =>
