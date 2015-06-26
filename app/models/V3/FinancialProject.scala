@@ -119,7 +119,7 @@ case class FinancialProjectGroup(id: Option[Long], name: Option[String], short_n
             'short_name -> short_name,
             'time -> System.currentTimeMillis
           ).executeInsert()
-        id foreach {
+        insert foreach {
           case i =>
             FinancialProjectGroup.cleanRelation(kg, i)
             projects foreach {
