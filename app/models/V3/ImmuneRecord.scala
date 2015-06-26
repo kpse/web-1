@@ -34,7 +34,7 @@ case class ImmuneStudent(id: Option[Long], student_id: Long) {
           'id -> id,
           'school_id -> kg,
           'immune_id -> immuneId,
-          'studentId -> student_id,
+          'student_id -> student_id,
           'time -> System.currentTimeMillis
         ).executeUpdate()
   }
@@ -46,7 +46,7 @@ case class ImmuneStudent(id: Option[Long], student_id: Long) {
         .on(
           'school_id -> kg,
           'immune_id -> immuneId,
-          'studentId -> student_id,
+          'student_id -> student_id,
           'time -> System.currentTimeMillis
         ).executeInsert()
   }
