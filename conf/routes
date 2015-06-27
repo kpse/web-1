@@ -485,12 +485,6 @@ POST          /api/v3/kindergarten/:kg/warehouse/:warehouseId/stocking          
 POST          /api/v3/kindergarten/:kg/warehouse/:warehouseId/stocking/:id                controllers.V3.StockingController.update(kg: Long, warehouseId: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/warehouse/:warehouseId/stocking/:id                controllers.V3.StockingController.delete(kg: Long, warehouseId: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/stocking/:stockingId/detail                        controllers.V3.StockingDetailController.index(kg: Long, stockingId: Long)
-GET           /api/v3/kindergarten/:kg/stocking/:stockingId/detail/:id                    controllers.V3.StockingDetailController.show(kg: Long, stockingId: Long, id: Long)
-POST          /api/v3/kindergarten/:kg/stocking/:stockingId/detail                        controllers.V3.StockingDetailController.create(kg: Long, stockingId: Long)
-POST          /api/v3/kindergarten/:kg/stocking/:stockingId/detail/:id                    controllers.V3.StockingDetailController.update(kg: Long, stockingId: Long, id: Long)
-DELETE        /api/v3/kindergarten/:kg/stocking/:stockingId/detail/:id                    controllers.V3.StockingDetailController.delete(kg: Long, stockingId: Long, id: Long)
-
 GET           /api/v3/kindergarten/:kg/diet_nutrition                                     controllers.V3.DietNutritionController.index(kg: Long)
 GET           /api/v3/kindergarten/:kg/diet_nutrition/:id                                 controllers.V3.DietNutritionController.show(kg: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/diet_nutrition                                     controllers.V3.DietNutritionController.create(kg: Long)

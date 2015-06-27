@@ -8,10 +8,10 @@ import play.api.mvc.Controller
 case class WarehouseKeeper(id: Option[Long], employee_id: Option[Long])
 case class Warehouse(id: Option[Long], warehouse_id: Option[Long], employees: Option[List[WarehouseKeeper]], name: Option[String], memo: Option[String])
 case class Goods(id: Option[Long], name: Option[String], short_name: Option[String], unit: Option[String], max_warning: Option[String],
-                 min_warning: Option[String], warehouse_id: Option[Long], stock_place: Option[String], memo: Option[String], origin_id: Option[Long])
+                 min_warning: Option[String], warehouse_id: Option[Long], stock_place: Option[String], memo: Option[String])
 case class Inventory(id: Option[Long], goods_id: Option[Long], goods_name: Option[String], warehouse_id: Option[Long], created_at: Option[Long], updated_at: Option[Long], quality: Option[Int], unit: Option[String])
 case class Stocking(id: Option[Long], `type`: Option[Int], invoice_type: Option[Int], invoice_name: Option[String], serial_number: Option[String], sn_base: Option[String],
-                     creator: Option[String], created_at: Option[Long], employee_id: Option[String], warehouse_id: Option[Long], memo: Option[String])
+                     creator: Option[String], updated_at: Option[Long], employee_id: Option[String], warehouse_id: Option[Long], memo: Option[String], origin_id: Option[Long], items: Option[List[StockingDetail]])
 case class StockingDetail(id: Option[Long], stocking_id: Option[Long], goods_id: Option[Long], goods_name: Option[String],
                           origin_id: Option[Long], origin_name: Option[String], price: Option[String], quality: Option[Int], unit: Option[String], memo: Option[String], subtotal: Option[String])
 
@@ -168,13 +168,11 @@ object GoodsController extends Controller with Secured {
   implicit val readGoods = Json.reads[Goods]
 
   def index(kg: Long, warehouseId: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Goods(Some(1), Some("钢笔"), Some("笔"), Some("支"), Some("100"), Some("1000"), Some(warehouseId), Some("地板"), Some("存的是啥？"),
-      Some(1)))))
+    Ok(Json.toJson(List(Goods(Some(1), Some("钢笔"), Some("笔"), Some("支"), Some("100"), Some("1000"), Some(warehouseId), Some("地板"), Some("存的是啥？")))))
   }
 
   def show(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Goods(Some(1), Some("钢笔"), Some("笔"), Some("支"), Some("100"), Some("1000"), Some(warehouseId), Some("地板"), Some("存的是啥？"),
-      Some(1))))
+    Ok(Json.toJson(Goods(Some(1), Some("钢笔"), Some("笔"), Some("支"), Some("100"), Some("1000"), Some(warehouseId), Some("地板"), Some("存的是啥？"))))
   }
 
   def create(kg: Long, warehouseId: Long) = IsLoggedIn(parse.json) { u => request =>
@@ -202,15 +200,21 @@ object GoodsController extends Controller with Secured {
 
 object StockingController extends Controller with Secured {
 
+  implicit val writeStockingDetail = Json.writes[StockingDetail]
+  implicit val readStockingDetail = Json.reads[StockingDetail]
   implicit val writeStocking = Json.writes[Stocking]
   implicit val readStocking = Json.reads[Stocking]
 
   def index(kg: Long, warehouseId: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Stocking(Some(1), Some(1), Some(1), Some("发票名字"), Some("12312313123"), Some("123131"), Some("3_2_1"), Some(System.currentTimeMillis), Some("3_2_1"), Some(warehouseId), Some("这啥意思")))))
+    Ok(Json.toJson(List(Stocking(Some(1), Some(1), Some(1), Some("发票名字"), Some("12312313123"), Some("123131"),
+      Some("3_2_1"), Some(System.currentTimeMillis), Some("3_2_1"), Some(warehouseId), Some("这啥意思"), Some(1),
+      Some(List(StockingDetail(Some(1), Some(1), Some(1), Some("一种货"), Some(1), Some("美国"), Some("$1"), Some(122), Some("只"), Some("库存变化"), Some("￥3434"))))))))
   }
 
   def show(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Stocking(Some(kg), Some(1), Some(1), Some("发票名字"), Some("12312313123"), Some("123131"), Some("3_2_1"), Some(System.currentTimeMillis), Some("3_2_1"), Some(warehouseId), Some("这啥意思"))))
+    Ok(Json.toJson(Stocking(Some(kg), Some(1), Some(1), Some("发票名字"), Some("12312313123"), Some("123131"),
+      Some("3_2_1"), Some(System.currentTimeMillis), Some("3_2_1"), Some(warehouseId), Some("这啥意思"), Some(1),
+      Some(List(StockingDetail(Some(1), Some(id), Some(1), Some("一种货"), Some(1), Some("美国"), Some("$1"), Some(122), Some("只"), Some("库存变化"), Some("￥3434")))))))
   }
 
   def create(kg: Long, warehouseId: Long) = IsLoggedIn(parse.json) { u => request =>
@@ -232,42 +236,6 @@ object StockingController extends Controller with Secured {
   }
 
   def delete(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(new SuccessResponse()))
-  }
-}
-
-object StockingDetailController extends Controller with Secured {
-
-  implicit val writeStockingDetail = Json.writes[StockingDetail]
-  implicit val readStockingDetail = Json.reads[StockingDetail]
-
-  def index(kg: Long, stockingId: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(StockingDetail(Some(1), Some(stockingId), Some(1), Some("一种货"), Some(1), Some("美国"), Some("$1"), Some(122), Some("只"), Some("库存变化"), Some("￥3434")))))
-  }
-
-  def show(kg: Long, stockingId: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(StockingDetail(Some(id), Some(stockingId), Some(1), Some("一种货"), Some(1), Some("美国"), Some("$1"), Some(122), Some("只"), Some("库存变化"), Some("￥3434"))))
-  }
-
-  def create(kg: Long, stockingId: Long) = IsLoggedIn(parse.json) { u => request =>
-    request.body.validate[StockingDetail].map {
-      case (s) =>
-        Ok(Json.toJson(s))
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
-
-  def update(kg: Long, stockingId: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
-    request.body.validate[StockingDetail].map {
-      case (s) =>
-        Ok(Json.toJson(s))
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
-
-  def delete(kg: Long, stockingId: Long, id: Long) = IsLoggedIn { u => _ =>
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
