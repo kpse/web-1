@@ -61,7 +61,7 @@ case class FinancialProject(id: Option[Long], parent_id: Option[Long], name: Opt
 }
 
 case class FinancialProjectGroup(id: Option[Long], name: Option[String], short_name: Option[String], projects: Option[List[GroupedFinancialProject]]) {
-  def exists(id: Long) = DB.withTransaction {
+  def exists(id: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from financialprojectgroup where uid={id}")
         .on(
@@ -139,11 +139,6 @@ case class FinancialProjectGroup(id: Option[Long], name: Option[String], short_n
       }
   }
 }
-
-
-
-
-
 
 case class GroupedFinancialProject(id: Option[Long], project_id: Option[Long]) {
   def exists(id: Long) = DB.withTransaction {
