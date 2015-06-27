@@ -8,7 +8,7 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
-case class FinancialReceiptItem(id: Option[Long], project_id: Option[String], sum_value: Option[String], reason: Option[String], count: Option[Int], updated_at: Option[Long]) {
+case class FinancialReceiptItem(id: Option[Long], project_id: Option[Long], sum_value: Option[String], reason: Option[String], count: Option[Int], updated_at: Option[Long]) {
   def exists(id: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from financialreceiptitem where uid={id}")
@@ -216,7 +216,7 @@ object FinancialReceipt {
 
   val itemSimple = {
     get[Long]("uid") ~
-      get[Option[String]]("project_id") ~
+      get[Option[Long]]("project_id") ~
       get[Option[String]]("sum_value") ~
       get[Option[String]]("reason") ~
       get[Option[Int]]("count") ~
