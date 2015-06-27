@@ -176,9 +176,6 @@ POST          /feedback                                                         
 POST          /feedback/:id                                                               controllers.FeedbackController.update(id: Long)
 GET           /feedback                                                                   controllers.FeedbackController.index(source: Option[String])
 
-GET           /push                                                                       controllers.PushController.test
-GET           /push/group                                                                 controllers.PushController.testGroup(newsId: Option[Long])
-
 GET           /cheatCode                                                                  controllers.CheatingController.show
 POST          /cheatCode                                                                  controllers.CheatingController.create
 DELETE        /cheatCode                                                                  controllers.CheatingController.delete

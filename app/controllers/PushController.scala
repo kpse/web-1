@@ -1,19 +1,19 @@
 package controllers
 
-import com.baidu.yun.channel.auth.ChannelKeyPair
-import com.baidu.yun.channel.client.BaiduChannelClient
-import com.baidu.yun.channel.model._
 import com.baidu.yun.core.log.{YunLogEvent, YunLogHandler}
-import com.baidu.yun.channel.exception.{ChannelServerException, ChannelClientException}
-import play.Logger
-import play.api.mvc._
-import play.api.libs.json.{JsError, Json}
-import models.json_models.{IOSField, CheckingMessage, CheckInfo, CheckNotification}
-import scala.Predef._
+import com.baidu.yun.push.auth.PushKeyPair
+import com.baidu.yun.push.client.BaiduPushClient
+import com.baidu.yun.push.constants.BaiduPushConstants
+import com.baidu.yun.push.exception.{PushServerException, PushClientException}
+import com.baidu.yun.push.model.{PushResponse, PushMsgToSingleDeviceResponse, PushMsgToSingleDeviceRequest}
 import models._
+import models.json_models.{CheckInfo, CheckNotification, IOSField}
+import play.Logger
 import play.api.Play
-import scala.Some
-import models.JsonResponse
+import play.api.libs.json.{JsError, Json}
+import play.api.mvc._
+
+import scala.Predef._
 
 object PushController extends Controller {
   implicit val write = Json.writes[IOSField]
@@ -27,17 +27,7 @@ object PushController extends Controller {
     Ok(runWithLog(msg, triggerSinglePush))
   }
 
-  type Trigger[A] = (A) => ChannelResponse
-
-  def testGroup(newsId: Option[Long]) = Action {
-    News.findById(93740362L, newsId.getOrElse(2L)) match {
-      case Some(n: News) =>
-        Ok(Json.toJson(runWithLog(n, triggerTagPush)))
-      case None =>
-        Ok(Json.toJson(ErrorResponse("No such news")))
-    }
-
-  }
+  type Trigger[A] = (A) => PushResponse
 
   def runWithLog[A](msg: A, trigger: Trigger[A]) = {
     try {
@@ -45,10 +35,10 @@ object PushController extends Controller {
       Json.toJson(new SuccessResponse)
     }
     catch {
-      case e: ChannelClientException =>
+      case e: PushClientException =>
         Json.toJson(ErrorResponse(e.printStackTrace().toString))
-      case e: ChannelServerException =>
-        val error = "request_id: %d, error_code: %d, error_message: %s".format(e.getRequestId, e.getErrorCode, e.getErrorMsg)
+      case e: PushServerException =>
+        val error = s"request_id: ${e.getRequestId}, error_code: ${e.getErrorCode}, error_message: ${e.getErrorMsg}"
         Logger.info(error)
         Json.toJson(ErrorResponse(error))
     }
@@ -75,34 +65,16 @@ object PushController extends Controller {
 
   def triggerSinglePush(check: CheckNotification) = {
     val channelClient = getClient
-    val request: PushUnicastMessageRequest = new PushUnicastMessageRequest
+    val request: PushMsgToSingleDeviceRequest = new PushMsgToSingleDeviceRequest
     //device_type => 1: web 2: pc 3:android 4:ios 5:wp
     request.setDeviceType(new Integer(check.device))
     request.setDeployStatus(deployStatus)
-    if (check.channelid.toLong > 0) {
-      request.setChannelId(check.channelid.toLong)
-    }
-    request.setUserId(check.pushid)
+    request.addChannelId(check.channelid)
     request.setMessageType(messageType(check.device))
     Logger.info(Json.toJson(check).toString())
     request.setMessage(Json.toJson(check).toString())
-    request.setMsgKey(check.timestamp.toString)
-    val response: PushUnicastMessageResponse = channelClient.pushUnicastMessage(request)
-    Logger.info("push amount : " + response.getSuccessAmount)
-    response
-  }
-
-  def triggerTagPush(news: News) = {
-    val channelClient = getClient
-    val request: PushTagMessageRequest = new PushTagMessageRequest
-    request.setDeviceType(3)
-    request.setTagName(news.school_id.toString)
-    request.setMessageType(0)
-    request.setMessage("{\"notice_title\":\"" + news.title + "\",\"notice_body\":\"" + news.content + "\", \"notice_type\":2, \"timestamp\": " + System.currentTimeMillis + ", \"publisher\":\"老师\"}")
-    request.setMsgKey(System.currentTimeMillis.toString)
-    request.setMessageExpires(7 * 86400)
-    val response: PushTagMessageResponse = channelClient.pushTagMessage(request)
-    Logger.info("push amount : " + response.getSuccessAmount)
+    val response: PushMsgToSingleDeviceResponse = channelClient.pushMsgToSingleDevice(request)
+    Logger.info(s"push result msgId: ${response.getMsgId()},sendTime: ${response.getSendTime()}")
     response
   }
 
@@ -111,9 +83,8 @@ object PushController extends Controller {
     val apiKey = Play.current.configuration.getString("push.ak").getOrElse("")
     val secretKey = Play.current.configuration.getString("push.sk").getOrElse("")
 
-    val pair: ChannelKeyPair = new ChannelKeyPair(apiKey, secretKey)
-
-    val channelClient: BaiduChannelClient = new BaiduChannelClient(pair)
+    val pair: PushKeyPair = new PushKeyPair(apiKey, secretKey)
+    val channelClient = new BaiduPushClient(pair, BaiduPushConstants.CHANNEL_REST_URL)
 
     channelClient.setChannelLogHandler(new YunLogHandler {
       def onHandle(event: YunLogEvent) {
@@ -123,11 +94,11 @@ object PushController extends Controller {
     channelClient
   }
 
-  def createSwipeMessage(check: CheckNotification) = check.pushid match {
+  def createSwipeMessage(check: CheckNotification) = check.channelid match {
     case p if p.length > 0 =>
       runWithLog(check, triggerSinglePush)
     case _ =>
-      Logger.info("No pushid available.")
+      Logger.info("No channel id available.")
   }
 
   def forwardSwipe(kg: Long) = Action(parse.json) {
