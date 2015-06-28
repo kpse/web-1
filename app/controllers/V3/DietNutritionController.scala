@@ -20,10 +20,10 @@ case class DietGrade(id: Option[Long], name: Option[String], age_name: Option[St
                          carotine: Option[String], choline: Option[String], cholesterol: Option[String], vitamin: Option[Vitamin]
                          , p: Option[String], i: Option[String], f: Option[String], metal: Option[Metal])
 
-case class BigMenu(id: Option[Long], name: Option[String])
-case class Menu(id: Option[Long], big_menu: Option[BigMenu], menu_id: Option[String], name: Option[String], weight: Option[String], arrange_type: Option[Int])
-case class MenuArrangement(id: Option[Long], menu_id: Option[String], menu_name: Option[String],
-                           arrange_type: Option[Int], master_id: Option[Long], grade_id: Option[Long], weight: Option[String])
+case class MenuGroup(id: Option[Long], name: Option[String])
+case class Menu(id: Option[Long], group_id: Option[Long], menu_id: Option[String], name: Option[String], weight: Option[String], arrange_type: Option[Int])
+case class DietArrangement(id: Option[Long], menu_id: Option[String], menu_name: Option[String],
+                           arrange_type: Option[Int], master_id: Option[Long], grade_id: Option[Long], weight: Option[String], updated_at: Option[Long])
 
 object DietNutritionController extends Controller with Secured {
 
@@ -237,17 +237,55 @@ object DietGradeController extends Controller with Secured {
 
 object DietMenuController extends Controller with Secured {
 
-  implicit val writeBigMenu = Json.writes[BigMenu]
-  implicit val readBigMenu = Json.reads[BigMenu]
+  implicit val writeBigMenu = Json.writes[MenuGroup]
+  implicit val readBigMenu = Json.reads[MenuGroup]
   implicit val writeMenu = Json.writes[Menu]
   implicit val readMenu = Json.reads[Menu]
 
   def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Menu(Some(1), Some(BigMenu(Some(1), Some("大菜单"))), Some("1"), Some("某菜单"), Some("100"), Some(1)))))
+    Ok(Json.toJson(List(Menu(Some(1), Some(1), Some("1"), Some("某菜单"), Some("100"), Some(1)))))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Menu(Some(1), Some(BigMenu(Some(1), Some("大菜单"))), Some("1"), Some("某菜单"), Some("100"), Some(1))))
+    Ok(Json.toJson(Menu(Some(1), Some(1), Some("1"), Some("某菜单"), Some("100"), Some(1))))
+  }
+
+  def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
+    request.body.validate[Menu].map {
+      case (s) =>
+        Ok(Json.toJson(s))
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
+
+  def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
+    request.body.validate[Menu].map {
+      case (s) =>
+        Ok(Json.toJson(s))
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
+
+  def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(new SuccessResponse()))
+  }
+}
+
+object DietMenuGroupController extends Controller with Secured {
+
+  implicit val writeBigMenu = Json.writes[MenuGroup]
+  implicit val readBigMenu = Json.reads[MenuGroup]
+  implicit val writeMenu = Json.writes[Menu]
+  implicit val readMenu = Json.reads[Menu]
+
+  def index(kg: Long) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(List(Menu(Some(1), Some(1), Some("1"), Some("某菜单"), Some("100"), Some(1)))))
+  }
+
+  def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(Menu(Some(1), Some(1), Some("1"), Some("某菜单"), Some("100"), Some(1))))
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
@@ -275,19 +313,19 @@ object DietMenuController extends Controller with Secured {
 
 object DietMenuArrangementController extends Controller with Secured {
 
-  implicit val writeStocking = Json.writes[MenuArrangement]
-  implicit val readStocking = Json.reads[MenuArrangement]
+  implicit val writeStocking = Json.writes[DietArrangement]
+  implicit val readStocking = Json.reads[DietArrangement]
 
-  def index(kg: Long, menuId: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(MenuArrangement(Some(1), Some("1"), Some("配餐"), Some(1), Some(1), Some(1), Some("120g")))))
+  def index(kg: Long) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(List(DietArrangement(Some(1), Some("1"), Some("配餐"), Some(1), Some(1), Some(1), Some("120g"), Some(System.currentTimeMillis())))))
   }
 
-  def show(kg: Long, menuId: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(MenuArrangement(Some(kg), Some("1"), Some("配餐"), Some(1), Some(1), Some(1), Some("120g"))))
+  def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(DietArrangement(Some(kg), Some("1"), Some("配餐"), Some(1), Some(1), Some(1), Some("120g"), Some(System.currentTimeMillis()))))
   }
 
-  def create(kg: Long, menuId: Long) = IsLoggedIn(parse.json) { u => request =>
-    request.body.validate[MenuArrangement].map {
+  def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
+    request.body.validate[DietArrangement].map {
       case (s) =>
         Ok(Json.toJson(s))
     }.recoverTotal {
@@ -295,8 +333,8 @@ object DietMenuArrangementController extends Controller with Secured {
     }
   }
 
-  def update(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
-    request.body.validate[MenuArrangement].map {
+  def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
+    request.body.validate[DietArrangement].map {
       case (s) =>
         Ok(Json.toJson(s))
     }.recoverTotal {
@@ -304,7 +342,7 @@ object DietMenuArrangementController extends Controller with Secured {
     }
   }
 
-  def delete(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn { u => _ =>
+  def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
