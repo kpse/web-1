@@ -1,7 +1,11 @@
 package controllers.V3
 
 import controllers.Secured
-import models.{ChildInfo, SuccessResponse}
+import models.V3.{ArrangementGroup, DietArrangement, Menu}
+import models.V3.ArrangementGroup._
+import models.V3.DietArrangement._
+import models.V3.Menu._
+import models.{ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
@@ -19,11 +23,6 @@ case class DietGrade(id: Option[Long], name: Option[String], age_name: Option[St
                      calorie: Option[String], protein: Option[String], fat: Option[String],
                          carotine: Option[String], choline: Option[String], cholesterol: Option[String], vitamin: Option[Vitamin]
                          , p: Option[String], i: Option[String], f: Option[String], metal: Option[Metal])
-
-case class MenuGroup(id: Option[Long], name: Option[String])
-case class Menu(id: Option[Long], group_id: Option[Long], menu_id: Option[String], name: Option[String], weight: Option[String], arrange_type: Option[Int])
-case class DietArrangement(id: Option[Long], menu_id: Option[String], menu_name: Option[String],
-                           arrange_type: Option[Int], master_id: Option[Long], grade_id: Option[Long], weight: Option[String], updated_at: Option[Long])
 
 object DietNutritionController extends Controller with Secured {
 
@@ -192,11 +191,10 @@ ArrangeType varchar(2)配餐类型
 */
 
 object DietGradeController extends Controller with Secured {
-
-  import controllers.V3.DietNutritionController.writeMetal
-  import controllers.V3.DietNutritionController.readMetal
-  import controllers.V3.DietNutritionController.readVitamin
-  import controllers.V3.DietNutritionController.writeVitamin
+  implicit val writeVitamin = Json.writes[Vitamin]
+  implicit val readVitamin = Json.reads[Vitamin]
+  implicit val writeMetal = Json.writes[Metal]
+  implicit val readMetal = Json.reads[Metal]
   implicit val writeDietGrade = Json.writes[DietGrade]
   implicit val readDietGrade = Json.reads[DietGrade]
 
@@ -237,23 +235,25 @@ object DietGradeController extends Controller with Secured {
 
 object DietMenuController extends Controller with Secured {
 
-  implicit val writeBigMenu = Json.writes[MenuGroup]
-  implicit val readBigMenu = Json.reads[MenuGroup]
-  implicit val writeMenu = Json.writes[Menu]
-  implicit val readMenu = Json.reads[Menu]
-
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Menu(Some(1), Some(1), Some("1"), Some("某菜单"), Some("100"), Some(1)))))
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(Menu.index(kg, from, to, most)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Menu(Some(1), Some(1), Some("1"), Some("某菜单"), Some("100"), Some(1))))
+    Menu.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的菜单。(No such diet menu)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Menu].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -261,73 +261,85 @@ object DietMenuController extends Controller with Secured {
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Menu].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    Menu.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
 
-object DietMenuGroupController extends Controller with Secured {
-
-  implicit val writeBigMenu = Json.writes[MenuGroup]
-  implicit val readBigMenu = Json.reads[MenuGroup]
-  implicit val writeMenu = Json.writes[Menu]
-  implicit val readMenu = Json.reads[Menu]
-
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Menu(Some(1), Some(1), Some("1"), Some("某菜单"), Some("100"), Some(1)))))
+object DietArrangementGroupController extends Controller with Secured {
+  
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(ArrangementGroup.index(kg, from, to, most)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Menu(Some(1), Some(1), Some("1"), Some("某菜单"), Some("100"), Some(1))))
+    ArrangementGroup.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的膳食分组。(No such diet arrangement group)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
-    request.body.validate[Menu].map {
+    request.body.validate[ArrangementGroup].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
-    request.body.validate[Menu].map {
+    request.body.validate[ArrangementGroup].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    ArrangementGroup.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
 
-object DietMenuArrangementController extends Controller with Secured {
+object DietArrangementController extends Controller with Secured {
 
-  implicit val writeStocking = Json.writes[DietArrangement]
-  implicit val readStocking = Json.reads[DietArrangement]
-
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(DietArrangement(Some(1), Some("1"), Some("配餐"), Some(1), Some(1), Some(1), Some("120g"), Some(System.currentTimeMillis())))))
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(DietArrangement.index(kg, from, to, most)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(DietArrangement(Some(kg), Some("1"), Some("配餐"), Some(1), Some(1), Some(1), Some("120g"), Some(System.currentTimeMillis()))))
+    DietArrangement.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的膳食配餐。(No such diet arrangement)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[DietArrangement].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg, 0)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -335,14 +347,17 @@ object DietMenuArrangementController extends Controller with Secured {
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[DietArrangement].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update(kg, 0)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    DietArrangement.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
