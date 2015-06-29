@@ -1,18 +1,13 @@
 package controllers.V3
 
 import controllers.Secured
-import models.V3.Warehouse
+import models.V3._
+import models.V3.Inventory._
+import models.V3.Stocking._
+import models.V3.Goods._
 import models.{ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
-
-case class Goods(id: Option[Long], name: Option[String], short_name: Option[String], unit: Option[String], max_warning: Option[String],
-                 min_warning: Option[String], warehouse_id: Option[Long], stock_place: Option[String], memo: Option[String])
-case class Inventory(id: Option[Long], goods_id: Option[Long], goods_name: Option[String], warehouse_id: Option[Long], created_at: Option[Long], updated_at: Option[Long], quality: Option[Int], unit: Option[String])
-case class Stocking(id: Option[Long], `type`: Option[Int], invoice_type: Option[Int], invoice_name: Option[String], serial_number: Option[String], sn_base: Option[String],
-                     creator: Option[String], updated_at: Option[Long], employee_id: Option[String], warehouse_id: Option[Long], memo: Option[String], origin_id: Option[Long], items: Option[List[StockingDetail]])
-case class StockingDetail(id: Option[Long], stocking_id: Option[Long], goods_id: Option[Long], goods_name: Option[String],
-                          origin_id: Option[Long], origin_name: Option[String], price: Option[String], quality: Option[Int], unit: Option[String], memo: Option[String], subtotal: Option[String])
 
 object WarehouseController extends Controller with Secured {
 
@@ -132,21 +127,25 @@ WarehouseSysNO int仓库编号
 
 object WarehouseInventoryController extends Controller with Secured {
 
-  implicit val writeInventory = Json.writes[Inventory]
-  implicit val readInventory = Json.reads[Inventory]
-
-  def index(kg: Long, warehouseId: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Inventory(Some(1), Some(1), Some("铅笔"), Some(warehouseId), Some(System.currentTimeMillis - 500000), Some(System.currentTimeMillis), Some(100), Some("支")))))
+  def index(kg: Long, warehouseId: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(Inventory.index(kg, warehouseId, from, to, most)))
   }
 
   def show(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Inventory(Some(1), Some(1), Some("铅笔"), Some(warehouseId), Some(System.currentTimeMillis - 500000), Some(System.currentTimeMillis), Some(100), Some("支"))))
+    Inventory.show(kg, warehouseId, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的库存信息。(No such warehouse inventory)")))
+    }
   }
 
   def create(kg: Long, warehouseId: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Inventory].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg, warehouseId)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -154,35 +153,42 @@ object WarehouseInventoryController extends Controller with Secured {
 
   def update(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Inventory].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update(kg, warehouseId)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn { u => _ =>
+    Inventory.deleteById(kg, warehouseId, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
 
 object GoodsController extends Controller with Secured {
 
-  implicit val writeGoods = Json.writes[Goods]
-  implicit val readGoods = Json.reads[Goods]
-
-  def index(kg: Long, warehouseId: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Goods(Some(1), Some("钢笔"), Some("笔"), Some("支"), Some("100"), Some("1000"), Some(warehouseId), Some("地板"), Some("存的是啥？")))))
+  def index(kg: Long, warehouseId: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(Goods.index(kg, warehouseId, from, to, most)))
   }
 
   def show(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Goods(Some(1), Some("钢笔"), Some("笔"), Some("支"), Some("100"), Some("1000"), Some(warehouseId), Some("地板"), Some("存的是啥？"))))
+    Goods.show(kg, warehouseId, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的物资信息。(No such warehouse goods)")))
+    }
   }
 
   def create(kg: Long, warehouseId: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Goods].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg, warehouseId)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -190,41 +196,42 @@ object GoodsController extends Controller with Secured {
 
   def update(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Goods].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update(kg, warehouseId)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn { u => _ =>
+    Goods.deleteById(kg, warehouseId, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
 
 object StockingController extends Controller with Secured {
 
-  implicit val writeStockingDetail = Json.writes[StockingDetail]
-  implicit val readStockingDetail = Json.reads[StockingDetail]
-  implicit val writeStocking = Json.writes[Stocking]
-  implicit val readStocking = Json.reads[Stocking]
-
-  def index(kg: Long, warehouseId: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(Stocking(Some(1), Some(1), Some(1), Some("发票名字"), Some("12312313123"), Some("123131"),
-      Some("3_2_1"), Some(System.currentTimeMillis), Some("3_2_1"), Some(warehouseId), Some("这啥意思"), Some(1),
-      Some(List(StockingDetail(Some(1), Some(1), Some(1), Some("一种货"), Some(1), Some("美国"), Some("$1"), Some(122), Some("只"), Some("库存变化"), Some("￥3434"))))))))
+  def index(kg: Long, warehouseId: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(Stocking.index(kg, warehouseId, from, to, most)))
   }
 
   def show(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Stocking(Some(kg), Some(1), Some(1), Some("发票名字"), Some("12312313123"), Some("123131"),
-      Some("3_2_1"), Some(System.currentTimeMillis), Some("3_2_1"), Some(warehouseId), Some("这啥意思"), Some(1),
-      Some(List(StockingDetail(Some(1), Some(id), Some(1), Some("一种货"), Some(1), Some("美国"), Some("$1"), Some(122), Some("只"), Some("库存变化"), Some("￥3434")))))))
+    Stocking.show(kg, warehouseId, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的货物出入信息。(No such warehouse goods)")))
+    }
   }
 
   def create(kg: Long, warehouseId: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Stocking].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.create(kg, warehouseId)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -232,14 +239,17 @@ object StockingController extends Controller with Secured {
 
   def update(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[Stocking].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
       case (s) =>
-        Ok(Json.toJson(s))
+        Ok(Json.toJson(s.update(kg, warehouseId)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
 
   def delete(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn { u => _ =>
+    Stocking.deleteById(kg, warehouseId, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
