@@ -1,5 +1,6 @@
 package controllers
 
+import models.V4.KulebaoAgent
 import play.api.mvc._
 import play.api.mvc.BodyParsers.parse
 import play.api.data._
@@ -21,7 +22,7 @@ object Auth extends Controller {
       "challenge" -> nonEmptyText,
       "answer" -> nonEmptyText
     ) verifying("无效的用户名或密码。", _ match {
-      case (username, password, _, _) => Employee.authenticate(username, password).isDefined
+      case (username, password, _, _) => Employee.authenticate(username, password).isDefined || KulebaoAgent.authenticate(username, password).isDefined
     }) verifying("验证码不正确。", _ match {
       case (_, _, challenge, answer) => ReCaptcha.simpleCheck(challenge, answer)
     })
@@ -50,14 +51,9 @@ object Auth extends Controller {
       loginForm.bindFromRequest.fold(
         formWithErrors => BadRequest(html.login(formWithErrors)),
         user => {
-          val login = Employee.authenticate(user._1, user._2).get
-          Logger.info(login.toString)
-          if (login.privilege_group.getOrElse("").equals("operator"))
-            Redirect("/operation").withSession("username" -> login.login_name, "phone" -> login.phone, "name" -> login.name, "id" -> login.id.getOrElse(""))
-          else
-            Redirect("/admin#/kindergarten/%d".format(login.school_id)).withSession("username" -> login.login_name, "phone" -> login.phone, "name" -> login.name, "id" -> login.id.getOrElse(""))
+          val login: LoginAccount = Employee.authenticate(user._1, user._2).getOrElse(KulebaoAgent.authenticate(user._1, user._2).get)
+          Redirect(login.url()).withSession(login.session())
         }
-
       )
   }
 
@@ -91,7 +87,17 @@ trait Secured {
         request.session.get("username")
       case _ => None
     }
+  }
 
+  private def agent(request: RequestHeader) = {
+    val id: Option[String] = request.session.get("id")
+    id match {
+      case Some(agent) if operator(request).isDefined =>
+        request.session.get("username")
+      case Some(agent) if KulebaoAgent.isAgent(agent.toLong) =>
+        request.session.get("username")
+      case _ => None
+    }
   }
 
   private def principal(request: RequestHeader) = {
@@ -161,6 +167,16 @@ trait Secured {
   }
 
   def OperatorPage(f: => String => Request[AnyContent] => Result) = Security.Authenticated(operator, redirectToLogin) {
+    user =>
+      Action(request => f(user)(request))
+  }
+
+  def AgentPage(f: => String => Request[AnyContent] => Result) = Security.Authenticated(agent, redirectToLogin) {
+    user =>
+      Action(request => f(user)(request))
+  }
+
+  def IsAgentLoggedIn(f: => String => Request[AnyContent] => Result) = Security.Authenticated(agent, forbidAccess) {
     user =>
       Action(request => f(user)(request))
   }

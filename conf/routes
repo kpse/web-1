@@ -12,6 +12,7 @@ GET           /forgotten                                                        
 GET           /                                                                       controllers.Application.index
 GET           /admin                                                                  controllers.Application.admin
 GET           /operation                                                              controllers.Application.operation
+GET           /agent                                                                  controllers.Application.agent
 GET           /download_log                                                           controllers.Application.downloadLog
 GET           /track_logging                                                          controllers.Application.continuousLogging
 
@@ -532,6 +533,10 @@ POST          /api/weixin/entry                                                 
 
 GET           /api/v3/weixin_jsticket                                                 controllers.WeiXinController.ticket()
 GET           /api/v3/weixin_signature                                                controllers.WeiXinController.signature(url: String)
+
+#agent api
+
+GET /api/v4/agent/:id                                                                 controllers.V4.AgentController.show(id: Long)
 
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                controllers.ChildController.index(kg: Long, parentId: String)

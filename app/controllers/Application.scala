@@ -68,6 +68,12 @@ object Application extends Controller with Secured {
       Ok.chunked(LogTracker.enumerator &> EventSource()).as(EVENT_STREAM)
 
   }
+
+  def agent() = AgentPage {
+    username =>
+      _ =>
+        Ok(views.html.agent())
+  }
 }
 
 object LogTracker {

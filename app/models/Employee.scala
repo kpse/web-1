@@ -11,11 +11,17 @@ import play.Logger
 import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
+import play.api.mvc.Session
+
+trait LoginAccount {
+  def url(): String
+  def session(): Session
+}
 
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
-                    login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1), created_at: Option[Long] = None, uid: Option[Long]=None) {
+                    login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1), created_at: Option[Long] = None, uid: Option[Long] = None) extends LoginAccount {
   def update = DB.withConnection {
     implicit c =>
       id map {
@@ -125,6 +131,13 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
           'time -> System.currentTimeMillis
         ).executeInsert()
   }
+
+  override def url(): String =  privilege_group match {
+    case Some("operator") => "/operator"
+    case _ => s"/admin#/kindergarten/$school_id"
+  }
+
+  override def session(): Session = Session(Map("username" -> login_name, "phone" -> phone, "name" -> name, "id" -> id.getOrElse("")))
 }
 
 case class Principal(employee_id: String, school_id: Long, phone: String, timestamp: Long)
@@ -358,7 +371,7 @@ object Employee {
   }
 
   def createPrincipal(employee: Employee) = {
-    create(employee) map(_.promote)
+    create(employee) map (_.promote)
   }
 
   def update(employee: Employee) = DB.withConnection {
@@ -442,7 +455,7 @@ object Employee {
 
   val simple = {
     get[Long]("uid") ~
-    get[String]("employee_id") ~
+      get[String]("employee_id") ~
       get[String]("name") ~
       get[String]("phone") ~
       get[Int]("gender") ~
