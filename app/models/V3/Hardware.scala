@@ -7,7 +7,7 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
-case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], updated_at: Option[Long]) {
+case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], ip: Option[String], port:Option[Int], machine_type: Option[Int], updated_at: Option[Long]) {
   def exists(id: Long) = DB.withTransaction {
     implicit c =>
       SQL("select count(1) from hardware where uid={id}")
@@ -26,12 +26,15 @@ case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], 
 
   def update(kg: Long): Option[Hardware] = DB.withConnection {
     implicit c =>
-      SQL("update hardware set name={name}, sn={sn}, updated_at={time} where school_id={school_id} and uid={id}")
+      SQL("update hardware set name={name}, sn={sn}, ip={ip}, port={port}, machine_type={machine_type}, updated_at={time} where school_id={school_id} and uid={id}")
         .on(
           'id -> id,
           'school_id -> kg,
           'name -> name,
           'sn -> sn,
+          'ip -> ip,
+          'port -> port,
+          'machine_type -> machine_type,
           'time -> System.currentTimeMillis
         ).executeUpdate()
       Hardware.show(kg, id.getOrElse(0))
@@ -39,12 +42,15 @@ case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], 
 
   def create(kg: Long): Option[Hardware] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into hardware (school_id, name, sn, updated_at) values (" +
-        "{school_id}, {name}, {sn}, {time})")
+      val insert: Option[Long] = SQL("insert into hardware (school_id, name, sn, ip, port, machine_type, updated_at) values (" +
+        "{school_id}, {name}, {sn}, {ip}, {port}, {machine_type}, {time})")
         .on(
           'school_id -> kg,
           'name -> name,
           'sn -> sn,
+          'ip -> ip,
+          'port -> port,
+          'machine_type -> machine_type,
           'time -> System.currentTimeMillis
         ).executeInsert()
       Hardware.show(kg, insert.getOrElse(0))
@@ -87,9 +93,12 @@ object Hardware {
     get[Long]("uid") ~
       get[Option[String]]("name") ~
       get[Option[String]]("sn") ~
+      get[Option[String]]("ip") ~
+      get[Option[Int]]("port") ~
+      get[Option[Int]]("machine_type") ~
       get[Option[Long]]("updated_at") map {
-      case id ~ name ~ sn ~ time =>
-        Hardware(Some(id), name, sn, time)
+      case id ~ name ~ sn ~ ip ~ port ~ typ ~ time =>
+        Hardware(Some(id), name, sn, ip, port, typ, time)
     }
   }
 }

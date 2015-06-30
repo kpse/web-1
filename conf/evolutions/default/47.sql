@@ -5,13 +5,16 @@ CREATE TABLE hardware (
   school_id   VARCHAR(20) NOT NULL,
   name   VARCHAR(20),
   sn   VARCHAR(50),
+  ip   VARCHAR(20),
+  port   INT,
+  machine_type   INT,
   updated_at BIGINT,
   status INT(4) DEFAULT 1,
   PRIMARY KEY (uid)
 );
 
-INSERT INTO hardware (school_id, name, sn, updated_at) VALUES
-('93740362', '门口刷卡机', '123',  1323390313123);
+INSERT INTO hardware (school_id, name, sn, ip, port, machine_type, updated_at) VALUES
+('93740362', '门口刷卡机', '123', '255.255.255.255', 80, 1, 1323390313123);
 
 # --- !Downs
 
