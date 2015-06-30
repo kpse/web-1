@@ -1,7 +1,6 @@
 angular.module('kulebaoAgent').controller 'AgentCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'passwordService', '$modal', '$alert',
-   '$location', 'AdminUser',
-    (scope, $rootScope, stateParams, Password, Modal, Alert, location, User) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', 'AdminUser',
+    (scope, $rootScope, stateParams, location, User) ->
       scope.adminUser = User
 
       scope.isSelected = (tab)->

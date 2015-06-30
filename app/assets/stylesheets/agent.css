@@ -15,6 +15,11 @@ util.print: Use console.log instead
   direction: ltr;
   cursor: pointer;
 }
+.footer {
+  margin: 0 auto;
+  width: 400px;
+  background-color: #e0dfe4;
+}
 .triangle-border {
   position: relative;
   padding: 15px;

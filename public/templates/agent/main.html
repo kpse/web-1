@@ -5,13 +5,13 @@
       <div class="admin-user-info-container container-fluid col-sm-10">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">{{kindergarten.name}}</a>
+          <a class="navbar-brand" href="#">{{adminUser.name}}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="admin-features collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <form class="navbar-form navbar-right row" role="search">
-            <h4 class="col-sm-6">您好， {{adminUser.name}}</h4>
+            <h4 class="col-sm-8">您好</h4>
             <button type="button" class="btn btn-warning dropdown-toggle admin-user" data-toggle="dropdown">
               个人中心<span class="caret"></span>
             </button>
@@ -43,68 +43,8 @@
         </a>
       </li>
       <li class="action" ui-sref-active="active">
-        <a ui-sref="main.feedback" ui-sref-opts="{reload: true}" class="btn">
-          家长反馈跟踪
-        </a>
-      </li>
-      <li class="action" ui-sref-active="active">
-        <a ui-sref="main.principal" class="btn">
-          校长及教师信息
-        </a>
-      </li>
-      <li class="action" ui-sref-active="active">
-        <a ui-sref="main.charge" class="btn">
-          收费管理
-        </a>
-      </li>
-      <li class="action" ui-sref-active="active">
-        <a ui-sref="main.phone_management" class="btn">
-          电话号码管理
-        </a>
-      </li>
-      <li class="action" ui-sref-active="active">
-        <a ui-sref="main.verification_code" class="btn">
-          查看验证码
-        </a>
-      </li>
-      <li class="action" ng-class="{active : isSelected('reporting')}">
-        <a ui-sref="main.report" class="btn">
-          用户数汇总
-        </a>
-      </li>
-      <li class="action" ui-sref-active="active">
-        <a ui-sref="main.score" class="btn">
-          教师分数统计
-        </a>
-      </li>
-      <li class="action" ui-sref-active="active">
-        <a ui-sref="main.logging" class="btn">
-          后台日志查看
-        </a>
-      </li>
-      <li class="action" ui-sref-active="active">
-        <a ui-sref="main.chat" class="btn">
-          管理员闲聊
-        </a>
-      </li>
-      <li class="action" ui-sref-active="active">
-        <a ui-sref="main.video" class="btn">
-          视频账号详细
-        </a>
-      </li>
-      <li class="action" ui-sref-active="active">
-        <a ui-sref="main.device" class="btn">
-          管理平板设备
-        </a>
-      </li>
-      <li class="action" ng-class="{active : isSelected('app')}">
-        <a ng-click="goAppRelease()" class="btn">
-          客户端版本管理
-        </a>
-      </li>
-      <li class="action" ui-sref-active="active">
-        <a ui-sref="main.ad" class="btn">
-          广告配置
+        <a ui-sref="main.commercial" class="btn">
+          广告管理
         </a>
       </li>
     </ul>
@@ -112,11 +52,6 @@
   </div>
 
   <div class="module-view-container">
-    <!--<ol class="breadcrumb">-->
-    <!--<li><a href="#">Home</a></li>-->
-    <!--<li><a href="#">Library</a></li>-->
-    <!--<li class="active">Data</li>-->
-    <!--</ol>-->
     <div class="module-view" ui-view></div>
   </div>
 </div>

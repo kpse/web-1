@@ -9,25 +9,30 @@ angular.module('kulebaoAdmin',
    'mgcrea.ngStrap.helpers.dimensions',
    'ngCookies'])
 angular.module('kulebaoAgent',
-  ['kulebaoAdmin'])
-.config ['$stateProvider', '$urlRouterProvider', '$compileProvider',
-  ($stateProvider, $urlRouterProvider, $compileProvider) ->
+  ['kulebaoAdmin', 'ngCsv'])
+.config ['$stateProvider', '$urlRouterProvider', '$compileProvider', ($stateProvider, $urlRouterProvider, $compileProvider) ->
     $stateProvider
     .state 'main',
-      url: '/main',
-      templateUrl: 'templates/agent/main.html',
+      url: '/main'
+      templateUrl: 'templates/agent/main.html'
       controller: 'AgentCtrl'
       resolve:
-        AdminUser: (agentService) -> agentService.get().$promise
+        AdminUser:
+          (agentService) -> agentService.get().$promise
     .state 'main.school',
-      url: '/school',
-      templateUrl: 'templates/agent/school.html',
+      url: '/school'
+      templateUrl: 'templates/agent/school.html'
       controller: 'AgentSchoolCtrl'
+    .state 'main.commercial',
+      url: '/commercial'
+      templateUrl: 'templates/agent/commercial.html'
+      controller: 'AgentCommercialCtrl'
 
     $urlRouterProvider.otherwise ($injector, $location) ->
       $location.path '/main/school'
 
-    $compileProvider.debugInfoEnabled(false);
+    $compileProvider.debugInfoEnabled(true)
+
 ]
 .config(($modalProvider) ->
   angular.extend $modalProvider.defaults,

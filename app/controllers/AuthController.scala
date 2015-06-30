@@ -37,6 +37,8 @@ object Auth extends Controller {
       request.session.get("id").fold(Ok(html.login(loginForm)))({
         case op if Employee.isOperator(op) =>
           Redirect("/operation")
+        case agent if KulebaoAgent.isAgent(agent.toLong) =>
+          Redirect("/agent")
         case admin =>
           Redirect("/admin")
       })

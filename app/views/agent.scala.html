@@ -7,7 +7,13 @@
 }
 @normalScripts = {
   <script src="@routes.VersionedAssets.at("scripts/agent.js")" type="text/javascript"></script>
+
+  <script src="@routes.VersionedAssets.at("scripts/services/SessionService.js")" type="text/javascript"></script>
   <script src="@routes.VersionedAssets.at("scripts/services/AgentService.js")" type="text/javascript"></script>
+
+  <script src="@routes.VersionedAssets.at("scripts/controllers/agent/AgentController.js")" type="text/javascript"></script>
+  <script src="@routes.VersionedAssets.at("scripts/controllers/agent/AgentSchoolController.js")" type="text/javascript"></script>
+  <script src="@routes.VersionedAssets.at("scripts/controllers/agent/AgentCommercialController.js")" type="text/javascript"></script>
   @commonScripts
 }
 @commonScripts = {
