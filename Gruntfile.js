@@ -33,6 +33,10 @@ module.exports = function (grunt) {
         src: ['dist/op.js'],
         dest: 'dist/ngmin/op.js'
       },
+      agent_controllers: {
+        src: ['dist/agent.js'],
+        dest: 'dist/ngmin/agent.js'
+      },
       directives: {
         src: ['dist/all_directives.js'],
         dest: 'dist/ngmin/all_directives.js'
@@ -55,6 +59,10 @@ module.exports = function (grunt) {
         src: ['app/assets/scripts/op.js', 'app/assets/scripts/controllers/op/*.js'],
         dest: 'dist/op.js'
       },
+      agent: {
+        src: ['app/assets/scripts/agent.js', 'app/assets/scripts/controllers/agent/*.js'],
+        dest: 'dist/agent.js'
+      },
       directives: {
         src: ['app/assets/scripts/directives/*.js'],
         dest: 'dist/all_directives.js'
@@ -76,6 +84,7 @@ module.exports = function (grunt) {
       my_target: {
         files: {
           'app/assets/scripts/min/op.min.js': ['dist/ngmin/op.js'],
+          'app/assets/scripts/min/agent.min.js': ['dist/ngmin/agent.js'],
           'app/assets/scripts/min/admin.min.js': ['dist/ngmin/admin.js'],
           'app/assets/scripts/min/directives.min.js': ['dist/ngmin/all_directives.js'],
           'app/assets/scripts/min/filters.min.js': ['dist/ngmin/all_filters.js'],
