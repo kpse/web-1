@@ -14,7 +14,7 @@ import org.joda.time.format.DateTimeFormat
 
 import scala.language.postfixOps
 
-case class DailyLog(timestamp: Long, notice_type: Int, child_id: String, record_url: String, parent_name: String)
+case class DailyLog(timestamp: Long, notice_type: Int, child_id: String, record_url: String, parent_name: String, card: Option[String] = None)
 
 case class DailyLogStats(class_id: Int, count: Long, school_id: Long, date: String)
 
@@ -63,9 +63,12 @@ object DailyLog {
       get[Long]("check_at") ~
       get[Option[String]]("record_url") ~
       get[Int]("notice_type") ~
+      get[String]("card_no") ~
       get[String]("parent_name") map {
-      case child_id ~ timestamp ~ url ~ notice_type ~ name =>
+      case child_id ~ timestamp ~ url ~ notice_type ~ card ~ name if card.isEmpty =>
         DailyLog(timestamp, notice_type, child_id, url.getOrElse(""), name)
+      case child_id ~ timestamp ~ url ~ notice_type ~ card ~ name =>
+        DailyLog(timestamp, notice_type, child_id, url.getOrElse(""), name, Some(card))
     }
   }
 
