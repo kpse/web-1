@@ -29,7 +29,7 @@ object ShareLinksController extends Controller with Secured {
           val b = Bucket.parse(u)
           Logger.info(s"Bucket.parse : $b")
           b foreach QiniuHelper.triggerPfop
-
+        case _ =>
       }
   }
 
