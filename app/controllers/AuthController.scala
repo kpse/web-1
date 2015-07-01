@@ -183,6 +183,12 @@ trait Secured {
       Action(request => f(user)(request))
   }
 
+  def IsAgentLoggedIn(b: BodyParser[play.api.libs.json.JsValue] = parse.json)
+                (f: => String => Request[play.api.libs.json.JsValue] => Result) = Security.Authenticated(agent, forbidAccess) {
+    user =>
+      Action(b)(request => f(user)(request))
+  }
+
   def IsLoggedIn(f: => String => Request[AnyContent] => Result) = Security.Authenticated(checkSchool, forbidAccess) {
     user =>
       Action(request => f(user)(request))

@@ -3,6 +3,7 @@ package models.V4
 import models.helper.MD5Helper._
 import anorm.SqlParser._
 import anorm._
+import models.helper.RangerHelper
 import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
@@ -15,6 +16,37 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], phone: Option[St
   override def url(): String = "/agent"
 
   override def session(): Session = Session(Map("username" -> login_name.getOrElse(""), "phone" -> phone.getOrElse(""), "name" -> name.getOrElse(""), "id" -> id.getOrElse(0).toString))
+
+  def update: Option[KulebaoAgent] = DB.withConnection {
+    implicit c =>
+      SQL("update agentinfo set name={name}, phone={phone}, logo_url={logo_url}, " +
+        "updated_at={time} where uid={id}")
+        .on(
+          'id -> id,
+          'name -> name,
+          'phone -> phone,
+          'logo_url -> logo,
+          'login_password -> md5(phone.drop(3).toString),
+          'login_name -> login_name,
+          'time -> System.currentTimeMillis
+        ).executeUpdate()
+      id flatMap KulebaoAgent.show
+  }
+
+  def create: Option[KulebaoAgent] = DB.withConnection {
+    implicit c =>
+      val insert: Option[Long] = SQL("insert into agentinfo (name, phone, logo_url, login_password, login_name, update_at, created_at) values (" +
+        "{name}, {phone}, {logo_url}, {login_password}, {login_name}, {time}, {time})")
+        .on(
+          'name -> name,
+          'phone -> phone,
+          'logo_url -> logo,
+          'login_password -> md5(phone.drop(3).toString),
+          'login_name -> login_name,
+          'time -> System.currentTimeMillis
+        ).executeInsert()
+      insert flatMap KulebaoAgent.show
+  }
 }
 
 object KulebaoAgent {
@@ -27,6 +59,24 @@ object KulebaoAgent {
         .on(
           'id -> id
         ).as(simple singleOpt)
+  }
+
+  def index(from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
+    implicit c =>
+      SQL(s"select * from agentinfo where status=1 ${RangerHelper.generateSpan(from, to, most)}")
+        .on(
+          'from -> from,
+          'to -> to,
+          'most -> most
+        ).as(simple *)
+  }
+
+  def deleteById(id: Long) = DB.withConnection {
+    implicit c =>
+      SQL(s"update agentinfo set status=0 where uid={id} and status=1")
+        .on(
+          'id -> id
+        ).executeUpdate()
   }
 
   def authenticate(loginName: String, password: String) = DB.withConnection {

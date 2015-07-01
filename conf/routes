@@ -536,7 +536,11 @@ GET           /api/v3/weixin_signature                                          
 
 #agent api
 
-GET /api/v4/agent/:id                                                                 controllers.V4.AgentController.show(id: Long)
+GET           /api/v4/agent                                                           controllers.V4.AgentController.index(from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v4/agent/:id                                                       controllers.V4.AgentController.show(id: Long)
+POST          /api/v4/agent                                                           controllers.V4.AgentController.create
+POST          /api/v4/agent/:id                                                       controllers.V4.AgentController.update(id: Long)
+DELETE        /api/v4/agent/:id                                                       controllers.V4.AgentController.delete(id: Long)
 
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                controllers.ChildController.index(kg: Long, parentId: String)
