@@ -133,7 +133,7 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
   }
 
   override def url(): String =  privilege_group match {
-    case Some("operator") => "/operator"
+    case Some("operator") => "/operation"
     case _ => s"/admin#/kindergarten/$school_id"
   }
 
