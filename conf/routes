@@ -542,6 +542,12 @@ POST          /api/v4/agent                                                     
 POST          /api/v4/agent/:id                                                       controllers.V4.AgentController.update(id: Long)
 DELETE        /api/v4/agent/:id                                                       controllers.V4.AgentController.delete(id: Long)
 
+GET           /api/v4/agent/:agentId/kindergarten                                     controllers.V4.AgentSchoolController.index(agentId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v4/agent/:agentId/kindergarten/:id                                 controllers.V4.AgentSchoolController.show(agentId: Long, id: Long)
+POST          /api/v4/agent/:agentId/kindergarten                                     controllers.V4.AgentSchoolController.create(agentId: Long)
+POST          /api/v4/agent/:agentId/kindergarten/:id                                 controllers.V4.AgentSchoolController.update(agentId: Long, id: Long)
+DELETE        /api/v4/agent/:agentId/kindergarten/:id                                 controllers.V4.AgentSchoolController.delete(agentId: Long, id: Long)
+
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                controllers.ChildController.index(kg: Long, parentId: String)
 GET           /kindergarten/:kg/parent/:parentId/child/:childId                       controllers.ChildController.show(kg: Long, parentId: String, childId: String)

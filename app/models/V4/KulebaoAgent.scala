@@ -26,7 +26,7 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], phone: Option[St
           'name -> name,
           'phone -> phone,
           'logo_url -> logo,
-          'login_password -> md5(phone.drop(3).toString),
+          'login_password -> md5(phone.drop(3).toString()),
           'login_name -> login_name,
           'time -> System.currentTimeMillis
         ).executeUpdate()
@@ -35,13 +35,13 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], phone: Option[St
 
   def create: Option[KulebaoAgent] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into agentinfo (name, phone, logo_url, login_password, login_name, update_at, created_at) values (" +
+      val insert: Option[Long] = SQL("insert into agentinfo (name, phone, logo_url, login_password, login_name, updated_at, created_at) values (" +
         "{name}, {phone}, {logo_url}, {login_password}, {login_name}, {time}, {time})")
         .on(
           'name -> name,
           'phone -> phone,
           'logo_url -> logo,
-          'login_password -> md5(phone.drop(3).toString),
+          'login_password -> md5(phone.drop(3).toString()),
           'login_name -> login_name,
           'time -> System.currentTimeMillis
         ).executeInsert()
@@ -102,7 +102,7 @@ object KulebaoAgent {
       get[Option[String]]("phone") ~
       get[Option[String]]("logo_url") ~
       get[Option[String]]("login_name") ~
-      get[Option[Long]]("update_at") ~
+      get[Option[Long]]("updated_at") ~
       get[Option[Long]]("created_at") map {
       case id ~ name ~ phone ~ url ~ loginName ~ updated ~ created =>
         KulebaoAgent(Some(id), name, phone, url, loginName, updated, created)
