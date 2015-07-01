@@ -548,11 +548,17 @@ POST          /api/v4/agent/:agentId/kindergarten                               
 POST          /api/v4/agent/:agentId/kindergarten/:id                                 controllers.V4.AgentSchoolController.update(agentId: Long, id: Long)
 DELETE        /api/v4/agent/:agentId/kindergarten/:id                                 controllers.V4.AgentSchoolController.delete(agentId: Long, id: Long)
 
-GET           /api/v4/agent/:agentId/commercial                                       controllers.V4.AgentAdInSchoolController.index(agentId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
-GET           /api/v4/agent/:agentId/commercial/:id                                   controllers.V4.AgentAdInSchoolController.show(agentId: Long, id: Long)
-POST          /api/v4/agent/:agentId/commercial                                       controllers.V4.AgentAdInSchoolController.create(agentId: Long)
-POST          /api/v4/agent/:agentId/commercial/:id                                   controllers.V4.AgentAdInSchoolController.update(agentId: Long, id: Long)
-DELETE        /api/v4/agent/:agentId/commercial/:id                                   controllers.V4.AgentAdInSchoolController.delete(agentId: Long, id: Long)
+GET           /api/v4/agent/:agentId/kindergarten/:kg/commercial                      controllers.V4.AgentAdInSchoolController.index(agentId: Long, kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v4/agent/:agentId/kindergarten/:kg/commercial/:id                  controllers.V4.AgentAdInSchoolController.show(agentId: Long, kg: Long, id: Long)
+POST          /api/v4/agent/:agentId/kindergarten/:kg/commercial                      controllers.V4.AgentAdInSchoolController.create(agentId: Long, kg: Long)
+POST          /api/v4/agent/:agentId/kindergarten/:kg/commercial/:id                  controllers.V4.AgentAdInSchoolController.update(agentId: Long, kg: Long, id: Long)
+DELETE        /api/v4/agent/:agentId/kindergarten/:kg/commercial/:id                  controllers.V4.AgentAdInSchoolController.delete(agentId: Long, kg: Long, id: Long)
+
+GET           /api/v4/agent/:agentId/commercial                                       controllers.V4.AgentAdController.index(agentId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v4/agent/:agentId/commercial/:id                                   controllers.V4.AgentAdController.show(agentId: Long, id: Long)
+POST          /api/v4/agent/:agentId/commercial                                       controllers.V4.AgentAdController.create(agentId: Long)
+POST          /api/v4/agent/:agentId/commercial/:id                                   controllers.V4.AgentAdController.update(agentId: Long, id: Long)
+DELETE        /api/v4/agent/:agentId/commercial/:id                                   controllers.V4.AgentAdController.delete(agentId: Long, id: Long)
 
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                controllers.ChildController.index(kg: Long, parentId: String)

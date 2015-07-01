@@ -8,7 +8,7 @@ import play.api.libs.json.Json
 import play.api.Play.current
 
 case class AgentAd(id: Option[Long], agent_id: Long, title: String, address: Option[String],
-                   contact: String, time_span: Option[String], detail: Option[String], logo: Option[String], updated_at: Option[Long], publish_status: Int) {
+                   contact: String, time_span: Option[String], detail: Option[String], logo: Option[String], updated_at: Option[Long]) {
   def update(base: Long): Option[AgentAd] = DB.withConnection {
     implicit c =>
       SQL("update agentadvertisement set agent_id={base}, title={title}, address={address}, contact={contact}, time_span={time_span}," +
@@ -22,7 +22,6 @@ case class AgentAd(id: Option[Long], agent_id: Long, title: String, address: Opt
           'time_span -> time_span,
           'detail -> detail,
           'logo -> logo,
-          'publish_status -> publish_status,
           'time -> System.currentTimeMillis
         ).executeUpdate()
       id flatMap (AgentAd.show(_, base))
@@ -30,8 +29,8 @@ case class AgentAd(id: Option[Long], agent_id: Long, title: String, address: Opt
 
   def create(base: Long): Option[AgentAd] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into agentadvertisement (agent_id, title, address, contact, time_span, detail, logo, publish_status, updated_at, created_at) values (" +
-        "{base}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {publish_status}, {time}, {time})")
+      val insert: Option[Long] = SQL("insert into agentadvertisement (agent_id, title, address, contact, time_span, detail, logo, updated_at, created_at) values (" +
+        "{base}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time})")
         .on(
           'base -> base,
           'title -> title,
@@ -40,7 +39,6 @@ case class AgentAd(id: Option[Long], agent_id: Long, title: String, address: Opt
           'time_span -> time_span,
           'detail -> detail,
           'logo -> logo,
-          'publish_status -> publish_status,
           'time -> System.currentTimeMillis
         ).executeInsert()
       insert flatMap (AgentAd.show(_, base))
@@ -88,10 +86,9 @@ object AgentAd {
       get[Option[String]]("time_span") ~
       get[Option[String]]("detail") ~
       get[Option[String]]("logo") ~
-      get[Int]("publish_status") ~
       get[Option[Long]]("updated_at") map {
-      case id ~ agent ~ title ~ address ~ contact ~ timeSpan ~ detail ~ logo ~ publish ~ time =>
-        AgentAd(Some(id), agent, title, address, contact, timeSpan, detail, logo, time, publish)
+      case id ~ agent ~ title ~ address ~ contact ~ timeSpan ~ detail ~ logo ~ time =>
+        AgentAd(Some(id), agent, title, address, contact, timeSpan, detail, logo, time)
     }
   }
 }
