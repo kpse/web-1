@@ -120,6 +120,11 @@ angular.module('kulebaoOp',
       templateUrl: 'templates/op/video_class_detail.html',
       controller: 'OpVideoMemberInClassCtrl'
 
+    .state 'main.agent',
+      url: '/agent',
+      templateUrl: 'templates/op/agent_dashboard.html',
+      controller: 'OpAgentManagementCtrl'
+
 
     .state 'main.ad',
       url: '/commercials',
