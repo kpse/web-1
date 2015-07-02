@@ -10,8 +10,8 @@ import play.api.Play.current
 import models.LoginAccount
 import play.api.mvc.Session
 
-case class KulebaoAgent(id: Option[Long], name: Option[String], phone: Option[String], logo: Option[String],
-                        login_name: Option[String], updated_at: Option[Long], created_at: Option[Long], privilege_group: Option[String] = Some("agent")) extends LoginAccount {
+case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[String], phone: Option[String], logo: Option[String],
+                        login_name: Option[String], updated_at: Option[Long], created_at: Option[Long], expire: Option[Long], privilege_group: Option[String] = Some("agent")) extends LoginAccount {
 
   override def url(): String = "/agent"
 
@@ -19,15 +19,17 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], phone: Option[St
 
   def update: Option[KulebaoAgent] = DB.withConnection {
     implicit c =>
-      SQL("update agentinfo set name={name}, phone={phone}, logo_url={logo_url}, " +
+      SQL("update agentinfo set name={name}, phone={phone}, area={area}, logo_url={logo_url}, expire_at={expire_at}," +
         "updated_at={time} where uid={id}")
         .on(
           'id -> id,
           'name -> name,
+          'area -> area,
           'phone -> phone,
           'logo_url -> logo,
           'login_password -> md5(phone.drop(3).toString()),
           'login_name -> login_name,
+          'expire_at -> expire,
           'time -> System.currentTimeMillis
         ).executeUpdate()
       id flatMap KulebaoAgent.show
@@ -35,14 +37,16 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], phone: Option[St
 
   def create: Option[KulebaoAgent] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into agentinfo (name, phone, logo_url, login_password, login_name, updated_at, created_at) values (" +
-        "{name}, {phone}, {logo_url}, {login_password}, {login_name}, {time}, {time})")
+      val insert: Option[Long] = SQL("insert into agentinfo (name, area, phone, logo_url, login_password, login_name, updated_at, created_at, expire_at) values (" +
+        "{name}, {area}, {phone}, {logo_url}, {login_password}, {login_name}, {time}, {time}, {expire_at})")
         .on(
           'name -> name,
+          'area -> area,
           'phone -> phone,
           'logo_url -> logo,
           'login_password -> md5(phone.drop(3).toString()),
           'login_name -> login_name,
+          'expire_at -> expire,
           'time -> System.currentTimeMillis
         ).executeInsert()
       insert flatMap KulebaoAgent.show
@@ -99,13 +103,15 @@ object KulebaoAgent {
   val simple = {
     get[Long]("uid") ~
       get[Option[String]]("name") ~
+      get[Option[String]]("area") ~
       get[Option[String]]("phone") ~
       get[Option[String]]("logo_url") ~
       get[Option[String]]("login_name") ~
+      get[Option[Long]]("expire_at") ~
       get[Option[Long]]("updated_at") ~
       get[Option[Long]]("created_at") map {
-      case id ~ name ~ phone ~ url ~ loginName ~ updated ~ created =>
-        KulebaoAgent(Some(id), name, phone, url, loginName, updated, created)
+      case id ~ name ~ area ~ phone ~ url ~ loginName ~ expire ~ updated ~ created =>
+        KulebaoAgent(Some(id), name, area, phone, url, loginName, updated, created, expire)
     }
   }
 }
