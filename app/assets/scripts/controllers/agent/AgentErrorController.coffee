@@ -1,5 +1,5 @@
 angular.module('kulebaoAgent').controller 'AgentErrorCtrl',
-  ['$scope', 'loggedUser',
+  ['$scope', 'employeeService',
     (scope, loggedUser) ->
-      scope.adminUser = loggedUser
+      scope.adminUser = loggedUser.get()
   ]

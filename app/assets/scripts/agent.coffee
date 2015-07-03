@@ -18,11 +18,20 @@ angular.module('kulebaoAgent',
       controller: 'AgentCtrl'
       resolve:
         currentAgent:
-          (agentManagementService, $stateParams) ->
-            agentManagementService.get(id: $stateParams.agent_id).$promise
+          (agentManagementService, $stateParams, agentService) ->
+            if $stateParams.agent_id == 'default'
+              console.log('currentAgent agentService 1')
+              agentService.get().$promise
+            else
+              console.log('currentAgent agentService 2' + $stateParams.agent_id)
+              agentManagementService.get(id: $stateParams.agent_id).$promise
         loggedUser:
           (employeeService, session, agentService) ->
-            if (!isNaN(parseInt session.id)) then employeeService.get().$promise else agentService.get().$promise
+            if session.id.indexOf('_') > 0
+              employeeService.get().$promise
+            else
+              console.log('loggedUser agentService 1' + session)
+              agentService.get().$promise
 
     .state 'main.school',
       url: '/school'
@@ -32,18 +41,19 @@ angular.module('kulebaoAgent',
       url: '/commercial'
       templateUrl: 'templates/agent/commercial.html'
       controller: 'AgentCommercialCtrl'
+    .state 'main.statistic',
+      url: '/statistic'
+      templateUrl: 'templates/agent/statistic.html'
+      controller: 'AgentStatisticCtrl'
 
     .state 'error',
       url: '/error'
       templateUrl: 'templates/agent/404.html'
       controller: 'AgentErrorCtrl'
-      resolve:
-        loggedUser:
-          (employeeService) ->
-            employeeService.get().$promise
+
 
     $urlRouterProvider.otherwise ($injector, $location) ->
-      $location.path '/error'
+      $location.path "/main/default"
 
     $compileProvider.debugInfoEnabled(true)
 

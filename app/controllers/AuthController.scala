@@ -37,8 +37,8 @@ object Auth extends Controller {
       request.session.get("id").fold(Ok(html.login(loginForm)))({
         case op if Employee.isOperator(op) =>
           Redirect("/operation")
-        case agent if KulebaoAgent.isAgent(agent.toLong) =>
-          Redirect("/agent")
+        case agent if KulebaoAgent.isAgent(agent.toLong, s"/main/${agent.toLong}") =>
+          Redirect(s"/agent#/main/${agent.toLong}")
         case admin =>
           Redirect("/admin")
       })
@@ -96,7 +96,7 @@ trait Secured {
     id match {
       case Some(agent) if operator(request).isDefined =>
         request.session.get("username")
-      case Some(agent) if KulebaoAgent.isAgent(agent.toLong) =>
+      case Some(agent) if KulebaoAgent.isAgent(agent.toLong, request.path) =>
         request.session.get("username")
       case _ => None
     }

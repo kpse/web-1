@@ -4,6 +4,7 @@ import models.helper.MD5Helper._
 import anorm.SqlParser._
 import anorm._
 import models.helper.RangerHelper
+import play.Logger
 import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
@@ -92,12 +93,14 @@ object KulebaoAgent {
         ).as(simple singleOpt)
   }
 
-  def isAgent(id: Long) = DB.withConnection {
+  def isAgent(id: Long, path: String) = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from agentinfo where uid={id} and status=1")
+      val isAgent: Boolean = SQL("select count(1) from agentinfo where uid={id} and status=1")
         .on(
           'id -> id
         ).as(get[Long]("count(1)") single) > 0
+      Logger.info(s"request path is $path")
+      isAgent && (path.matches(s"^(?:/api/v\\d+)?/agent/$id(/.+)?") || path.matches(s"^/agent#/main/$id(/.+)?")) || path.matches("^/agent")
   }
 
   val simple = {
