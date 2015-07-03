@@ -30,6 +30,9 @@
       <button class="btn btn-xs btn-danger" ng-confirm-msg="这个操作将彻底删除{{::agent.name}}的所有数据，确定继续?"
               ng-confirm-click="deleteAgent(agent);$event.stopPropagation()">删除
       </button>
+      <button class="btn btn-xs btn-success"
+              ng-click="addSchool(agent);$event.stopPropagation()">添加学校
+      </button>
     </td>
   </tr>
   </tbody>
