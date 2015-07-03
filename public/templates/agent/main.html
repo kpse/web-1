@@ -5,19 +5,20 @@
       <div class="admin-user-info-container container-fluid col-sm-10">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">{{adminUser.name}}</a>
+          <a class="navbar-brand" href="#">{{loggedUser.name}}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="admin-features collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <form class="navbar-form navbar-right row" role="search">
-            <h4 class="col-sm-8">您好</h4>
+            <h4 class="col-sm-8">您好, {{loggedUser.name}}</h4>
             <button type="button" class="btn btn-warning dropdown-toggle admin-user" data-toggle="dropdown">
               个人中心<span class="caret"></span>
             </button>
             <ul class="dropdown-menu user-menu" role="menu">
-              <li><a ng-click="edit(adminUser)">修改个人信息</a></li>
-              <li><a ng-click="changePassword(adminUser)">修改密码</a></li>
+              <li><a ng-click="edit(loggedUser)">修改个人信息</a></li>
+              <li><a ng-click="changePassword(loggedUser)">修改密码</a></li>
+              <li ng-show="loggedUser.privilege_group == 'operator'"><a ng-href="/operation">去后台管理页面</a>
               <li class="divider"></li>
               <li><a class="logout-link" href="/logout">退出登陆</a></li>
             </ul>
@@ -28,7 +29,7 @@
       </div>
       <div class="admin-user-portrait-container editable col-sm-2" ng-click="edit(adminUser)">
         <img class="portrait img-responsive"
-             ng-src="{{adminUser.portrait || '/assets/images/portrait_placeholder.png' }}"
+             ng-src="{{loggedUser.portrait || '/assets/images/portrait_placeholder.png' }}"
              alt="照片"/>
       </div>
       <!-- /.container-fluid -->
@@ -45,6 +46,11 @@
       <li class="action" ui-sref-active="active">
         <a ui-sref="main.commercial" class="btn">
           广告管理
+        </a>
+      </li>
+      <li class="action" ui-sref-active="active">
+        <a ui-sref="main.statistics" class="btn">
+          数据统计
         </a>
       </li>
     </ul>
