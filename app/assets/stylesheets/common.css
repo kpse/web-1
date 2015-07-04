@@ -604,3 +604,7 @@ util.print: Use console.log instead
 .content {
   font-size: 16px;
 }
+.school-list-panel {
+  overflow-y: auto;
+  max-height: 654px;
+}
