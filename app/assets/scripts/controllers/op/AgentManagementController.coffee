@@ -1,7 +1,9 @@
 angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
   ['$scope', '$rootScope', '$filter', 'agentManagementService', '$modal', 'principalService', 'allEmployeesService',
-   '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location', 'agentSchoolService',
-    (scope, rootScope, $filter, Agent, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location, School) ->
+   '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location', 'agentSchoolService', 'schoolService',
+    'agentSchoolService',
+    (scope, rootScope, $filter, Agent, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location,
+     School, AllSchool, AgentSchool) ->
       rootScope.tabName = 'agent'
 
       scope.refresh = ->
@@ -9,6 +11,10 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
           _.forEach scope.agents, (a) ->
             a.schools = School.query a
             a.expireDisplayValue = $filter('date')(a.expire, 'yyyy-MM-dd')
+            a.schoolIds = AgentSchool.query a, ->
+              a.schools = _.map a.schoolIds, (kg) -> AllSchool.get(school_id: kg.school_id)
+        scope.kindergartens = AllSchool.query()
+
 
       scope.refresh()
 
@@ -31,7 +37,11 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
           handleError res
 
       scope.addSchool = (agent) ->
-        scope.agent = angular.copy agent.detail
+        scope.currentAgent = angular.copy agent
+        partition = _.partition scope.kindergartens, (kg) ->
+          _.find scope.currentAgent.schools, (k) ->
+            k.school_id == kg.school_id
+        scope.unSelectedSchools = partition[1]
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/op/connect_school.html'
@@ -82,6 +92,33 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
         scope.advancedEdting = true
       scope.simpleDialog = ->
         scope.advancedEdting = false
+
+      scope.addSchools = (agent) ->
+
+
+      scope.checkAll = (check) ->
+        _.forEach scope.kindergartens, (r) -> r.checked = check
+
+      scope.checkAgentAll = (check) ->
+        _.forEach scope.kindergartens, (r) -> r.checked = check
+
+      scope.multipleDelete = ->
+        checked = _.filter scope.kindergartens, (r) -> r.checked? && r.checked == true
+        queue = _.map checked, (c) -> Child.delete(school_id: stateParams.kindergarten, child_id: c.child_id).$promise
+        all = $q.all queue
+        all.then (q) ->
+          scope.refreshChildren()
+
+      scope.hasSelection = (kindergartens) ->
+        _.some kindergartens, (r) -> r.checked? && r.checked == true
+
+      scope.singleSelection = (kg) ->
+        allChecked = _.every scope.kindergartens, (r) -> r.checked? && r.checked == true
+        scope.selection.allCheck = allChecked
+
+      scope.selection =
+        allCheck: false
+        allAgentCheck: false
 
   ]
 
