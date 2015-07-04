@@ -1,105 +1,112 @@
 <div class="panel panel-default">
   <div class="panel-heading" ng-hide="currentAgent.id">新建代理商</div>
   <div class="panel-heading" ng-show="currentAgent.id">代理商编辑</div>
-<div class="panel-body">
-  <form class="form-horizontal row agent-form" role="form" name="newAgentForm">
+  <div class="panel-body">
+    <form class="form-horizontal row agent-form" role="form" name="newAgentForm">
 
-    <div class="col-sm-6">
-      <div class="form-group">
-        <label for="agent-phone" class="col-sm-4 control-label">电话号码</label>
+      <div class="col-sm-10">
+        <div class="form-group">
+          <label for="agent-phone" class="col-sm-4 control-label">电话号码</label>
 
-        <div class="col-sm-8">
-          <input id="agent-phone" type="text" ng-model="currentAgent.phone" name="phone"
-                 ui-mask="{{'999-9999-9999'}}"
-                 class="editing-field form-control" ng-bk-focus required kl-unique="employee" unique-identity="id" unique-type="employee" />
-          <span class="error-field" ng-show="newAgentForm.phone.$dirty && newAgentForm.phone.$error.unique">与现有手机号重复！</span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="agent-name" class="col-sm-4 control-label">名称</label>
-
-        <div class="col-sm-8">
-          <input id="agent-name" ng-model="currentAgent.name" placeholder="请输入代理商名称" name="name"
-                 class="editing-field form-control" required ng-change="checkName(currentAgent, newAgentForm.name)"/>
-          <span class="error-field" ng-show="newAgentForm.name.$dirty && newAgentForm.name.$error.unique">已存在重名老师，建议增加数字或其他字符以便混淆。</span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="agent-name" class="col-sm-4 control-label">代理区域</label>
-
-        <div class="col-sm-8">
-          <input id="agent-area" ng-model="currentAgent.area" placeholder="请输入区域" name="area"
-                 class="editing-field form-control" required />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="login-name" class="col-sm-4 control-label">登陆名字</label>
-
-        <div class="col-sm-8">
-          <input id="login-name" ng-model="currentAgent.login_name" name="login_name" placeholder="每个老师的登录名必须唯一"
-                 class="editing-field form-control" ng-show="currentAgent.id == undefined || adminUser.privilege_group == 'operator'" ng-pattern="/^\w{3,16}$/" required/>
-          <p class="form-control-static" ng-hide="currentAgent.id == undefined || adminUser.privilege_group == 'operator'">{{currentAgent.login_name}}</p>
-          <span class="error-field" ng-show="newAgentForm.login_name.$dirty && newAgentForm.login_name.$error.pattern">登录名只能由3到16位数字和字母组成，不能包含特殊字符或者中文。</span>
-        </div>
-      </div>
-
-      <div class="form-group">
-
-        <label for="agent-expire" class="col-sm-4 control-label">过期时间</label>
-
-        <div class="col-sm-8">
-          <div class="control-group input-append">
-            <input type="text" class="form-control datepicker-input" ng-model="currentAgent.expire" placeholder="{{currentAgent.expireDisplayValue}}"
-                   data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="today" data-autoclose="1"
-                   name="expire" bs-datepicker required>
-            <button type="button" class="btn datepicker-button" ng-disabled="true">
-              <i class="glyphicon glyphicon-calendar"></i></button>
+          <div class="col-sm-8">
+            <input id="agent-phone" type="text" ng-model="currentAgent.phone" name="phone"
+                   ui-mask="{{'999-9999-9999'}}"
+                   class="editing-field form-control" ng-bk-focus required kl-unique="employee" unique-identity="id"
+                   unique-type="employee"/>
+            <span class="error-field"
+                  ng-show="newAgentForm.phone.$dirty && newAgentForm.phone.$error.unique">与现有手机号重复！</span>
           </div>
         </div>
+
+        <div class="form-group">
+          <label for="agent-name" class="col-sm-4 control-label">名称</label>
+
+          <div class="col-sm-8">
+            <input id="agent-name" ng-model="currentAgent.name" placeholder="请输入代理商名称" name="name"
+                   class="editing-field form-control" required ng-change="checkName(currentAgent, newAgentForm.name)"/>
+            <span class="error-field" ng-show="newAgentForm.name.$dirty && newAgentForm.name.$error.unique">已存在重名老师，建议增加数字或其他字符以便混淆。</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="agent-name" class="col-sm-4 control-label">所属区域</label>
+
+          <div class="col-sm-8">
+            <input id="agent-area" ng-model="currentAgent.area" placeholder="xx省xx市详细地址" name="area"
+                   class="editing-field form-control" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="login-name" class="col-sm-4 control-label">登陆名字</label>
+
+          <div class="col-sm-8">
+            <input id="login-name" ng-model="currentAgent.login_name" name="loginName" placeholder="每个代理商的登录名必须唯一"
+                   class="editing-field form-control"
+                   ng-show="currentAgent.id == undefined || adminUser.privilege_group == 'operator'"
+                   ng-pattern="/^\w{3,16}$/" required/>
+
+            <p class="form-control-static"
+               ng-hide="currentAgent.id == undefined || adminUser.privilege_group == 'operator'">
+              {{currentAgent.login_name}}</p>
+            <span class="error-field"
+                  ng-show="newAgentForm.loginName.$dirty && newAgentForm.loginName.$error.pattern">登录名只能由3到16位数字和字母组成，不能包含特殊字符或者中文。</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+
+          <label for="agent-expire" class="col-sm-4 control-label">过期时间</label>
+
+          <div class="col-sm-8">
+            <div class="control-group input-append">
+              <input id="agent-expire" type="text" class="form-control datepicker-input" ng-model="currentAgent.expireDisplayValue"
+                     data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="today" data-autoclose="1"
+                     name="expire" bs-datepicker required>
+              <button type="button" class="btn datepicker-button" ng-disabled="true">
+                <i class="glyphicon glyphicon-calendar"></i></button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="contact-info" class="col-sm-4 control-label">联系人信息</label>
+
+          <div class="col-sm-8">
+            <input id="contact-info" ng-model="currentAgent.contact_info" name="contactInfo" placeholder="联系人信息"
+                   class="editing-field form-control"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="memo" class="col-sm-4 control-label">备注</label>
+
+          <div class="col-sm-8">
+            <input id="memo" ng-model="currentAgent.memo" name="memo" placeholder="备注"
+                   class="editing-field form-control"/>
+          </div>
+        </div>
+
+        <div class="form-group" ng-show="currentAgent.created_at">
+          <label for="created-at" class="col-sm-4 control-label">创建时间</label>
+
+          <div class="col-sm-8">
+            <p id="created-at" class="form-control-static">{{currentAgent.created_at | date:'yyyy年MM月dd日 HH:mm'}}</p>
+          </div>
+        </div>
+
       </div>
 
 
-      <div class="form-group" ng-show="currentAgent.created_at">
-        <label for="created-at" class="col-sm-4 control-label">创建时间</label>
-
-        <div class="col-sm-8">
-          <p id="created-at" class="form-control-static">{{currentAgent.created_at | date:'yyyy年MM月dd日 HH:mm'}}</p>
+      <div class="clearfix"></div>
+      <div class="col-sm-offset-4 col-sm-8">
+        <div class="form-group">
+          <a class="btn btn-warning pull-right adding-button"
+             ng-disabled="newAgentForm.$invalid || uploading || newAgentForm.$pristine"
+             ng-click="saveAgent(currentAgent)">保存</a>
+          <a class="btn btn-default pull-right adding-button"
+             ng-click="$hide()">取消</a>
         </div>
       </div>
-
-    </div>
-
-    <div class="col-sm-6">
-      <div class="form-group">
-        <div class="portrait-container">
-          <img class="portrait" ng-src="{{currentAgent.portrait || '/assets/images/portrait_placeholder.png'}}"
-               alt="照片"/>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="agent-pic" class="col-sm-4 control-label">上传头像</label>
-
-        <div class="col-sm-8">
-          <kl-file-upload ng-model="employee" user="adminUser.id" form="newAgentForm" field-name="logo"
-                          label="buttonLabel"></kl-file-upload>
-        </div>
-      </div>
-    </div>
-    <div class="clearfix"></div>
-    <div class="col-sm-offset-4 col-sm-8">
-      <div class="form-group">
-        <a class="btn btn-warning pull-right adding-button"
-           ng-disabled="newAgentForm.$invalid || uploading || newAgentForm.$pristine"
-           ng-click="saveAgent(currentAgent)">保存</a>
-        <a class="btn btn-default pull-right adding-button"
-           ng-click="$hide()">取消</a>
-      </div>
-    </div>
-  </form>
-</div>
+    </form>
+  </div>
 </div>
 

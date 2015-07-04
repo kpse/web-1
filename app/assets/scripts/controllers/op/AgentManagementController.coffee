@@ -49,6 +49,8 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
           login_name: ''
           expire: new Date("#{new Date().getFullYear() + 1}-01-01")
           logo_url: ''
+          contact_info: ''
+          memo: ''
 
 
       scope.addAgent = ->
@@ -68,7 +70,7 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
           duration: 3
 
       scope.saveAgent = (agent) ->
-        agent.expire = new Date(agent.expire).getTime()
+        agent.expire = new Date(agent.expireDisplayValue).getTime()
         Agent.save agent, ->
           scope.refresh()
           scope.currentModal.hide()
