@@ -1,4 +1,4 @@
-angular.module('kulebaoAgent').controller 'AgentCtrl',
+angular.module('kulebaoAgent').controller 'AgentStatisticsCtrl',
   ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter','loggedUser', 'currentAgent',
    'agentSchoolService', 'schoolService',
     (scope, $rootScope, $stateParams, $state, $location, $filter, User, CurrentAgent, AgentSchool, AllSchool) ->

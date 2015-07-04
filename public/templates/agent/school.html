@@ -20,16 +20,15 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="kg in kindergartens | filter: searchText | orderBy: 'school_id'" class="row" ng-class="{editable: editSchool, expired: kg.charge[0].status==0}" ng-click="editSchool(kg)">
+  <tr ng-repeat="kg in currentAgent.schools | filter: searchText | orderBy: 'school_id'" class="row" >
     <td class="col-xs-1"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
     <td class="col-xs-3">{{::kg.full_name}}</td>
-    <td class="col-xs-2">{{::kg.name}}</td>
+    <td class="col-xs-2">20</td>
     <td class="col-xs-2">
-      <p ng-repeat="m in kg.managers"><a ng-click="edit(m);$event.stopPropagation()">{{::m.detail.name}}</a></p>
-      <p ng-show="kg.managers.length == 0">还没有管理员，<a class="dropdown" ng-click="addManager(kg);$event.stopPropagation()">增加</a>一个</p>
+               20
       </td>
     <td class="col-xs-2">
-      <span ng-repeat="kgConfig in kg.configArray | filter: filterConfig" class="glyphicon {{displayIcon(kgConfig.name)}}" data-trigger="hover" bs-tooltip data-title="{{titleOf(kgConfig)}}"></span>
+      <a ng-click="goActiveUser()">查看</a>
     </td>
     <td class="col-xs-2">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="这个操作将彻底删除{{::kg.name}}的所有数据，确定继续?"

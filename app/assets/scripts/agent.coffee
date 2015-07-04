@@ -37,14 +37,16 @@ angular.module('kulebaoAgent',
       url: '/school'
       templateUrl: 'templates/agent/school.html'
       controller: 'AgentSchoolCtrl'
+
     .state 'main.commercial',
       url: '/commercial'
       templateUrl: 'templates/agent/commercial.html'
       controller: 'AgentCommercialCtrl'
-    .state 'main.statistic',
-      url: '/statistic'
-      templateUrl: 'templates/agent/statistic.html'
-      controller: 'AgentStatisticCtrl'
+
+    .state 'main.statistics',
+      url: '/statistics'
+      templateUrl: 'templates/agent/statistics.html'
+      controller: 'AgentStatisticsCtrl'
 
     .state 'error',
       url: '/error'
