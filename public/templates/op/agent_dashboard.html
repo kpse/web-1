@@ -21,7 +21,7 @@
   </thead>
   <tbody>
   <tr ng-repeat="agent in agents | filter: searchText | orderBy: 'id'" class="row" ng-class="{editable: editAgent, expired: kg.charge[0].status==0}" ng-click="editAgent(agent)">
-    <td class="col-xs-1"><a ng-href="/agent#/main/{{agent.id}}/school" ng-click="$event.stopPropagation()">{{agent.id}}</a></td>
+    <td class="col-xs-1"><a ng-href="/agent#/main/{{agent.id}}/commercial" ng-click="$event.stopPropagation()">{{agent.id}}</a></td>
     <td class="col-xs-2">{{agent.area}}</td>
     <td class="col-xs-2">{{agent.name}}</td>
     <td class="col-xs-2">{{agent.schools.length}}</td>
