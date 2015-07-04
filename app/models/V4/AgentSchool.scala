@@ -60,7 +60,8 @@ object AgentSchool {
     implicit c =>
       SQL(s"update agentschool set status=0 where agent_id={base} and uid={id} and status=1")
         .on(
-          'id -> id
+          'id -> id,
+          'base -> base
         ).executeUpdate()
   }
 
