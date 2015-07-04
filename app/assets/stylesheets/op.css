@@ -83,6 +83,9 @@ util.print: Use console.log instead
 .parent-status.removed {
   text-decoration: line-through;
 }
+.multiple-school-operation {
+  margin-left: 15%;
+}
 .triangle-border {
   position: relative;
   padding: 15px;

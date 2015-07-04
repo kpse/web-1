@@ -1,24 +1,24 @@
 angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
-  ['$scope', '$rootScope', '$filter', 'agentManagementService', '$modal', 'principalService', 'allEmployeesService',
+  ['$scope', '$rootScope', '$filter', '$q', 'agentManagementService', '$modal', 'principalService',
+   'allEmployeesService',
    '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location', 'agentSchoolService', 'schoolService',
-    'agentSchoolService',
-    (scope, rootScope, $filter, Agent, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location,
-     School, AllSchool, AgentSchool) ->
+    (scope, rootScope, $filter, $q, Agent, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location,
+     AgentSchool, AllSchool) ->
       rootScope.tabName = 'agent'
 
-      scope.refresh = ->
-        scope.agents = Agent.query ->
-          _.forEach scope.agents, (a) ->
-            a.schools = School.query a
+      scope.refresh = (agent)->
+        Agent.query (data) ->
+          scope.agents = _.each data, (a) ->
             a.expireDisplayValue = $filter('date')(a.expire, 'yyyy-MM-dd')
-            a.schoolIds = AgentSchool.query a, ->
+            a.schoolIds = AgentSchool.query agentId: a.id, ->
               a.schools = _.map a.schoolIds, (kg) -> AllSchool.get(school_id: kg.school_id)
+              _.each a.schools, (kg) -> kg.checked = false
+          if agent?
+            scope.currentAgent = _.find scope.agents, (a) -> a.id == agent.id
         scope.kindergartens = AllSchool.query()
 
 
       scope.refresh()
-
-
 
       scope.editAgent = (agent) ->
         scope.currentAgent = angular.copy agent
@@ -36,12 +36,18 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
         , (res) ->
           handleError res
 
-      scope.addSchool = (agent) ->
-        scope.currentAgent = angular.copy agent
+      pickUpUnselected = (agent) ->
         partition = _.partition scope.kindergartens, (kg) ->
-          _.find scope.currentAgent.schools, (k) ->
+          _.find agent.schools, (k) ->
             k.school_id == kg.school_id
-        scope.unSelectedSchools = partition[1]
+        _.map partition[1], (kg) ->
+          kg.checked = false
+          kg
+
+      scope.addSchool = (agent) ->
+        scope.resetSelection()
+        scope.currentAgent = angular.copy agent
+        scope.unSelectedSchools = pickUpUnselected agent
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/op/connect_school.html'
@@ -87,38 +93,75 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
         , (res) ->
           handleError res
 
-      scope.advancedEdting = false
-      scope.advanced = ->
-        scope.advancedEdting = true
-      scope.simpleDialog = ->
-        scope.advancedEdting = false
+      scope.disconnect = (kg, currentAgent) ->
+        deletedSchool = _.find currentAgent.schoolIds, (k) -> k.school_id == kg.school_id
+        currentAgent.schoolIds = _.reject currentAgent.schoolIds, (k) -> k.school_id == kg.school_id
+        currentAgent.schools = _.reject currentAgent.schools, (k) -> k.school_id == kg.school_id
+        scope.unSelectedSchools.push _.find scope.kindergartens , (k) -> k.school_id == kg.school_id
+        AgentSchool.delete(agentId: currentAgent.id, kg: deletedSchool.id).$promise
 
-      scope.addSchools = (agent) ->
+      scope.connect = (kg, currentAgent) ->
+        currentAgent.schoolIds = [] unless currentAgent.schoolIds?
+        currentAgent.schools = [] unless currentAgent.schools?
+        currentAgent.schoolIds.push school_id: kg.school_id
+        currentAgent.schools.push _.find scope.kindergartens, (k) -> k.school_id == kg.school_id
+        scope.unSelectedSchools = _.reject scope.unSelectedSchools , (k) -> k.school_id == kg.school_id
+        AgentSchool.save(agentId: currentAgent.id, school_id: kg.school_id).$promise
 
 
       scope.checkAll = (check) ->
-        _.forEach scope.kindergartens, (r) -> r.checked = check
+        scope.unSelectedSchools = [] unless scope.unSelectedSchools?
+        scope.unSelectedSchools = _.each scope.unSelectedSchools, (r) ->
+          r.checked = check
+          r
 
       scope.checkAgentAll = (check) ->
-        _.forEach scope.kindergartens, (r) -> r.checked = check
+        if scope.currentAgent?
+          scope.currentAgent.schools = _.map scope.currentAgent.schools, (r) ->
+            r.checked = check
+            r
 
       scope.multipleDelete = ->
-        checked = _.filter scope.kindergartens, (r) -> r.checked? && r.checked == true
-        queue = _.map checked, (c) -> Child.delete(school_id: stateParams.kindergarten, child_id: c.child_id).$promise
+        checked = _.filter scope.currentAgent.schools, (r) -> r.checked? && r.checked == true
+        queue = _.map checked, (kg) -> scope.disconnect kg, scope.currentAgent
         all = $q.all queue
         all.then (q) ->
-          scope.refreshChildren()
+            scope.resetSelection()
+            scope.refresh()
+          , (res) ->
+            handleError res
+
+      scope.multipleAdd = ->
+        checked = _.filter scope.unSelectedSchools, (r) -> r.checked? && r.checked == true
+        queue = _.map checked, (kg) -> scope.connect kg, scope.currentAgent
+        all = $q.all queue
+        all.then (q) ->
+            scope.resetSelection()
+            scope.refresh()
+          , (res) ->
+            handleError res
 
       scope.hasSelection = (kindergartens) ->
         _.some kindergartens, (r) -> r.checked? && r.checked == true
 
+      scope.singleAgentSelection = (kg) ->
+        allChecked = _.every scope.currentAgent.schools, (r) -> r.checked? && r.checked == true
+        scope.selection.allAgentCheck = allChecked && scope.currentAgent.schools.length > 0
+
       scope.singleSelection = (kg) ->
-        allChecked = _.every scope.kindergartens, (r) -> r.checked? && r.checked == true
-        scope.selection.allCheck = allChecked
+        allChecked = _.every scope.unSelectedSchools, (r) -> r.checked? && r.checked == true
+        scope.selection.allCheck = allChecked && scope.unSelectedSchools.length > 0
 
       scope.selection =
         allCheck: false
         allAgentCheck: false
+
+      scope.resetSelection = ->
+        scope.selection =
+          allCheck: false
+          allAgentCheck: false
+        scope.checkAgentAll false
+        scope.checkAll false
 
   ]
 

@@ -8,48 +8,55 @@
       <input ng-model="searchText"/>
     </div>
     <h3>已选择新学校</h3>
-      <table class="table table-hover table-condensed schools-list">
-        <thead>
-        <tr class="row">
-          <th class="col-xs-2"><input type="checkbox" ng-model="selection.allAgentCheck" ng-change="checkAgentAll(selection.allAgentCheck)"/> 全选</th>
-          <th class="col-xs-3">学校编号</th>
-          <th class="col-xs-3">学校全名</th>
-          <th class="col-xs-3">操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="kg in currentAgent.schools | filter: searchText | orderBy: 'school_id'" class="row">
-          <td class="col-xs-2" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="kg.checked" ng-change="singleSelection(kg)"/></td>
-          <td class="col-xs-3"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
-          <td class="col-xs-3">{{::kg.full_name}}</td>
-          </td>
-          <td class="col-xs-3">
-            <button class="btn btn-xs btn-danger" ng-confirm-msg="这个操作将撤消{{currentAgent.name}}与{{::kg.name}}的联系，确定继续?"
-                    ng-confirm-click="disconnect(kg, currentAgent);$event.stopPropagation()">删除
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-
-    <div class="loading" ng-show="loading"></div>
-    <h3>添加新学校</h3>
-    <form name="schoolsPicker">
+    <button ng-disabled="!hasSelection(currentAgent.schools)" class="btn btn-danger multiple-school-operation" ng-confirm-msg="你确定要删除吗?"
+            ng-confirm-click="multipleDelete()">取消关联
+    </button>
     <table class="table table-hover table-condensed schools-list">
       <thead>
       <tr class="row">
-        <th class="col-xs-2"><input type="checkbox" ng-model="selection.allCheck" ng-change="checkAll(selection.allCheck)"/> 全选</th>
+        <th class="col-xs-2"><input type="checkbox" ng-model="selection.allAgentCheck"
+                                    ng-change="checkAgentAll(selection.allAgentCheck)"/> 全选
+        </th>
         <th class="col-xs-3">学校编号</th>
         <th class="col-xs-3">学校全名</th>
-        <th class="col-xs-3">操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="kg in currentAgent.schools | filter: searchText | orderBy: 'school_id'" class="row">
+        <td class="col-xs-2" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="kg.checked"
+                                                                        ng-change="singleAgentSelection(kg)"/></td>
+        <td class="col-xs-3"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome"
+                                ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
+        <td class="col-xs-3">{{::kg.full_name}}</td>
+        </td>
+
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="loading" ng-show="loading"></div>
+    <h3>添加新学校</h3>
+    <button ng-disabled="!hasSelection(unSelectedSchools)" class="btn btn-success multiple-school-operation" ng-confirm-msg="你确定要添加吗?"
+            ng-confirm-click="multipleAdd()">关联到代理商
+    </button>
+    <table class="table table-hover table-condensed schools-list">
+      <thead>
+      <tr class="row">
+        <th class="col-xs-2"><input type="checkbox" ng-model="selection.allCheck"
+                                    ng-change="checkAll(selection.allCheck)"/> 全选
+        </th>
+        <th class="col-xs-3">学校编号</th>
+        <th class="col-xs-3">学校全名</th>
       </tr>
       </thead>
       <tbody>
       <tr ng-repeat="kg in unSelectedSchools | filter: searchText | orderBy: 'school_id'" class="row">
-        <td class="col-xs-2" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="kg.checked" ng-change="singleSelection(kg)"/></td>
-        <td class="col-xs-3"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
+        <td class="col-xs-2" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="kg.checked"
+                                                                        ng-change="singleSelection(kg)"/></td>
+        <td class="col-xs-3"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome"
+                                ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
         <td class="col-xs-3">{{::kg.full_name}}</td>
-        <td class="col-xs-3"></td>
+
         </td>
       </tr>
       </tbody>
@@ -58,14 +65,10 @@
     <div class="clearfix"></div>
     <div class="col-sm-offset-4 col-sm-8">
       <div class="form-group">
-        <a class="btn btn-warning pull-right adding-button"
-           ng-disabled="schoolsPicker.$invalid || schoolsPicker.$pristine"
-           ng-click="addSchools(currentAgent)">保存</a>
         <a class="btn btn-default pull-right adding-button"
-           ng-click="$hide()">取消</a>
+           ng-click="$hide()">关闭</a>
       </div>
     </div>
-    </form>
   </div>
 </div>
 
