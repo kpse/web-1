@@ -1,10 +1,15 @@
 angular.module('kulebaoAgent').controller 'AgentCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$state', 'loggedUser',
-    (scope, $rootScope, $stateParams, $state, User) ->
+  ['$scope', '$rootScope', '$stateParams', '$state', '$location', 'loggedUser',
+    (scope, $rootScope, $stateParams, $state, $location, User) ->
       scope.loggedUser = User
       console.log(scope.loggedUser)
+      console.log($stateParams)
 
-      $state.go('main', agent_id: scope.loggedUser.id) if $stateParams.agent_id == 'default'
-      $state.go('main', agent_id: scope.loggedUser.id) unless "#{scope.loggedUser.id}".indexOf('_') > 0
+      if $stateParams.agent_id == 'default' || "#{scope.loggedUser.id}".indexOf('_') < 0
+        $location.path "main/#{scope.loggedUser.id}/school"
+
+      scope.$on 'currentAgent', (e, agent) ->
+        scope.currentAgent = agent
+        console.log scope.currentAgent
 
   ]

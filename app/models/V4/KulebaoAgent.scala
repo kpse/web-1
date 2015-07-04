@@ -100,7 +100,8 @@ object KulebaoAgent {
           'id -> id
         ).as(get[Long]("count(1)") single) > 0
       Logger.info(s"request path is $path")
-      isAgent && (path.matches(s"^(?:/api/v\\d+)?/agent/$id(/.+)?") || path.matches(s"^/agent#/main/$id(/.+)?")) || path.matches("^/agent")
+      isAgent && (path.matches(s"^(?:/api/v\\d+)?/agent/$id(/.+)?") || path.matches(s"^/agent#/main/$id(/.+)?")) ||
+        path.matches("^/agent") || path.matches(s"^/main/$id(/.+)?")
   }
 
   val simple = {

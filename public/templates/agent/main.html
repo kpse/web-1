@@ -5,13 +5,13 @@
       <div class="admin-user-info-container container-fluid col-sm-10">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">{{loggedUser.name}}</a>
+          <a class="navbar-brand" href="#">{{currentAgent.name}}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="admin-features collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <form class="navbar-form navbar-right row" role="search">
-            <h4 class="col-sm-8">您好, {{loggedUser.name}}</h4>
+            <h4 class="col-sm-7">您好, {{loggedUser.name}}</h4>
             <button type="button" class="btn btn-warning dropdown-toggle admin-user" data-toggle="dropdown">
               个人中心<span class="caret"></span>
             </button>
@@ -27,7 +27,7 @@
         </div>
         <!-- /.navbar-collapse -->
       </div>
-      <div class="admin-user-portrait-container editable col-sm-2" ng-click="edit(adminUser)">
+      <div class="admin-user-portrait-container editable col-sm-2" ng-click="edit(loggedUser)">
         <img class="portrait img-responsive"
              ng-src="{{loggedUser.portrait || '/assets/images/portrait_placeholder.png' }}"
              alt="照片"/>
