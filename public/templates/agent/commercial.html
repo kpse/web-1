@@ -20,19 +20,26 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="ad in commercials | filter: searchText | orderBy: 'publishing.publish_status' : true " class="row"
-      ng-class="{editable: editSchool, expired: kg.charge[0].status==0}" ng-click="editAd(ad);$event.stopPropagation()">
+  <tr ng-repeat="ad in commercials | filter: searchText | orderBy: 'publishing.publish_status' : true " class="row">
     <td class="col-xs-1"><a ng-href="/agent#/preview/{{ad.id}}" ng-click="$event.stopPropagation()">{{ad.id}}</a></td>
     <td class="col-xs-3">{{ad.title}} 投放数: {{ad.ads.length || 0}}, 投放家长数: 500</td>
-    <td class="col-xs-2">
-      <button type="button" class="btn btn-default publishing-status" ng-model="ad.publishing.publish_status"
+    <td class="col-xs-2" ng-show="adminUser.privilege_group == 'operator'">
+      <button type="button" class="btn btn-default publishing-status" ng-model="ad.publishing.publish_status" placeholder="{{currentStatus(ad)}}"
               ng-class="{success : ad.publishing.publish_status == 2, danger: ad.publishing.publish_status == 3, warning: ad.publishing.publish_status == 99}"
-              ng-disabled="!allowEditing(adminUser, ad)" ng-change="adminEdit(ad);$event.stopPropagation()"
-              ng-click="$event.stopPropagation()" bs-options="item.publish_status as item.display for item in allStatus" bs-select></button>
+              ng-disabled="!allowEditing(adminUser, ad)" ng-change="adminEdit(ad, '{{ad.publishing.publish_status}}');$event.stopPropagation()"
+              ng-click="$event.stopPropagation()" bs-options="item.publish_status as item.display for item in adminStatus" bs-select></button>
+    </td>
+    <td class="col-xs-2" ng-hide="adminUser.privilege_group == 'operator'">
+      <button type="button" class="btn btn-default publishing-status" ng-model="ad.publishing.publish_status" placeholder="{{currentStatus(ad)}}"
+              ng-class="{success : ad.publishing.publish_status == 2, danger: ad.publishing.publish_status == 3, warning: ad.publishing.publish_status == 99}"
+              ng-disabled="!allowEditing(adminUser, ad)" ng-change="preview(ad);$event.stopPropagation()"
+              ng-click="$event.stopPropagation()" bs-options="item.publish_status as item.display for item in userStatus" bs-select></button>
     </td>
     <td class="col-xs-2">{{ad.time_span || 'N/A'}}</td>
-    <td class="col-xs-2"><a ng-click="">反馈</a></td>
+    <td class="col-xs-2"><a ng-click="$event.stopPropagation()">反馈</a></td>
     <td class="col-xs-2">
+      <button class="btn btn-xs btn-warning" ng-click="editAd(ad);$event.stopPropagation()">编辑
+      </button>
       <button class="btn btn-xs btn-danger" ng-confirm-msg="这个操作将彻底删除{{ad.name}}，确定继续?"
               ng-confirm-click="removeAd(ad);$event.stopPropagation()">删除
       </button>

@@ -8,7 +8,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
 
       scope.refresh = ->
         queue = [AgentAd.query(agent_id: scope.currentAgent.id).$promise
-        Schools.query(agent_id: scope.currentAgent.id).$promise]
+                 Schools.query(agent_id: scope.currentAgent.id).$promise]
 
         $q.all(queue).then (q) ->
           scope.commercials = q[0]
@@ -25,7 +25,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       scope.published = (ad) ->
         ad.publishing.published_at > 0
       scope.canBePreviewed = (ad) ->
-        ad.publishing.publish_status == 0 || ad.publishing.publish_status == 3
+        scope.adminUser.privilege_group == 'agent' && ad.publishing.publish_status == 0 || ad.publishing.publish_status == 3
 
       scope.canBeApproved = (ad) ->
         scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 3)
@@ -45,14 +45,20 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         status = _.find scope.allStatus, (s) -> ad.publishing.publish_status == s.publish_status
         if status then status.display else ''
 
-      scope.allStatus = [
-        {publish_status: 0, display: '未提交'},
+      scope.allStatus = [{publish_status: 0, display: '未提交'},
         {publish_status: 99, display: '等待审批'},
         {publish_status: 2, display: '审批通过'},
         {publish_status: 3, display: '拒绝发布'}]
 
+      scope.userStatus =
+        [{publish_status: 99, display: '提交审批'}]
+
+      scope.adminStatus =
+        [{publish_status: 2, display: '审批通过'},
+          {publish_status: 3, display: '拒绝发布'}]
+
       scope.allowEditing = (user, ad) ->
-        user.privilege_group == 'operator' && !scope.canBePreviewed(ad)
+        scope.canBeApproved(ad) || scope.canBeRejected(ad) || scope.canBePreviewed(ad)
 
 
       scope.allTags = ['商户:亲子摄影', '商户:亲子游乐', '商户:幼儿教育', '商户:亲子购物', '商户:DIY手工', '活动:线上', '活动:线下']
@@ -102,10 +108,13 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         Reject.save ad, ->
           scope.refresh()
 
-      scope.adminEdit = (ad) ->
+      scope.adminEdit = (ad, oldStatus) ->
         switch ad.publishing.publish_status
           when 2 then scope.approve(ad)
           when 3 then scope.reject(ad)
           else
-            console.log 'publish_status = ' + ad.publishing.publish_status
+            console.log 'no way here! publish_status = ' + ad.publishing.publish_status
+            ad.publishing.publish_status = parseInt oldStatus
+
+
   ]
