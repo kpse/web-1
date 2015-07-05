@@ -1,7 +1,7 @@
 angular.module('kulebaoAgent').controller 'AgentCtrl',
   ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter','loggedUser', 'currentAgent',
-   'agentSchoolService', 'schoolService',
-    (scope, $rootScope, $stateParams, $state, $location, $filter, User, CurrentAgent, AgentSchool, AllSchool) ->
+   'agentSchoolService',
+    (scope, $rootScope, $stateParams, $state, $location, $filter, User, CurrentAgent, AgentSchool) ->
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
       console.log(scope.loggedUser)
@@ -17,8 +17,7 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
       scope.refresh = ->
         currentAgent = scope.currentAgent
         currentAgent.expireDisplayValue = $filter('date')(currentAgent.expire, 'yyyy-MM-dd')
-        currentAgent.schoolIds = AgentSchool.query agentId: currentAgent.id, ->
-          currentAgent.schools = _.map currentAgent.schoolIds, (kg) -> AllSchool.get(school_id: kg.school_id)
+        currentAgent.schools = AgentSchool.query agentId: currentAgent.id, ->
           _.each currentAgent.schools, (kg) -> kg.checked = false
 
       scope.refresh()

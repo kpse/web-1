@@ -7,15 +7,16 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
-case class AgentSchool(id: Option[Long], school_id: Long) {
+case class AgentSchool(id: Option[Long], school_id: Long, name: String) {
   def update(base: Long): Option[AgentSchool] = DB.withConnection {
     implicit c =>
-      SQL("update agentschool set agent_id={base}, school_id={school_id}, " +
+      SQL("update agentschool set agent_id={base}, school_id={school_id}, name={name}, " +
         "updated_at={time} where uid={id}")
         .on(
           'id -> id,
           'base -> base,
           'school_id -> school_id,
+          'name -> name,
           'time -> System.currentTimeMillis
         ).executeUpdate()
       id flatMap (AgentSchool.show(_, base))
@@ -23,11 +24,12 @@ case class AgentSchool(id: Option[Long], school_id: Long) {
 
   def create(base: Long): Option[AgentSchool] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into agentschool (agent_id, school_id, updated_at) values (" +
-        "{base}, {school_id}, {time})")
+      val insert: Option[Long] = SQL("insert into agentschool (agent_id, school_id, name, updated_at) values (" +
+        "{base}, {school_id}, {name}, {time})")
         .on(
           'base -> base,
           'school_id -> school_id,
+          'name -> name,
           'time -> System.currentTimeMillis
         ).executeInsert()
       insert flatMap (AgentSchool.show(_, base))
@@ -67,9 +69,10 @@ object AgentSchool {
 
   val simple = {
     get[Long]("uid") ~
-      get[String]("school_id") map {
-      case id ~ school =>
-        AgentSchool(Some(id), school.toLong)
+      get[String]("school_id") ~
+      get[String]("name") map {
+      case id ~ school ~ name =>
+        AgentSchool(Some(id), school.toLong, name)
     }
   }
 }

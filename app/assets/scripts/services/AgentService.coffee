@@ -32,10 +32,10 @@ angular.module('kulebao.services')
   ]
 .factory 'agentAdService', ['$resource',
   ($resource) ->
-    $resource '/api/v4/agent/:agentId/commercial/:id',
+    $resource '/api/v4/agent/:agentId/commercial/:ad',
       {
         agentId: "@agentId"
-        id: "@id"
+        ad: "@ad"
       }
   ]
 .factory 'agentAdInSchoolService', ['$resource',
@@ -43,7 +43,7 @@ angular.module('kulebao.services')
       $resource '/api/v4/agent/:agentId/kindergarten/:kg/commercial/:id',
         {
           agentId: "@agentId"
-          kg: "@school_id"
+          kg: "@kg"
           id: "@id"
         }
   ]
