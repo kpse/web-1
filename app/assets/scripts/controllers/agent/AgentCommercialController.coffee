@@ -25,13 +25,13 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       scope.published = (ad) ->
         ad.publishing.published_at > 0
       scope.canBePreviewed = (ad) ->
-        scope.adminUser.privilege_group == 'agent' && ad.publishing.publish_status == 0 || ad.publishing.publish_status == 3
+        ad.id && scope.adminUser.privilege_group == 'agent' && (ad.publishing.publish_status == 0 || ad.publishing.publish_status == 3)
 
       scope.canBeApproved = (ad) ->
-        scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 3)
+        ad.id && scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 3)
 
       scope.canBeRejected = (ad) ->
-        scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 2)
+        ad.id && scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 2)
 
 
       scope.editAd = (ad) ->
@@ -72,6 +72,8 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       createNewAd = ->
         new AgentAd
           agent_id: scope.currentAgent.id
+          publishing:
+            publish_status: 0
 
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)

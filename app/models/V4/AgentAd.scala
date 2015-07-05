@@ -62,8 +62,8 @@ case class AgentAd(id: Option[Long], agent_id: Long, title: String, address: Opt
 
   def create(base: Long): Option[AgentAd] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into agentadvertisement (agent_id, title, address, contact, time_span, detail, logo, updated_at, created_at) values (" +
-        "{base}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time})")
+      val insert: Option[Long] = SQL("insert into agentadvertisement (agent_id, title, address, contact, time_span, detail, logo, updated_at, created_at, publish_status) values (" +
+        "{base}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time}, 0)")
         .on(
           'base -> base,
           'title -> title,
