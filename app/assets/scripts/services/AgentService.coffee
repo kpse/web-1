@@ -15,6 +15,7 @@ angular.module('kulebao.services')
             cache: true
         }
   ]
+
 .factory 'agentManagementService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:id',
@@ -22,27 +23,30 @@ angular.module('kulebao.services')
         id: '@id'
       }
   ]
+
 .factory 'agentSchoolService', ['$resource',
   ($resource) ->
-    $resource '/api/v4/agent/:agentId/kindergarten/:kg',
+    $resource '/api/v4/agent/:agent_id/kindergarten/:kg',
       {
-        agentId: "@agentId"
+        agent_id: "@agent_id"
         kg: "@kg"
       }
   ]
+
 .factory 'agentAdService', ['$resource',
   ($resource) ->
-    $resource '/api/v4/agent/:agentId/commercial/:ad',
+    $resource '/api/v4/agent/:agent_id/commercial/:id',
       {
-        agentId: "@agentId"
-        ad: "@ad"
+        agent_id: "@agent_id"
+        id: "@id"
       }
   ]
+
 .factory 'agentAdInSchoolService', ['$resource',
     ($resource) ->
-      $resource '/api/v4/agent/:agentId/kindergarten/:kg/commercial/:id',
+      $resource '/api/v4/agent/:agent_id/kindergarten/:kg/commercial/:id',
         {
-          agentId: "@agentId"
+          agent_id: "@agent_id"
           kg: "@kg"
           id: "@id"
         }

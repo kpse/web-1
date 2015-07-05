@@ -7,7 +7,7 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
-case class AgentAd(id: Option[Long], agent_id: Long, title: String, address: Option[String],
+case class AgentAd(id: Option[Long], agent_id: Long, title: String, address: Option[String], published_at: Option[Long], publish_status: Option[Int],
                    contact: String, time_span: Option[String], detail: Option[String], logo: Option[String], updated_at: Option[Long]) {
   def update(base: Long): Option[AgentAd] = DB.withConnection {
     implicit c =>
@@ -86,9 +86,11 @@ object AgentAd {
       get[Option[String]]("time_span") ~
       get[Option[String]]("detail") ~
       get[Option[String]]("logo") ~
+      get[Option[Int]]("publish_status") ~
+      get[Option[Long]]("published_at") ~
       get[Option[Long]]("updated_at") map {
-      case id ~ agent ~ title ~ address ~ contact ~ timeSpan ~ detail ~ logo ~ time =>
-        AgentAd(Some(id), agent, title, address, contact, timeSpan, detail, logo, time)
+      case id ~ agent ~ title ~ address ~ contact ~ timeSpan ~ detail ~ logo ~ p ~ pDate ~ time =>
+        AgentAd(Some(id), agent, title, address, pDate, p, contact, timeSpan, detail, logo, time)
     }
   }
 }

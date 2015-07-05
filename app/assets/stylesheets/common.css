@@ -608,3 +608,7 @@ util.print: Use console.log instead
   overflow-y: auto;
   max-height: 654px;
 }
+.new-ad-content {
+  min-height: 100px;
+  height: 180px;
+}

@@ -10,7 +10,7 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
         Agent.query (data) ->
           scope.agents = _.each data, (a) ->
             a.expireDisplayValue = $filter('date')(a.expire, 'yyyy-MM-dd')
-            a.schoolIds = AgentSchool.query agentId: a.id, ->
+            a.schoolIds = AgentSchool.query agent_id: a.id, ->
               a.schools = _.map a.schoolIds, (kg) -> AllSchool.get(school_id: kg.school_id)
               _.each a.schools, (kg) -> kg.checked = false
           if agent?
@@ -98,7 +98,7 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
         currentAgent.schoolIds = _.reject currentAgent.schoolIds, (k) -> k.school_id == kg.school_id
         currentAgent.schools = _.reject currentAgent.schools, (k) -> k.school_id == kg.school_id
         scope.unSelectedSchools.push _.find scope.kindergartens , (k) -> k.school_id == kg.school_id
-        AgentSchool.delete(agentId: currentAgent.id, kg: deletedSchool.id).$promise
+        AgentSchool.delete(agent_id: currentAgent.id, kg: deletedSchool.id).$promise
 
       scope.connect = (kg, currentAgent) ->
         currentAgent.schoolIds = [] unless currentAgent.schoolIds?
@@ -106,7 +106,7 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
         currentAgent.schoolIds.push school_id: kg.school_id
         currentAgent.schools.push _.find scope.kindergartens, (k) -> k.school_id == kg.school_id
         scope.unSelectedSchools = _.reject scope.unSelectedSchools , (k) -> k.school_id == kg.school_id
-        AgentSchool.save(agentId: currentAgent.id, school_id: kg.school_id, name: kg.full_name).$promise
+        AgentSchool.save(agent_id: currentAgent.id, school_id: kg.school_id, name: kg.full_name).$promise
 
 
       scope.checkAll = (check) ->

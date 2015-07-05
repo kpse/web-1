@@ -12,6 +12,8 @@ CREATE TABLE agentadvertisement (
   time_span   VARCHAR(100),
   detail   TEXT,
   logo   TEXT,
+  publish_status   INT(4) DEFAULT 0,
+  published_at BIGINT,
   updated_at BIGINT,
   created_at BIGINT,
   status INT(4) DEFAULT 1,

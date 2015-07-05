@@ -17,7 +17,7 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
       scope.refresh = ->
         currentAgent = scope.currentAgent
         currentAgent.expireDisplayValue = $filter('date')(currentAgent.expire, 'yyyy-MM-dd')
-        currentAgent.schools = AgentSchool.query agentId: currentAgent.id, ->
+        currentAgent.schools = AgentSchool.query agent_id: currentAgent.id, ->
           _.each currentAgent.schools, (kg) -> kg.checked = false
 
       scope.refresh()
