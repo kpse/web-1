@@ -7,7 +7,7 @@
 
         <div class="col-xs-4">
           <input ng-bk-focus id="title" name="title" ng-model="newAd.title" class="form-control"
-                 maxlength="15" placeholder="添加标题" ng-disabled="newAd.publish_status == 3" required/>
+                 maxlength="15" placeholder="添加标题" ng-disabled="published(newAd)" required/>
           <span class="error-field"
                 ng-show="commercialForm.title.$dirty && commercialForm.title.$error.required">请填写标题</span>
           <span class="error-field"
@@ -54,7 +54,7 @@
 
         <div class="col-xs-4">
           <input id="address" name="address" ng-model="newAd.address" class="form-control"
-                 placeholder="活动地点" ng-disabled="newAd.publish_status == 3"/>
+                 placeholder="活动地点" ng-disabled="published(newAd)"/>
         </div>
       </div>
       <div class="form-group">
@@ -62,7 +62,7 @@
 
         <div class="col-xs-4">
           <input id="contact" name="contact" ng-model="newAd.contact" class="form-control"
-                 placeholder="联系方式" ng-disabled="newAd.publish_status == 3"/>
+                 placeholder="联系方式" ng-disabled="published(newAd)"/>
         </div>
       </div>
       <div class="form-group">
@@ -70,7 +70,7 @@
 
         <div class="col-xs-4">
           <input id="time-span" name="timeSpan" ng-model="newAd.time_span" class="form-control"
-                 placeholder="有效期" ng-disabled="newAd.publish_status == 3"/>
+                 placeholder="有效期" ng-disabled="published(newAd)"/>
         </div>
       </div>
 
@@ -82,26 +82,26 @@
       <span class="error-field"
             ng-show="commercialForm.content.$dirty && commercialForm.content.$error.maxlength">正文内容请不要超过2000个字符</span>
         <div class="col-xs-8">
-          <textarea ng-disabled="newAd.publish_status == 3" id="content" name="content" ng-model="newAd.detail"
+          <textarea ng-disabled="published(newAd)" id="content" name="content" ng-model="newAd.detail"
                   class="editing-content form-control new-ad-content" ng-maxlength="2000" placeholder="添加内容" required/></div>
       </div>
 
 
       <div class="panel-footer">
-        <div ng-show="newAd.publish_status == 0" class="issue-date">已于{{newAd.published_at
+        <div ng-show="published(newAd)" class="issue-date">已于{{newAd.published_at
           | date:'yyyy年MM月dd日 HH:mm'}}审批通过
         </div>
         <div ng-hide="newAd.publish_status > 0" class="issue-date">未发布</div>
         <div class="loading" ng-show="loading"></div>
         <div class="btn-group">
-          <button class="btn btn-default" ng-click="closeDialog(newAd)">{{ newAd.publish_status == 3 ? '关闭' : '取消' }}</button>
-          <button class="btn btn-primary" ng-disabled="commercialForm.$invalid || uploading" ng-hide="newAd.publish_status == 3"
-                  ng-click="publish(newAd)">预发布
+          <button class="btn btn-default" ng-click="closeDialog(newAd)">{{ published(newAd) ? '关闭' : '取消' }}</button>
+          <button class="btn btn-primary" ng-disabled="commercialForm.$invalid || uploading" ng-hide="published(newAd)"
+                  ng-click="preview(newAd)">预发布
           </button>
-          <button class="btn btn-danger" ng-show="newAd.publish_status == 3 || newAd.id" ng-confirm-msg="你确定要删除吗?"
+          <button class="btn btn-danger" ng-show="published(newAd) || newAd.id" ng-confirm-msg="你确定要删除吗?"
                   ng-confirm-click="removeAd(newAd)">删除
           </button>
-          <button class="btn btn-info" ng-disabled="commercialForm.$invalid || uploading || commercialForm.$pristine" ng-hide="newAd.publish_status == 3"
+          <button class="btn btn-info" ng-disabled="commercialForm.$invalid || uploading || commercialForm.$pristine" ng-hide="published(newAd)"
                   ng-click="save(newAd)">保存
           </button>
         </div>

@@ -21,6 +21,8 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
                   commercial.ads.push d
 
       scope.refresh()
+      scope.published = (ad) ->
+        ad.publishing.published_at > 0
 
       scope.editAd = (ad) ->
         scope.newAd = angular.copy ad
@@ -29,7 +31,12 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
           scope: scope
           contentTemplate: 'templates/agent/add_commercial.html'
 
-      scope.allStatus = ['审批通过', '等待审批', '未提交', '拒绝发布']
+      scope.allStatus = [
+        {value: 0, display: '未提交'},
+        {value: 99, display: '等待审批'},
+        {value: 2, display: '审批通过'},
+        {value: 3, display: '拒绝发布'}]
+
       scope.allTags = ['商户:亲子摄影', '商户:亲子游乐', '商户:幼儿教育', '商户:亲子购物', '商户:DIY手工', '活动:线上', '活动:线下']
 
       scope.addNewAd = () ->
@@ -45,7 +52,10 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)
 
-      scope.publish = (newAd) ->
+      scope.preview = (newAd) ->
+        newAd.$preview ->
+          scope.refresh()
+          scope.currentModal.hide() if scope.currentModal?
 
       scope.removeAd = (newAd) ->
         newAd.$delete ->

@@ -25,9 +25,9 @@
     <td class="col-xs-1"><a ng-href="/agent#/preview/{{ad.id}}" ng-click="$event.stopPropagation()">{{ad.id}}</a></td>
     <td class="col-xs-3">{{ad.title}} 投放数: {{ad.ads.length || 0}}, 投放家长数: 500</td>
     <td class="col-xs-2">
-      <button type="button" class="btn btn-default" ng-model="ad.publish_status"
-              placeholder="审批" ng-disabled="adminUser.privilege_group != 'operator'"
-              ng-click="$event.stopPropagation()" bs-options="t for t in allStatus" bs-select></button>
+      <button type="button" class="btn btn-default" ng-model="ad.publishing.publish_status"
+              ng-disabled="adminUser.privilege_group != 'operator'"
+              ng-click="$event.stopPropagation()" bs-options="item.value as item.display for item in allStatus" bs-select></button>
     </td>
     <td class="col-xs-2">{{ad.time_span || 'N/A'}}</td>
     <td class="col-xs-2"><a ng-click="">反馈</a></td>

@@ -2,19 +2,19 @@
 
 angular.module('kulebao.services')
 .factory 'agentService', ['$resource', 'session',
-    ($resource, Session) ->
-      $resource '/api/v4/agent/:id',
-        {
-          id: Session.id
-        }, {
-          all:
-            params:
-              id: '@id'
-          get:
-            method: 'GET'
-            cache: true
-        }
-  ]
+  ($resource, Session) ->
+    $resource '/api/v4/agent/:id',
+      {
+        id: Session.id
+      }, {
+        all:
+          params:
+            id: '@id'
+        get:
+          method: 'GET'
+          cache: true
+      }
+]
 
 .factory 'agentManagementService', ['$resource',
   ($resource) ->
@@ -22,7 +22,7 @@ angular.module('kulebao.services')
       {
         id: '@id'
       }
-  ]
+]
 
 .factory 'agentSchoolService', ['$resource',
   ($resource) ->
@@ -31,7 +31,7 @@ angular.module('kulebao.services')
         agent_id: "@agent_id"
         kg: "@kg"
       }
-  ]
+]
 
 .factory 'agentAdService', ['$resource',
   ($resource) ->
@@ -39,16 +39,29 @@ angular.module('kulebao.services')
       {
         agent_id: "@agent_id"
         id: "@id"
+      }, {
+        preview:
+          method: 'POST'
+          params:
+            publish_status: 1
+        publish:
+          method: 'POST'
+          params:
+            publish_status: 2
+        reject:
+          method: 'POST'
+          params:
+            publish_status: 3
       }
-  ]
+]
 
 .factory 'agentAdInSchoolService', ['$resource',
-    ($resource) ->
-      $resource '/api/v4/agent/:agent_id/kindergarten/:kg/commercial/:id',
-        {
-          agent_id: "@agent_id"
-          kg: "@kg"
-          id: "@id"
-        }
-  ]
+  ($resource) ->
+    $resource '/api/v4/agent/:agent_id/kindergarten/:kg/commercial/:id',
+      {
+        agent_id: "@agent_id"
+        kg: "@kg"
+        id: "@id"
+      }
+]
 

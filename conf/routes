@@ -560,6 +560,10 @@ POST          /api/v4/agent/:agentId/commercial                                 
 POST          /api/v4/agent/:agentId/commercial/:id                                   controllers.V4.AgentAdController.update(agentId: Long, id: Long)
 DELETE        /api/v4/agent/:agentId/commercial/:id                                   controllers.V4.AgentAdController.delete(agentId: Long, id: Long)
 
+POST          /api/v4/agent/:agentId/commercial/:id/preview                           controllers.V4.AgentAdController.preview(agentId: Long, id: Long)
+POST          /api/v4/agent/:agentId/commercial/:id/publish                           controllers.V4.AgentAdController.publish(agentId: Long, id: Long)
+POST          /api/v4/agent/:agentId/commercial/:id/reject                            controllers.V4.AgentAdController.reject(agentId: Long, id: Long)
+
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                controllers.ChildController.index(kg: Long, parentId: String)
 GET           /kindergarten/:kg/parent/:parentId/child/:childId                       controllers.ChildController.show(kg: Long, parentId: String, childId: String)
