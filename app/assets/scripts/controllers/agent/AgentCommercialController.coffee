@@ -1,7 +1,8 @@
 angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
   ['$scope', '$rootScope', '$stateParams', '$q', '$modal', 'currentAgent', 'loggedUser', 'agentAdService',
-   'agentAdInSchoolService', 'agentSchoolService', 'imageCompressService',
-    (scope, $rootScope, stateParams, $q, Modal, Agent, User, AgentAd, AdInSchool, Schools, Compress) ->
+   'agentAdInSchoolService', 'agentSchoolService', 'imageCompressService', 'agentAdPreviewService',
+   'agentAdApproveService', 'agentAdRejectService',
+    (scope, $rootScope, stateParams, $q, Modal, Agent, User, AgentAd, AdInSchool, Schools, Compress, Preview, Approve, Reject) ->
       scope.adminUser = User
       scope.currentAgent = Agent
 
@@ -23,6 +24,15 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       scope.refresh()
       scope.published = (ad) ->
         ad.publishing.published_at > 0
+      scope.canBePreviewed = (ad) ->
+        ad.publishing.publish_status == 0 || ad.publishing.publish_status == 3
+
+      scope.canBeApproved = (ad) ->
+        scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 3)
+
+      scope.canBeRejected = (ad) ->
+        scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 2)
+
 
       scope.editAd = (ad) ->
         scope.newAd = angular.copy ad
@@ -31,11 +41,19 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
           scope: scope
           contentTemplate: 'templates/agent/add_commercial.html'
 
+      scope.currentStatus = (ad) ->
+        status = _.find scope.allStatus, (s) -> ad.publishing.publish_status == s.publish_status
+        if status then status.display else ''
+
       scope.allStatus = [
-        {value: 0, display: '未提交'},
-        {value: 99, display: '等待审批'},
-        {value: 2, display: '审批通过'},
-        {value: 3, display: '拒绝发布'}]
+        {publish_status: 0, display: '未提交'},
+        {publish_status: 99, display: '等待审批'},
+        {publish_status: 2, display: '审批通过'},
+        {publish_status: 3, display: '拒绝发布'}]
+
+      scope.allowEditing = (user, ad) ->
+        user.privilege_group == 'operator' && !scope.canBePreviewed(ad)
+
 
       scope.allTags = ['商户:亲子摄影', '商户:亲子游乐', '商户:幼儿教育', '商户:亲子购物', '商户:DIY手工', '活动:线上', '活动:线下']
 
@@ -52,10 +70,11 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)
 
-      scope.preview = (newAd) ->
-        newAd.$preview ->
+      scope.preview = (ad) ->
+        ad.publishing =
+          publish_status: 99
+        Preview.save ad, ->
           scope.refresh()
-          scope.currentModal.hide() if scope.currentModal?
 
       scope.removeAd = (newAd) ->
         newAd.$delete ->
@@ -69,4 +88,24 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
 
       scope.closeDialog = (newAd) ->
         scope.currentModal.hide()
+
+      scope.approve = (ad) ->
+        ad.publishing =
+          publish_status: 2
+        Approve.save ad, ->
+          scope.refresh()
+
+      scope.reject = (ad) ->
+        ad.publishing =
+          publish_status: 3
+          reject_reason: '我看有点问题，但是说不好在哪里...'
+        Reject.save ad, ->
+          scope.refresh()
+
+      scope.adminEdit = (ad) ->
+        switch ad.publishing.publish_status
+          when 2 then scope.approve(ad)
+          when 3 then scope.reject(ad)
+          else
+            console.log 'publish_status = ' + ad.publishing.publish_status
   ]

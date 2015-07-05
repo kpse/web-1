@@ -20,6 +20,28 @@ util.print: Use console.log instead
   width: 400px;
   background-color: #e0dfe4;
 }
+.publishing-status.success {
+  background-color: #1c964b;
+}
+.publishing-status.danger {
+  background-color: #d64928;
+}
+.publishing-status.warning {
+  background-color: #feb900;
+}
+.reject-reason {
+  font-weight: bolder;
+  color: red;
+}
+.title-publish-status {
+  font-weight: bolder;
+}
+.title-publish-status.success {
+  color: #1c964b;
+}
+.title-publish-status.warning {
+  color: #feb900;
+}
 .triangle-border {
   position: relative;
   padding: 15px;

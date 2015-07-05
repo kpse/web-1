@@ -610,5 +610,7 @@ util.print: Use console.log instead
 }
 .new-ad-content {
   min-height: 100px;
+  max-height: 254px;
+  max-width: 100%;
   height: 180px;
 }

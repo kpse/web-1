@@ -39,19 +39,33 @@ angular.module('kulebao.services')
       {
         agent_id: "@agent_id"
         id: "@id"
-      }, {
-        preview:
-          method: 'POST'
-          params:
-            publish_status: 1
-        publish:
-          method: 'POST'
-          params:
-            publish_status: 2
-        reject:
-          method: 'POST'
-          params:
-            publish_status: 3
+      }
+]
+
+.factory 'agentAdPreviewService', ['$resource',
+  ($resource) ->
+    $resource '/api/v4/agent/:agent_id/commercial/:id/preview',
+      {
+        agent_id: "@agent_id"
+        id: "@id"
+      }
+]
+
+.factory 'agentAdApproveService', ['$resource',
+  ($resource) ->
+    $resource '/api/v4/agent/:agent_id/commercial/:id/publish',
+      {
+        agent_id: "@agent_id"
+        id: "@id"
+      }
+]
+
+.factory 'agentAdRejectService', ['$resource',
+  ($resource) ->
+    $resource '/api/v4/agent/:agent_id/commercial/:id/reject',
+      {
+        agent_id: "@agent_id"
+        id: "@id"
       }
 ]
 

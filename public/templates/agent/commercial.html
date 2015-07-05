@@ -20,14 +20,15 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="ad in commercials | filter: searchText | orderBy: 'id'" class="row"
+  <tr ng-repeat="ad in commercials | filter: searchText | orderBy: 'publishing.publish_status' : true " class="row"
       ng-class="{editable: editSchool, expired: kg.charge[0].status==0}" ng-click="editAd(ad);$event.stopPropagation()">
     <td class="col-xs-1"><a ng-href="/agent#/preview/{{ad.id}}" ng-click="$event.stopPropagation()">{{ad.id}}</a></td>
     <td class="col-xs-3">{{ad.title}} 投放数: {{ad.ads.length || 0}}, 投放家长数: 500</td>
     <td class="col-xs-2">
-      <button type="button" class="btn btn-default" ng-model="ad.publishing.publish_status"
-              ng-disabled="adminUser.privilege_group != 'operator'"
-              ng-click="$event.stopPropagation()" bs-options="item.value as item.display for item in allStatus" bs-select></button>
+      <button type="button" class="btn btn-default publishing-status" ng-model="ad.publishing.publish_status"
+              ng-class="{success : ad.publishing.publish_status == 2, danger: ad.publishing.publish_status == 3, warning: ad.publishing.publish_status == 99}"
+              ng-disabled="!allowEditing(adminUser, ad)" ng-change="adminEdit(ad);$event.stopPropagation()"
+              ng-click="$event.stopPropagation()" bs-options="item.publish_status as item.display for item in allStatus" bs-select></button>
     </td>
     <td class="col-xs-2">{{ad.time_span || 'N/A'}}</td>
     <td class="col-xs-2"><a ng-click="">反馈</a></td>

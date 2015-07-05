@@ -23,7 +23,7 @@ case class AgentAd(id: Option[Long], agent_id: Long, title: String, address: Opt
 
   def publish(agentId: Long) = DB.withConnection {
     implicit c =>
-      SQL("update agentadvertisement set publish_status=2, published_at={time}, updated_at={time} where uid={id} and agent_id={base} and publish_status=1")
+      SQL("update agentadvertisement set publish_status=2, published_at={time}, updated_at={time} where uid={id} and agent_id={base} and publish_status=99")
         .on(
           'id -> id,
           'base -> agentId,
@@ -33,7 +33,7 @@ case class AgentAd(id: Option[Long], agent_id: Long, title: String, address: Opt
 
   def reject(agentId: Long) = DB.withConnection {
     implicit c =>
-      SQL("update agentadvertisement set publish_status=3, reject_reason={reason}, updated_at={time} where uid={id} and agent_id={base} ")
+      SQL("update agentadvertisement set publish_status=3, reject_reason={reason}, updated_at={time} where uid={id} and agent_id={base} and publish_status=99")
         .on(
           'id -> id,
           'base -> agentId,

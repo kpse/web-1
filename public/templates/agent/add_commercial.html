@@ -1,5 +1,12 @@
 <div class="panel panel-default">
-  <div class="panel-heading">创建广告</div>
+  <div class="panel-heading" ng-hide="newAd.id">创建广告</div>
+  <div class="panel-heading" ng-show="newAd.id">查看广告
+    <span class="reject-reason"
+          ng-show="newAd.publishing.publish_status == 3">拒绝理由：{{newAd.publishing.reject_reason}}</span>
+    <span class="title-publish-status" ng-class="{success : newAd.publishing.publish_status == 2,
+    warning: newAd.publishing.publish_status == 99}"
+          ng-hide="newAd.publishing.publish_status == 3">{{currentStatus(newAd)}}</span>
+  </div>
   <div class="panel-body">
     <form class="form-horizontal" role="form" name="commercialForm">
       <div class="form-group">
@@ -81,27 +88,35 @@
         <span class="error-field" ng-show="commercialForm.content.$dirty && commercialForm.content.$error.required">请填写正文内容</span>
       <span class="error-field"
             ng-show="commercialForm.content.$dirty && commercialForm.content.$error.maxlength">正文内容请不要超过2000个字符</span>
+
         <div class="col-xs-8">
           <textarea ng-disabled="published(newAd)" id="content" name="content" ng-model="newAd.detail"
-                  class="editing-content form-control new-ad-content" ng-maxlength="2000" placeholder="添加内容" required/></div>
+                    class="editing-content form-control new-ad-content" ng-maxlength="2000" placeholder="添加内容"
+                    required></textarea></div>
       </div>
 
 
       <div class="panel-footer">
-        <div ng-show="published(newAd)" class="issue-date">已于{{newAd.published_at
-          | date:'yyyy年MM月dd日 HH:mm'}}审批通过
+        <div ng-show="published(newAd)" class="issue-date">已于{{newAd.published_at | date:'yyyy年MM月dd日 HH:mm'}}审批通过
         </div>
-        <div ng-hide="newAd.publish_status > 0" class="issue-date">未发布</div>
+        <div ng-hide="published(newAd)" class="issue-date">未发布</div>
         <div class="loading" ng-show="loading"></div>
         <div class="btn-group">
-          <button class="btn btn-default" ng-click="closeDialog(newAd)">{{ published(newAd) ? '关闭' : '取消' }}</button>
-          <button class="btn btn-primary" ng-disabled="commercialForm.$invalid || uploading" ng-hide="published(newAd)"
-                  ng-click="preview(newAd)">预发布
+
+          <button class="btn btn-primary" ng-disabled="commercialForm.$invalid || uploading"
+                  ng-show="canBePreviewed(newAd) && adminUser.privilege_group == 'agent'"
+                  ng-click="preview(newAd)">提交审批
           </button>
+          <button class="btn btn-danger"  ng-show="canBeRejected(newAd)" ng-click="reject(newAd)">拒绝
+          </button>
+          <button class="btn btn-success" ng-show="canBeApproved(newAd)" ng-click="approve(newAd)">批准
+          </button>
+          <button class="btn btn-default" ng-click="closeDialog(newAd)">关闭</button>
           <button class="btn btn-danger" ng-show="published(newAd) || newAd.id" ng-confirm-msg="你确定要删除吗?"
                   ng-confirm-click="removeAd(newAd)">删除
           </button>
-          <button class="btn btn-info" ng-disabled="commercialForm.$invalid || uploading || commercialForm.$pristine" ng-hide="published(newAd)"
+          <button class="btn btn-info" ng-disabled="commercialForm.$invalid || uploading || commercialForm.$pristine"
+                  ng-hide="canBePreview(newAd)"
                   ng-click="save(newAd)">保存
           </button>
         </div>

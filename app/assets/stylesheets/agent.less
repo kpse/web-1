@@ -5,5 +5,32 @@
   background-color: #e0dfe4;
 }
 
+.publishing-status {
+  &.success {
+    background-color: rgb(28, 150, 75);
+  }
+  &.danger {
+    background-color: rgb(214, 73, 40);
+  }
+  &.warning {
+    background-color: rgb(254, 185, 0);
+  }
+}
+
+.reject-reason {
+  font-weight: bolder;
+  color: red;
+}
+
+.title-publish-status {
+  font-weight: bolder;
+  &.success {
+    color: rgb(28, 150, 75);
+  }
+  &.warning {
+    color: rgb(254, 185, 0);
+  }
+}
+
 @import "triangle-border.less";
 @import "animates.less";
