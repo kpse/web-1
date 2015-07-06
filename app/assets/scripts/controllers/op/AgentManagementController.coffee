@@ -31,23 +31,23 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
 
       scope.endEditing = (kg) ->
         Agent.save kg, ->
-          scope.refresh()
-          scope.currentModal.hide()
-        , (res) ->
-          handleError res
+            scope.refresh()
+            scope.currentModal.hide()
+          , (res) ->
+            handleError res
 
-      pickUpUnselected = (agent) ->
+      selectedSchools = (agent) ->
         partition = _.partition scope.kindergartens, (kg) ->
           _.find agent.schools, (k) ->
             k.school_id == kg.school_id
-        _.map partition[1], (kg) ->
-          kg.checked = false
-          kg
+        partition[0]
 
       scope.addSchool = (agent) ->
         scope.resetSelection()
         scope.currentAgent = angular.copy agent
-        scope.unSelectedSchools = pickUpUnselected agent
+        scope.unSelectedSchools = _.reject scope.kindergartens, (r) ->
+          _.find (_.flatten _.map scope.agents, (a) -> selectedSchools a), (u) ->
+            r.school_id == u.school_id
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/op/connect_school.html'
@@ -88,10 +88,10 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
       scope.saveAgent = (agent) ->
         agent.expire = new Date(agent.expireDisplayValue).getTime()
         Agent.save agent, ->
-          scope.refresh()
-          scope.currentModal.hide()
-        , (res) ->
-          handleError res
+            scope.refresh()
+            scope.currentModal.hide()
+          , (res) ->
+            handleError res
 
       scope.disconnect = (kg, currentAgent) ->
         deletedSchool = _.find currentAgent.schoolIds, (k) -> k.school_id == kg.school_id
@@ -127,7 +127,7 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
         all = $q.all queue
         all.then (q) ->
             scope.resetSelection()
-            scope.refresh()
+            scope.refresh(scope.currentAgent)
           , (res) ->
             handleError res
 
@@ -137,7 +137,7 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
         all = $q.all queue
         all.then (q) ->
             scope.resetSelection()
-            scope.refresh()
+            scope.refresh(scope.currentAgent)
           , (res) ->
             handleError res
 
