@@ -103,17 +103,24 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         Approve.save ad, ->
           scope.refresh()
 
-      scope.reject = (ad) ->
-        ad.publishing =
+      scope.rejectDialog = (ad) ->
+        scope.badAd = angular.copy ad
+        scope.badAd.publishing =
           publish_status: 3
-          reject_reason: '我看有点问题，但是说不好在哪里...'
+          reject_reason: ''
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/agent/reject_commercial.html'
+
+      scope.reject = (ad) ->
         Reject.save ad, ->
           scope.refresh()
+          scope.currentModal.hide()
 
       scope.adminEdit = (ad, oldStatus) ->
         switch ad.publishing.publish_status
           when 2 then scope.approve(ad)
-          when 3 then scope.reject(ad)
+          when 3 then scope.rejectDialog(ad)
           else
             console.log 'no way here! publish_status = ' + ad.publishing.publish_status
             ad.publishing.publish_status = parseInt oldStatus

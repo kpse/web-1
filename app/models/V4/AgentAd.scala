@@ -3,6 +3,7 @@ package models.V4
 import anorm.SqlParser._
 import anorm._
 import models.helper.RangerHelper
+import play.Logger
 import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
@@ -33,6 +34,7 @@ case class AgentAd(id: Option[Long], agent_id: Long, title: String, address: Opt
 
   def reject(agentId: Long) = DB.withConnection {
     implicit c =>
+      Logger.info(s"publishing : $publishing")
       SQL("update agentadvertisement set publish_status=3, reject_reason={reason}, updated_at={time} where uid={id} and agent_id={base} and publish_status in (99, 2)")
         .on(
           'id -> id,
@@ -45,7 +47,7 @@ case class AgentAd(id: Option[Long], agent_id: Long, title: String, address: Opt
   def update(base: Long): Option[AgentAd] = DB.withConnection {
     implicit c =>
       SQL("update agentadvertisement set agent_id={base}, title={title}, address={address}, contact={contact}, time_span={time_span}," +
-        "detail={detail}, logo={logo}, publish_status={publish_status}, published_at={published_at}, updated_at={time} where uid={id}")
+        "detail={detail}, logo={logo}, updated_at={time} where uid={id}")
         .on(
           'id -> id,
           'base -> base,

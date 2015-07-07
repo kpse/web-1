@@ -42,6 +42,9 @@ util.print: Use console.log instead
 .title-publish-status.warning {
   color: #feb900;
 }
+.static-content {
+  margin-top: 7px;
+}
 .triangle-border {
   position: relative;
   padding: 15px;
