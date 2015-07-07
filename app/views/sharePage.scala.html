@@ -21,11 +21,12 @@
     <div class="static-container">
       <div class="header">
         <div class="row">
-          <div class="logo col-lg-offset-2 col-lg-2 pull-left">
-            <a href="http://www.cocobabys.com"><img class="" src="@routes.VersionedAssets.at("images/logo.jpg")" alt="幼乐宝"/></a>
+          <div class="logo col-lg-offset-2 col-lg-2">
+            <a href="http://www.cocobabys.com"><img class="" src="@routes.VersionedAssets.at("images/logowb.png")" alt="幼乐宝"/></a>
           </div>
         </div>
       </div>
+      <div class="border"></div>
       <div class="clearfix"></div>
       <div id="main">
         @*
@@ -33,7 +34,7 @@
         *@
         <div class="share-content content">@page.content</div>
         <div class="share-content">
-          <span>@(new Date(page.timestamp).format("yyyy-MM-dd"))</span>
+          <span class="shared-at">@(new Date(page.timestamp).format("yyyy-MM-dd"))</span>
           <a href="http://www.cocobabys.com">幼乐宝</a>
         </div>
         <ul class="share-images">

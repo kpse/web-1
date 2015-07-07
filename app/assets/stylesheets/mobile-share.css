@@ -2,26 +2,39 @@ util.print: Use console.log instead
 .static-container {
   overflow: hidden;
 }
-.share-images {
-  margin: 15px auto;
-  padding: 0;
-}
-.share-images .share-image {
-  list-style: none;
-  margin: 5px auto;
-  max-width: 480px;
-}
-.share-images .share-image img {
-  max-width: 480px;
-  width: 100%;
-}
-.share-content {
-  margin: 5px auto;
-  max-width: 480px;
-}
 .content {
   font-size: 16px;
 }
 #really-cool-video {
   max-width: 100%;
+}
+.logo {
+  margin-left: 20px;
+}
+.border {
+  border-bottom: #e6e6e6 2px solid;
+  margin: 5px 20px;
+}
+#main {
+  margin: 5px 20px;
+}
+#main .share-content {
+  margin: 0 auto;
+  max-width: 480px;
+}
+#main .share-content .shared-at {
+  color: #e6e6e6;
+}
+#main .share-images {
+  margin: 15px auto;
+  padding: 0;
+}
+#main .share-images .share-image {
+  list-style: none;
+  margin: 0 auto 30px;
+  max-width: 480px;
+}
+#main .share-images .share-image img {
+  max-width: 480px;
+  width: 100%;
 }
