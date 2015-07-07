@@ -16,17 +16,21 @@
     <th class="col-xs-2">名称</th>
     <th class="col-xs-2">下级幼儿园数量</th>
     <th class="col-xs-2">到期时间</th>
-    <th class="col-xs-3">操作</th>
+    <th class="col-xs-1">待审批广告</th>
+    <th class="col-xs-2">操作</th>
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="agent in agents | filter: searchText | orderBy: 'id'" class="row" ng-class="{editable: editAgent, expired: kg.charge[0].status==0}" ng-click="editAgent(agent)">
+  <tr ng-repeat="agent in agents | filter: searchText | orderBy: ['-waitingAd.length', 'id']" class="row"
+      ng-class="{editable: editAgent, expired: kg.charge[0].status==0, waiting: agent.waitingAd.length > 0}" ng-click="editAgent(agent)">
     <td class="col-xs-1"><a ng-href="/agent#/main/{{agent.id}}/commercial" ng-click="$event.stopPropagation()">{{agent.id}}</a></td>
     <td class="col-xs-2">{{agent.area}}</td>
     <td class="col-xs-2">{{agent.name}}</td>
     <td class="col-xs-2">{{agent.schools.length}}</td>
     <td class="col-xs-2">{{agent.expire | date:'yyyy年MM月dd日'}}</td>
-    <td class="col-xs-3">
+    <td class="col-xs-1" ng-show="agent.waitingAd.length > 0"><a ng-href="/agent#/main/{{agent.id}}/commercial" ng-click="$event.stopPropagation()">{{agent.waitingAd.length}}</a></td>
+    <td class="col-xs-1" ng-hide="agent.waitingAd.length > 0">0</td>
+    <td class="col-xs-2">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="这个操作将彻底删除{{::agent.name}}的所有数据，确定继续?"
               ng-confirm-click="deleteAgent(agent);$event.stopPropagation()">删除
       </button>
