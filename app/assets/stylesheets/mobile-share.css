@@ -29,12 +29,14 @@ util.print: Use console.log instead
   margin: 15px auto;
   padding: 0;
 }
-#main .share-images .share-image {
+#main .share-images li {
   list-style: none;
+}
+#main .share-images li.share-image {
   margin: 0 auto 30px;
   max-width: 480px;
 }
-#main .share-images .share-image img {
+#main .share-images li.share-image img {
   max-width: 480px;
   width: 100%;
 }

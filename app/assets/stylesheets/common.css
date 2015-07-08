@@ -166,7 +166,11 @@ util.print: Use console.log instead
 .main-body .main-view .image-container .message-image,
 .main-body .modal .image-container .message-image,
 .main-body .main-view .image-preview .message-image,
-.main-body .modal .image-preview .message-image {
+.main-body .modal .image-preview .message-image,
+.main-body .main-view .image-container .message-video,
+.main-body .modal .image-container .message-video,
+.main-body .main-view .image-preview .message-video,
+.main-body .modal .image-preview .message-video {
   max-height: 220px;
   max-width: 220px;
 }
@@ -194,7 +198,11 @@ util.print: Use console.log instead
 .main-body .main-view .image-container.image-110 .message-audio,
 .main-body .modal .image-container.image-110 .message-audio,
 .main-body .main-view .image-preview.image-110 .message-audio,
-.main-body .modal .image-preview.image-110 .message-audio {
+.main-body .modal .image-preview.image-110 .message-audio,
+.main-body .main-view .image-container.image-110 .message-video,
+.main-body .modal .image-container.image-110 .message-video,
+.main-body .main-view .image-preview.image-110 .message-video,
+.main-body .modal .image-preview.image-110 .message-video {
   max-height: 80px;
   max-width: 80px;
 }

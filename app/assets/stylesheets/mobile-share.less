@@ -34,15 +34,18 @@
   .share-images {
     margin: 15px auto;
     padding: 0;
-    .share-image {
+    li {
       list-style: none;
-      margin: 0 auto 30px;
-      max-width: 480px;
-      img {
+      &.share-image {
+        margin: 0 auto 30px;
         max-width: 480px;
-        width: 100%;
+        img {
+          max-width: 480px;
+          width: 100%;
+        }
       }
     }
+
   }
 
 }
