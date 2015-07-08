@@ -288,10 +288,10 @@ object Employee {
 
   def loginNameExists(loginName: String) = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from employeeinfo where login_name={login}")
+      SQL("select (select count(1) from employeeinfo where login_name={login}) + (select count(1) from agentinfo where login_name={login}) as count")
         .on(
           'login -> loginName
-        ).as(get[Long]("count(1)") single) > 0
+        ).as(get[Long]("count") single) > 0
   }
 
   def phoneExists(phone: String) = DB.withConnection {

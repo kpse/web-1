@@ -4,9 +4,9 @@ import controllers.Secured
 import models.V4.{AgentResetPassword, AgentPassword, KulebaoAgent}
 import models.V4.AgentPassword.readAgentPassword
 import models.V4.AgentPassword.readAgentResetPassword
-import models.{ErrorResponse, SuccessResponse}
+import models.{Employee, ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
-import play.api.mvc.Controller
+import play.api.mvc.{SimpleResult, Controller}
 
 object AgentController extends Controller with Secured {
   def show(id: Long) = IsAgentLoggedIn {
@@ -25,12 +25,7 @@ object AgentController extends Controller with Secured {
 
   def create = IsAgentLoggedIn(parse.json) { u => request =>
     request.body.validate[KulebaoAgent].map {
-      case (s) if s.id.isDefined =>
-        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
-      case (s) if s.name.isEmpty =>
-        BadRequest(Json.toJson(ErrorResponse("请提供代理商名称(please provide name of the agent)", 4)))
-      case (s) =>
-        Ok(Json.toJson(s.create))
+      idExistCheck orElse nameCheck orElse createAgent
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -38,10 +33,7 @@ object AgentController extends Controller with Secured {
 
   def update(id: Long) = IsAgentLoggedIn(parse.json) { u => request =>
     request.body.validate[KulebaoAgent].map {
-      case (s) if s.id != Some(id) =>
-        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
-      case (s) =>
-        Ok(Json.toJson(s.update))
+      idCheck(id) orElse nameCheck orElse updateAgent
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -72,5 +64,34 @@ object AgentController extends Controller with Secured {
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
+  }
+
+  val nameCheck: PartialFunction[KulebaoAgent, SimpleResult] = {
+    case (s) if s.name.isEmpty =>
+      BadRequest(Json.toJson(ErrorResponse("请提供代理商名称(please provide name of the agent)", 4)))
+    case (s) if s.login_name.isEmpty =>
+      BadRequest(Json.toJson(ErrorResponse("必须提供代理商登陆名称(please provide login name of the agent)", 7)))
+    case (s) if Employee.loginNameExists(s.login_name.get) =>
+      BadRequest(Json.toJson(ErrorResponse("登陆名已存在，请另行选择(please provide another login name)", 8)))
+  }
+
+  def idCheck(id: Long): PartialFunction[KulebaoAgent, SimpleResult] = {
+    case (s) if s.id != Some(id) =>
+      BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
+  }
+
+  val idExistCheck: PartialFunction[KulebaoAgent, SimpleResult] = {
+    case (s) if s.id.isDefined =>
+      BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
+  }
+
+  val updateAgent: PartialFunction[KulebaoAgent, SimpleResult] = {
+    case (s) =>
+      Ok(Json.toJson(s.update))
+  }
+
+  val createAgent: PartialFunction[KulebaoAgent, SimpleResult] = {
+    case (s) =>
+      Ok(Json.toJson(s.create))
   }
 }
