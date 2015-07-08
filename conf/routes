@@ -564,6 +564,9 @@ POST          /api/v4/agent/:agentId/commercial/:id/preview                     
 POST          /api/v4/agent/:agentId/commercial/:id/publish                           controllers.V4.AgentAdController.publish(agentId: Long, id: Long)
 POST          /api/v4/agent/:agentId/commercial/:id/reject                            controllers.V4.AgentAdController.reject(agentId: Long, id: Long)
 
+POST          /api/v4/agent/:agentId/password                                         controllers.V4.AgentController.changePassword(agentId: Long)
+POST          /api/v4/agent/:agentId/password_reset                                   controllers.V4.AgentController.resetPassword(agentId: Long)
+
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                controllers.ChildController.index(kg: Long, parentId: String)
 GET           /kindergarten/:kg/parent/:parentId/child/:childId                       controllers.ChildController.show(kg: Long, parentId: String, childId: String)

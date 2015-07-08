@@ -1,8 +1,10 @@
 package controllers.V4
 
 import controllers.Secured
-import models.{SuccessResponse, ErrorResponse}
-import models.V4.KulebaoAgent
+import models.V4.{AgentResetPassword, AgentPassword, KulebaoAgent}
+import models.V4.AgentPassword.readAgentPassword
+import models.V4.AgentPassword.readAgentResetPassword
+import models.{ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
@@ -48,5 +50,27 @@ object AgentController extends Controller with Secured {
   def delete(id: Long) = IsAgentLoggedIn { u => _ =>
     KulebaoAgent.deleteById(id)
     Ok(Json.toJson(new SuccessResponse()))
+  }
+
+  def changePassword(agentId: Long) = IsAgentLoggedIn(parse.json) { u => request =>
+    request.body.validate[AgentPassword].map {
+      case (s) if !s.matched =>
+        BadRequest(Json.toJson(ErrorResponse("提供的信息不匹配(information is incorrect)", 5)))
+      case (s) =>
+        Ok(Json.toJson(s.change))
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
+
+  def resetPassword(agentId: Long) = IsAgentLoggedIn(parse.json) { u => request =>
+    request.body.validate[AgentResetPassword].map {
+      case (s) if !s.matched =>
+        BadRequest(Json.toJson(ErrorResponse("提供的信息不匹配(information is incorrect)", 6)))
+      case (s) =>
+        Ok(Json.toJson(s.reset))
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
   }
 }
