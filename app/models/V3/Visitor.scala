@@ -20,7 +20,7 @@ case class Visitor(id: Option[Long], name: Option[String], certification_type: O
           'school_id -> kg,
           'name -> name,
           'type -> certification_type,
-          'number -> certification_type,
+          'number -> certification_number,
           'reason -> reason,
           'time -> System.currentTimeMillis,
           'quantity -> quantity,
