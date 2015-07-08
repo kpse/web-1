@@ -1,0 +1,81 @@
+<div class="panel panel-default">
+  <div class="panel-heading">查看信息</div>
+  <div class="panel-body">
+    <form class="form-horizontal row agent-form" role="form" name="newAgentForm">
+
+      <div class="col-sm-10">
+        <div class="form-group">
+          <label class="col-sm-4 control-label">电话号码</label>
+
+          <div class="col-sm-8">
+            <p class="form-control-static">{{currentAgent.phone}}</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-4 control-label">名称</label>
+
+          <div class="col-sm-8">
+            <p class="form-control-static">{{currentAgent.name}}</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-4 control-label">所属区域</label>
+
+          <div class="col-sm-8">
+            <p class="form-control-static">{{currentAgent.area}}</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-4 control-label">登陆名字</label>
+
+          <div class="col-sm-8">
+            <p class="form-control-static">{{currentAgent.login_name}}</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+
+          <label class="col-sm-4 control-label">过期时间</label>
+
+          <div class="col-sm-8">
+            <p class="form-control-static">{{currentAgent.expire | date:'yyyy年MM月'}}</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">联系人信息</label>
+
+          <div class="col-sm-8">
+            <p class="form-control-static">{{currentAgent.contact_info}}</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">备注</label>
+
+          <div class="col-sm-8">
+            <p class="form-control-static">{{currentAgent.memo}}</p>
+          </div>
+        </div>
+
+        <div class="form-group" ng-show="currentAgent.created_at">
+          <label for="created-at" class="col-sm-4 control-label">创建时间</label>
+
+          <div class="col-sm-8">
+            <p id="created-at" class="form-control-static">{{currentAgent.created_at | date:'yyyy年MM月dd日 HH:mm'}}</p>
+          </div>
+        </div>
+
+
+        <div class="col-sm-8">
+          <div class="form-group">
+            <a class="btn btn-default pull-right adding-button"
+               ng-click="$hide()">关闭</a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+

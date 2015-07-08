@@ -16,8 +16,8 @@
               个人中心<span class="caret"></span>
             </button>
             <ul class="dropdown-menu user-menu" role="menu">
-              <li><a ng-click="edit(loggedUser)">修改个人信息</a></li>
-              <li><a ng-click="changePassword(loggedUser)">修改密码</a></li>
+              <li><a ng-click="editAgent(currentAgent)">查看信息</a></li>
+              <li><a ng-click="changePassword(currentAgent)">修改登陆密码</a></li>
               <li ng-show="loggedUser.privilege_group == 'operator'"><a ng-href="/operation">去后台管理页面</a>
               <li class="divider"></li>
               <li><a class="logout-link" href="/logout">退出登陆</a></li>

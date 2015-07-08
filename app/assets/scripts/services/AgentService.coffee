@@ -79,3 +79,19 @@ angular.module('kulebao.services')
       }
 ]
 
+.factory 'agentPasswordService', ['$resource',
+  ($resource) ->
+    $resource '/api/v4/agent/:agent_id/password',
+      {
+        agent_id: "@agent_id"
+      }
+]
+
+.factory 'agentResetPasswordService', ['$resource',
+  ($resource) ->
+    $resource '/api/v4/agent/:agent_id/password_reset',
+      {
+        agent_id: "@agent_id"
+      }
+]
+
