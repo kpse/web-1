@@ -11,6 +11,7 @@ CREATE TABLE dietarrangement (
   menu_name   VARCHAR(50),
   weight   VARCHAR(10),
   arrange_type INT,
+  arrange_date BIGINT,
   master_id INT(11),
   grade_id INT(11),
   updated_at BIGINT,
@@ -19,9 +20,9 @@ CREATE TABLE dietarrangement (
   KEY (school_id, group_id)
 );
 
-INSERT INTO dietarrangement (school_id, menu_id, menu_name, group_id, weight, arrange_type, master_id, grade_id, updated_at) VALUES
-('93740362', 1, '一顿饭', 1, '100g', 1, 1, 1, 1393395313123),
-('93740362', 1, '另一顿饭', 0, '400g', 2, 2, 2, 1393399313123);
+INSERT INTO dietarrangement (school_id, menu_id, menu_name, group_id, weight, arrange_type, master_id, grade_id, updated_at, arrange_date) VALUES
+('93740362', 1, '一顿饭', 1, '100g', 1, 1, 1, 1393395313123, 1393395313123),
+('93740362', 1, '另一顿饭', 0, '400g', 2, 2, 2, 1393399313123, 1393395313123);
 
 # --- !Downs
 

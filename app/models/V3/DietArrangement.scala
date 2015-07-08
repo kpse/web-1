@@ -8,7 +8,7 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
-case class DietArrangement(id: Option[Long], menu_id: Option[Long], menu_name: Option[String],
+case class DietArrangement(id: Option[Long], menu_id: Option[Long], menu_name: Option[String], arrange_date: Option[Long],
                            arrange_type: Option[Int], master_id: Option[Long], grade_id: Option[Long], weight: Option[String], updated_at: Option[Long]) {
   def exists(id: Long) = DB.withConnection {
     implicit c =>
@@ -30,7 +30,7 @@ case class DietArrangement(id: Option[Long], menu_id: Option[Long], menu_name: O
     implicit c =>
       SQL("update dietarrangement set school_id={school_id}, menu_id={menu_id}, menu_name={menu_name}, " +
         "arrange_type={arrange_type}, master_id={master_id}, grade_id={grade_id}, weight={weight}, group_id={group_id}, " +
-        "updated_at={time} where school_id={school_id} and uid={id}")
+        "updated_at={time}, arrange_date={arrange_date} where school_id={school_id} and uid={id}")
         .on(
           'id -> id,
           'school_id -> kg,
@@ -38,6 +38,7 @@ case class DietArrangement(id: Option[Long], menu_id: Option[Long], menu_name: O
           'menu_id -> menu_id,
           'menu_name -> menu_name,
           'arrange_type -> arrange_type,
+          'arrange_date -> arrange_date,
           'master_id -> master_id,
           'grade_id -> grade_id,
           'weight -> weight,
@@ -48,14 +49,15 @@ case class DietArrangement(id: Option[Long], menu_id: Option[Long], menu_name: O
 
   def create(kg: Long, base: Long): Option[DietArrangement] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into dietarrangement (school_id, group_id, menu_id, menu_name, arrange_type, master_id, grade_id, weight, updated_at) values (" +
-        "{school_id}, {group_id}, {menu_id}, {menu_name}, {arrange_type}, {master_id}, {grade_id}, {weight}, {time})")
+      val insert: Option[Long] = SQL("insert into dietarrangement (school_id, group_id, menu_id, menu_name, arrange_type, master_id, grade_id, weight, updated_at, arrange_date) values (" +
+        "{school_id}, {group_id}, {menu_id}, {menu_name}, {arrange_type}, {master_id}, {grade_id}, {weight}, {time}, {arrange_date})")
         .on(
           'school_id -> kg,
           'group_id -> base,
           'menu_id -> menu_id,
           'menu_name -> menu_name,
           'arrange_type -> arrange_type,
+          'arrange_date -> arrange_date,
           'master_id -> master_id,
           'grade_id -> grade_id,
           'weight -> weight,
@@ -194,12 +196,13 @@ object ArrangementGroup {
       get[Option[Long]]("menu_id") ~
       get[Option[String]]("menu_name") ~
       get[Option[Int]]("arrange_type") ~
+      get[Option[Long]]("arrange_date") ~
       get[Option[Long]]("master_id") ~
       get[Option[Long]]("grade_id") ~
       get[Option[String]]("weight") ~
       get[Option[Long]]("updated_at") map {
-      case id ~ menuId ~ name ~ typ ~ master ~ grade ~ weight ~ time =>
-        DietArrangement(Some(id), menuId, name, typ, master, grade, weight, time)
+      case id ~ menuId ~ name ~ typ ~ date ~ master ~ grade ~ weight ~ time =>
+        DietArrangement(Some(id), menuId, name, date, typ, master, grade, weight, time)
     }
   }
 }
@@ -241,12 +244,13 @@ object DietArrangement {
       get[Option[Long]]("menu_id") ~
       get[Option[String]]("menu_name") ~
       get[Option[Int]]("arrange_type") ~
+      get[Option[Long]]("arrange_date") ~
       get[Option[Long]]("master_id") ~
       get[Option[Long]]("grade_id") ~
       get[Option[String]]("weight") ~
       get[Option[Long]]("updated_at") map {
-      case id ~ menuId ~ name ~ typ ~ master ~ grade ~ weight ~ time =>
-        DietArrangement(Some(id), menuId, name, typ, master, grade, weight, time)
+      case id ~ menuId ~ name ~ typ ~ date ~ master ~ grade ~ weight ~ time =>
+        DietArrangement(Some(id), menuId, name, date, typ, master, grade, weight, time)
     }
   }
 }
