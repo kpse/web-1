@@ -128,8 +128,10 @@ angular.module('kulebaoAdmin')
       scope.detectType = (url) ->
         if url && url.match /\.(jpg|png)$/i
           'image'
-        else if url && url.match /\.(mp3|mp4|amr)$/i
+        else if url && url.match /\.(mp3|amr)$/i
           'audio'
+        else if url && url.match /\.(mp4)$/i
+          'video'
         else
           'unknown'
 
