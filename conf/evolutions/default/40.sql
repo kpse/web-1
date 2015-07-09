@@ -9,7 +9,7 @@
 CREATE TABLE cardrecord (
   uid         INT(11) NOT NULL AUTO_INCREMENT,
   school_id   VARCHAR(20) NOT NULL,
-  number VARCHAR(40),
+  number VARCHAR(50),
   origin VARCHAR(10),
   status INT DEFAULT 1,
   PRIMARY KEY (uid),
