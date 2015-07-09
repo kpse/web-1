@@ -44,6 +44,7 @@ object WarehouseGoodsOriginController extends Controller with Secured {
   }
 
   def delete(kg: Long, warehouseId: Long, id: Long) = IsLoggedIn { u => _ =>
+    GoodsOrigin.deleteById(kg, warehouseId, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
