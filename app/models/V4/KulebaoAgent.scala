@@ -18,8 +18,18 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[Str
 
   override def session(): Session = Session(Map("username" -> login_name.getOrElse(""), "phone" -> phone.getOrElse(""), "name" -> name.getOrElse(""), "id" -> id.getOrElse(0).toString))
 
+  def removeDuplicatedPhone(phone: Option[String]) = DB.withConnection {
+    implicit c =>
+      phone foreach {
+        p =>
+          SQL("delete from agentinfo where phone={phone} and status=0")
+            .on('phone -> p).execute()
+      }
+  }
+
   def update: Option[KulebaoAgent] = DB.withConnection {
     implicit c =>
+      removeDuplicatedPhone(phone)
       SQL("update agentinfo set name={name}, phone={phone}, area={area}, logo_url={logo_url}, expire_at={expire_at}, contact_info={contact_info}, memo={memo}," +
         "updated_at={time} where uid={id}")
         .on(
@@ -40,6 +50,7 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[Str
 
   def create: Option[KulebaoAgent] = DB.withConnection {
     implicit c =>
+      removeDuplicatedPhone(phone)
       val insert: Option[Long] = SQL("insert into agentinfo (name, area, phone, logo_url, login_password, login_name, updated_at, created_at, expire_at, memo, contact_info) values (" +
         "{name}, {area}, {phone}, {logo_url}, {login_password}, {login_name}, {time}, {time}, {expire_at}, {memo}, {contact_info})")
         .on(
@@ -106,6 +117,24 @@ object KulebaoAgent {
       Logger.info(s"request path is $path")
       isAgent && (path.matches(s"^(?:/api/v\\d+)?/agent/$id(/.+)?") || path.matches(s"^/agent#/main/$id(/.+)?")) ||
         path.matches("^/agent") || path.matches(s"^/main/$id(/.+)?")
+  }
+
+  def duplicatedPhone(agent: KulebaoAgent) = DB.withConnection {
+    implicit c =>
+      agent.id match {
+        case Some(i) =>
+          SQL("select count(1) from agentinfo where uid<>{id} and phone={phone} and status=1")
+            .on(
+              'id -> i,
+              'phone -> agent.phone
+            ).as(get[Long]("count(1)") single) > 0
+        case None =>
+          SQL("select count(1) from agentinfo where phone={phone} and status=1")
+            .on(
+              'phone -> agent.phone
+            ).as(get[Long]("count(1)") single) > 0
+      }
+
   }
 
   val simple = {

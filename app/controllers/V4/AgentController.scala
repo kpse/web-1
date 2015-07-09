@@ -25,7 +25,7 @@ object AgentController extends Controller with Secured {
 
   def create = IsAgentLoggedIn(parse.json) { u => request =>
     request.body.validate[KulebaoAgent].map {
-      idExistCheck orElse nameCheck orElse createAgent
+      idExistCheck orElse phoneCheck orElse nameCheck orElse createAgent
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -33,7 +33,7 @@ object AgentController extends Controller with Secured {
 
   def update(id: Long) = IsAgentLoggedIn(parse.json) { u => request =>
     request.body.validate[KulebaoAgent].map {
-      idCheck(id) orElse nameCheck orElse updateAgent
+      idCheck(id) orElse phoneCheck orElse nameCheck orElse updateAgent
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -83,6 +83,13 @@ object AgentController extends Controller with Secured {
   val idExistCheck: PartialFunction[KulebaoAgent, SimpleResult] = {
     case (s) if s.id.isDefined =>
       BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
+  }
+
+  val phoneCheck: PartialFunction[KulebaoAgent, SimpleResult] = {
+    case (s) if s.phone.isEmpty =>
+      BadRequest(Json.toJson(ErrorResponse("必须提供电话号码(please provide phone number)", 9)))
+    case (s) if KulebaoAgent.duplicatedPhone(s) =>
+      BadRequest(Json.toJson(ErrorResponse("电话号与其他代理商重复(duplicated phone number)", 10)))
   }
 
   val updateAgent: PartialFunction[KulebaoAgent, SimpleResult] = {
