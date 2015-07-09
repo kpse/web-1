@@ -68,6 +68,17 @@ object AgentSchoolAd {
         ).executeUpdate()
   }
 
+  def published(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
+    implicit c =>
+      SQL(s"select a.* from agentadinschool s, agentadvertisement a where s.ad_id=a.uid and s.school_id={kg} " +
+        s"and a.status=1 and s.status=1 and a.publish_status=2 ${RangerHelper.generateSpan(from, to, most)}")
+        .on(
+          'from -> from,
+          'to -> to,
+          'kg -> kg
+        ).as(AgentAd.simple *)
+  }
+
   val simple = {
     get[Long]("uid") ~
       get[Long]("agent_id") ~
