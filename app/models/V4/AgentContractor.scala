@@ -123,7 +123,7 @@ object AgentContractor {
       get[Option[String]]("logo") ~
       get[Option[Long]]("updated_at") map {
       case id ~ agent ~ title ~ category ~ address ~ contact ~ timeSpan ~ detail ~ logo ~ time =>
-        AgentContractor(Some(id), agent, title, categoryFromEnum(category), address, contact, timeSpan, detail, logo, time, Some(AdPublishing.publishStatus(tableName)(id, agent)))
+        AgentContractor(Some(id), agent, categoryFromEnum(category), title, address, contact, timeSpan, detail, logo, time, Some(AdPublishing.publishStatus(tableName)(id, agent)))
     }
   }
 }

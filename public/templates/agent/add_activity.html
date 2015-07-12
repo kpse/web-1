@@ -1,6 +1,6 @@
 <div class="panel panel-default">
-  <div class="panel-heading" ng-hide="newAd.id">创建广告</div>
-  <div class="panel-heading" ng-show="newAd.id">查看广告
+  <div class="panel-heading" ng-hide="newAd.id">创建活动</div>
+  <div class="panel-heading" ng-show="newAd.id">查看活动
     <span class="reject-reason"
           ng-show="newAd.publishing.publish_status == 3">拒绝理由：{{newAd.publishing.reject_reason}}</span>
     <span class="title-publish-status" ng-class="{success : newAd.publishing.publish_status == 2,
@@ -10,7 +10,7 @@
   <div class="panel-body">
     <form class="form-horizontal" role="form" name="commercialForm">
       <div class="form-group">
-        <label for="title" class="control-label col-xs-2 title-line">广告标题</label>
+        <label for="title" class="control-label col-xs-2 title-line">活动标题</label>
 
         <div class="col-xs-4">
           <input ng-bk-focus id="title" name="title" ng-model="newAd.title" class="form-control"
@@ -22,9 +22,9 @@
         </div>
 
         <div class="form-group col-xs-3">
-          <button type="button" class="btn btn-default" ng-model="newAd.tags" data-html="1" data-multiple="1"
-                  placeholder="添加需要的标签" ng-disabled="newAd.published"
-                  ng-click="$event.stopPropagation()" bs-options="t for t in allTags" bs-select></button>
+          <button type="button" class="btn btn-default" ng-model="newAd.contractor" data-html="1"
+                  placeholder="{{newAd.contractor.title || '所属商户'}}"
+                  ng-click="$event.stopPropagation()" bs-options="c as c.title for c in contractors" bs-select required></button>
         </div>
       </div>
 
@@ -111,7 +111,7 @@
           </button>
           <button class="btn btn-success" ng-show="canBeApproved(newAd)" ng-click="approve(newAd)">批准
           </button>
-          <button class="btn btn-default" ng-click="closeDialog(newAd)">关闭</button>
+          <button class="btn btn-default" ng-click="$hide()">关闭</button>
           <button class="btn btn-danger" ng-show="published(newAd) || newAd.id" ng-confirm-msg="你确定要删除吗?"
                   ng-confirm-click="removeAd(newAd)">删除
           </button>

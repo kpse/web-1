@@ -33,45 +33,50 @@ angular.module('kulebao.services')
       }
 ]
 
-.factory 'agentAdService', ['$resource',
+.factory 'agentContractorService', ['$resource',
   ($resource) ->
-    $resource '/api/v4/agent/:agent_id/commercial/:id',
+    $resource '/api/v4/agent/:agent_id/contractor/:id',
       {
         agent_id: "@agent_id"
         id: "@id"
+      }, {
+        preview:
+          url: '/api/v4/agent/:agent_id/contractor/:id/preview'
+          method: 'POST'
+        approve:
+          url: '/api/v4/agent/:agent_id/contractor/:id/publish'
+          method: 'POST'
+        reject:
+          url: '/api/v4/agent/:agent_id/contractor/:id/reject'
+          method: 'POST'
       }
+
 ]
 
-.factory 'agentAdPreviewService', ['$resource',
+.factory 'agentActivityService', ['$resource',
   ($resource) ->
-    $resource '/api/v4/agent/:agent_id/commercial/:id/preview',
+    $resource '/api/v4/agent/:agent_id/contractor/:contractor_id/activity/:id',
       {
         agent_id: "@agent_id"
+        contractor_id: "@contractor_id"
         id: "@id"
+      }, {
+        preview:
+          url: '/api/v4/agent/:agent_id/contractor/:contractor_id/activity/:id/preview'
+          method: 'POST'
+        approve:
+          url: '/api/v4/agent/:agent_id/contractor/:contractor_id/activity/:id/publish'
+          method: 'POST'
+        reject:
+          url: '/api/v4/agent/:agent_id/contractor/:contractor_id/activity/:id/reject'
+          method: 'POST'
       }
-]
 
-.factory 'agentAdApproveService', ['$resource',
-  ($resource) ->
-    $resource '/api/v4/agent/:agent_id/commercial/:id/publish',
-      {
-        agent_id: "@agent_id"
-        id: "@id"
-      }
-]
-
-.factory 'agentAdRejectService', ['$resource',
-  ($resource) ->
-    $resource '/api/v4/agent/:agent_id/commercial/:id/reject',
-      {
-        agent_id: "@agent_id"
-        id: "@id"
-      }
 ]
 
 .factory 'agentAdInSchoolService', ['$resource',
   ($resource) ->
-    $resource '/api/v4/agent/:agent_id/kindergarten/:kg/commercial/:id',
+    $resource '/api/v4/agent/:agent_id/kindergarten/:kg/contractor/:id',
       {
         agent_id: "@agent_id"
         kg: "@kg"

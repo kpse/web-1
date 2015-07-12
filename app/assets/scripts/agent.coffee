@@ -40,8 +40,16 @@ angular.module('kulebaoAgent',
 
     .state 'main.commercial',
       url: '/commercial'
-      templateUrl: 'templates/agent/commercial.html'
+      templateUrl: 'templates/agent/commercial_types.html'
       controller: 'AgentCommercialCtrl'
+    .state 'main.commercial.contractors',
+      url: '/contractors'
+      templateUrl: 'templates/agent/contractors.html'
+      controller: 'AgentContractorsCtrl'
+    .state 'main.commercial.activities',
+      url: '/activities'
+      templateUrl: 'templates/agent/activities.html'
+      controller: 'AgentActivitiesCtrl'
 
     .state 'main.statistics',
       url: '/statistics'

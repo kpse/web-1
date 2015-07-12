@@ -1,0 +1,18 @@
+<h2>广告管理</h2>
+<div class="well schools-search-panel">
+  <span>检索：</span>
+  <input ng-model="searchText"/>
+
+  <div class="btn-group">
+    <button type="submit" class="btn btn-success" ng-disabled="loading" ng-click="addNewActivity()">增加活动</button>
+    <button type="submit" class="btn btn-primary" ng-disabled="loading" ng-click="addNewAd()">增加商户</button>
+  </div>
+</div>
+<ul class="nav nav-tabs">
+  <li ng-repeat="a in adTypes" ui-sref-active="active">
+    <a ui-sref="main.commercial.{{a.route}}">{{a.name}}</a>
+  </li>
+</ul>
+<div class="loading" ng-show="loading"></div>
+<div class="commercial-view" ui-view></div>
+

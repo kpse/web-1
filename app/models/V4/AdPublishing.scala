@@ -10,7 +10,7 @@ import play.api.libs.json.Json
 case class AdPublishing(publish_status: Int, published_at: Option[Long], reject_reason: Option[String] = None) {
   def preview(table: String)(agentId: Long, target: Long) = DB.withConnection {
     implicit c =>
-      SQL(s"update $table set publish_status=99, updated_at={time} where uid={target} and agent_id={base} and publish_status in (0, 3)")
+      SQL(s"update $table set publish_status=99, updated_at={time} where uid={id} and agent_id={base} and publish_status in (0, 3)")
         .on(
           'id -> target,
           'base -> agentId,
@@ -20,7 +20,7 @@ case class AdPublishing(publish_status: Int, published_at: Option[Long], reject_
 
   def publish(table: String)(agentId: Long, target: Long) = DB.withConnection {
     implicit c =>
-      SQL(s"update $table set publish_status=2, published_at={time}, updated_at={time} where uid={target} and agent_id={base} and publish_status in (99, 3)")
+      SQL(s"update $table set publish_status=2, published_at={time}, updated_at={time} where uid={id} and agent_id={base} and publish_status in (99, 3)")
         .on(
           'id -> target,
           'base -> agentId,
@@ -30,7 +30,7 @@ case class AdPublishing(publish_status: Int, published_at: Option[Long], reject_
 
   def reject(table: String)(agentId: Long, target: Long) = DB.withConnection {
     implicit c =>
-      SQL(s"update $table set publish_status=3, reject_reason={reason}, updated_at={time} where uid={target} and agent_id={base} and publish_status in (99, 2)")
+      SQL(s"update $table set publish_status=3, reject_reason={reason}, updated_at={time} where uid={id} and agent_id={base} and publish_status in (99, 2)")
         .on(
           'id -> target,
           'base -> agentId,

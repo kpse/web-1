@@ -1,0 +1,125 @@
+<div class="panel panel-default">
+  <div class="panel-heading" ng-hide="newAd.id">创建商户</div>
+  <div class="panel-heading" ng-show="newAd.id">查看商户
+    <span class="reject-reason"
+          ng-show="newAd.publishing.publish_status == 3">拒绝理由：{{newAd.publishing.reject_reason}}</span>
+    <span class="title-publish-status" ng-class="{success : newAd.publishing.publish_status == 2,
+    warning: newAd.publishing.publish_status == 99}"
+          ng-hide="newAd.publishing.publish_status == 3">{{currentStatus(newAd)}}</span>
+  </div>
+  <div class="panel-body">
+    <form class="form-horizontal" role="form" name="commercialForm">
+      <div class="form-group">
+        <label for="title" class="control-label col-xs-2 title-line">广告标题</label>
+
+        <div class="col-xs-4">
+          <input ng-bk-focus id="title" name="title" ng-model="newAd.title" class="form-control"
+                 maxlength="15" placeholder="添加标题" ng-disabled="published(newAd)" required/>
+          <span class="error-field"
+                ng-show="commercialForm.title.$dirty && commercialForm.title.$error.required">请填写标题</span>
+          <span class="error-field"
+                ng-show="commercialForm.title.$dirty && commercialForm.title.$error.maxlength">标题请不要超过15个字符</span>
+        </div>
+
+        <div class="form-group col-xs-3">
+          <button type="button" class="btn btn-default" ng-model="newAd.category" placeholder="商户类型"
+                  ng-click="$event.stopPropagation()" bs-options="t for t in categories" bs-select required></button>
+        </div>
+      </div>
+
+      <div class="clearfix news-creation-form"></div>
+      <div class="form-group col-sm-6">
+        <div class="image-container">
+          <img class="news-image img-responsive" ng-src="{{compress(newAd.logo, 0, 200)}}"
+               alt="图片"/></div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="form-group" ng-hide="newAd.published">
+          <label for="news-pic" class="col-sm-4 control-label">上传</label>
+
+          <div class="col-sm-8">
+            <kl-file-upload ng-model="newAd" user="adminUser.login_name" field-name="logo"></kl-file-upload>
+          </div>
+
+        </div>
+        <div class="form-group" ng-show="false">
+          <label for="target" class="col-sm-4 control-label">通知范围</label>
+
+          <div class="col-sm-8">
+            <select id="target" class="form-control class-select" ng-model="newAd.class_id"
+                    ng-options="value.class_id as value.name for (key, value) in classesScope"
+                    data-style="btn-primary" ng-disabled="newAd.published">
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="form-group">
+        <label for="address" class="control-label col-xs-2">商户地址</label>
+
+        <div class="col-xs-4">
+          <input id="address" name="address" ng-model="newAd.address" class="form-control"
+                 placeholder="活动地点" ng-disabled="published(newAd)"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="contact" class="control-label col-xs-2">联系方式</label>
+
+        <div class="col-xs-4">
+          <input id="contact" name="contact" ng-model="newAd.contact" class="form-control"
+                 placeholder="联系方式" ng-disabled="published(newAd)"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="time-span" class="control-label col-xs-2">有效期</label>
+
+        <div class="col-xs-4">
+          <input id="time-span" name="timeSpan" ng-model="newAd.time_span" class="form-control"
+                 placeholder="有效期" ng-disabled="published(newAd)"/>
+        </div>
+      </div>
+
+      <div class="form-group news-content">
+        <label for="content" class="control-label col-xs-2">活动介绍</label>
+        <br/>
+        <small ng-show="newAd.content.length >= 0">还可以输入{{ 2000 - newAd.content.length}}个字</small>
+        <span class="error-field" ng-show="commercialForm.content.$dirty && commercialForm.content.$error.required">请填写正文内容</span>
+      <span class="error-field"
+            ng-show="commercialForm.content.$dirty && commercialForm.content.$error.maxlength">正文内容请不要超过2000个字符</span>
+
+        <div class="col-xs-8">
+          <textarea ng-disabled="published(newAd)" id="content" name="content" ng-model="newAd.detail"
+                    class="editing-content form-control new-ad-content" ng-maxlength="2000" placeholder="添加内容"
+                    required></textarea></div>
+      </div>
+
+
+      <div class="panel-footer">
+        <div ng-show="published(newAd)" class="issue-date">已于{{newAd.published_at | date:'yyyy年MM月dd日 HH:mm'}}审批通过
+        </div>
+        <div ng-hide="published(newAd)" class="issue-date">未发布</div>
+        <div class="loading" ng-show="loading"></div>
+        <div class="btn-group">
+
+          <button class="btn btn-primary" ng-disabled="commercialForm.$invalid || uploading"
+                  ng-show="canBePreviewed(newAd) && adminUser.privilege_group == 'agent'"
+                  ng-click="preview(newAd)">提交审批
+          </button>
+          <button class="btn btn-danger"  ng-show="canBeRejected(newAd)" ng-click="reject(newAd)">拒绝
+          </button>
+          <button class="btn btn-success" ng-show="canBeApproved(newAd)" ng-click="approve(newAd)">批准
+          </button>
+          <button class="btn btn-default" ng-click="$hide()">关闭</button>
+          <button class="btn btn-danger" ng-show="published(newAd) || newAd.id" ng-confirm-msg="你确定要删除吗?"
+                  ng-confirm-click="removeAd(newAd)">删除
+          </button>
+          <button class="btn btn-info" ng-disabled="commercialForm.$invalid || uploading || commercialForm.$pristine"
+                  ng-hide="canBePreview(newAd)"
+                  ng-click="save(newAd)">保存
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
