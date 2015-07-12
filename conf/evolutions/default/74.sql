@@ -3,10 +3,11 @@
 -- case class AgentAd(id: Option[Long], agent_id: Long, school_id: Long, title: String, address: Option[String],
 --                    contact: String, time_span: Option[String], detail: Option[String], logo: Option[String])
 
-CREATE TABLE agentadvertisement (
+CREATE TABLE agentcontractor (
   uid         INT(11) NOT NULL AUTO_INCREMENT,
   agent_id   INT(11),
   title   VARCHAR(50) NOT NULL,
+  category INT,
   address   VARCHAR(250),
   contact   VARCHAR(50) NOT NULL,
   time_span   VARCHAR(100),
@@ -19,15 +20,17 @@ CREATE TABLE agentadvertisement (
   created_at BIGINT,
   status INT(4) DEFAULT 1,
   PRIMARY KEY (uid),
-  KEY (agent_id)
+  KEY (agent_id),
+  KEY (category)
 );
 
-INSERT INTO agentadvertisement (agent_id, title, address, contact, time_span, detail, logo, updated_at, publish_status, published_at, reject_reason) VALUES
-(1, '雅芳', '天津', '13333652147', '7月2日-8月3日', '去广告中心，领免费机票', '', 1393395313123, 2, 1393395313123, null),
-(1, '本田', '上海', '13333452147', '12月2日-12月3日', '汽车随便开', '', 1393399313123, 99, 0, null),
-(1, '悲剧', '上海', '13333452147', '12月2日-12月3日', '要悲剧', '', 1393399313123, 3, 0, '名字太长'),
-(1, 'T', '四川', '13333653147', null, '特斯拉要不要', '', 1393399313123, 0, 0, null);
+INSERT INTO agentcontractor (agent_id, title, address, contact, time_span, detail, logo, updated_at, publish_status, published_at, reject_reason, category) VALUES
+(1, '雅芳', '天津', '13333652147', '7月2日-8月3日', '去广告中心，领免费机票', '', 1393395313123, 2, 1393395313123, null, 0),
+(1, '本田', '上海', '13333452147', '12月2日-12月3日', '汽车随便开', '', 1393399313123, 99, 0, null, 1),
+(1, '悲剧', '上海', '13333452147', '12月2日-12月3日', '要悲剧', '', 1393399313123, 3, 0, '名字太长', 2),
+(1, 'T', '四川', '13333653147', null, '特斯拉要不要', '', 1393399313123, 0, 0, null, 3),
+(1, 'Coca cola', '四川', '13333653147', null, '喝可乐挑战赛', '', 1393399313123, 0, 0, null, 3);
 
 # --- !Downs
 
-DROP TABLE IF EXISTS agentadvertisement;
+DROP TABLE IF EXISTS agentcontractor;

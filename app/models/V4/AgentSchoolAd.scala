@@ -76,7 +76,7 @@ object AgentSchoolAd {
           'from -> from,
           'to -> to,
           'kg -> kg
-        ).as(AgentAd.simple *)
+        ).as(AgentContractor.simple *)
   }
 
   val simple = {
