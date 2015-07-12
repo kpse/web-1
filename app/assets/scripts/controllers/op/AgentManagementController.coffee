@@ -1,7 +1,7 @@
 angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
   ['$scope', '$rootScope', '$filter', '$q', 'agentManagementService', '$modal', 'principalService',
    'allEmployeesService', '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location',
-   'agentSchoolService', 'schoolService', 'agentAdService',
+   'agentSchoolService', 'schoolService', 'agentContractorService',
     (scope, rootScope, $filter, $q, Agent, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location,
      AgentSchool, AllSchool, AgentAd) ->
       rootScope.tabName = 'agent'

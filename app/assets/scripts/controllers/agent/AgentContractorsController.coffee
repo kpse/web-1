@@ -22,18 +22,6 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
 
       scope.refresh()
 
-      scope.published = (ad) ->
-        ad.publishing.published_at > 0
-      scope.canBePreviewed = (ad) ->
-        ad.id && scope.adminUser.privilege_group == 'agent' && (ad.publishing.publish_status == 0 || ad.publishing.publish_status == 3)
-
-      scope.canBeApproved = (ad) ->
-        ad.id && scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 3)
-
-      scope.canBeRejected = (ad) ->
-        ad.id && scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 2)
-
-
       scope.editAd = (ad) ->
         scope.newAd = angular.copy ad
         _.assign scope.newAd, agent_id: scope.currentAgent.id
@@ -61,6 +49,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
           publish_status: 99
         ad.$preview ->
           scope.refresh()
+          scope.currentModal.hide() if scope.currentModal?
 
       scope.removeAd = (newAd) ->
         newAd.$delete ->
@@ -70,13 +59,14 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
       scope.save = (newAd) ->
         newAd.$save ->
           scope.refresh()
-          scope.currentModal.hide()
+          scope.currentModal.hide() if scope.currentModal?
 
       scope.approve = (ad) ->
         ad.publishing =
           publish_status: 2
         ad.$approve ->
           scope.refresh()
+          scope.currentModal.hide() if scope.currentModal?
 
       scope.rejectDialog = (ad) ->
         scope.badAd = angular.copy ad
@@ -90,7 +80,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
       scope.reject = (ad) ->
         ad.$reject ->
           scope.refresh()
-          scope.currentModal.hide()
+          scope.currentModal.hide() if scope.currentModal?
 
       scope.adminEdit = (ad, oldStatus) ->
         switch ad.publishing.publish_status

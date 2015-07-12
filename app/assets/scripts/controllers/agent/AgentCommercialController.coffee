@@ -64,6 +64,16 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
           $state.go targetState if targetState?
           $state.reload()
 
+      scope.published = (ad) ->
+        ad.publishing? && ad.publishing.published_at > 0
+      scope.canBePreviewed = (ad) ->
+        ad.id && scope.adminUser.privilege_group == 'agent' && (ad.publishing.publish_status == 0 || ad.publishing.publish_status == 3)
+
+      scope.canBeApproved = (ad) ->
+        ad.id && scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 3)
+
+      scope.canBeRejected = (ad) ->
+        ad.id && scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 2)
 
       scope.adTypes = [
         {name: '商户', route: 'contractors'},
