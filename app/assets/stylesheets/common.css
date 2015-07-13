@@ -628,3 +628,6 @@ util.print: Use console.log instead
   max-width: 100%;
   height: 125px;
 }
+.mandatory {
+  color: red;
+}

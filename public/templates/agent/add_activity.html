@@ -10,7 +10,7 @@
   <div class="panel-body">
     <form class="form-horizontal" role="form" name="commercialForm">
       <div class="form-group">
-        <label for="title" class="control-label col-xs-2 title-line">活动标题</label>
+        <label for="title" class="control-label col-xs-2 title-line">活动标题 <span class="mandatory">*</span></label>
 
         <div class="col-xs-4">
           <input ng-bk-focus id="title" name="title" ng-model="newAd.title" class="form-control"
@@ -24,7 +24,7 @@
         <div class="form-group col-xs-3">
           <button type="button" class="btn btn-default" ng-model="newAd.contractor" data-html="1"
                   placeholder="{{newAd.contractor.title || '所属商户'}}"
-                  ng-click="$event.stopPropagation()" bs-options="c as c.title for c in contractors" bs-select required></button>
+                  ng-click="$event.stopPropagation()" bs-options="c as c.title for c in contractors" bs-select></button>
         </div>
       </div>
 
@@ -45,7 +45,7 @@
 
         </div>
         <div class="form-group" ng-show="false">
-          <label for="target" class="col-sm-4 control-label">通知范围</label>
+          <label for="target" class="col-sm-4 control-label">通知范围 <span class="mandatory">*</span></label>
 
           <div class="col-sm-8">
             <select id="target" class="form-control class-select" ng-model="newAd.class_id"
@@ -57,7 +57,7 @@
       </div>
       <div class="clearfix"></div>
       <div class="form-group">
-        <label for="address" class="control-label col-xs-2">商户地址</label>
+        <label for="address" class="control-label col-xs-2">商户地址 <span class="mandatory">*</span></label>
 
         <div class="col-xs-4">
           <input id="address" name="address" ng-model="newAd.address" class="form-control"
@@ -65,7 +65,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="contact" class="control-label col-xs-2">联系方式</label>
+        <label for="contact" class="control-label col-xs-2">联系方式 <span class="mandatory">*</span></label>
 
         <div class="col-xs-4">
           <input id="contact" name="contact" ng-model="newAd.contact" class="form-control"
@@ -73,7 +73,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="time-span" class="control-label col-xs-2">有效期</label>
+        <label for="time-span" class="control-label col-xs-2">有效期 <span class="mandatory">*</span></label>
 
         <div class="col-xs-4">
           <input id="time-span" name="timeSpan" ng-model="newAd.time_span" class="form-control"
@@ -82,7 +82,7 @@
       </div>
 
       <div class="form-group news-content">
-        <label for="content" class="control-label col-xs-2">活动介绍</label>
+        <label for="content" class="control-label col-xs-2">活动介绍 <span class="mandatory">*</span></label>
         <br/>
         <small ng-show="newAd.content.length >= 0">还可以输入{{ 2000 - newAd.content.length}}个字</small>
         <span class="error-field" ng-show="commercialForm.content.$dirty && commercialForm.content.$error.required">请填写正文内容</span>

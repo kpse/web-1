@@ -1,23 +1,32 @@
 angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', 'currentAgent', 'loggedUser', 'agentActivityService',
+  ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', 'currentAgent', 'loggedUser', 'agentRawActivityService',
    'agentAdInSchoolService', 'agentSchoolService', 'agentContractorService',
     (scope, $rootScope, stateParams, $q, $state, Modal, Agent, User, Activity, AdInSchool, Schools, Contractor) ->
       scope.adminUser = User
       scope.currentAgent = Agent
 
+#      scope.refresh = ->
+#        scope.activities = []
+#        scope.contractors = Contractor.query agent_id: scope.currentAgent.id, ->
+#          _.map scope.contractors, (contractor) ->
+#            queue = [Activity.query(agent_id: scope.currentAgent.id, contractor_id: contractor.id).$promise
+#                     Schools.query(agent_id: scope.currentAgent.id).$promise]
+#
+#            $q.all(queue).then (q) ->
+#              activities = q[0]
+#              scope.schools = q[1]
+#              _.each activities, (a) -> a.contractor = contractor
+#              scope.activities = scope.activities.concat activities
+
       scope.refresh = ->
-        scope.activities = []
-        scope.contractors = Contractor.query agent_id: scope.currentAgent.id, ->
-          _.map scope.contractors, (contractor) ->
-            queue = [Activity.query(agent_id: scope.currentAgent.id, contractor_id: contractor.id).$promise
-                     Schools.query(agent_id: scope.currentAgent.id).$promise]
+        queue = [Activity.query(agent_id: scope.currentAgent.id).$promise,
+                 Schools.query(agent_id: scope.currentAgent.id).$promise]
 
-            $q.all(queue).then (q) ->
-              activities = q[0]
-              scope.schools = q[1]
-              _.each activities, (a) -> a.contractor = contractor
-              scope.activities = scope.activities.concat activities
-
+        $q.all(queue).then (q) ->
+          scope.activities = q[0]
+          scope.schools = q[1]
+          _.each (_.filter scope.activities, (h) -> h.contractor_id?), (a) ->
+            a.contractor = Contractor.get agent_id: scope.currentAgent.id, id: a.contractor_id
 
       scope.refresh()
 
