@@ -74,6 +74,26 @@ angular.module('kulebao.services')
 
 ]
 
+.factory 'agentRawActivityService', ['$resource',
+  ($resource) ->
+    $resource '/api/v4/agent/:agent_id/activity/:id',
+      {
+        agent_id: "@agent_id"
+        id: "@id"
+      }, {
+        preview:
+          url: '/api/v4/agent/:agent_id/activity/:id/preview'
+          method: 'POST'
+        approve:
+          url: '/api/v4/agent/:agent_id/activity/:id/publish'
+          method: 'POST'
+        reject:
+          url: '/api/v4/agent/:agent_id/activity/:id/reject'
+          method: 'POST'
+      }
+
+]
+
 .factory 'agentAdInSchoolService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/kindergarten/:kg/contractor/:id',

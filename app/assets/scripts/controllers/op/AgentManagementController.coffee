@@ -1,9 +1,9 @@
 angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
   ['$scope', '$rootScope', '$filter', '$q', 'agentManagementService', '$modal', 'principalService',
    'allEmployeesService', '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location',
-   'agentSchoolService', 'schoolService', 'agentContractorService',
+   'agentSchoolService', 'schoolService', 'agentContractorService', 'agentRawActivityService',
     (scope, rootScope, $filter, $q, Agent, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location,
-     AgentSchool, AllSchool, AgentAd) ->
+     AgentSchool, AllSchool, AgentContractor, AgentActivity) ->
       rootScope.tabName = 'agent'
 
       scope.refresh = (agent)->
@@ -13,8 +13,10 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
             a.schoolIds = AgentSchool.query agent_id: a.id, ->
               a.schools = _.map a.schoolIds, (kg) -> AllSchool.get(school_id: kg.school_id)
               _.each a.schools, (kg) -> kg.checked = false
-            AgentAd.query agent_id: a.id, (data) ->
-              a.waitingAd = _.filter data, (d) -> d.publishing.publish_status == 99
+            AgentContractor.query agent_id: a.id, (data) ->
+              a.waitingContractors = _.filter data, (d) -> d.publishing.publish_status == 99
+            AgentActivity.query agent_id: a.id, (data) ->
+              a.waitingActivities = _.filter data, (d) -> d.publishing.publish_status == 99
           if agent?
             scope.currentAgent = _.find scope.agents, (a) -> a.id == agent.id
         scope.kindergartens = AllSchool.query()
