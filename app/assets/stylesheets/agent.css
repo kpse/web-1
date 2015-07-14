@@ -1,4 +1,4 @@
-util.print: Use console.log instead
+(node) util.print is deprecated. Use console.log instead.
 .btn-upload {
   position: relative;
   overflow: hidden;
@@ -44,6 +44,10 @@ util.print: Use console.log instead
 }
 .static-content {
   margin-top: 7px;
+}
+.bar-image {
+  height: 300px;
+  margin-top: 50px;
 }
 .triangle-border {
   position: relative;
