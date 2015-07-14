@@ -4,6 +4,8 @@ import models.helper.MD5Helper._
 import anorm.SqlParser._
 import anorm._
 import models.helper.RangerHelper
+import org.joda.time.DateTime
+import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
 import play.Logger
 import play.api.db.DB
 import play.api.libs.json.Json
@@ -11,6 +13,7 @@ import play.api.Play.current
 import models.LoginAccount
 import play.api.mvc.Session
 
+case class AgentStatistics(id: Long, agent: Long, school_id: Long, month: String, logged_once: Long, logged_ever: Long, created_at: Long)
 case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[String], phone: Option[String], logo: Option[String], contact_info: Option[String], memo: Option[String],
                         login_name: Option[String], updated_at: Option[Long], created_at: Option[Long], expire: Option[Long], privilege_group: Option[String] = Some("agent")) extends LoginAccount {
 
@@ -72,6 +75,9 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[Str
 object KulebaoAgent {
   implicit val writeKulebaoAgent = Json.writes[KulebaoAgent]
   implicit val readKulebaoAgent = Json.reads[KulebaoAgent]
+
+  implicit val writeAgentStatistics = Json.writes[AgentStatistics]
+  implicit val readAgentStatistics = Json.reads[AgentStatistics]
 
   def show(id: Long) = DB.withConnection {
     implicit c =>
@@ -137,6 +143,19 @@ object KulebaoAgent {
 
   }
 
+  def stats(agentId: Long) = DB.withConnection {
+    implicit c =>
+      val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
+      Logger.info(s"from = ${pattern.print(DateTime.now().minusMonths(13))}")
+      Logger.info(s"to = ${pattern.print(DateTime.now().minusMonths(1))}")
+      SQL(s"select * from agentstatistics where month >= {from} and month <= {to} and agent_id={agent}")
+        .on(
+          'agent -> agentId,
+          'from -> pattern.print(DateTime.now().minusMonths(13)),
+          'to -> pattern.print(DateTime.now().minusMonths(1))
+        ).as(simpleStatistics *)
+  }
+
   val simple = {
     get[Long]("uid") ~
       get[Option[String]]("name") ~
@@ -151,6 +170,19 @@ object KulebaoAgent {
       get[Option[Long]]("created_at") map {
       case id ~ name ~ area ~ phone ~ url ~ loginName ~ expire ~ contact_info ~ memo ~ updated ~ created =>
         KulebaoAgent(Some(id), name, area, phone, url, contact_info, memo, loginName, updated, created, expire)
+    }
+  }
+
+  val simpleStatistics = {
+    get[Long]("uid") ~
+      get[Long]("agent_id") ~
+      get[String]("school_id") ~
+      get[String]("month") ~
+      get[Long]("logged_once") ~
+      get[Long]("logged_ever") ~
+      get[Long]("created_at") map {
+      case id ~ agent ~ school ~ month ~ once ~ ever ~ created  =>
+        AgentStatistics(id, agent, school.toLong, month, once, ever, created)
     }
   }
 }
