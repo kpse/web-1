@@ -78,7 +78,7 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
         location.path '/main/phone_management'
 
       scope.resetPassword = (person) ->
-        person.new_password = _.last(person.phone, 8).join('')
+        person.new_password = person.phone.slice(3)
         person.authcode = "0"
         person.account_name = person.phone
         ParentPassword.save person, ->
@@ -136,7 +136,7 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
           scope.cancel()
 
       scope.resetPassword = (person) ->
-        person.new_password = _.last(person.phone, 8).join('')
+        person.new_password = person.phone.slice(3)
         EmployeePassword.save person, ->
           Alert
             title: '密码重置成功'
