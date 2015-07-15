@@ -12,10 +12,13 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
         scope.currentAgent = agent
 
       scope.refresh = ->
+        scope.d3Data = []
         currentAgent = scope.currentAgent
         currentAgent.expireDisplayValue = $filter('date')(currentAgent.expire, 'yyyy-MM-dd')
         currentAgent.schools = AgentSchool.query agent_id: currentAgent.id, ->
           _.each currentAgent.schools, (kg) -> kg.checked = false
+          currentAgent.schools[0].activeData = [{date: '201412', count: 100}, {date: '201502', count: 88.65}, {date: '201501', count: 56.88}, {date: '201503', count: 12.02} ]
+          currentAgent.schools[1].activeData = []
 
       scope.refresh()
 
@@ -35,5 +38,9 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
       scope.change = (agent) ->
         Password.save (_.assign agent, agent_id: agent.id), ->
           scope.currentModal.hide()
+
+      scope.checkUserActive = (school) ->
+        scope.currentSchool = school
+        scope.d3Data = school.activeData
 
   ]

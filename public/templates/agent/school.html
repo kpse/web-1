@@ -28,7 +28,7 @@
                20
       </td>
     <td class="col-xs-2">
-      <a ng-click="goActiveUser()">查看</a>
+      <a ng-click="checkUserActive(kg)">查看</a>
     </td>
     <td class="col-xs-2">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="这个操作将彻底删除{{::kg.name}}的所有数据，确定继续?"
@@ -38,4 +38,12 @@
   </tr>
   </tbody>
 </table>
+
+<div ng-show="currentSchool && d3Data.length > 0">
+  <h3>{{currentSchool.name}} 用户活跃度</h3>
+  <kl-agent-active-bars data="d3Data" label="date" actual="count" class="bar-image-container"></kl-agent-active-bars>
+</div>
+<div ng-show="currentSchool && d3Data.length == 0">
+  <h3>暂无 {{currentSchool.name}} 的用户活跃度数据</h3>
+</div>
 
