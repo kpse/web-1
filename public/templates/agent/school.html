@@ -15,7 +15,7 @@
     <th class="col-xs-3">全名</th>
     <th class="col-xs-2">学生数</th>
     <th class="col-xs-2">家长数</th>
-    <th class="col-xs-2">活跃度</th>
+    <th class="col-xs-2">上月活跃度</th>
     <th class="col-xs-2">操作</th>
   </tr>
   </thead>
@@ -28,6 +28,7 @@
                20
       </td>
     <td class="col-xs-2">
+      <span>{{kg.lastActiveData.count || 'N/A'}}</span>
       <a ng-click="checkUserActive(kg)">查看</a>
     </td>
     <td class="col-xs-2">
