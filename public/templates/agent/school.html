@@ -28,7 +28,7 @@
                20
       </td>
     <td class="col-xs-2">
-      <span>{{kg.lastActiveData.count || 'N/A'}}</span>
+      <span>{{kg.lastActiveData.rate || 'N/A'}}</span>
       <a ng-click="checkUserActive(kg)">查看</a>
     </td>
     <td class="col-xs-2">
@@ -42,7 +42,7 @@
 
 <div ng-show="currentSchool && d3Data.length > 0">
   <h3>{{currentSchool.name}} 用户活跃度</h3>
-  <kl-agent-active-bars data="d3Data" label="date" actual="count" class="bar-image-container"></kl-agent-active-bars>
+  <kl-agent-active-bars data="d3Data" label="month" actual="rate" class="bar-image-container"></kl-agent-active-bars>
 </div>
 <div ng-show="currentSchool && d3Data.length == 0">
   <h3>暂无 {{currentSchool.name}} 的用户活跃度数据</h3>

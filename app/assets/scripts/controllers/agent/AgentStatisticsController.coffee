@@ -5,6 +5,6 @@ angular.module('kulebaoAgent').controller 'AgentStatisticsCtrl',
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
 
-      scope.d3Data = [{date: '201412', count: 100}, {date: '201502', count: 88.65}, {date: '201501', count: 56.88}, {date: '201503', count: 12.02} ]
+      scope.d3Data = [{month: '201412', rate: 100}, {month: '201502', rate: 88.65}, {month: '201501', rate: 56.88}, {month: '201503', rate: 12.02} ]
 
   ]

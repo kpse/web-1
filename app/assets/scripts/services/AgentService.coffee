@@ -120,3 +120,11 @@ angular.module('kulebao.services')
       }
 ]
 
+.factory 'agentStatsService', ['$resource',
+  ($resource) ->
+    $resource '/api/v4/agent/:agent_id/statistics',
+      {
+        agent_id: "@agent_id"
+      }
+]
+

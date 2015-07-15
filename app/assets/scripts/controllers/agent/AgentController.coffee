@@ -1,7 +1,7 @@
 angular.module('kulebaoAgent').controller 'AgentCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter', '$modal', 'loggedUser', 'currentAgent',
-   'agentSchoolService', 'agentPasswordService',
-    (scope, $rootScope, $stateParams, $state, $location, $filter, Modal, User, CurrentAgent, AgentSchool, Password) ->
+  ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter', '$modal', '$q', 'loggedUser', 'currentAgent',
+   'agentSchoolService', 'agentPasswordService', 'agentStatsService',
+    (scope, $rootScope, $stateParams, $state, $location, $filter, Modal, $q, User, CurrentAgent, AgentSchool, Password, Stats) ->
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
 
@@ -15,16 +15,19 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
         scope.d3Data = []
         currentAgent = scope.currentAgent
         currentAgent.expireDisplayValue = $filter('date')(currentAgent.expire, 'yyyy-MM-dd')
-        currentAgent.schools = AgentSchool.query agent_id: currentAgent.id, ->
-          currentAgent.schools[0].activeData = [{date: '201412', count: 100}, {date: '201502', count: 88.65}, {date: '201501', count: 56.88}, {date: '201503', count: 12.02} ]
-          currentAgent.schools[1].activeData = []
+        queue = [Stats.query(agent_id: currentAgent.id).$promise,
+                 AgentSchool.query(agent_id: currentAgent.id).$promise]
+        $q.all(queue).then (q) ->
+          currentAgent.schools = q[1]
+          groups = _.groupBy(q[0], 'school_id')
           _.each currentAgent.schools, (kg) ->
             kg.checked = false
+            kg.activeData = groups[kg.school_id]
+            _.each kg.activeData, (d) ->
+              d.rate = d.logged_once/d.logged_ever * 100
             kg.lastActiveData = _.last(kg.activeData)
 
       scope.refresh()
-
-      scope.goActiveUser = ->
 
       scope.editAgent = (agent) ->
         scope.currentModal = Modal
