@@ -1,10 +1,30 @@
 angular.module('kulebaoAgent').controller 'AgentStatisticsCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter','loggedUser', 'currentAgent',
-   'agentSchoolService',
-    (scope, $rootScope, $stateParams, $state, $location, $filter, User, CurrentAgent, AgentSchool) ->
+  ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter', '$q', 'loggedUser', 'currentAgent',
+   'agentSchoolService', 'agentStatsService',
+    (scope, $rootScope, $stateParams, $state, $location, $filter, $q, User, CurrentAgent, AgentSchool, Stats) ->
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
 
-      scope.d3Data = [{month: '201412', rate: 100}, {month: '201502', rate: 88.65}, {month: '201501', rate: 56.88}, {month: '201503', rate: 12.02} ]
+      scope.refresh = ->
+        scope.d3Data = []
+        currentAgent = scope.currentAgent
+        currentAgent.expireDisplayValue = $filter('date')(currentAgent.expire, 'yyyy-MM-dd')
+        queue = [Stats.query(agent_id: currentAgent.id).$promise,
+                 AgentSchool.query(agent_id: currentAgent.id).$promise]
+        $q.all(queue).then (q) ->
+          currentAgent.schools = q[1]
+          groups = _.groupBy(q[0], 'month')
+          scope.d3Data = _.map _.keys(groups), (g) ->
+            once = _.sum groups[g], 'logged_once'
+            ever = _.sum groups[g], 'logged_ever'
+            result =
+              month : g
+              data : groups[g]
+              loggedOnce : once
+              loggedEver : ever
+              rate : if ever == 0 then 0 else once / ever * 100
+          scope.lastActiveData = _.last scope.d3Data
+
+      scope.refresh()
 
   ]
