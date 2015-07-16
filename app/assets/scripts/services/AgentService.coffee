@@ -128,3 +128,12 @@ angular.module('kulebao.services')
       }
 ]
 
+.factory 'agentSchoolDataService', ['$resource',
+  ($resource) ->
+    $resource '/api/v4/agent/:agent_id/kindergarten/:kg/active',
+      {
+        agent_id: "@agent_id"
+        kg: "@kg"
+      }
+]
+

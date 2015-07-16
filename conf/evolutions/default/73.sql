@@ -8,7 +8,8 @@ CREATE TABLE agentschool (
   updated_at BIGINT,
   status INT(4) DEFAULT 1,
   PRIMARY KEY (uid),
-  KEY (agent_id)
+  KEY (agent_id),
+  KEY (agent_id, school_id)
 );
 
 INSERT INTO agentschool (agent_id, school_id, name, updated_at) VALUES

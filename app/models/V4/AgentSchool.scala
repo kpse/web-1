@@ -48,6 +48,15 @@ object AgentSchool {
         ).as(simple singleOpt)
   }
 
+  def exists(agentId: Long, kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from agentschool where agent_id={base} and school_id={kg} and status=1")
+        .on(
+          'base -> agentId,
+          'kg -> kg
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
   def index(base: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
     implicit c =>
       SQL(s"select * from agentschool where agent_id={base} and status=1 ${RangerHelper.generateSpan(from, to, most)}")

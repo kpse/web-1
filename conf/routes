@@ -588,6 +588,7 @@ GET           /api/v4/kindergarten/:kg/contractor/:contractorId/activity        
 
 #agent statistics
 GET           /api/v4/agent/:agentId/statistics                                           controllers.V4.AgentController.stats(agentId: Long)
+GET           /api/v4/agent/:agentId/kindergarten/:kg/active                              controllers.V4.AgentSchoolController.schoolData(agentId: Long, kg: Long)
 
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                    controllers.ChildController.index(kg: Long, parentId: String)

@@ -9,11 +9,14 @@ import anorm.~
 import java.util.Date
 import models.helper.TimeHelper.any2DateTime
 import org.joda.time.DateTime
+import play.api.libs.json.Json
 
 case class ChargeInfo(school_id: Long, total_phone_number: Long, expire_date: String, status: Int, used: Long, total_video_account: Option[Long]=Some(0), video_user_name: Option[String] = None, video_user_password: Option[String] = None)
-case class ActiveCount(school_id: Long, activated: Long, all: Long, member: Long, video: Long, check_in_out: Long)
+case class ActiveCount(school_id: Long, activated: Long, all: Long, member: Long, video: Long, check_in_out: Long, children: Long)
 
 object Charge {
+  implicit val writeActiveCount = Json.writes[ActiveCount]
+
   def countActivePhones(kg: Long) = DB.withConnection {
     implicit c =>
       val countActive: Long = SQL("select count(1) from accountinfo where active=1 and accountid in (select phone from parentinfo where school_id={kg})")
@@ -37,7 +40,9 @@ object Charge {
         .on('oneMonthAgo -> DateTime.now().minusDays(30).getMillis,
           'now -> System.currentTimeMillis(),
         'kg -> kg).as(get[Long]("count(1)") single)
-      ActiveCount(kg, countActive, countAll, countMember, countVideoMember, countActiveCheckIn)
+      val countChildren: Long = SQL("select count(1) from childinfo where school_id={kg} and status=1")
+        .on('kg -> kg).as(get[Long]("count(1)") single)
+      ActiveCount(kg, countActive, countAll, countMember, countVideoMember, countActiveCheckIn, countChildren)
   }
 
 

@@ -1,8 +1,9 @@
 package controllers.V4
 
 import controllers.Secured
-import models.V4.{AgentSchool, KulebaoAgent}
-import models.{ErrorResponse, SuccessResponse}
+import models.Charge.writeActiveCount
+import models.V4.AgentSchool
+import models.{Charge, ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
@@ -47,4 +48,14 @@ object AgentSchoolController extends Controller with Secured {
      AgentSchool.deleteById(id, agentId)
      Ok(Json.toJson(new SuccessResponse()))
    }
+
+  def schoolData(agentId: Long, kg: Long) = IsAgentLoggedIn { u => _ =>
+    AgentSchool.exists(agentId, kg) match {
+      case true =>
+        Ok(Json.toJson(Charge.countActivePhones(kg)))
+      case false =>
+        NotFound(Json.toJson(ErrorResponse("权限不足(insufficient privilege)", 3)))
+    }
+
+  }
  }
