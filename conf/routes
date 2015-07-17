@@ -576,6 +576,8 @@ POST          /api/v4/agent/:agentId/activity                                   
 POST          /api/v4/agent/:agentId/activity/:id                                         controllers.V4.AgentRawActivityController.update(agentId: Long, id: Long)
 DELETE        /api/v4/agent/:agentId/activity/:id                                         controllers.V4.AgentRawActivityController.delete(agentId: Long, id: Long)
 
+GET           /api/v4/agent/:agentId/activity/:activityId/feedback                        controllers.V4.AgentActivityFeedbackController.index(agentId: Long, activityId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+
 POST          /api/v4/agent/:agentId/contractor/:contractorId/activity/:id/preview        controllers.V4.AgentActivityController.preview(agentId: Long, contractorId: Long, id: Long)
 POST          /api/v4/agent/:agentId/contractor/:contractorId/activity/:id/publish        controllers.V4.AgentActivityController.publish(agentId: Long, contractorId: Long, id: Long)
 POST          /api/v4/agent/:agentId/contractor/:contractorId/activity/:id/reject         controllers.V4.AgentActivityController.reject(agentId: Long, contractorId: Long, id: Long)
@@ -585,6 +587,8 @@ POST          /api/v4/agent/:agentId/password_reset                             
 
 GET           /api/v4/kindergarten/:kg/contractor                                         controllers.V4.AgentAdInSchoolController.published(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v4/kindergarten/:kg/contractor/:contractorId/activity                  controllers.V4.AgentAdInSchoolController.publishedActivities(kg: Long, contractorId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+
+POST          /api/v4/kindergarten/:kg/activity/:activityId/feedback                      controllers.V4.AgentActivityFeedbackController.create(kg: Long, activityId: Long)
 
 #agent statistics
 GET           /api/v4/agent/:agentId/statistics                                           controllers.V4.AgentController.stats(agentId: Long)
