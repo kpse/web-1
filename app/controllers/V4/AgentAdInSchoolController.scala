@@ -9,7 +9,7 @@ import play.api.mvc.Controller
 object AgentAdInSchoolController extends Controller with Secured {
   def show(agentId: Long, kg: Long, id: Long) = IsAgentLoggedIn {
     u => _ =>
-      AgentSchoolAd.show(id, agentId) match {
+      AgentSchoolAd.show(id, agentId, kg) match {
         case Some(x) =>
           Ok(Json.toJson(x))
         case None =>
@@ -18,13 +18,15 @@ object AgentAdInSchoolController extends Controller with Secured {
   }
 
   def index(agentId: Long, kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsAgentLoggedIn { u => _ =>
-    Ok(Json.toJson(AgentSchoolAd.index(agentId, from, to, most)))
+    Ok(Json.toJson(AgentSchoolAd.index(agentId, kg, from, to, most)))
   }
 
   def create(agentId: Long, kg: Long) = IsAgentLoggedIn(parse.json) { u => request =>
     request.body.validate[AgentSchoolAd].map {
       case (s) if s.id.isDefined =>
         BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
+      case (s) if s.hasBeenDeleted(agentId, kg) =>
+        Ok(Json.toJson(s.undoDeletion(agentId, kg)))
       case (s) =>
         Ok(Json.toJson(s.create(agentId, kg)))
     }.recoverTotal {
@@ -44,7 +46,7 @@ object AgentAdInSchoolController extends Controller with Secured {
   }
 
   def delete(agentId: Long, kg: Long, id: Long) = IsAgentLoggedIn { u => _ =>
-    AgentSchoolAd.deleteById(id, agentId)
+    AgentSchoolAd.deleteById(id, agentId, kg)
     Ok(Json.toJson(new SuccessResponse()))
   }
 
