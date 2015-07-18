@@ -2,18 +2,24 @@
   <thead>
   <tr class="row">
     <th class="col-xs-1">编号</th>
-    <th class="col-xs-3">内容</th>
-    <th class="col-xs-2">展示状态</th>
-    <th class="col-xs-2">有效期</th>
-    <th class="col-xs-2">详情</th>
+    <th class="col-xs-2">名称</th>
+    <th class="col-xs-1">类型</th>
+    <th class="col-xs-1">投放对象</th>
+    <th class="col-xs-1">活动数量</th>
+    <th class="col-xs-1">投放状态</th>
+    <th class="col-xs-1">有效期</th>
+    <th class="col-xs-1">详情</th>
     <th class="col-xs-2">操作</th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="ad in contractors | filter: searchText | orderBy: 'publishing.publish_status' : true " class="row">
     <td class="col-xs-1"><a ng-href="/agent#/preview/{{ad.id}}" ng-click="$event.stopPropagation()">{{ad.id}}</a></td>
-    <td class="col-xs-3">{{ad.title}} 投放数: {{ad.ads.length || 0}}, 投放家长数: 500</td>
-    <td class="col-xs-2" ng-show="adminUser.privilege_group == 'operator'">
+    <td class="col-xs-2">{{ad.title}}</td>
+    <td class="col-xs-1">{{ad.category}}</td>
+    <td class="col-xs-1">500</td>
+    <td class="col-xs-1">{{ad.ads.length || 0}}</td>
+    <td class="col-xs-1" ng-show="adminUser.privilege_group == 'operator'">
       <button type="button" class="btn btn-default publishing-status" ng-model="ad.publishing.publish_status"
               placeholder="{{currentStatus(ad)}}"
               ng-class="{success : ad.publishing.publish_status == 2, danger: ad.publishing.publish_status == 3, warning: ad.publishing.publish_status == 99}"
@@ -22,7 +28,7 @@
               ng-click="$event.stopPropagation()"
               bs-options="item.publish_status as item.display for item in adminStatus" bs-select></button>
     </td>
-    <td class="col-xs-2" ng-hide="adminUser.privilege_group == 'operator'">
+    <td class="col-xs-1" ng-hide="adminUser.privilege_group == 'operator'">
       <button type="button" class="btn btn-default publishing-status" ng-model="ad.publishing.publish_status"
               placeholder="{{currentStatus(ad)}}"
               ng-class="{success : ad.publishing.publish_status == 2, danger: ad.publishing.publish_status == 3, warning: ad.publishing.publish_status == 99}"
@@ -31,7 +37,7 @@
               bs-options="item.publish_status as item.display for item in userStatus" bs-select></button>
     </td>
     <td class="col-xs-2">{{ad.time_span || 'N/A'}}</td>
-    <td class="col-xs-2"><a ng-click="$event.stopPropagation()">反馈</a></td>
+    <td class="col-xs-1"><a ng-click="$event.stopPropagation()">反馈</a></td>
     <td class="col-xs-2">
       <button class="btn btn-xs btn-warning" ng-click="editAd(ad);$event.stopPropagation()">编辑
       </button>
