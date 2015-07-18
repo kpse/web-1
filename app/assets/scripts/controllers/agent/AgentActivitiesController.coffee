@@ -103,4 +103,7 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
         {name: '商户', route: 'contractors'},
         {name: '活动', route: 'activities'}
       ]
+
+      scope.distribute = (ad) ->
+        alert "投放活动 #{ad.title}"
   ]

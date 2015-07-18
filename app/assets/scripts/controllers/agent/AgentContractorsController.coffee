@@ -90,4 +90,6 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
             console.log 'no way here! publish_status = ' + ad.publishing.publish_status
             ad.publishing.publish_status = parseInt oldStatus
 
+      scope.distribute = (ad) ->
+        alert "投放商户 #{ad.title}"
   ]

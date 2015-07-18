@@ -79,4 +79,6 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         {name: '商户', route: 'contractors'},
         {name: '活动', route: 'activities'}
       ]
+
+      scope.allowToDistribute = (ad) -> ad.publishing.publish_status == 2
   ]
