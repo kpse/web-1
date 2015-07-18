@@ -27,6 +27,8 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
               d.rate = d.logged_once/d.logged_ever * 100
             kg.lastActiveData = _.last(kg.activeData)
 
+          scope.$broadcast 'schools_ready', currentAgent.schools
+
       scope.refresh()
 
       scope.editAgent = (agent) ->

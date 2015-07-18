@@ -23,10 +23,8 @@
   <tr ng-repeat="kg in currentAgent.schools | filter: searchText | orderBy: 'school_id'" class="row" >
     <td class="col-xs-1"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
     <td class="col-xs-3">{{::kg.name}}</td>
-    <td class="col-xs-2">20</td>
-    <td class="col-xs-2">
-               20
-      </td>
+    <td class="col-xs-2">{{kg.stats.all}}</td>
+    <td class="col-xs-2">{{kg.stats.children}}</td>
     <td class="col-xs-2">
       <span>{{kg.lastActiveData.rate || 'N/A'}}</span>
       <a ng-click="checkUserActive(kg)">查看</a>
