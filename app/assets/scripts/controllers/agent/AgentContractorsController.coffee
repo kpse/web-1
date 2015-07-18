@@ -1,24 +1,25 @@
 angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$q', '$modal', 'currentAgent', 'loggedUser', 'agentContractorService',
+  ['$scope', '$rootScope', '$stateParams', '$q', '$modal', '$alert', 'currentAgent', 'loggedUser', 'agentContractorService',
    'agentAdInSchoolService', 'agentSchoolService',
-    (scope, $rootScope, stateParams, $q, Modal, Agent, User, Contractor, AdInSchool, Schools) ->
+    (scope, $rootScope, stateParams, $q, Modal, Alert, Agent, User, Contractor, ContractorInSchool, Schools) ->
       scope.adminUser = User
       scope.currentAgent = Agent
 
-      scope.refresh = ->
+      scope.refresh = (contractorId) ->
         queue = [Contractor.query(agent_id: scope.currentAgent.id).$promise
                  Schools.query(agent_id: scope.currentAgent.id).$promise]
 
         $q.all(queue).then (q) ->
           scope.contractors = q[0]
           scope.schools = q[1]
-          _.each scope.schools, (s) ->
-            s.ad = AdInSchool.query agent_id: scope.currentAgent.id, kg: s.school_id, (data) ->
-              _.each data, (d) ->
-                commercial = _.find scope.contractors, (c) -> c.id == d.ad_id
-                if commercial?
-                  commercial.ads = [] unless commercial.ads?
-                  commercial.ads.push d
+          queue2 = _.map scope.schools, (s) ->
+            ContractorInSchool.query(agent_id: scope.currentAgent.id, school_id: s.school_id).$promise
+          $q.all(queue2).then (q2) ->
+            group = _.groupBy (_.flatten q2), 'school_id'
+            _.each scope.schools, (s) ->
+              s.contractorIds = group[s.school_id]
+            if scope.selectedSchools? && contractorId?
+              scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.ad_id == contractorId
 
       scope.refresh()
 
@@ -90,32 +91,28 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
             console.log 'no way here! publish_status = ' + ad.publishing.publish_status
             ad.publishing.publish_status = parseInt oldStatus
 
-      scope.distribute = (ad) ->
+      scope.distribute = (contractor) ->
         scope.resetSelection()
-        scope.selectedSchools = ad.schools
-        scope.unSelectedSchools = _.reject scope.currentAgent.schools, (r) ->
-          _.find ad.schools, (u) ->
-            r.school_id == u.school_id
+        scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.ad_id == contractor.id
+        scope.unSelectedSchools = _.reject scope.schools, (r) ->
+          _.find scope.selectedSchools, (u) -> r.school_id == u.school_id
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/distribute_to_school.html'
 
       scope.disconnect = (kg, contractor) ->
-        deletedSchool = _.find contractor.schoolIds, (k) -> k.school_id == kg.school_id
-        contractor.schoolIds = _.reject contractor.schoolIds, (k) -> k.school_id == kg.school_id
-        contractor.schools = _.reject contractor.schools, (k) -> k.school_id == kg.school_id
-        scope.unSelectedSchools.push _.find scope.kindergartens , (k) -> k.school_id == kg.school_id
-#        AgentSchool.delete(agent_id: contractor.id, kg: deletedSchool.id).$promise
-#        alert contractor.schools
+        connectionId = _.find kg.contractorIds, (c) -> c.school_id == kg.school_id
+        kg.contractorIds = _.reject kg.contractorIds, (c) -> c.school_id == kg.school_id
+        scope.selectedSchools = _.reject scope.selectedSchools, (s) -> s.school_id == kg.school_id
+        scope.unSelectedSchools.push _.find scope.schools , (c) -> c.school_id == kg.school_id
+        ContractorInSchool.delete(agent_id: contractor.id, school_id: kg.school_id, id: connectionId.id).$promise
 
       scope.connect = (kg, contractor) ->
-        contractor.schoolIds = [] unless contractor.schoolIds?
-        contractor.schools = [] unless contractor.schools?
-        contractor.schoolIds.push school_id: kg.school_id
-        contractor.schools.push _.find scope.kindergartens, (k) -> k.school_id == kg.school_id
+        kg.contractorIds = [] unless kg.contractorIds?
+        kg.contractorIds.push agent_id: contractor.id, school_id: kg.school_id, ad_id: contractor.id
+        scope.selectedSchools.push agent_id: contractor.id, school_id: kg.school_id, ad_id: contractor.id, name: kg.name
         scope.unSelectedSchools = _.reject scope.unSelectedSchools , (k) -> k.school_id == kg.school_id
-#        AgentSchool.save(agent_id: contractor.id, school_id: kg.school_id, name: kg.full_name).$promise
-#        alert contractor.schools
+        ContractorInSchool.save(agent_id: contractor.id, school_id: kg.school_id, ad_id: contractor.id).$promise
 
       scope.checkAll = (check) ->
         scope.unSelectedSchools = [] unless scope.unSelectedSchools?
@@ -123,31 +120,31 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
           r.checked = check
           r
 
-      scope.checkAgentAll = (check) ->
-        if scope.currentAgent?
-          scope.selectedSchools = _.map scope.selectedSchools, (r) ->
-            r.checked = check
-            r
+      scope.checkAllDistributed = (check) ->
+        scope.selectedSchools = [] unless scope.selectedSchools?
+        scope.selectedSchools = _.map scope.selectedSchools, (r) ->
+          r.checked = check
+          r
 
       scope.multipleDelete = ->
         checked = _.filter scope.selectedSchools, (r) -> r.checked? && r.checked == true
         queue = _.map checked, (kg) -> scope.disconnect kg, scope.currentAgent
         all = $q.all queue
         all.then (q) ->
-          scope.resetSelection()
-          scope.refresh(scope.currentAgent)
-        , (res) ->
-          handleError res
+            scope.resetSelection()
+            scope.refresh(q[0].ad_id)
+          , (res) ->
+            handleError res
 
       scope.multipleAdd = ->
         checked = _.filter scope.unSelectedSchools, (r) -> r.checked? && r.checked == true
         queue = _.map checked, (kg) -> scope.connect kg, scope.currentAgent
         all = $q.all queue
         all.then (q) ->
-          scope.resetSelection()
-          scope.refresh(scope.currentAgent)
-        , (res) ->
-          handleError res
+            scope.resetSelection()
+            scope.refresh(q[0].ad_id)
+          , (res) ->
+            handleError res
 
       scope.hasSelection = (kindergartens) ->
         _.some kindergartens, (r) -> r.checked? && r.checked == true
@@ -156,14 +153,28 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
         allChecked = _.every scope.unSelectedSchools, (r) -> r.checked? && r.checked == true
         scope.selection.allCheck = allChecked && scope.unSelectedSchools.length > 0
 
+      scope.singleDistributedSelection = (kg) ->
+        allChecked = _.every scope.selectedSchools, (r) -> r.checked? && r.checked == true
+        scope.selection.allDistributedCheck = allChecked && scope.selectedSchools.length > 0
+
       scope.selection =
         allCheck: false
-        allAgentCheck: false
+        allDistributedCheck: false
 
       scope.resetSelection = ->
         scope.selection =
           allCheck: false
-          allAgentCheck: false
-        scope.checkAgentAll false
+          allDistributedCheck: false
+        scope.checkAllDistributed false
         scope.checkAll false
+
+      handleError = (res) ->
+        Alert
+          title: '无法保存发布信息'
+          content: if res.data.error_msg? then res.data.error_msg else res.data
+          placement: "top"
+          type: "danger"
+          show: true
+          container: '.modal-dialog .panel-body'
+          duration: 3
   ]

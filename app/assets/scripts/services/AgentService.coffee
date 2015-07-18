@@ -96,10 +96,10 @@ angular.module('kulebao.services')
 
 .factory 'agentAdInSchoolService', ['$resource',
   ($resource) ->
-    $resource '/api/v4/agent/:agent_id/kindergarten/:kg/contractor/:id',
+    $resource '/api/v4/agent/:agent_id/kindergarten/:school_id/contractor/:id',
       {
         agent_id: "@agent_id"
-        kg: "@kg"
+        school_id: "@school_id"
         id: "@id"
       }
 ]

@@ -15,8 +15,8 @@
     <table class="table table-hover table-condensed schools-list">
       <thead>
       <tr class="row">
-        <th class="col-xs-2"><input type="checkbox" ng-model="selection.allAgentCheck"
-                                    ng-change="checkAgentAll(selection.allAgentCheck)"/> 全选
+        <th class="col-xs-2"><input type="checkbox" ng-model="selection.allDistributedCheck"
+                                    ng-change="checkAllDistributed(selection.allDistributedCheck)"/> 全选
         </th>
         <th class="col-xs-3">学校编号</th>
         <th class="col-xs-3">学校全名</th>
@@ -25,10 +25,10 @@
       <tbody>
       <tr ng-repeat="kg in selectedSchools | filter: searchText | orderBy: 'school_id'" class="row">
         <td class="col-xs-2" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="kg.checked"
-                                                                        ng-change="singleAgentSelection(kg)"/></td>
+                                                                        ng-change="singleDistributedSelection(kg)"/></td>
         <td class="col-xs-3"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome"
                                 ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
-        <td class="col-xs-3">{{::kg.full_name}}</td>
+        <td class="col-xs-3">{{::kg.name}}</td>
         </td>
 
       </tr>
