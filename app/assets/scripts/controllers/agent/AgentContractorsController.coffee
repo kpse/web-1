@@ -91,5 +91,79 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
             ad.publishing.publish_status = parseInt oldStatus
 
       scope.distribute = (ad) ->
-        alert "投放商户 #{ad.title}"
+        scope.resetSelection()
+        scope.selectedSchools = ad.schools
+        scope.unSelectedSchools = _.reject scope.currentAgent.schools, (r) ->
+          _.find ad.schools, (u) ->
+            r.school_id == u.school_id
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/agent/distribute_to_school.html'
+
+      scope.disconnect = (kg, contractor) ->
+        deletedSchool = _.find contractor.schoolIds, (k) -> k.school_id == kg.school_id
+        contractor.schoolIds = _.reject contractor.schoolIds, (k) -> k.school_id == kg.school_id
+        contractor.schools = _.reject contractor.schools, (k) -> k.school_id == kg.school_id
+        scope.unSelectedSchools.push _.find scope.kindergartens , (k) -> k.school_id == kg.school_id
+#        AgentSchool.delete(agent_id: contractor.id, kg: deletedSchool.id).$promise
+#        alert contractor.schools
+
+      scope.connect = (kg, contractor) ->
+        contractor.schoolIds = [] unless contractor.schoolIds?
+        contractor.schools = [] unless contractor.schools?
+        contractor.schoolIds.push school_id: kg.school_id
+        contractor.schools.push _.find scope.kindergartens, (k) -> k.school_id == kg.school_id
+        scope.unSelectedSchools = _.reject scope.unSelectedSchools , (k) -> k.school_id == kg.school_id
+#        AgentSchool.save(agent_id: contractor.id, school_id: kg.school_id, name: kg.full_name).$promise
+#        alert contractor.schools
+
+      scope.checkAll = (check) ->
+        scope.unSelectedSchools = [] unless scope.unSelectedSchools?
+        scope.unSelectedSchools = _.each scope.unSelectedSchools, (r) ->
+          r.checked = check
+          r
+
+      scope.checkAgentAll = (check) ->
+        if scope.currentAgent?
+          scope.selectedSchools = _.map scope.selectedSchools, (r) ->
+            r.checked = check
+            r
+
+      scope.multipleDelete = ->
+        checked = _.filter scope.selectedSchools, (r) -> r.checked? && r.checked == true
+        queue = _.map checked, (kg) -> scope.disconnect kg, scope.currentAgent
+        all = $q.all queue
+        all.then (q) ->
+          scope.resetSelection()
+          scope.refresh(scope.currentAgent)
+        , (res) ->
+          handleError res
+
+      scope.multipleAdd = ->
+        checked = _.filter scope.unSelectedSchools, (r) -> r.checked? && r.checked == true
+        queue = _.map checked, (kg) -> scope.connect kg, scope.currentAgent
+        all = $q.all queue
+        all.then (q) ->
+          scope.resetSelection()
+          scope.refresh(scope.currentAgent)
+        , (res) ->
+          handleError res
+
+      scope.hasSelection = (kindergartens) ->
+        _.some kindergartens, (r) -> r.checked? && r.checked == true
+
+      scope.singleSelection = (kg) ->
+        allChecked = _.every scope.unSelectedSchools, (r) -> r.checked? && r.checked == true
+        scope.selection.allCheck = allChecked && scope.unSelectedSchools.length > 0
+
+      scope.selection =
+        allCheck: false
+        allAgentCheck: false
+
+      scope.resetSelection = ->
+        scope.selection =
+          allCheck: false
+          allAgentCheck: false
+        scope.checkAgentAll false
+        scope.checkAll false
   ]
