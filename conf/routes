@@ -554,6 +554,12 @@ POST          /api/v4/agent/:agentId/kindergarten/:kg/contractor                
 POST          /api/v4/agent/:agentId/kindergarten/:kg/contractor/:id                           controllers.V4.AgentContractorInSchoolController.update(agentId: Long, kg: Long, id: Long)
 DELETE        /api/v4/agent/:agentId/kindergarten/:kg/contractor/:id                           controllers.V4.AgentContractorInSchoolController.delete(agentId: Long, kg: Long, id: Long)
 
+GET           /api/v4/agent/:agentId/kindergarten/:kg/activity                                 controllers.V4.AgentActivityInSchoolController.index(agentId: Long, kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v4/agent/:agentId/kindergarten/:kg/activity/:id                             controllers.V4.AgentActivityInSchoolController.show(agentId: Long, kg: Long, id: Long)
+POST          /api/v4/agent/:agentId/kindergarten/:kg/activity                                 controllers.V4.AgentActivityInSchoolController.create(agentId: Long, kg: Long)
+POST          /api/v4/agent/:agentId/kindergarten/:kg/activity/:id                             controllers.V4.AgentActivityInSchoolController.update(agentId: Long, kg: Long, id: Long)
+DELETE        /api/v4/agent/:agentId/kindergarten/:kg/activity/:id                             controllers.V4.AgentActivityInSchoolController.delete(agentId: Long, kg: Long, id: Long)
+
 GET           /api/v4/agent/:agentId/contractor                                                controllers.V4.AgentContractorController.index(agentId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v4/agent/:agentId/contractor/:id                                            controllers.V4.AgentContractorController.show(agentId: Long, id: Long)
 POST          /api/v4/agent/:agentId/contractor                                                controllers.V4.AgentContractorController.create(agentId: Long)

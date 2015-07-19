@@ -1,22 +1,22 @@
 # --- !Ups
 
--- case class AgentContractorInSchool(id: Option[Long], agent_id: Long,
--- contractor_id: Long, school_id: Long, updated_at: Option[Long])
+-- case class AgentActivityInSchool(id: Option[Long], agent_id: Long, activity_id: Long,
+-- school_id: Long, updated_at: Option[Long])
 
-CREATE TABLE agentcontractorinschool (
+CREATE TABLE agentactivityinschool (
   uid         INT(11) NOT NULL AUTO_INCREMENT,
   agent_id   INT(11) NOT NULL,
   school_id   VARCHAR(20) NOT NULL,
-  contractor_id   INT(11),
+  activity_id   INT(11),
   updated_at BIGINT,
   status INT(4) DEFAULT 1,
   PRIMARY KEY (uid),
-  UNIQUE (agent_id, school_id, contractor_id),
+  UNIQUE (agent_id, school_id, activity_id),
   KEY (agent_id),
   KEY (school_id)
 );
 
-INSERT INTO agentcontractorinschool (agent_id, school_id, contractor_id, updated_at) VALUES
+INSERT INTO agentactivityinschool (agent_id, school_id, activity_id, updated_at) VALUES
 (1, '93740362', 1, 1393395313123),
 (1, '93740362', 2, 1393395313123),
 (1, '93740562', 1, 1393395313123),
@@ -24,4 +24,4 @@ INSERT INTO agentcontractorinschool (agent_id, school_id, contractor_id, updated
 
 # --- !Downs
 
-DROP TABLE IF EXISTS agentcontractorinschool;
+DROP TABLE IF EXISTS agentactivityinschool;
