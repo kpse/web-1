@@ -49,6 +49,12 @@
   height: 300px;
   margin-top: 50px;
 }
+.main-footer.footer {
+  display: none;
+}
+.module-view {
+  min-height: 739px;
+}
 .triangle-border {
   position: relative;
   padding: 15px;
