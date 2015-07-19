@@ -1,7 +1,7 @@
 angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', '$timeout', 'currentAgent', 'loggedUser', 'agentContractorService',
+  ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', 'currentAgent', 'loggedUser', 'agentContractorService',
    'agentContractorInSchoolService', 'agentSchoolService', 'imageCompressService', 'agentRawActivityService',
-    (scope, $rootScope, stateParams, $q, $state, Modal, $timeout, Agent, User, Contractor, AdInSchool, Schools, Compress, Activity) ->
+    (scope, $rootScope, stateParams, $q, $state, Modal, Agent, User, Contractor, AdInSchool, Schools, Compress, Activity) ->
       scope.adminUser = User
       scope.currentAgent = Agent
 
@@ -62,10 +62,10 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         newAd.$save ->
           scope.loading = true
           scope.currentModal.hide()
-          $timeout ->
-              $state.go targetState, reload: true if targetState?
-              scope.loading = false
-            , 3000
+          if targetState?
+            $state.go targetState, reload: true unless $state.is targetState
+            $state.reload() if $state.is targetState
+            scope.loading = false
 
 
       scope.published = (ad) ->
