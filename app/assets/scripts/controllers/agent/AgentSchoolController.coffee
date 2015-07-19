@@ -8,6 +8,6 @@ angular.module('kulebaoAgent').controller 'AgentSchoolCtrl',
 
       scope.$on 'schools_ready', (data) ->
         _.each scope.currentAgent.schools, (s) ->
-          s.stats = SchoolData.get agent_id: scope.currentAgent.id, kg: s.school_id
+          s.stats = SchoolData.get agent_id: scope.currentAgent.id, school_id: s.school_id
 
   ]

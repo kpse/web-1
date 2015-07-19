@@ -1,6 +1,6 @@
 angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
   ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', 'currentAgent', 'loggedUser', 'agentContractorService',
-   'agentAdInSchoolService', 'agentSchoolService', 'imageCompressService', 'agentRawActivityService',
+   'agentContractorInSchoolService', 'agentSchoolService', 'imageCompressService', 'agentRawActivityService',
     (scope, $rootScope, stateParams, $q, $state, Modal, Agent, User, Contractor, AdInSchool, Schools, Compress, Activity) ->
       scope.adminUser = User
       scope.currentAgent = Agent
@@ -62,7 +62,6 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         newAd.$save ->
           scope.currentModal.hide()
           $state.go targetState if targetState?
-          $state.reload()
 
       scope.published = (ad) ->
         ad.publishing? && ad.publishing.published_at > 0
@@ -80,5 +79,5 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         {name: '活动', route: 'activities'}
       ]
 
-      scope.allowToDistribute = (ad) -> ad.publishing.publish_status == 2
+      scope.allowToDistribute = (ad) -> ad.publishing && ad.publishing.publish_status == 2
   ]

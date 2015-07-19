@@ -1,32 +1,25 @@
 angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', 'currentAgent', 'loggedUser', 'agentRawActivityService',
-   'agentAdInSchoolService', 'agentSchoolService', 'agentContractorService',
-    (scope, $rootScope, stateParams, $q, $state, Modal, Agent, User, Activity, AdInSchool, Schools, Contractor) ->
+  ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', '$alert', 'currentAgent', 'loggedUser', 'agentRawActivityService',
+   'agentActivityInSchoolService', 'agentSchoolService', 'agentContractorService',
+    (scope, $rootScope, stateParams, $q, $state, Modal, Alert, Agent, User, Activity, ActivityInSchool, Schools, Contractor) ->
       scope.adminUser = User
       scope.currentAgent = Agent
 
-#      scope.refresh = ->
-#        scope.activities = []
-#        scope.contractors = Contractor.query agent_id: scope.currentAgent.id, ->
-#          _.map scope.contractors, (contractor) ->
-#            queue = [Activity.query(agent_id: scope.currentAgent.id, contractor_id: contractor.id).$promise
-#                     Schools.query(agent_id: scope.currentAgent.id).$promise]
-#
-#            $q.all(queue).then (q) ->
-#              activities = q[0]
-#              scope.schools = q[1]
-#              _.each activities, (a) -> a.contractor = contractor
-#              scope.activities = scope.activities.concat activities
-
-      scope.refresh = ->
+      scope.refresh = (activityId) ->
         queue = [Activity.query(agent_id: scope.currentAgent.id).$promise,
                  Schools.query(agent_id: scope.currentAgent.id).$promise]
 
         $q.all(queue).then (q) ->
           scope.activities = q[0]
           scope.schools = q[1]
-          _.each (_.filter scope.activities, (h) -> h.contractor_id?), (a) ->
-            a.contractor = Contractor.get agent_id: scope.currentAgent.id, id: a.contractor_id
+          queue2 = _.map scope.schools, (s) ->
+            ActivityInSchool.query(agent_id: scope.currentAgent.id, school_id: s.school_id).$promise
+          $q.all(queue2).then (q2) ->
+            group = _.groupBy (_.flatten q2), 'school_id'
+            _.each scope.schools, (s) ->
+              s.activityIds = group[s.school_id]
+            if scope.selectedSchools? && activityId?
+              scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.activityIds, (c) -> c.activity_id == activityId
 
       scope.refresh()
 
@@ -99,11 +92,91 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
           scope.currentModal.hide()
           scope.refresh()
 
-      scope.adTypes = [
-        {name: '商户', route: 'contractors'},
-        {name: '活动', route: 'activities'}
-      ]
+      scope.distribute = (activity) ->
+        scope.currentActivity = angular.copy activity
+        scope.resetSelection()
+        scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.activityIds, (c) -> c.activity_id == activity.id
+        scope.unSelectedSchools = _.reject scope.schools, (r) ->
+          _.find scope.selectedSchools, (u) -> r.school_id == u.school_id
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/agent/distribute_to_school.html'
 
-      scope.distribute = (ad) ->
-        alert "投放活动 #{ad.title}"
+      scope.disconnect = (kg, activity) ->
+        connectionId = _.find kg.activityIds, (c) -> c.school_id == kg.school_id
+        kg.activityIds = _.reject kg.activityIds, (c) -> c.school_id == kg.school_id
+        scope.selectedSchools = _.reject scope.selectedSchools, (s) -> s.school_id == kg.school_id
+        scope.unSelectedSchools.push _.find scope.schools , (c) -> c.school_id == kg.school_id
+        ActivityInSchool.delete(agent_id: scope.currentAgent.id, school_id: kg.school_id, id: connectionId.id).$promise
+
+      scope.connect = (kg, activity) ->
+        kg.activityIds = [] unless kg.activityIds?
+        kg.activityIds.push agent_id: scope.currentAgent.id, school_id: kg.school_id, activity_id: activity.id
+        scope.selectedSchools.push agent_id: scope.currentAgent.id, school_id: kg.school_id, activity_id: activity.id, name: kg.name
+        scope.unSelectedSchools = _.reject scope.unSelectedSchools , (k) -> k.school_id == kg.school_id
+        ActivityInSchool.save(agent_id: scope.currentAgent.id, school_id: kg.school_id, activity_id: activity.id).$promise
+
+      scope.checkAll = (check) ->
+        scope.unSelectedSchools = [] unless scope.unSelectedSchools?
+        scope.unSelectedSchools = _.each scope.unSelectedSchools, (r) ->
+          r.checked = check
+          r
+
+      scope.checkAllDistributed = (check) ->
+        scope.selectedSchools = [] unless scope.selectedSchools?
+        scope.selectedSchools = _.map scope.selectedSchools, (r) ->
+          r.checked = check
+          r
+
+      scope.multipleDelete = ->
+        checked = _.filter scope.selectedSchools, (r) -> r.checked? && r.checked == true
+        queue = _.map checked, (kg) -> scope.disconnect kg, scope.currentActivity
+        all = $q.all queue
+        all.then (q) ->
+          scope.resetSelection()
+          scope.refresh(q[0].activity_id)
+        , (res) ->
+          handleError res
+
+      scope.multipleAdd = ->
+        checked = _.filter scope.unSelectedSchools, (r) -> r.checked? && r.checked == true
+        queue = _.map checked, (kg) -> scope.connect kg, scope.currentActivity
+        all = $q.all queue
+        all.then (q) ->
+          scope.resetSelection()
+          scope.refresh(q[0].activity_id)
+        , (res) ->
+          handleError res
+
+      scope.hasSelection = (kindergartens) ->
+        _.some kindergartens, (r) -> r.checked? && r.checked == true
+
+      scope.singleSelection = (kg) ->
+        allChecked = _.every scope.unSelectedSchools, (r) -> r.checked? && r.checked == true
+        scope.selection.allCheck = allChecked && scope.unSelectedSchools.length > 0
+
+      scope.singleDistributedSelection = (kg) ->
+        allChecked = _.every scope.selectedSchools, (r) -> r.checked? && r.checked == true
+        scope.selection.allDistributedCheck = allChecked && scope.selectedSchools.length > 0
+
+      scope.selection =
+        allCheck: false
+        allDistributedCheck: false
+
+      scope.resetSelection = ->
+        scope.selection =
+          allCheck: false
+          allDistributedCheck: false
+        scope.checkAllDistributed false
+        scope.checkAll false
+
+      handleError = (res) ->
+        Alert
+          title: '发布活动到学校出错，请稍后重试'
+          content: if res.data.error_msg? then res.data.error_msg else res.data
+          placement: "top"
+          type: "danger"
+          show: true
+          container: '.modal-dialog .panel-body'
+          duration: 3
   ]

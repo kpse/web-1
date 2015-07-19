@@ -1,5 +1,3 @@
-'use strict'
-
 angular.module('kulebao.services')
 .factory 'agentService', ['$resource', 'session',
   ($resource, Session) ->
@@ -14,7 +12,7 @@ angular.module('kulebao.services')
           method: 'GET'
           cache: true
       }
-]
+  ]
 
 .factory 'agentManagementService', ['$resource',
   ($resource) ->
@@ -22,7 +20,7 @@ angular.module('kulebao.services')
       {
         id: '@id'
       }
-]
+  ]
 
 .factory 'agentSchoolService', ['$resource',
   ($resource) ->
@@ -31,7 +29,7 @@ angular.module('kulebao.services')
         agent_id: "@agent_id"
         kg: "@kg"
       }
-]
+  ]
 
 .factory 'agentContractorService', ['$resource',
   ($resource) ->
@@ -50,8 +48,7 @@ angular.module('kulebao.services')
           url: '/api/v4/agent/:agent_id/contractor/:id/reject'
           method: 'POST'
       }
-
-]
+  ]
 
 .factory 'agentActivityService', ['$resource',
   ($resource) ->
@@ -71,8 +68,7 @@ angular.module('kulebao.services')
           url: '/api/v4/agent/:agent_id/contractor/:contractor_id/activity/:id/reject'
           method: 'POST'
       }
-
-]
+  ]
 
 .factory 'agentRawActivityService', ['$resource',
   ($resource) ->
@@ -91,10 +87,9 @@ angular.module('kulebao.services')
           url: '/api/v4/agent/:agent_id/activity/:id/reject'
           method: 'POST'
       }
+  ]
 
-]
-
-.factory 'agentAdInSchoolService', ['$resource',
+.factory 'agentContractorInSchoolService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/kindergarten/:school_id/contractor/:id',
       {
@@ -102,7 +97,17 @@ angular.module('kulebao.services')
         school_id: "@school_id"
         id: "@id"
       }
-]
+  ]
+
+.factory 'agentActivityInSchoolService', ['$resource',
+  ($resource) ->
+    $resource '/api/v4/agent/:agent_id/kindergarten/:school_id/activity/:id',
+      {
+        agent_id: "@agent_id"
+        school_id: "@school_id"
+        id: "@id"
+      }
+  ]
 
 .factory 'agentPasswordService', ['$resource',
   ($resource) ->
@@ -110,7 +115,7 @@ angular.module('kulebao.services')
       {
         agent_id: "@agent_id"
       }
-]
+  ]
 
 .factory 'agentResetPasswordService', ['$resource',
   ($resource) ->
@@ -118,7 +123,7 @@ angular.module('kulebao.services')
       {
         agent_id: "@agent_id"
       }
-]
+  ]
 
 .factory 'agentStatsService', ['$resource',
   ($resource) ->
@@ -126,14 +131,14 @@ angular.module('kulebao.services')
       {
         agent_id: "@agent_id"
       }
-]
+  ]
 
 .factory 'agentSchoolDataService', ['$resource',
   ($resource) ->
-    $resource '/api/v4/agent/:agent_id/kindergarten/:kg/active',
+    $resource '/api/v4/agent/:agent_id/kindergarten/:school_id/active',
       {
         agent_id: "@agent_id"
-        kg: "@kg"
+        school_id: "@school_id"
       }
-]
+  ]
 

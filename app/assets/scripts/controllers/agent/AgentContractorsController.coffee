@@ -1,6 +1,6 @@
 angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
   ['$scope', '$rootScope', '$stateParams', '$q', '$modal', '$alert', 'currentAgent', 'loggedUser', 'agentContractorService',
-   'agentAdInSchoolService', 'agentSchoolService',
+   'agentContractorInSchoolService', 'agentSchoolService',
     (scope, $rootScope, stateParams, $q, Modal, Alert, Agent, User, Contractor, ContractorInSchool, Schools) ->
       scope.adminUser = User
       scope.currentAgent = Agent
@@ -92,6 +92,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
             ad.publishing.publish_status = parseInt oldStatus
 
       scope.distribute = (contractor) ->
+        scope.currentContractor = angular.copy contractor
         scope.resetSelection()
         scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.contractor_id == contractor.id
         scope.unSelectedSchools = _.reject scope.schools, (r) ->
@@ -105,14 +106,14 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
         kg.contractorIds = _.reject kg.contractorIds, (c) -> c.school_id == kg.school_id
         scope.selectedSchools = _.reject scope.selectedSchools, (s) -> s.school_id == kg.school_id
         scope.unSelectedSchools.push _.find scope.schools , (c) -> c.school_id == kg.school_id
-        ContractorInSchool.delete(agent_id: contractor.id, school_id: kg.school_id, id: connectionId.id).$promise
+        ContractorInSchool.delete(agent_id: scope.currentAgent.id, school_id: kg.school_id, id: connectionId.id).$promise
 
       scope.connect = (kg, contractor) ->
         kg.contractorIds = [] unless kg.contractorIds?
-        kg.contractorIds.push agent_id: contractor.id, school_id: kg.school_id, contractor_id: contractor.id
-        scope.selectedSchools.push agent_id: contractor.id, school_id: kg.school_id, contractor_id: contractor.id, name: kg.name
+        kg.contractorIds.push agent_id: scope.currentAgent.id, school_id: kg.school_id, contractor_id: contractor.id
+        scope.selectedSchools.push agent_id: scope.currentAgent.id, school_id: kg.school_id, contractor_id: contractor.id, name: kg.name
         scope.unSelectedSchools = _.reject scope.unSelectedSchools , (k) -> k.school_id == kg.school_id
-        ContractorInSchool.save(agent_id: contractor.id, school_id: kg.school_id, contractor_id: contractor.id).$promise
+        ContractorInSchool.save(agent_id: scope.currentAgent.id, school_id: kg.school_id, contractor_id: contractor.id).$promise
 
       scope.checkAll = (check) ->
         scope.unSelectedSchools = [] unless scope.unSelectedSchools?
@@ -128,7 +129,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
 
       scope.multipleDelete = ->
         checked = _.filter scope.selectedSchools, (r) -> r.checked? && r.checked == true
-        queue = _.map checked, (kg) -> scope.disconnect kg, scope.currentAgent
+        queue = _.map checked, (kg) -> scope.disconnect kg, scope.currentContractor
         all = $q.all queue
         all.then (q) ->
             scope.resetSelection()
@@ -138,7 +139,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
 
       scope.multipleAdd = ->
         checked = _.filter scope.unSelectedSchools, (r) -> r.checked? && r.checked == true
-        queue = _.map checked, (kg) -> scope.connect kg, scope.currentAgent
+        queue = _.map checked, (kg) -> scope.connect kg, scope.currentContractor
         all = $q.all queue
         all.then (q) ->
             scope.resetSelection()
@@ -170,7 +171,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
 
       handleError = (res) ->
         Alert
-          title: '无法保存发布信息'
+          title: '发布商户到学校出错，请稍后重试'
           content: if res.data.error_msg? then res.data.error_msg else res.data
           placement: "top"
           type: "danger"
