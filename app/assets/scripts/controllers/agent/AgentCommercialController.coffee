@@ -65,7 +65,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
           $timeout ->
               $state.go targetState, reload: true if targetState?
               scope.loading = false
-            , 2000
+            , 3000
 
 
       scope.published = (ad) ->
