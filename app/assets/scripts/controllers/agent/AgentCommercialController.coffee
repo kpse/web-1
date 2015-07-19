@@ -80,4 +80,8 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       ]
 
       scope.allowToDistribute = (ad) -> ad.publishing && ad.publishing.publish_status == 2
+
+      scope.parentsInSchools = (schools) ->
+        _.sum schools, (s) -> s.stats.all
+
   ]

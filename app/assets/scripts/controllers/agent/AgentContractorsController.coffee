@@ -27,6 +27,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
               s.contractorIds = group[s.school_id]
             if scope.selectedSchools? && contractorId?
               scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.contractor_id == contractorId
+        scope.resetSelection() if scope.selection?
 
       scope.refresh()
 
@@ -97,8 +98,9 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
           else
             console.log 'no way here! publish_status = ' + ad.publishing.publish_status
             ad.publishing.publish_status = parseInt oldStatus
-      scope.parentsInSchools = (schools) ->
-        _.sum schools, (s) -> s.stats.all
+
+      scope.distributedIn = (contractor) ->
+        _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.contractor_id == contractor.id
 
       scope.distribute = (contractor) ->
         scope.currentContractor = angular.copy contractor
@@ -109,10 +111,6 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/distribute_to_school.html'
-
-      scope.distributedIn = (contractor) ->
-        _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.contractor_id == contractor.id
-
 
       scope.disconnect = (kg, contractor) ->
         connectionId = _.find kg.contractorIds, (c) -> c.school_id == kg.school_id
@@ -191,4 +189,5 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
           show: true
           container: '.modal-dialog .panel-body'
           duration: 3
+
   ]

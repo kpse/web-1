@@ -1,17 +1,19 @@
 angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
   ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', '$alert', 'currentAgent', 'loggedUser', 'agentRawActivityService',
-   'agentActivityInSchoolService', 'agentSchoolService', 'agentContractorService',
-    (scope, $rootScope, stateParams, $q, $state, Modal, Alert, Agent, User, Activity, ActivityInSchool, Schools, Contractor) ->
+   'agentActivityInSchoolService', 'agentSchoolService', 'agentSchoolDataService',
+    (scope, $rootScope, stateParams, $q, $state, Modal, Alert, Agent, User, Activity, ActivityInSchool, Schools, SchoolData) ->
       scope.adminUser = User
       scope.currentAgent = Agent
 
       scope.refresh = (activityId) ->
-        queue = [Activity.query(agent_id: scope.currentAgent.id).$promise,
-                 Schools.query(agent_id: scope.currentAgent.id).$promise]
+        queue = [Activity.query(agent_id: scope.currentAgent.id).$promise
+                 scope.waitForSchoolsReady()]
 
         $q.all(queue).then (q) ->
           scope.activities = q[0]
-          scope.schools = q[1]
+          scope.schools = scope.currentAgent.schools
+          _.each scope.schools, (s) ->
+            s.stats = SchoolData.get agent_id: scope.currentAgent.id, school_id: s.school_id
           queue2 = _.map scope.schools, (s) ->
             ActivityInSchool.query(agent_id: scope.currentAgent.id, school_id: s.school_id).$promise
           $q.all(queue2).then (q2) ->
@@ -20,6 +22,7 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
               s.activityIds = group[s.school_id]
             if scope.selectedSchools? && activityId?
               scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.activityIds, (c) -> c.activity_id == activityId
+        scope.resetSelection() if scope.selection?
 
       scope.refresh()
 
@@ -91,6 +94,9 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
         newAd.$save ->
           scope.currentModal.hide()
           scope.refresh()
+
+      scope.distributedIn = (activity) ->
+        _.filter scope.schools, (s) -> _.any s.activityIds, (c) -> c.activity_id == activity.id
 
       scope.distribute = (activity) ->
         scope.currentActivity = angular.copy activity
