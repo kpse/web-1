@@ -5,17 +5,12 @@ angular.module('kulebaoAgent').controller 'AgentStatisticsCtrl',
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
 
-      waitForSchoolsReady = ->
-        $q (resolve, reject) ->
-          scope.$on 'schools_ready', -> resolve()
-          resolve() if scope.currentAgent && scope.currentAgent.schools?
-
       scope.refresh = ->
         scope.d3Data = []
         currentAgent = scope.currentAgent
         currentAgent.expireDisplayValue = $filter('date')(currentAgent.expire, 'yyyy-MM-dd')
         queue = [Stats.query(agent_id: currentAgent.id).$promise,
-                 waitForSchoolsReady()]
+                 scope.waitForSchoolsReady()]
         $q.all(queue).then (q) ->
           console.log currentAgent.schools
           groups = _.groupBy(q[0], 'month')

@@ -1,17 +1,24 @@
 angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
   ['$scope', '$rootScope', '$stateParams', '$q', '$modal', '$alert', 'currentAgent', 'loggedUser', 'agentContractorService',
-   'agentContractorInSchoolService', 'agentSchoolService',
-    (scope, $rootScope, stateParams, $q, Modal, Alert, Agent, User, Contractor, ContractorInSchool, Schools) ->
+   'agentContractorInSchoolService', 'agentSchoolService', 'agentRawActivityService', 'agentSchoolDataService',
+    (scope, $rootScope, stateParams, $q, Modal, Alert, Agent, User, Contractor, ContractorInSchool, Schools, Activity,
+     SchoolData) ->
       scope.adminUser = User
       scope.currentAgent = Agent
 
       scope.refresh = (contractorId) ->
         queue = [Contractor.query(agent_id: scope.currentAgent.id).$promise
-                 Schools.query(agent_id: scope.currentAgent.id).$promise]
+                 scope.waitForSchoolsReady()
+                 Activity.query(agent_id: scope.currentAgent.id).$promise]
 
         $q.all(queue).then (q) ->
-          scope.contractors = q[0]
-          scope.schools = q[1]
+          scope.schools = scope.currentAgent.schools
+          activityGroup = _.groupBy q[2], 'contractor_id'
+          scope.contractors = _.map q[0], (c) ->
+            c.activities = activityGroup[c.id]
+            c
+          _.each scope.schools, (s) ->
+            s.stats = SchoolData.get agent_id: scope.currentAgent.id, school_id: s.school_id
           queue2 = _.map scope.schools, (s) ->
             ContractorInSchool.query(agent_id: scope.currentAgent.id, school_id: s.school_id).$promise
           $q.all(queue2).then (q2) ->
@@ -90,16 +97,22 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
           else
             console.log 'no way here! publish_status = ' + ad.publishing.publish_status
             ad.publishing.publish_status = parseInt oldStatus
+      scope.parentsInSchools = (schools) ->
+        _.sum schools, (s) -> s.stats.all
 
       scope.distribute = (contractor) ->
         scope.currentContractor = angular.copy contractor
         scope.resetSelection()
-        scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.contractor_id == contractor.id
+        scope.selectedSchools = scope.distributedIn contractor
         scope.unSelectedSchools = _.reject scope.schools, (r) ->
           _.find scope.selectedSchools, (u) -> r.school_id == u.school_id
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/distribute_to_school.html'
+
+      scope.distributedIn = (contractor) ->
+        _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.contractor_id == contractor.id
+
 
       scope.disconnect = (kg, contractor) ->
         connectionId = _.find kg.contractorIds, (c) -> c.school_id == kg.school_id

@@ -11,6 +11,11 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
       scope.$on 'currentAgent', (e, agent) ->
         scope.currentAgent = agent
 
+      scope.waitForSchoolsReady = ->
+        $q (resolve, reject) ->
+          scope.$on 'schools_ready', -> resolve()
+          resolve() if scope.currentAgent && scope.currentAgent.schools?
+
       scope.refresh = ->
         scope.d3Data = []
         currentAgent = scope.currentAgent
