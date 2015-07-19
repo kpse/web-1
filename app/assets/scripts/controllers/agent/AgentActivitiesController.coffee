@@ -6,6 +6,7 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
       scope.currentAgent = Agent
 
       scope.refresh = (activityId) ->
+        scope.loading = true
         queue = [Activity.query(agent_id: scope.currentAgent.id).$promise
                  scope.waitForSchoolsReady()]
 
@@ -22,6 +23,7 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
               s.activityIds = group[s.school_id]
             if scope.selectedSchools? && activityId?
               scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.activityIds, (c) -> c.activity_id == activityId
+          scope.loading = false
         scope.resetSelection() if scope.selection?
 
       scope.refresh()
