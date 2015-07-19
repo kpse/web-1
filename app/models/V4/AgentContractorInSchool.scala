@@ -92,7 +92,7 @@ object AgentContractorInSchool {
 
   def published(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
     implicit c =>
-      SQL(s"select a.* from agentcontractorinschool s, agentadvertisement a where s.contractor_id=a.uid and s.school_id={kg} " +
+      SQL(s"select a.* from agentcontractorinschool s, agentcontractor a where s.contractor_id=a.uid and s.school_id={kg} " +
         s"and a.status=1 and s.status=1 and a.publish_status=2 ${RangerHelper.generateSpan(from, to, most)}")
         .on(
           'from -> from,

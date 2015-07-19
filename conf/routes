@@ -598,6 +598,7 @@ POST          /api/v4/agent/:agentId/password_reset                             
 
 GET           /api/v4/kindergarten/:kg/contractor                                              controllers.V4.AgentContractorInSchoolController.published(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v4/kindergarten/:kg/contractor/:contractorId/activity                       controllers.V4.AgentContractorInSchoolController.publishedActivities(kg: Long, contractorId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v4/kindergarten/:kg/activity                                                controllers.V4.AgentActivityInSchoolController.published(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 
 POST          /api/v4/kindergarten/:kg/activity/:activityId/enrollment                         controllers.V4.AgentActivityEnrollmentController.create(kg: Long, activityId: Long)
 GET           /api/v4/kindergarten/:kg/activity/:activityId/parent/:parentId/enrollment        controllers.V4.AgentActivityEnrollmentController.show(kg: Long, activityId: Long, parentId: String)
