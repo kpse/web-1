@@ -5,15 +5,19 @@ angular.module('kulebaoAgent').controller 'AgentStatisticsCtrl',
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
 
+      waitForSchoolsReady = ->
+        $q (resolve, reject) ->
+          scope.$on 'schools_ready', -> resolve()
+          resolve() if scope.currentAgent && scope.currentAgent.schools?
+
       scope.refresh = ->
         scope.d3Data = []
         currentAgent = scope.currentAgent
         currentAgent.expireDisplayValue = $filter('date')(currentAgent.expire, 'yyyy-MM-dd')
         queue = [Stats.query(agent_id: currentAgent.id).$promise,
-                 AgentSchool.query(agent_id: currentAgent.id).$promise]
+                 waitForSchoolsReady()]
         $q.all(queue).then (q) ->
-          currentAgent.schools = q[1]
-
+          console.log currentAgent.schools
           groups = _.groupBy(q[0], 'month')
           scope.d3Data = _.map _.keys(groups), (g) ->
             once = _.sum groups[g], 'logged_once'
@@ -27,7 +31,7 @@ angular.module('kulebaoAgent').controller 'AgentStatisticsCtrl',
           scope.lastActiveData = _.last scope.d3Data
 
           schoolDataQueue = _.map currentAgent.schools, (s) ->
-            SchoolData.get(agent_id: currentAgent.id, kg: s.school_id).$promise
+            SchoolData.get(agent_id: currentAgent.id, school_id: s.school_id).$promise
           $q.all(schoolDataQueue).then (q2) ->
             scope.parentsCount = _.sum q2, 'all'
             scope.childrenCount = _.sum q2, 'children'
