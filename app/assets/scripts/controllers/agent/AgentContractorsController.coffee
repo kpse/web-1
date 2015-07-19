@@ -19,7 +19,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
             _.each scope.schools, (s) ->
               s.contractorIds = group[s.school_id]
             if scope.selectedSchools? && contractorId?
-              scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.ad_id == contractorId
+              scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.contractor_id == contractorId
 
       scope.refresh()
 
@@ -93,7 +93,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
 
       scope.distribute = (contractor) ->
         scope.resetSelection()
-        scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.ad_id == contractor.id
+        scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.contractor_id == contractor.id
         scope.unSelectedSchools = _.reject scope.schools, (r) ->
           _.find scope.selectedSchools, (u) -> r.school_id == u.school_id
         scope.currentModal = Modal
@@ -109,10 +109,10 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
 
       scope.connect = (kg, contractor) ->
         kg.contractorIds = [] unless kg.contractorIds?
-        kg.contractorIds.push agent_id: contractor.id, school_id: kg.school_id, ad_id: contractor.id
-        scope.selectedSchools.push agent_id: contractor.id, school_id: kg.school_id, ad_id: contractor.id, name: kg.name
+        kg.contractorIds.push agent_id: contractor.id, school_id: kg.school_id, contractor_id: contractor.id
+        scope.selectedSchools.push agent_id: contractor.id, school_id: kg.school_id, contractor_id: contractor.id, name: kg.name
         scope.unSelectedSchools = _.reject scope.unSelectedSchools , (k) -> k.school_id == kg.school_id
-        ContractorInSchool.save(agent_id: contractor.id, school_id: kg.school_id, ad_id: contractor.id).$promise
+        ContractorInSchool.save(agent_id: contractor.id, school_id: kg.school_id, contractor_id: contractor.id).$promise
 
       scope.checkAll = (check) ->
         scope.unSelectedSchools = [] unless scope.unSelectedSchools?
@@ -132,7 +132,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
         all = $q.all queue
         all.then (q) ->
             scope.resetSelection()
-            scope.refresh(q[0].ad_id)
+            scope.refresh(q[0].contractor_id)
           , (res) ->
             handleError res
 
@@ -142,7 +142,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
         all = $q.all queue
         all.then (q) ->
             scope.resetSelection()
-            scope.refresh(q[0].ad_id)
+            scope.refresh(q[0].contractor_id)
           , (res) ->
             handleError res
 

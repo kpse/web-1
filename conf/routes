@@ -548,11 +548,11 @@ POST          /api/v4/agent/:agentId/kindergarten                               
 POST          /api/v4/agent/:agentId/kindergarten/:id                                          controllers.V4.AgentSchoolController.update(agentId: Long, id: Long)
 DELETE        /api/v4/agent/:agentId/kindergarten/:id                                          controllers.V4.AgentSchoolController.delete(agentId: Long, id: Long)
 
-GET           /api/v4/agent/:agentId/kindergarten/:kg/contractor                               controllers.V4.AgentAdInSchoolController.index(agentId: Long, kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
-GET           /api/v4/agent/:agentId/kindergarten/:kg/contractor/:id                           controllers.V4.AgentAdInSchoolController.show(agentId: Long, kg: Long, id: Long)
-POST          /api/v4/agent/:agentId/kindergarten/:kg/contractor                               controllers.V4.AgentAdInSchoolController.create(agentId: Long, kg: Long)
-POST          /api/v4/agent/:agentId/kindergarten/:kg/contractor/:id                           controllers.V4.AgentAdInSchoolController.update(agentId: Long, kg: Long, id: Long)
-DELETE        /api/v4/agent/:agentId/kindergarten/:kg/contractor/:id                           controllers.V4.AgentAdInSchoolController.delete(agentId: Long, kg: Long, id: Long)
+GET           /api/v4/agent/:agentId/kindergarten/:kg/contractor                               controllers.V4.AgentContractorInSchoolController.index(agentId: Long, kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v4/agent/:agentId/kindergarten/:kg/contractor/:id                           controllers.V4.AgentContractorInSchoolController.show(agentId: Long, kg: Long, id: Long)
+POST          /api/v4/agent/:agentId/kindergarten/:kg/contractor                               controllers.V4.AgentContractorInSchoolController.create(agentId: Long, kg: Long)
+POST          /api/v4/agent/:agentId/kindergarten/:kg/contractor/:id                           controllers.V4.AgentContractorInSchoolController.update(agentId: Long, kg: Long, id: Long)
+DELETE        /api/v4/agent/:agentId/kindergarten/:kg/contractor/:id                           controllers.V4.AgentContractorInSchoolController.delete(agentId: Long, kg: Long, id: Long)
 
 GET           /api/v4/agent/:agentId/contractor                                                controllers.V4.AgentContractorController.index(agentId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v4/agent/:agentId/contractor/:id                                            controllers.V4.AgentContractorController.show(agentId: Long, id: Long)
@@ -585,8 +585,8 @@ POST          /api/v4/agent/:agentId/contractor/:contractorId/activity/:id/rejec
 POST          /api/v4/agent/:agentId/password                                                  controllers.V4.AgentController.changePassword(agentId: Long)
 POST          /api/v4/agent/:agentId/password_reset                                            controllers.V4.AgentController.resetPassword(agentId: Long)
 
-GET           /api/v4/kindergarten/:kg/contractor                                              controllers.V4.AgentAdInSchoolController.published(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
-GET           /api/v4/kindergarten/:kg/contractor/:contractorId/activity                       controllers.V4.AgentAdInSchoolController.publishedActivities(kg: Long, contractorId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v4/kindergarten/:kg/contractor                                              controllers.V4.AgentContractorInSchoolController.published(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v4/kindergarten/:kg/contractor/:contractorId/activity                       controllers.V4.AgentContractorInSchoolController.publishedActivities(kg: Long, contractorId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 
 POST          /api/v4/kindergarten/:kg/activity/:activityId/enrollment                         controllers.V4.AgentActivityEnrollmentController.create(kg: Long, activityId: Long)
 GET           /api/v4/kindergarten/:kg/activity/:activityId/parent/:parentId/enrollment        controllers.V4.AgentActivityEnrollmentController.show(kg: Long, activityId: Long, parentId: String)
