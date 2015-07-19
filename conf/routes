@@ -582,6 +582,11 @@ POST          /api/v4/agent/:agentId/activity                                   
 POST          /api/v4/agent/:agentId/activity/:id                                              controllers.V4.AgentRawActivityController.update(agentId: Long, id: Long)
 DELETE        /api/v4/agent/:agentId/activity/:id                                              controllers.V4.AgentRawActivityController.delete(agentId: Long, id: Long)
 
+POST          /api/v4/agent/:agentId/activity/:id/preview                                      controllers.V4.AgentRawActivityController.preview(agentId: Long, id: Long)
+POST          /api/v4/agent/:agentId/activity/:id/publish                                      controllers.V4.AgentRawActivityController.publish(agentId: Long, id: Long)
+POST          /api/v4/agent/:agentId/activity/:id/reject                                       controllers.V4.AgentRawActivityController.reject(agentId: Long, id: Long)
+
+
 GET           /api/v4/agent/:agentId/activity/:activityId/enrollment                           controllers.V4.AgentActivityEnrollmentController.index(agentId: Long, activityId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 
 POST          /api/v4/agent/:agentId/contractor/:contractorId/activity/:id/preview             controllers.V4.AgentActivityController.preview(agentId: Long, contractorId: Long, id: Long)

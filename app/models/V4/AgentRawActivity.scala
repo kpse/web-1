@@ -103,7 +103,8 @@ object AgentRawActivity {
       get[Option[String]]("logo") ~
       get[Option[Long]]("updated_at") map {
       case id ~ agent ~ contractor ~ title ~ address ~ contact ~ timeSpan ~ detail ~ logo ~ time =>
-        AgentRawActivity(Some(id), agent, contractor, title, address, contact, timeSpan, detail, logo, time, Some(AdPublishing.publishStatus(tableName)(id, agent)))
+        AgentRawActivity(Some(id), agent, contractor, title, address, contact, timeSpan, detail, logo, time,
+          Some(AdPublishing.publishStatus(tableName)(id, agent)))
     }
   }
 }
