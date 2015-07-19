@@ -139,6 +139,10 @@ angular.module('kulebao.services')
       {
         agent_id: "@agent_id"
         school_id: "@school_id"
+      }, {
+        get:
+          method: 'GET'
+          cache: true
       }
   ]
 
