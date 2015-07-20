@@ -7,7 +7,8 @@ import play.api.db.DB
 import play.api.libs.json.Json
 
 case class CardV3(id: Option[Long], number: String, origin: String) {
-  def exists(id: Long) = DB.withTransaction {
+
+  def exists = DB.withTransaction {
     implicit c =>
       SQL("select count(1) from cardrecord where uid={id}")
         .on(
@@ -15,11 +16,19 @@ case class CardV3(id: Option[Long], number: String, origin: String) {
         ).as(get[Long]("count(1)") single) > 0
   }
 
-  def handle(id: Long) = exists(id) match {
+  def originExists = DB.withTransaction {
+    implicit c =>
+      SQL("select count(1) from cardrecord where origin={origin}")
+        .on(
+          'origin -> origin
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
+  def handle(kg: Long) = exists match {
     case true =>
-      update(id)
+      update(kg)
     case false =>
-      create(id)
+      create(kg)
   }
 
   def update(kg: Long): Option[CardV3] = DB.withConnection {

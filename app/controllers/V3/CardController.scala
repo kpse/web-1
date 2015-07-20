@@ -22,6 +22,8 @@ object CardController extends Controller with Secured {
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[CardV3].map {
+      case (s) if s.originExists =>
+        InternalServerError(Json.toJson(ErrorResponse("卡号重复(duplicated card number)", 2)))
       case (s) =>
         Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
