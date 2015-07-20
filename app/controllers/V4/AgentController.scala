@@ -24,7 +24,7 @@ object AgentController extends Controller with Secured {
     Ok(Json.toJson(KulebaoAgent.index(from, to, most)))
   }
 
-  def create = IsAgentLoggedIn(parse.json) { u => request =>
+  def create = IsOperator(parse.json) { u => request =>
     request.body.validate[KulebaoAgent].map {
       idExistCheck orElse phoneCheck orElse nameCheck orElse createAgent
     }.recoverTotal {
@@ -32,7 +32,7 @@ object AgentController extends Controller with Secured {
     }
   }
 
-  def update(id: Long) = IsAgentLoggedIn(parse.json) { u => request =>
+  def update(id: Long) = IsOperator(parse.json) { u => request =>
     request.body.validate[KulebaoAgent].map {
       idCheck(id) orElse phoneCheck orElse nameCheck orElse updateAgent
     }.recoverTotal {
