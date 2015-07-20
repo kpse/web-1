@@ -15,6 +15,7 @@ import play.api.mvc.Session
 
 trait LoginAccount {
   def url(): String
+
   def session(): Session
 }
 
@@ -132,7 +133,7 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
         ).executeInsert()
   }
 
-  override def url(): String =  privilege_group match {
+  override def url(): String = privilege_group match {
     case Some("operator") => "/operation"
     case _ => s"/admin#/kindergarten/$school_id"
   }
@@ -286,12 +287,22 @@ object Employee {
   }
 
 
-  def loginNameExists(loginName: String) = DB.withConnection {
+  def loginNameExists(loginName: String, id: Option[Long] = None) = DB.withConnection {
     implicit c =>
-      SQL("select (select count(1) from employeeinfo where login_name={login}) + (select count(1) from agentinfo where login_name={login}) as count")
-        .on(
-          'login -> loginName
-        ).as(get[Long]("count") single) > 0
+      id match {
+        case Some(i) =>
+          SQL("select (select count(1) from employeeinfo where login_name={login}) + (select count(1) from agentinfo where login_name={login} and uid <> {id}) as count")
+            .on(
+              'login -> loginName,
+              'id -> i
+            ).as(get[Long]("count") single) > 0
+        case None =>
+          SQL("select (select count(1) from employeeinfo where login_name={login}) + (select count(1) from agentinfo where login_name={login}) as count")
+            .on(
+              'login -> loginName
+            ).as(get[Long]("count") single) > 0
+      }
+
   }
 
   def phoneExists(phone: String) = DB.withConnection {

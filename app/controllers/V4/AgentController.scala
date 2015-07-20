@@ -72,7 +72,7 @@ object AgentController extends Controller with Secured {
       BadRequest(Json.toJson(ErrorResponse("请提供代理商名称(please provide name of the agent)", 4)))
     case (s) if s.login_name.isEmpty =>
       BadRequest(Json.toJson(ErrorResponse("必须提供代理商登陆名称(please provide login name of the agent)", 7)))
-    case (s) if Employee.loginNameExists(s.login_name.get) =>
+    case (s) if Employee.loginNameExists(s.login_name.get, s.id) =>
       BadRequest(Json.toJson(ErrorResponse("登陆名已存在，请另行选择(please provide another login name)", 8)))
   }
 
