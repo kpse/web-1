@@ -1,18 +1,20 @@
 angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
   ['$scope', '$rootScope', '$filter', '$q', 'agentManagementService', '$modal', 'principalService',
    'allEmployeesService', '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location',
-   'agentSchoolService', 'schoolService', 'agentContractorService', 'agentRawActivityService',
+   'agentSchoolService', 'schoolService', 'agentContractorService', 'agentRawActivityService', 'fullResponseService',
     (scope, rootScope, $filter, $q, Agent, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location,
-     AgentSchool, AllSchool, AgentContractor, AgentActivity) ->
+     AgentSchool, AllSchool, AgentContractor, AgentActivity, FullResponse) ->
       rootScope.tabName = 'agent'
 
       scope.refresh = (agent)->
         Agent.query (data) ->
           scope.agents = _.each data, (a) ->
             a.expireDisplayValue = $filter('date')(a.expire, 'yyyy-MM-dd')
-            a.schoolIds = AgentSchool.query agent_id: a.id, ->
+            FullResponse(AgentSchool, agent_id: a.id, most:5).then (d2) ->
+              a.schoolIds = d2
               a.schools = _.map a.schoolIds, (kg) -> AllSchool.get(school_id: kg.school_id)
               _.each a.schools, (kg) -> kg.checked = false
+
             AgentContractor.query agent_id: a.id, (data) ->
               a.waitingContractors = _.filter data, (d) -> d.publishing.publish_status == 99
             AgentActivity.query agent_id: a.id, (data) ->

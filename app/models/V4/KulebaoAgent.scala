@@ -33,7 +33,8 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[Str
   def update: Option[KulebaoAgent] = DB.withConnection {
     implicit c =>
       removeDuplicatedPhone(phone)
-      SQL("update agentinfo set name={name}, phone={phone}, area={area}, logo_url={logo_url}, expire_at={expire_at}, contact_info={contact_info}, memo={memo}," +
+      SQL("update agentinfo set name={name}, phone={phone}, area={area}, logo_url={logo_url}, expire_at={expire_at}, " +
+        "contact_info={contact_info}, memo={memo}, login_name={login_name}, " +
         "updated_at={time} where uid={id}")
         .on(
           'id -> id,
@@ -41,7 +42,6 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[Str
           'area -> area,
           'phone -> phone,
           'logo_url -> logo,
-          'login_password -> md5(phone.drop(3).toString()),
           'login_name -> login_name,
           'contact_info -> contact_info,
           'memo -> memo,
