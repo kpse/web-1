@@ -1,13 +1,13 @@
 angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
   ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', '$alert', 'currentAgent', 'loggedUser', 'agentRawActivityService',
-   'agentActivityInSchoolService', 'agentSchoolService', 'agentSchoolDataService',
-    (scope, $rootScope, stateParams, $q, $state, Modal, Alert, Agent, User, Activity, ActivityInSchool, Schools, SchoolData) ->
+   'agentActivityInSchoolService', 'agentSchoolService', 'agentSchoolDataService', 'fullResponseService',
+    (scope, $rootScope, stateParams, $q, $state, Modal, Alert, Agent, User, Activity, ActivityInSchool, Schools, SchoolData, FullRes) ->
       scope.adminUser = User
       scope.currentAgent = Agent
 
       scope.refresh = (activityId) ->
         scope.loading = true
-        queue = [Activity.query(agent_id: scope.currentAgent.id).$promise
+        queue = [FullRes(Activity, agent_id: scope.currentAgent.id)
                  scope.waitForSchoolsReady()]
 
         $q.all(queue).then (q) ->

@@ -1,16 +1,16 @@
 angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
   ['$scope', '$rootScope', '$stateParams', '$q', '$modal', '$alert', 'currentAgent', 'loggedUser', 'agentContractorService',
-   'agentContractorInSchoolService', 'agentSchoolService', 'agentRawActivityService', 'agentSchoolDataService',
+   'agentContractorInSchoolService', 'agentSchoolService', 'agentRawActivityService', 'agentSchoolDataService', 'fullResponseService',
     (scope, $rootScope, stateParams, $q, Modal, Alert, Agent, User, Contractor, ContractorInSchool, Schools, Activity,
-     SchoolData) ->
+     SchoolData, FullRes) ->
       scope.adminUser = User
       scope.currentAgent = Agent
 
       scope.refresh = (contractorId) ->
         scope.loading = true
-        queue = [Contractor.query(agent_id: scope.currentAgent.id).$promise
+        queue = [FullRes(Contractor, agent_id: scope.currentAgent.id)
                  scope.waitForSchoolsReady()
-                 Activity.query(agent_id: scope.currentAgent.id).$promise]
+                 FullRes Activity, agent_id: scope.currentAgent.id]
 
         $q.all(queue).then (q) ->
           scope.schools = scope.currentAgent.schools

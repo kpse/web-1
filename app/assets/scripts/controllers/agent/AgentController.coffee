@@ -1,7 +1,7 @@
 angular.module('kulebaoAgent').controller 'AgentCtrl',
   ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter', '$modal', '$q', 'loggedUser', 'currentAgent',
-   'agentSchoolService', 'agentPasswordService', 'agentStatsService',
-    (scope, $rootScope, $stateParams, $state, $location, $filter, Modal, $q, User, CurrentAgent, AgentSchool, Password, Stats) ->
+   'agentSchoolService', 'agentPasswordService', 'agentStatsService', 'fullResponseService',
+    (scope, $rootScope, $stateParams, $state, $location, $filter, Modal, $q, User, CurrentAgent, AgentSchool, Password, Stats, FullRes) ->
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
 
@@ -21,7 +21,7 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
         currentAgent = scope.currentAgent
         currentAgent.expireDisplayValue = $filter('date')(currentAgent.expire, 'yyyy-MM-dd')
         queue = [Stats.query(agent_id: currentAgent.id).$promise,
-                 AgentSchool.query(agent_id: currentAgent.id).$promise]
+                 FullRes AgentSchool, agent_id: currentAgent.id ]
         $q.all(queue).then (q) ->
           currentAgent.schools = q[1]
           groups = _.groupBy(q[0], 'school_id')
