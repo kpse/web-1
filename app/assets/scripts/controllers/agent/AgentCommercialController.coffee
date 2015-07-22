@@ -12,17 +12,28 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         status = 0 unless status?
         if status then status.display else ''
 
+      scope.refresh = ->
+        scope.$broadcast 'refresh'
+
       scope.allStatus = [{publish_status: 0, display: '未提交'},
         {publish_status: 99, display: '等待审批'},
         {publish_status: 2, display: '审批通过'},
-        {publish_status: 3, display: '拒绝发布'}]
+        {publish_status: 3, display: '审批未通过'},
+        {publish_status: 4, display: '上线'},
+        {publish_status: 5, display: '下线'}]
 
       scope.userStatus =
-        [{publish_status: 99, display: '提交审批'}]
+        [{publish_status: 0, display: '未提交'},
+          {publish_status: 99, display: '等待审批'},
+          {publish_status: 4, display: '上线'},
+          {publish_status: 5, display: '下线'}]
 
       scope.adminStatus =
         [{publish_status: 2, display: '审批通过'},
-          {publish_status: 3, display: '拒绝发布'}]
+          {publish_status: 3, display: '拒绝发布'},
+          {publish_status: 4, display: '上线'},
+          {publish_status: 5, display: '下线'}]
+
 
       scope.categories = ['亲子摄影', '培训教育', '亲子游乐', '亲子购物', '其他']
 
@@ -70,8 +81,9 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
 
       scope.published = (ad) ->
         ad.publishing? && ad.publishing.published_at > 0
+
       scope.canBePreviewed = (ad) ->
-        ad.id && scope.adminUser.privilege_group == 'agent' && (ad.publishing.publish_status == 0 || ad.publishing.publish_status == 3)
+        ad.id && (ad.publishing.publish_status == 0 || ad.publishing.publish_status == 3)
 
       scope.canBeApproved = (ad) ->
         ad.id && scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 3)
@@ -89,4 +101,60 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       scope.parentsInSchools = (schools) ->
         _.sum schools, (s) -> s.stats.all
 
+      scope.adminEdit = (ad, oldStatus) ->
+        switch ad.publishing.publish_status
+          when 2 then scope.approve(ad)
+          when 3 then scope.rejectDialog(ad)
+          when 4 then scope.takeOnline(ad)
+          when 5 then scope.putOffline(ad)
+          else
+            console.log 'no way here! publish_status = ' + ad.publishing.publish_status
+            ad.publishing.publish_status = parseInt oldStatus
+
+      scope.approve = (ad) ->
+        updateAdStatus ad, 2
+
+      scope.takeOnline = (ad) ->
+        updateAdStatus ad, 4
+
+      scope.putOffline = (ad) ->
+        updateAdStatus ad, 5
+
+      updateAdStatus = (ad, status) ->
+        ad.publishing =
+          publish_status: status
+        ad.$approve ->
+          scope.refresh()
+          scope.currentModal.hide() if scope.currentModal?
+
+      scope.rejectDialog = (ad) ->
+        scope.badAd = angular.copy ad
+        scope.badAd.publishing =
+          publish_status: 3
+          reject_reason: ''
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/agent/reject_commercial.html'
+
+      scope.preview = (ad) ->
+        ad.publishing =
+          publish_status: 99
+        ad.$preview ->
+          scope.refresh()
+          scope.currentModal.hide() if scope.currentModal?
+
+      scope.removeAd = (newAd) ->
+        newAd.$delete ->
+          scope.refresh()
+          scope.currentModal.hide() if scope.currentModal?
+
+      scope.save = (newAd) ->
+        newAd.$save ->
+          scope.refresh()
+          scope.currentModal.hide() if scope.currentModal?
+
+      scope.reject = (ad) ->
+        ad.$reject ->
+          scope.refresh()
+          scope.currentModal.hide() if scope.currentModal?
   ]

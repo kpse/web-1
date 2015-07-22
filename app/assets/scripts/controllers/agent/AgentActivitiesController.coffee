@@ -28,6 +28,9 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
 
       scope.refresh()
 
+      scope.$on 'refresh', ->
+        scope.refresh()
+
       scope.editAd = (ad) ->
         scope.newAd = angular.copy ad
         _.assign scope.newAd, agent_id: scope.currentAgent.id
@@ -35,61 +38,9 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
           scope: scope
           contentTemplate: 'templates/agent/add_activity.html'
 
-      scope.allStatus = [{publish_status: 0, display: '未提交'},
-        {publish_status: 99, display: '等待审批'},
-        {publish_status: 2, display: '审批通过'},
-        {publish_status: 3, display: '拒绝发布'}]
-
-      scope.userStatus =
-        [{publish_status: 99, display: '提交审批'}]
-
-      scope.adminStatus =
-        [{publish_status: 2, display: '审批通过'},
-          {publish_status: 3, display: '拒绝发布'}]
-
       scope.allowEditing = (user, ad) ->
         scope.canBeApproved(ad) || scope.canBeRejected(ad) || scope.canBePreviewed(ad)
 
-      scope.preview = (ad) ->
-        ad.publishing =
-          publish_status: 99
-        ad.$preview ->
-          scope.refresh()
-          scope.currentModal.hide() if scope.currentModal?
-
-      scope.removeAd = (newAd) ->
-        newAd.$delete ->
-          scope.refresh()
-          scope.currentModal.hide() if scope.currentModal?
-
-      scope.approve = (ad) ->
-        ad.publishing =
-          publish_status: 2
-        ad.$approve ->
-          scope.refresh()
-          scope.currentModal.hide() if scope.currentModal?
-
-      scope.rejectDialog = (ad) ->
-        scope.badAd = angular.copy ad
-        scope.badAd.publishing =
-          publish_status: 3
-          reject_reason: ''
-        scope.currentModal = Modal
-          scope: scope
-          contentTemplate: 'templates/agent/reject_commercial.html'
-
-      scope.reject = (ad) ->
-        ad.$reject ->
-          scope.refresh()
-          scope.currentModal.hide() if scope.currentModal?
-
-      scope.adminEdit = (ad, oldStatus) ->
-        switch ad.publishing.publish_status
-          when 2 then scope.approve(ad)
-          when 3 then scope.rejectDialog(ad)
-          else
-            console.log 'no way here! publish_status = ' + ad.publishing.publish_status
-            ad.publishing.publish_status = parseInt oldStatus
 
       scope.save = (newAd) ->
         newAd.contractor_id = newAd.contractor.id if newAd.contractor? && newAd.contractor.id?
