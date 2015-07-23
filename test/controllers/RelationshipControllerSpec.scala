@@ -56,6 +56,32 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       (response \ "error_code").as[Int] must equalTo(0)
     }
 
+    "be invalid card if it does not exist in cardrecord table" in new WithApplication {
+
+      private val jsBody = invalidCard
+      private val card = (invalidCard \ "card").as[String]
+      val res = route(loggedRequest(POST, "/api/v1/card_check").withBody(jsBody)).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res))
+      (response \ "error_code").as[Int] must equalTo(2)
+      (response \ "error_msg").as[String] must equalTo(s"卡号${card}未授权，请联系库贝人员。(Invalid card number)")
+    }
+
+    "not be created by invalid card" in new WithApplication {
+
+      private val jsBody = invalidCard
+      private val card = (invalidCard \ "card").as[String]
+      val res = route(loggedRequest(POST, s"/kindergarten/93740362/relationship/$card").withBody(jsBody)).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res))
+      (response \ "error_code").as[Int] must equalTo(4)
+      (response \ "error_msg").as[String] must equalTo(s"卡号${card}未授权，请联系库贝人员。(Invalid card number)")
+    }
+
     "complain about card is used" in new WithApplication {
 
       private val jsBody = existingCard
@@ -146,6 +172,10 @@ class RelationshipControllerSpec extends Specification with TestSupport {
 
   def newCard: JsValue = {
     createCard("9991234567")
+  }
+
+  def invalidCard: JsValue = {
+    createANewRelationship("3331234567", "13408654681", "1_93740362_456")
   }
 
   def deletedCard: JsValue = {
