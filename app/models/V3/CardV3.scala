@@ -2,6 +2,7 @@ package models.V3
 
 import anorm.SqlParser._
 import anorm._
+import play.Logger
 import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
@@ -68,6 +69,15 @@ object CardV3 {
           'kg -> kg.toString,
           'q -> q
         ).as(simple *)
+  }
+
+  def valid(q: String) = DB.withConnection {
+    implicit c =>
+      Logger.info(s"check card: $q")
+      SQL(s"select count(1) from cardrecord c where origin={q} and status=1")
+        .on(
+          'q -> q
+        ).as(get[Long]("count(1)") single) > 0
   }
 
   def show(kg: Long, id: Long) = DB.withConnection {
