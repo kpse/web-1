@@ -96,19 +96,19 @@ object AgentContractor {
   }
 
   def categoryFromEnum(category: Int): String = category match {
-    case 0 => "亲子摄影"
-    case 1 => "培训教育"
-    case 2 => "亲子游乐"
-    case 3 => "亲子购物"
+    case 1 => "亲子摄影"
+    case 2 => "培训教育"
+    case 4 => "亲子游乐"
+    case 8 => "亲子购物"
     case _ => "其他"
   }
 
   def categoryToEnum(category: String): Int = category match {
-    case "亲子摄影" => 0
-    case "培训教育" => 1
-    case "亲子游乐" => 2
-    case "亲子购物" => 3
-    case "其他" => 4
+    case "亲子摄影" => 1
+    case "培训教育" => 2
+    case "亲子游乐" => 4
+    case "亲子购物" => 8
+    case "其他" => 0
   }
 
   val simple = {
