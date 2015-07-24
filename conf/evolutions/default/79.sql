@@ -19,6 +19,8 @@ CREATE TABLE agentactivityinschool (
 INSERT INTO agentactivityinschool (agent_id, school_id, activity_id, updated_at) VALUES
 (1, '93740362', 1, 1393395313123),
 (1, '93740362', 2, 1393395313123),
+(1, '93740362', 5, 1393395313123),
+(1, '93740362', 6, 1393395313123),
 (1, '93740562', 1, 1393395313123),
 (1, '93740562', 2, 1393395313123);
 

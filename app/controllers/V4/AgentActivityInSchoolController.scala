@@ -54,8 +54,4 @@ object AgentActivityInSchoolController extends Controller with Secured {
     u => _ =>
       Ok(Json.toJson(AgentActivityInSchool.published(kg, from, to, most)))
   }
-  def publishedActivities(kg: Long, contractorId: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsAgentLoggedIn {
-    u => _ =>
-      Ok(Json.toJson(AgentActivityInSchool.published(kg, from, to, most)))
-  }
 }
