@@ -47,6 +47,12 @@ angular.module('kulebao.services')
         reject:
           url: '/api/v4/agent/:agent_id/contractor/:id/reject'
           method: 'POST'
+        active:
+          url: '/api/v4/agent/:agent_id/contractor/:id/active'
+          method: 'POST'
+        deactive:
+          url: '/api/v4/agent/:agent_id/contractor/:id/deactive'
+          method: 'POST'
       }
   ]
 
@@ -85,6 +91,12 @@ angular.module('kulebao.services')
           method: 'POST'
         reject:
           url: '/api/v4/agent/:agent_id/activity/:id/reject'
+          method: 'POST'
+        active:
+          url: '/api/v4/agent/:agent_id/activity/:id/active'
+          method: 'POST'
+        deactive:
+          url: '/api/v4/agent/:agent_id/activity/:id/deactive'
           method: 'POST'
       }
   ]

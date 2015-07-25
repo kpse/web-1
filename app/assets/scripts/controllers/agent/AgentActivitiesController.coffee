@@ -39,8 +39,8 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
           contentTemplate: 'templates/agent/add_activity.html'
 
       scope.allowEditing = (user, ad) ->
-        scope.canBeApproved(ad) || scope.canBeRejected(ad) || scope.canBePreviewed(ad)
-
+        scope.canBeApproved(ad) || scope.canBeRejected(ad) || scope.canBePreviewed(ad) ||
+          scope.canBeTakenOnline(ad) || scope.canBeTakenOffline(ad)
 
       scope.save = (newAd) ->
         newAd.contractor_id = newAd.contractor.id if newAd.contractor? && newAd.contractor.id?

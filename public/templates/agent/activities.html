@@ -19,7 +19,7 @@
     <td class="col-xs-2" ng-show="adminUser.privilege_group == 'operator'">
       <button type="button" class="btn btn-default publishing-status" ng-model="ad.publishing.publish_status"
               placeholder="{{currentStatus(ad)}}"
-              ng-class="{success : ad.publishing.publish_status == 2, danger: ad.publishing.publish_status == 3, warning: ad.publishing.publish_status == 99}"
+              ng-class="{success : ad.publishing.publish_status == 2, danger: ad.publishing.publish_status == 3, warning: ad.publishing.publish_status == 99, active: ad.publishing.publish_status == 4, inactive: ad.publishing.publish_status == 5}"
               ng-disabled="!allowEditing(adminUser, ad)"
               ng-change="adminEdit(ad, '{{ad.publishing.publish_status}}');$event.stopPropagation()"
               ng-click="$event.stopPropagation()"
@@ -28,7 +28,7 @@
     <td class="col-xs-2" ng-hide="adminUser.privilege_group == 'operator'">
       <button type="button" class="btn btn-default publishing-status" ng-model="ad.publishing.publish_status"
               placeholder="{{currentStatus(ad)}}"
-              ng-class="{success : ad.publishing.publish_status == 2, danger: ad.publishing.publish_status == 3, warning: ad.publishing.publish_status == 99}"
+              ng-class="{success : ad.publishing.publish_status == 2, danger: ad.publishing.publish_status == 3, warning: ad.publishing.publish_status == 99, active: ad.publishing.publish_status == 4, inactive: ad.publishing.publish_status == 5}"
               ng-disabled="!allowEditing(adminUser, ad)" ng-change="preview(ad);$event.stopPropagation()"
               ng-click="$event.stopPropagation()"
               bs-options="item.publish_status as item.display for item in userStatus" bs-select></button>

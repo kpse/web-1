@@ -44,7 +44,8 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
           contentTemplate: 'templates/agent/add_contractor.html'
 
       scope.allowEditing = (user, ad) ->
-        scope.canBeApproved(ad) || scope.canBeRejected(ad) || scope.canBePreviewed(ad)
+        scope.canBeApproved(ad) || scope.canBeRejected(ad) || scope.canBePreviewed(ad) ||
+          scope.canBeTakenOnline(ad) || scope.canBeTakenOffline(ad)
 
 
       scope.distributedIn = (contractor) ->

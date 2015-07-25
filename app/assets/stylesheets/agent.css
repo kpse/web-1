@@ -29,6 +29,12 @@
 .publishing-status.warning {
   background-color: #feb900;
 }
+.publishing-status.active {
+  background-color: #0568f4 !important;
+}
+.publishing-status.inactive {
+  background-color: white !important;
+}
 .reject-reason {
   font-weight: bolder;
   color: red;

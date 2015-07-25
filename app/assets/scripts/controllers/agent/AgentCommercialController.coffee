@@ -23,16 +23,15 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         {publish_status: 5, display: '下线'}]
 
       scope.userStatus =
-        [{publish_status: 0, display: '未提交'},
-          {publish_status: 99, display: '等待审批'},
+        [{publish_status: 99, display: '提交审批'},
           {publish_status: 4, display: '上线'},
           {publish_status: 5, display: '下线'}]
 
       scope.adminStatus =
         [{publish_status: 2, display: '审批通过'},
-          {publish_status: 3, display: '拒绝发布'},
+          {publish_status: 3, display: '审批未通过'},
           {publish_status: 4, display: '上线'},
-          {publish_status: 5, display: '下线'}]
+          {publish_status: 5, display: '强制下线'}]
 
 
       scope.categories = ['亲子摄影', '培训教育', '亲子游乐', '亲子购物', '其他']
@@ -85,6 +84,12 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       scope.canBePreviewed = (ad) ->
         ad.id && (ad.publishing.publish_status == 0 || ad.publishing.publish_status == 3)
 
+      scope.canBeTakenOnline = (ad) ->
+        ad.id && ad.publishing.publish_status == 2
+
+      scope.canBeTakenOffline = (ad) ->
+        ad.id && ad.publishing.publish_status == 4
+
       scope.canBeApproved = (ad) ->
         ad.id && scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 3)
 
@@ -96,7 +101,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         {name: '活动', route: 'activities'}
       ]
 
-      scope.allowToDistribute = (ad) -> ad.publishing && ad.publishing.publish_status == 2
+      scope.allowToDistribute = (ad) -> ad.publishing && _.any [2, 4], (s) -> ad.publishing.publish_status == s
 
       scope.parentsInSchools = (schools) ->
         _.sum schools, (s) -> s.stats.all
@@ -110,20 +115,27 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
           else
             console.log 'no way here! publish_status = ' + ad.publishing.publish_status
             ad.publishing.publish_status = parseInt oldStatus
+      scope.userEdit = (ad, oldStatus) ->
+        switch ad.publishing.publish_status
+          when 99 then scope.preview(ad)
+          when 4 then scope.takeOnline(ad)
+          when 5 then scope.putOffline(ad)
+          else
+            console.log 'no way here! publish_status = ' + ad.publishing.publish_status
+            ad.publishing.publish_status = parseInt oldStatus
 
       scope.approve = (ad) ->
-        updateAdStatus ad, 2
+        ad.$approve ->
+          scope.refresh()
+          scope.currentModal.hide() if scope.currentModal?
 
       scope.takeOnline = (ad) ->
-        updateAdStatus ad, 4
+        ad.$active ->
+          scope.refresh()
+          scope.currentModal.hide() if scope.currentModal?
 
       scope.putOffline = (ad) ->
-        updateAdStatus ad, 5
-
-      updateAdStatus = (ad, status) ->
-        ad.publishing =
-          publish_status: status
-        ad.$approve ->
+        ad.$deactive ->
           scope.refresh()
           scope.currentModal.hide() if scope.currentModal?
 
