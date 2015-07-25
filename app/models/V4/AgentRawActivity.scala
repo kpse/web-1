@@ -10,6 +10,12 @@ import play.api.Play.current
 
 case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Option[Long], title: String, address: Option[String], contact: String, time_span: Option[String],
                          detail: Option[String], logo: Option[String], updated_at: Option[Long], publishing: Option[AdPublishing] = None) {
+  def deactive(agentId: Long) = for {i <- id
+                                     p <- publishing} yield p.deactive(AgentActivity.tableName)(agentId, i)
+
+  def active(agentId: Long) = for {i <- id
+                                   p <- publishing} yield p.active(AgentActivity.tableName)(agentId, i)
+
   def preview(agentId: Long) = for {i <- id
                                     p <- publishing} yield p.preview(AgentActivity.tableName)(agentId, i)
 

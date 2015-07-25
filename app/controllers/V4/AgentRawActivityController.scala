@@ -80,4 +80,26 @@ object AgentRawActivityController extends Controller with Secured {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
+
+  def active(agentId: Long, id: Long) = IsAgentLoggedIn(parse.json) { u => request =>
+    request.body.validate[AgentRawActivity].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
+      case (s) =>
+        Ok(Json.toJson(s.active(agentId)))
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
+
+  def deactive(agentId: Long, id: Long) = IsAgentLoggedIn(parse.json) { u => request =>
+    request.body.validate[AgentRawActivity].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
+      case (s) =>
+        Ok(Json.toJson(s.deactive(agentId)))
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
 }

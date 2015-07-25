@@ -8,6 +8,26 @@ import play.api.db.DB
 import play.api.libs.json.Json
 
 case class AdPublishing(publish_status: Int, published_at: Option[Long], reject_reason: Option[String] = None) {
+  def active(table: String)(agentId: Long, target: Long) = DB.withConnection {
+    implicit c =>
+      SQL(s"update $table set publish_status=4, updated_at={time} where uid={id} and agent_id={base} and publish_status in (2, 5)")
+        .on(
+          'id -> target,
+          'base -> agentId,
+          'time -> System.currentTimeMillis()
+        ).executeUpdate()
+  }
+
+  def deactive(table: String)(agentId: Long, target: Long) = DB.withConnection {
+    implicit c =>
+      SQL(s"update $table set publish_status=5, updated_at={time} where uid={id} and agent_id={base} and publish_status in (2, 4)")
+        .on(
+          'id -> target,
+          'base -> agentId,
+          'time -> System.currentTimeMillis()
+        ).executeUpdate()
+  }
+
   def preview(table: String)(agentId: Long, target: Long) = DB.withConnection {
     implicit c =>
       SQL(s"update $table set publish_status=99, updated_at={time} where uid={id} and agent_id={base} and publish_status in (0, 3)")

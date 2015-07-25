@@ -569,6 +569,8 @@ DELETE        /api/v4/agent/:agentId/contractor/:id                             
 POST          /api/v4/agent/:agentId/contractor/:id/preview                                    controllers.V4.AgentContractorController.preview(agentId: Long, id: Long)
 POST          /api/v4/agent/:agentId/contractor/:id/publish                                    controllers.V4.AgentContractorController.publish(agentId: Long, id: Long)
 POST          /api/v4/agent/:agentId/contractor/:id/reject                                     controllers.V4.AgentContractorController.reject(agentId: Long, id: Long)
+POST          /api/v4/agent/:agentId/contractor/:id/active                                     controllers.V4.AgentContractorController.active(agentId: Long, id: Long)
+POST          /api/v4/agent/:agentId/contractor/:id/deactive                                   controllers.V4.AgentContractorController.deactive(agentId: Long, id: Long)
 
 GET           /api/v4/agent/:agentId/contractor/:contractorId/activity                         controllers.V4.AgentActivityController.index(agentId: Long, contractorId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v4/agent/:agentId/contractor/:contractorId/activity/:id                     controllers.V4.AgentActivityController.show(agentId: Long, contractorId: Long, id: Long)
@@ -585,6 +587,8 @@ DELETE        /api/v4/agent/:agentId/activity/:id                               
 POST          /api/v4/agent/:agentId/activity/:id/preview                                      controllers.V4.AgentRawActivityController.preview(agentId: Long, id: Long)
 POST          /api/v4/agent/:agentId/activity/:id/publish                                      controllers.V4.AgentRawActivityController.publish(agentId: Long, id: Long)
 POST          /api/v4/agent/:agentId/activity/:id/reject                                       controllers.V4.AgentRawActivityController.reject(agentId: Long, id: Long)
+POST          /api/v4/agent/:agentId/activity/:id/active                                       controllers.V4.AgentRawActivityController.active(agentId: Long, id: Long)
+POST          /api/v4/agent/:agentId/activity/:id/deactive                                     controllers.V4.AgentRawActivityController.deactive(agentId: Long, id: Long)
 
 
 GET           /api/v4/agent/:agentId/activity/:activityId/enrollment                           controllers.V4.AgentActivityEnrollmentController.index(agentId: Long, activityId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
