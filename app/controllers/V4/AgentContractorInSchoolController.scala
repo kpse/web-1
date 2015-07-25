@@ -50,11 +50,11 @@ object AgentContractorInSchoolController extends Controller with Secured {
     Ok(Json.toJson(new SuccessResponse()))
   }
 
-  def published(kg: Long, category: Option[Int], from: Option[Long], to: Option[Long], most: Option[Int]) = IsAgentLoggedIn {
+  def published(kg: Long, category: Option[Int], from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn {
     u => _ =>
       Ok(Json.toJson(AgentContractorInSchool.published(kg, category, from, to, most)))
   }
-  def publishedActivities(kg: Long, contractorId: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsAgentLoggedIn {
+  def publishedActivities(kg: Long, contractorId: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn {
     u => _ =>
       Ok(Json.toJson(AgentActivityInSchool.published(kg, from, to, most, Some(contractorId))))
   }
