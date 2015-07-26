@@ -36,7 +36,7 @@
                alt="图片"/></div>
       </div>
 
-      <div class="col-sm-6">
+      <div class="col-sm-6" ng-hide="published(newAd)">
         <div class="form-group" ng-hide="newAd.published">
           <label for="news-pic" class="col-sm-4 control-label">上传</label>
 
@@ -52,7 +52,7 @@
             <label for="latitude" class="col-sm-4 control-label">经度</label>
             <div class="col-xs-6">
               <input id="latitude" name="latitude" ng-model="newAd.location.latitude" class="form-control" type="number"
-                     placeholder="经度" />
+                     placeholder="经度" ng-disabled="published(newAd)"/>
               <span class="error-field"
                     ng-show="commercialForm.latitude.$dirty && commercialForm.latitude.$error.number">只能输入带小数点的经度</span>
             </div>
@@ -61,7 +61,7 @@
             <label for="longitude" class="col-sm-4 control-label">纬度</label>
             <div class="col-xs-6">
               <input id="longitude" name="longitude" ng-model="newAd.location.longitude" class="form-control" type="number"
-                     placeholder="纬度" />
+                     placeholder="纬度" ng-disabled="published(newAd)"/>
               <span class="error-field"
                     ng-show="commercialForm.longitude.$dirty && commercialForm.longitude.$error.number">只能输入带小数点的纬度</span>
             </div>

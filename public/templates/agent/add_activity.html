@@ -29,38 +29,44 @@
       </div>
 
       <div class="clearfix news-creation-form"></div>
-      <div class="form-group col-sm-6">
-        <div class="image-container">
-          <img class="news-image img-responsive" ng-src="{{compress(newAd.logo, 0, 200)}}"
-               alt="图片"/></div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <div class="image-container">
+            <img class="news-image img-responsive" ng-src="{{compress(newAd.logo, 0, 200)}}"
+                 alt="图片"/></div>
+        </div>
       </div>
 
-      <div class="col-sm-6">
+      <div class="col-sm-6" ng-hide="published(newAd)">
         <div class="form-group" ng-hide="newAd.published">
           <label for="news-pic" class="col-sm-4 control-label">上传</label>
 
           <div class="col-sm-8">
-            <kl-file-upload ng-model="newAd" user="adminUser.login_name" form="commercialForm" field-name="logo"></kl-file-upload>
+            <kl-file-upload ng-model="newAd" user="adminUser.login_name" form="commercialForm"
+                            field-name="logo"></kl-file-upload>
           </div>
 
         </div>
         <div class="form-group">
           <label for="latitude" class="col-sm-4 control-label">位置信息 </label>
 
-          <div class="col-sm-12">
+          <div class="col-sm-11">
             <label for="latitude" class="col-sm-4 control-label">经度</label>
+
             <div class="col-xs-6">
               <input id="latitude" name="latitude" ng-model="newAd.location.latitude" class="form-control" type="number"
-                     placeholder="经度" />
+                     placeholder="经度" ng-disabled="published(newAd)"/>
               <span class="error-field"
                     ng-show="commercialForm.latitude.$dirty && commercialForm.latitude.$error.number">只能输入带小数点的经度</span>
             </div>
           </div>
-          <div class="col-sm-12">
+          <div class="col-sm-11">
             <label for="longitude" class="col-sm-4 control-label">纬度</label>
+
             <div class="col-xs-6">
-              <input id="longitude" name="longitude" ng-model="newAd.location.longitude" class="form-control" type="number"
-                     placeholder="纬度" />
+              <input id="longitude" name="longitude" ng-model="newAd.location.longitude" class="form-control"
+                     type="number" ng-disabled="published(newAd)"
+                     placeholder="纬度"/>
               <span class="error-field"
                     ng-show="commercialForm.longitude.$dirty && commercialForm.longitude.$error.number">只能输入带小数点的纬度</span>
             </div>
@@ -68,31 +74,61 @@
         </div>
       </div>
       <div class="clearfix"></div>
-      <div class="form-group">
-        <label for="address" class="control-label col-xs-2">商户地址 <span class="mandatory">*</span></label>
+      <div class="col-xs-6">
+        <div class="form-group">
+          <label for="address" class="control-label col-xs-4">商户地址 <span class="mandatory">*</span></label>
 
-        <div class="col-xs-4">
-          <input id="address" name="address" ng-model="newAd.address" class="form-control"
-                 placeholder="活动地点" ng-disabled="published(newAd)"/>
+          <div class="col-xs-8">
+            <input id="address" name="address" ng-model="newAd.address" class="form-control"
+                   placeholder="活动地点" ng-disabled="published(newAd)"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="contact" class="control-label col-xs-4">联系方式 <span class="mandatory">*</span></label>
+
+          <div class="col-xs-8">
+            <input id="contact" name="contact" ng-model="newAd.contact" class="form-control"
+                   placeholder="联系方式" ng-disabled="published(newAd)"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="time-span" class="control-label col-xs-4">有效期 <span class="mandatory">*</span></label>
+
+          <div class="col-xs-8">
+            <input id="time-span" name="timeSpan" ng-model="newAd.time_span" class="form-control"
+                   placeholder="有效期" ng-disabled="published(newAd)"/>
+          </div>
         </div>
       </div>
-      <div class="form-group">
-        <label for="contact" class="control-label col-xs-2">联系方式 <span class="mandatory">*</span></label>
+      <div class="col-xs-6">
+        <div class="form-group">
+          <label for="discounted" class="col-sm-4 control-label">打折信息</label>
 
-        <div class="col-xs-4">
-          <input id="contact" name="contact" ng-model="newAd.contact" class="form-control"
-                 placeholder="联系方式" ng-disabled="published(newAd)"/>
+          <div class="col-sm-11">
+            <label for="discounted" class="col-sm-4 control-label">折扣价</label>
+
+            <div class="col-xs-6">
+              <input id="discounted" name="discounted" ng-model="newAd.price.discounted" class="form-control"
+                     type="number" ng-disabled="published(newAd)"
+                     placeholder="￥折扣价"/>
+              <span class="error-field"
+                    ng-show="commercialForm.discounted.$dirty && commercialForm.discounted.$error.number">只能输入带小数点的价格</span>
+            </div>
+          </div>
+          <div class="col-sm-11">
+            <label for="origin-price" class="col-sm-4 control-label">原价</label>
+
+            <div class="col-xs-6">
+              <input id="origin-price" name="originPrice" ng-model="newAd.price.origin" class="form-control"
+                     type="number" ng-disabled="published(newAd)"
+                     placeholder="￥原价"/>
+              <span class="error-field"
+                    ng-show="commercialForm.originPrice.$dirty && commercialForm.originPrice.$error.number">只能输入带+小数点的价格</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="form-group">
-        <label for="time-span" class="control-label col-xs-2">有效期 <span class="mandatory">*</span></label>
-
-        <div class="col-xs-4">
-          <input id="time-span" name="timeSpan" ng-model="newAd.time_span" class="form-control"
-                 placeholder="有效期" ng-disabled="published(newAd)"/>
-        </div>
-      </div>
-
+      <div class="clearfix"></div>
       <div class="form-group news-content">
         <label for="content" class="control-label col-xs-2">活动介绍 <span class="mandatory">*</span></label>
         <br/>
@@ -119,7 +155,7 @@
                   ng-show="canBePreviewed(newAd) && adminUser.privilege_group == 'agent'"
                   ng-click="preview(newAd)">提交审批
           </button>
-          <button class="btn btn-danger"  ng-show="canBeRejected(newAd)" ng-click="reject(newAd)">拒绝
+          <button class="btn btn-danger" ng-show="canBeRejected(newAd)" ng-click="reject(newAd)">拒绝
           </button>
           <button class="btn btn-success" ng-show="canBeApproved(newAd)" ng-click="approve(newAd)">批准
           </button>

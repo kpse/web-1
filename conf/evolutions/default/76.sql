@@ -15,6 +15,8 @@ CREATE TABLE agentactivity (
   logo   TEXT,
   latitude   DOUBLE,
   longitude   DOUBLE,
+  origin_price   DOUBLE,
+  price   DOUBLE,
   publish_status   INT(4) DEFAULT 0,
   published_at BIGINT,
   reject_reason TEXT,
@@ -34,6 +36,7 @@ INSERT INTO agentactivity (agent_id, contractor_id, title, address, contact, tim
 (1, 2, 'T下线', '四川', '13333653147', null, '特斯拉要不要', '', 1393399313123, 5, 1393399313123, null);
 
 update agentactivity set latitude=123.231, longitude=321.123 where uid in (1, 2, 3);
+update agentactivity set origin_price=10000, price=5000 where uid in (1, 2, 3, 4, 5, 6);
 
 # --- !Downs
 
