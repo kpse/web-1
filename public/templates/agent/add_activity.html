@@ -23,7 +23,7 @@
 
         <div class="form-group col-xs-3">
           <button type="button" class="btn btn-default" ng-model="newAd.contractor" data-html="1"
-                  placeholder="{{newAd.contractor.title || '所属商户'}}"
+                  placeholder="{{newAd.contractor.title || '所属商户'}}" ng-disabled="published(newAd)"
                   ng-click="$event.stopPropagation()" bs-options="c as c.title for c in contractors" bs-select></button>
         </div>
       </div>
@@ -37,8 +37,8 @@
         </div>
       </div>
 
-      <div class="col-sm-6" ng-hide="published(newAd)">
-        <div class="form-group" ng-hide="newAd.published">
+      <div class="col-sm-6">
+        <div class="form-group" ng-hide="published(newAd)">
           <label for="news-pic" class="col-sm-4 control-label">上传</label>
 
           <div class="col-sm-8">

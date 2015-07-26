@@ -36,6 +36,9 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
       scope.$on 'refresh', ->
         scope.refresh()
 
+      scope.$on 'closeDialog', ->
+        scope.currentModal.hide() if scope.currentModal?
+
       scope.editAd = (ad) ->
         scope.newAd = angular.copy ad
         _.assign scope.newAd, agent_id: scope.currentAgent.id

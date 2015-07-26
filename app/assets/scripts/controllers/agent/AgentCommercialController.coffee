@@ -73,13 +73,16 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
           scope.loading = true
           scope.currentModal.hide()
           if targetState?
-            $state.go targetState, reload: true unless $state.is targetState
-            $state.reload() if $state.is targetState
+            if $state.is targetState
+              scope.refresh()
+            else
+              $state.go targetState, reload: true
+
             scope.loading = false
 
 
       scope.published = (ad) ->
-        ad.publishing? && ad.publishing.published_at > 0
+        ad.publishing? && _.any [99, 2, 4], (c) -> ad.publishing.publish_status == c
 
       scope.canBePreviewed = (ad) ->
         ad.id && (ad.publishing.publish_status == 0 || ad.publishing.publish_status == 3)
@@ -97,7 +100,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         ad.id && scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 2)
 
       scope.allowEditingContent = (ad) ->
-        _.any [0, 1, 3, 5], (c) -> ad.publishing.publish_status == c
+        scope.adminUser.privilege_group == 'operator' || _.any [0, 99, 3, 5], (c) -> ad.publishing.publish_status == c
 
       scope.adTypes = [
         {name: '商户', route: 'contractors'},
@@ -130,17 +133,26 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       scope.approve = (ad) ->
         ad.$approve ->
           scope.refresh()
-          scope.currentModal.hide() if scope.currentModal?
+          if scope.currentModal?
+            scope.currentModal.hide()
+          else
+            scope.$broadcast 'closeDialog'
 
       scope.takeOnline = (ad) ->
         ad.$active ->
           scope.refresh()
-          scope.currentModal.hide() if scope.currentModal?
+          if scope.currentModal?
+            scope.currentModal.hide()
+          else
+            scope.$broadcast 'closeDialog'
 
       scope.putOffline = (ad) ->
         ad.$deactive ->
           scope.refresh()
-          scope.currentModal.hide() if scope.currentModal?
+          if scope.currentModal?
+            scope.currentModal.hide()
+          else
+            scope.$broadcast 'closeDialog'
 
       scope.rejectDialog = (ad) ->
         scope.badAd = angular.copy ad
@@ -156,20 +168,24 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
           publish_status: 99
         ad.$preview ->
           scope.refresh()
-          scope.currentModal.hide() if scope.currentModal?
+          if scope.currentModal?
+            scope.currentModal.hide()
+          else
+            scope.$broadcast 'closeDialog'
 
       scope.removeAd = (newAd) ->
         newAd.$delete ->
           scope.refresh()
-          scope.currentModal.hide() if scope.currentModal?
-
-      scope.save = (newAd) ->
-        newAd.$save ->
-          scope.refresh()
-          scope.currentModal.hide() if scope.currentModal?
+          if scope.currentModal?
+            scope.currentModal.hide()
+          else
+            scope.$broadcast 'closeDialog'
 
       scope.reject = (ad) ->
         ad.$reject ->
           scope.refresh()
-          scope.currentModal.hide() if scope.currentModal?
+          if scope.currentModal?
+            scope.currentModal.hide()
+          else
+            scope.$broadcast 'closeDialog'
   ]

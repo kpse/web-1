@@ -23,7 +23,7 @@
 
         <div class="form-group col-xs-3">
           <span class="mandatory">*</span>
-          <button type="button" class="btn btn-default" ng-model="newAd.category" placeholder="商户类型"
+          <button type="button" class="btn btn-default" ng-model="newAd.category" placeholder="商户类型" ng-disabled="published(newAd)"
                   ng-click="$event.stopPropagation()" bs-options="t for t in categories" bs-select required></button>
 
         </div>
@@ -36,8 +36,8 @@
                alt="图片"/></div>
       </div>
 
-      <div class="col-sm-6" ng-hide="published(newAd)">
-        <div class="form-group" ng-hide="newAd.published">
+      <div class="col-sm-6">
+        <div class="form-group" ng-hide="published(newAd)">
           <label for="news-pic" class="col-sm-4 control-label">上传</label>
 
           <div class="col-sm-8">
