@@ -44,14 +44,26 @@
           </div>
 
         </div>
-        <div class="form-group" ng-show="false">
-          <label for="target" class="col-sm-4 control-label">通知范围 <span class="mandatory">*</span></label>
+        <div class="form-group">
+          <label for="latitude" class="col-sm-4 control-label">位置信息 </label>
 
-          <div class="col-sm-8">
-            <select id="target" class="form-control class-select" ng-model="newAd.class_id"
-                    ng-options="value.class_id as value.name for (key, value) in classesScope"
-                    data-style="btn-primary" ng-disabled="newAd.published">
-            </select>
+          <div class="col-sm-12">
+            <label for="latitude" class="col-sm-4 control-label">经度</label>
+            <div class="col-xs-6">
+              <input id="latitude" name="latitude" ng-model="newAd.location.latitude" class="form-control" type="number"
+                     placeholder="经度" />
+              <span class="error-field"
+                    ng-show="commercialForm.latitude.$dirty && commercialForm.latitude.$error.number">只能输入带小数点的经度</span>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <label for="longitude" class="col-sm-4 control-label">纬度</label>
+            <div class="col-xs-6">
+              <input id="longitude" name="longitude" ng-model="newAd.location.longitude" class="form-control" type="number"
+                     placeholder="纬度" />
+              <span class="error-field"
+                    ng-show="commercialForm.longitude.$dirty && commercialForm.longitude.$error.number">只能输入带小数点的纬度</span>
+            </div>
           </div>
         </div>
       </div>

@@ -9,7 +9,7 @@ import play.api.libs.json.Json
 import play.api.Play.current
 
 case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Option[Long], title: String, address: Option[String], contact: String, time_span: Option[String],
-                         detail: Option[String], logo: Option[String], updated_at: Option[Long], publishing: Option[AdPublishing] = None) {
+                         detail: Option[String], logo: Option[String], updated_at: Option[Long], publishing: Option[AdPublishing] = None, location: Option[EarthLocation] = None) {
   def deactive(agentId: Long) = for {i <- id
                                      p <- publishing} yield p.deactive(AgentActivity.tableName)(agentId, i)
 
@@ -29,7 +29,7 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
   def update(base: Long): Option[AgentRawActivity] = DB.withConnection {
     implicit c =>
       SQL("update agentactivity set agent_id={base}, contractor_id={contractor}, title={title}, address={address}, contact={contact}, time_span={time_span}," +
-        "detail={detail}, logo={logo}, updated_at={time} where uid={id}")
+        "detail={detail}, latitude={latitude}, longitude={longitude}, logo={logo}, updated_at={time} where uid={id}")
         .on(
           'id -> id,
           'base -> base,
@@ -38,6 +38,8 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
           'contact -> contact,
           'time_span -> time_span,
           'detail -> detail,
+          'latitude -> location.map (_.latitude),
+          'longitude -> location.map (_.longitude),
           'logo -> logo,
           'contractor -> contractor_id,
           'time -> System.currentTimeMillis
@@ -47,8 +49,9 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
 
   def create(base: Long): Option[AgentRawActivity] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into agentactivity (agent_id, contractor_id, title, address, contact, time_span, detail, logo, updated_at, created_at, publish_status) values (" +
-        "{base}, {contractor}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time}, 0)")
+      val insert: Option[Long] = SQL("insert into agentactivity (agent_id, contractor_id, title, address, contact, " +
+        "time_span, detail, logo, updated_at, created_at, publish_status, latitude, longitude) values (" +
+        "{base}, {contractor}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time}, 0, {latitude}, {longitude})")
         .on(
           'base -> base,
           'title -> title,
@@ -56,6 +59,8 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
           'contact -> contact,
           'time_span -> time_span,
           'detail -> detail,
+          'latitude -> location.map (_.latitude),
+          'longitude -> location.map (_.longitude),
           'logo -> logo,
           'contractor -> contractor_id,
           'time -> System.currentTimeMillis
@@ -65,6 +70,8 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
 }
 
 object AgentRawActivity {
+  import AgentContractor.writeEarthLocation
+  import AgentContractor.readEarthLocation
   implicit val writeAgentRawActivity = Json.writes[AgentRawActivity]
   implicit val readAgentRawActivity = Json.reads[AgentRawActivity]
   val tableName: String = "agentactivity"
@@ -106,11 +113,13 @@ object AgentRawActivity {
       get[String]("contact") ~
       get[Option[String]]("time_span") ~
       get[Option[String]]("detail") ~
+      get[Option[Double]]("latitude") ~
+      get[Option[Double]]("longitude") ~
       get[Option[String]]("logo") ~
       get[Option[Long]]("updated_at") map {
-      case id ~ agent ~ contractor ~ title ~ address ~ contact ~ timeSpan ~ detail ~ logo ~ time =>
+      case id ~ agent ~ contractor ~ title ~ address ~ contact ~ timeSpan ~ detail ~ latitude ~ longitude ~ logo ~ time =>
         AgentRawActivity(Some(id), agent, contractor, title, address, contact, timeSpan, detail, logo, time,
-          Some(AdPublishing.publishStatus(tableName)(id, agent)))
+          Some(AdPublishing.publishStatus(tableName)(id, agent)), AgentContractor.locationOfContractor(latitude, longitude))
     }
   }
 }

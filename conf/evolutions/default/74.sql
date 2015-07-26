@@ -13,6 +13,8 @@ CREATE TABLE agentcontractor (
   time_span   VARCHAR(100),
   detail   TEXT,
   logo   TEXT,
+  latitude   DOUBLE,
+  longitude   DOUBLE,
   publish_status   INT(4) DEFAULT 0,
   published_at BIGINT,
   reject_reason TEXT,
@@ -36,6 +38,8 @@ INSERT INTO agentcontractor (agent_id, title, address, contact, time_span, detai
 (1, '购物在线', '四川', '13333653147', null, '喝可乐挑战赛', '', 1393399313123, 4, 1393395313123, null, 8),
 (1, '其他在线', '四川', '13333653147', null, '喝可乐挑战赛', '', 1393399313123, 4, 1393395313123, null, 0),
 (1, '去年下线', '四川', '13333653147', null, '喝可乐挑战赛', '', 1393399313123, 5, 1393395313123, null, 8);
+
+update agentcontractor set latitude=123.231, longitude=321.123 where uid in (1, 3);
 
 # --- !Downs
 

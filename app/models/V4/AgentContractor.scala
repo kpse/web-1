@@ -8,8 +8,10 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
+case class EarthLocation(latitude: Double, longitude: Double)
+
 case class AgentContractor(id: Option[Long], agent_id: Long, category: String, title: String, address: Option[String], contact: String, time_span: Option[String],
-                           detail: Option[String], logo: Option[String], updated_at: Option[Long], publishing: Option[AdPublishing] = None) {
+                           detail: Option[String], logo: Option[String], updated_at: Option[Long], publishing: Option[AdPublishing] = None, location: Option[EarthLocation] = None) {
   def deactive(agentId: Long) = for {i <- id
                                      p <- publishing} yield p.deactive(AgentContractor.tableName)(agentId, i)
 
@@ -30,7 +32,7 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
   def update(base: Long): Option[AgentContractor] = DB.withConnection {
     implicit c =>
       SQL("update agentcontractor set agent_id={base}, category={category}, title={title}, address={address}, contact={contact}, time_span={time_span}," +
-        "detail={detail}, logo={logo}, updated_at={time} where uid={id}")
+        "detail={detail}, logo={logo}, latitude={latitude}, longitude={longitude} updated_at={time} where uid={id}")
         .on(
           'id -> id,
           'base -> base,
@@ -40,6 +42,8 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
           'contact -> contact,
           'time_span -> time_span,
           'detail -> detail,
+          'latitude -> location.map (_.latitude),
+          'longitude -> location.map (_.longitude),
           'logo -> logo,
           'time -> System.currentTimeMillis
         ).executeUpdate()
@@ -48,8 +52,9 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
 
   def create(base: Long): Option[AgentContractor] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into agentcontractor (agent_id, category, title, address, contact, time_span, detail, logo, updated_at, created_at, publish_status) values (" +
-        "{base}, {category}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time}, 0)")
+      val insert: Option[Long] = SQL("insert into agentcontractor (agent_id, category, title, address, contact, time_span, " +
+        "detail, logo, updated_at, created_at, publish_status, latitude, longitude) values (" +
+        "{base}, {category}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time}, 0, {latitude}, {longitude})")
         .on(
           'base -> base,
           'title -> title,
@@ -58,6 +63,8 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
           'contact -> contact,
           'time_span -> time_span,
           'detail -> detail,
+          'latitude -> location.map (_.latitude),
+          'longitude -> location.map (_.longitude),
           'logo -> logo,
           'time -> System.currentTimeMillis
         ).executeInsert()
@@ -66,6 +73,8 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
 }
 
 object AgentContractor {
+  implicit val writeEarthLocation = Json.writes[EarthLocation]
+  implicit val readEarthLocation = Json.reads[EarthLocation]
   implicit val writeAgentAd = Json.writes[AgentContractor]
   implicit val readAgentAd = Json.reads[AgentContractor]
 
@@ -116,6 +125,9 @@ object AgentContractor {
     case "其他" => 0
   }
 
+  def locationOfContractor(latitude: Option[Double], longitude: Option[Double]): Option[EarthLocation] =
+    for(la <- latitude;lo <- longitude) yield EarthLocation(la, lo)
+
   val simple = {
     get[Long]("uid") ~
       get[Long]("agent_id") ~
@@ -125,10 +137,13 @@ object AgentContractor {
       get[String]("contact") ~
       get[Option[String]]("time_span") ~
       get[Option[String]]("detail") ~
+      get[Option[Double]]("latitude") ~
+      get[Option[Double]]("longitude") ~
       get[Option[String]]("logo") ~
       get[Option[Long]]("updated_at") map {
-      case id ~ agent ~ title ~ category ~ address ~ contact ~ timeSpan ~ detail ~ logo ~ time =>
-        AgentContractor(Some(id), agent, categoryFromEnum(category), title, address, contact, timeSpan, detail, logo, time, Some(AdPublishing.publishStatus(tableName)(id, agent)))
+      case id ~ agent ~ title ~ category ~ address ~ contact ~ timeSpan ~ detail ~ latitude ~ longitude ~ logo ~ time =>
+        AgentContractor(Some(id), agent, categoryFromEnum(category), title, address, contact, timeSpan, detail, logo, time,
+          Some(AdPublishing.publishStatus(tableName)(id, agent)), locationOfContractor(latitude, longitude))
     }
   }
 }

@@ -13,6 +13,8 @@ CREATE TABLE agentactivity (
   time_span   VARCHAR(100),
   detail   TEXT,
   logo   TEXT,
+  latitude   DOUBLE,
+  longitude   DOUBLE,
   publish_status   INT(4) DEFAULT 0,
   published_at BIGINT,
   reject_reason TEXT,
@@ -30,6 +32,8 @@ INSERT INTO agentactivity (agent_id, contractor_id, title, address, contact, tim
 (1, 2, 'T', '四川', '13333653147', null, '特斯拉要不要', '', 1393399313123, 0, 0, null),
 (1, 2, 'T上线', '四川', '13333653147', null, '特斯拉要不要', '', 1393399313123, 4, 1393399313123, null),
 (1, 2, 'T下线', '四川', '13333653147', null, '特斯拉要不要', '', 1393399313123, 5, 1393399313123, null);
+
+update agentactivity set latitude=123.231, longitude=321.123 where uid in (1, 2, 3);
 
 # --- !Downs
 
