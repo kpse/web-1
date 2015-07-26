@@ -4,10 +4,12 @@ import _root_.helper.TestSupport
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
+import play.Logger
 
 import play.api.test._
 import play.api.Play
 import play.api.libs.json.Json
+import scala.collection.immutable.IndexedSeq
 import scala.io.Source
 import scala.concurrent.Future
 import play.api.Play.current
@@ -32,6 +34,11 @@ class DataImportingSpec extends Specification with TestSupport {
     Source.fromInputStream(is).getLines()
   }
 
+  def allCardRequests = (0 to 1000) map {
+    num =>
+      """{"number":"%020d","origin":"%010d"}""".format(num, num)
+  }
+
   implicit val read = Json.reads[ChildInfo]
   implicit val read1 = Json.reads[SchoolClass]
   implicit val read2 = Json.reads[Parent]
@@ -54,8 +61,10 @@ class DataImportingSpec extends Specification with TestSupport {
 
       val parentCreatingUrl = "http://localhost:19001/kindergarten/%d/parent".format(schoolId)
       val parentCheckingUrl = "http://localhost:19001/kindergarten/%d/parent".format(schoolId)
-
       val relationshipCreatingUrl = "http://localhost:19001/kindergarten/%d/relationship/%010d"
+
+      val cardCreatingUrl = "http://localhost:19001/api/v3/kindergarten/%d/card".format(schoolId)
+
       val relationshipCheckingUrl = "http://localhost:19001/kindergarten/%d/relationship".format(schoolId)
       val relationshipSingleCheckingUrl = "http://localhost:19001/kindergarten/%d/relationship/0000000011".format(schoolId)
 
@@ -69,6 +78,8 @@ class DataImportingSpec extends Specification with TestSupport {
       waitForWSCall(allRequests("/data/student.txt").filter(_.trim.nonEmpty).map(createOnServer(childCreatingUrl)), Some(60))
 
       waitForWSCall(allRequests("/data/relative.txt").filter(_.trim.nonEmpty).map(createOnServer(parentCreatingUrl)), Some(60))
+
+      waitForWSCall(allCardRequests.toIterator.map(createOnServer(cardCreatingUrl)), Some(60))
 
       waitForWSCall(allRequests("/data/relationship.txt").filter(_.trim.nonEmpty).foldLeft(List[Future[Response]]()) {
         (arr: List[Future[Response]], line: String) =>
