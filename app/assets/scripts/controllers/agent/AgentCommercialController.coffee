@@ -31,7 +31,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         [{publish_status: 2, display: '审批通过'},
           {publish_status: 3, display: '审批未通过'},
           {publish_status: 4, display: '上线'},
-          {publish_status: 5, display: '强制下线'}]
+          {publish_status: 5, display: '下线'}]
 
 
       scope.categories = ['亲子摄影', '培训教育', '亲子游乐', '亲子购物', '其他']
@@ -95,6 +95,9 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
 
       scope.canBeRejected = (ad) ->
         ad.id && scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 2)
+
+      scope.allowEditingContent = (ad) ->
+        _.any [0, 1, 3, 5], (c) -> ad.publishing.publish_status == c
 
       scope.adTypes = [
         {name: '商户', route: 'contractors'},

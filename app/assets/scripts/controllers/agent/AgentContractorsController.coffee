@@ -47,7 +47,6 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
         scope.canBeApproved(ad) || scope.canBeRejected(ad) || scope.canBePreviewed(ad) ||
           scope.canBeTakenOnline(ad) || scope.canBeTakenOffline(ad)
 
-
       scope.distributedIn = (contractor) ->
         _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.contractor_id == contractor.id
 

@@ -38,7 +38,7 @@
     <td class="col-xs-2">
       <button class="btn btn-xs btn-success" ng-show="allowToDistribute(ad)"
               ng-click="distribute(ad);$event.stopPropagation()">投放对象</button>
-      <button class="btn btn-xs btn-warning" ng-click="editAd(ad);$event.stopPropagation()">编辑
+      <button class="btn btn-xs btn-warning" ng-show="allowEditingContent(ad)" ng-click="editAd(ad);$event.stopPropagation()">编辑
       </button>
       <button class="btn btn-xs btn-danger" ng-confirm-msg="这个操作将彻底删除{{ad.name}}，确定继续?"
               ng-confirm-click="removeAd(ad);$event.stopPropagation()">删除
