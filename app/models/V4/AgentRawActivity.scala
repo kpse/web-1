@@ -8,6 +8,7 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
+
 case class ActivityPrice(origin: Double, discounted: Double)
 case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Option[Long], title: String,
                             address: Option[String], contact: String, time_span: Option[String],
@@ -42,8 +43,8 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
           'contact -> contact,
           'time_span -> time_span,
           'detail -> detail,
-          'latitude -> location.map (_.latitude),
-          'longitude -> location.map (_.longitude),
+          'latitude -> location.map (_.latitude.bigDecimal),
+          'longitude -> location.map (_.longitude.bigDecimal),
           'origin_price -> price.map (_.origin),
           'price -> price.map (_.discounted),
           'logo -> logo,
@@ -65,8 +66,8 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
           'contact -> contact,
           'time_span -> time_span,
           'detail -> detail,
-          'latitude -> location.map (_.latitude),
-          'longitude -> location.map (_.longitude),
+          'latitude -> location.map (_.latitude.bigDecimal),
+          'longitude -> location.map (_.longitude.bigDecimal),
           'origin_price -> price.map (_.origin),
           'price -> price.map (_.discounted),
           'logo -> logo,
@@ -127,8 +128,8 @@ object AgentRawActivity {
       get[String]("contact") ~
       get[Option[String]]("time_span") ~
       get[Option[String]]("detail") ~
-      get[Option[Double]]("latitude") ~
-      get[Option[Double]]("longitude") ~
+      get[Option[java.math.BigDecimal]]("latitude") ~
+      get[Option[java.math.BigDecimal]]("longitude") ~
       get[Option[Double]]("origin_price") ~
       get[Option[Double]]("price") ~
       get[Option[String]]("logo") ~

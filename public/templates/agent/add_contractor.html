@@ -130,7 +130,7 @@
           </button>
           <button class="btn btn-info" ng-disabled="commercialForm.$invalid || uploading || commercialForm.$pristine"
                   ng-hide="canBePreview(newAd)"
-                  ng-click="save(newAd)">保存
+                  ng-click="save(newAd);$hide()">保存
           </button>
         </div>
       </div>

@@ -7,8 +7,9 @@ import play.Logger
 import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
+import math.BigDecimal._
 
-case class EarthLocation(latitude: Double, longitude: Double)
+case class EarthLocation(latitude: BigDecimal, longitude: BigDecimal)
 
 case class AgentContractor(id: Option[Long], agent_id: Long, category: String, title: String, address: Option[String], contact: String, time_span: Option[String],
                            detail: Option[String], logo: Option[String], updated_at: Option[Long], publishing: Option[AdPublishing] = None, location: Option[EarthLocation] = None) {
@@ -32,7 +33,7 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
   def update(base: Long): Option[AgentContractor] = DB.withConnection {
     implicit c =>
       SQL("update agentcontractor set agent_id={base}, category={category}, title={title}, address={address}, contact={contact}, time_span={time_span}," +
-        "detail={detail}, logo={logo}, latitude={latitude}, longitude={longitude} updated_at={time} where uid={id}")
+        "detail={detail}, logo={logo}, latitude={latitude}, longitude={longitude}, updated_at={time} where uid={id}")
         .on(
           'id -> id,
           'base -> base,
@@ -42,8 +43,8 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
           'contact -> contact,
           'time_span -> time_span,
           'detail -> detail,
-          'latitude -> location.map (_.latitude),
-          'longitude -> location.map (_.longitude),
+          'latitude -> location.map (_.latitude.bigDecimal),
+          'longitude -> location.map (_.longitude.bigDecimal),
           'logo -> logo,
           'time -> System.currentTimeMillis
         ).executeUpdate()
@@ -63,8 +64,8 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
           'contact -> contact,
           'time_span -> time_span,
           'detail -> detail,
-          'latitude -> location.map (_.latitude),
-          'longitude -> location.map (_.longitude),
+          'latitude -> location.map (_.latitude.bigDecimal),
+          'longitude -> location.map (_.longitude.bigDecimal),
           'logo -> logo,
           'time -> System.currentTimeMillis
         ).executeInsert()
@@ -125,7 +126,7 @@ object AgentContractor {
     case "其他" => 0
   }
 
-  def locationOfContractor(latitude: Option[Double], longitude: Option[Double]): Option[EarthLocation] =
+  def locationOfContractor(latitude: Option[java.math.BigDecimal], longitude: Option[java.math.BigDecimal]): Option[EarthLocation] =
     for(la <- latitude;lo <- longitude) yield EarthLocation(la, lo)
 
   val simple = {
@@ -137,8 +138,8 @@ object AgentContractor {
       get[String]("contact") ~
       get[Option[String]]("time_span") ~
       get[Option[String]]("detail") ~
-      get[Option[Double]]("latitude") ~
-      get[Option[Double]]("longitude") ~
+      get[Option[java.math.BigDecimal]]("latitude") ~
+      get[Option[java.math.BigDecimal]]("longitude") ~
       get[Option[String]]("logo") ~
       get[Option[Long]]("updated_at") map {
       case id ~ agent ~ title ~ category ~ address ~ contact ~ timeSpan ~ detail ~ latitude ~ longitude ~ logo ~ time =>
