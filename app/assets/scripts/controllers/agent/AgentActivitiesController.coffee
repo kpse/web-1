@@ -1,17 +1,22 @@
 angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
   ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', '$alert', 'currentAgent', 'loggedUser', 'agentRawActivityService',
-   'agentActivityInSchoolService', 'agentSchoolService', 'agentSchoolDataService', 'fullResponseService',
-    (scope, $rootScope, stateParams, $q, $state, Modal, Alert, Agent, User, Activity, ActivityInSchool, Schools, SchoolData, FullRes) ->
+   'agentActivityInSchoolService', 'agentSchoolService', 'agentSchoolDataService', 'fullResponseService', 'agentContractorService',
+    (scope, $rootScope, stateParams, $q, $state, Modal, Alert, Agent, User, Activity, ActivityInSchool, Schools, SchoolData, FullRes, Contractor) ->
       scope.adminUser = User
       scope.currentAgent = Agent
 
       scope.refresh = (activityId) ->
         scope.loading = true
         queue = [FullRes(Activity, agent_id: scope.currentAgent.id)
-                 scope.waitForSchoolsReady()]
+                 scope.waitForSchoolsReady()
+                 FullRes(Contractor, agent_id: scope.currentAgent.id)]
 
         $q.all(queue).then (q) ->
           scope.activities = q[0]
+          activityGroup = _.groupBy scope.activities, 'contractor_id'
+          scope.contractors = _.map q[2], (c) ->
+            c.activities = activityGroup[c.id]
+            c
           scope.schools = scope.currentAgent.schools
           _.each scope.schools, (s) ->
             s.stats = SchoolData.get agent_id: scope.currentAgent.id, school_id: s.school_id
@@ -31,9 +36,14 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
       scope.$on 'refresh', ->
         scope.refresh()
 
+      scope.$on 'closeDialog', ->
+        scope.currentModal.hide() if scope.currentModal?
+
       scope.editAd = (ad) ->
         scope.newAd = angular.copy ad
         _.assign scope.newAd, agent_id: scope.currentAgent.id
+        if ad.contractor_id?
+          _.assign scope.newAd, contractor: (_.find scope.contractors, (c) -> c.id == ad.contractor_id)
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/add_activity.html'
