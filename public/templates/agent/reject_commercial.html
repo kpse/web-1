@@ -41,7 +41,7 @@
         <label class="control-label col-xs-2 title-line">介绍</label>
 
         <div class="col-xs-8">
-           <textarea ng-disabled="true" id="content" name="content" ng-model="badAd.content"
+           <textarea ng-disabled="true" id="content" name="content" ng-model="badAd.detail"
                      class="editing-content form-control reject-ad-content"></textarea>
         </div>
       </div>
@@ -65,7 +65,7 @@
 
     <div class="loading" ng-show="loading"></div>
     <div class="btn-group">
-      <button class="btn btn-default" ng-click="$hide()">关闭</button>
+      <button class="btn btn-default" ng-click="cancelRejection(badAd)">关闭</button>
 
       <button class="btn btn-info" ng-disabled="commercialForm.$invalid || uploading || commercialForm.$pristine"
               ng-click="reject(badAd)">拒绝
