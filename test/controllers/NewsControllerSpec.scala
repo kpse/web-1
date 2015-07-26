@@ -77,7 +77,7 @@ class NewsControllerSpec extends Specification with TestSupport {
       response match {
         case JsArray(arr) =>
           arr.length must greaterThan(1)
-          (arr(0) \ "news_id").as[Long] must equalTo(5L)
+          (arr.head \ "news_id").as[Long] must equalTo(4L)
         case _ => failure
       }
 

@@ -30,9 +30,9 @@ class ChatSessionSpec extends Specification with TestSupport {
 
       private val index = ChatSession.index(93740362L, "1_93740362_9982", None, Some(4))
 
-      index.size must equalTo(3)
+      index.size must equalTo(2)
       index.head.topic must equalTo("1_93740362_9982")
-      index.head.id must equalTo(Some(4))
+      index.head.id must equalTo(Some(3))
       index.head.id must greaterThan(index(1).id)
 
     }
@@ -43,11 +43,11 @@ class ChatSessionSpec extends Specification with TestSupport {
       index.size must equalTo(0)
     }
 
-    "report beginning if to the beginning" in new WithApplication {
+    "report empty if to the beginning" in new WithApplication {
 
-      private val index = ChatSession.index(93740362L, "1_93740362_9982", None, Some(2))
+      private val index = ChatSession.index(93740362L, "1_93740362_9982", None, Some(1))
 
-      index.size must equalTo(1)
+      index.size must equalTo(0)
     }
   }
 

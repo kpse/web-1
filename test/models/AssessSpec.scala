@@ -44,11 +44,11 @@ class AssessSpec extends Specification with TestSupport {
       index.size must equalTo(0)
     }
 
-    "report beginning if to the beginning" in new WithApplication {
+    "report empty if to the beginning" in new WithApplication {
 
       private val index = Assess.all(93740362L, "1_93740362_374", None, Some(1))
 
-      index.size must equalTo(1)
+      index.size must equalTo(0)
     }
   }
 
