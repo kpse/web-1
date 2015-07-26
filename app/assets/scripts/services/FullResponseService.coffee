@@ -7,7 +7,7 @@ angular.module('kulebao.services')
     $q (resolve, reject) ->
       Resource.query dic, (data) ->
         if data.length == most
-          fullResponse(Resource, (_.assign dic, to: _.last(data).id - 1), result.concat(data)).then (d) ->
+          fullResponse(Resource, (_.assign dic, to: _.last(data).id), result.concat(data)).then (d) ->
             resolve d
           , (err) -> reject err
         else

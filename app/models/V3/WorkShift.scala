@@ -143,12 +143,12 @@ object WorkShift {
       case range if range > 1388534400000L =>
         var result = ""
         from foreach { _ => result = s" and $timeSpanField > {from} " }
-        to foreach { _ => result = s"$result and $timeSpanField <= {to} " }
+        to foreach { _ => result = s"$result and $timeSpanField < {to} " }
         s"$result order by uid DESC limit ${most.getOrElse(25)}"
       case _ =>
         var result = ""
         from foreach { _ => result = " and uid > {from} " }
-        to foreach { _ => result = s"$result and uid <= {to} " }
+        to foreach { _ => result = s"$result and uid < {to} " }
         s"$result order by uid DESC limit ${most.getOrElse(25)}"
     }
   }

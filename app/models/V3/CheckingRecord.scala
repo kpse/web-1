@@ -89,12 +89,12 @@ object CheckingRecordV3 {
       case range if range > 1388534400000L =>
         var result = ""
         from foreach { _ => result = " and d.check_at > {from} " }
-        to foreach { _ => result = s"$result and d.check_at <= {to} " }
+        to foreach { _ => result = s"$result and d.check_at < {to} " }
         s"$result order by c.uid DESC limit ${most.getOrElse(25)}"
       case _ =>
         var result = ""
         from foreach { _ => result = " and c.uid > {from} " }
-        to foreach { _ => result = s"$result and c.uid <= {to} " }
+        to foreach { _ => result = s"$result and c.uid < {to} " }
         s"$result order by c.uid DESC limit ${most.getOrElse(25)}"
     }
 

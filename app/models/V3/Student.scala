@@ -196,7 +196,7 @@ object Student {
   def generateSpan(from: Option[Long], to: Option[Long], most: Option[Int]): String = {
     var result = ""
     from foreach { _ => result = " and c.uid > {from} " }
-    to foreach { _ => result = s"$result and c.uid <= {to} " }
+    to foreach { _ => result = s"$result and c.uid < {to} " }
     s"$result order by c.uid DESC limit ${most.getOrElse(25)}"
   }
 

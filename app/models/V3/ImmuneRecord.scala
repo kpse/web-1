@@ -157,12 +157,12 @@ object ImmuneRecord {
       case range if range > 1388534400000L =>
         var result = ""
         from foreach { _ => result = " and created_at > {from} " }
-        to foreach { _ => result = s"$result and created_at <= {to} " }
+        to foreach { _ => result = s"$result and created_at < {to} " }
         s"$result order by uid DESC limit ${most.getOrElse(25)}"
       case _ =>
         var result = ""
         from foreach { _ => result = " and uid > {from} " }
-        to foreach { _ => result = s"$result and uid <= {to} " }
+        to foreach { _ => result = s"$result and uid < {to} " }
         s"$result order by uid DESC limit ${most.getOrElse(25)}"
     }
   }

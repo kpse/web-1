@@ -11,7 +11,7 @@ object RangerHelper {
   def generateTo(to: Option[Long], field: Option[String]) = {
     to map {
       t =>
-        s" and ${field.getOrElse("uid")} <= {to}"
+        s" and ${field.getOrElse("uid")} < {to}"
     }
   }
 
@@ -34,7 +34,7 @@ object RangerHelper {
   def generateSpan(from: Option[Long], to: Option[Long], most: Option[Int] = Some(25), fieldName: String = "uid"): String = {
     var result = ""
     from foreach { _ => result = s" and $fieldName > {from} " }
-    to foreach { _ => result = s"$result and $fieldName <= {to} " }
+    to foreach { _ => result = s"$result and $fieldName < {to} " }
     s"$result order by $fieldName DESC limit ${most.getOrElse(25)}"
   }
 
