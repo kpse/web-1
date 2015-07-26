@@ -26,6 +26,12 @@ object AgentActivityEnrollmentController extends Controller with Secured {
   }
 
   def show(kg: Long, activityId: Long, parentId: String) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(AgentActivityEnrollment.show(kg, activityId, parentId)))
+    AgentActivityEnrollment.show(kg, activityId, parentId) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"${parentId}没有报名活动$activityId。(No such enrollment)")))
+    }
+
   }
 }
