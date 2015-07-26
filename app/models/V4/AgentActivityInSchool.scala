@@ -102,7 +102,7 @@ object AgentActivityInSchool {
           'to -> to,
           'contractorId -> contractorId,
           'kg -> kg
-        ).as(AgentActivity.simple *)
+        ).as(AgentRawActivity.simple *)
   }
 
   val simple = {
