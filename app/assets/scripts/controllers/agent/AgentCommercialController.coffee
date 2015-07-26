@@ -82,7 +82,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
 
 
       scope.published = (ad) ->
-        ad.publishing? && _.any [99, 2, 4], (c) -> ad.publishing.publish_status == c
+        ad.publishing? && _.any [99, 2, 4, 5], (c) -> ad.publishing.publish_status == c
 
       scope.canBePreviewed = (ad) ->
         ad.id && (ad.publishing.publish_status == 0 || ad.publishing.publish_status == 3)
@@ -100,7 +100,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         ad.id && scope.adminUser.privilege_group == 'operator' && (ad.publishing.publish_status == 99 || ad.publishing.publish_status == 2)
 
       scope.allowEditingContent = (ad) ->
-        scope.adminUser.privilege_group == 'operator' || _.any [0, 99, 3, 5], (c) -> ad.publishing.publish_status == c
+        scope.adminUser.privilege_group == 'operator' || _.any [0, 99, 3], (c) -> ad.publishing.publish_status == c
 
       scope.adTypes = [
         {name: '商户', route: 'contractors'},
