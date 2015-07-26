@@ -54,7 +54,7 @@
             <label for="latitude" class="col-sm-4 control-label">经度</label>
 
             <div class="col-xs-6">
-              <input id="latitude" name="latitude" ng-model="newAd.location.latitude" class="form-control" type="number"
+              <input id="latitude" name="latitude" ng-model="newAd.location.latitude" class="form-control" type="number" ng-model-options="{ allowInvalid: true }"
                      placeholder="经度" ng-disabled="published(newAd)"/>
               <span class="error-field"
                     ng-show="commercialForm.latitude.$dirty && commercialForm.latitude.$error.number">只能输入带小数点的经度</span>
