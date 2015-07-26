@@ -156,9 +156,6 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
 
       scope.rejectDialog = (ad) ->
         scope.badAd = angular.copy ad
-        scope.badAd.publishing =
-          publish_status: 3
-          reject_reason: ''
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/reject_commercial.html'
@@ -182,10 +179,20 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
             scope.$broadcast 'closeDialog'
 
       scope.reject = (ad) ->
+        ad.publishing.publish_status = 3
         ad.$reject ->
           scope.refresh()
           if scope.currentModal?
             scope.currentModal.hide()
           else
             scope.$broadcast 'closeDialog'
+
+      scope.cancelRejection = (ad) ->
+        delete scope.badAd
+        scope.refresh()
+        if scope.currentModal?
+          scope.currentModal.hide()
+        else
+          scope.$broadcast 'closeDialog'
+
   ]
