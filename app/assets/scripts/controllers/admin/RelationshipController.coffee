@@ -89,6 +89,7 @@ angular.module('kulebaoAdmin')
           scope.parent = scope.createParent()
           scope.parent.saveHook = saveHook
           scope.connecting = askForConnecting
+          scope.currentModal.hide() if scope.currentModal?
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/admin/add_adult.html'
@@ -97,11 +98,13 @@ angular.module('kulebaoAdmin')
       scope.newChild = ->
         scope.nickFollowing = true
         scope.child = scope.createChild()
+        scope.currentModal.hide() if scope.currentModal?
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/add_child.html'
 
       scope.newRelationship = (child, parent)->
+        scope.currentModal.hide() if scope.currentModal?
         scope.refresh ->
           scope.relationship = scope.createRelationship(child, parent)
           scope.parents = Parent.query school_id: stateParams.kindergarten, ->
@@ -113,6 +116,7 @@ angular.module('kulebaoAdmin')
                 contentTemplate: 'templates/admin/add_connection.html'
 
       scope.editParent = (parent) ->
+        scope.currentModal.hide() if scope.currentModal?
         scope.refresh ->
           scope.parent = Parent.get school_id: stateParams.kindergarten, phone: parent.phone, (p) ->
             scope.parent.video_member_status = 0
@@ -126,6 +130,7 @@ angular.module('kulebaoAdmin')
               contentTemplate: 'templates/admin/add_adult.html'
 
       scope.editChild = (child) ->
+        scope.currentModal.hide() if scope.currentModal?
         scope.refresh ->
           scope.nickFollowing = true
           scope.child = Child.get school_id: stateParams.kindergarten, child_id: child.child_id, ->
@@ -543,6 +548,7 @@ angular.module('kulebaoAdmin')
 
       scope.previewChild = ->
         scope.currentClass = classOfId(stateParams.class_id)
+        scope.currentModal.hide() if scope.currentModal?
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/children_preview.html'
