@@ -71,7 +71,10 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         targetState = newAd.targetState
         newAd.$save ->
           scope.loading = true
-          scope.currentModal.hide()
+          if scope.currentModal?
+            scope.currentModal.hide()
+          else
+            scope.$broadcast 'closeDialog'
           if targetState?
             if $state.is targetState
               scope.refresh()
@@ -163,12 +166,13 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       scope.preview = (ad) ->
         ad.publishing =
           publish_status: 99
-        ad.$preview ->
-          scope.refresh()
-          if scope.currentModal?
-            scope.currentModal.hide()
-          else
-            scope.$broadcast 'closeDialog'
+        ad.$save ->
+          ad.$preview ->
+            scope.refresh()
+            if scope.currentModal?
+              scope.currentModal.hide()
+            else
+              scope.$broadcast 'closeDialog'
 
       scope.removeAd = (newAd) ->
         newAd.$delete ->
