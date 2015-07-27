@@ -24,7 +24,12 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
       def generateNotice(childName: String): IOSField = {
         IOSField("%s提醒您：您的孩子 %s 已于 %s 打卡%s。".format(CheckingMessage.advertisementOf(school_id), childName,
           new DateTime(timestamp).toString("HH:mm:ss"),
-          if (notice_type == 1) "入园" else "离开幼儿园"))
+          notice_type match {
+            case 1 => "入园"
+            case 0 => "离开幼儿园"
+            case 10 => "上车"
+            case 13 => "下车"
+          }))
       }
 
       val simpleCheck = {
