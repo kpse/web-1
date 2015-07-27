@@ -95,9 +95,9 @@
       </div>
 
       <div class="form-group news-content">
-        <label for="content" class="control-label col-xs-2">活动介绍 <span class="mandatory">*</span></label>
+        <label for="content" class="control-label col-xs-2">商户介绍 <span class="mandatory">*</span></label>
         <br/>
-        <small ng-show="newAd.content.length >= 0">还可以输入{{ 2000 - newAd.content.length}}个字</small>
+        <small ng-show="newAd.detail.length >= 0">还可以输入{{ 2000 - newAd.detail.length}}个字</small>
         <span class="error-field" ng-show="commercialForm.content.$dirty && commercialForm.content.$error.required">请填写正文内容</span>
       <span class="error-field"
             ng-show="commercialForm.content.$dirty && commercialForm.content.$error.maxlength">正文内容请不要超过2000个字符</span>
@@ -110,7 +110,7 @@
 
 
       <div class="panel-footer">
-        <div ng-show="published(newAd)" class="issue-date">已于{{newAd.published_at | date:'yyyy年MM月dd日 HH:mm'}}审批通过
+        <div ng-show="published(newAd)" class="issue-date">已于{{newAd.publishing.published_at | date:'yyyy年MM月dd日 HH:mm'}}审批通过
         </div>
         <div ng-hide="published(newAd)" class="issue-date">未发布</div>
         <div class="loading" ng-show="loading"></div>
