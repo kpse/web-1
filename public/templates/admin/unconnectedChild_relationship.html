@@ -4,9 +4,9 @@
   </li>
 </ul>
 
-<form class="form well"><button class="btn btn-success" ng-click="newChild()">创建小孩信息</button>
-<button class="btn btn-primary" ng-click="newParent()">创建家长关联到小孩</button>
-<button class="btn btn-warning" ng-click="newRelationship()">创建卡片（关联小孩和家长）</button></form>
+<form class="form well"><button class="btn btn-success" ng-disabled="loading" ng-click="newChild()">创建小孩信息</button>
+<button class="btn btn-primary" ng-disabled="loading" ng-click="newParent()">创建家长关联到小孩</button>
+<button class="btn btn-warning" ng-disabled="loading" ng-click="newRelationship()">创建卡片（关联小孩和家长）</button></form>
 <div class="loading" ng-show="loading"></div>
 <br/>
 <button ng-disabled="!hasSelection(children)" class="btn btn-danger btn-xs" ng-confirm-msg="你确定要删除吗?"
@@ -23,7 +23,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="child in children | filter: searchText" class="row" ng-class="{'member-row': false, 'editable': editChild}" ng-click="editChild(child)">
+  <tr ng-repeat="child in children | filter: searchText" class="row" ng-class="{'member-row': false, 'editable': editChild}" ng-disabled="loading" ng-click="editChild(child)">
     <td class="col-xs-2" ng-if="config.deletable" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="child.checked" ng-change="singleSelection(child)"/></td>
     <td class="col-xs-2" ng-if="config.deletable">{{::child.name}}</td>
     <td class="col-xs-4" ng-if="!config.deletable && backend">{{::child.name}}</td>

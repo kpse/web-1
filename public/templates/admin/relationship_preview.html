@@ -12,7 +12,7 @@
   <div class="loading" ng-show="loading"></div>
   <tr ng-repeat="r in relationships | filter: searchText" class="row">
     <td class="col-xs-2">{{::r.child.class_name}}</td>
-    <td class="col-xs-2"><a ng-click="previewChild(r.child)">{{::r.child.name}}</a></td>
+    <td class="col-xs-2"><a ng-disabled="loading" ng-click="previewChild(r.child)">{{::r.child.name}}</a></td>
     <td class="col-xs-3">{{::r.parent.name}}</td>
     <td class="col-xs-3">{{::r.parent.phone | phone}}</td>
     <td class="col-xs-2">{{::r.relationship}}</td>

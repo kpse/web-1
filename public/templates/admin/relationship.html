@@ -4,7 +4,7 @@
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class="col-xs-1" ng-if="config.deletable"><input type="checkbox" ng-model="selection.allCheck"
+    <th class="col-xs-1" ng-if="config.deletable"><input type="checkbox" ng-model="selection.allCheck" ng-disabled="loading"
                                                          ng-change="checkAll(selection.allCheck)"/> 全选
     </th>
     <th class="col-xs-2" ng-if="backend">卡号</th>
@@ -20,9 +20,9 @@
   <tbody>
   <div class="loading" ng-show="loading"></div>
   <tr ng-repeat="r in relationships | filter: searchText" class="row">
-    <td class="col-xs-1" ng-if="config.deletable"><input type="checkbox" ng-model="r.checked"
+    <td class="col-xs-1" ng-if="config.deletable"><input type="checkbox" ng-model="r.checked" 
                                                          ng-change="singleSelection(r)"/></td>
-    <td class="col-xs-2" ng-hide="cardNumberEditing=={{::r.card}}" ng-if="backend"><a
+    <td class="col-xs-2" ng-hide="cardNumberEditing=={{::r.card}}" ng-if="backend"><a ng-disabled="loading"
       ng-click="editing(r)">{{::r.card}}</a></td>
     <td class="col-xs-2" ng-show="cardNumberEditing=={{::r.card}}" ng-if="backend">
       <form name="editCardForm">
@@ -32,14 +32,14 @@
         <span class="error-field non-registered-card-error"
               ng-show="editCardForm.card.$dirty && editCardForm.card.$error.registered">卡未授权，请联系库贝处理</span>
         <button class="inline-btn save-btn btn btn-xs btn-success" ng-disabled="editCardForm.$invalid">
-          <span class="glyphicon glyphicon-ok" ng-click="updateCardNumber(r)"></span></button>
+          <span class="glyphicon glyphicon-ok" ng-disabled="loading" ng-click="updateCardNumber(r)"></span></button>
         <button class="inline-btn cancel-btn btn btn-xs btn-warning">
-          <span class="glyphicon glyphicon-remove" ng-click="cancelEditing(r)"></span></button>
+          <span class="glyphicon glyphicon-remove" ng-disabled="loading" ng-click="cancelEditing(r)"></span></button>
       </form>
     </td>
     <td class="col-xs-1">{{::r.child.class_name}}</td>
-    <td class="col-xs-1"><a ng-click="editChild(r.child)">{{::r.child.name}}</a></td>
-    <td class="col-xs-1"><a ng-click="editParent(r.parent)">{{::r.parent.name}}</a></td>
+    <td class="col-xs-1"><a ng-disabled="loading" ng-click="editChild(r.child)">{{::r.child.name}}</a></td>
+    <td class="col-xs-1"><a ng-disabled="loading" ng-click="editParent(r.parent)">{{::r.parent.name}}</a></td>
     <td class="col-xs-2">{{::r.parent.phone | phone}}</td>
     <td class="col-xs-1">{{::r.relationship}}</td>
 

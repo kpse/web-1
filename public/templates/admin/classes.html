@@ -1,4 +1,4 @@
-<a class="btn btn-primary pull-right adding-button" ng-show="create" ng-disabled="inCreating" ng-click="create()">添加</a>
+<a class="btn btn-primary pull-right adding-button" ng-show="create" ng-disabled="inCreating || loading" ng-click="create()">添加</a>
 <ul class="nav nav-tabs">
   <li ng-repeat="c in classesScope" ng-class="{active: {{c.class_id == current_class}}}">
     <a ng-click="navigateTo(c)">{{c.name}}</a>

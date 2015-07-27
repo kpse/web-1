@@ -4,9 +4,9 @@
   </li>
 </ul>
 <form class="form well">
-<button class="btn btn-success" ng-click="newChild()">创建小孩信息</button>
-<button class="btn btn-primary" ng-click="newParent()">创建家长关联到小孩</button>
-<button class="btn btn-warning" ng-click="newRelationship()">创建卡片（关联小孩和家长）</button>
+<button class="btn btn-success" ng-disabled="loading" ng-click="newChild()">创建小孩信息</button>
+<button class="btn btn-primary" ng-disabled="loading" ng-click="newParent()">创建家长关联到小孩</button>
+<button class="btn btn-warning" ng-disabled="loading" ng-click="newRelationship()">创建卡片（关联小孩和家长）</button>
   </form>
 <div class="loading" ng-show="loading"></div>
 <br/>
@@ -16,7 +16,7 @@
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class="col-xs-2" ng-if="config.deletable"><input type="checkbox" ng-model="selection.allCheck" ng-change="checkAll(selection.allCheck)"/> 全选</th>
+    <th class="col-xs-2" ng-if="config.deletable"><input type="checkbox" ng-model="selection.allCheck" ng-disabled="loading" ng-change="checkAll(selection.allCheck)"/> 全选</th>
     <th class="col-xs-2" ng-if="config.deletable">家长姓名</th>
     <th class="col-xs-4" ng-if="!config.deletable && backend">家长姓名</th>
     <th class="col-xs-4">电话号码</th>
@@ -24,7 +24,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="parent in parents | filter: searchText" class="row" ng-class="{'member-row': parent.member_status, 'editable': editParent}" ng-click="editParent(parent)">
+  <tr ng-repeat="parent in parents | filter: searchText" class="row" ng-class="{'member-row': parent.member_status, 'editable': editParent}" ng-disabled="loading" ng-click="editParent(parent)">
     <td class="col-xs-2" ng-if="config.deletable" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="parent.checked" ng-change="singleSelection(parent)"/></td>
     <td class="col-xs-2" ng-if="config.deletable">{{::parent.name}}</td>
     <td class="col-xs-4" ng-if="!config.deletable && backend">{{::parent.name}}</td>
