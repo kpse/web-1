@@ -27,7 +27,7 @@ angular.module('kulebaoAdmin')
         }
       ]
 
-      scope.refresh = (callback)->
+      scope.refresh = (callback) ->
         scope.loading = true
         scope.disableMemberEditing = false
         SchoolConfig.get school_id: stateParams.kindergarten, (data)->
@@ -84,7 +84,8 @@ angular.module('kulebaoAdmin')
           fix_child: child?
           fix_parent: parent?
 
-      scope.newParent = (saveHook, askForConnecting = true)->
+      scope.newParent = (saveHook, askForConnecting = true) ->
+        scope.loading = true
         scope.parents = Parent.query school_id: stateParams.kindergarten, ->
           scope.parent = scope.createParent()
           scope.parent.saveHook = saveHook
@@ -92,6 +93,7 @@ angular.module('kulebaoAdmin')
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/admin/add_adult.html'
+          scope.loading = false
 
       scope.buttonLabel = '上传头像'
       scope.newChild = ->
@@ -102,6 +104,7 @@ angular.module('kulebaoAdmin')
           contentTemplate: 'templates/admin/add_child.html'
 
       scope.newRelationship = (child, parent)->
+        scope.loading = true
         scope.refresh ->
           scope.relationship = scope.createRelationship(child, parent)
           scope.parents = Parent.query school_id: stateParams.kindergarten, ->
@@ -117,9 +120,9 @@ angular.module('kulebaoAdmin')
           scope.parent = Parent.get school_id: stateParams.kindergarten, phone: parent.phone, (p) ->
             scope.parent.video_member_status = 0
             VideoMember.get school_id: stateParams.kindergarten, id: parent.parent_id, ->
-              p.video_member_status = 1
-            , (e) ->
-              p.video_member_status = 0
+                p.video_member_status = 1
+              , (e) ->
+                p.video_member_status = 0
             scope.connecting = true
             scope.currentModal = Modal
               scope: scope
@@ -150,13 +153,17 @@ angular.module('kulebaoAdmin')
       scope.saveParent = (parent) ->
         saveHook = parent.saveHook
         video_member_status = parent.video_member_status
+        scope.loading = true
         parent.$save ->
-          scope.updateVideoMember(parent, video_member_status == 1)
-          scope.$broadcast 'refreshing'
-          scope.currentModal.hide()
-          saveHook(parent) if typeof saveHook == 'function'
-        , (res) ->
-          handleError('家长', res)
+            scope.updateVideoMember(parent, video_member_status == 1)
+            scope.$broadcast 'refreshing'
+            scope.currentModal.hide()
+            saveHook(parent) if typeof saveHook == 'function'
+            scope.loading = false
+          , (res) ->
+            handleError('家长', res)
+            scope.loading = false
+
 
       scope.updateVideoMember = (parent, save) ->
         if save
@@ -165,23 +172,29 @@ angular.module('kulebaoAdmin')
           VideoMember.remove school_id: parent.school_id, id: parent.parent_id
 
       scope.saveRelationship = (relationship) ->
+        scope.loading = true
         relationship.$save ->
-          scope.$broadcast 'refreshing'
-          scope.refresh()
-          scope.currentModal.hide()
-        , (res) ->
-          handleError('关系', res)
+            scope.$broadcast 'refreshing'
+            scope.refresh()
+            scope.currentModal.hide()
+            scope.loading = false
+          , (res) ->
+            handleError('关系', res)
+            scope.loading = false
 
       scope.saveChild = (child) ->
+        scope.loading = true
         child.$save ->
-          scope.$broadcast 'refreshing'
-          scope.currentModal.hide()
-        , (res) ->
-          handleError('小孩', res)
+            scope.$broadcast 'refreshing'
+            scope.currentModal.hide()
+            scope.loading = false
+          , (res) ->
+            handleError('小孩', res)
+            scope.loading = false
 
       scope.alreadyConnected = (parent, child) ->
         return false if parent is undefined || child is undefined
-        undefined isnt _.find scope.relationships, (r) ->
+        _.any scope.relationships, (r) ->
           r.parent.phone == parent.phone && r.child.child_id == child.child_id
 
       scope.availableChildFor = (parent) ->
@@ -209,10 +222,10 @@ angular.module('kulebaoAdmin')
       scope.connectToChild = (parent) ->
         video_member_status = parent.video_member_status
         parent.$save ->
-          scope.updateVideoMember(parent, video_member_status)
-          scope.connectToChildOnly(parent)
-        , (res) ->
-          handleError('家长', res)
+            scope.updateVideoMember(parent, video_member_status)
+            scope.connectToChildOnly(parent)
+          , (res) ->
+            handleError('家长', res)
 
       scope.createParentOnly = (child) ->
         scope.$broadcast 'refreshing'
@@ -252,12 +265,13 @@ angular.module('kulebaoAdmin')
         r.card = scope.oldRelationship.card
 
       scope.updateCardNumber = (relationship) ->
+        scope.loading = true
         relationship.$save ->
-          scope.$broadcast 'refreshing'
-          scope.refresh()
-          scope.cardNumberEditing = 0
-        , (res) ->
-          handleError('关系', res)
+            scope.$broadcast 'refreshing'
+            scope.refresh()
+            scope.cardNumberEditing = 0
+          , (res) ->
+            handleError('关系', res)
 
       scope.navigateTo = (s) ->
         location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/#{s.url}") if stateParams.type != s.url
@@ -542,9 +556,11 @@ angular.module('kulebaoAdmin')
         location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/#{c.class_id}/list")
 
       scope.previewChild = ->
+        scope.loading = true
         scope.currentClass = classOfId(stateParams.class_id)
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/children_preview.html'
           id: 'preview-child-modal'
+        scope.loading = false
   ]
