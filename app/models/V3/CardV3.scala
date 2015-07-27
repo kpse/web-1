@@ -64,7 +64,7 @@ object CardV3 {
 
   def search(kg: Long, q: String) = DB.withConnection {
     implicit c =>
-      SQL(s"select * from cardrecord c where c.school_id={kg} and origin={q} and status=1")
+      SQL(s"select * from cardrecord c where origin={q} and status=1")
         .on(
           'kg -> kg.toString,
           'q -> q
@@ -100,10 +100,9 @@ object CardV3 {
 
   val simple = {
     get[Long]("uid") ~
-      get[String]("school_id") ~
       get[String]("origin") ~
       get[String]("number") map {
-      case id ~ schoolId ~ origin ~ number =>
+      case id ~ origin ~ number =>
         CardV3(Some(id), number, origin)
     }
   }
