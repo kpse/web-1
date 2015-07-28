@@ -49,21 +49,21 @@
           <label for="latitude" class="col-sm-4 control-label">位置信息 </label>
 
           <div class="col-sm-12">
-            <label for="latitude" class="col-sm-4 control-label">经度</label>
+            <label for="latitude" class="col-sm-4 control-label">纬度</label>
             <div class="col-xs-6">
-              <input id="latitude" name="latitude" ng-model="newAd.location.latitude" class="form-control" type="number" ng-model-options="{ allowInvalid: true }"
-                     placeholder="经度" ng-disabled="published(newAd)"/>
+              <input id="latitude" name="latitude" ng-model="newAd.location.latitude" class="form-control" type="number"
+                     placeholder="纬度" ng-disabled="published(newAd)"/>
               <span class="error-field"
-                    ng-show="commercialForm.latitude.$dirty && commercialForm.latitude.$error.number">只能输入带小数点的经度</span>
+                    ng-show="commercialForm.latitude.$dirty && commercialForm.latitude.$error.number">只能输入带小数点的纬度</span>
             </div>
           </div>
           <div class="col-sm-12">
-            <label for="longitude" class="col-sm-4 control-label">纬度</label>
+            <label for="longitude" class="col-sm-4 control-label">经度</label>
             <div class="col-xs-6">
               <input id="longitude" name="longitude" ng-model="newAd.location.longitude" class="form-control" type="number"
-                     placeholder="纬度" ng-disabled="published(newAd)"/>
+                     placeholder="经度" ng-disabled="published(newAd)"/>
               <span class="error-field"
-                    ng-show="commercialForm.longitude.$dirty && commercialForm.longitude.$error.number">只能输入带小数点的纬度</span>
+                    ng-show="commercialForm.longitude.$dirty && commercialForm.longitude.$error.number">只能输入带小数点的经度</span>
             </div>
           </div>
         </div>
