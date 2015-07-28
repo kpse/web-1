@@ -156,6 +156,22 @@ object KulebaoAgent {
         ).as(simpleStatistics *)
   }
 
+  def collectData(data: AgentStatistics) = DB.withConnection {
+    implicit c =>
+      val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
+      Logger.info(s"lastMonth = ${pattern.print(DateTime.now().minusMonths(1))}")
+      SQL(s"insert into agentstatistics (agent_id, school_id, month, logged_once, logged_ever, created_at) values " +
+        s"({agent}, {school_id}, {month}, {once}, {ever}, {time})")
+        .on(
+          'agent -> data.agent,
+          'school_id -> data.school_id,
+          'month -> data.month,
+          'once -> data.logged_once,
+          'ever -> data.logged_ever,
+          'time -> System.currentTimeMillis()
+        ).executeInsert()
+  }
+
   val simple = {
     get[Long]("uid") ~
       get[Option[String]]("name") ~
