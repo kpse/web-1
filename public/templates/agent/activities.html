@@ -34,7 +34,10 @@
               bs-options="item.publish_status as item.display for item in userStatus" bs-select></button>
     </td>
     <td class="col-xs-2">{{ad.time_span || 'N/A'}}</td>
-    <td class="col-xs-1"><a ng-click="$event.stopPropagation()">反馈</a></td>
+    <td class="col-xs-1">
+      <a ng-show="ad.publishing.publish_status == 4" ng-csv="enrollmentOfActivity(ad)" csv-header="getHeader()" filename="{{ad.csvName}}" ng-click="$event.stopPropagation()">下载报名</a></td>
+      <p ng-hide="ad.publishing.publish_status == 4" ng-click="$event.stopPropagation()">N/A</p>
+    </td>
     <td class="col-xs-2">
       <button class="btn btn-xs btn-success" ng-show="allowToDistribute(ad)"
               ng-click="distribute(ad);$event.stopPropagation()">投放对象</button>

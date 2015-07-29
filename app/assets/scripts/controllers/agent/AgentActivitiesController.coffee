@@ -1,9 +1,18 @@
 angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
   ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', '$alert', 'currentAgent', 'loggedUser', 'agentRawActivityService',
    'agentActivityInSchoolService', 'agentSchoolService', 'agentSchoolDataService', 'fullResponseService', 'agentContractorService',
-    (scope, $rootScope, stateParams, $q, $state, Modal, Alert, Agent, User, Activity, ActivityInSchool, Schools, SchoolData, FullRes, Contractor) ->
+    'agentActivityEnrollmentService',
+    (scope, $rootScope, stateParams, $q, $state, Modal, Alert, Agent, User, Activity, ActivityInSchool, Schools,
+     SchoolData, FullRes, Contractor, Enrollment) ->
       scope.adminUser = User
       scope.currentAgent = Agent
+
+      nameOf = (ad) ->
+        _.assign ad, contractor: (_.find scope.contractors, (c) -> c.id == ad.contractor_id)
+        if ad.contractor?
+          "#{scope.currentAgent.name}_商户_#{ad.contractor.title}_活动_#{ad.title}_报名.csv"
+        else
+          "#{scope.currentAgent.name}_活动_#{ad.title}_报名.csv"
 
       scope.refresh = (activityId) ->
         scope.loading = true
@@ -17,6 +26,7 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
           scope.contractors = _.map q[2], (c) ->
             c.activities = activityGroup[c.id]
             c
+          _.each scope.activities, (a) -> _.assign a, csvName : nameOf a
           scope.schools = scope.currentAgent.schools
           _.each scope.schools, (s) ->
             s.stats = SchoolData.get agent_id: scope.currentAgent.id, school_id: s.school_id
@@ -38,6 +48,21 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
 
       scope.$on 'closeDialog', ->
         scope.currentModal.hide() if scope.currentModal?
+
+      scope.enrollmentOfActivity = (ad) ->
+        $q (resolve, reject) ->
+          Enrollment.query agent_id: ad.agent_id, id: ad.id, (data) ->
+              schoolsGroup = _.groupBy scope.schools, (s) -> s.school_id
+              result = _.sortBy (_.map data, (d) -> {id: d.id, name: d.name, contact: d.contact, school: schoolsGroup[d.school_id][0].name}), 'id'
+              if result.length > 0
+                resolve(result)
+              else
+                alert "很抱歉，活动 #{ad.title} 暂时没有收到任何报名。"
+                reject()
+            , (err) -> reject(err)
+
+      scope.getHeader = ->
+        ['编号', '姓名', '联系方式', '学校']
 
       scope.editAd = (ad) ->
         scope.newAd = angular.copy ad

@@ -158,3 +158,12 @@ angular.module('kulebao.services')
       }
   ]
 
+.factory 'agentActivityEnrollmentService', ['$resource',
+  ($resource) ->
+    $resource '/api/v4/agent/:agent_id/activity/:id/enrollment',
+      {
+        agent_id: "@agent_id"
+        id: "@id"
+      }
+  ]
+
