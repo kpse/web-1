@@ -19,7 +19,7 @@ class CronJob extends Actor {
       log.info("Got tick")
       val r = scala.util.Random
       val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
-      val lastMonth: String = pattern.print(DateTime.now().minusMonths(r.nextInt(12)))
+      val lastMonth: String = pattern.print(DateTime.now().minusMonths(r.nextInt(13)))
       Logger.info(s"lastMonth = $lastMonth")
 
       KulebaoAgent.index(None, None, None).foreach {
