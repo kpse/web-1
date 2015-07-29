@@ -34,7 +34,7 @@ object ChildrenPlanController extends Controller with Secured {
         case Some(p) =>
           Ok(Json.toJson(p))
         case None =>
-          NotFound(Json.toJson(ErrorResponse("${childId}没有对应的乘车计划。(No such children plan)")))
+          NotFound(Json.toJson(ErrorResponse(s"学生编号${childId}没有对应的乘车计划。(No such children plan)")))
       }
   }
 
