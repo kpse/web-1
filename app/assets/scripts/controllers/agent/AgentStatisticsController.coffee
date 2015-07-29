@@ -22,8 +22,8 @@ angular.module('kulebaoAgent').controller 'AgentStatisticsCtrl',
               data : groups[g]
               loggedOnce : once
               loggedEver : ever
-              rate : if ever == 0 then 0 else once / ever * 100
-          scope.lastActiveData = _.last scope.d3Data
+              rate : (if ever == 0 then 0 else once / ever * 100).toFixed 2
+          scope.lastActiveData = _.last _.sortBy scope.d3Data, 'month'
 
           schoolDataQueue = _.map currentAgent.schools, (s) ->
             SchoolData.get(agent_id: currentAgent.id, school_id: s.school_id).$promise

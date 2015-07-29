@@ -32,8 +32,9 @@ angular.module("kulebao.directives").directive "klAgentActiveBars", [
 
           full = 100
 
-          days = [13..1].map (d) ->
+          days = [12..1].map (d) ->
             a = new Date()
+            a.setDate(1)
             a.setMonth(a.getMonth() - d)
             a.getFullYear() + ('0' + (a.getMonth() + 1)).slice(-2)
 
@@ -52,27 +53,11 @@ angular.module("kulebao.directives").directive "klAgentActiveBars", [
           .attr('y', (d) ->
             (1 - (d.rate * 1.0 / full)) * 180)
 
-#
-#          bars.append('rect').attr('x', (d) ->
-#            x(d.month) + offset).attr('y', (d) -> ((1 - (d.rate * 1.0 / full)) * 180))
-#          .attr('width', barWidth)
-#          .style('fill', 'red').attr('height', 0)
-#          .transition().delay(750).duration(750)
-#          .attr('y', 0)
-#          .attr('height', (d) ->
-#            (1 - (d.rate * 1.0 / full)) * 180)
-
           bars.append("text").attr('width', 200).attr('height', 100).attr('x', (d) ->
             x(d.month) + offset + barNumberDescOffset).attr('y', 160)
           .transition().duration(750)
           .text((d) ->
             d.rate + '%')
-
-#          bars.append("text").attr('width', 200).attr('height', 100).attr('x', (d) ->
-#            x(d.month) + offset + barNumberDescOffset).attr('y', 20)
-#          .transition().delay(750).duration(750)
-#          .text((d) ->
-#            (full - d.rate) if full - d.rate > 0)
 
     )
 ]

@@ -29,8 +29,8 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
             kg.checked = false
             kg.activeData = groups[kg.school_id]
             _.each kg.activeData, (d) ->
-              d.rate = d.logged_once/d.logged_ever * 100
-            kg.lastActiveData = _.last(kg.activeData)
+              d.rate = if d.logged_ever == 0 then 0 else (d.logged_once/d.logged_ever * 100).toFixed 2
+            kg.lastActiveData = _.last _.sortBy kg.activeData, 'month'
 
           scope.$broadcast 'schools_ready', currentAgent.schools
 
