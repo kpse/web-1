@@ -10,12 +10,17 @@ import scala.concurrent.duration._
 object Global extends WithFilters(LoggingFilter) with GlobalSettings {
   // ...
   override def onStart(app: Application): Unit = {
+    play.api.Play.mode(app) match {
+      case play.api.Mode.Test =>
+        Logger(classOf[CronJob]).info("No CronJob in test mode")
+      case _ =>
+        Logger(classOf[CronJob]).info("start cron jobs")
 
-    Logger(classOf[CronJob]).info("Test code")
+        val monitorActor = Akka.system.actorOf(Props[CronJob], name = "CronJob")
 
-    val monitorActor = Akka.system.actorOf(Props[CronJob], name = "CronJob")
+        Akka.system.scheduler.schedule(10 minutes, 1 hour, monitorActor, Tick)
+    }
 
-    Akka.system.scheduler.schedule(10 minutes, 1 hour, monitorActor, Tick)
   }
 }
 
