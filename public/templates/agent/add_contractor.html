@@ -87,13 +87,13 @@
       </div>
       <div class="form-group">
 
-        <label for="time-span" class="col-sm-2 control-label">有效期</label>
+        <label for="time-span" class="col-sm-2 control-label">有效期 <span class="mandatory">*</span></label>
 
         <div class="col-sm-4">
           <div class="control-group input-append">
             <input type="text" class="form-control datepicker-input" ng-model="newAd.startDate"
                    data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="today" data-autoclose="1"
-                   name="startData" bs-datepicker placeholder="生效时间" ng-disabled="published(newAd)">
+                   name="startData" bs-datepicker placeholder="生效时间" ng-disabled="published(newAd)" required>
             <button type="button" class="btn datepicker-button" ng-disabled="true"><i
               class="glyphicon glyphicon-calendar"></i></button>
           </div>
@@ -102,7 +102,7 @@
           <div class="control-group input-append">
             <input type="text" class="form-control datepicker-input" ng-model="newAd.endDate"
                    data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="today" data-autoclose="1"
-                   name="endData" bs-datepicker placeholder="到期时间" ng-disabled="published(newAd)">
+                   name="endData" bs-datepicker placeholder="到期时间" ng-disabled="published(newAd)" required>
             <button type="button" class="btn datepicker-button" ng-disabled="true"><i
               class="glyphicon glyphicon-calendar"></i></button>
           </div>
@@ -112,7 +112,7 @@
       <div class="form-group news-content">
         <label for="content" class="control-label col-xs-2">商户介绍 <span class="mandatory">*</span></label>
         <br/>
-        <small ng-show="newAd.detail.length >= 0">还可以输入{{ 2000 - newAd.detail.length}}个字</small>
+        <small ng-show="commercialForm.content.$dirty && newAd.detail.length >= 0">还可以输入{{ 2000 - newAd.detail.length}}个字</small>
         <span class="error-field" ng-show="commercialForm.content.$dirty && commercialForm.content.$error.required">请填写正文内容</span>
       <span class="error-field"
             ng-show="commercialForm.content.$dirty && commercialForm.content.$error.maxlength">正文内容请不要超过2000个字符</span>

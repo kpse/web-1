@@ -33,10 +33,13 @@
               ng-click="$event.stopPropagation()"
               bs-options="item.publish_status as item.display for item in userStatus" bs-select></button>
     </td>
-    <td class="col-xs-2">{{ad.time_span || 'N/A'}}</td>
+    <td class="col-xs-2">
+      <p>{{ad.startDate}}</p>
+      <p>~ {{ad.endDate}}</p>
+    </td>
     <td class="col-xs-1">
-      <a ng-show="ad.publishing.publish_status == 4" ng-csv="enrollmentOfActivity(ad)" csv-header="getHeader()" filename="{{ad.csvName}}" ng-click="$event.stopPropagation()">下载报名</a></td>
-      <p ng-hide="ad.publishing.publish_status == 4" ng-click="$event.stopPropagation()">N/A</p>
+      <a ng-show="ad.publishing.publish_status == 4" ng-csv="enrollmentOfActivity(ad)" csv-header="getHeader()" filename="{{ad.csvName}}" ng-click="$event.stopPropagation()">下载报名</a>
+      <span ng-hide="ad.publishing.publish_status == 4">N/A</span>
     </td>
     <td class="col-xs-2">
       <button class="btn btn-xs btn-success" ng-show="allowToDistribute(ad)"

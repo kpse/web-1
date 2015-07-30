@@ -23,10 +23,10 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
         $q.all(queue).then (q) ->
           scope.activities = q[0]
           activityGroup = _.groupBy scope.activities, 'contractor_id'
-          scope.contractors = _.map q[2], (c) ->
-            c.activities = activityGroup[c.id]
-            c
-          _.each scope.activities, (a) -> _.assign a, csvName : nameOf a
+          scope.contractors = q[2]
+          _.each scope.activities, (a) ->
+            _.assign a, csvName : nameOf a
+            [a.startDate, a.endDate] =  a.time_span.split('~') if a.time_span?
           scope.schools = scope.currentAgent.schools
           _.each scope.schools, (s) ->
             s.stats = SchoolData.get agent_id: scope.currentAgent.id, school_id: s.school_id
@@ -65,12 +65,10 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
         ['编号', '姓名', '联系方式', '学校']
 
       scope.editAd = (ad) ->
-        if ad.time_span?
-          [ad.startDate, ad.endDate] =  ad.time_span.split('~')
-        scope.newAd = angular.copy ad
-        _.assign scope.newAd, agent_id: scope.currentAgent.id
+        _.assign ad, agent_id: scope.currentAgent.id
         if ad.contractor_id?
-          _.assign scope.newAd, contractor: (_.find scope.contractors, (c) -> c.id == ad.contractor_id)
+          _.assign ad, contractor: (_.find scope.contractors, (c) -> c.id == ad.contractor_id)
+        scope.newAd = angular.copy ad
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/add_activity.html'
