@@ -65,6 +65,8 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
         ['编号', '姓名', '联系方式', '学校']
 
       scope.editAd = (ad) ->
+        if ad.time_span?
+          [ad.startDate, ad.endDate] =  ad.time_span.split('~')
         scope.newAd = angular.copy ad
         _.assign scope.newAd, agent_id: scope.currentAgent.id
         if ad.contractor_id?
@@ -79,6 +81,7 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
 
       scope.save = (newAd) ->
         newAd.contractor_id = newAd.contractor.id if newAd.contractor? && newAd.contractor.id?
+        newAd.time_span = newAd.startDate + '~' + newAd.endDate
         newAd.$save ->
           scope.currentModal.hide()
           scope.refresh()

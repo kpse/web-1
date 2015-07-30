@@ -1,7 +1,8 @@
 angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', 'currentAgent', 'loggedUser', 'agentContractorService',
+  ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', '$filter', 'currentAgent', 'loggedUser',
+   'agentContractorService',
    'agentContractorInSchoolService', 'agentSchoolService', 'imageCompressService', 'agentRawActivityService',
-    (scope, $rootScope, stateParams, $q, $state, Modal, Agent, User, Contractor, AdInSchool, Schools, Compress, Activity) ->
+    (scope, $rootScope, stateParams, $q, $state, Modal, $filter, Agent, User, Contractor, AdInSchool, Schools, Compress, Activity) ->
       scope.adminUser = User
       scope.currentAgent = Agent
 
@@ -50,24 +51,31 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
           contentTemplate: 'templates/agent/add_activity.html'
 
       createNewAd = ->
+        today = new Date
         new Contractor
           agent_id: scope.currentAgent.id
           publishing:
             publish_status: 0
           targetState: 'main.commercial.contractors'
+          startDate: $filter('date')(today, 'yyyy-MM-dd')
+          endDate: $filter('date')(today.setMonth(today.getMonth() + 1), 'yyyy-MM-dd')
 
       createNewActivity = ->
+        today = new Date
         new Activity
           agent_id: scope.currentAgent.id
           publishing:
             publish_status: 0
           targetState: 'main.commercial.activities'
+          startDate: $filter('date')(today, 'yyyy-MM-dd')
+          endDate: $filter('date')(today.setMonth(today.getMonth() + 1), 'yyyy-MM-dd')
 
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)
 
       scope.save = (newAd) ->
         newAd.contractor_id = newAd.contractor.id if newAd.contractor? && newAd.contractor.id?
+        newAd.time_span = newAd.startDate + '~' + newAd.endDate
         targetState = newAd.targetState
         newAd.$save ->
           scope.loading = true

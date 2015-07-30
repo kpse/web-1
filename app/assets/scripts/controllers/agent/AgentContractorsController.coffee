@@ -17,6 +17,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
           activityGroup = _.groupBy q[2], 'contractor_id'
           scope.contractors = _.map q[0], (c) ->
             c.activities = activityGroup[c.id]
+            [c.startDate, c.endDate] =  c.time_span.split('~') if c.time_span?
             c
           _.each scope.schools, (s) ->
             s.stats = SchoolData.get agent_id: scope.currentAgent.id, school_id: s.school_id
@@ -45,6 +46,12 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/add_contractor.html'
+
+      scope.save = (newAd) ->
+        newAd.time_span = newAd.startDate + '~' + newAd.endDate
+        newAd.$save ->
+          scope.currentModal.hide()
+          scope.refresh()
 
       scope.allowEditing = (user, ad) ->
         scope.canBeApproved(ad) || scope.canBeRejected(ad) || scope.canBePreviewed(ad) ||
