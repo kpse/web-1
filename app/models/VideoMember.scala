@@ -62,7 +62,7 @@ object VideoMember {
 
   def show(kg: Long, id: String) = DB.withConnection {
     implicit c =>
-      SQL("select * from videomembers where school_id={kg} and parent_id={id} and status=1")
+      trialAccount(kg, id) orElse SQL("select * from videomembers where school_id={kg} and parent_id={id} and status=1")
         .on('kg -> kg, 'id -> id).as(simple singleOpt)
   }
 
@@ -72,6 +72,13 @@ object VideoMember {
         .on('kg -> kg, 'id -> id).executeUpdate()
   }
 
+  def trialAccount(kg: Long, id: String): Option[VideoMember] = {
+    for (
+      account <- School.config(kg).config.find(_.name == "videoTrialAccount");
+      password <- School.config(kg).config.find(_.name == "videoTrialPassword")
+    ) yield VideoMember(id, Some(account.value), Some(password.value), Some(kg))
+  }
+
   def passwordOfVideo = Play.current.configuration.getString("video.provider.password")
 
   val simple = {
@@ -79,7 +86,7 @@ object VideoMember {
       get[String]("parent_id") ~
       get[String]("account") map {
       case kg ~ id ~ account =>
-//        VideoMember(id, Some(account), passwordOfVideo, Some(kg.toLong))
+        //        VideoMember(id, Some(account), passwordOfVideo, Some(kg.toLong))
         fakeAccountAccordingSchool(kg.toLong, id, account)
 
     }
