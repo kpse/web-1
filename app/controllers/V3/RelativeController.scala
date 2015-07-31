@@ -2,7 +2,7 @@ package controllers.V3
 
 import controllers.Secured
 import models.V3.Relative
-import models.{ErrorResponse, SuccessResponse}
+import models.{Relationship, ErrorResponse, SuccessResponse}
 import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
@@ -53,8 +53,14 @@ object RelativeController extends Controller with Secured {
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Relative.deleteById(kg, id)
-    Ok(Json.toJson(new SuccessResponse()))
+    Relative.show(kg, id) match {
+      case Some(x) =>
+        Relative.deleteById(kg, id)
+        x.basic.parent_id foreach Relationship.deleteCardByParentId
+        Ok(Json.toJson(new SuccessResponse()))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的父母。(No such relative)")))
+    }
   }
 }
 

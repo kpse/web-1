@@ -146,6 +146,20 @@ object Relationship {
         ).execute()
   }
 
+  def deleteCardByChildId(childId: String) = DB.withConnection {
+    implicit c =>
+      SQL("delete from relationmap where child_id={child}")
+        .on('child -> childId
+        ).execute()
+  }
+
+  def deleteCardByParentId(parentId: String) = DB.withConnection {
+    implicit c =>
+      SQL("delete from relationmap where parent_id={parent}")
+        .on('parent -> parentId
+        ).execute()
+  }
+
   def show(kg: Long, card: String) = DB.withConnection {
     implicit c =>
       SQL("select * from relationmap where card_num={card}").on('card -> card).as(simple(kg) singleOpt)

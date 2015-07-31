@@ -2,7 +2,7 @@ package controllers.V3
 
 import controllers.Secured
 import models.V3.{Student, StudentExt}
-import models.{ErrorResponse, Children, ChildInfo, SuccessResponse}
+import models._
 import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
@@ -50,8 +50,14 @@ object StudentController extends Controller with Secured {
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Student.deleteById(kg, id)
-    Ok(Json.toJson(new SuccessResponse()))
+    Student.show(kg, id) match {
+      case Some(x) =>
+        Student.deleteById(kg, id)
+        x.basic.child_id foreach Relationship.deleteCardByChildId
+        Ok(Json.toJson(new SuccessResponse()))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的学生。(No such student)")))
+    }
   }
 }
 
