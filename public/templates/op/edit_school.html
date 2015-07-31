@@ -120,13 +120,18 @@
         </div>
 
         <div class="form-group">
-          <label for="bus-control" class="col-sm-4 control-label">校车定位</label>
+          <label for="video-trial" class="col-sm-4 control-label">试用摄像头账号</label>
 
-          <div class="col-sm-8 form-control-static">
-            <input type="radio" ng-model="school.config.bus" value="true"> 启用
-            <input type="radio" ng-model="school.config.bus" value="false"> 禁用 <br/>
+          <div class="col-sm-3">
+            <input input="text" id="video-trial" class="form-control" ng-model="school.config.videoTrialAccount" name="videoTrialAccount" placeholder="输入账号即开通" />
+          </div>
+          <label for="video-trial-password" class="col-sm-1 control-label">密码</label>
+          <div class="col-sm-3">
+            <input input="text" id="video-trial-password" class="form-control" ng-model="school.config.videoTrialPassword" name="videoTrialPassword"
+                   placeholder="视频密码" ng-required="school.config.videoTrialAccount.length > 0"/>
           </div>
         </div>
+
         <a class="btn btn-default pull-right" ng-click="simpleDialog()">&lt;&lt;普通选项</a>
 
         <div class="form-group">

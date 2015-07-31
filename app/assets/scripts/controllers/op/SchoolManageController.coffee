@@ -35,6 +35,8 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
                 hideVideo: extractConfig data['config'], 'hideVideo', scope.defaultConfig['hideVideo']
                 disableMemberEditing: extractConfig data['config'], 'disableMemberEditing', scope.defaultConfig['disableMemberEditing']
                 bus: extractConfig data['config'], 'bus', scope.defaultConfig['bus']
+                videoTrialAccount: extractConfig data['config'], 'videoTrialAccount', scope.defaultConfig['videoTrialAccount']
+                videoTrialPassword: extractConfig data['config'], 'videoTrialPassword', scope.defaultConfig['videoTrialPassword']
               kg.configArray = scope.generateConfigArray(kg.config)
 
           scope.admins = Employee.query()
@@ -180,6 +182,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           when 'hideVideo' then 'glyphicon-facetime-video'
           when 'disableMemberEditing' then 'glyphicon-ban-circle'
           when 'bus' then 'glyphicon-record'
+          when 'videoTrialAccount' then 'glyphicon glyphicon-star'
 
       scope.titleOf = (config) ->
           switch config.name
@@ -187,6 +190,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             when 'hideVideo' then '不显示视频图标'
             when 'disableMemberEditing' then '不允许学校开通或关闭会员'
             when 'bus' then '激活校车定位功能'
+            when 'videoTrialAccount' then '试用视频账号'
 
       scope.advancedEdting = false
       scope.advanced = ->
