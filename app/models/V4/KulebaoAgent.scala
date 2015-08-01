@@ -175,6 +175,28 @@ object KulebaoAgent {
             ).executeInsert()
         case true => 0
       }
+  }
+
+  def collectTheWholeMonth(agent: Long, school_id: Long, lastMonth: DateTime): AgentStatistics = DB.withConnection {
+    implicit c =>
+      val firstMilli = lastMonth.withDayOfMonth(1).withMillisOfDay(1).getMillis
+      val lastMilli = lastMonth.plusMonths(1).withDayOfMonth(1).withMillisOfDay(1).getMillis
+      Logger.info(s"collectTheWholeMonth firstMilli = $firstMilli")
+      Logger.info(s"collectTheWholeMonth lastMilli = $lastMilli")
+      val loggedEver: Long = SQL(s"SELECT count(distinct phone) count FROM bindinghistory where phone in (select phone from parentinfo where school_id={kg} and status=1) and updated_at > {begin} and updated_at < {end}")
+        .on(
+          'kg -> school_id,
+          'begin -> firstMilli,
+          'end -> lastMilli
+        ).as(get[Long]("count") single)
+      val loggedOnce: Long = SQL(s"SELECT count(distinct phone) count FROM bindinghistory where phone in (select phone from parentinfo where school_id={kg} and status=1) and updated_at < {end}")
+        .on(
+          'kg -> school_id,
+          'begin -> firstMilli,
+          'end -> lastMilli
+        ).as(get[Long]("count") single)
+      val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
+      AgentStatistics(0, agent, school_id, pattern.print(lastMonth), loggedOnce, loggedEver, 0)
 
   }
 

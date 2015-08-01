@@ -15,21 +15,20 @@ class CronJob extends Actor {
   private val log = Logger(classOf[CronJob])
 
   def receive = {
-    case Tick => {
-      log.info("Got tick")
-      val r = scala.util.Random
-      val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
-      val lastMonth: String = pattern.print(DateTime.now().minusMonths(r.nextInt(13)))
-      Logger.info(s"lastMonth = $lastMonth")
+    case Tick if DateTime.now().dayOfMonth().get() == 1 => {
+      log.info("Got tick at the first day of the month")
 
       KulebaoAgent.index(None, None, None).foreach {
         case agent =>
           AgentSchool.index(agent.id.get, None, None, None).foreach {
             case school =>
-              Logger.info(s"${agent.id.get}, ${school.school_id}, $lastMonth, ${r.nextInt(100)}")
-              KulebaoAgent.collectData(AgentStatistics(0, agent.id.get, school.school_id, lastMonth, r.nextInt(100), 100, 0))
+              val monthData: AgentStatistics = KulebaoAgent.collectTheWholeMonth(agent.id.get, school.school_id, DateTime.now().minusMonths(1))
+              Logger.info(s"${agent.id.get}, ${school.school_id}, ${monthData.logged_once}, ${monthData.logged_ever}")
+              KulebaoAgent.collectData(monthData)
           }
       }
     }
+    case Tick =>
+      log.info("Got a normal tick")
   }
 }
