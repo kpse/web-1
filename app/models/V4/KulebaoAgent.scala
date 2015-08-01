@@ -183,13 +183,13 @@ object KulebaoAgent {
       val lastMilli = lastMonth.plusMonths(1).withDayOfMonth(1).withMillisOfDay(1).getMillis
       Logger.info(s"collectTheWholeMonth firstMilli = $firstMilli")
       Logger.info(s"collectTheWholeMonth lastMilli = $lastMilli")
-      val loggedEver: Long = SQL(s"SELECT count(distinct phone) count FROM bindinghistory where phone in (select phone from parentinfo where school_id={kg} and status=1) and updated_at > {begin} and updated_at < {end}")
+      val loggedOnce: Long = SQL(s"SELECT count(distinct phone) count FROM bindinghistory where phone in (select phone from parentinfo where school_id={kg} and status=1) and updated_at > {begin} and updated_at < {end}")
         .on(
           'kg -> school_id,
           'begin -> firstMilli,
           'end -> lastMilli
         ).as(get[Long]("count") single)
-      val loggedOnce: Long = SQL(s"SELECT count(distinct phone) count FROM bindinghistory where phone in (select phone from parentinfo where school_id={kg} and status=1) and updated_at < {end}")
+      val loggedEver: Long = SQL(s"SELECT count(distinct phone) count FROM bindinghistory where phone in (select phone from parentinfo where school_id={kg} and status=1) and updated_at < {end}")
         .on(
           'kg -> school_id,
           'begin -> firstMilli,
