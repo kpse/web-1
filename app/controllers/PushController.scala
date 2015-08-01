@@ -7,7 +7,7 @@ import com.baidu.yun.push.constants.BaiduPushConstants
 import com.baidu.yun.push.exception.{PushServerException, PushClientException}
 import com.baidu.yun.push.model.{PushResponse, PushMsgToSingleDeviceResponse, PushMsgToSingleDeviceRequest}
 import models._
-import models.json_models.{CheckInfo, CheckNotification, IOSField}
+import models.json_models.{EmployeeCheckInfo, CheckInfo, CheckNotification, IOSField}
 import play.Logger
 import play.api.Play
 import play.api.libs.json.{JsError, Json}
@@ -20,7 +20,8 @@ object PushController extends Controller {
   implicit val write1 = Json.writes[CheckNotification]
   implicit val write3 = Json.writes[ErrorResponse]
   implicit val write4 = Json.writes[SuccessResponse]
-  implicit val read = Json.reads[CheckInfo]
+  implicit val readCheckInfo = Json.reads[CheckInfo]
+  implicit val readEmployeeCheckInfo = Json.reads[EmployeeCheckInfo]
 
   def test = Action {
     val msg = CheckNotification(System.currentTimeMillis, 1, "1_93740362_374", "925387477040814447", "123", "", "袋鼠", 3, None)
@@ -125,6 +126,17 @@ object PushController extends Controller {
       request.body.validate[List[CheckInfo]].map {
         case (all) =>
           all foreach (_.create)
+          Ok(Json.toJson(new SuccessResponse))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
+
+  def forwardEmployeeSwipe(kg: Long) = Action(parse.json) {
+    request =>
+      Logger.info("checking : " + request.body)
+      request.body.validate[EmployeeCheckInfo].map {
+        case (check) =>
           Ok(Json.toJson(new SuccessResponse))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))

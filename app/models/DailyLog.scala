@@ -11,14 +11,19 @@ import models.helper.RangerHelper.rangerQueryWithField
 import org.joda.time.DateTime
 import play.Logger
 import org.joda.time.format.DateTimeFormat
+import play.api.libs.json.Json
 
 import scala.language.postfixOps
 
 case class DailyLog(timestamp: Long, notice_type: Int, child_id: String, record_url: String, parent_name: String, card: Option[String] = None)
+case class EmployeeDailyLog(timestamp: Long, notice_type: Int, employee_id: String, record_url: String, card: Option[String] = None)
 
 case class DailyLogStats(class_id: Int, count: Long, school_id: Long, date: String)
 
 object DailyLog {
+
+  implicit val readEmployeeDailyLog = Json.reads[EmployeeDailyLog]
+  implicit val writeEmployeeDailyLog = Json.writes[EmployeeDailyLog]
 
   def generateDays: List[Long] = (0 to 9).map(DateTime.now().minusDays(_).toLocalDate.toDateTimeAtStartOfDay.toInstant.getMillis).toList
 

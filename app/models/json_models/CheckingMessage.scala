@@ -18,6 +18,8 @@ import play.api.libs.json.Json
  13 get off bus at afternoon
 */
 
+case class EmployeeCheckInfo(school_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long, id: Option[Long] = None)
+
 case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long, id: Option[Long] = None) {
   def toNotifications: List[CheckNotification] = DB.withConnection {
     implicit c =>
@@ -139,6 +141,8 @@ object CheckingMessage {
   implicit val checkChildInfoWrites = Json.writes[CheckChildInfo]
   implicit val checkInfoReads = Json.reads[CheckInfo]
   implicit val checkInfoWrites = Json.writes[CheckInfo]
+  implicit val readEmployeeCheckInfo = Json.reads[EmployeeCheckInfo]
+  implicit val writeEmployeeCheckInfo = Json.writes[EmployeeCheckInfo]
 
   def advertisementOf(schoolId: Long): String = Advertisement.index(schoolId) match {
     case x :: xs => x.name
