@@ -1,4 +1,4 @@
-util.print: Use console.log instead
+(node) util.print is deprecated. Use console.log instead.
 /*
   Allow angular.js to be loaded in body, hiding cloaked elements until
   templates compile.  The !important is important given that there may be
@@ -630,4 +630,11 @@ util.print: Use console.log instead
 }
 .mandatory {
   color: red;
+}
+.map-picking {
+  width: 930px;
+}
+.map-canvas {
+  width: 100%;
+  height: 500px;
 }

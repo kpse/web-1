@@ -10,16 +10,16 @@ angular.module("kulebao.directives").directive "klBaiduMap", ->
   link: (scope, element, attrs, c) ->
     scope.clickable = scope.clickable || false
     scope.hasMarker = scope.hasMarker || false
-    scope.map = new BMap.Map attrs.id
-    scope.map.addControl(new BMap.ScaleControl())
-    scope.map.addControl(new BMap.NavigationControl())
-    scope.map.addControl(new BMap.MapTypeControl())
 
     scope.$watch "klBaiduMap", ((newVals, oldVals) ->
       scope.render scope.klBaiduMap if newVals?
     ), true
 
     scope.render = (model) ->
+      scope.map = new BMap.Map attrs.id
+      scope.map.addControl(new BMap.ScaleControl())
+      scope.map.addControl(new BMap.NavigationControl())
+      scope.map.addControl(new BMap.MapTypeControl())
       point = new BMap.Point model.longitude, model.latitude
       scope.map.centerAndZoom point, 18
       myIcon = new BMap.Icon("http://api.map.baidu.com/mapCard/img/location.gif",
@@ -46,5 +46,6 @@ angular.module("kulebao.directives").directive "klBaiduMap", ->
             infoWindow = new (BMap.InfoWindow)(result.address, opts)
             # 创建信息窗口对象
             scope.map.openInfoWindow infoWindow, scope.map.pixelToPoint(_.assign e.pixel, y: e.pixel.y - 20)
+            scope.klBaiduMap.result = result
 
       scope.map.addEventListener "click", clickHandler if scope.clickable

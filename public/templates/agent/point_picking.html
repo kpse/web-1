@@ -1,0 +1,16 @@
+<div class="panel panel-default">
+  <div class="panel-heading">选择位置</div>
+  <div class="panel-body map-picking">
+    <div id="l-map" kl-baidu-map="mapOptions" class="map-canvas" clickable="true"></div>
+  </div>
+  <div class="panel-footer">
+    <div class="loading" ng-show="loading"></div>
+    <div class="btn-group">
+      <button class="btn btn-default" ng-click="$hide()">关闭</button>
+
+      <button class="btn btn-info"
+              ng-click="savePoint(newAd, mapOptions)">获取地点并回到创建页面
+      </button>
+    </div>
+  </div>
+</div>

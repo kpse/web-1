@@ -207,4 +207,27 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         else
           scope.$broadcast 'closeDialog'
 
+      scope.hasPoint = (mapOptions) -> mapOptions.result?
+
+      scope.savePoint = (ad, model) ->
+        scope.pickUpModal.hide()
+        ad.location =
+          address: model.result.address
+          latitude: model.result.point.lat
+          longitude: model.result.point.lng
+
+      createOpts = (location) ->
+        latitude: location.latitude ||  39.915
+        longitude: location.longitude || 116.404
+
+      scope.pickingUpPoint = (ad) ->
+        if ad.location?
+          scope.mapOptions = createOpts(ad.location)
+        else
+          scope.mapOptions =
+            latitude: 39.915
+            longitude: 116.404
+        scope.pickUpModal = Modal
+          scope: scope
+          contentTemplate: 'templates/agent/point_picking.html'
   ]
