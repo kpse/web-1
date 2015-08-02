@@ -10,7 +10,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           _(all).map (value, key) ->
               {name: key, value: value}
             .reject (item) ->
-              _.any ['videoTrialAccount', 'videoTrialPassword'], (n) -> item.name == n and !item.value?
+              _.any ['videoTrialAccount', 'videoTrialPassword'], (n) -> item.name == n && (!item.value? || item.value.length == 0)
             .value()
 
         scope.defaultConfig =
@@ -21,9 +21,6 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
         scope.filterConfig = (config, index) ->
           scope.defaultConfig[config.name] != config.value
-
-        hasConfigOf = (data, name) ->
-          _.any data, (item) -> item.name == name && item.value.length > 0
 
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->
@@ -41,8 +38,8 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
                 hideVideo: extractConfig data['config'], 'hideVideo', scope.defaultConfig['hideVideo']
                 disableMemberEditing: extractConfig data['config'], 'disableMemberEditing', scope.defaultConfig['disableMemberEditing']
                 bus: extractConfig data['config'], 'bus', scope.defaultConfig['bus']
-                videoTrialAccount: (extractConfig data['config'], 'videoTrialAccount', scope.defaultConfig['videoTrialAccount'] if hasConfigOf data['config'], 'videoTrialAccount')
-                videoTrialPassword: (extractConfig data['config'], 'videoTrialPassword', scope.defaultConfig['videoTrialPassword'] if hasConfigOf data['config'], 'videoTrialAccount')
+                videoTrialAccount: extractConfig data['config'], 'videoTrialAccount'
+                videoTrialPassword: extractConfig data['config'], 'videoTrialPassword'
               kg.configArray = scope.generateConfigArray(kg.config)
 
           scope.admins = Employee.query()
