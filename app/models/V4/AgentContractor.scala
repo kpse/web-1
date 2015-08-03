@@ -9,7 +9,7 @@ import play.api.libs.json.Json
 import play.api.Play.current
 import math.BigDecimal._
 
-case class EarthLocation(latitude: BigDecimal, longitude: BigDecimal)
+case class EarthLocation(latitude: BigDecimal, longitude: BigDecimal, address: String)
 
 case class AgentContractor(id: Option[Long], agent_id: Long, category: String, title: String, address: Option[String], contact: String, time_span: Option[String],
                            detail: Option[String], logo: Option[String], updated_at: Option[Long], publishing: Option[AdPublishing] = None, location: Option[EarthLocation] = None) {
@@ -33,7 +33,7 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
   def update(base: Long): Option[AgentContractor] = DB.withConnection {
     implicit c =>
       SQL("update agentcontractor set agent_id={base}, category={category}, title={title}, address={address}, contact={contact}, time_span={time_span}," +
-        "detail={detail}, logo={logo}, latitude={latitude}, longitude={longitude}, updated_at={time} where uid={id}")
+        "detail={detail}, logo={logo}, latitude={latitude}, longitude={longitude}, geo_address={geo_address}, updated_at={time} where uid={id}")
         .on(
           'id -> id,
           'base -> base,
@@ -45,6 +45,7 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
           'detail -> detail,
           'latitude -> location.map (_.latitude.bigDecimal),
           'longitude -> location.map (_.longitude.bigDecimal),
+          'geo_address -> location.map (_.address),
           'logo -> logo,
           'time -> System.currentTimeMillis
         ).executeUpdate()
@@ -54,8 +55,8 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
   def create(base: Long): Option[AgentContractor] = DB.withConnection {
     implicit c =>
       val insert: Option[Long] = SQL("insert into agentcontractor (agent_id, category, title, address, contact, time_span, " +
-        "detail, logo, updated_at, created_at, publish_status, latitude, longitude) values (" +
-        "{base}, {category}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time}, 0, {latitude}, {longitude})")
+        "detail, logo, updated_at, created_at, publish_status, latitude, longitude, geo_address) values (" +
+        "{base}, {category}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time}, 0, {latitude}, {longitude}, {geo_address})")
         .on(
           'base -> base,
           'title -> title,
@@ -66,6 +67,7 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
           'detail -> detail,
           'latitude -> location.map (_.latitude.bigDecimal),
           'longitude -> location.map (_.longitude.bigDecimal),
+          'geo_address -> location.map (_.address),
           'logo -> logo,
           'time -> System.currentTimeMillis
         ).executeInsert()
@@ -126,8 +128,8 @@ object AgentContractor {
     case "其他" => 0
   }
 
-  def locationOfContractor(latitude: Option[java.math.BigDecimal], longitude: Option[java.math.BigDecimal]): Option[EarthLocation] =
-    for(la <- latitude;lo <- longitude) yield EarthLocation(la, lo)
+  def locationOfContractor(latitude: Option[java.math.BigDecimal], longitude: Option[java.math.BigDecimal], address: Option[String]): Option[EarthLocation] =
+    for(la <- latitude;lo <- longitude) yield EarthLocation(la, lo, address.getOrElse(""))
 
   val simple = {
     get[Long]("uid") ~
@@ -141,10 +143,11 @@ object AgentContractor {
       get[Option[java.math.BigDecimal]]("latitude") ~
       get[Option[java.math.BigDecimal]]("longitude") ~
       get[Option[String]]("logo") ~
-      get[Option[Long]]("updated_at") map {
-      case id ~ agent ~ title ~ category ~ address ~ contact ~ timeSpan ~ detail ~ latitude ~ longitude ~ logo ~ time =>
+      get[Option[Long]]("updated_at") ~
+      get[Option[String]]("geo_address") map {
+      case id ~ agent ~ title ~ category ~ address ~ contact ~ timeSpan ~ detail ~ latitude ~ longitude ~ logo ~ time ~ geoAddress =>
         AgentContractor(Some(id), agent, categoryFromEnum(category), title, address, contact, timeSpan, detail, logo, time,
-          Some(AdPublishing.publishStatus(tableName)(id, agent)), locationOfContractor(latitude, longitude))
+          Some(AdPublishing.publishStatus(tableName)(id, agent)), locationOfContractor(latitude, longitude, geoAddress))
     }
   }
 }

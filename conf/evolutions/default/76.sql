@@ -15,6 +15,7 @@ CREATE TABLE agentactivity (
   logo   TEXT,
   latitude   decimal,
   longitude   decimal,
+  geo_address   TEXT,
   origin_price   DOUBLE,
   price   DOUBLE,
   publish_status   INT(4) DEFAULT 0,

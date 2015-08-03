@@ -34,7 +34,7 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
   def update(base: Long): Option[AgentRawActivity] = DB.withConnection {
     implicit c =>
       SQL("update agentactivity set agent_id={base}, contractor_id={contractor}, title={title}, address={address}, contact={contact}, time_span={time_span}," +
-        "detail={detail}, latitude={latitude}, longitude={longitude}, logo={logo}, origin_price={origin_price}, price={price}, updated_at={time} where uid={id}")
+        "detail={detail}, latitude={latitude}, longitude={longitude}, logo={logo}, origin_price={origin_price}, price={price}, geo_address={geo_address}, updated_at={time} where uid={id}")
         .on(
           'id -> id,
           'base -> base,
@@ -45,6 +45,7 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
           'detail -> detail,
           'latitude -> location.map (_.latitude.bigDecimal),
           'longitude -> location.map (_.longitude.bigDecimal),
+          'geo_address -> location.map (_.address),
           'origin_price -> price.map (_.origin),
           'price -> price.map (_.discounted),
           'logo -> logo,
@@ -57,8 +58,8 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
   def create(base: Long): Option[AgentRawActivity] = DB.withConnection {
     implicit c =>
       val insert: Option[Long] = SQL("insert into agentactivity (agent_id, contractor_id, title, address, contact, " +
-        "time_span, detail, logo, updated_at, created_at, publish_status, latitude, longitude, origin_price, price) values (" +
-        "{base}, {contractor}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time}, 0, {latitude}, {longitude}, {origin_price}, {price})")
+        "time_span, detail, logo, updated_at, created_at, publish_status, latitude, longitude, geo_address, origin_price, price) values (" +
+        "{base}, {contractor}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time}, 0, {latitude}, {longitude}, {geo_address}, {origin_price}, {price})")
         .on(
           'base -> base,
           'title -> title,
@@ -68,6 +69,7 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
           'detail -> detail,
           'latitude -> location.map (_.latitude.bigDecimal),
           'longitude -> location.map (_.longitude.bigDecimal),
+          'geo_address -> location.map (_.address),
           'origin_price -> price.map (_.origin),
           'price -> price.map (_.discounted),
           'logo -> logo,
@@ -133,10 +135,11 @@ object AgentRawActivity {
       get[Option[Double]]("origin_price") ~
       get[Option[Double]]("price") ~
       get[Option[String]]("logo") ~
-      get[Option[Long]]("updated_at") map {
-      case id ~ agent ~ contractor ~ title ~ address ~ contact ~ timeSpan ~ detail ~ latitude ~ longitude ~ origin_price ~ price ~ logo ~ time =>
+      get[Option[Long]]("updated_at") ~
+      get[Option[String]]("geo_address") map {
+      case id ~ agent ~ contractor ~ title ~ address ~ contact ~ timeSpan ~ detail ~ latitude ~ longitude ~ origin_price ~ price ~ logo ~ time ~ geoAddress=>
         AgentRawActivity(Some(id), agent, contractor, title, address, contact, timeSpan, detail, logo, time,
-          Some(AdPublishing.publishStatus(tableName)(id, agent)), AgentContractor.locationOfContractor(latitude, longitude), priceOfActivity(origin_price, price))
+          Some(AdPublishing.publishStatus(tableName)(id, agent)), AgentContractor.locationOfContractor(latitude, longitude, geoAddress), priceOfActivity(origin_price, price))
     }
   }
 }
