@@ -5,6 +5,7 @@ angular.module("kulebao.directives").directive "klBaiduMap", ->
   scope:
     klBaiduMap: "="
     clickable: "=?"
+    upperForm: "=?form"
 
   link: (scope, element, attrs, c) ->
     scope.clickable = scope.clickable || false
@@ -43,6 +44,7 @@ angular.module("kulebao.directives").directive "klBaiduMap", ->
             # 创建信息窗口对象
             map.openInfoWindow infoWindow, map.pixelToPoint(_.assign e.pixel, y: e.pixel.y - 20)
             scope.klBaiduMap.result = result
+            scope.upperForm.$setDirty() if scope.upperForm?
 
       map.addEventListener "click", clickHandler if scope.clickable
 

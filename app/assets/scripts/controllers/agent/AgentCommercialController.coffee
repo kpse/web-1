@@ -216,13 +216,16 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
           latitude: model.result.point.lat
           longitude: model.result.point.lng
 
-      createOpts = (location) ->
+
+      scope.createOpts = (location) ->
         latitude: location.latitude ||  39.915
         longitude: location.longitude || 116.404
 
-      scope.pickingUpPoint = (ad) ->
+      scope.pickingUpPoint = (ad, form) ->
+        scope.newAd = angular.copy ad
+        scope.form = form
         if ad.location?
-          scope.mapOptions = createOpts(ad.location)
+          scope.mapOptions = scope.createOpts(ad.location)
         else
           scope.mapOptions =
             latitude: 39.915

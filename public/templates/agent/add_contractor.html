@@ -46,12 +46,12 @@
 
         </div>
         <div class="form-group">
-          <label for="latitude" class="col-sm-4 control-label">位置信息 </label>
+          <label for="point-capture" class="col-sm-4 control-label">位置信息 </label>
           <div class="col-sm-12">
             <span class="col-xs-offset-4">{{newAd.location.address || '暂无位置信息'}}</span>
 
             <div class="col-xs-offset-4 col-xs-6">
-              <button class="btn btn-success" ng-hide="published(newAd)" ng-click="pickingUpPoint(newAd)">选取一个地点
+              <button class="btn btn-success" ng-hide="published(newAd)" ng-click="pickingUpPoint(newAd, commercialForm)">从地图定位
               </button>
             </div>
           </div>

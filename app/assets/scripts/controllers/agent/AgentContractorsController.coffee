@@ -148,4 +148,23 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
           container: '.modal-dialog .panel-body'
           duration: 3
 
+      scope.savePoint = (ad, model) ->
+        scope.pickUpModal.hide()
+        ad.location =
+          address: model.result.address
+          latitude: model.result.point.lat
+          longitude: model.result.point.lng
+
+      scope.pickingUpPoint = (ad, form) ->
+        scope.newAd = angular.copy ad
+        scope.form = form
+        if ad.location?
+          scope.mapOptions = scope.createOpts(ad.location)
+        else
+          scope.mapOptions =
+            latitude: 39.915
+            longitude: 116.404
+        scope.pickUpModal = Modal
+          scope: scope
+          contentTemplate: 'templates/agent/point_picking.html'
   ]
