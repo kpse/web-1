@@ -98,8 +98,8 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
           contentTemplate: 'templates/agent/distribute_to_school.html'
 
       scope.disconnect = (kg, activity) ->
-        connectionId = _.find kg.activityIds, (c) -> c.school_id == kg.school_id
-        kg.activityIds = _.reject kg.activityIds, (c) -> c.school_id == kg.school_id
+        connectionId = _.find kg.activityIds, (c) -> c.school_id == kg.school_id && c.activity_id == activity.id
+        kg.activityIds = _.reject kg.activityIds, (c) -> c.school_id == kg.school_id && c.activity_id == activity.id
         scope.selectedSchools = _.reject scope.selectedSchools, (s) -> s.school_id == kg.school_id
         scope.unSelectedSchools.push _.find scope.schools , (c) -> c.school_id == kg.school_id
         ActivityInSchool.delete(agent_id: scope.currentAgent.id, school_id: kg.school_id, id: connectionId.id).$promise
