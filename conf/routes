@@ -614,8 +614,8 @@ GET           /api/v4/kindergarten/:kg/activity                                 
 POST          /api/v4/kindergarten/:kg/activity/:activityId/enrollment                         controllers.V4.AgentActivityEnrollmentController.create(kg: Long, activityId: Long)
 GET           /api/v4/kindergarten/:kg/activity/:activityId/parent/:parentId/enrollment        controllers.V4.AgentActivityEnrollmentController.show(kg: Long, activityId: Long, parentId: String)
 
-POST          /api/v4/kindergarten/:kg/employee_check                                          controllers.PushController.forwardEmployeeSwipe(kg: Long)
-GET           /api/v4/kindergarten/:kg/employee/:employeeId/dailylog                           controllers.V4.EmployeeDailyLogController.index(kg: Long, employeeId: String, from: Option[Long], to: Option[Long], most: Option[Int])
+POST          /api/v4/kindergarten/:kg/employee_check                                          controllers.PushController.employeeCheckInOut(kg: Long)
+GET           /api/v4/kindergarten/:kg/employee/:employeeId/dailylog                           controllers.V4.EmployeeDailyLogController.index(kg: Long, employeeId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 
 #agent statistics
 GET           /api/v4/agent/:agentId/statistics                                                controllers.V4.AgentController.stats(agentId: Long)

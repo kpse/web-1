@@ -132,11 +132,14 @@ object PushController extends Controller {
       }
   }
 
-  def forwardEmployeeSwipe(kg: Long) = Action(parse.json) {
+  def employeeCheckInOut(kg: Long) = Action(parse.json) {
     request =>
       Logger.info("checking : " + request.body)
       request.body.validate[EmployeeCheckInfo].map {
+        case (check) if check.school_id != kg =>
+          BadRequest(Json.toJson(new ErrorResponse("School id is not matching")))
         case (check) =>
+          check.create
           Ok(Json.toJson(new SuccessResponse))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))

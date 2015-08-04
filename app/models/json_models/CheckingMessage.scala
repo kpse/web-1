@@ -18,7 +18,22 @@ import play.api.libs.json.Json
  13 get off bus at afternoon
 */
 
-case class EmployeeCheckInfo(school_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long, id: Option[Long] = None)
+case class EmployeeCheckInfo(school_id: Long, employee_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long, id: Option[Long] = None) {
+  def create = DB.withConnection {
+    implicit c =>
+      SQL("insert into employeedailylog (employee_id, record_url, checked_at, card, notice_type, card_type, school_id) " +
+        "values ({employee_id}, {url}, {check_at}, {card}, {notice_type}, {card_type}, {school_id})")
+        .on(
+          'employee_id -> employee_id,
+          'url -> record_url,
+          'check_at -> timestamp,
+          'card -> card_no,
+          'notice_type -> notice_type,
+          'card_type -> card_type,
+          'school_id -> school_id
+        ).executeInsert()
+  }
+}
 
 case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long, id: Option[Long] = None) {
   def toNotifications: List[CheckNotification] = DB.withConnection {

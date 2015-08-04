@@ -16,7 +16,8 @@ import play.api.libs.json.Json
 import scala.language.postfixOps
 
 case class DailyLog(timestamp: Long, notice_type: Int, child_id: String, record_url: String, parent_name: String, card: Option[String] = None)
-case class EmployeeDailyLog(timestamp: Long, notice_type: Int, employee_id: String, record_url: String, card: Option[String] = None)
+
+case class EmployeeDailyLog(timestamp: Long, notice_type: Int, employee_id: Long, record_url: String, card: String)
 
 case class DailyLogStats(class_id: Int, count: Long, school_id: Long, date: String)
 
@@ -76,6 +77,17 @@ object DailyLog {
         DailyLog(timestamp, notice_type, child_id, url.getOrElse(""), name, Some(card))
     }
   }
+  val employeeSimple = {
+    get[Long]("employee_id") ~
+      get[Long]("checked_at") ~
+      get[Option[String]]("record_url") ~
+      get[Int]("notice_type") ~
+      get[String]("card") map {
+      case id ~ timestamp ~ url ~ notice_type ~ card =>
+        EmployeeDailyLog(timestamp, notice_type, id, url.getOrElse(""), card)
+
+    }
+  }
 
   def all(kg: Long, childId: String, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
     implicit c =>
@@ -86,6 +98,17 @@ object DailyLog {
           'from -> from,
           'to -> to
         ).as(simple *)
+  }
+
+  def employeeCheck(kg: Long, employeeId: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
+    implicit c =>
+      SQL("select * from employeedailylog where employee_id={employee} and school_id={school_id} " + rangerQueryWithField(from, to, Some("checked_at"), most))
+        .on(
+          'employee -> employeeId,
+          'school_id -> kg.toString,
+          'from -> from,
+          'to -> to
+        ).as(employeeSimple *)
   }
 
   def show(kg: Long, id: Long) = DB.withConnection {
