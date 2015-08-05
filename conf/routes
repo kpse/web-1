@@ -321,6 +321,11 @@ GET           /api/v2/kindergarten/:kg/removed_classes                          
 GET           /api/v2/kindergarten/:kg/employee/:employeeId/read_session                       controllers.ReaderController.employeeLastRead(kg: Long, employeeId: String)
 GET           /api/v2/kindergarten/:kg/employee/:employeeId/session                            controllers.SessionController.employeeList(kg: Long, employeeId: String)
 
+
+#schools pagination
+GET           /api/v2/kindergarten                                                             controllers.SchoolSummaryController.pagination(from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v2/kindergarten_preview                                                     controllers.SchoolSummaryController.previewIndex
+
 #v3 integrate with c# client
 
 GET           /api/v3/kindergarten/:kg/student                                                 controllers.V3.StudentController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])

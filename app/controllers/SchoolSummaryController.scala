@@ -97,4 +97,14 @@ object SchoolSummaryController extends Controller with Secured {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
+
+  def previewIndex() = IsOperator {
+    u => _ =>
+      Ok(Json.toJson(SchoolIntro.previewIndex()))
+  }
+
+  def pagination(from: Option[Long], to: Option[Long], most: Option[Int]) = IsOperator {
+    u => _ =>
+      Ok(Json.toJson(SchoolIntro.pagination(from, to, most)))
+  }
 }

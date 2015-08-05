@@ -101,6 +101,20 @@ object SchoolIntro {
       SQL("select * from schoolinfo").as(sample *)
   }
 
+  def pagination(from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
+    implicit c =>
+      SQL(s"select * from schoolinfo where 1=1 ${from map (_ => " and school_id > {from} ") getOrElse ""}  ${to map (_ => " and school_id < {to} ") getOrElse ""} order by school_id limit {most}")
+        .on('from -> from,
+          'to -> to,
+          'most -> most.getOrElse(25)
+        ).as(sample *)
+  }
+
+  def previewIndex() = DB.withConnection {
+    implicit c =>
+      SQL("select school_id, update_at from schoolinfo order by school_id").as(previewSimple *)
+  }
+
   def schoolExists(schoolId: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from schoolinfo where school_id={school_id}")
@@ -133,7 +147,9 @@ object SchoolIntro {
             'address -> info.address,
             'full_name -> info.full_name,
             'timestamp -> timestamp).executeUpdate()
-        info.properties map {_.map(Charge.addConfig(info.school_id, _))}
+        info.properties map {
+          _.map(Charge.addConfig(info.school_id, _))
+        }
       }
       catch {
         case t: Throwable =>
