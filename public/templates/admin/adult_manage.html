@@ -47,7 +47,10 @@
 
         <label for="video-member" class="col-sm-4 control-label">华迈视频</label>
 
-        <div class="col-sm-8" >
+        <div class="col-sm-8" ng-show="videoTrialAccount.length > 0">
+          <p class="form-control-static">试用账号：{{videoTrialAccount}}</p>
+        </div>
+        <div class="col-sm-8" ng-hide="videoTrialAccount.length > 0">
           <p class="form-control-static" ng-show="parent.videoMember.account && !parent.pickingAccount">{{parent.videoMember.account}}</p>
           <p class="form-control-static" ng-hide="parent.videoMember.account || parent.pickingAccount">未开通，点击<a ng-click="parent.pickingAccount = true">分配</a>账号</p>
           <input kl-existing-video-account ng-show="parent.pickingAccount" class="form-control" name="account" ng-minlength="24"

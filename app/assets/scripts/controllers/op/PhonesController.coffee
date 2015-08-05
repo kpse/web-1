@@ -55,9 +55,10 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
 
 .controller 'OpShowPhoneCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', '$alert', '$state', 'phoneManageService', 'schoolService',
-   'videoMemberService', 'parentPasswordService', 'pushAccountService', 'parentService', 'bindingHistoryService', 'allEmployeesService',
+   'videoMemberService', 'parentPasswordService', 'pushAccountService', 'parentService', 'bindingHistoryService',
+   'allEmployeesService', 'schoolConfigService', 'schoolConfigExtractService',
     (scope, rootScope, stateParams, location, Alert, $state, Phone, School, VideoMember, ParentPassword, PushAccount,
-     Parent, Binding, Employee) ->
+     Parent, Binding, Employee, SchoolConfig, ConfigExtract) ->
       scope.teacher = Employee.get phone: stateParams.phone, ->
         scope.hasTeacherInfo = true
       scope.parent = Phone.get phone: stateParams.phone, ->
@@ -66,6 +67,8 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
         scope.parent.pushAccount = PushAccount.get phone: stateParams.phone
         scope.parent.pickingAccount = false
         scope.parent.bindings = Binding.get scope.parent
+        SchoolConfig.get school_id: scope.parent.school_id, (data)->
+          scope.videoTrialAccount = ConfigExtract data['config'], 'videoTrialAccount'
 
       scope.delete = (parent) ->
         Phone.delete parent, ->

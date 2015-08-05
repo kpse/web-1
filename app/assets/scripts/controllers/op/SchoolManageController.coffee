@@ -7,11 +7,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         extractConfig = ConfigExtract
 
         scope.generateConfigArray = (all) ->
-          _(all).map (value, key) ->
-              {name: key, value: value}
-            .reject (item) ->
-              _.any ['videoTrialAccount', 'videoTrialPassword'], (n) -> item.name == n && (!item.value? || item.value.length == 0)
-            .value()
+          _.map all,  (value, key) -> {name: key, value: value}
 
         scope.defaultConfig =
           backend: 'true'
@@ -20,7 +16,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           bus: 'false'
 
         scope.filterConfig = (config, index) ->
-          scope.defaultConfig[config.name] != config.value
+          (config.value? && config.value.length > 0) && scope.defaultConfig[config.name] != config.value
 
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (kg) ->

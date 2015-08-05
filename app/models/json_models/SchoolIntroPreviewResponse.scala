@@ -133,10 +133,7 @@ object SchoolIntro {
             'address -> info.address,
             'full_name -> info.full_name,
             'timestamp -> timestamp).executeUpdate()
-        info.properties map {
-          configs =>
-            configs.map(Charge.addConfig(info.school_id, _))
-        }
+        info.properties map {_.map(Charge.addConfig(info.school_id, _))}
       }
       catch {
         case t: Throwable =>
