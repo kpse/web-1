@@ -33,11 +33,12 @@ object Relationship {
       val random: Random = new Random(System.currentTimeMillis)
       try {
         val id: Option[Long] = SQL("insert into relationmap (child_id, parent_id, card_num, relationship, reference_id) " +
-          " select {child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg}), (SELECT concat('F', LPAD(count(1), 9, '0')) FROM relationmap), {relationship}, {reference_id}")
+          " select {child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg}), (SELECT concat('F', LPAD(max(uid) + {factor}, 9, '0')) from relationmap), {relationship}, {reference_id}")
           .on(
             'phone -> phone,
             'child_id -> childId,
             'relationship -> relationship,
+            'factor -> random.nextInt(17),
             'kg -> kg.toString,
             'reference_id -> "%s_%s_%s".format(childId, phone, random.nextString(4))
           ).executeInsert()
