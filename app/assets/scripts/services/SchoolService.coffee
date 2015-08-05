@@ -20,17 +20,27 @@ classManagerService = ($resource) ->
 angular.module('kulebao.services')
 .factory('classManagerService', ['$resource', classManagerService])
 
-schoolService = ($resource) ->
+
+
+angular.module('kulebao.services')
+.factory 'schoolService', ['$resource', ($resource) ->
   $resource '/kindergarten/:school_id',
     {
       school_id: '@school_id'
     }, {
       'get':    {method:'GET', cache: true}
     }
-
+]
 
 angular.module('kulebao.services')
-.factory('schoolService', ['$resource', schoolService])
+.factory 'schoolPaginationService', ['$resource', ($resource) ->
+  $resource '/api/v2/kindergarten', {}
+]
+
+angular.module('kulebao.services')
+.factory 'schoolPreviewService', ['$resource', ($resource) ->
+  $resource '/api/v2/kindergarten_preview', {}
+]
 
 adminCreatingService = ($resource) ->
   $resource '/kindergarten'

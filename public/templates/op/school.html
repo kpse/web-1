@@ -21,6 +21,9 @@
   </tr>
   </thead>
   <tbody>
+  <pagination boundary-links="true" items-per-page="itemsPerPage" total-items="totalItems" ng-model="currentPage" max-size="maxSize"
+              class="pagination-sm news-pagination" ng-change="onSelectPage(page)"
+              previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
   <tr ng-repeat="kg in kindergartens | filter: searchText | orderBy: 'school_id'" class="row" ng-class="{editable: editSchool, expired: kg.charge[0].status==0}" ng-click="editSchool(kg)">
     <td class="col-xs-1"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
     <td class="col-xs-3">{{::kg.full_name}}</td>

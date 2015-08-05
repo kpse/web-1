@@ -1,14 +1,22 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
-  ['$scope', '$rootScope', '$filter', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
+  ['$scope', '$rootScope', '$filter', 'schoolPaginationService', 'classService', '$modal', 'principalService', 'allEmployeesService',
    '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location', 'schoolConfigService',
-   'schoolConfigExtractService',
+   'schoolConfigExtractService', 'schoolPreviewService',
     (scope, rootScope, $filter, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert,
-     location, SchoolConfig, ConfigExtract) ->
-      scope.refresh = ->
-        extractConfig = ConfigExtract
+     location, SchoolConfig, ConfigExtract, Preview) ->
+      scope.totalItems = 0
+      scope.currentPage = 1
+      scope.maxSize = 5
+      scope.itemsPerPage = 8
 
-        scope.generateConfigArray = (all) ->
-          _.map all,  (value, key) -> {name: key, value: value}
+      extractConfig = ConfigExtract
+      scope.generateConfigArray = (all) ->
+        _.map all,  (value, key) -> {name: key, value: value}
+
+      scope.filterConfig = (config, index) ->
+        (config.value? && config.value.length > 0) && scope.defaultConfig[config.name] != config.value
+      scope.refresh = ->
+        scope.loading = true
 
         scope.defaultConfig =
           backend: 'true'
@@ -16,33 +24,40 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           disableMemberEditing: 'false'
           bus: 'false'
 
-        scope.filterConfig = (config, index) ->
-          (config.value? && config.value.length > 0) && scope.defaultConfig[config.name] != config.value
-
-        scope.kindergartens = School.query ->
-          _.each scope.kindergartens, (kg) ->
-            kg.managers = Principal.query school_id: kg.school_id, ->
-              _.map kg.managers, (p) ->
-                p.detail = Employee.get phone: p.phone
-            Charge.query school_id: kg.school_id, (data) ->
-              kg.charge = data[0]
-              kg.charge.expire = new Date(data[0].expire_date)
-
-
-            SchoolConfig.get school_id: kg.school_id, (data)->
-              kg.config =
-                backend: extractConfig data['config'], 'backend', scope.defaultConfig['backend']
-                hideVideo: extractConfig data['config'], 'hideVideo', scope.defaultConfig['hideVideo']
-                disableMemberEditing: extractConfig data['config'], 'disableMemberEditing', scope.defaultConfig['disableMemberEditing']
-                bus: extractConfig data['config'], 'bus', scope.defaultConfig['bus']
-                videoTrialAccount: extractConfig data['config'], 'videoTrialAccount'
-                videoTrialPassword: extractConfig data['config'], 'videoTrialPassword'
-              kg.configArray = scope.generateConfigArray(kg.config)
+        page = scope.currentPage
+        Preview.query (data) ->
+          scope.preview = data
+          scope.totalItems = scope.preview.length
+          startIndex = (page - 1) * scope.itemsPerPage
+          last = scope.preview[startIndex...startIndex + scope.itemsPerPage][0].school_id if scope.preview.length > 0
+          School.query
+            from: last - 1
+            most: scope.itemsPerPage, (all) ->
+              scope.kindergartens = _.map all, (kg) ->
+                kg.managers = Principal.query school_id: kg.school_id, ->
+                  _.map kg.managers, (p) ->
+                    p.detail = Employee.get phone: p.phone
+                Charge.query school_id: kg.school_id, (data) ->
+                  kg.charge = data[0]
+                  kg.charge.expire = new Date(data[0].expire_date)
+                SchoolConfig.get school_id: kg.school_id, (data)->
+                  kg.config =
+                    backend: extractConfig data['config'], 'backend', scope.defaultConfig['backend']
+                    hideVideo: extractConfig data['config'], 'hideVideo', scope.defaultConfig['hideVideo']
+                    disableMemberEditing: extractConfig data['config'], 'disableMemberEditing', scope.defaultConfig['disableMemberEditing']
+                    bus: extractConfig data['config'], 'bus', scope.defaultConfig['bus']
+                    videoTrialAccount: extractConfig data['config'], 'videoTrialAccount'
+                    videoTrialPassword: extractConfig data['config'], 'videoTrialPassword'
+                  kg.configArray = scope.generateConfigArray(kg.config)
+                kg
+              scope.loading = false
 
           scope.admins = Employee.query()
 
 
       scope.refresh()
+      scope.$watch 'currentPage', (newPage, oldPage) ->
+        scope.refresh() if newPage isnt oldPage
 
       rootScope.tabName = 'school'
 
