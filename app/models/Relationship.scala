@@ -38,9 +38,9 @@ object Relationship {
             'phone -> phone,
             'child_id -> childId,
             'relationship -> relationship,
-            'factor -> random.nextInt(17),
+            'factor -> 1,
             'kg -> kg.toString,
-            'reference_id -> "%s_%s_%s".format(childId, phone, random.nextString(4))
+            'reference_id -> "%s_%s_%d".format(childId, phone, random.nextInt(10000))
           ).executeInsert()
         c.commit()
         findById(kg)(id.getOrElse(-1))
