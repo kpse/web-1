@@ -68,13 +68,20 @@
 
           <label for="video-member" class="col-sm-4 control-label">视频</label>
 
-          <div class="col-sm-8">
+          <div class="col-sm-8" ng-hide="videoTrialAccount.length > 0">
             <div class="control-group input-append">
               <select class="form-control member-select" ng-model="parent.video_member_status" name="videoMember"
                       ng-options="item.id as item.desc for item in membersInformation.videoMembers"
                       data-style="btn-primary"></select>
             </div>
           </div>
+          <div class="col-sm-8" ng-show="videoTrialAccount.length > 0">
+            <div class="control-group input-append">
+              <select class="form-control member-select" name="videoMember" data-style="btn-primary" ng-disabled="true">
+                  <option value="0" selected="selected" label="学校试用账号">学校账号试用中</option>
+                      </select>
+              </div>
+              </div>
         </div>
 
       </div>

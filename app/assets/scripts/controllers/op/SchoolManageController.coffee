@@ -2,7 +2,8 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
   ['$scope', '$rootScope', '$filter', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
    '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location', 'schoolConfigService',
    'schoolConfigExtractService',
-    (scope, rootScope, $filter, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location, SchoolConfig, ConfigExtract) ->
+    (scope, rootScope, $filter, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert,
+     location, SchoolConfig, ConfigExtract) ->
       scope.refresh = ->
         extractConfig = ConfigExtract
 

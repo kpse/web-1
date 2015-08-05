@@ -3,8 +3,8 @@
 angular.module('kulebaoAdmin')
 .controller 'RelationshipMainCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'parentService',
-   'relationshipService', '$modal', 'childService', '$http', '$alert', 'videoMemberService', 'schoolConfigService',
-    (scope, rootScope, stateParams, location, Parent, Relationship, Modal, Child, $http, Alert, VideoMember, SchoolConfig) ->
+   'relationshipService', '$modal', 'childService', '$http', '$alert', 'videoMemberService', 'schoolConfigService', 'schoolConfigExtractService',
+    (scope, rootScope, stateParams, location, Parent, Relationship, Modal, Child, $http, Alert, VideoMember, SchoolConfig, ConfigExtract) ->
       rootScope.tabName = 'relationship'
       scope.heading = '管理幼儿及家长基础档案信息'
 
@@ -35,6 +35,7 @@ angular.module('kulebaoAdmin')
           backendConfig? && scope.backend = backendConfig.value == 'true'
           disableMemberEditingConfig = _.find data['config'], (item) -> item.name == 'disableMemberEditing'
           disableMemberEditingConfig? && scope.disableMemberEditing = disableMemberEditingConfig.value == 'true'
+          scope.videoTrialAccount = ConfigExtract data['config'], 'videoTrialAccount'
           scope.types = scope.allTypes()
           scope.types.pop() if scope.backend or (!scope.backend and !scope.isSuperUser())
           scope.config =

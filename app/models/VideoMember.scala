@@ -75,7 +75,7 @@ object VideoMember {
   def trialAccount(kg: Long, id: String): Option[VideoMember] = {
     for (
       account <- School.config(kg).config.find(_.name == "videoTrialAccount");
-      password <- School.config(kg).config.find(_.name == "videoTrialPassword")
+      password <- School.config(kg).config.find(_.name == "videoTrialPassword") if account.value.length > 0
     ) yield VideoMember(id, Some(account.value), Some(password.value), Some(kg))
   }
 
