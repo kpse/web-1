@@ -23,6 +23,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           hideVideo: 'false'
           disableMemberEditing: 'false'
           bus: 'false'
+          enableHealthRecordManagement: 'false'
+          enableFinancialManagement: 'false'
+          enableWarehouseManagement: 'false'
+          enableDietManagement: 'false'
 
         page = scope.currentPage
         Preview.query (data) ->
@@ -48,6 +52,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
                     bus: extractConfig data['config'], 'bus', scope.defaultConfig['bus']
                     videoTrialAccount: extractConfig data['config'], 'videoTrialAccount'
                     videoTrialPassword: extractConfig data['config'], 'videoTrialPassword'
+                    enableHealthRecordManagement: extractConfig data['config'], 'enableHealthRecordManagement', scope.defaultConfig['enableHealthRecordManagement']
+                    enableFinancialManagement: extractConfig data['config'], 'enableFinancialManagement', scope.defaultConfig['enableFinancialManagement']
+                    enableWarehouseManagement: extractConfig data['config'], 'enableWarehouseManagement', scope.defaultConfig['enableWarehouseManagement']
+                    enableDietManagement: extractConfig data['config'], 'enableDietManagement', scope.defaultConfig['enableDietManagement']
                   kg.configArray = scope.generateConfigArray(kg.config)
                 kg
               scope.loading = false
@@ -198,6 +206,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           when 'disableMemberEditing' then 'glyphicon-ban-circle'
           when 'bus' then 'glyphicon-record'
           when 'videoTrialAccount' then 'glyphicon glyphicon-star'
+          when 'enableHealthRecordManagement' then 'glyphicon glyphicon-heart'
+          when 'enableFinancialManagement' then 'glyphicon glyphicon-yen'
+          when 'enableWarehouseManagement' then 'glyphicon glyphicon-list-alt'
+          when 'enableDietManagement' then 'glyphicon glyphicon-grain'
 
       scope.titleOf = (config) ->
           switch config.name
@@ -206,12 +218,18 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             when 'disableMemberEditing' then '不允许学校开通或关闭会员'
             when 'bus' then '激活校车定位功能'
             when 'videoTrialAccount' then '试用视频账号'
+            when 'enableHealthRecordManagement' then '健康档案'
+            when 'enableFinancialManagement' then '财务管理'
+            when 'enableWarehouseManagement' then '仓库管理'
+            when 'enableDietManagement' then '营养膳食'
 
-      scope.advancedEdting = false
+      scope.advancedEdting = 0
       scope.advanced = ->
-        scope.advancedEdting = true
+        scope.advancedEdting = 1
       scope.simpleDialog = ->
-        scope.advancedEdting = false
+        scope.advancedEdting = 0
 
+      scope.BSOptionDialog = ->
+        scope.advancedEdting = 2
   ]
 

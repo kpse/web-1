@@ -11,7 +11,7 @@
         </div>
       </div>
 
-      <div class="basic-form" ng-hide="advancedEdting">
+      <div class="basic-form" ng-show="advancedEdting == 0">
         <div class="form-group">
           <label for="school-full-name" class="col-sm-2 control-label">学校全称</label>
 
@@ -81,7 +81,7 @@
               &nbsp; <a ng-click="$hide();goChargePage()">授权更多号码？</a></p>
           </div>
         </div>
-        <a class="btn btn-default pull-right" ng-click="advanced()">高级选项 &gt;&gt;</a>
+        <a class="btn btn-default pull-right" ng-click="advanced()">功能选项 &gt;&gt;</a>
 
         <div class="form-group">
           <label for="address" class="col-sm-2 control-label">学校地址</label>
@@ -100,7 +100,7 @@
         </div>
       </div>
 
-      <div class="advanced-form" ng-show="advancedEdting">
+      <div class="advanced-form" ng-show="advancedEdting == 1">
         <div class="form-group">
           <label for="backend" class="col-sm-4 control-label">安全后台</label>
 
@@ -141,8 +141,6 @@
           </div>
         </div>
 
-        <a class="btn btn-default pull-right" ng-click="simpleDialog()">&lt;&lt;普通选项</a>
-
         <div class="form-group">
           <label for="member-control" class="col-sm-4 control-label">禁用会员编辑(适用于江西移动)</label>
 
@@ -151,9 +149,57 @@
             <input type="radio" ng-model="school.config.disableMemberEditing" value="false"> 可以编辑 <br/>
           </div>
         </div>
+        <div class="clearfix"></div>
+
+        <a class="btn btn-default pull-right" ng-click="BSOptionDialog()">客户端功能限制 &gt;&gt;</a>
+        <a class="btn btn-default pull-right" ng-click="simpleDialog()">&lt;&lt; 普通选项</a>
+
       </div>
 
+      <div class="advanced-form" ng-show="advancedEdting == 2">
+        <div class="form-group">
+          <label for="health-control" class="col-sm-4 control-label">健康档案</label>
 
+          <div class="col-sm-8 form-control-static">
+            <input type="radio" ng-model="school.config.enableHealthRecordManagement" value="true"> 开启
+            <input type="radio" ng-model="school.config.enableHealthRecordManagement" value="false"> 关闭 <br/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="financial-control" class="col-sm-4 control-label">财务管理</label>
+
+          <div class="col-sm-8 form-control-static">
+            <input type="radio" ng-model="school.config.enableFinancialManagement" value="true"> 开启
+            <input type="radio" ng-model="school.config.enableFinancialManagement" value="false"> 关闭 <br/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="warehouse-control" class="col-sm-4 control-label">仓库管理</label>
+
+          <div class="col-sm-8 form-control-static">
+            <input type="radio" ng-model="school.config.enableWarehouseManagement" value="true"> 开启
+            <input type="radio" ng-model="school.config.enableWarehouseManagement" value="false"> 关闭 <br/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="diet-control" class="col-sm-4 control-label">营养膳食</label>
+
+          <div class="col-sm-8 form-control-static">
+            <input type="radio" ng-model="school.config.enableDietManagement" value="true"> 开启
+            <input type="radio" ng-model="school.config.enableDietManagement" value="false"> 关闭 <br/>
+          </div>
+        </div>
+
+        <a class="btn btn-default pull-right" ng-click="simpleDialog()">普通选项  &gt;&gt;</a>
+        <a class="btn btn-default pull-right" ng-click="advanced()">&lt;&lt;功能选项</a>
+
+      </div>
+
+      <div class="clearfix"></div>
+      <br/>
       <a class="btn btn-warning pull-right adding-button"
          ng-disabled="editSchoolForm.$invalid || isSchoolDuplicated(school) || editSchoolForm.$pristine"
          ng-click="endEditing(school)">保存</a>
