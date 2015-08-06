@@ -1,9 +1,9 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
-  ['$scope', '$rootScope', '$filter', 'schoolPaginationService', 'classService', '$modal', 'principalService', 'allEmployeesService',
+  ['$scope', '$rootScope', '$filter', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
    '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location', 'schoolConfigService',
-   'schoolConfigExtractService', 'schoolPreviewService',
+   'schoolConfigExtractService', 'schoolPreviewService', 'schoolPaginationService',
     (scope, rootScope, $filter, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert,
-     location, SchoolConfig, ConfigExtract, Preview) ->
+     location, SchoolConfig, ConfigExtract, Preview, SchoolPagination) ->
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
@@ -30,7 +30,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           scope.totalItems = scope.preview.length
           startIndex = (page - 1) * scope.itemsPerPage
           last = scope.preview[startIndex...startIndex + scope.itemsPerPage][0].school_id if scope.preview.length > 0
-          School.query
+          SchoolPagination.query
             from: last - 1
             most: scope.itemsPerPage, (all) ->
               scope.kindergartens = _.map all, (kg) ->
