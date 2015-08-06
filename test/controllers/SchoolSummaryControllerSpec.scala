@@ -7,7 +7,7 @@ import models.json_models.SchoolIntro._
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
@@ -96,6 +96,57 @@ class SchoolSummaryControllerSpec extends Specification with TestSupport {
         val notFoundResponse = route(requestWithSession(GET, "/kindergarten/93740362/employee/13060003722")).get
 
         status(notFoundResponse) must equalTo(UNAUTHORIZED)
+      }
+
+      "preview all ids" in new WithApplication {
+
+        val previewResponse = route(requestByOperator(GET, "/api/v2/kindergarten_preview")).get
+
+        status(previewResponse) must equalTo(OK)
+        contentType(previewResponse) must beSome.which(_ == "application/json")
+
+        val response: JsValue = Json.parse(contentAsString(previewResponse))
+        val first = response(0)
+        (first \ "error_code").as[Int] must equalTo(0)
+        (first \ "school_id").as[Long] must equalTo(93740362)
+        (first \ "timestamp").as[Long] must greaterThan(0L)
+      }
+
+      "should support from in v2" in new WithApplication {
+
+        val pagingResponse = route(requestByOperator(GET, "/api/v2/kindergarten?from=93740361&most=1")).get
+
+        status(pagingResponse) must equalTo(OK)
+        contentType(pagingResponse) must beSome.which(_ == "application/json")
+
+        val response: JsValue = Json.parse(contentAsString(pagingResponse))
+        val first = response(0)
+        (first \ "school_id").as[Long] must equalTo(93740362)
+        (first \ "timestamp").as[Long] must greaterThan(0L)
+      }
+
+      "should support to in v2" in new WithApplication {
+
+        val pagingResponse = route(requestByOperator(GET, "/api/v2/kindergarten?from=93740362&to=93740563")).get
+
+        status(pagingResponse) must equalTo(OK)
+        contentType(pagingResponse) must beSome.which(_ == "application/json")
+
+        val response: JsValue = Json.parse(contentAsString(pagingResponse))
+        val first = response(0)
+        (first \ "school_id").as[Long] must equalTo(93740562)
+        (first \ "timestamp").as[Long] must greaterThan(0L)
+      }
+
+      "should support most in v2" in new WithApplication {
+
+        val pagingResponse = route(requestByOperator(GET, "/api/v2/kindergarten?most=3")).get
+
+        status(pagingResponse) must equalTo(OK)
+        contentType(pagingResponse) must beSome.which(_ == "application/json")
+
+        val response: JsValue = Json.parse(contentAsString(pagingResponse))
+        response.as[JsArray].value.size must equalTo(3)
       }
     }
 
