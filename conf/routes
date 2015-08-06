@@ -323,8 +323,8 @@ GET           /api/v2/kindergarten/:kg/employee/:employeeId/session             
 
 
 #schools pagination
-GET           /api/v2/kindergarten                                                             controllers.SchoolSummaryController.pagination(from: Option[Long], to: Option[Long], most: Option[Int])
-GET           /api/v2/kindergarten_preview                                                     controllers.SchoolSummaryController.previewIndex
+GET           /api/v2/kindergarten                                                             controllers.V2.SchoolController.pagination(from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v2/kindergarten_preview                                                     controllers.V2.SchoolController.previewIndex
 
 #v3 integrate with c# client
 
