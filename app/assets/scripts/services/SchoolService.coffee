@@ -65,7 +65,7 @@ angular.module('kulebao.services')
 
 angular.module('kulebao.services')
 .service 'schoolConfigExtractService', ->
-  (data, name, defaultValue) ->
+  (data, name, defaultValue = '') ->
     config = _.find data, (item) -> item.name == name
     if config? then config.value else defaultValue
 
