@@ -80,8 +80,6 @@ object ErrorCheckingRecordController extends Controller with Secured {
     request.body.validate[CheckingRecordV3].map {
       case (s) if s.check_info.school_id != kg =>
         BadRequest(Json.toJson(ErrorResponse("学校ID不匹配(school_id is not matched)", 2)))
-      case (s) if !Relationship.cardExists(s.check_info.card_no, None) =>
-        BadRequest(Json.toJson(ErrorResponse("卡号不存在(card number does not exist)", 3)))
       case (s) =>
         Ok(Json.toJson(s.createErrorRecord))
     }.recoverTotal {
