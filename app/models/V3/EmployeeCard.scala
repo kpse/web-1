@@ -106,11 +106,17 @@ object EmployeeCard {
         ).as(simple singleOpt)
   }
 
-  def cardExists(card: String) = DB.withConnection {
+  def generateIdCheck(id: Option[Long]) = id match {
+    case Some(x) => " and uid <> {id} "
+    case None => ""
+  }
+
+  def cardExists(card: String, id: Option[Long]) = DB.withConnection {
     implicit c =>
-      SQL(s"select count(1) from employeecard where card={card} and status=1")
+      SQL(s"select count(1) from employeecard where card={card} and status=1 ${generateIdCheck(id)}")
         .on(
-          'card -> card
+          'card -> card,
+          'id -> id
         ).as(get[Long]("count(1)") single) > 0
   }
 

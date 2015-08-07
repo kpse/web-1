@@ -358,7 +358,7 @@ POST          /api/v3/kindergarten/:kg/employee_card                            
 POST          /api/v3/kindergarten/:kg/employee_card/:id                                       controllers.V3.EmployeeCardController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/employee_card/:id                                       controllers.V3.EmployeeCardController.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/card_check/:card                                                         controllers.V3.EmployeeCardController.cardCheck(kg: Long, card: String)
+GET           /api/v3/kindergarten/:kg/card_check/:card                                        controllers.V3.EmployeeCardController.cardCheck(kg: Long, card: String, id: Option[Long])
 
 
 GET           /api/v3/kindergarten/:kg/normal_card                                             controllers.V3.CheckingRecordController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])

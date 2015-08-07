@@ -2,7 +2,7 @@ package controllers.V3
 
 import controllers.Secured
 import controllers.helper.JsonLogger.loggedJson
-import models.V3.EmployeeCard
+import models.V3.{CardV3, EmployeeCard}
 import models.{ErrorResponse, Relationship, SuccessResponse}
 import play.Logger
 import play.api.libs.json.{JsError, Json}
@@ -55,13 +55,17 @@ object EmployeeCardController extends Controller with Secured {
     Ok(Json.toJson(new SuccessResponse()))
   }
 
-  def cardCheck(kg: Long, cardNum: String) = IsLoggedIn {
+  def cardCheck(kg: Long, cardNum: String, id: Option[Long]) = IsLoggedIn {
     u => _ =>
       cardNum match {
-        case (card) if Relationship.cardExists(card, None) =>
+        case (card) if id.isEmpty && Relationship.cardExists(card, None) =>
           Ok(loggedJson(ErrorResponse("该卡片已被家长占用。(Relatives occupied)")))
-        case (card) if EmployeeCard.cardExists(card) =>
+        case (card) if Relationship.cardExists(card, None) != Relationship.cardExists(card, id) =>
+          Ok(loggedJson(ErrorResponse("该卡片已被家长占用。(Relatives occupied)")))
+        case (card) if EmployeeCard.cardExists(card, id) =>
           Ok(loggedJson(ErrorResponse("该卡片已被老师占用。(Employees occupied)", 2)))
+        case (card) if !CardV3.valid(card) =>
+          Ok(loggedJson(ErrorResponse("该卡片未被授权。(Non-autherised card number)", 3)))
         case (card) =>
           Ok(loggedJson(SuccessResponse("该卡片可以使用。(this is a virgin card)")))
       }
