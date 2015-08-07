@@ -124,10 +124,10 @@ trait Secured {
     val user = request.session.get("username")
     val id = request.session.get("id")
     val token = request.session.get("token")
-    val Pattern = "^(?:/api/v\\d+)?/kindergarten/(\\d+).*".r
+    val school = "^(?:/api/v\\d+)?/kindergarten/(\\d+).*".r
     request.path match {
       case path if Employee.canAccess(id) => user
-      case Pattern(c) if Employee.canAccess(id, c.toLong) || Parent.canAccess(user, token, c.toLong) => user
+      case school(c) if Employee.canAccess(id, c.toLong) || Parent.canAccess(user, token, c.toLong) => user
       case _ => None
     }
 

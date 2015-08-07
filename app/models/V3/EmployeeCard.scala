@@ -106,6 +106,14 @@ object EmployeeCard {
         ).as(simple singleOpt)
   }
 
+  def cardExists(card: String) = DB.withConnection {
+    implicit c =>
+      SQL(s"select count(1) from employeecard where card={card} and status=1")
+        .on(
+          'card -> card
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
   def simple = {
     get[Long]("uid") ~
       get[String]("school_id") ~

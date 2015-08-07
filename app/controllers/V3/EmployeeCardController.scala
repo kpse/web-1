@@ -1,8 +1,9 @@
 package controllers.V3
 
 import controllers.Secured
+import controllers.helper.JsonLogger.loggedJson
 import models.V3.EmployeeCard
-import models.{SuccessResponse, ErrorResponse}
+import models.{ErrorResponse, Relationship, SuccessResponse}
 import play.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
@@ -52,5 +53,17 @@ object EmployeeCardController extends Controller with Secured {
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
     EmployeeCard.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
+  }
+
+  def cardCheck(kg: Long, cardNum: String) = IsLoggedIn {
+    u => _ =>
+      cardNum match {
+        case (card) if Relationship.cardExists(card, None) =>
+          Ok(loggedJson(ErrorResponse("该卡片已被家长占用。(Relatives occupied)")))
+        case (card) if EmployeeCard.cardExists(card) =>
+          Ok(loggedJson(ErrorResponse("该卡片已被老师占用。(Employees occupied)", 2)))
+        case (card) =>
+          Ok(loggedJson(SuccessResponse("该卡片可以使用。(this is a virgin card)")))
+      }
   }
 }

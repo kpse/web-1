@@ -1,7 +1,8 @@
 package controllers
 
+import controllers.V3.EmployeeCardController._
 import controllers.helper.JsonLogger._
-import models.V3.CardV3
+import models.V3.{EmployeeCard, CardV3}
 import models._
 import play.Logger
 import play.api.libs.json.{JsError, JsValue, Json}
@@ -115,7 +116,7 @@ object RelationshipController extends Controller with Secured {
           }
         case _ => Ok(Json.toJson(new SuccessResponse("无此卡号，可重用。(Available card number)")))
       }.recoverTotal {
-        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+          e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
   }
 
