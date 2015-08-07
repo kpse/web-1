@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module("kulebao.directives").directive "klUniqueCard",
-  ['cardCheckService',
+  ['cardCheckServiceV3',
     (CardCheck) ->
       return (
         restrict: "A"
@@ -22,7 +22,7 @@ angular.module("kulebao.directives").directive "klUniqueCard",
               if valid.error_code == 0
                 c.$setValidity 'unique', true
                 c.$setValidity 'registered', true
-              else if valid.error_code == 2
+              else if valid.error_code == 3
                 c.$setValidity 'registered', false
               else
                 c.$setValidity 'unique', false

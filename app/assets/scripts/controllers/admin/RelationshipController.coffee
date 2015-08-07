@@ -41,7 +41,10 @@ angular.module('kulebaoAdmin')
           scope.config =
             deletable : scope.adminUser.privilege_group == 'operator' || !scope.backend
 
-        scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
+        Relationship.bind(school_id: stateParams.kindergarten).query (data) ->
+          scope.relationships = _.map data , (d) ->
+            d.school_id = parseInt(stateParams.kindergarten)
+            d
           callback() if callback?
           scope.loading = false
 
@@ -300,7 +303,10 @@ angular.module('kulebaoAdmin')
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.loading = true
-      scope.relationships = Relationship.bind(school_id: stateParams.kindergarten).query ->
+      Relationship.bind(school_id: stateParams.kindergarten).query (data) ->
+        scope.relationships = _.map data , (d) ->
+          d.school_id = parseInt(stateParams.kindergarten)
+          d
         scope.loading = false
 
       scope.navigateTo = (c) ->
@@ -324,7 +330,8 @@ angular.module('kulebaoAdmin')
         scope.loading = true
         relationships = Relationship.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query ->
           scope.relationships = _.map relationships, (r) ->
-            extendFilterFriendlyProperties(r)
+            _.assign extendFilterFriendlyProperties(r), school_id: parseInt stateParams.kindergarten
+
           scope.loading = false
 
       scope.refreshRelationship()
