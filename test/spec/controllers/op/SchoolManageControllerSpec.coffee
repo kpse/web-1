@@ -19,17 +19,18 @@ describe 'SchoolManageController', ->
       rootScope = $rootScope.$new()
 
       controller = $controller('OpSchoolCtrl', $scope: $scope, $rootScope: rootScope)
-      refreshResponse()
+      prepareForRefreshing()
       $httpBackend.flush()
 
       expect($scope.kindergartens.length).toEqual 3
 
+  describe 'editing school', ->
     it 'should update school config', ->
       $scope = $rootScope.$new()
       rootScope = $rootScope.$new()
 
       controller = $controller('OpSchoolCtrl', $scope: $scope, $rootScope: rootScope)
-      refreshResponse()
+      prepareForRefreshing()
       $httpBackend.flush()
 
       $scope.editSchool({"school_id":2})
@@ -49,10 +50,10 @@ describe 'SchoolManageController', ->
 
       $httpBackend.expectPOST('/kindergarten/2', {"school_id":2,"config":{"backend":"true","hideVideo":"true","disableMemberEditing":"true","bus":"true"},"properties":[{"name":"backend","value":"true"},{"name":"hideVideo","value":"true"},{"name":"disableMemberEditing","value":"true"},{"name":"bus","value":"true"}]})
       .respond {error_code: 0}
-      refreshResponse()
+      prepareForRefreshing()
       $httpBackend.flush()
 
-  refreshResponse = ->
+  prepareForRefreshing = ->
     $httpBackend.expectGET('/api/v2/kindergarten_preview')
     .respond [
       {id: 1, school_id: 1, timestamp: 0},

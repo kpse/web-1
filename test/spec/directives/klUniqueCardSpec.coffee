@@ -100,3 +100,23 @@ describe 'Directive: klUniqueCard', () ->
     expect(element.controller('ngModel').$valid).toBe false
     expect(element.controller('ngModel').$error.unique).toBe true
     expect(element.controller('ngModel').$error.registered).toBe true
+
+  it 'should not pass id if no id present', inject ($compile) ->
+    $httpBackend.expectGET('api/v3/kindergarten/123/card_check/0123456789')
+    .respond { error_code: 0}
+
+    scope.relationship =
+      card: 'initial_card'
+      school_id: 123
+
+    element = angular.element '<input kl-unique-card="relationship" ng-model="relationship.card" />'
+    element = $compile(element)(scope)
+    scope.$digest()
+    scope.relationship.card = '0123456789'
+    scope.$digest()
+
+
+    $httpBackend.flush()
+
+    expect(element.controller('ngModel').$valid).toBe true
+    expect(element.controller('ngModel').$error).isEmpty
