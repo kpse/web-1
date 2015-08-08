@@ -30,6 +30,29 @@ describe 'AgentContractorsController', ->
       expect($scope.schools.length).toEqual 2
       expect($scope.contractors.length).toEqual 2
 
+    it 'should refresh with contractor', ->
+      $scope = $rootScope.$new()
+      $scope.waitForSchoolsReady = ->
+      rootScope = $rootScope.$new()
+
+      controller = $controller('AgentContractorsCtrl', $scope: $scope, $rootScope: rootScope, currentAgent: currentAgent, Agent: Agent, User: User, loggedUser: loggedUser)
+      prepareForRefreshing()
+      $httpBackend.flush()
+
+      $scope.distribute(contractor1)
+      $httpBackend.expectGET('templates/agent/distribute_to_school.html')
+      .respond '<div></div>'
+
+      $httpBackend.flush()
+
+      $scope.refresh(contractor1.id)
+
+      prepareForSecondTimeRefreshing()
+
+      $httpBackend.flush()
+
+      expect($scope.selectedSchools.length).toEqual 2
+
   describe 'connecting', ->
     it 'should add new schools into contractor', ->
       $scope = $rootScope.$new()
@@ -41,16 +64,39 @@ describe 'AgentContractorsController', ->
       $httpBackend.flush()
 
       $scope.distribute(contractor2)
+      $httpBackend.expectGET('templates/agent/distribute_to_school.html')
+      .respond '<div></div>'
+
+      $httpBackend.flush()
+
       $scope.connect({"school_id":2}, contractor2)
 
       $httpBackend.expectPOST('/api/v4/agent/1/kindergarten/2/contractor')
+      .respond 200
+
+      $httpBackend.flush()
+
+  describe 'disconnecting', ->
+    it 'should remove school from contractor', ->
+      $scope = $rootScope.$new()
+      $scope.waitForSchoolsReady = ->
+      rootScope = $rootScope.$new()
+
+      controller = $controller('AgentContractorsCtrl', $scope: $scope, $rootScope: rootScope, currentAgent: currentAgent, Agent: Agent, User: User, loggedUser: loggedUser)
+      prepareForRefreshing()
+      $httpBackend.flush()
+
+      $scope.distribute(contractor2)
+      $scope.disconnect($scope.schools[1], contractor2)
+
+      $httpBackend.expectDELETE('/api/v4/agent/1/kindergarten/2/contractor/4')
       .respond 200
       $httpBackend.expectGET('templates/agent/distribute_to_school.html')
       .respond '<div></div>'
 
       $httpBackend.flush()
 
-  describe 'disconnecting', ->
+  describe 'saving', ->
     it 'should remove school from contractor', ->
       $scope = $rootScope.$new()
       $scope.waitForSchoolsReady = ->
@@ -81,6 +127,23 @@ describe 'AgentContractorsController', ->
     .respond {"school_id":1,"activated":6,"all":9,"member":8,"video":2,"check_in_out":0,"children":600}
     $httpBackend.expectGET('/api/v4/agent/1/kindergarten/2/active')
     .respond {"school_id":2,"activated":0,"all":9,"member":8,"video":2,"check_in_out":0,"children":500}
+    $httpBackend.expectGET('/api/v4/agent/1/kindergarten/1/contractor')
+    .respond [
+      {"id":1,"agent_id":1,"contractor_id":1,"school_id":1,"updated_at":1393395313123}
+      {"id":2,"agent_id":1,"contractor_id":2,"school_id":1,"updated_at":1393395313123}
+    ]
+    $httpBackend.expectGET('/api/v4/agent/1/kindergarten/2/contractor')
+    .respond [
+      {"id":3,"agent_id":1,"contractor_id":1,"school_id":2,"updated_at":1393395313123}
+      {"id":4,"agent_id":1,"contractor_id":2,"school_id":2,"updated_at":1393395313123}
+    ]
+  prepareForSecondTimeRefreshing = ->
+    $httpBackend.expectGET('/api/v4/agent/1/contractor')
+    .respond [contractor2, contractor1]
+
+    $httpBackend.expectGET('/api/v4/agent/1/activity')
+    .respond [activity1, activity2]
+
     $httpBackend.expectGET('/api/v4/agent/1/kindergarten/1/contractor')
     .respond [
       {"id":1,"agent_id":1,"contractor_id":1,"school_id":1,"updated_at":1393395313123}
