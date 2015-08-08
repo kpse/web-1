@@ -162,8 +162,8 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
           scope.mapOptions = scope.createOpts(ad.location)
         else
           scope.mapOptions =
-            latitude: 39.915
-            longitude: 116.404
+            city: scope.currentAgent.city || scope.currentAgent.area
+            address: scope.currentAgent.area
         scope.pickUpModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/point_picking.html'

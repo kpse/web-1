@@ -15,19 +15,12 @@ angular.module("kulebao.directives").directive "klBaiduMap", ->
       scope.render scope.klBaiduMap if newVals?
     ), true
 
-    scope.render = (model) ->
-      map = new BMap.Map attrs.id
-      return unless map.Q
-      map.addControl(new BMap.ScaleControl())
-      map.addControl(new BMap.NavigationControl())
-      map.addControl(new BMap.MapTypeControl())
-      point = new BMap.Point model.longitude, model.latitude
-      map.centerAndZoom point, 18
-      myIcon = new BMap.Icon("http://api.map.baidu.com/mapCard/img/location.gif",
-        new BMap.Size(14, 23)
-        anchor: new BMap.Size(7, 25))
+    myIcon = new BMap.Icon("http://api.map.baidu.com/mapCard/img/location.gif",
+      new BMap.Size(14, 23)
+      anchor: new BMap.Size(7, 25))
 
-      clickHandler = (e)->
+    clickHandler = (map) ->
+      (e)->
         map.removeOverlay scope.marker
         scope.marker = new BMap.Marker e.point, icon: myIcon
         map.addOverlay scope.marker
@@ -46,6 +39,26 @@ angular.module("kulebao.directives").directive "klBaiduMap", ->
             scope.klBaiduMap.result = result
             scope.upperForm.$setDirty() if scope.upperForm?
 
-      map.addEventListener "click", clickHandler if scope.clickable
+    scope.render = (model) ->
+      map = new BMap.Map attrs.id
+      return unless map.Q
+      map.addControl(new BMap.ScaleControl())
+      map.addControl(new BMap.NavigationControl())
+      map.addControl(new BMap.MapTypeControl())
+      if model.city?
+        map.setCurrentCity(model.city);
+        # 创建地址解析器实例
+        myGeo = new (BMap.Geocoder)
+        # 将地址解析结果显示在地图上，并调整地图视野
+        myGeo.getPoint model.address, ((point) ->
+          point = point || new BMap.Point 116.404, 39.915
+          map.centerAndZoom point, 13
+          clickHandler(map) point: point, pixel: map.pointToPixel(point)
+        ), model.city
+      else
+        point = new BMap.Point model.longitude, model.latitude
+        map.centerAndZoom point, 18
+        clickHandler(map) point: point, pixel: map.pointToPixel(point)
 
-      clickHandler point: point, pixel: map.pointToPixel(point)
+      map.addEventListener "click", clickHandler(map) if scope.clickable
+

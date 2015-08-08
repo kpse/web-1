@@ -15,7 +15,7 @@ import play.api.mvc.Session
 
 case class AgentStatistics(id: Long, agent: Long, school_id: Long, month: String, logged_once: Long, logged_ever: Long, created_at: Long)
 
-case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[String], phone: Option[String], logo: Option[String], contact_info: Option[String], memo: Option[String],
+case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[String], phone: Option[String], logo: Option[String], contact_info: Option[String], memo: Option[String], city: Option[String],
                         login_name: Option[String], updated_at: Option[Long], created_at: Option[Long], expire: Option[Long], privilege_group: Option[String] = Some("agent")) extends LoginAccount {
 
   override def url(): String = "/agent"
@@ -34,12 +34,13 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[Str
   def update: Option[KulebaoAgent] = DB.withConnection {
     implicit c =>
       removeDuplicatedPhone(phone)
-      SQL("update agentinfo set name={name}, phone={phone}, area={area}, logo_url={logo_url}, expire_at={expire_at}, " +
+      SQL("update agentinfo set name={name}, phone={phone}, area={area}, city={city}, logo_url={logo_url}, expire_at={expire_at}, " +
         "contact_info={contact_info}, memo={memo}, login_name={login_name}, " +
         "updated_at={time} where uid={id}")
         .on(
           'id -> id,
           'name -> name,
+          'city -> city,
           'area -> area,
           'phone -> phone,
           'logo_url -> logo,
@@ -55,10 +56,11 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[Str
   def create: Option[KulebaoAgent] = DB.withConnection {
     implicit c =>
       removeDuplicatedPhone(phone)
-      val insert: Option[Long] = SQL("insert into agentinfo (name, area, phone, logo_url, login_password, login_name, updated_at, created_at, expire_at, memo, contact_info) values (" +
-        "{name}, {area}, {phone}, {logo_url}, {login_password}, {login_name}, {time}, {time}, {expire_at}, {memo}, {contact_info})")
+      val insert: Option[Long] = SQL("insert into agentinfo (name, area, city, phone, logo_url, login_password, login_name, updated_at, created_at, expire_at, memo, contact_info) values (" +
+        "{name}, {area}, {city}, {phone}, {logo_url}, {login_password}, {login_name}, {time}, {time}, {expire_at}, {memo}, {contact_info})")
         .on(
           'name -> name,
+          'city -> city,
           'area -> area,
           'phone -> phone,
           'logo_url -> logo,
@@ -210,6 +212,7 @@ object KulebaoAgent {
     get[Long]("uid") ~
       get[Option[String]]("name") ~
       get[Option[String]]("area") ~
+      get[Option[String]]("city") ~
       get[Option[String]]("phone") ~
       get[Option[String]]("logo_url") ~
       get[Option[String]]("login_name") ~
@@ -218,8 +221,8 @@ object KulebaoAgent {
       get[Option[String]]("memo") ~
       get[Option[Long]]("updated_at") ~
       get[Option[Long]]("created_at") map {
-      case id ~ name ~ area ~ phone ~ url ~ loginName ~ expire ~ contact_info ~ memo ~ updated ~ created =>
-        KulebaoAgent(Some(id), name, area, phone, url, contact_info, memo, loginName, updated, created, expire)
+      case id ~ name ~ area ~ city ~ phone ~ url ~ loginName ~ expire ~ contact_info ~ memo ~ updated ~ created =>
+        KulebaoAgent(Some(id), name, area, phone, url, contact_info, memo, city, loginName, updated, created, expire)
     }
   }
 
