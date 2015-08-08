@@ -57,7 +57,7 @@ angular.module("kulebao.directives").directive "klBaiduMap", ->
         ), model.city
       else
         point = new BMap.Point model.longitude, model.latitude
-        map.centerAndZoom point, 18
+        map.centerAndZoom point, 17
         clickHandler(map) point: point, pixel: map.pointToPixel(point)
 
       map.addEventListener "click", clickHandler(map) if scope.clickable
