@@ -13,6 +13,33 @@ describe 'AgentContractorsController', ->
   contractor2 = {"id":2,"agent_id":1,"category":"培训教育","title":"悲剧","address":"上海","contact":"13333452147","time_span":"2015-12-02~2016-12-03","detail":"要悲剧","logo":"","updated_at":1393399313123,"publishing":{"publish_status":3,"published_at":0,"reject_reason":"名字太长"},"location":{"latitude":123.231,"longitude":321.123,"address":""}}
   contractor1 = {"id":1,"agent_id":1,"category":"其他","title":"雅芳","address":"天津","contact":"13333652147","time_span":"2015-07-02~2015-08-03","detail":"去广告中心，领免费机票","logo":"","updated_at":1393395313123,"publishing":{"publish_status":2,"published_at":1393395313123},"location":{"latitude":123.231,"longitude":321.123,"address":""}}
 
+  activity2 = {
+    "id": 2,
+    "agent_id": 1,
+    "contractor_id": 1,
+    "title": "T下线",
+    "address": "四川",
+    "contact": "13333653147",
+    "detail": "特斯拉要不要",
+    "logo": "",
+    "updated_at": 1393399313123,
+    "publishing": {"publish_status": 5, "published_at": 1393399313123},
+    "price": {"origin": 10000.0, "discounted": 5000.0}
+  }
+  activity1 = {
+    "id": 1,
+    "agent_id": 1,
+    "contractor_id": 1,
+    "title": "T上线",
+    "address": "四川",
+    "contact": "13333653147",
+    "detail": "特斯拉要不要",
+    "logo": "",
+    "updated_at": 1393399313123,
+    "publishing": {"publish_status": 4, "published_at": 1393399313123},
+    "price": {"origin": 10000.0, "discounted": 5000.0}
+  }
+
   beforeEach inject (_$controller_, _$rootScope_, _$httpBackend_) ->
     $controller = _$controller_
     $httpBackend = _$httpBackend_
@@ -54,15 +81,11 @@ describe 'AgentContractorsController', ->
 
   prepareForRefreshing = ->
     $httpBackend.expectGET('/api/v4/agent/1/contractor')
-    .respond [
-      contractor2,
-      contractor1
-    ]
+    .respond [contractor2, contractor1]
+
     $httpBackend.expectGET('/api/v4/agent/1/activity')
-    .respond [
-      {"id":2,"agent_id":1,"contractor_id":1,"title":"T下线","address":"四川","contact":"13333653147","detail":"特斯拉要不要","logo":"","updated_at":1393399313123,"publishing":{"publish_status":5,"published_at":1393399313123},"price":{"origin":10000.0,"discounted":5000.0}}
-      {"id":1,"agent_id":1,"contractor_id":1,"title":"T上线","address":"四川","contact":"13333653147","detail":"特斯拉要不要","logo":"","updated_at":1393399313123,"publishing":{"publish_status":4,"published_at":1393399313123},"price":{"origin":10000.0,"discounted":5000.0}}
-    ]
+    .respond [activity1, activity2]
+
     $httpBackend.expectGET('/api/v4/agent/1/kindergarten/1/active')
     .respond {"school_id":1,"activated":6,"all":9,"member":8,"video":2,"check_in_out":0,"children":600}
     $httpBackend.expectGET('/api/v4/agent/1/kindergarten/2/active')
