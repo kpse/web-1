@@ -28,6 +28,8 @@ object RelativeController extends Controller with Secured {
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
       case (s) if s.basic.id.nonEmpty || s.id.nonEmpty =>
         BadRequest(Json.toJson(ErrorResponse("有id的情况请用update接口。(use update when you have ID value)", 4)))
+      case (s) if s.basic.duplicatedPhoneWithOthers =>
+        BadRequest(Json.toJson(ErrorResponse("手机与现有未删除家长重复，请先删除再创建。(duplicated phone number with another parent)", 6)))
       case (s) =>
         Relative.removeDirtyDataIfExists(s)
         Ok(Json.toJson(s.create))

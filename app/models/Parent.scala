@@ -15,7 +15,7 @@ import play.api.libs.json.Json
 case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String],
                   gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int],
                   company: Option[String] = None, video_member_status: Option[Long] = None, created_at: Option[Long] = None,
-                  id: Option[Long]=None) {
+                  id: Option[Long] = None) {
   def hasHistory(historyId: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from sessionlog where uid={id} and sender={sender}")
@@ -328,6 +328,7 @@ object Parent {
     implicit c =>
       val timestamp = System.currentTimeMillis
       updateRelatedPhone(parent)
+      fixUpPushAccount(parent)
       SQL("update parentinfo set name={name}, " +
         "phone={phone}, gender={gender}, company={company}, " +
         "picurl={picurl}, birthday={birthday}, " +
@@ -418,7 +419,7 @@ object Parent {
             'member -> parent.member_status.getOrElse(0),
             'timestamp -> timestamp,
             'created -> timestamp).executeInsert()
-        Logger.info(s"created parent uid=${createdId}, parent_id=${parentId}")
+        Logger.info(s"created parent uid=$createdId, parent_id=$parentId, phone=${parent.phone}")
         val accountinfoUid = createPushAccount(parent)
         Logger.info("created accountinfo %s".format(accountinfoUid))
         c.commit()
@@ -437,16 +438,30 @@ object Parent {
 
   def createPushAccount(parent: Parent): Option[Long] = DB.withConnection {
     implicit c =>
+      Logger.info(s"createPushAccount for ${parent.parent_id} ${parent.phone}")
+      val existingHandler: (Parent) => Option[Long] = (p: Parent) => throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
+      manipulatePushAccount(parent)(existingHandler)
+  }
+
+  def fixUpPushAccount(parent: Parent): Option[Long] = DB.withConnection {
+    implicit c =>
+      Logger.info(s"fixUpPushAccount for ${parent.parent_id} ${parent.phone}")
+      val existingHandler: (Parent) => Option[Long] = (p: Parent) => None
+      manipulatePushAccount(parent)(existingHandler)
+  }
+
+  def manipulatePushAccount(parent: Parent)(existingHandler: (Parent) => Option[Long]) = DB.withConnection {
+    implicit c =>
       isConflicting(parent) match {
-        case true => throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
         case false =>
-          SQL("INSERT INTO accountinfo(accountid, password, pushid, active, pwd_change_time) " +
-            "VALUES ({accountid},{password},'',0,0)")
+          SQL("INSERT INTO accountinfo(accountid, password) " +
+            "VALUES ({accountid},{password})")
             .on('accountid -> parent.phone,
               'password -> generateNewPassword(parent.phone)).executeInsert()
+        case true => existingHandler(parent)
       }
-
   }
+
 
   val withRelationship = {
     get[Long]("parentinfo.uid") ~
@@ -513,7 +528,7 @@ object Parent {
 
   val simple = {
     get[Long]("uid") ~
-    get[String]("parent_id") ~
+      get[String]("parent_id") ~
       get[String]("school_id") ~
       get[String]("parentinfo.name") ~
       get[String]("phone") ~
