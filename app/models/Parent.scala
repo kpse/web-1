@@ -454,6 +454,7 @@ object Parent {
     implicit c =>
       isConflicting(parent) match {
         case false =>
+          Logger.info(s"inert PushAccount for ${parent.phone}")
           SQL("INSERT INTO accountinfo(accountid, password) " +
             "VALUES ({accountid},{password})")
             .on('accountid -> parent.phone,
