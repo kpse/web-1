@@ -16,7 +16,11 @@ CREATE TABLE sessionlog (
   sender_type CHAR(1) NOT NULL DEFAULT 't',
   status INT default 1,
   update_at BIGINT(20) NOT NULL DEFAULT 0,
-  PRIMARY KEY (uid)
+  PRIMARY KEY (uid),
+  KEY `session_id` (`session_id`),
+  KEY `school` (`school_id`,`status`),
+  KEY `update_at` (`update_at`),
+  KEY `IDX_SESSION_ID_SCHOOL_ID` (`session_id`,`school_id`)
 );
 
 INSERT INTO sessionlog (school_id, session_id, content, media_url, sender, update_at, sender_type)
