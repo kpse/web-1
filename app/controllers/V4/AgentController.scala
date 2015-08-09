@@ -1,13 +1,13 @@
 package controllers.V4
 
 import controllers.Secured
-import models.V4.{AgentResetPassword, AgentPassword, KulebaoAgent}
-import models.V4.AgentPassword.readAgentPassword
-import models.V4.AgentPassword.readAgentResetPassword
+import models.V4.AgentPassword.{readAgentPassword, readAgentResetPassword}
+import models.V4.AgentSchool.{writeAgentContractorInSchoolSummary, writeAgentReport}
 import models.V4.KulebaoAgent.writeAgentStatistics
-import models.{Charge, Employee, ErrorResponse, SuccessResponse}
+import models.V4._
+import models.{Employee, ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
-import play.api.mvc.{SimpleResult, Controller}
+import play.api.mvc.{Controller, SimpleResult}
 
 object AgentController extends Controller with Secured {
   def show(id: Long) = IsAgentLoggedIn {
@@ -105,5 +105,10 @@ object AgentController extends Controller with Secured {
 
   def stats(agentId: Long) = IsAgentLoggedIn { u => _ =>
     Ok(Json.toJson(KulebaoAgent.stats(agentId)))
+  }
+
+  def summarise(kg: Long) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(AgentSchool.summarise(kg)))
   }
 }

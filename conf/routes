@@ -614,6 +614,7 @@ POST          /api/v4/agent/:agentId/contractor/:contractorId/activity/:id/rejec
 POST          /api/v4/agent/:agentId/password                                                  controllers.V4.AgentController.changePassword(agentId: Long)
 POST          /api/v4/agent/:agentId/password_reset                                            controllers.V4.AgentController.resetPassword(agentId: Long)
 
+GET           /api/v4/kindergarten/:kg/commercial_summary                                      controllers.V4.AgentController.summarise(kg: Long)
 GET           /api/v4/kindergarten/:kg/contractor                                              controllers.V4.AgentContractorInSchoolController.published(kg: Long, category: Option[Int], from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v4/kindergarten/:kg/contractor/:contractorId/activity                       controllers.V4.AgentContractorInSchoolController.publishedActivities(kg: Long, contractorId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v4/kindergarten/:kg/activity                                                controllers.V4.AgentActivityInSchoolController.published(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])

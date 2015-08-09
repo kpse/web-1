@@ -7,6 +7,9 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
+case class AgentReport(threshold: Long, current: Long)
+case class AgentSummaryInSchool(agent_id: Long, contractor: AgentReport, activity: AgentReport, school_id: Long)
+
 case class AgentSchool(id: Option[Long], school_id: Long, name: String) {
   def update(base: Long): Option[AgentSchool] = DB.withConnection {
     implicit c =>
@@ -38,6 +41,10 @@ case class AgentSchool(id: Option[Long], school_id: Long, name: String) {
 object AgentSchool {
   implicit val writeAgentSchool = Json.writes[AgentSchool]
   implicit val readAgentSchool = Json.reads[AgentSchool]
+  implicit val writeAgentReport = Json.writes[AgentReport]
+  implicit val readAgentReport = Json.reads[AgentReport]
+  implicit val writeAgentContractorInSchoolSummary = Json.writes[AgentSummaryInSchool]
+  implicit val readAgentContractorInSchoolSummary = Json.reads[AgentSummaryInSchool]
 
   def show(id: Long, base: Long) = DB.withConnection {
     implicit c =>
@@ -76,12 +83,33 @@ object AgentSchool {
         ).executeUpdate()
   }
 
+  def summarise(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL(s"select (select count(a.uid) from agentcontractorinschool s, agentcontractor a where s.contractor_id=a.uid and s.school_id={kg} and a.status=1 and s.status=1 and a.publish_status=4) as contractor, " +
+        s"(select count(a.uid) from agentactivityinschool s, agentactivity a where s.activity_id=a.uid and s.school_id={kg} and a.status=1 and s.status=1 and a.publish_status=4) as activity, " +
+        s"{kg} as school_id, " +
+        s"(select agent_id from agentschool where school_id={kg} and status=1) as agent")
+        .on(
+          'kg -> kg
+        ).as(simpleSummary single)
+  }
+
   val simple = {
     get[Long]("uid") ~
       get[String]("school_id") ~
       get[String]("name") map {
       case id ~ school ~ name =>
         AgentSchool(Some(id), school.toLong, name)
+    }
+  }
+
+  val simpleSummary = {
+    get[Long]("agent") ~
+      get[Long]("school_id") ~
+      get[Long]("contractor") ~
+      get[Long]("activity") map {
+      case agent ~ kg ~ contractor ~ activity =>
+        AgentSummaryInSchool(agent, AgentReport(10, contractor), AgentReport(10, activity), kg)
     }
   }
 }
