@@ -109,7 +109,7 @@ object AgentSchool {
       get[Long]("contractor") ~
       get[Long]("activity") map {
       case agent ~ kg ~ contractor ~ activity =>
-        AgentSummaryInSchool(agent, AgentReport(10, contractor), AgentReport(10, activity), kg)
+        AgentSummaryInSchool(agent, AgentReport(5, contractor), AgentReport(5, activity), kg)
     }
   }
 }
