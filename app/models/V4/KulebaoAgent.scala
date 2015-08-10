@@ -149,12 +149,12 @@ object KulebaoAgent {
   def stats(agentId: Long) = DB.withConnection {
     implicit c =>
       val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
-      Logger.info(s"from = ${pattern.print(DateTime.now().minusMonths(13))}")
+      Logger.info(s"from = ${pattern.print(DateTime.now().minusMonths(12))}")
       Logger.info(s"to = ${pattern.print(DateTime.now().minusMonths(1))}")
       SQL(s"select * from agentstatistics where month >= {from} and month <= {to} and agent_id={agent}")
         .on(
           'agent -> agentId,
-          'from -> pattern.print(DateTime.now().minusMonths(13)),
+          'from -> pattern.print(DateTime.now().minusMonths(12)),
           'to -> pattern.print(DateTime.now().minusMonths(1))
         ).as(simpleStatistics *)
   }

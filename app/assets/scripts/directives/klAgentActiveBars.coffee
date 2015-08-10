@@ -26,7 +26,7 @@ angular.module("kulebao.directives").directive "klAgentActiveBars", [
           someData = data
 
           width = 951
-          offset = 20
+          offset = 10
           barWidth = 30
           barNumberDescOffset = 15
 
