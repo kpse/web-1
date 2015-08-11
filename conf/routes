@@ -413,6 +413,13 @@ POST          /api/v3/kindergarten/:kg/hardware                                 
 POST          /api/v3/kindergarten/:kg/hardware/:id                                            controllers.V3.HardwareController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/hardware/:id                                            controllers.V3.HardwareController.delete(kg: Long, id: Long)
 
+
+GET           /api/v3/kindergarten/:kg/camera                                                  controllers.V3.CameraController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v3/kindergarten/:kg/camera/:id                                              controllers.V3.CameraController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/camera                                                  controllers.V3.CameraController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/camera/:id                                              controllers.V3.CameraController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/camera/:id                                              controllers.V3.CameraController.delete(kg: Long, id: Long)
+
 GET           /api/v3/kindergarten/:kg/multi_channel                                           controllers.V3.MultiChannelController.index(kg: Long)
 GET           /api/v3/kindergarten/:kg/multi_channel/:id                                       controllers.V3.MultiChannelController.show(kg: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/multi_channel                                           controllers.V3.MultiChannelController.create(kg: Long)
