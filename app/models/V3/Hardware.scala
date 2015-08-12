@@ -7,7 +7,9 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
-case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], ip: Option[String], port:Option[Int], machine_type: Option[Int], updated_at: Option[Long]) {
+case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], ip: Option[String], port:Option[Int],
+                    machine_type: Option[Int], updated_at: Option[Long], channel_1_camera: Option[Long] = None,
+                    channel_2_camera: Option[Long] = None) {
   def exists(id: Long) = DB.withTransaction {
     implicit c =>
       SQL("select count(1) from hardware where uid={id}")
