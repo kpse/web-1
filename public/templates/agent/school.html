@@ -13,9 +13,10 @@
   <tr class="row">
     <th class="col-xs-1">编号</th>
     <th class="col-xs-3">全名</th>
-    <th class="col-xs-2">学生数</th>
-    <th class="col-xs-2">家长数</th>
+    <th class="col-xs-1">学生数</th>
+    <th class="col-xs-1">家长数</th>
     <th class="col-xs-2">上月活跃度</th>
+    <th class="col-xs-2">上月激活率</th>
     <th class="col-xs-2">操作</th>
   </tr>
   </thead>
@@ -23,12 +24,13 @@
   <tr ng-repeat="kg in currentAgent.schools | filter: searchText | orderBy: 'school_id'" class="row" >
     <td class="col-xs-1"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
     <td class="col-xs-3">{{::kg.name}}</td>
-    <td class="col-xs-2">{{kg.stats.all}}</td>
-    <td class="col-xs-2">{{kg.stats.children}}</td>
+    <td class="col-xs-1">{{kg.stats.all}}</td>
+    <td class="col-xs-1">{{kg.stats.children}}</td>
     <td class="col-xs-2">
       <span>{{kg.lastActiveData.rate || 'N/A'}}</span>
       <a ng-click="checkUserActive(kg)">查看</a>
     </td>
+    <td class="col-xs-2">{{kg.lastActiveData.childRate}}</td>
     <td class="col-xs-2">
       N/A
     </td>

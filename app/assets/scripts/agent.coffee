@@ -56,6 +56,15 @@ angular.module('kulebaoAgent',
       templateUrl: 'templates/agent/statistics.html'
       controller: 'AgentStatisticsCtrl'
 
+    .state 'main.history',
+      url: '/history'
+      templateUrl: 'templates/agent/history.html'
+      controller: 'AgentHistoryCtrl'
+    .state 'main.history.month',
+      url: '/month/:month'
+      templateUrl: 'templates/agent/school_in_month.html'
+      controller: 'AgentSchoolHistoryCtrl'
+
     .state 'error',
       url: '/error'
       templateUrl: 'templates/agent/404.html'

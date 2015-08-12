@@ -61,6 +61,9 @@
 .module-view {
   min-height: 739px;
 }
+.month-select {
+  width: 200px;
+}
 .triangle-border {
   position: relative;
   padding: 15px;

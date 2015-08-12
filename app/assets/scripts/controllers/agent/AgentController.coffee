@@ -16,6 +16,12 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
           scope.$on 'schools_ready', -> resolve()
           resolve() if scope.currentAgent && scope.currentAgent.schools?
 
+      scope.calcChildRate = (d) ->
+        result = if d.child_count == 0 then 0 else (d.logged_ever / d.child_count * 1.5 * 100 ).toFixed 2
+        if result > 100 then 100 else result
+
+      scope.calcRate = (d) -> if d.logged_ever == 0 then 0 else (d.logged_once/d.logged_ever * 100).toFixed 2
+
       scope.refresh = ->
         scope.d3Data = []
         currentAgent = scope.currentAgent
@@ -29,7 +35,8 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
             kg.checked = false
             kg.activeData = groups[kg.school_id]
             _.each kg.activeData, (d) ->
-              d.rate = if d.logged_ever == 0 then 0 else (d.logged_once/d.logged_ever * 100).toFixed 2
+              d.rate = scope.calcRate(d)
+              d.childRate = scope.calcChildRate(d)
             kg.lastActiveData = _.last _.sortBy kg.activeData, 'month'
 
           scope.$broadcast 'schools_ready', currentAgent.schools

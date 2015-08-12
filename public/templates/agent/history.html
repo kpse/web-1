@@ -1,0 +1,10 @@
+<h2>按月查看数据统计</h2>
+<div class="well schools-search-panel">
+  <label for="month-select">选择查看月份</label>
+  <select class="form-control month-select" ng-model="currentMonth"
+          ng-options="month for month in pastMonths" id="month-select"
+          data-style="btn-primary"></select>
+</div>
+<div class="loading" ng-show="loading"></div>
+<div class="agent-school-view" ui-view></div>
+

@@ -1,0 +1,27 @@
+<h4>{{currentMonthDisplay}}数据回顾</h4>
+<div class="loading" ng-show="loading"></div>
+<table class="table table-hover table-condensed schools-list">
+  <thead>
+  <tr class="row">
+    <th class="col-xs-2">编号</th>
+    <th class="col-xs-3">学校全名</th>
+    <th class="col-xs-1">学生数</th>
+    <th class="col-xs-1">总用户数</th>
+    <th class="col-xs-1">当月用户数</th>
+    <th class="col-xs-2">当月激活率</th>
+    <th class="col-xs-2">当月活跃度</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="kg in currentAgent.schools | filter: searchText | orderBy: 'school_id'" class="row" >
+    <td class="col-xs-2"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
+    <td class="col-xs-3">{{::kg.name}}</td>
+    <td class="col-xs-1">{{kg.stats.child_count || 0}}</td>
+    <td class="col-xs-1">{{kg.stats.logged_ever || 0}}</td>
+    <td class="col-xs-1">{{kg.stats.logged_once || 0}}</td>
+    <td class="col-xs-2">{{kg.stats.childRate || 0}}</td>
+    <td class="col-xs-2">{{kg.stats.rate || 0}}</td>
+  </tr>
+  </tbody>
+</table>
+
