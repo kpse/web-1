@@ -13,7 +13,7 @@ import play.api.Play.current
 import models.LoginAccount
 import play.api.mvc.Session
 
-case class AgentStatistics(id: Long, agent: Long, school_id: Long, month: String, logged_once: Long, logged_ever: Long, created_at: Long)
+case class AgentStatistics(id: Long, agent: Long, school_id: Long, month: String, logged_once: Long, logged_ever: Long, created_at: Long, child_count: Long)
 
 case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[String], phone: Option[String], logo: Option[String], contact_info: Option[String], memo: Option[String], city: Option[String],
                         login_name: Option[String], updated_at: Option[Long], created_at: Option[Long], expire: Option[Long], privilege_group: Option[String] = Some("agent")) extends LoginAccount {
@@ -165,12 +165,13 @@ object KulebaoAgent {
       Logger.info(s"lastMonth = ${pattern.print(DateTime.now().minusMonths(1))}")
       historyDataExists(data) match {
         case false =>
-          SQL(s"insert into agentstatistics (agent_id, school_id, month, logged_once, logged_ever, created_at) values " +
-            s"({agent}, {school_id}, {month}, {once}, {ever}, {time})")
+          SQL(s"insert into agentstatistics (agent_id, school_id, month, child_count, logged_once, logged_ever, created_at) values " +
+            s"({agent}, {school_id}, {month}, {child}, {once}, {ever}, {time})")
             .on(
               'agent -> data.agent,
               'school_id -> data.school_id,
               'month -> data.month,
+              'child -> data.child_count,
               'once -> data.logged_once,
               'ever -> data.logged_ever,
               'time -> System.currentTimeMillis()
@@ -197,8 +198,12 @@ object KulebaoAgent {
           'begin -> firstMilli,
           'end -> lastMilli
         ).as(get[Long]("count") single)
+      val childCount: Long = SQL(s"SELECT count(distinct child_id) count FROM childinfo where school_id={kg} and status=1)")
+        .on(
+          'kg -> school_id
+        ).as(get[Long]("count") single)
       val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
-      AgentStatistics(0, agent, school_id, pattern.print(lastMonth), loggedOnce, loggedEver, 0)
+      AgentStatistics(0, agent, school_id, pattern.print(lastMonth), loggedOnce, loggedEver, 0, childCount)
 
   }
 
@@ -233,9 +238,10 @@ object KulebaoAgent {
       get[String]("month") ~
       get[Long]("logged_once") ~
       get[Long]("logged_ever") ~
+      get[Long]("child_count") ~
       get[Long]("created_at") map {
-      case id ~ agent ~ school ~ month ~ once ~ ever ~ created =>
-        AgentStatistics(id, agent, school.toLong, month, once, ever, created)
+      case id ~ agent ~ school ~ month ~ once ~ ever ~ child ~ created =>
+        AgentStatistics(id, agent, school.toLong, month, once, ever, created, child)
     }
   }
 }
