@@ -208,4 +208,9 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
 
       scope.dynamicDisable = (message) ->
         message.logos && message.logos.length > 2
+
+      scope.deleteLogo = (logo) ->
+        _.pullAt scope.newAd.logos, _.findIndex scope.newAd.logos, 'url', logo.url
+        scope.disableUploading = scope.dynamicDisable(scope.newAd)
+        scope.buttonLabel = scope.dynamicLabel(scope.newAd)
   ]

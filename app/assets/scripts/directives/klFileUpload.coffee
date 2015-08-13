@@ -68,11 +68,11 @@ angular.module("kulebao.directives").directive "klFileUpload",
           scope.combineSuccess = (f) ->
             (url, size, other)->
               f(url, size, other) if angular.isFunction(f)
+              scope.form.$setDirty() if scope.form?
               if scope.ngModel
                 scope.$apply ->
                   scope.ngModel[scope.field] = url
                   scope.ngModel[scope.field + 'Size'] = size
-                  scope.form.$setDirty() if scope.form?
               scope.cleanUp()
 
         templateUrl: (elem, attr) ->

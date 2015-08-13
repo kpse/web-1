@@ -224,6 +224,10 @@
   max-height: 220px;
   max-width: 150px;
 }
+.main-body .main-view .commercial-image-preview .delete-image,
+.main-body .modal .commercial-image-preview .delete-image {
+  cursor: pointer;
+}
 .main-body .main-view .rating,
 .main-body .modal .rating,
 .main-body .main-view .editable,

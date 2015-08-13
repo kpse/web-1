@@ -7,9 +7,11 @@ angular.module("kulebao.directives").directive "klMediaPreview",
         restrict: "EA"
         scope:
           media: "="
+          deleteCallback: "="
           height: "@"
           width: "@"
           clickable: "@"
+          form: "="
 
         link: (scope, element) ->
           scope.$watch 'media.url', ( (n, o) ->
@@ -35,6 +37,10 @@ angular.module("kulebao.directives").directive "klMediaPreview",
             return unless scope.media?
             scope.url = scope.compress scope.media.url, scope.width, scope.height
             scope.type = scope.media.type
+
+          scope.deleteThisImage = (media) ->
+            scope.deleteCallback(media) if scope.deleteCallback?
+            scope.form.$setDirty() if scope.form?
 
         templateUrl: (tElement, tAttrs) ->
           if tAttrs.clickable
