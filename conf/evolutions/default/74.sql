@@ -16,7 +16,7 @@ CREATE TABLE agentcontractor (
   latitude   decimal,
   longitude   decimal,
   geo_address   TEXT,
-  priority   INT(4) NOT NULL DEFAULT 0,
+  priority   BIGINT NOT NULL DEFAULT 0,
   publish_status   INT(4) DEFAULT 0,
   published_at BIGINT,
   reject_reason TEXT,

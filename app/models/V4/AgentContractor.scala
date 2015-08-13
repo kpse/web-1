@@ -34,7 +34,7 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
   def update(base: Long): Option[AgentContractor] = DB.withConnection {
     implicit c =>
       SQL("update agentcontractor set agent_id={base}, category={category}, title={title}, address={address}, contact={contact}, time_span={time_span}," +
-        "detail={detail}, logo={logo}, latitude={latitude}, longitude={longitude}, geo_address={geo_address}, updated_at={time} where uid={id}")
+        "detail={detail}, logo={logo}, latitude={latitude}, longitude={longitude}, geo_address={geo_address}, priority={priority}, updated_at={time} where uid={id}")
         .on(
           'id -> id,
           'base -> base,
@@ -57,8 +57,8 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
   def create(base: Long): Option[AgentContractor] = DB.withConnection {
     implicit c =>
       val insert: Option[Long] = SQL("insert into agentcontractor (agent_id, category, title, address, contact, time_span, " +
-        "detail, logo, updated_at, created_at, publish_status, latitude, longitude, geo_address) values (" +
-        "{base}, {category}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time}, 0, {latitude}, {longitude}, {geo_address})")
+        "detail, logo, updated_at, created_at, publish_status, latitude, longitude, geo_address, priority) values (" +
+        "{base}, {category}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time}, 0, {latitude}, {longitude}, {geo_address}, {priority})")
         .on(
           'base -> base,
           'title -> title,
@@ -149,10 +149,11 @@ object AgentContractor {
       get[Option[java.math.BigDecimal]]("longitude") ~
       get[Option[String]]("logo") ~
       get[Option[Long]]("updated_at") ~
+      get[Long]("priority") ~
       get[Option[String]]("geo_address") map {
-      case id ~ agent ~ title ~ category ~ address ~ contact ~ timeSpan ~ detail ~ latitude ~ longitude ~ logo ~ time ~ geoAddress =>
+      case id ~ agent ~ title ~ category ~ address ~ contact ~ timeSpan ~ detail ~ latitude ~ longitude ~ logo ~ time ~ priority ~ geoAddress =>
         AgentContractor(Some(id), agent, categoryFromEnum(category), title, address, contact, timeSpan, detail, AgentRawActivity.splitLogos(logo), time,
-          Some(AdPublishing.publishStatus(tableName)(id, agent)), locationOfContractor(latitude, longitude, geoAddress))
+          Some(AdPublishing.publishStatus(tableName)(id, agent)), locationOfContractor(latitude, longitude, geoAddress), priority)
     }
   }
 }
