@@ -10,9 +10,10 @@ import play.api.Play.current
 
 
 case class ActivityPrice(origin: Double, discounted: Double)
+case class HeroImage(url: String)
 case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Option[Long], title: String,
                             address: Option[String], contact: String, time_span: Option[String],
-                         detail: Option[String], logo: Option[String], updated_at: Option[Long],
+                         detail: Option[String], logos: List[HeroImage], updated_at: Option[Long],
                             publishing: Option[AdPublishing] = None, location: Option[EarthLocation] = None,
                              price: Option[ActivityPrice] = None) {
   def deactive(agentId: Long) = for {i <- id
@@ -48,7 +49,7 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
           'geo_address -> location.map (_.address),
           'origin_price -> price.map (_.origin),
           'price -> price.map (_.discounted),
-          'logo -> logo,
+          'logo -> logos.map(_.url).mkString(AgentRawActivity.urlSeparator),
           'contractor -> contractor_id,
           'time -> System.currentTimeMillis
         ).executeUpdate()
@@ -72,7 +73,7 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
           'geo_address -> location.map (_.address),
           'origin_price -> price.map (_.origin),
           'price -> price.map (_.discounted),
-          'logo -> logo,
+          'logo -> logos.map(_.url).mkString(AgentRawActivity.urlSeparator),
           'contractor -> contractor_id,
           'time -> System.currentTimeMillis
         ).executeInsert()
@@ -81,13 +82,16 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
 }
 
 object AgentRawActivity {
-  import AgentContractor.writeEarthLocation
-  import AgentContractor.readEarthLocation
+  implicit val writeEarthLocation = Json.writes[EarthLocation]
+  implicit val readEarthLocation = Json.reads[EarthLocation]
   implicit val writeActivityPrice = Json.writes[ActivityPrice]
   implicit val readActivityPrice = Json.reads[ActivityPrice]
+  implicit val writeHeroImage = Json.writes[HeroImage]
+  implicit val readHeroImage = Json.reads[HeroImage]
   implicit val writeAgentRawActivity = Json.writes[AgentRawActivity]
   implicit val readAgentRawActivity = Json.reads[AgentRawActivity]
   val tableName: String = "agentactivity"
+  val urlSeparator = "  "
 
   def show(id: Long, base: Long) = DB.withConnection {
     implicit c =>
@@ -121,6 +125,11 @@ object AgentRawActivity {
   def priceOfActivity(originPrice: Option[Double], price: Option[Double]): Option[ActivityPrice] =
     for(origin <- originPrice;price <- price) yield ActivityPrice(origin, price)
 
+  def splitLogos(logo: Option[String]): List[HeroImage] = logo match {
+    case Some(images) if images.length > 0 => images.split(urlSeparator).map(url => HeroImage(url)).toList
+    case _ => List()
+  }
+
   val simple = {
     get[Long]("uid") ~
       get[Long]("agent_id") ~
@@ -138,7 +147,7 @@ object AgentRawActivity {
       get[Option[Long]]("updated_at") ~
       get[Option[String]]("geo_address") map {
       case id ~ agent ~ contractor ~ title ~ address ~ contact ~ timeSpan ~ detail ~ latitude ~ longitude ~ origin_price ~ price ~ logo ~ time ~ geoAddress=>
-        AgentRawActivity(Some(id), agent, contractor, title, address, contact, timeSpan, detail, logo, time,
+        AgentRawActivity(Some(id), agent, contractor, title, address, contact, timeSpan, detail, splitLogos(logo), time,
           Some(AdPublishing.publishStatus(tableName)(id, agent)), AgentContractor.locationOfContractor(latitude, longitude, geoAddress), priceOfActivity(origin_price, price))
     }
   }

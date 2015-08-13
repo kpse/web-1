@@ -9,10 +9,11 @@ import play.api.libs.json.Json
 import play.api.Play.current
 import math.BigDecimal._
 
+
 case class EarthLocation(latitude: BigDecimal, longitude: BigDecimal, address: String)
 
 case class AgentContractor(id: Option[Long], agent_id: Long, category: String, title: String, address: Option[String], contact: String, time_span: Option[String],
-                           detail: Option[String], logo: Option[String], updated_at: Option[Long], publishing: Option[AdPublishing] = None, location: Option[EarthLocation] = None) {
+                           detail: Option[String], logos: List[HeroImage], updated_at: Option[Long], publishing: Option[AdPublishing] = None, location: Option[EarthLocation] = None) {
   def deactive(agentId: Long) = for {i <- id
                                      p <- publishing} yield p.deactive(AgentContractor.tableName)(agentId, i)
 
@@ -46,7 +47,7 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
           'latitude -> location.map (_.latitude.bigDecimal),
           'longitude -> location.map (_.longitude.bigDecimal),
           'geo_address -> location.map (_.address),
-          'logo -> logo,
+          'logo -> logos.map(_.url).mkString(AgentRawActivity.urlSeparator),
           'time -> System.currentTimeMillis
         ).executeUpdate()
       id flatMap (AgentContractor.show(_, base))
@@ -68,7 +69,7 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
           'latitude -> location.map (_.latitude.bigDecimal),
           'longitude -> location.map (_.longitude.bigDecimal),
           'geo_address -> location.map (_.address),
-          'logo -> logo,
+          'logo -> logos.map(_.url).mkString(AgentRawActivity.urlSeparator),
           'time -> System.currentTimeMillis
         ).executeInsert()
       insert flatMap (AgentContractor.show(_, base))
@@ -78,6 +79,8 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
 object AgentContractor {
   implicit val writeEarthLocation = Json.writes[EarthLocation]
   implicit val readEarthLocation = Json.reads[EarthLocation]
+  implicit val writeHeroImage = Json.writes[HeroImage]
+  implicit val readHeroImage = Json.reads[HeroImage]
   implicit val writeAgentAd = Json.writes[AgentContractor]
   implicit val readAgentAd = Json.reads[AgentContractor]
 
@@ -146,7 +149,7 @@ object AgentContractor {
       get[Option[Long]]("updated_at") ~
       get[Option[String]]("geo_address") map {
       case id ~ agent ~ title ~ category ~ address ~ contact ~ timeSpan ~ detail ~ latitude ~ longitude ~ logo ~ time ~ geoAddress =>
-        AgentContractor(Some(id), agent, categoryFromEnum(category), title, address, contact, timeSpan, detail, logo, time,
+        AgentContractor(Some(id), agent, categoryFromEnum(category), title, address, contact, timeSpan, detail, AgentRawActivity.splitLogos(logo), time,
           Some(AdPublishing.publishStatus(tableName)(id, agent)), locationOfContractor(latitude, longitude, geoAddress))
     }
   }
