@@ -194,4 +194,18 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
         scope.pickUpModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/point_picking.html'
+
+      scope.disableUploading = false
+      scope.buttonLabel = '添加'
+      scope.onUploadSuccess = (url) ->
+        scope.$apply ->
+          scope.newAd.logos.push url: url if url isnt undefined
+          scope.disableUploading = scope.dynamicDisable(scope.newAd)
+          scope.buttonLabel = scope.dynamicLabel(scope.newAd)
+
+      scope.dynamicLabel = (message)->
+        if message.logos.length == 0 then '添加' else '继续添加'
+
+      scope.dynamicDisable = (message) ->
+        message.logos && message.logos.length > 2
   ]

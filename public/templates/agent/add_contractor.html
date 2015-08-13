@@ -30,10 +30,12 @@
       </div>
 
       <div class="clearfix news-creation-form"></div>
-      <div class="form-group col-sm-6">
-        <div class="image-container">
-          <img class="news-image img-responsive" ng-src="{{compress(newAd.logo, 0, 200)}}"
-               alt="图片"/></div>
+      <div class="col-sm-6">
+        <div class="form-group row">
+          <div class="commercial-image-preview col-xs-4 " ng-repeat="m in newAd.logos">
+            <div kl-media-preview media="m" height="220" ></div>
+          </div>
+        </div>
       </div>
 
       <div class="col-sm-6">
@@ -41,7 +43,8 @@
           <label for="news-pic" class="col-sm-4 control-label">上传</label>
 
           <div class="col-sm-8">
-            <kl-file-upload ng-model="newAd" user="adminUser.login_name" form="commercialForm" field-name="logo"></kl-file-upload>
+            <kl-file-upload multiple="newAd.logos" user="adminUser.login_name" form="commercialForm" disabled="disableUploading" on-success="onUploadSuccess"
+                            label="buttonLabel" field-name="logo" suffix="jpg|png"></kl-file-upload>
           </div>
 
         </div>

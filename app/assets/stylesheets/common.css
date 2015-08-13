@@ -219,6 +219,11 @@
 .main-body .modal .image-preview .news-image {
   max-height: 200px;
 }
+.main-body .main-view .commercial-image-preview .message-image,
+.main-body .modal .commercial-image-preview .message-image {
+  max-height: 220px;
+  max-width: 150px;
+}
 .main-body .main-view .rating,
 .main-body .modal .rating,
 .main-body .main-view .editable,
