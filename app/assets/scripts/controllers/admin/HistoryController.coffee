@@ -152,4 +152,9 @@ angular.module('kulebaoAdmin')
       scope.deletable = (message) ->
         (message.sender? && message.sender.id == scope.adminUser.id) || undefined isnt _.find ['principal', 'operator'], (u) -> scope.adminUser.privilege_group == u
 
+      scope.deleteMedia = (media) ->
+        _.pullAt scope.message.medium, _.findIndex scope.message.medium, 'url', media.url
+        scope.disableUploading = scope.dynamicDisable(scope.message)
+        scope.buttonLabel = scope.dynamicLabel(scope.message)
+
   ]

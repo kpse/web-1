@@ -6,4 +6,4 @@
 <a ng-show="isVideo(media.url)" ng-href="{{url}}">
   <img class="message-audio" src="/assets/images/video-file-icon.png"
        alt="{{type}}"/></a>
-<span class="delete-image glyphicon glyphicon-remove" ng-click="deleteThisImage(media)"></span>
+<span class="delete-image glyphicon glyphicon-remove" ng-show="deleteCallback" ng-click="deleteThisImage(media)"></span>

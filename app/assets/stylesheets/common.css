@@ -159,6 +159,12 @@
 .main-body .modal .control-label.highlight {
   color: red;
 }
+.main-body .main-view .image-container .delete-image,
+.main-body .modal .image-container .delete-image,
+.main-body .main-view .image-preview .delete-image,
+.main-body .modal .image-preview .delete-image {
+  cursor: pointer;
+}
 .main-body .main-view .image-container .assignment-image,
 .main-body .modal .image-container .assignment-image,
 .main-body .main-view .image-preview .assignment-image,
