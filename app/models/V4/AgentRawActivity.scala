@@ -124,6 +124,20 @@ object AgentRawActivity {
         ).executeUpdate()
   }
 
+  def filterContractor(contractorId: Option[Long]) = contractorId map { id => " and a.contractor_id = {contractorId} "}
+
+  def published(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int], contractorId: Option[Long] = None) = DB.withConnection {
+    implicit c =>
+      SQL(s"select a.* from agentactivityinschool s, agentactivity a where s.activity_id=a.uid and s.school_id={kg} " +
+        s"and a.status=1 and s.status=1 and a.publish_status=4 ${filterContractor(contractorId).getOrElse("")} ${RangerHelper.generateSpan(from, to, most, "a.uid")}")
+        .on(
+          'from -> from,
+          'to -> to,
+          'contractorId -> contractorId,
+          'kg -> kg
+        ).as(AgentRawActivity.simple *)
+  }
+
 
   def priceOfActivity(originPrice: Option[Double], price: Option[Double]): Option[ActivityPrice] =
     for(origin <- originPrice;price <- price) yield ActivityPrice(origin, price)

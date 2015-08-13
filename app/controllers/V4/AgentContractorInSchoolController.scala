@@ -1,7 +1,7 @@
 package controllers.V4
 
 import controllers.Secured
-import models.V4.{AgentActivityInSchool, AgentContractorInSchool, AgentContractorInSchool$, AgentContractor}
+import models.V4._
 import models.{ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
@@ -56,6 +56,6 @@ object AgentContractorInSchoolController extends Controller with Secured {
   }
   def publishedActivities(kg: Long, contractorId: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn {
     u => _ =>
-      Ok(Json.toJson(AgentActivityInSchool.published(kg, from, to, most, Some(contractorId))))
+      Ok(Json.toJson(AgentRawActivity.published(kg, from, to, most, Some(contractorId))))
   }
 }
