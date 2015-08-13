@@ -40,8 +40,6 @@ angular.module('kulebaoAgent')
           console.log currentAgent.schools
           groups = _.groupBy(q[0], 'month')
           scope.lastActiveData = groups[scope.currentMonth]
-
-
           _.each currentAgent.schools, (s) ->
             s.stats = _.find scope.lastActiveData, (f) -> f.school_id == s.school_id
             s.stats.rate = scope.calcRate s.stats
