@@ -186,4 +186,10 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
         _.pullAt scope.newAd.logos, _.findIndex scope.newAd.logos, 'url', logo.url
         scope.disableUploading = scope.dynamicDisable(scope.newAd)
         scope.buttonLabel = scope.dynamicLabel(scope.newAd)
+
+      scope.moveToTop = (ad) ->
+        currentTop = (_.max scope.contractors, 'priority') || {'priority': 0}
+        ad.priority = currentTop.priority + 1
+        ad.$save ->
+          scope.refresh()
   ]

@@ -213,4 +213,10 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
         _.pullAt scope.newAd.logos, _.findIndex scope.newAd.logos, 'url', logo.url
         scope.disableUploading = scope.dynamicDisable(scope.newAd)
         scope.buttonLabel = scope.dynamicLabel(scope.newAd)
+
+      scope.moveToTop = (ad) ->
+        currentTop = (_.max scope.activities, 'priority') || {'priority': 0}
+        ad.priority = currentTop.priority + 1
+        ad.$save ->
+          scope.refresh()
   ]

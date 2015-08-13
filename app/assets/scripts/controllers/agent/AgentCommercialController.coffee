@@ -53,6 +53,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       createNewAd = ->
         today = new Date
         new Contractor
+          priority: 0
           agent_id: scope.currentAgent.id
           publishing:
             publish_status: 0
@@ -63,6 +64,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       createNewActivity = ->
         today = new Date
         new Activity
+          priority: 0
           agent_id: scope.currentAgent.id
           publishing:
             publish_status: 0

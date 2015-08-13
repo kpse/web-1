@@ -13,7 +13,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="ad in contractors | filter: searchText | orderBy: 'publishing.publish_status' : true " class="row">
+  <tr ng-repeat="ad in contractors | filter: searchText | orderBy: '+priority' : true " class="row">
     <td class="col-xs-1"><a ng-href="/agent#/preview/{{ad.id}}" ng-click="$event.stopPropagation()">{{ad.id}}</a></td>
     <td class="col-xs-2">{{ad.title}}</td>
     <td class="col-xs-1">{{ad.category}}</td>
@@ -50,6 +50,9 @@
       </button>
       <button class="btn btn-xs btn-danger" ng-confirm-msg="这个操作将彻底删除{{ad.name}}，确定继续?"
               ng-confirm-click="removeAd(ad);$event.stopPropagation()">删除
+      </button>
+      <button class="btn btn-xs btn-info" ng-hide="$first"
+              ng-click="moveToTop(ad);$event.stopPropagation()">置顶
       </button>
     </td>
   </tr>
