@@ -13,7 +13,7 @@ import math.BigDecimal._
 case class EarthLocation(latitude: BigDecimal, longitude: BigDecimal, address: String)
 
 case class AgentContractor(id: Option[Long], agent_id: Long, category: String, title: String, address: Option[String], contact: String, time_span: Option[String],
-                           detail: Option[String], logos: List[HeroImage], updated_at: Option[Long], publishing: Option[AdPublishing] = None, location: Option[EarthLocation] = None) {
+                           detail: Option[String], logos: List[HeroImage], updated_at: Option[Long], publishing: Option[AdPublishing] = None, location: Option[EarthLocation] = None, priority: Long = 0) {
   def deactive(agentId: Long) = for {i <- id
                                      p <- publishing} yield p.deactive(AgentContractor.tableName)(agentId, i)
 
@@ -48,6 +48,7 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
           'longitude -> location.map (_.longitude.bigDecimal),
           'geo_address -> location.map (_.address),
           'logo -> logos.map(_.url).mkString(AgentRawActivity.urlSeparator),
+          'priority -> priority,
           'time -> System.currentTimeMillis
         ).executeUpdate()
       id flatMap (AgentContractor.show(_, base))
@@ -70,6 +71,7 @@ case class AgentContractor(id: Option[Long], agent_id: Long, category: String, t
           'longitude -> location.map (_.longitude.bigDecimal),
           'geo_address -> location.map (_.address),
           'logo -> logos.map(_.url).mkString(AgentRawActivity.urlSeparator),
+          'priority -> priority,
           'time -> System.currentTimeMillis
         ).executeInsert()
       insert flatMap (AgentContractor.show(_, base))

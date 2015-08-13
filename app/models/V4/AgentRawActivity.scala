@@ -15,27 +15,28 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
                             address: Option[String], contact: String, time_span: Option[String],
                          detail: Option[String], logos: List[HeroImage], updated_at: Option[Long],
                             publishing: Option[AdPublishing] = None, location: Option[EarthLocation] = None,
-                             price: Option[ActivityPrice] = None) {
+                             price: Option[ActivityPrice] = None, priority: Long = 0) {
   def deactive(agentId: Long) = for {i <- id
-                                     p <- publishing} yield p.deactive(AgentActivity.tableName)(agentId, i)
+                                     p <- publishing} yield p.deactive(AgentRawActivity.tableName)(agentId, i)
 
   def active(agentId: Long) = for {i <- id
-                                   p <- publishing} yield p.active(AgentActivity.tableName)(agentId, i)
+                                   p <- publishing} yield p.active(AgentRawActivity.tableName)(agentId, i)
 
   def preview(agentId: Long) = for {i <- id
-                                    p <- publishing} yield p.preview(AgentActivity.tableName)(agentId, i)
+                                    p <- publishing} yield p.preview(AgentRawActivity.tableName)(agentId, i)
 
 
   def publish(agentId: Long) = for {i <- id
-                                    p <- publishing} yield p.publish(AgentActivity.tableName)(agentId, i)
+                                    p <- publishing} yield p.publish(AgentRawActivity.tableName)(agentId, i)
 
   def reject(agentId: Long) = for {i <- id
-                                   p <- publishing} yield p.reject(AgentActivity.tableName)(agentId, i)
+                                   p <- publishing} yield p.reject(AgentRawActivity.tableName)(agentId, i)
 
   def update(base: Long): Option[AgentRawActivity] = DB.withConnection {
     implicit c =>
-      SQL("update agentactivity set agent_id={base}, contractor_id={contractor}, title={title}, address={address}, contact={contact}, time_span={time_span}," +
-        "detail={detail}, latitude={latitude}, longitude={longitude}, logo={logo}, origin_price={origin_price}, price={price}, geo_address={geo_address}, updated_at={time} where uid={id}")
+      SQL("update agentactivity set agent_id={base}, contractor_id={contractor}, title={title}, address={address}, " +
+        "contact={contact}, time_span={time_span}, detail={detail}, latitude={latitude}, longitude={longitude}, logo={logo}, " +
+        "origin_price={origin_price}, price={price}, geo_address={geo_address}, priority={priority}, updated_at={time} where uid={id}")
         .on(
           'id -> id,
           'base -> base,
@@ -50,6 +51,7 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
           'origin_price -> price.map (_.origin),
           'price -> price.map (_.discounted),
           'logo -> logos.map(_.url).mkString(AgentRawActivity.urlSeparator),
+          'priority -> priority,
           'contractor -> contractor_id,
           'time -> System.currentTimeMillis
         ).executeUpdate()
@@ -59,8 +61,8 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
   def create(base: Long): Option[AgentRawActivity] = DB.withConnection {
     implicit c =>
       val insert: Option[Long] = SQL("insert into agentactivity (agent_id, contractor_id, title, address, contact, " +
-        "time_span, detail, logo, updated_at, created_at, publish_status, latitude, longitude, geo_address, origin_price, price) values (" +
-        "{base}, {contractor}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time}, 0, {latitude}, {longitude}, {geo_address}, {origin_price}, {price})")
+        "time_span, detail, logo, updated_at, created_at, publish_status, latitude, longitude, geo_address, origin_price, price, priority) values (" +
+        "{base}, {contractor}, {title}, {address}, {contact}, {time_span}, {detail}, {logo}, {time}, {time}, 0, {latitude}, {longitude}, {geo_address}, {origin_price}, {price}, {priority})")
         .on(
           'base -> base,
           'title -> title,
@@ -74,6 +76,7 @@ case class AgentRawActivity(id: Option[Long], agent_id: Long, contractor_id: Opt
           'origin_price -> price.map (_.origin),
           'price -> price.map (_.discounted),
           'logo -> logos.map(_.url).mkString(AgentRawActivity.urlSeparator),
+          'priority -> priority,
           'contractor -> contractor_id,
           'time -> System.currentTimeMillis
         ).executeInsert()
@@ -145,10 +148,11 @@ object AgentRawActivity {
       get[Option[Double]]("price") ~
       get[Option[String]]("logo") ~
       get[Option[Long]]("updated_at") ~
+      get[Long]("priority") ~
       get[Option[String]]("geo_address") map {
-      case id ~ agent ~ contractor ~ title ~ address ~ contact ~ timeSpan ~ detail ~ latitude ~ longitude ~ origin_price ~ price ~ logo ~ time ~ geoAddress=>
+      case id ~ agent ~ contractor ~ title ~ address ~ contact ~ timeSpan ~ detail ~ latitude ~ longitude ~ origin_price ~ price ~ logo ~ time ~ priority ~ geoAddress=>
         AgentRawActivity(Some(id), agent, contractor, title, address, contact, timeSpan, detail, splitLogos(logo), time,
-          Some(AdPublishing.publishStatus(tableName)(id, agent)), AgentContractor.locationOfContractor(latitude, longitude, geoAddress), priceOfActivity(origin_price, price))
+          Some(AdPublishing.publishStatus(tableName)(id, agent)), AgentContractor.locationOfContractor(latitude, longitude, geoAddress), priceOfActivity(origin_price, price), priority)
     }
   }
 }
