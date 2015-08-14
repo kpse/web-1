@@ -13,8 +13,8 @@ angular.module('kulebaoAgent')
         a.getFullYear() + ('0' + (a.getMonth() + 1)).slice(-2) + ""
 
       scope.currentMonth = _.first scope.pastMonths
-      scope.currentMonthDisplay = $filter('date')(scope.currentMonth, 'yyyy年MM月')
-
+      scope.monthDisplay = (month) -> $filter('date')(Date.parse("#{month.substring(0, 4)}-#{month.slice(4)}-01"), 'yyyy年MM月')
+      scope.currentMonthDisplay = scope.monthDisplay scope.currentMonth
       scope.$watch 'currentMonth', (n, o) ->
         $state.go 'main.history.month', month: n if n isnt o
 
@@ -30,6 +30,7 @@ angular.module('kulebaoAgent')
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
       scope.currentMonth = $stateParams.month
+      scope.currentMonthDisplay = scope.monthDisplay scope.currentMonth
       scope.refresh = ->
         scope.d3Data = []
         currentAgent = scope.currentAgent
