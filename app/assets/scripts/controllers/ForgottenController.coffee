@@ -13,7 +13,6 @@ angular.module('kulebaoApp')
           countDown()
       , 1000
     scope.sendToken = (phone) ->
-      scope.secondsRemaining = 30
       scope.employee = Phone.get phone: phone, ->
         Token.bind(phone: phone).get ->
           Alert
@@ -23,6 +22,8 @@ angular.module('kulebaoApp')
             type: "info"
             container: '.phone-input-panel'
             duration: 3
+          scope.secondsRemaining = 30
+          countDown()
       , (res) ->
         delete scope.employee
         Alert
@@ -32,7 +33,7 @@ angular.module('kulebaoApp')
           type: "danger"
           container: '.phone-input-panel'
           duration: 3
-      countDown()
+
 
     scope.validate = (token) ->
       result = Token.save phone: scope.employee.phone, code: token, ->
