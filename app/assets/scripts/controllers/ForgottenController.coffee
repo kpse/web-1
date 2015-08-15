@@ -1,10 +1,19 @@
 'use strict'
 
 angular.module('kulebaoApp')
-.controller('ForgottenCtrl', [ '$scope', '$rootScope', '$stateParams',
-                               '$location', '$http', 'employeePhoneService', '$alert', 'passwordTokenService',
-  (scope, rootScope, stateParams, location, $http, Phone, Alert, Token) ->
+.controller('ForgottenCtrl', [
+    '$scope', '$rootScope', '$stateParams', '$location', '$http', '$timeout', 'employeePhoneService', '$alert',
+    'passwordTokenService',
+  (scope, rootScope, stateParams, location, $http, $timeout, Phone, Alert, Token) ->
+    scope.secondsRemaining = 0
+    countDown = ->
+      $timeout ->
+        if scope.secondsRemaining > 0
+          scope.secondsRemaining--
+          countDown()
+      , 1000
     scope.sendToken = (phone) ->
+      scope.secondsRemaining = 30
       scope.employee = Phone.get phone: phone, ->
         Token.bind(phone: phone).get ->
           Alert
@@ -23,6 +32,7 @@ angular.module('kulebaoApp')
           type: "danger"
           container: '.phone-input-panel'
           duration: 3
+      countDown()
 
     scope.validate = (token) ->
       result = Token.save phone: scope.employee.phone, code: token, ->
