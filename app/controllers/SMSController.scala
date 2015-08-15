@@ -1,5 +1,6 @@
 package controllers
 
+import play.api.Play
 import play.api.mvc.{SimpleResult, Action, Controller}
 import models._
 import play.api.libs.ws.WS
@@ -37,7 +38,7 @@ object SMSController extends Controller with Secured {
 
   def sendSMS(phone: String): Future[SimpleResult] = {
 
-    val url = "http://mb345.com:999/ws/LinkWS.asmx/Send2"
+    val url = Play.current.configuration.getString("sms.ws.url").getOrElse("")
     val generate = Verification.generate(phone)
     Logger.info(generate.toString())
     WS.url(url).withHeaders("Content-Type" -> "application/x-www-form-urlencoded;charset=UTF-8")
