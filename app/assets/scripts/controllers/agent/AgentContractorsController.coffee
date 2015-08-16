@@ -17,6 +17,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
           activityGroup = _.groupBy q[2], 'contractor_id'
           scope.contractors = _.map q[0], (c) ->
             c.activities = activityGroup[c.id]
+            c.actions = scope.actionsBaseOnStatus(scope.adminUser, c.publishing.publish_status)
             [c.startDate, c.endDate] =  c.time_span.split('~') if c.time_span?
             c
           _.each scope.schools, (s) ->

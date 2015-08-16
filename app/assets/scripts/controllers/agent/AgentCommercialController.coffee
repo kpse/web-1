@@ -34,6 +34,29 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
           {publish_status: 4, display: '上线'},
           {publish_status: 5, display: '下线'}]
 
+      scope.actionsBaseOnStatus = (user, status) ->
+        switch status
+          when 0 then [{publish_status: 99, display: '提交审批'}]
+          when 99
+            if user.privilege_group == 'operator'
+              [{publish_status: 2, display: '审批通过'},
+                {publish_status: 3, display: '拒绝审批'}]
+            else
+              []
+          when 2 then [{publish_status: 4, display: '上线'}, {publish_status: 5, display: '下线'}]
+          when 3
+            if user.privilege_group == 'operator'
+              [{publish_status: 2, display: '审批通过'}]
+            else
+              [{publish_status: 99, display: '提交审批'}]
+          when 4 then [{publish_status: 5, display: '下线'}]
+          when 5
+            if user.privilege_group == 'operator'
+              [{publish_status: 4, display: '上线'}]
+            else
+              [{publish_status: 99, display: '重新提交审批'}]
+          else
+            []
 
       scope.categories = ['亲子摄影', '培训教育', '亲子游乐', '亲子购物', '其他']
 
@@ -95,7 +118,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
 
 
       scope.published = (ad) ->
-        ad.publishing? && _.any [99, 2, 4, 5], (c) -> ad.publishing.publish_status == c
+        ad.publishing? && _.any [99, 2, 4], (c) -> ad.publishing.publish_status == c
 
       scope.canBePreviewed = (ad) ->
         ad.id && (ad.publishing.publish_status == 0 || ad.publishing.publish_status == 3)
