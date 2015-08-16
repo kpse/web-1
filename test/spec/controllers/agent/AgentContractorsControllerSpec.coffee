@@ -21,6 +21,7 @@ describe 'AgentContractorsController', ->
     it 'should retrieve all contractors', ->
       $scope = $rootScope.$new()
       $scope.waitForSchoolsReady = ->
+      $scope.actionsBaseOnStatus = ->
       rootScope = $rootScope.$new()
 
       controller = $controller('AgentContractorsCtrl', $scope: $scope, $rootScope: rootScope, currentAgent: currentAgent, Agent: Agent, User: User, loggedUser: loggedUser)
@@ -33,6 +34,7 @@ describe 'AgentContractorsController', ->
     it 'should refresh with contractor', ->
       $scope = $rootScope.$new()
       $scope.waitForSchoolsReady = ->
+      $scope.actionsBaseOnStatus = ->
       rootScope = $rootScope.$new()
 
       controller = $controller('AgentContractorsCtrl', $scope: $scope, $rootScope: rootScope, currentAgent: currentAgent, Agent: Agent, User: User, loggedUser: loggedUser)
@@ -57,6 +59,7 @@ describe 'AgentContractorsController', ->
     it 'should add new schools into contractor', ->
       $scope = $rootScope.$new()
       $scope.waitForSchoolsReady = ->
+      $scope.actionsBaseOnStatus = ->
       rootScope = $rootScope.$new()
 
       controller = $controller('AgentContractorsCtrl', $scope: $scope, $rootScope: rootScope, currentAgent: currentAgent, Agent: Agent, User: User, loggedUser: loggedUser)
@@ -80,6 +83,7 @@ describe 'AgentContractorsController', ->
     it 'should remove school from contractor', ->
       $scope = $rootScope.$new()
       $scope.waitForSchoolsReady = ->
+      $scope.actionsBaseOnStatus = ->
       rootScope = $rootScope.$new()
 
       controller = $controller('AgentContractorsCtrl', $scope: $scope, $rootScope: rootScope, currentAgent: currentAgent, Agent: Agent, User: User, loggedUser: loggedUser)
@@ -100,6 +104,7 @@ describe 'AgentContractorsController', ->
     it 'should remove school from contractor', ->
       $scope = $rootScope.$new()
       $scope.waitForSchoolsReady = ->
+      $scope.actionsBaseOnStatus = ->
       rootScope = $rootScope.$new()
 
       controller = $controller('AgentContractorsCtrl', $scope: $scope, $rootScope: rootScope, currentAgent: currentAgent, Agent: Agent, User: User, loggedUser: loggedUser)
