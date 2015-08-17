@@ -30,7 +30,7 @@ case class AdPublishing(publish_status: Int, published_at: Option[Long], reject_
 
   def preview(table: String)(agentId: Long, target: Long) = DB.withConnection {
     implicit c =>
-      SQL(s"update $table set publish_status=99, updated_at={time} where uid={id} and agent_id={base} and publish_status in (0, 3)")
+      SQL(s"update $table set publish_status=99, updated_at={time} where uid={id} and agent_id={base} and publish_status in (0, 3, 5)")
         .on(
           'id -> target,
           'base -> agentId,

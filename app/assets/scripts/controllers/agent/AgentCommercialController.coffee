@@ -52,7 +52,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
           when 4 then [{publish_status: 5, display: '下线'}]
           when 5
             if user.privilege_group == 'operator'
-              [{publish_status: 4, display: '上线'}]
+              [{publish_status: 4, display: '重新上线'}, {publish_status: 99, display: '重新提交审批'}]
             else
               [{publish_status: 99, display: '重新提交审批'}]
           else
@@ -154,6 +154,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
           when 3 then scope.rejectDialog(ad)
           when 4 then scope.takeOnline(ad)
           when 5 then scope.putOffline(ad)
+          when 99 then scope.preview(ad)
           else
             console.log 'no way here! publish_status = ' + ad.publishing.publish_status
             ad.publishing.publish_status = parseInt oldStatus
