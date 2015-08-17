@@ -51,7 +51,7 @@
       <button class="btn btn-xs btn-danger" ng-confirm-msg="这个操作将彻底删除{{ad.name}}，确定继续?"
               ng-confirm-click="removeAd(ad);$event.stopPropagation()">删除
       </button>
-      <button class="btn btn-xs btn-info" ng-hide="$first"
+      <button class="btn btn-xs btn-info" ng-hide="$first || !published(ad)"
               ng-click="moveToTop(ad);$event.stopPropagation()">置顶
       </button>
     </td>
