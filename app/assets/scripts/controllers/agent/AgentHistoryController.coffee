@@ -20,6 +20,25 @@ angular.module('kulebaoAgent')
 
       $state.go 'main.history.month', month: scope.currentMonth
 
+      scope.$on 'stats_ready', ->
+        scope.export = (currentMonth) ->
+          _(scope.currentAgent.schools).map (s) ->
+              id: s.school_id
+              name: s.name
+              data: (_.find s.activeData, (d) -> d.month == currentMonth)
+          .sortBy('school_id')
+          .map (s) ->
+            id: s.id
+            name: s.name
+            childrenCount: s.data.child_count
+            parentsCount: s.data.logged_ever
+            parentsLastMonth: s.data.logged_once
+            childRate: s.data.childRate
+            rate: s.data.rate
+          .value()
+        scope.exportHeader = ->
+          ['编号', '学校名称', '学生数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
+        scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.currentMonth}"
   ]
 
 
@@ -45,6 +64,7 @@ angular.module('kulebaoAgent')
             s.stats = _.find scope.lastActiveData, (f) -> f.school_id == s.school_id
             s.stats.rate = scope.calcRate s.stats
             s.stats.childRate =  scope.calcChildRate s.stats
+          scope.$emit 'stats_ready', currentAgent.schools
 
       scope.refresh()
   ]
