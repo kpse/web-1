@@ -32,7 +32,7 @@
     </td>
     <td class="col-xs-2">{{kg.lastActiveData.childRate}}</td>
     <td class="col-xs-2">
-      N/A
+      <button type="submit" class="btn btn-xs btn-success" ng-disabled="loading" ng-csv="export(kg)" csv-header="exportHeader()" filename="{{kg.csvName}}" ng-click="$event.stopPropagation()">导出历史记录</button>
     </td>
   </tr>
   </tbody>
