@@ -1,0 +1,3 @@
+<a ng-show="clickable()" ng-href="/admin#/kindergarten/{{::school}}/welcome"
+   ng-click="$event.stopPropagation()">{{::school}}</a>
+<span ng-hide="clickable()">{{::school}}</span>

@@ -26,8 +26,7 @@
       <tr ng-repeat="kg in selectedSchools | filter: searchText | orderBy: 'school_id'" class="row">
         <td class="col-xs-2" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="kg.checked"
                                                                         ng-change="singleDistributedSelection(kg)"/></td>
-        <td class="col-xs-3"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome"
-                                ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
+        <td class="col-xs-3"><div kl-school-column="{{::kg.school_id}}" user="adminUser"></div></td>
         <td class="col-xs-3">{{::kg.name}}</td>
         </td>
 
@@ -55,8 +54,7 @@
       <tr ng-repeat="kg in unSelectedSchools | filter: searchText | orderBy: 'school_id'" class="row">
         <td class="col-xs-2" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="kg.checked"
                                                                         ng-change="singleSelection(kg)"/></td>
-        <td class="col-xs-3"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome"
-                                ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
+        <td class="col-xs-3"><div kl-school-column="{{::kg.school_id}}" user="adminUser"></div></td>
         <td class="col-xs-3">{{::kg.name}}</td>
 
         </td>
