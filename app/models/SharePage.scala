@@ -16,7 +16,7 @@ object SharePage {
 
   def create(record: ChatSession) = DB.withConnection {
     implicit c =>
-      val token: String = java.util.UUID.randomUUID.toString.takeWhile(!_.equals('-'))
+      val token: String = java.util.UUID.randomUUID.toString.replaceAll("-", "")
       SQL("insert into sharedpages (token, original_id, created_at) values ({token}, {id}, {time})")
         .on('token -> token,
           'id -> record.id.get,
