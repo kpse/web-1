@@ -52,3 +52,6 @@
 .footer img.right {
   padding-right: 20px;
 }
+.contact-us {
+  display: none;
+}
