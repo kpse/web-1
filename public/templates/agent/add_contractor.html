@@ -22,10 +22,9 @@
         </div>
 
         <div class="form-group col-xs-3">
-          <span class="mandatory">*</span>
           <button type="button" class="btn btn-default" ng-model="newAd.category" placeholder="商户类型" ng-disabled="published(newAd)"
                   ng-click="$event.stopPropagation()" bs-options="t for t in categories" bs-select required></button>
-
+          <span class="mandatory">*</span>
         </div>
       </div>
 
@@ -40,7 +39,7 @@
 
       <div class="col-sm-6">
         <div class="form-group" ng-hide="published(newAd)">
-          <label for="news-pic" class="col-sm-4 control-label">上传</label>
+          <label for="news-pic" class="col-sm-4 control-label">上传 <span class="mandatory">*</span></label>
 
           <div class="col-sm-8">
             <kl-file-upload multiple="newAd.logos" user="adminUser.login_name" form="commercialForm" disabled="disableUploading" on-success="onUploadSuccess"
@@ -49,7 +48,7 @@
 
         </div>
         <div class="form-group">
-          <label for="point-capture" class="col-sm-4 control-label">位置信息 </label>
+          <label for="point-capture" class="col-sm-4 control-label">位置信息 <span class="mandatory">*</span></label>
           <div class="col-sm-12">
             <span class="col-xs-offset-4">{{newAd.location.address || '暂无位置信息'}}</span>
 
@@ -135,7 +134,7 @@
           <button class="btn btn-danger" ng-show="published(newAd) || newAd.id" ng-confirm-msg="你确定要删除吗?"
                   ng-confirm-click="removeAd(newAd)">删除
           </button>
-          <button class="btn btn-info" ng-disabled="commercialForm.$invalid || uploading || commercialForm.$pristine"
+          <button class="btn btn-info" ng-disabled="commercialForm.$invalid || uploading || commercialForm.$pristine || !validContractor(newAd)"
                   ng-hide="canBePreview(newAd)"
                   ng-click="save(newAd);$hide()">保存
           </button>

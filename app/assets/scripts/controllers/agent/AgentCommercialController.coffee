@@ -278,4 +278,10 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         _.pullAt scope.newAd.logos, _.findIndex scope.newAd.logos, 'url', logo.url
         scope.disableUploading = scope.dynamicDisable(scope.newAd)
         scope.buttonLabel = scope.dynamicLabel(scope.newAd)
+
+      scope.validActivity = (ad) ->
+        ad.location? && ad.logos? && ad.logos.length > 0 && ad.price?
+      scope.validContractor = (ad) ->
+        ad.location? && ad.location.address? && ad.logos? && ad.logos.length > 0
+
   ]
