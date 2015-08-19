@@ -238,11 +238,14 @@ object Employee {
           'kg -> kg
         ).as(get[String]("subordinate") *)
       Logger.info(classes.toString())
-      classes map {
+      classes filter {
+        _.length > 0
+      } map {
         c =>
           School.findClass(kg, Some(Integer.parseInt(c)))
       } filter {
         case Some(SchoolClass(_, _, _, _, status, _)) => status.getOrElse(0) == 1
+        case _ => false
       }
   }
 

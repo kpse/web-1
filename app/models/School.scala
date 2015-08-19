@@ -202,7 +202,7 @@ object School {
         ).as(simple *)
   }
 
-  def findClass(kg: Long, id: Option[Int]) = DB.withConnection {
+  def findClass(kg: Long, id: Option[Int]) : Option[SchoolClass] = DB.withConnection {
     implicit c =>
       SQL("select * from classinfo where " +
         " school_id = {school_id} and class_id={class_id}")
