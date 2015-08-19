@@ -1,4 +1,4 @@
-util.print: Use console.log instead
+(node) util.print is deprecated. Use console.log instead.
 .static-container {
   overflow: hidden;
 }
@@ -39,4 +39,16 @@ util.print: Use console.log instead
 #main .share-images li.share-image img {
   max-width: 480px;
   width: 100%;
+}
+.footer {
+  margin: -25px 0 0;
+}
+.footer img {
+  padding: 0;
+}
+.footer img.left {
+  padding-left: 20px;
+}
+.footer img.right {
+  padding-right: 20px;
 }
