@@ -24,9 +24,22 @@
   .share-content {
     margin: 0 auto;
     max-width: 480px;
-    .shared-at {
-      color: #e6e6e6;
+    &.content {
+      font-size: 18px;
+      color: #444;
+      margin: 12px 0;
     }
+    &.from {
+      font-size: 14px;
+      color: #8d8d8d;
+    }
+    .shared-at {
+      color: #8d8d8d;
+    }
+    .product-name {
+      color: #009dd7;
+    }
+
   }
   //li.share-image {
   //  //padding-bottom: 30px;
@@ -50,6 +63,15 @@
 
 }
 
+.header {
+  background-color: #009dd7;
+  padding: 5px 0;
+  height: 47px;
+  .logo-back {
+    height: 37px;
+  }
+}
+
 .footer {
   margin: -25px 0 0;
   img {
@@ -67,3 +89,36 @@
   display: none;
 }
 
+.share-signature {
+
+  .left {
+    float:left;
+    width: 45%;
+  }
+  .right {
+    float:right;
+    width: 45%;
+    text-align: right;
+  }
+}
+
+.blue-strap {
+  width: 120%;
+  background-color: #009dd7;
+  margin: 10px -20px 10px -20px;
+  height: 40px;
+  padding: 5px 0;
+  .bell-logo {
+    float: left;
+    margin-left: 10px;
+    width: 40px;
+  }
+  .promotion {
+    float: left;
+    font-size: 16px;
+    color: #fff;
+    width: 80%;
+    margin-left: 10px;
+  }
+
+}

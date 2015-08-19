@@ -503,6 +503,14 @@ object Employee {
       SQL("select * from employeeinfo where status=1").as(simple *)
   }
 
+  def idSearch(id: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from employeeinfo where employee_id={id}")
+        .on(
+          'id -> id
+        ).as(Employee.simple singleOpt)
+  }
+
 }
 
 object Teacher {

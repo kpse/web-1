@@ -10,7 +10,32 @@ import play.api.db.DB
 
 case class ChatSession(topic: String, timestamp: Option[Long], id: Option[Long], content: String, media: Option[MediaContent] = Some(MediaContent("")), sender: Sender, medium: Option[List[MediaContent]] = Some(List[MediaContent]()))
 
-case class Sender(id: String, `type`: Option[String] = Some("t"))
+case class Sender(id: String, `type`: Option[String] = Some("t")) {
+  def retrieveSchool: Option[School] = DB.withConnection {
+    implicit c =>
+      `type` match {
+        case Some("p") =>
+          Parent.idSearch(id).map(_.school_id) flatMap schoolById
+        case Some("t") =>
+          Employee.idSearch(id).map(_.school_id) flatMap schoolById
+        case _ => None
+
+      }
+  }
+
+  val simpleSchool = {
+    get[String]("school_id") ~
+      get[String]("name") map {
+      case kg ~ name =>
+        School(kg.toLong, name)
+    }
+  }
+
+  def schoolById(kg: Long): Option[School] = DB.withConnection {
+    implicit c =>
+      SQL("select school_id, name from schoolinfo where school_id={kg}").on('kg -> kg).as(simpleSchool singleOpt)
+  }
+}
 
 case class MediaContent(url: String, `type`: Option[String] = Some("image"))
 

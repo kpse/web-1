@@ -184,7 +184,7 @@ object EmployeeV3 {
 
   def removeDirtyDataIfExists(r: EmployeeV3) = DB.withConnection {
     implicit c =>
-      val deletableCondition: String = " where status=0 and school_id={kg} and (phone={phone} or employee_id={id} or login_name={login}) "
+      val deletableCondition: String = " where status=0 and (phone={phone} or employee_id={id} or login_name={login}) "
       val execute1: Boolean = SQL(s"delete from employeeext where base_id in (select uid from employeeinfo $deletableCondition)")
         .on(
           'kg -> r.basic.school_id,

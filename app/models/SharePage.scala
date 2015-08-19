@@ -6,13 +6,17 @@ import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
 
-case class SharePage(id: Option[Long], token: String, title: String, content: String, sender: Sender, medium: List[MediaContent], comment: Option[String], timestamp: Long)
+case class SharePage(id: Option[Long], token: String, title: String, content: String, sender: Sender,
+                     medium: List[MediaContent], comment: Option[String], timestamp: Long, school: Option[School] = None)
 
 object SharePage {
 
   implicit val writesSender = Json.writes[Sender]
   implicit val writesMediaContent = Json.writes[MediaContent]
+  implicit val writesSchool = Json.writes[School]
   implicit val writesSharePage = Json.writes[SharePage]
+
+
 
   def create(record: ChatSession) = DB.withConnection {
     implicit c =>
@@ -45,7 +49,7 @@ object SharePage {
       case id ~ token ~ origin ~ time ~ comment =>
         ChatSession.findHistoryById(origin) match {
           case Some(x) =>
-            SharePage(Some(id), token, "", x.content, x.sender, x.medium.getOrElse(List()), comment, time)
+            SharePage(Some(id), token, "", x.content, x.sender, x.medium.getOrElse(List()), comment, time, x.sender.retrieveSchool)
           case None =>
             SharePage(None, token, "", "", Sender(""), List(), None, 0)
         }

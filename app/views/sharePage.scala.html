@@ -20,22 +20,28 @@
   <body>
     <div class="static-container">
       <div class="header">
-        <div class="row">
+        <div class="row logo-back">
           <div class="logo col-lg-offset-2 col-lg-2">
-            <a href="http://www.cocobabys.com"><img class="" src="@routes.VersionedAssets.at("images/logowb.png")" alt="幼乐宝"/></a>
+            <a href="http://www.cocobabys.com"><img class="" src="@routes.VersionedAssets.at("images/share-logo.png")" alt="幼乐宝"/></a>
           </div>
         </div>
       </div>
-      <div class="border"></div>
       <div class="clearfix"></div>
       <div id="main">
         @*
         @page.toString
         *@
         <div class="share-content content">@page.content</div>
-        <div class="share-content">
-          <span class="shared-at">@(new Date(page.timestamp).format("yyyy-MM-dd"))</span>
-          <a href="http://www.cocobabys.com">幼乐宝</a>
+        <div class="share-signature">
+          <div class="share-content from left">来自@page.school.map(_.name).getOrElse("幼乐宝")</div>
+          <div class="share-content right">
+            <span class="shared-at">@(new Date(page.timestamp).format("yyyy-MM-dd"))</span>
+            <a href="http://www.cocobabys.com" class="product-name">幼乐宝</a>
+          </div></div>
+        <div class="clearfix"></div>
+        <div class="blue-strap">
+          <img class="bell-logo" src="@routes.VersionedAssets.at("images/bell.png")" alt="bell"/>
+          <a href="#footer"><p class="promotion">扫描下方二维码关注微信公众号</p></a>
         </div>
         <ul class="share-images">
         @for(p <- page.medium) {
@@ -67,7 +73,7 @@
         </ul>
       </div>
       <div class="clearfix"></div>
-      <div class="footer row">
+      <div class="footer row" id="footer">
         <img class="img-responsive col-xs-6 left" src="@routes.VersionedAssets.at("images/share-footer-left.png")" alt="contact"/>
         <img class="img-responsive col-xs-6 right" src="@routes.VersionedAssets.at("images/share-footer-right.png")" alt="qr-code"/>
       </div>
