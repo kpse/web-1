@@ -29,9 +29,11 @@ object EmployeeControllerV3 extends Controller with Secured {
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
       case (s) if s.basic.uid.nonEmpty || s.id.nonEmpty =>
         BadRequest(Json.toJson(ErrorResponse("有id的情况请用update接口。(use update when you have ID value)", 4)))
+      case (s) if s.existsInOtherSchool(kg) =>
+        InternalServerError(Json.toJson(ErrorResponse("该号码的老师属于另一个学校。(this employee number belongs to another school)", 6)))
       case (s) =>
         EmployeeV3.removeDirtyDataIfExists(s)
-        Ok(Json.toJson(s.create))
+        Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -46,8 +48,10 @@ object EmployeeControllerV3 extends Controller with Secured {
         BadRequest(Json.toJson(ErrorResponse("内外id不一致。(ids should be consistent)", 3)))
       case (s) if s.id.isEmpty  =>
         BadRequest(Json.toJson(ErrorResponse("没有id无法更新。(no id for update)", 5)))
+      case (s) if s.existsInOtherSchool(kg) =>
+        InternalServerError(Json.toJson(ErrorResponse("该号码的老师属于另一个学校。(this employee number belongs to another school)", 6)))
       case (s) =>
-        Ok(Json.toJson(s.update))
+        Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }

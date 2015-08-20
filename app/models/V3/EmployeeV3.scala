@@ -92,10 +92,21 @@ case class EmployeeExt(display_name: Option[String], social_id: Option[String], 
 }
 
 case class EmployeeV3(id: Option[Long], basic: Employee, ext: Option[EmployeeExt]) {
-  def update: Option[EmployeeV3] = DB.withTransaction {
+  def existsInOtherSchool(kg: Long) = DB.withTransaction {
+    implicit c =>
+      SQL("select count(1) from employeeinfo where school_id<>{kg} and (phone={phone} or employee_id={employee_id} or login_name={login}) ")
+        .on(
+          'kg -> kg,
+          'phone -> basic.phone,
+          'employee_id -> basic.id,
+          'login -> basic.login_name
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
+  def update(kg: Long): Option[EmployeeV3] = DB.withTransaction {
     implicit c =>
       try {
-        val updatedEmployee: Option[Employee] = Employee.update(basic)
+        val updatedEmployee: Option[Employee] = Employee.update(basic.copy(school_id = kg))
         ext foreach (_.handleExt(id.get))
         c.commit()
         Logger.info(updatedEmployee.toString)
@@ -114,10 +125,10 @@ case class EmployeeV3(id: Option[Long], basic: Employee, ext: Option[EmployeeExt
       }
   }
 
-  def create: Option[EmployeeV3] = DB.withTransaction {
+  def create(kg: Long): Option[EmployeeV3] = DB.withTransaction {
     implicit c =>
       try {
-        val createdEmployee: Option[Employee] = Employee.create(basic)
+        val createdEmployee: Option[Employee] = Employee.create(basic.copy(school_id = kg))
         ext foreach (_.handleExt(createdEmployee.get.uid.get))
         c.commit()
         Logger.info(createdEmployee.toString)
