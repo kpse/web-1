@@ -200,7 +200,7 @@ object FinancialProject {
 
   def show(kg: Long, id: Long) = DB.withConnection {
     implicit c =>
-      SQL(s"select * from groupedfinancialproject where school_id={kg} and uid={id} and status=1")
+      SQL(s"select * from financialproject where school_id={kg} and uid={id} and status=1")
         .on(
           'kg -> kg.toString,
           'id -> id
