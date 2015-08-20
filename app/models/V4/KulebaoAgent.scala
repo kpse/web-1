@@ -117,8 +117,9 @@ object KulebaoAgent {
         ).as(simple singleOpt)
   }
 
-  def isAgent(id: Long, path: String) = DB.withConnection {
+  def isAgent(id: String, path: String) : Boolean = DB.withConnection {
     implicit c =>
+      if (id.contains("_")) return false
       val isAgent: Boolean = SQL("select count(1) from agentinfo where uid={id} and status=1")
         .on(
           'id -> id
