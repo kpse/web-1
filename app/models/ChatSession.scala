@@ -146,7 +146,12 @@ object ChatSession {
     }
   }
 
-  def generateClassQuery(classes: String): String = "class_id in (%s) and ".format(classes)
+  def generateClassQuery(classes: String): String = classes match {
+    case ids if ids.nonEmpty =>
+      s" and class_id in (${classes}) "
+    case _ => " "
+  }
+
 
   def lastMessageInClasses(kg: Long, classes: Option[String]) = DB.withConnection {
     implicit c =>
@@ -154,7 +159,7 @@ object ChatSession {
         case Some(ids) =>
           SQL("select * from sessionlog s," +
             "(select session_id, MAX(update_at) last from sessionlog where status=1 and " +
-            "session_id in (select child_id from childinfo where " + generateClassQuery(ids) + " school_id={kg} and status=1) " +
+            "session_id in (select child_id from childinfo where school_id={kg} and status=1 " + generateClassQuery(ids) + ") " +
             "group by session_id) a where a.last=s.update_at and s.session_id = a.session_id")
             .on(
               'kg -> kg.toString

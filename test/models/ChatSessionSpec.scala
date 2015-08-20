@@ -49,6 +49,31 @@ class ChatSessionSpec extends Specification with TestSupport {
 
       index.size must equalTo(0)
     }
+
+    "collect conversation from specific class" in new WithApplication {
+
+      private val index = ChatSession.lastMessageInClasses(93740362L, Some("777999"))
+
+      index.size must equalTo(1)
+    }
+
+    "collect conversation from multiple classes" in new WithApplication {
+
+      private val index = ChatSession.lastMessageInClasses(93740362L, Some("777999,777666"))
+
+      index.size must equalTo(2)
+    }
+
+    "treat empty classId the same as the whole school" in new WithApplication {
+
+      private val index = ChatSession.lastMessageInClasses(93740362L, Some(""))
+      private val index2 = ChatSession.lastMessageInClasses(93740362L, Some("777999,777666,777888"))
+
+      index.size must greaterThan(0)
+      index.size must equalTo(index2.size)
+    }
+
+
   }
 
 
