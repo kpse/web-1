@@ -13,7 +13,7 @@
   </thead>
   <tbody>
   <tr ng-repeat="ad in activities | filter: searchText | orderBy: '+priority' : true " class="row">
-    <td class="col-xs-1"><a ng-href="/agent#/preview/{{ad.id}}" ng-click="$event.stopPropagation()">{{ad.id}}</a></td>
+    <td class="col-xs-1">{{ad.id}}</td>
     <td class="col-xs-2">{{ad.title}}</td>
     <th class="col-xs-2">{{distributedIn(ad).length}}所学校/{{parentsInSchools(distributedIn(ad))}}位家长</th>
     <td class="col-xs-2" ng-show="adminUser.privilege_group == 'operator'">
