@@ -533,6 +533,12 @@ POST          /api/v3/kindergarten/:kg/medicine_record                          
 POST          /api/v3/kindergarten/:kg/medicine_record/:id                                     controllers.V3.MedicineRecordController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/medicine_record/:id                                     controllers.V3.MedicineRecordController.delete(kg: Long, id: Long)
 
+GET           /api/v3/kindergarten/:kg/internal_notification                                   controllers.V3.NotificationController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v3/kindergarten/:kg/internal_notification/:id                               controllers.V3.NotificationController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/internal_notification                                   controllers.V3.NotificationController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/internal_notification/:id                               controllers.V3.NotificationController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/internal_notification/:id                               controllers.V3.NotificationController.delete(kg: Long, id: Long)
+
 #check binding history
 GET           /api/v3/binding_history/:phone                                                   controllers.Authentication.bindingHistory(phone: String)
 
