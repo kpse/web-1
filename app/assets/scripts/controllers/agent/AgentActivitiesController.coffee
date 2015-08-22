@@ -27,6 +27,7 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
           _.each scope.activities, (a) ->
             _.assign a, csvName : nameOf a
             [a.startDate, a.endDate] =  a.time_span.split('~') if a.time_span?
+            a.actions = scope.actionsBaseOnStatus(scope.adminUser, a.publishing.publish_status)
           scope.schools = scope.currentAgent.schools
           _.each scope.schools, (s) ->
             s.stats = SchoolData.get agent_id: scope.currentAgent.id, school_id: s.school_id

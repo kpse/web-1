@@ -23,7 +23,8 @@
       <button type="button" class="btn btn-default publishing-status" ng-model="ad.publishing.publish_status"
               placeholder="{{currentStatus(ad)}}"
               ng-class="{success : ad.publishing.publish_status == 2, danger: ad.publishing.publish_status == 3,
-              warning: ad.publishing.publish_status == 99, active: ad.publishing.publish_status == 4, inactive: ad.publishing.publish_status == 5}"
+              warning: ad.publishing.publish_status == 99, active: ad.publishing.publish_status == 4,
+              inactive: ad.publishing.publish_status == 5}"
               ng-disabled="ad.actions.length == 0"
               ng-change="adminEdit(ad, '{{ad.publishing.publish_status}}');$event.stopPropagation()"
               ng-click="$event.stopPropagation()"
@@ -33,8 +34,10 @@
       <button type="button" class="btn btn-default publishing-status" ng-model="ad.publishing.publish_status"
               placeholder="{{currentStatus(ad)}}"
               ng-class="{success : ad.publishing.publish_status == 2, danger: ad.publishing.publish_status == 3,
-              warning: ad.publishing.publish_status == 99, active: ad.publishing.publish_status == 4, inactive: ad.publishing.publish_status == 5}"
-              ng-disabled="ad.actions.length == 0" ng-change="userEdit(ad, '{{ad.publishing.publish_status}}');$event.stopPropagation()"
+              warning: ad.publishing.publish_status == 99, active: ad.publishing.publish_status == 4,
+              inactive: ad.publishing.publish_status == 5}"
+              ng-disabled="ad.actions.length == 0"
+              ng-change="userEdit(ad, '{{ad.publishing.publish_status}}');$event.stopPropagation()"
               ng-click="$event.stopPropagation()"
               bs-options="item.publish_status as item.display for item in ad.actions" bs-select></button>
     </td>
