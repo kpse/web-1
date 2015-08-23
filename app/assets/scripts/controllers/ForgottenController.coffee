@@ -13,41 +13,39 @@ angular.module('kulebaoApp')
           countDown()
       , 1000
     scope.sendToken = (phone) ->
-      scope.employee = Phone.get phone: phone, ->
-        Token.bind(phone: phone).get ->
-          Alert
-            title: '验证码已发送。'
-            content: '请注意查看手机短信。'
-            placement: "top"
-            type: "info"
-            container: '.phone-input-panel'
-            duration: 3
-          scope.secondsRemaining = 30
-          countDown()
-      , (res) ->
-        delete scope.employee
-        Alert
-          title: '号码不存在。'
-          content: res.data.error_msg
-          placement: "top-left"
-          type: "danger"
-          container: '.phone-input-panel'
-          duration: 3
+      Phone.get phone: phone, (data) ->
+          scope.employee = data
+          Token.bind(phone: phone).get ->
+              Alert
+                title: '验证码已发送。'
+                content: '请注意查看手机短信。'
+                placement: "top"
+                type: "info"
+                container: '.phone-input-panel'
+                duration: 3
+              scope.secondsRemaining = 120
+              countDown()
+            , (err) ->
+              delete scope.employee
+              alertError err.data, '请求发送短信错误。'
+        , (err) ->
+          delete scope.employee
+          alertError err.data, '号码不存在'
 
 
     scope.validate = (token) ->
       result = Token.save phone: scope.employee.phone, code: token, ->
-        if result.error_code == 0
-          rootScope.resetToken = token
-          location.path "/reset/#{scope.employee.phone}"
-        else
-          handleValidateError(result)
-      , (res) ->
-        handleValidateError(res.data)
+          if result.error_code == 0
+            rootScope.resetToken = token
+            location.path "/reset/#{scope.employee.phone}"
+          else
+            alertError(result)
+        , (res) ->
+          alertError(res.data)
 
-    handleValidateError = (data) ->
+    alertError = (data, title = '验证码错误') ->
       Alert
-        title: '验证码错误'
+        title: title
         content: data.error_msg
         placement: "top-left"
         type: "danger"
@@ -65,10 +63,10 @@ angular.module('kulebaoApp')
       user.old_password = ''
       user.token = rootScope.resetToken
       ResetPassword.save user, ->
-        delete rootScope.resetToken
-        $window.location.href = '/login'
-      , (res) ->
-        handleValidateError(res.data)
+          delete rootScope.resetToken
+          $window.location.href = '/login'
+        , (res) ->
+          handleValidateError(res.data)
 
     handleValidateError = (data) ->
       Alert
