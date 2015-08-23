@@ -653,3 +653,6 @@
   width: 100%;
   height: 500px;
 }
+.main-body .modal {
+  overflow-y: auto;
+}
