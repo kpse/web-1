@@ -15,6 +15,7 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
           "#{scope.currentAgent.name}_活动_#{ad.title}_报名.csv"
 
       scope.refresh = (activityId) ->
+        scope.cleanUpSearchText()
         scope.loading = true
         queue = [FullRes(Activity, agent_id: scope.currentAgent.id)
                  scope.waitForSchoolsReady()
@@ -94,6 +95,7 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
         scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.activityIds, (c) -> c.activity_id == activity.id
         scope.unSelectedSchools = _.reject scope.schools, (r) ->
           _.find scope.selectedSchools, (u) -> r.school_id == u.school_id
+        scope.cleanUpSearchText()
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/distribute_to_school.html'

@@ -13,6 +13,9 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         status = 0 unless status?
         if status then status.display else ''
 
+      scope.$on 'cleanUpSearchText', ->
+        scope.searchText = ''
+
       scope.refresh = ->
         scope.$broadcast 'refresh'
 
@@ -283,5 +286,13 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         ad.location? && ad.logos? && ad.logos.length > 0 && ad.price?
       scope.validContractor = (ad) ->
         ad.location? && ad.location.address? && ad.logos? && ad.logos.length > 0
+
+      scope.closeDialog = (d) ->
+        d.$hide()
+        scope.searchText = ''
+
+      scope.cleanUpSearchText = ->
+        scope.searchText = ''
+        scope.$emit 'cleanUpSearchText'
 
   ]

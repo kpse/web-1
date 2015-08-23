@@ -7,6 +7,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
       scope.currentAgent = Agent
 
       scope.refresh = (contractorId) ->
+        scope.cleanUpSearchText()
         scope.loading = true
         queue = [FullRes(Contractor, agent_id: scope.currentAgent.id)
                  scope.waitForSchoolsReady()
@@ -67,6 +68,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
         scope.selectedSchools = scope.distributedIn contractor
         scope.unSelectedSchools = _.reject scope.schools, (r) ->
           _.find scope.selectedSchools, (u) -> r.school_id == u.school_id
+        scope.cleanUpSearchText()
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/distribute_to_school.html'
