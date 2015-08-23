@@ -20,8 +20,7 @@ describe 'AgentContractorsController', ->
   describe 'loading', ->
     it 'should retrieve all contractors', ->
       $scope = $rootScope.$new()
-      $scope.waitForSchoolsReady = ->
-      $scope.actionsBaseOnStatus = ->
+      setUpScope($scope)
       rootScope = $rootScope.$new()
 
       controller = $controller('AgentContractorsCtrl', $scope: $scope, $rootScope: rootScope, currentAgent: currentAgent, Agent: Agent, User: User, loggedUser: loggedUser)
@@ -33,8 +32,7 @@ describe 'AgentContractorsController', ->
 
     it 'should refresh with contractor', ->
       $scope = $rootScope.$new()
-      $scope.waitForSchoolsReady = ->
-      $scope.actionsBaseOnStatus = ->
+      setUpScope($scope)
       rootScope = $rootScope.$new()
 
       controller = $controller('AgentContractorsCtrl', $scope: $scope, $rootScope: rootScope, currentAgent: currentAgent, Agent: Agent, User: User, loggedUser: loggedUser)
@@ -58,8 +56,7 @@ describe 'AgentContractorsController', ->
   describe 'connecting', ->
     it 'should add new schools into contractor', ->
       $scope = $rootScope.$new()
-      $scope.waitForSchoolsReady = ->
-      $scope.actionsBaseOnStatus = ->
+      setUpScope($scope)
       rootScope = $rootScope.$new()
 
       controller = $controller('AgentContractorsCtrl', $scope: $scope, $rootScope: rootScope, currentAgent: currentAgent, Agent: Agent, User: User, loggedUser: loggedUser)
@@ -82,8 +79,7 @@ describe 'AgentContractorsController', ->
   describe 'disconnecting', ->
     it 'should remove school from contractor', ->
       $scope = $rootScope.$new()
-      $scope.waitForSchoolsReady = ->
-      $scope.actionsBaseOnStatus = ->
+      setUpScope($scope)
       rootScope = $rootScope.$new()
 
       controller = $controller('AgentContractorsCtrl', $scope: $scope, $rootScope: rootScope, currentAgent: currentAgent, Agent: Agent, User: User, loggedUser: loggedUser)
@@ -103,8 +99,7 @@ describe 'AgentContractorsController', ->
   describe 'saving', ->
     it 'should remove school from contractor', ->
       $scope = $rootScope.$new()
-      $scope.waitForSchoolsReady = ->
-      $scope.actionsBaseOnStatus = ->
+      setUpScope($scope)
       rootScope = $rootScope.$new()
 
       controller = $controller('AgentContractorsCtrl', $scope: $scope, $rootScope: rootScope, currentAgent: currentAgent, Agent: Agent, User: User, loggedUser: loggedUser)
@@ -190,3 +185,7 @@ describe 'AgentContractorsController', ->
     "price": {"origin": 10000.0, "discounted": 5000.0}
   }
 
+  setUpScope = (scope) ->
+    scope.waitForSchoolsReady = ->
+    scope.actionsBaseOnStatus = ->
+    scope.cleanUpSearchText = ->
