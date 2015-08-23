@@ -38,7 +38,7 @@ angular.module('kulebaoAgent')
           .value()
         scope.exportHeader = ->
           ['编号', '学校名称', '学生数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
-        scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.currentMonth}"
+        scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.currentMonth}.csv"
   ]
 
 
