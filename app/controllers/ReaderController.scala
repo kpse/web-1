@@ -31,6 +31,7 @@ object ReaderController extends Controller with Secured {
         val children: List[ChildInfo] = UserAccess.isSupervisor(accesses) match {
           case true =>
             Children.findAllInClass(kg, None, Some(true))
+          case supervisor if !supervisor && accesses.isEmpty => List()
           case false =>
             Children.findAllInClass(kg, Some(UserAccess.allClasses(accesses)), Some(true))
         }

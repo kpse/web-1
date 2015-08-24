@@ -197,11 +197,17 @@ object Children {
 
   def generateSQL(sql: String, classIds: Option[String], connected: Option[Boolean]): String = {
     sql +
-      classIds.fold("")(l => " and c.class_id in (%s) ".format(classIds.getOrElse(0))) +
+      classesScope(classIds) +
       connected.fold("")({
         case true => " and child_id in " + childWithEnabledParents
         case false => " and child_id not in " + childWithEnabledParents
       })
+  }
+
+  def classesScope(classIds: Option[String]): String = classIds match {
+    case Some(ids) if ids.length > 0 =>
+       s" and c.class_id in (${ids}) "
+    case _ => " "
   }
 
   def childWithEnabledParents: String = {
