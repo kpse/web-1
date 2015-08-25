@@ -28,7 +28,7 @@ case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], 
 
   def update(kg: Long): Option[Hardware] = DB.withConnection {
     implicit c =>
-      SQL("update hardware set name={name}, sn={sn}, ip={ip}, port={port}, machine_type={machine_type}, updated_at={time} where school_id={school_id} and uid={id}")
+      SQL("update hardware set name={name}, sn={sn}, ip={ip}, port={port}, machine_type={machine_type}, channel_1_camera={camera1}, channel_2_camera={camera2}, updated_at={time} where school_id={school_id} and uid={id}")
         .on(
           'id -> id,
           'school_id -> kg,
@@ -37,6 +37,8 @@ case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], 
           'ip -> ip,
           'port -> port,
           'machine_type -> machine_type,
+          'camera1 -> channel_1_camera,
+          'camera2 -> channel_2_camera,
           'time -> System.currentTimeMillis
         ).executeUpdate()
       Hardware.show(kg, id.getOrElse(0))
@@ -44,8 +46,8 @@ case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], 
 
   def create(kg: Long): Option[Hardware] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into hardware (school_id, name, sn, ip, port, machine_type, updated_at) values (" +
-        "{school_id}, {name}, {sn}, {ip}, {port}, {machine_type}, {time})")
+      val insert: Option[Long] = SQL("insert into hardware (school_id, name, sn, ip, port, machine_type, channel_1_camera, channel_2_camera, updated_at) values (" +
+        "{school_id}, {name}, {sn}, {ip}, {port}, {machine_type}, {camera1}, {camera2}, {time})")
         .on(
           'school_id -> kg,
           'name -> name,
@@ -53,6 +55,8 @@ case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], 
           'ip -> ip,
           'port -> port,
           'machine_type -> machine_type,
+          'camera1 -> channel_1_camera,
+          'camera2 -> channel_2_camera,
           'time -> System.currentTimeMillis
         ).executeInsert()
       Hardware.show(kg, insert.getOrElse(0))
@@ -98,9 +102,11 @@ object Hardware {
       get[Option[String]]("ip") ~
       get[Option[Int]]("port") ~
       get[Option[Int]]("machine_type") ~
+      get[Option[Long]]("channel_1_camera") ~
+      get[Option[Long]]("channel_2_camera") ~
       get[Option[Long]]("updated_at") map {
-      case id ~ name ~ sn ~ ip ~ port ~ typ ~ time =>
-        Hardware(Some(id), name, sn, ip, port, typ, time)
+      case id ~ name ~ sn ~ ip ~ port ~ typ ~ c1 ~ c2 ~ time =>
+        Hardware(Some(id), name, sn, ip, port, typ, time, c1, c2)
     }
   }
 }

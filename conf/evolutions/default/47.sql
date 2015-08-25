@@ -8,6 +8,8 @@ CREATE TABLE hardware (
   ip   VARCHAR(20),
   port   INT,
   machine_type   INT,
+  channel_1_camera   INT(11),
+  channel_2_camera   INT(11),
   updated_at BIGINT,
   status INT(4) DEFAULT 1,
   PRIMARY KEY (uid)
