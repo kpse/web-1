@@ -1,28 +1,10 @@
 package controllers.V3
 
 import controllers.Secured
-import models.V3.Hardware
+import models.V3.{Camera, Hardware}
 import models.{ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
-
-case class Camera(id: Option[Long], account: String, password: String, hardware: Hardware) {
-  def update(kg: Long) = Camera(id, account, password, hardware)
-
-  def create(kg: Long) = Camera(Some(1), account, password, hardware)
-}
-
-object Camera {
-  implicit val readCamera = Json.reads[Camera]
-  implicit val writeCamera = Json.writes[Camera]
-
-  def deleteById(kg: Long, id: Long) = None
-
-  def show(kg: Long, id: Long): Option[Camera] = Some(Camera(Some(id), "account", "password", Hardware(Some(1), Some("cam1"), Some("sn"), Some("8.8.8.8"), Some(80), Some(1), Some(System.currentTimeMillis()))))
-
-  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = List(Camera(Some(1), "account", "password", Hardware(Some(1), Some("cam1"), Some("sn"), Some("8.8.8.8"), Some(80), Some(1), Some(System.currentTimeMillis()))))
-
-}
 
 object CameraController extends Controller with Secured {
 
