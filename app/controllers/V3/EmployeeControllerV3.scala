@@ -30,7 +30,7 @@ object EmployeeControllerV3 extends Controller with Secured {
       case (s) if s.basic.uid.nonEmpty || s.id.nonEmpty =>
         BadRequest(Json.toJson(ErrorResponse("有id的情况请用update接口。(use update when you have ID value)", 4)))
       case (s) if s.existsInOtherSchool(kg) =>
-        InternalServerError(Json.toJson(ErrorResponse("该号码的老师属于另一个学校。(this employee number belongs to another school)", 6)))
+        InternalServerError(Json.toJson(ErrorResponse("该号码，员工id，登录名三者至少有一样出现在另一个学校未删除老师的信息里。(the given employee critical info belongs to another school)", 6)))
       case (s) =>
         EmployeeV3.removeDirtyDataIfExists(s)
         Ok(Json.toJson(s.create(kg)))
