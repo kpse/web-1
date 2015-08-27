@@ -539,6 +539,12 @@ POST          /api/v3/kindergarten/:kg/internal_notification                    
 POST          /api/v3/kindergarten/:kg/internal_notification/:id                               controllers.V3.NotificationController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/internal_notification/:id                               controllers.V3.NotificationController.delete(kg: Long, id: Long)
 
+GET           /api/v3/kindergarten/:kg/internal_notification/:nId/feedback                     controllers.V3.NotificationFeedbackController.index(kg: Long, nId: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v3/kindergarten/:kg/internal_notification/:nId/feedback/:id                 controllers.V3.NotificationFeedbackController.show(kg: Long, nId: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/internal_notification/:nId/feedback                     controllers.V3.NotificationFeedbackController.create(kg: Long, nId: Long)
+POST          /api/v3/kindergarten/:kg/internal_notification/:nId/feedback/:id                 controllers.V3.NotificationFeedbackController.update(kg: Long, nId: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/internal_notification/:nId/feedback/:id                 controllers.V3.NotificationFeedbackController.delete(kg: Long, nId: Long, id: Long)
+
 GET           /api/v3/kindergarten/:kg/enumeration                                             controllers.V3.SchoolDataDefinitionController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
 GET           /api/v3/kindergarten/:kg/enumeration/:id                                         controllers.V3.SchoolDataDefinitionController.show(kg: Long, id: Long)
 POST          /api/v3/kindergarten/:kg/enumeration                                             controllers.V3.SchoolDataDefinitionController.create(kg: Long)
