@@ -13,7 +13,7 @@ CREATE TABLE employeedailylog (
   card varchar(20)   NOT NULL,
   card_type int(11) DEFAULT '0',
   notice_type int(4) NOT NULL DEFAULT '0',
-  checked_at bigint(20) NOT NULL DEFAULT '0',
+  checked_at bigint(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (uid),
   KEY(checked_at),
   KEY(school_id),

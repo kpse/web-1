@@ -11,7 +11,7 @@ CREATE TABLE camerarecord (
   hardware_id int(11) NOT NULL,
   account varchar(100) NOT NULL DEFAULT '',
   password varchar(100) NOT NULL DEFAULT '',
-  updated_at bigint(20) NOT NULL DEFAULT '0',
+  updated_at bigint(20) NOT NULL DEFAULT 0,
   status INT(4) DEFAULT 1,
   PRIMARY KEY (uid),
   KEY(school_id),
