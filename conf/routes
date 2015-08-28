@@ -551,6 +551,12 @@ POST          /api/v3/kindergarten/:kg/enumeration                              
 POST          /api/v3/kindergarten/:kg/enumeration/:id                                         controllers.V3.SchoolDataDefinitionController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/enumeration/:id                                         controllers.V3.SchoolDataDefinitionController.delete(kg: Long, id: Long)
 
+GET           /api/v3/kindergarten/:kg/log_store                                               controllers.V3.SchoolLogStoreController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v3/kindergarten/:kg/log_store/:id                                           controllers.V3.SchoolLogStoreController.show(kg: Long, id: Long)
+POST          /api/v3/kindergarten/:kg/log_store                                               controllers.V3.SchoolLogStoreController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/log_store/:id                                           controllers.V3.SchoolLogStoreController.update(kg: Long, id: Long)
+DELETE        /api/v3/kindergarten/:kg/log_store/:id                                           controllers.V3.SchoolLogStoreController.delete(kg: Long, id: Long)
+
 #check binding history
 GET           /api/v3/binding_history/:phone                                                   controllers.Authentication.bindingHistory(phone: String)
 
