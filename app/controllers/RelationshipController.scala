@@ -114,7 +114,6 @@ object RelationshipController extends Controller with Secured {
             case None =>
               Ok(Json.toJson(new SuccessResponse("已授权卡号未使用。(Available card number)")))
           }
-        case _ => Ok(Json.toJson(new SuccessResponse("无此卡号，可重用。(Available card number)")))
       }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
