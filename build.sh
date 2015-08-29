@@ -36,6 +36,11 @@ function local_https_server {
     JAVA_OPTS="-Dhttps.port=9001 -Xmx3g" play h2-browser run
 }
 
+function local_https_server_with_prod_logger {
+    load_env
+    JAVA_OPTS="-Dhttps.port=9001 -Xmx3g -Dlogger.resource=$(pwd)/conf/prod-logger.xml" play h2-browser run
+}
+
 function local_https_server_with_minjs {
     load_env
     grunt minjs &&
@@ -95,6 +100,7 @@ function main {
 		s) local_https_server ;;
 		ss) local_https_server_with_minjs ;;
 		mysql) local_https_server_with_mysql ;;
+		sp) local_https_server_with_prod_logger ;;
 		a) build_deploy_stage ;;
 		heroku) deploy_heroku ;;
 		prod) deploy_prod cocobabys.com ;;
