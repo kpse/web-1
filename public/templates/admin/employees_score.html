@@ -11,21 +11,19 @@
   <thead>
   <tr class="row">
     <th class="col-xs-2">老师姓名</th>
-    <th class="col-xs-2">作业发布</th>
-    <th class="col-xs-2">在园评价</th>
-    <th class="col-xs-2">家园互动</th>
-    <th class="col-xs-2">公告发布</th>
-    <th class="col-xs-2">备注</th>
+    <th class="col-xs-3">在园评价</th>
+    <th class="col-xs-3">家园互动</th>
+    <th class="col-xs-3">公告发布</th>
+    <th class="col-xs-1">备注</th>
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="e in employees | filter: searchText | filter: noOperator | orderBy:countScore:true" class="row">
+  <tr ng-repeat="e in employees | filter: searchText | filter: noOperator | orderBy:countScore:true" class="row" ng-hide="loading">
     <td class="col-xs-2">{{e.name}}</td>
-    <td class="col-xs-2">{{e.assignment.count || 0}}</td>
-    <td class="col-xs-2">{{e.assess.count || 0}}</td>
-    <td class="col-xs-2">{{e.conversation.count || 0}}</td>
-    <td class="col-xs-2">{{e.news.count || 0}}</td>
-    <td class="col-xs-2">N/A</td>
+    <td class="col-xs-3">{{e.assess.count || 0}}</td>
+    <td class="col-xs-3">{{e.conversation.count || 0}}</td>
+    <td class="col-xs-3">{{e.news.count || 0}}</td>
+    <td class="col-xs-1">N/A</td>
   </tr>
   </tbody>
 </table>

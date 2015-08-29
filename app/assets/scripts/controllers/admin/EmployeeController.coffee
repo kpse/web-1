@@ -116,10 +116,6 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
       scope.refresh = ->
         scope.loading = true
         scope.employees = SchoolEmployee.query school_id: $stateParams.kindergarten, ->
-          scope.assignmentStats = Stats('assignment').query school_id: $stateParams.kindergarten, ->
-            _.forEach scope.employees, (e) ->
-              e.assignment = _.find scope.assignmentStats, (s) -> e.id == s.employee_id
-              e.assignment = count: 0 unless e.assignment?
           scope.assessStats = Stats('assess').query school_id: $stateParams.kindergarten, ->
             _.forEach scope.employees, (e) ->
               e.assess = _.find scope.assessStats, (s) -> e.id == s.employee_id
@@ -142,7 +138,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
           0
 
       scope.countScore = (employee) ->
-        safeCount(employee.assignment) + safeCount(employee.news) + safeCount(employee.conversation) + safeCount(employee.assess)
+        safeCount(employee.news) + safeCount(employee.conversation) + safeCount(employee.assess)
 
       scope.refresh()
   ]

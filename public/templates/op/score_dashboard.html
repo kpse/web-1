@@ -18,7 +18,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="e in allEmployees | filter: searchText | filter: noOperator | filter: nonZero | orderBy:'+count'" class="row" ng-hide="loading">
+  <tr ng-repeat="e in allEmployees | filter: searchText | filter: noOperator | filter: nonZero | orderBy:'-count'" class="row" ng-hide="loading">
     <td class="col-xs-2">{{e.name}}</td>
     <td class="col-xs-2">{{e.count}}</td>
     <td class="col-xs-1">{{e.assess.count || 0}}</td>
