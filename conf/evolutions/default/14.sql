@@ -17,6 +17,24 @@ CREATE TABLE feedback (
   PRIMARY KEY (uid)
 );
 
+insert into feedback (phone, content, comment) VALUES
+('123456789321', '一个安卓反馈', '不想处理');
+
+insert into feedback (phone, content, comment, source) VALUES
+('123456789321', '一个安卓教师反馈', '不想处理1', 'android_teacher');
+
+insert into feedback (phone, content, comment, source) VALUES
+('123456789321', '一个iOS反馈', '不想处理2', 'ios_parent');
+
+insert into feedback (phone, content, comment, source) VALUES
+('123456789321', '一个iOS老师反馈', '不想处理3', 'ios_teacher');
+
+insert into feedback (phone, content, comment, source) VALUES
+('123456789321', '一个网页反馈', '不想处理4', 'web');
+
+insert into feedback (phone, content, comment, source) VALUES
+('123456789321', '处理完毕', 'done', 'done');
+
 # --- !Downs
 
 DROP TABLE IF EXISTS feedback;

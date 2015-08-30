@@ -36,6 +36,9 @@ angular.module('kulebaoOp').controller 'OpFeedbackCtrl',
         feedback.$save ->
           scope.refresh()
 
+      scope.editFeedback = (feedback)->
+        alert '编辑功能暂未实现。'
+
   ]
 
 
