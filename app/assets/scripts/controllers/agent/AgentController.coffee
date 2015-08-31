@@ -20,7 +20,7 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
         result = if d.child_count == 0 then 0 else (d.logged_ever / d.child_count * 1.5 * 100 ).toFixed 2
         if result > 100 then 100 else result
 
-      scope.calcRate = (d) -> if d.logged_ever == 0 then 0 else (d.logged_once/d.logged_ever * 100).toFixed 2
+      scope.calcRate = (d) -> if !d? || !d.logged_ever? || d.logged_ever == 0 then 0 else (d.logged_once/d.logged_ever * 100).toFixed 2
 
       scope.refresh = ->
         scope.d3Data = []

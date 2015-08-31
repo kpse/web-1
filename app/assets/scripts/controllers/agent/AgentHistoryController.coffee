@@ -57,13 +57,13 @@ angular.module('kulebaoAgent')
         queue = [Stats.query(agent_id: currentAgent.id).$promise,
                  scope.waitForSchoolsReady()]
         $q.all(queue).then (q) ->
-          console.log currentAgent.schools
           groups = _.groupBy(q[0], 'month')
           scope.lastActiveData = groups[scope.currentMonth]
           _.each currentAgent.schools, (s) ->
             s.stats = _.find scope.lastActiveData, (f) -> f.school_id == s.school_id
-            s.stats.rate = scope.calcRate s.stats
-            s.stats.childRate =  scope.calcChildRate s.stats
+            if s.stats?
+              s.stats.rate = scope.calcRate s.stats
+              s.stats.childRate =  scope.calcChildRate s.stats
           scope.$emit 'stats_ready', currentAgent.schools
 
       scope.refresh()

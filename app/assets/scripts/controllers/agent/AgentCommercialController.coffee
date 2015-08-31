@@ -149,7 +149,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       scope.allowToDistribute = (ad) -> ad.publishing && _.any [2, 4], (s) -> ad.publishing.publish_status == s
 
       scope.parentsInSchools = (schools) ->
-        _.sum schools, (s) -> s.lastActiveData.logged_ever
+        _.sum (_.filter schools, (f) -> f.lastActiveData?), (s) -> s.lastActiveData.logged_ever
 
       scope.adminEdit = (ad, oldStatus) ->
         switch ad.publishing.publish_status

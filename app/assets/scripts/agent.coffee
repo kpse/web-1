@@ -20,10 +20,8 @@ angular.module('kulebaoAgent',
         currentAgent:
           (agentManagementService, $stateParams, agentService) ->
             if $stateParams.agent_id == 'default'
-              console.log('currentAgent agentService 1')
               agentService.get().$promise
             else
-              console.log('currentAgent agentService 2' + $stateParams.agent_id)
               agentManagementService.get(id: $stateParams.agent_id).$promise
         loggedUser:
           (employeeService, session, agentService) ->
