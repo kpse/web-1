@@ -7,7 +7,9 @@ import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
 
-case class Menu(id: Option[Long], name: Option[String], weight: Option[String], arrange_type: Option[Int]) {
+case class DietNutritionPreview(id: Option[Long], nutrition_id: Long, weight: String)
+case class Menu(id: Option[Long], name: Option[String], weight: Option[String], arrange_type: Option[Int],
+                nutrition_units: List[DietNutritionPreview]) {
   def exists(id: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from dietmenu where uid={id}")
@@ -55,6 +57,8 @@ case class Menu(id: Option[Long], name: Option[String], weight: Option[String], 
 }
 
 object Menu {
+  implicit val writeDietNutritionPreview = Json.writes[DietNutritionPreview]
+  implicit val readDietNutritionPreview = Json.reads[DietNutritionPreview]
   implicit val writeMenu = Json.writes[Menu]
   implicit val readMenu = Json.reads[Menu]
 
@@ -86,13 +90,26 @@ object Menu {
         ).executeUpdate()
   }
 
+  def previewNutritionUnit(id: Long): List[DietNutritionPreview] = DB.withConnection {
+    implicit c =>
+      List(DietNutritionPreview(Some(1), id, "123g"), DietNutritionPreview(Some(2), id, "1t"), DietNutritionPreview(Some(3), id, "312g"))
+  }
+
   def simple = {
     get[Long]("uid") ~
       get[Option[String]]("name") ~
       get[Option[String]]("weight") ~
       get[Option[Int]]("arrange_type") map {
       case id ~ name ~ weight ~ typ =>
-        Menu(Some(id), name, weight, typ)
+        Menu(Some(id), name, weight, typ, previewNutritionUnit(id))
+    }
+  }
+
+  def simpleUnit(id: Long) = {
+    get[Long]("uid") ~
+      get[Option[String]]("weight") map {
+      case uid ~ weight=>
+        DietNutritionPreview(Some(uid), id, weight.getOrElse(""))
     }
   }
 }
