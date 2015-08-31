@@ -9,6 +9,7 @@ CREATE TABLE dietmenu (
   weight   VARCHAR(10),
   arrange_type INT,
   updated_at BIGINT,
+  store_type INT(4) NOT NULL DEFAULT 1,
   status INT(4) DEFAULT 1,
   PRIMARY KEY (uid),
   KEY (school_id)

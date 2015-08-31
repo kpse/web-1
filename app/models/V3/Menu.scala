@@ -8,8 +8,9 @@ import play.api.db.DB
 import play.api.libs.json.Json
 
 case class DietNutritionPreview(id: Option[Long], nutrition_id: Long, weight: String)
+
 case class Menu(id: Option[Long], name: Option[String], weight: Option[String], arrange_type: Option[Int],
-                nutrition_units: List[DietNutritionPreview]) {
+                nutrition_units: List[DietNutritionPreview], store_type: Int = 1) {
   def exists(id: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from dietmenu where uid={id}")
@@ -29,13 +30,14 @@ case class Menu(id: Option[Long], name: Option[String], weight: Option[String], 
   def update(kg: Long): Option[Menu] = DB.withConnection {
     implicit c =>
       SQL("update dietmenu set school_id={school_id}, name={name}, weight={weight}, " +
-        "arrange_type={arrange_type}, updated_at={time} where school_id={school_id} and uid={id}")
+        "arrange_type={arrange_type}, store_type={store_type}, updated_at={time} where school_id={school_id} and uid={id}")
         .on(
           'id -> id,
           'school_id -> kg,
           'name -> name,
           'weight -> weight,
           'arrange_type -> arrange_type,
+          'store_type -> store_type,
           'time -> System.currentTimeMillis
         ).executeUpdate()
       id flatMap (Menu.show(kg, _))
@@ -50,6 +52,7 @@ case class Menu(id: Option[Long], name: Option[String], weight: Option[String], 
           'name -> name,
           'weight -> weight,
           'arrange_type -> arrange_type,
+          'store_type -> store_type,
           'time -> System.currentTimeMillis
         ).executeInsert()
       insert flatMap (Menu.show(kg, _))
@@ -99,16 +102,17 @@ object Menu {
     get[Long]("uid") ~
       get[Option[String]]("name") ~
       get[Option[String]]("weight") ~
+      get[Int]("store_type") ~
       get[Option[Int]]("arrange_type") map {
-      case id ~ name ~ weight ~ typ =>
-        Menu(Some(id), name, weight, typ, previewNutritionUnit(id))
+      case id ~ name ~ weight ~ store ~ typ =>
+        Menu(Some(id), name, weight, typ, previewNutritionUnit(id), store)
     }
   }
 
   def simpleUnit(id: Long) = {
     get[Long]("uid") ~
       get[Option[String]]("weight") map {
-      case uid ~ weight=>
+      case uid ~ weight =>
         DietNutritionPreview(Some(uid), id, weight.getOrElse(""))
     }
   }
