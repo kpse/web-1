@@ -109,6 +109,12 @@ object AgentController extends Controller with Secured {
 
   def summarise(kg: Long) = IsLoggedIn {
     u => _ =>
-      Ok(Json.toJson(AgentSchool.summarise(kg)))
+      AgentSchool.hasAgent(kg) match {
+        case false =>
+          Ok(Json.toJson(ErrorResponse(s"学校${kg}没有代理商(no agent for given school)", 11)))
+        case true =>
+          Ok(Json.toJson(AgentSchool.summarise(kg)))
+      }
+
   }
 }

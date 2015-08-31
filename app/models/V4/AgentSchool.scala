@@ -83,7 +83,15 @@ object AgentSchool {
         ).executeUpdate()
   }
 
-  def summarise(kg: Long) = DB.withConnection {
+  def hasAgent(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from agentschool where school_id={kg} and status=1")
+        .on(
+          'kg -> kg
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
+  def summarise(kg: Long): AgentSummaryInSchool = DB.withConnection {
     implicit c =>
       SQL(s"select (select count(a.uid) from agentcontractorinschool s, agentcontractor a where s.contractor_id=a.uid and s.school_id={kg} and a.status=1 and s.status=1 and a.publish_status=4) as contractor, " +
         s"(select count(a.uid) from agentactivityinschool s, agentactivity a where s.activity_id=a.uid and s.school_id={kg} and a.status=1 and s.status=1 and a.publish_status=4) as activity, " +
