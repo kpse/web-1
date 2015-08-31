@@ -64,7 +64,7 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[Str
           'area -> area,
           'phone -> phone,
           'logo_url -> logo,
-          'login_password -> md5(phone.drop(3).toString()),
+          'login_password -> md5(phone.getOrElse("secret")),
           'login_name -> login_name,
           'contact_info -> contact_info,
           'memo -> memo,
