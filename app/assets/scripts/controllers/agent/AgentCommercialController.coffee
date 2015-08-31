@@ -64,12 +64,14 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       scope.categories = ['亲子摄影', '培训教育', '亲子游乐', '亲子购物', '其他']
 
       scope.addNewAd = () ->
+        scope.disableUploading = false
         scope.newAd = createNewAd()
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/add_contractor.html'
 
       scope.addNewActivity = () ->
+        scope.disableUploading = false
         scope.newAd = createNewActivity()
         scope.contractors = Contractor.query agent_id: scope.currentAgent.id
         scope.currentModal = Modal
