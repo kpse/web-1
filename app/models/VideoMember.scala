@@ -49,7 +49,7 @@ case class VideoMember(id: String, account: Option[String], password: Option[Str
 }
 
 object VideoMember {
-  def default(kg: Long) = VideoMember("default", Some("8888"), Some("8888"), Some(kg))
+  def default(kg: Long) = VideoMember("default", Some("8888"), Some("000000"), Some(kg))
 
   implicit val write = Json.writes[VideoMember]
   implicit val write2 = Json.writes[AvailableSlots]
