@@ -18,7 +18,7 @@ object Global extends WithFilters(LoggingFilter) with GlobalSettings {
 
         val monitorActor = Akka.system.actorOf(Props[CronJob], name = "CronJob")
 
-        Akka.system.scheduler.schedule(10 minutes, 1 hour, monitorActor, Tick)
+        Akka.system.scheduler.schedule(2 minutes, 1 hours, monitorActor, Tick)
     }
 
   }

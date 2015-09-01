@@ -166,6 +166,7 @@ object KulebaoAgent {
       Logger.info(s"lastMonth = ${pattern.print(DateTime.now().minusMonths(1))}")
       historyDataExists(data) match {
         case false =>
+          Logger.info(s"insert data for ${pattern.print(DateTime.now().minusMonths(1))} in ${data.school_id}")
           SQL(s"insert into agentstatistics (agent_id, school_id, month, child_count, logged_once, logged_ever, created_at) values " +
             s"({agent}, {school_id}, {month}, {child}, {once}, {ever}, {time})")
             .on(
@@ -177,7 +178,9 @@ object KulebaoAgent {
               'ever -> data.logged_ever,
               'time -> System.currentTimeMillis()
             ).executeInsert()
-        case true => 0
+        case true =>
+          Logger.info(s"no data insertion for ${pattern.print(DateTime.now().minusMonths(1))} in ${data.school_id} is needed.")
+          0
       }
   }
 
@@ -199,7 +202,7 @@ object KulebaoAgent {
           'begin -> firstMilli,
           'end -> lastMilli
         ).as(get[Long]("count") single)
-      val childCount: Long = SQL(s"SELECT count(distinct child_id) count FROM childinfo where school_id={kg} and status=1)")
+      val childCount: Long = SQL(s"SELECT count(distinct child_id) count FROM childinfo where school_id={kg} and status=1")
         .on(
           'kg -> school_id
         ).as(get[Long]("count") single)
