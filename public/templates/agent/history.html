@@ -1,12 +1,20 @@
 <h2>按月查看数据统计</h2>
 <div class="well schools-search-panel">
   <label for="month-select">选择查看月份</label>
+
   <div class="row">
     <select class="form-control month-select col-xs-2" ng-model="currentMonth"
-          ng-options="month for month in pastMonths" id="month-select"
-          data-style="btn-primary"></select>
-  <button type="submit" class="btn btn-success col-xs-offset-1 col-xs-2" ng-disabled="loading || !export" ng-csv="export(currentMonth)" csv-header="exportHeader()"
-          filename="{{csvName}}">导出当月数据</button></div>
+            ng-options="month for month in pastMonths" id="month-select"
+            data-style="btn-primary"></select>
+    <button type="submit" class="btn btn-success col-xs-offset-1 col-xs-2" ng-disabled="loading || !export"
+            ng-csv="export(currentMonth)" csv-header="exportHeader()"
+            filename="{{csvName}}">导出当月数据
+    </button>
+    <button type="submit" class="btn btn-danger col-xs-offset-1" ng-disabled="loading" ng-confirm-msg="此操作会重新计算前一个月统计数据，已存在的数据不会被覆盖。确定要继续吗?"
+            ng-confirm-click="forceToReCalculate()">
+      重新计算上月统计数据
+    </button>
+  </div>
 </div>
 <div class="loading" ng-show="loading"></div>
 <div class="agent-school-view" ui-view></div>

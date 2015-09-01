@@ -139,9 +139,10 @@ angular.module('kulebao.services')
 
 .factory 'agentStatsService', ['$resource',
   ($resource) ->
-    $resource '/api/v4/agent/:agent_id/statistics',
+    $resource '/api/v4/agent/:agent_id/statistics/:id',
       {
         agent_id: "@agent_id"
+        id: "@id"
       }
   ]
 
@@ -165,5 +166,10 @@ angular.module('kulebao.services')
         agent_id: "@agent_id"
         id: "@id"
       }
+  ]
+
+.factory 'agentStatsOperatorService', ['$resource',
+  ($resource) ->
+    $resource '/api/v4/agent_statistics',{}
   ]
 
