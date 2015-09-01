@@ -117,4 +117,15 @@ object AgentController extends Controller with Secured {
       }
 
   }
+
+  def monthlyStatistics() = IsOperator { u => _ =>
+    KulebaoAgent.monthlyStatistics()
+    Ok(Json.toJson(new SuccessResponse))
+  }
+
+  def deleteStats(agentId: Long, id: Long) = IsOperator { u => _ =>
+    KulebaoAgent.deleteStats(agentId, id)
+    Ok(Json.toJson(new SuccessResponse))
+  }
+
 }

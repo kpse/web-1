@@ -160,6 +160,15 @@ object KulebaoAgent {
         ).as(simpleStatistics *)
   }
 
+  def deleteStats(agentId: Long, id: Long) = DB.withConnection {
+    implicit c =>
+      SQL(s"delete from agentstatistics where agent_id={agent} and uid={id}")
+        .on(
+          'agent -> agentId,
+          'id -> id
+        ).execute()
+  }
+
   def collectData(data: AgentStatistics) = DB.withConnection {
     implicit c =>
       val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
@@ -215,6 +224,18 @@ object KulebaoAgent {
     implicit c =>
       SQL(s"select count(1) from agentstatistics where agent_id={agent} and school_id={kg} and month={month}")
         .on('agent -> data.agent, 'kg -> data.school_id, 'month -> data.month).as(get[Long]("count(1)") single) > 0
+  }
+
+  def monthlyStatistics() = {
+    index(None, None, None).foreach {
+      case agent =>
+        AgentSchool.index(agent.id.get, None, None, None).foreach {
+          case school =>
+            val monthData: AgentStatistics = KulebaoAgent.collectTheWholeMonth(agent.id.get, school.school_id, DateTime.now().minusMonths(1))
+            Logger.info(s"${agent.id.get}, ${school.school_id}, ${monthData.logged_once}, ${monthData.logged_ever}")
+            collectData(monthData)
+        }
+    }
   }
 
   val simple = {
