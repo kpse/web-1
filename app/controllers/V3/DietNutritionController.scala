@@ -16,7 +16,7 @@ case class Metal(ca: Option[String], k: Option[String], na: Option[String], mg: 
 case class DietNutrition(id: Option[Long], food_type_id: Option[Long], name: Option[String], alias: Option[String], weight: Option[String], available_weight: Option[String],
                          calorie: Option[String], protein: Option[String], fat: Option[String], carbohydrate: Option[String], ash: Option[String],
                          carotine: Option[String], fibre: Option[String], cholesterol: Option[String], vitamin: Option[Vitamin]
-                         , p: Option[String], metal: Option[Metal], store_type: Int = 1)
+                         , p: Option[String], metal: Option[Metal], store_type: Int = 1, former_id: Option[Long] = None)
 
 case class DietGrade(id: Option[Long], name: Option[String], age_name: Option[String], age_min: Option[String], age_max: Option[String], gender: Option[Int],
                      Labor: Option[String], Joule: Option[String],
@@ -36,13 +36,15 @@ object DietNutritionController extends Controller with Secured {
   def index(kg: Long) = IsLoggedIn { u => _ =>
     Ok(Json.toJson(List(DietNutrition(Some(6001), Some(1), Some("吃的"), Some("好吃的"), Some("1kg"), Some("20g"), Some("1"), Some("2"), Some("3"), Some("4"), Some("5"), Some("6"), Some("7"), Some("8"),
       Some(Vitamin(Some("21"), Some("221"), Some("21"), Some("12"), Some("12"), Some("31"), Some("14"), Some("12"), Some("12"), Some("12"), Some("12"), Some("12")))
-      , Some("9"), Some(Metal(Some("11"), Some("12"), Some("13"), Some("14"), Some("15"), Some("61"), Some("17"), Some("18"), Some("19"), Some("19"), Some("19")))))))
+      , Some("9"), Some(Metal(Some("11"), Some("12"), Some("13"), Some("14"), Some("15"), Some("61"), Some("17"), Some("18"), Some("19"), Some("19"), Some("19"))
+      ), 1, Some(1)))))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
     Ok(Json.toJson(DietNutrition(Some(id + 6000), Some(1), Some("吃的"), Some("好吃的"), Some("1kg"), Some("20g"), Some("1"), Some("2"), Some("3"), Some("4"), Some("5"), Some("6"), Some("7"), Some("8"),
       Some(Vitamin(Some("21"), Some("221"), Some("21"), Some("12"), Some("12"), Some("31"), Some("14"), Some("12"), Some("12"), Some("12"), Some("12"), Some("12")))
-      , Some("9"), Some(Metal(Some("11"), Some("12"), Some("13"), Some("14"), Some("15"), Some("61"), Some("17"), Some("18"), Some("19"), Some("19"), Some("19"))))))
+      , Some("9"), Some(Metal(Some("11"), Some("12"), Some("13"), Some("14"), Some("15"), Some("61"), Some("17"), Some("18"), Some("19"), Some("19"), Some("19"))
+      ), 0, Some(1))))
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>

@@ -10,7 +10,8 @@ import play.api.libs.json.Json
 case class DietNutritionPreview(id: Option[Long], nutrition_id: Long, weight: String)
 
 case class Menu(id: Option[Long], name: Option[String], weight: Option[String], arrange_type: Option[Int],
-                nutrition_units: List[DietNutritionPreview], store_type: Int = 1) {
+                nutrition_units: List[DietNutritionPreview], recipe: String, property: String, tips: String, food_type_id: Long,
+                store_type: Int = 1, former_id: Option[Long] = None) {
   def exists(id: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from dietmenu where uid={id}")
@@ -105,7 +106,7 @@ object Menu {
       get[Int]("store_type") ~
       get[Option[Int]]("arrange_type") map {
       case id ~ name ~ weight ~ store ~ typ =>
-        Menu(Some(id), name, weight, typ, previewNutritionUnit(id), store)
+        Menu(Some(id), name, weight, typ, previewNutritionUnit(id), "recipe", "property", "tips", 1, store, Some(1))
     }
   }
 
