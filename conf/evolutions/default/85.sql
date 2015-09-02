@@ -10,7 +10,7 @@ CREATE TABLE internalnotification (
   school_id varchar(20)   NOT NULL,
   class_id INT   NOT NULL DEFAULT 0,
   title varchar(100) NOT NULL DEFAULT '',
-  content TEXT NOT NULL DEFAULT '',
+  content TEXT NOT NULL,
   updated_at bigint(20) NOT NULL DEFAULT 0,
   created_at bigint(20) NOT NULL DEFAULT 0,
   status INT(4) DEFAULT 1,

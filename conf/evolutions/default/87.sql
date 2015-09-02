@@ -8,7 +8,7 @@
 CREATE TABLE logstorage (
   uid int(11) NOT NULL AUTO_INCREMENT,
   school_id varchar(20)   NOT NULL,
-  url TEXT NOT NULL DEFAULT '',
+  url TEXT NOT NULL,
   logged_day bigint(20) NOT NULL DEFAULT 0,
   status INT(4) DEFAULT 1,
   PRIMARY KEY (uid),
