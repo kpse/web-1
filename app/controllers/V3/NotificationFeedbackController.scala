@@ -1,27 +1,10 @@
 package controllers.V3
 
 import controllers.Secured
-import models.V3.MedicineRecord
+import models.V3.{SchoolInternalFeedback, MedicineRecord}
 import models.{ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
-
-case class SchoolInternalFeedback(id: Option[Long], notification_id: Long, class_id: Int, created_at: Option[Long]) {
-  def update(kg: Long, notificationId: Long, id: Long): Option[SchoolInternalFeedback] = Some(this.copy(id = Some(id), notification_id = notificationId))
-
-  def create(kg: Long, notificationId: Long): Option[SchoolInternalFeedback] = Some(this.copy(id = Some(1), notification_id = notificationId))
-}
-
-object SchoolInternalFeedback {
-  implicit val readSchoolInternalFeedback = Json.reads[SchoolInternalFeedback]
-  implicit val writeSchoolInternalFeedback = Json.writes[SchoolInternalFeedback]
-
-  def show(kg: Long, notificationId: Long, id: Long): Option[SchoolInternalFeedback] = Some(SchoolInternalFeedback(Some(id), notificationId, 1, Some(System.currentTimeMillis())))
-
-  def index(kg: Long, notificationId: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = List(SchoolInternalFeedback(Some(1), notificationId, 1, Some(System.currentTimeMillis())))
-
-  def deleteById(kg: Long, notificationId: Long, id: Long) = None
-}
 
 object NotificationFeedbackController extends Controller with Secured {
   def index(kg: Long, notificationId: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
@@ -39,6 +22,10 @@ object NotificationFeedbackController extends Controller with Secured {
 
   def create(kg: Long, notificationId: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[SchoolInternalFeedback].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
+      case (s) if s.notification_id != notificationId =>
+        BadRequest(Json.toJson(ErrorResponse("内部通知ID不匹配(notification is not match)", 4)))
       case (s) =>
         Ok(Json.toJson(s.create(kg, notificationId)))
     }.recoverTotal {
@@ -48,8 +35,10 @@ object NotificationFeedbackController extends Controller with Secured {
 
   def update(kg: Long, notificationId: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[SchoolInternalFeedback].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
       case (s) =>
-        Ok(Json.toJson(s.update(kg, notificationId, id)))
+        Ok(Json.toJson(s.update(kg, notificationId)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }

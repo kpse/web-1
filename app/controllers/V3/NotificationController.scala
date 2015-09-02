@@ -1,27 +1,12 @@
 package controllers.V3
 
+import anorm.SqlParser._
+import anorm.~
 import controllers.Secured
-import models.V3.MedicineRecord
+import models.V3.SchoolInternalNotification
 import models.{ErrorResponse, SuccessResponse}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
-
-case class SchoolInternalNotification(id: Option[Long], class_id: Int, title: String, content: String, created_at: Option[Long]) {
-  def update(kg: Long, id: Long): Option[SchoolInternalNotification] = Some(this.copy(id = Some(id)))
-
-  def create(kg: Long): Option[SchoolInternalNotification] = Some(this.copy(id = Some(1)))
-}
-
-object SchoolInternalNotification {
-  implicit val readSchoolInternalNotification = Json.reads[SchoolInternalNotification]
-  implicit val writeSchoolInternalNotification = Json.writes[SchoolInternalNotification]
-
-  def show(kg: Long, id: Long): Option[SchoolInternalNotification] = Some(SchoolInternalNotification(Some(id), 1, "给一班的通知", "明天放假", Some(System.currentTimeMillis())))
-
-  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = List(SchoolInternalNotification(Some(1), 1, "给一班的通知", "明天放假", Some(System.currentTimeMillis())))
-
-  def deleteById(kg: Long, id: Long) = None
-}
 
 object NotificationController extends Controller with Secured {
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
@@ -39,6 +24,8 @@ object NotificationController extends Controller with Secured {
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[SchoolInternalNotification].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
       case (s) =>
         Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
@@ -48,8 +35,10 @@ object NotificationController extends Controller with Secured {
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[SchoolInternalNotification].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
       case (s) =>
-        Ok(Json.toJson(s.update(kg, id)))
+        Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
