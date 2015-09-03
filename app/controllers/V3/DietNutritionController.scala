@@ -18,24 +18,25 @@ object DietNutritionController extends Controller with Secured {
   implicit val writeDietNutrition = Json.writes[DietNutrition]
   implicit val readDietNutrition = Json.reads[DietNutrition]
 
-  def index(kg: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(List(DietNutrition(Some(6001), Some(1), Some("吃的"), Some("好吃的"), Some("1kg"), Some("20g"), Some("1"), Some("2"), Some("3"), Some("4"), Some("5"), Some("6"), Some("7"), Some("8"),
-      Some(Vitamin(Some("21"), Some("221"), Some("21"), Some("12"), Some("12"), Some("31"), Some("14"), Some("12"), Some("12"), Some("12"), Some("12"), Some("12")))
-      , Some("9"), Some(Metal(Some("11"), Some("12"), Some("13"), Some("14"), Some("15"), Some("61"), Some("17"), Some("18"), Some("19"), Some("19"), Some("19"))
-      ), 1, Some(1)))))
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
+    Ok(Json.toJson(DietNutrition.index(kg, from, to, most)))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(DietNutrition(Some(id + 6000), Some(1), Some("吃的"), Some("好吃的"), Some("1kg"), Some("20g"), Some("1"), Some("2"), Some("3"), Some("4"), Some("5"), Some("6"), Some("7"), Some("8"),
-      Some(Vitamin(Some("21"), Some("221"), Some("21"), Some("12"), Some("12"), Some("31"), Some("14"), Some("12"), Some("12"), Some("12"), Some("12"), Some("12")))
-      , Some("9"), Some(Metal(Some("11"), Some("12"), Some("13"), Some("14"), Some("15"), Some("61"), Some("17"), Some("18"), Some("19"), Some("19"), Some("19"))
-      ), 0, Some(1))))
+    DietNutrition.show(kg, id) match {
+      case Some(x) =>
+        Ok(Json.toJson(x))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的营养信息。(No such diet nutrition)")))
+    }
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[DietNutrition].map {
+      case (s) if s.id.isDefined =>
+        BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
       case (s) =>
-        Ok(Json.toJson(s.copy(id = Some(6001))))
+        Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -43,8 +44,10 @@ object DietNutritionController extends Controller with Secured {
 
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[DietNutrition].map {
+      case (s) if s.id != Some(id) =>
+        BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
       case (s) =>
-        Ok(Json.toJson(s.copy(id = Some(6001))))
+        Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
