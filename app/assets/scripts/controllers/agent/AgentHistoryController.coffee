@@ -27,6 +27,8 @@ angular.module('kulebaoAgent')
             id: s.school_id
             name: s.name
             data: (_.find s.activeData, (d) -> d.month == currentMonth)
+          .filter (s) ->
+            s.data?
           .sortBy('school_id')
           .map (s) ->
             id: s.id
