@@ -44,7 +44,7 @@
     </td>
     <td class="col-xs-1">
       <a ng-show="ad.publishing.publish_status == 4" ng-csv="enrollmentOfActivity(ad)" csv-header="getHeader()"
-         filename="{{ad.csvName}}" ng-click="$event.stopPropagation()">下载报名</a>
+         filename="{{ad.csvName}}" ng-click="$event.stopPropagation()" add-bom="U+FEFF">下载报名</a>
       <span ng-hide="ad.publishing.publish_status == 4">N/A</span>
     </td>
     <td class="col-xs-2">

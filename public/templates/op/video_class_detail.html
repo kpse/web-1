@@ -1,5 +1,7 @@
-<button class="btn btn-success" type="button" ng-csv="accountsInSchool(parents)" filename="{{kindergarten.name}}_{{kindergarten.school_id}}_视频账号.csv" ng-disabled="parents.length == 0">导出{{kindergarten.name}}全部家长</button>
-<button class="btn btn-warning" type="button" ng-csv="accountsInSchool(parents, current_class)" filename="{{kindergarten.name}}_{{kindergarten.school_id}}_{{currentClass.name}}_视频账号.csv"
+<button class="btn btn-success" type="button" ng-csv="accountsInSchool(parents)" add-bom="U+FEFF"
+        filename="{{kindergarten.name}}_{{kindergarten.school_id}}_视频账号.csv" ng-disabled="parents.length == 0">导出{{kindergarten.name}}全部家长</button>
+<button class="btn btn-warning" type="button" ng-csv="accountsInSchool(parents, current_class)" add-bom="U+FEFF"
+        filename="{{kindergarten.name}}_{{kindergarten.school_id}}_{{currentClass.name}}_视频账号.csv"
         ng-disabled="!downloadEnabled(parents)">导出{{currentClass.name}}的家长</button>
 <ul class="nav nav-tabs">
   <li ng-repeat="c in kindergarten.classes" ng-class="{active: {{c.class_id == current_class}}}">
