@@ -82,7 +82,7 @@ case class DietNutrition(id: Option[Long], food_type_id: Option[Long], name: Opt
         "vitamin_vc, vitamin_vd, vitamin_ve, vitamin_vb1, vitamin_vb2, vitamin_vb3, vitamin_vb5, vitamin_vb6, " +
         "vitamin_vb9, vitamin_vb12, vitamin_vh, p, metal_ca, metal_k, metal_na, metal_mg, metal_fe, metal_zn, " +
         "metal_se, metal_cu, metal_mn, metal_cr, metal_mo, store_type, former_id, created_at) values (" +
-        "{school_id}, {name}, {alias}, {weight}, {available_weight}, {calorie}, {protein}, {fat}, {carbohydrate}, {ash}, " +
+        "{school_id}, {food_type_id}, {name}, {alias}, {weight}, {available_weight}, {calorie}, {protein}, {fat}, {carbohydrate}, {ash}, " +
         "{carotine}, {fibre}, {cholesterol}, {vitamin_va}, {vitamin_vc}, {vitamin_vd}, {vitamin_ve}, {vitamin_vb1}, {vitamin_vb2}, {vitamin_vb3}, " +
         "{vitamin_vb5}, {vitamin_vb6}, {vitamin_vb9}, {vitamin_vb12}, {vitamin_vh}, {p}, {metal_ca}, {metal_k}, {metal_na}, {metal_mg}, " +
         "{metal_fe}, {metal_zn}, {metal_se}, {metal_cu}, {metal_mn}, {metal_cr}, {metal_mo}, {store_type}, " +
