@@ -54,6 +54,7 @@ object DietNutritionController extends Controller with Secured {
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    DietNutrition.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
   }
 }
