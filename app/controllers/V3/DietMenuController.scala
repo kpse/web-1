@@ -25,6 +25,8 @@ object DietMenuController extends Controller with Secured {
     request.body.validate[Menu].map {
       case (s) if s.id.isDefined =>
         BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
+      case (s) if s.nutrition_units.exists(_.id.nonEmpty) =>
+        BadRequest(Json.toJson(ErrorResponse("新建的菜单不能包含已存在的营养单元信息(nutrition unit id is not allow in menu creating)", 4)))
       case (s) =>
         Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
@@ -36,6 +38,10 @@ object DietMenuController extends Controller with Secured {
     request.body.validate[Menu].map {
       case (s) if s.id != Some(id) =>
         BadRequest(Json.toJson(ErrorResponse("ID不匹配(id is not match)", 3)))
+      case (s) if s.deleted =>
+        BadRequest(Json.toJson(ErrorResponse("该菜单已删除(given menu is deleted)", 5)))
+      case (s) if !s.validUnits(kg) =>
+        BadRequest(Json.toJson(ErrorResponse("菜单所包含的营养单元信息不正确(nutrition unit ids are not matched with this menu)", 6)))
       case (s) =>
         Ok(Json.toJson(s.update(kg)))
     }.recoverTotal {
