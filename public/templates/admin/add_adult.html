@@ -70,7 +70,7 @@
 
           <div class="col-sm-8" ng-hide="videoTrialAccount.length > 0">
             <div class="control-group input-append">
-              <select class="form-control member-select" ng-model="parent.video_member_status" name="videoMember"
+              <select class="form-control member-select" ng-model="parent.video_member_status" name="videoMember" ng-disabled="adminUser.privilege_group != 'operator'"
                       ng-options="item.id as item.desc for item in membersInformation.videoMembers"
                       data-style="btn-primary"></select>
             </div>
