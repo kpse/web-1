@@ -14,7 +14,7 @@ case class AgentContractorInSchool(id: Option[Long], agent_id: Long, contractor_
         .on(
           'base -> agentId,
           'ad -> contractor_id,
-          'kg -> kg
+          'kg -> kg.toString
         ).as(get[Long]("count(1)") single) > 0
   }
 
@@ -24,7 +24,7 @@ case class AgentContractorInSchool(id: Option[Long], agent_id: Long, contractor_
         .on(
           'base -> agentId,
           'ad -> contractor_id,
-          'kg -> kg
+          'kg -> kg.toString
         ).executeUpdate()
       id flatMap (AgentContractorInSchool.show(_, agentId, kg))
   }
@@ -36,7 +36,7 @@ case class AgentContractorInSchool(id: Option[Long], agent_id: Long, contractor_
           'id -> id,
           'base -> base,
           'ad -> contractor_id,
-          'kg -> kg,
+          'kg -> kg.toString,
           'time -> System.currentTimeMillis
         ).executeUpdate()
       id flatMap (AgentContractorInSchool.show(_, base, kg))
@@ -49,7 +49,7 @@ case class AgentContractorInSchool(id: Option[Long], agent_id: Long, contractor_
         .on(
           'base -> base,
           'ad -> contractor_id,
-          'kg -> kg,
+          'kg -> kg.toString,
           'time -> System.currentTimeMillis
         ).executeInsert()
       insert flatMap (AgentContractorInSchool.show(_, base, kg))
@@ -64,7 +64,7 @@ object AgentContractorInSchool {
       SQL("select * from agentcontractorinschool where agent_id={base} and school_id={kg} and uid={id} and status=1")
         .on(
           'id -> id,
-          'kg -> kg,
+          'kg -> kg.toString,
           'base -> base
         ).as(simple singleOpt)
   }
@@ -75,7 +75,7 @@ object AgentContractorInSchool {
         .on(
           'from -> from,
           'to -> to,
-          'kg -> kg,
+          'kg -> kg.toString,
           'base -> base
         ).as(simple *)
   }
@@ -85,7 +85,7 @@ object AgentContractorInSchool {
       SQL(s"update agentcontractorinschool set status=0 where agent_id={base} and school_id={kg} and uid={id} and status=1")
         .on(
           'id -> id,
-          'kg -> kg,
+          'kg -> kg.toString,
           'base -> base
         ).executeUpdate()
   }
@@ -100,7 +100,7 @@ object AgentContractorInSchool {
           'from -> from,
           'to -> to,
           'category -> category,
-          'kg -> kg
+          'kg -> kg.toString
         ).as(AgentContractor.simple *)
   }
 

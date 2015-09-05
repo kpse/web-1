@@ -241,7 +241,7 @@ object Parent {
       SQL("select count(1) from parentinfo where phone={phone} and school_id <> {kg}")
         .on(
           'phone -> parent.phone,
-          'kg -> kg
+          'kg -> kg.toString
         ).as(get[Long]("count(1)") single) > 0
   }
 
@@ -370,7 +370,7 @@ object Parent {
   def findByPhone(kg: Long)(phone: String) = DB.withConnection {
     implicit c =>
       SQL(fullStructureSql + " and p.phone={phone}")
-        .on('kg -> kg,
+        .on('kg -> kg.toString,
           'phone -> phone)
         .as(withRelationship singleOpt)
   }
@@ -385,7 +385,7 @@ object Parent {
   def findById(kg: Long)(id: Long) = DB.withConnection {
     implicit c =>
       SQL(fullStructureSql + " and p.uid={id}")
-        .on('kg -> kg,
+        .on('kg -> kg.toString,
           'id -> id)
         .as(withRelationship.singleOpt)
   }
@@ -500,7 +500,7 @@ object Parent {
   def show(kg: Long, phone: String) = DB.withConnection {
     implicit c =>
       SQL(simpleSql + " and p.phone = {phone}")
-        .on('kg -> kg,
+        .on('kg -> kg.toString,
           'phone -> phone)
         .as(simple singleOpt)
   }
@@ -516,7 +516,7 @@ object Parent {
       classId match {
         case Some(id) =>
           SQL(fullStructureSql + " and c.class_id={class_id}")
-            .on('kg -> kg,
+            .on('kg -> kg.toString,
               'class_id -> id.toString)
             .as(withRelationship *)
         case None =>
@@ -551,7 +551,7 @@ object Parent {
   def info(kg: Long, parentId: String) = DB.withConnection {
     implicit c =>
       SQL(simpleSql + " and parent_id={parent_id} ")
-        .on('kg -> kg,
+        .on('kg -> kg.toString,
           'parent_id -> parentId)
         .as(simple singleOpt)
   }
@@ -598,7 +598,7 @@ object Parent {
           classIds.length > 0 match {
             case true =>
               SQL(fullStructureSql + generateClassQuery(classIds) + generateMemberQuery(member) + generateConnectionQuery(connected))
-                .on('kg -> kg,
+                .on('kg -> kg.toString,
                   'member -> (if (member.getOrElse(false)) 1 else 0)
                 ).as(simple *)
             case false =>

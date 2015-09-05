@@ -60,7 +60,7 @@ object AgentSchool {
       SQL("select count(1) from agentschool where agent_id={base} and school_id={kg} and status=1")
         .on(
           'base -> agentId,
-          'kg -> kg
+          'kg -> kg.toString
         ).as(get[Long]("count(1)") single) > 0
   }
 
@@ -87,7 +87,7 @@ object AgentSchool {
     implicit c =>
       SQL("select count(1) from agentschool where school_id={kg} and status=1")
         .on(
-          'kg -> kg
+          'kg -> kg.toString
         ).as(get[Long]("count(1)") single) > 0
   }
 
@@ -98,7 +98,7 @@ object AgentSchool {
         s"{kg} as school_id, " +
         s"(select agent_id from agentschool where school_id={kg} and status=1) as agent")
         .on(
-          'kg -> kg
+          'kg -> kg.toString
         ).as(simpleSummary single)
   }
 

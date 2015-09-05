@@ -14,7 +14,7 @@ case class AgentActivityInSchool(id: Option[Long], agent_id: Long, activity_id: 
         .on(
           'base -> agentId,
           'ad -> activity_id,
-          'kg -> kg
+          'kg -> kg.toString
         ).as(get[Long]("count(1)") single) > 0
   }
 
@@ -24,7 +24,7 @@ case class AgentActivityInSchool(id: Option[Long], agent_id: Long, activity_id: 
         .on(
           'base -> agentId,
           'ad -> activity_id,
-          'kg -> kg
+          'kg -> kg.toString
         ).executeUpdate()
       id flatMap (AgentContractorInSchool.show(_, agentId, kg))
   }
@@ -36,7 +36,7 @@ case class AgentActivityInSchool(id: Option[Long], agent_id: Long, activity_id: 
           'id -> id,
           'base -> base,
           'ad -> activity_id,
-          'kg -> kg,
+          'kg -> kg.toString,
           'time -> System.currentTimeMillis
         ).executeUpdate()
       id flatMap (AgentActivityInSchool.show(_, base, kg))
@@ -49,7 +49,7 @@ case class AgentActivityInSchool(id: Option[Long], agent_id: Long, activity_id: 
         .on(
           'base -> base,
           'ad -> activity_id,
-          'kg -> kg,
+          'kg -> kg.toString,
           'time -> System.currentTimeMillis
         ).executeInsert()
       insert flatMap (AgentActivityInSchool.show(_, base, kg))
@@ -65,7 +65,7 @@ object AgentActivityInSchool {
       SQL("select * from agentactivityinschool where agent_id={base} and school_id={kg} and uid={id} and status=1")
         .on(
           'id -> id,
-          'kg -> kg,
+          'kg -> kg.toString,
           'base -> base
         ).as(simple singleOpt)
   }
@@ -76,7 +76,7 @@ object AgentActivityInSchool {
         .on(
           'from -> from,
           'to -> to,
-          'kg -> kg,
+          'kg -> kg.toString,
           'base -> base
         ).as(simple *)
   }
@@ -86,7 +86,7 @@ object AgentActivityInSchool {
       SQL(s"update agentactivityinschool set status=0 where agent_id={base} and school_id={kg} and uid={id} and status=1")
         .on(
           'id -> id,
-          'kg -> kg,
+          'kg -> kg.toString,
           'base -> base
         ).executeUpdate()
   }

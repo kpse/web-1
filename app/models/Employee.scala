@@ -235,7 +235,7 @@ object Employee {
       val classes: List[String] = SQL("select subordinate from privilege where employee_id={id} and school_id={kg}")
         .on(
           'id -> employee.id,
-          'kg -> kg
+          'kg -> kg.toString
         ).as(get[String]("subordinate") *)
       Logger.info(classes.toString())
       classes filter {
@@ -338,7 +338,7 @@ object Employee {
       SQL("select count(1) from privilege where `group`='principal' and employee_id={id} and school_id={kg}")
         .on(
           'id -> id,
-          'kg -> kg
+          'kg -> kg.toString
         ).as(get[Long]("count(1)") single) > 0
   }
 
@@ -407,7 +407,7 @@ object Employee {
                 'update_at -> System.currentTimeMillis
               ).executeUpdate()
             SQL("update privilege set status=0 where school_id={kg} and employee_id={id}")
-              .on('kg -> kg, 'id -> employee.id).executeUpdate()
+              .on('kg -> kg.toString, 'id -> employee.id).executeUpdate()
         }
         c.commit()
         result

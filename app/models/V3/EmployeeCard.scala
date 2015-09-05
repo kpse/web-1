@@ -101,7 +101,7 @@ object EmployeeCard {
     implicit c =>
       SQL(s"select * from employeecard where school_id={kg} and card={card} and status=1")
         .on(
-          'kg -> kg,
+          'kg -> kg.toString,
           'card -> card
         ).as(simple singleOpt)
   }

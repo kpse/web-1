@@ -18,7 +18,7 @@ object VideoProvider {
     implicit c =>
       SQL("insert into videoprovidertoken (school_id, token) " +
         "values ({kg}, {token})")
-        .on('kg -> kg, 'token -> md5(s"Token$kg(*)")).executeInsert()
+        .on('kg -> kg.toString, 'token -> md5(s"Token$kg(*)")).executeInsert()
   }
 
   def index = DB.withConnection {

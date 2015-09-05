@@ -12,7 +12,7 @@ object ReadNews {
   def oneReader(kg: Long, newsId: Long, parentId: String) = DB.withConnection {
     implicit c =>
       val readNews: Option[ReadNews] = SQL("select * from newsRead where school_id={kg} and news_id={id} and parent_id={p}")
-        .on('kg -> kg, 'id -> newsId, 'p -> parentId)
+        .on('kg -> kg.toString, 'id -> newsId, 'p -> parentId)
         .as(simple singleOpt)
       readNews.map(r => Parent.findById(kg, r.parent_id))
   }
@@ -20,7 +20,7 @@ object ReadNews {
   def allReaders(kg: Long, newsId: Long) = DB.withConnection {
     implicit c =>
       val readNews: List[ReadNews] = SQL("select * from newsRead where school_id={kg} and news_id={id}")
-        .on('kg -> kg, 'id -> newsId)
+        .on('kg -> kg.toString, 'id -> newsId)
         .as(simple *)
       readNews.map( r => Parent.findById(kg, r.parent_id))
   }

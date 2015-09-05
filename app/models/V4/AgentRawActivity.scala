@@ -134,7 +134,7 @@ object AgentRawActivity {
           'from -> from,
           'to -> to,
           'contractorId -> contractorId,
-          'kg -> kg
+          'kg -> kg.toString
         ).as(AgentRawActivity.simple *)
   }
 

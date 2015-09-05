@@ -68,14 +68,14 @@ object School {
     implicit c =>
       SQL("update privilege set subordinate= CONCAT((select subordinate from privilege where employee_id={id}) , {class_id} ) where school_id={kg} " +
         "and status=1 and employee_id={id}")
-        .on('kg -> kg, 'class_id -> ",%d".format(classId), 'id -> employee.id).as(get[Long]("count(1)") single) > 0
+        .on('kg -> kg.toString, 'class_id -> ",%d".format(classId), 'id -> employee.id).as(get[Long]("count(1)") single) > 0
   }
 
   def alreadyAManagerInSchool(kg: Long, employee: Employee) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from privilege where school_id={kg} " +
         "and status=1 and employee_id={id}")
-        .on('kg -> kg, 'id -> employee.id).as(get[Long]("count(1)") single) > 0
+        .on('kg -> kg.toString, 'id -> employee.id).as(get[Long]("count(1)") single) > 0
   }
 
   def deleteSchool(kg: Long) = DB.withConnection {
@@ -144,7 +144,7 @@ object School {
     implicit c =>
       SQL("select count(1) from privilege where school_id={kg} " +
         "and subordinate=cast({class_id} as char(10)) and status=1 and employee_id={id}")
-        .on('kg -> kg, 'class_id -> classId, 'id -> employee.id).as(get[Long]("count(1)") single) > 0
+        .on('kg -> kg.toString, 'class_id -> classId, 'id -> employee.id).as(get[Long]("count(1)") single) > 0
   }
 
   def createClassManagers(kg: Long, classId: Long, employee: Employee) = DB.withConnection {
@@ -158,7 +158,7 @@ object School {
   def getClassManagers(kg: Long, classId: Long) = DB.withConnection {
     implicit c =>
       SQL("select * from employeeinfo where employee_id in " +
-        "(select employee_id from privilege p, classinfo c " +
+        "(select distinct employee_id from privilege p, classinfo c " +
         "where p.school_id=c.school_id and p.school_id ={kg} " +
         "and p.subordinate=cast(c.class_id as char(10)) and c.class_id={class_id} and c.status=1 and p.status=1)")
         .on(

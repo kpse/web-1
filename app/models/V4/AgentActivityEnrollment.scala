@@ -16,7 +16,7 @@ case class AgentActivityEnrollment(id: Option[Long], agent_id: Long, activity_id
         .on(
           'agent -> agent_id,
           'activity -> activityId,
-          'kg -> kg,
+          'kg -> kg.toString,
           'parent -> parent_id,
           'contact -> contact,
           'name -> name,
@@ -44,7 +44,7 @@ object AgentActivityEnrollment {
     implicit c =>
       SQL(s"select * from agentactivityenrollment where activity_id={activity} and status=1 and parent_id={parent} limit 1")
         .on(
-          'kg -> kg,
+          'kg -> kg.toString,
           'activity -> activityId,
           'parent -> parentId
         ).as(simple singleOpt)

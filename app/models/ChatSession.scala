@@ -58,7 +58,7 @@ object ChatSession {
   def allHistoryImages(kg: Long, timestamp: Long): List[String] = DB.withConnection {
     implicit c =>
       val urls: List[String] = SQL("SELECT media_url FROM sessionlog where school_id = {kg} and update_at > {time} and session_id like 'h_%' and media_type like '%image%'")
-        .on('kg -> kg, 'time -> timestamp)
+        .on('kg -> kg.toString, 'time -> timestamp)
         .as(get[String]("media_url") *)
       urls flatMap (_.split("  ")) filter (_.length > 0)
   }

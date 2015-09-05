@@ -96,7 +96,7 @@ case class EmployeeV3(id: Option[Long], basic: Employee, ext: Option[EmployeeExt
     implicit c =>
       SQL("select count(1) from employeeinfo where school_id<>{kg} and (phone={phone} or employee_id={employee_id} or (login_name<>'' and login_name={login})) ")
         .on(
-          'kg -> kg,
+          'kg -> kg.toString,
           'phone -> basic.phone,
           'employee_id -> basic.id,
           'login -> basic.login_name

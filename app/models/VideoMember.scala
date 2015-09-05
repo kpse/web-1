@@ -63,13 +63,13 @@ object VideoMember {
   def show(kg: Long, id: String) = DB.withConnection {
     implicit c =>
       trialAccount(kg, id) orElse SQL("select * from videomembers where school_id={kg} and parent_id={id} and status=1")
-        .on('kg -> kg, 'id -> id).as(simple singleOpt)
+        .on('kg -> kg.toString, 'id -> id).as(simple singleOpt)
   }
 
   def delete(kg: Long, id: String) = DB.withConnection {
     implicit c =>
       SQL("update videomembers set status=0 where school_id={kg} and parent_id={id} and status=1")
-        .on('kg -> kg, 'id -> id).executeUpdate()
+        .on('kg -> kg.toString, 'id -> id).executeUpdate()
   }
 
   def trialAccount(kg: Long, id: String): Option[VideoMember] = {
@@ -114,7 +114,7 @@ object VideoMember {
   def accountExists(kg: Long, account: String) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from videomembers where school_id={kg} and account={account}")
-        .on('kg -> kg, 'account -> account).as(get[Long]("count(1)") single) > 0
+        .on('kg -> kg.toString, 'account -> account).as(get[Long]("count(1)") single) > 0
   }
 
   def limitExceed(kg: Long): Boolean = available(kg).count <= 0

@@ -152,7 +152,7 @@ case class Menu(id: Option[Long], name: Option[String], weight: Option[String], 
       SQL(s"select count(1) from dietstructure where menu_id={menu} and school_id={kg} and uid in (${unitIds.mkString(",")})")
         .on(
           'menu -> id,
-          'kg -> kg
+          'kg -> kg.toString
         ).as(get[Long]("count(1)") single) == unitIds.size
   }
 }
@@ -210,7 +210,7 @@ object Menu {
     implicit c =>
       SQL("select * from dietstructure where menu_id={id} and status=1 and school_id={kg}")
         .on(
-          'kg -> kg,
+          'kg -> kg.toString,
           'id -> id
         ).as(simpleUnit *)
   }

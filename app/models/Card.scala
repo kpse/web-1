@@ -12,7 +12,7 @@ object Card {
     implicit c =>
       SQL("select c.cardnum, p.phone from cardinfo c, parentinfo p where p.parent_id=c.userid and p.school_id={kg}")
         .on(
-          'kg -> kg
+          'kg -> kg.toString
         ).as(simple *)
   }
 
@@ -27,7 +27,7 @@ object Card {
   def show(kg: Long, cardId: String) = DB.withConnection {
     implicit c =>
       SQL("select c.cardnum, p.phone from cardinfo c, parentinfo p where p.parent_id=c.userid and p.school_id={kg} and cardnum={card_id}")
-        .on('kg -> kg,
+        .on('kg -> kg.toString,
           'card_id -> cardId
         ).as(simple singleOpt)
   }
