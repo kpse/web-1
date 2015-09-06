@@ -9,11 +9,11 @@ class SchoolIntroSpec extends Specification with TestSupport {
   "School" should {
     "report index" in new WithApplication {
 
-      private val index = SchoolIntro.index
+      private val index = SchoolIntro.index()
 
       index.size must beGreaterThanOrEqualTo(3)
-      index(0).name must equalTo("第三军区幼儿园")
-      index(0).school_id must equalTo(93740362L)
+      index.head.name must equalTo("第三军区幼儿园")
+      index.head.school_id must equalTo(93740362L)
 
       index(1).name must equalTo("高新一幼")
       index(1).school_id must equalTo(93740562L)

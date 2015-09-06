@@ -96,7 +96,7 @@ object SchoolIntro {
       detail(school.school_id)
   }
 
-  def index(q: Option[String]) = DB.withConnection {
+  def index(q: Option[String] = None) = DB.withConnection {
     implicit c =>
       SQL(s"select * from schoolinfo where 1=1 ${generateQ(q)} order by school_id").as(sample *)
   }
