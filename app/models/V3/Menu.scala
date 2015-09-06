@@ -54,7 +54,7 @@ case class DietNutritionPreview(id: Option[Long], nutrition_id: Long, weight: St
 
 
 case class Menu(id: Option[Long], name: Option[String], weight: Option[String], arrange_type: Option[Int],
-                nutrition_units: List[DietNutritionPreview], recipe: String, property: String, tips: String, food_type_id: Long,
+                nutrition_units: List[DietNutritionPreview], recipe: String, property: String, tips: String, food_type_id: Option[Long],
                 store_type: Int = 1, former_id: Option[Long] = None) {
   def deleted = DB.withConnection {
     implicit c =>
@@ -233,10 +233,12 @@ object Menu {
       get[Option[String]]("property") ~
       get[Option[String]]("tips") ~
       get[Int]("store_type") ~
+      get[Option[Long]]("food_type_id") ~
+      get[Option[Long]]("former_id") ~
       get[Option[Int]]("arrange_type") map {
-      case id ~ kg ~ name ~ weight ~ recipe ~ property ~ tips ~ store ~ typ =>
+      case id ~ kg ~ name ~ weight ~ recipe ~ property ~ tips ~ store ~ food ~ formerId ~ typ =>
         Menu(Some(id), name, weight, typ, previewNutritionUnit(kg.toLong, id), recipe.getOrElse(""),
-          property.getOrElse(""), tips.getOrElse(""), 1, store, Some(1))
+          property.getOrElse(""), tips.getOrElse(""), food, store, formerId)
     }
   }
 
