@@ -16,9 +16,9 @@ object SchoolSummaryController extends Controller with Secured {
   implicit val writes4 = Json.writes[ErrorResponse]
   implicit val writes5 = Json.writes[SuccessResponse]
 
-  def preview(kg: Long) = IsLoggedIn {
+  def preview(kg: Long, q: Option[String]) = IsLoggedIn {
     u => _ =>
-      Ok(Json.toJson(SchoolIntro.preview(kg)))
+      Ok(Json.toJson(SchoolIntro.preview(kg, q)))
   }
 
   def detail(kg: Long) = IsLoggedIn {
@@ -43,9 +43,9 @@ object SchoolSummaryController extends Controller with Secured {
         }
   }
 
-  def index = IsLoggedIn {
+  def index(q: Option[String]) = IsLoggedIn {
     u => _ =>
-      Ok(Json.toJson(SchoolIntro.index))
+      Ok(Json.toJson(SchoolIntro.index(q)))
   }
 
   def create = IsOperator(parse.json) {

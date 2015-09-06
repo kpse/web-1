@@ -96,23 +96,26 @@ object SchoolIntro {
       detail(school.school_id)
   }
 
-  def index = DB.withConnection {
+  def index(q: Option[String]) = DB.withConnection {
     implicit c =>
-      SQL("select * from schoolinfo").as(sample *)
+      SQL(s"select * from schoolinfo where 1=1 ${generateQ(q)} order by school_id").as(sample *)
   }
 
-  def pagination(from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
+  def pagination(q: Option[String], from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
     implicit c =>
-      SQL(s"select * from schoolinfo where 1=1 ${from map (_ => " and school_id > {from} ") getOrElse ""}  ${to map (_ => " and school_id < {to} ") getOrElse ""} order by school_id limit {most}")
+      SQL(s"select * from schoolinfo where 1=1 ${from map (_ => " and school_id > {from} ") getOrElse ""}  ${to map (_ => " and school_id < {to} ") getOrElse ""} ${generateQ(q)} order by school_id limit {most}")
         .on('from -> from,
           'to -> to,
           'most -> most.getOrElse(25)
         ).as(sample *)
   }
+  def queryFields(q: String) = List("name", "full_name", "school_id", "address", "token").map( _ + s" like '%$q%'").mkString(" or ")
+  def generateQ(query: Option[String]): String = query map {case q => s" and (${queryFields(q)})"} getOrElse ""
 
-  def previewIndex() = DB.withConnection {
+  def previewIndex(q: Option[String]) = DB.withConnection {
     implicit c =>
-      SQL("select school_id, update_at from schoolinfo order by school_id").as(previewSimple *)
+      Logger.info(generateQ(q))
+      SQL(s"select school_id, update_at from schoolinfo where 1=1 ${generateQ(q)} order by school_id").as(previewSimple *)
   }
 
   def schoolExists(schoolId: Long) = DB.withConnection {
@@ -167,9 +170,10 @@ object SchoolIntro {
     }
   }
 
-  def preview(kg: Long) = DB.withConnection {
+  def preview(kg: Long, q: Option[String]) = DB.withConnection {
     implicit c =>
-      SQL("select update_at, school_id from schoolinfo where school_id={school_id}")
+      Logger.info(generateQ(q))
+      SQL(s"select update_at, school_id from schoolinfo where school_id={school_id} ${generateQ(q)} order by school_id")
         .on('school_id -> kg.toString).as(previewSimple *)
   }
 

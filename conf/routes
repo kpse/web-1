@@ -32,8 +32,8 @@ GET           /kindergarten/:kg                                                 
 GET           /kindergarten/:kg/detail                                                         controllers.SchoolSummaryController.detail(kg: Long)
 POST          /kindergarten/:kg                                                                controllers.SchoolSummaryController.update(kg: Long)
 DELETE        /kindergarten/:kg                                                                controllers.SchoolSummaryController.delete(kg: Long)
-GET           /kindergarten/:kg/preview                                                        controllers.SchoolSummaryController.preview(kg: Long)
-GET           /kindergarten                                                                    controllers.SchoolSummaryController.index
+GET           /kindergarten/:kg/preview                                                        controllers.SchoolSummaryController.preview(kg: Long, q: Option[String])
+GET           /kindergarten                                                                    controllers.SchoolSummaryController.index(q: Option[String])
 POST          /kindergarten                                                                    controllers.SchoolSummaryController.create
 
 GET           /kindergarten/:kg/class                                                          controllers.ClassController.index(kg: Long)
@@ -323,8 +323,8 @@ GET           /api/v2/kindergarten/:kg/employee/:employeeId/session             
 
 
 #schools pagination
-GET           /api/v2/kindergarten                                                             controllers.V2.SchoolController.pagination(from: Option[Long], to: Option[Long], most: Option[Int])
-GET           /api/v2/kindergarten_preview                                                     controllers.V2.SchoolController.previewIndex
+GET           /api/v2/kindergarten                                                             controllers.V2.SchoolController.pagination(q: Option[String], from: Option[Long], to: Option[Long], most: Option[Int])
+GET           /api/v2/kindergarten_preview                                                     controllers.V2.SchoolController.previewIndex(q: Option[String])
 
 #v3 integrate with c# client
 

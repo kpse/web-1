@@ -11,13 +11,13 @@ object SchoolController extends Controller with Secured {
 
   implicit val writes3 = Json.writes[SchoolIntroDetail]
 
-  def previewIndex() = IsOperator {
+  def previewIndex(q: Option[String]) = IsOperator {
     u => _ =>
-      Ok(Json.toJson(SchoolIntro.previewIndex()))
+      Ok(Json.toJson(SchoolIntro.previewIndex(q)))
   }
 
-  def pagination(from: Option[Long], to: Option[Long], most: Option[Int]) = IsOperator {
+  def pagination(q: Option[String], from: Option[Long], to: Option[Long], most: Option[Int]) = IsOperator {
     u => _ =>
-      Ok(Json.toJson(SchoolIntro.pagination(from, to, most)))
+      Ok(Json.toJson(SchoolIntro.pagination(q, from, to, most)))
   }
 }
