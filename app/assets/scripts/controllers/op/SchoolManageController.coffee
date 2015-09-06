@@ -239,7 +239,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
       scope.filterSchool =
         _.debounce ->
-            scope.refresh(scope.searchText.replace("'", ''))
+            scope.refresh(this.searchText.replace("'", ''))
           , 300
   ]
 
