@@ -17,25 +17,40 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
       scope.filterConfig = (config, index) ->
         (config.value? && config.value.length > 0) && scope.defaultConfig[config.name] != config.value
-      scope.refresh = (q) ->
+
+      scope.defaultConfig =
+        backend: 'true'
+        hideVideo: 'false'
+        disableMemberEditing: 'false'
+        bus: 'false'
+        enableHealthRecordManagement: 'true'
+        enableFinancialManagement: 'true'
+        enableWarehouseManagement: 'true'
+        enableDietManagement: 'true'
+
+      fillSchoolConfig = (kg) ->
+        SchoolConfig.get school_id: kg.school_id, (data)->
+          kg.config =
+            backend: extractConfig data['config'], 'backend', scope.defaultConfig['backend']
+            hideVideo: extractConfig data['config'], 'hideVideo', scope.defaultConfig['hideVideo']
+            disableMemberEditing: extractConfig data['config'], 'disableMemberEditing', scope.defaultConfig['disableMemberEditing']
+            bus: extractConfig data['config'], 'bus', scope.defaultConfig['bus']
+            videoTrialAccount: extractConfig data['config'], 'videoTrialAccount'
+            videoTrialPassword: extractConfig data['config'], 'videoTrialPassword'
+            enableHealthRecordManagement: extractConfig data['config'], 'enableHealthRecordManagement', scope.defaultConfig['enableHealthRecordManagement']
+            enableFinancialManagement: extractConfig data['config'], 'enableFinancialManagement', scope.defaultConfig['enableFinancialManagement']
+            enableWarehouseManagement: extractConfig data['config'], 'enableWarehouseManagement', scope.defaultConfig['enableWarehouseManagement']
+            enableDietManagement: extractConfig data['config'], 'enableDietManagement', scope.defaultConfig['enableDietManagement']
+          kg.configArray = scope.generateConfigArray(kg.config)
+
+      scope.refresh = (q = scope.currentQuery, page = scope.currentPage) ->
         scope.loading = true
 
-        scope.defaultConfig =
-          backend: 'true'
-          hideVideo: 'false'
-          disableMemberEditing: 'false'
-          bus: 'false'
-          enableHealthRecordManagement: 'true'
-          enableFinancialManagement: 'true'
-          enableWarehouseManagement: 'true'
-          enableDietManagement: 'true'
-
-        page = scope.currentPage
         Preview.query q:q, (data) ->
           scope.preview = data
           scope.totalItems = scope.preview.length
           startIndex = (page - 1) * scope.itemsPerPage
-          last = scope.preview[startIndex...startIndex + scope.itemsPerPage][0].school_id if scope.preview.length > 0
+          last = scope.preview[startIndex...startIndex + scope.itemsPerPage][0].school_id if scope.totalItems > 0
           if last?
             SchoolPagination.query
               q:q
@@ -48,19 +63,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
                   Charge.query school_id: kg.school_id, (data) ->
                     kg.charge = data[0]
                     kg.charge.expire = new Date(data[0].expire_date)
-                  SchoolConfig.get school_id: kg.school_id, (data)->
-                    kg.config =
-                      backend: extractConfig data['config'], 'backend', scope.defaultConfig['backend']
-                      hideVideo: extractConfig data['config'], 'hideVideo', scope.defaultConfig['hideVideo']
-                      disableMemberEditing: extractConfig data['config'], 'disableMemberEditing', scope.defaultConfig['disableMemberEditing']
-                      bus: extractConfig data['config'], 'bus', scope.defaultConfig['bus']
-                      videoTrialAccount: extractConfig data['config'], 'videoTrialAccount'
-                      videoTrialPassword: extractConfig data['config'], 'videoTrialPassword'
-                      enableHealthRecordManagement: extractConfig data['config'], 'enableHealthRecordManagement', scope.defaultConfig['enableHealthRecordManagement']
-                      enableFinancialManagement: extractConfig data['config'], 'enableFinancialManagement', scope.defaultConfig['enableFinancialManagement']
-                      enableWarehouseManagement: extractConfig data['config'], 'enableWarehouseManagement', scope.defaultConfig['enableWarehouseManagement']
-                      enableDietManagement: extractConfig data['config'], 'enableDietManagement', scope.defaultConfig['enableDietManagement']
-                    kg.configArray = scope.generateConfigArray(kg.config)
+                  fillSchoolConfig(kg)
                   kg
           else
             scope.kindergartens = []
@@ -239,7 +242,8 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
       scope.filterSchool =
         _.debounce ->
-            scope.refresh(this.searchText.replace("'", ''))
+            scope.currentQuery = this.searchText.replace("'", '')
+            scope.refresh(scope.currentQuery, 1)
           , 300
   ]
 
