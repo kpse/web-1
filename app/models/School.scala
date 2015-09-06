@@ -302,13 +302,21 @@ object School {
         .as(simple *)
   }
 
+  def appendDefaultValue(configItems: List[ConfigItem]): List[ConfigItem] = {
+    val items: List[ConfigItem] = List(ConfigItem("enableHealthRecordManagement", "true"),
+      ConfigItem("enableFinancialManagement", "true"),
+      ConfigItem("enableWarehouseManagement", "true"),
+      ConfigItem("enableDietManagement", "true")) filterNot { c => configItems.exists(c.name == _.name) }
+    items ::: configItems
+  }
+
   def config(kg: Long) = DB.withConnection {
     implicit c =>
       val configItems: List[ConfigItem] = SQL("select name, value from schoolconfig " +
         " where school_id = {kg}")
         .on('kg -> kg.toString)
         .as(simpleItem *)
-      SchoolConfig(kg, configItems)
+      SchoolConfig(kg, appendDefaultValue(configItems))
   }
 
   val simpleItem = {

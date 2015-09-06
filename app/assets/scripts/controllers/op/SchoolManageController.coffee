@@ -23,10 +23,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           hideVideo: 'false'
           disableMemberEditing: 'false'
           bus: 'false'
-          enableHealthRecordManagement: 'false'
-          enableFinancialManagement: 'false'
-          enableWarehouseManagement: 'false'
-          enableDietManagement: 'false'
+          enableHealthRecordManagement: 'true'
+          enableFinancialManagement: 'true'
+          enableWarehouseManagement: 'true'
+          enableDietManagement: 'true'
 
         page = scope.currentPage
         Preview.query (data) ->
@@ -218,10 +218,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             when 'disableMemberEditing' then '不允许学校开通或关闭会员'
             when 'bus' then '激活校车定位功能'
             when 'videoTrialAccount' then '试用视频账号'
-            when 'enableHealthRecordManagement' then '健康档案'
-            when 'enableFinancialManagement' then '财务管理'
-            when 'enableWarehouseManagement' then '仓库管理'
-            when 'enableDietManagement' then '营养膳食'
+            when 'enableHealthRecordManagement' then '健康档案已禁用'
+            when 'enableFinancialManagement' then '财务管理已禁用'
+            when 'enableWarehouseManagement' then '仓库管理已禁用'
+            when 'enableDietManagement' then '营养膳食已禁用'
 
       scope.advancedEdting = 0
       scope.advanced = ->
