@@ -105,7 +105,7 @@ describe 'SchoolManageController', ->
     ]
 
 
-    $httpBackend.expectGET('/api/v2/kindergarten?from=0&most=8')
+    $httpBackend.expectGET('/api/v2/kindergarten?from=0&most=20')
     .respond [
       schoolOfId 1
       schoolOfId 2

@@ -1,7 +1,7 @@
 <h2>所有学校信息</h2>
 <div class="well schools-search-panel">
-  <span>检索：</span>
-  <input ng-model="searchText"/>
+  <span>全文检索：</span>
+  <input ng-model="searchText" ng-change="filterSchool()" bs-tooltip="tooltip"/>
 
   <div class="btn-group">
     <button type="submit" class="btn btn-primary" ng-disabled="loading" ng-click="addSchool()">增加学校</button>
@@ -24,7 +24,7 @@
   <pagination boundary-links="true" items-per-page="itemsPerPage" total-items="totalItems" ng-model="currentPage" max-size="maxSize"
               class="pagination-sm news-pagination" ng-change="onSelectPage(page)"
               previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
-  <tr ng-repeat="kg in kindergartens | filter: searchText | orderBy: 'school_id'" class="row" ng-class="{editable: editSchool, expired: kg.charge[0].status==0}" ng-click="editSchool(kg)">
+  <tr ng-repeat="kg in kindergartens | orderBy: 'school_id'" class="row" ng-class="{editable: editSchool, expired: kg.charge[0].status==0}" ng-click="editSchool(kg)">
     <td class="col-xs-1"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{::kg.school_id}}</a></td>
     <td class="col-xs-3">{{::kg.full_name}}</td>
     <td class="col-xs-2">{{::kg.name}}</td>

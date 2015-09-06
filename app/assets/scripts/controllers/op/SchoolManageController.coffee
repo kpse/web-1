@@ -8,6 +8,8 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
       scope.currentPage = 1
       scope.maxSize = 5
       scope.itemsPerPage = 20
+      scope.tooltip =
+        title: '搜索学校ID，显示名称，全称，地址，token'
 
       extractConfig = ConfigExtract
       scope.generateConfigArray = (all) ->
@@ -15,7 +17,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
       scope.filterConfig = (config, index) ->
         (config.value? && config.value.length > 0) && scope.defaultConfig[config.name] != config.value
-      scope.refresh = ->
+      scope.refresh = (q) ->
         scope.loading = true
 
         scope.defaultConfig =
@@ -29,38 +31,41 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           enableDietManagement: 'true'
 
         page = scope.currentPage
-        Preview.query (data) ->
+        Preview.query q:q, (data) ->
           scope.preview = data
           scope.totalItems = scope.preview.length
           startIndex = (page - 1) * scope.itemsPerPage
           last = scope.preview[startIndex...startIndex + scope.itemsPerPage][0].school_id if scope.preview.length > 0
-          SchoolPagination.query
-            from: last - 1
-            most: scope.itemsPerPage, (all) ->
-              scope.kindergartens = _.map all, (kg) ->
-                kg.managers = Principal.query school_id: kg.school_id, ->
-                  _.map kg.managers, (p) ->
-                    p.detail = Employee.get phone: p.phone
-                Charge.query school_id: kg.school_id, (data) ->
-                  kg.charge = data[0]
-                  kg.charge.expire = new Date(data[0].expire_date)
-                SchoolConfig.get school_id: kg.school_id, (data)->
-                  kg.config =
-                    backend: extractConfig data['config'], 'backend', scope.defaultConfig['backend']
-                    hideVideo: extractConfig data['config'], 'hideVideo', scope.defaultConfig['hideVideo']
-                    disableMemberEditing: extractConfig data['config'], 'disableMemberEditing', scope.defaultConfig['disableMemberEditing']
-                    bus: extractConfig data['config'], 'bus', scope.defaultConfig['bus']
-                    videoTrialAccount: extractConfig data['config'], 'videoTrialAccount'
-                    videoTrialPassword: extractConfig data['config'], 'videoTrialPassword'
-                    enableHealthRecordManagement: extractConfig data['config'], 'enableHealthRecordManagement', scope.defaultConfig['enableHealthRecordManagement']
-                    enableFinancialManagement: extractConfig data['config'], 'enableFinancialManagement', scope.defaultConfig['enableFinancialManagement']
-                    enableWarehouseManagement: extractConfig data['config'], 'enableWarehouseManagement', scope.defaultConfig['enableWarehouseManagement']
-                    enableDietManagement: extractConfig data['config'], 'enableDietManagement', scope.defaultConfig['enableDietManagement']
-                  kg.configArray = scope.generateConfigArray(kg.config)
-                kg
-              scope.loading = false
-
+          if last?
+            SchoolPagination.query
+              q:q
+              from: last - 1
+              most: scope.itemsPerPage, (all) ->
+                scope.kindergartens = _.map all, (kg) ->
+                  kg.managers = Principal.query school_id: kg.school_id, ->
+                    _.map kg.managers, (p) ->
+                      p.detail = Employee.get phone: p.phone
+                  Charge.query school_id: kg.school_id, (data) ->
+                    kg.charge = data[0]
+                    kg.charge.expire = new Date(data[0].expire_date)
+                  SchoolConfig.get school_id: kg.school_id, (data)->
+                    kg.config =
+                      backend: extractConfig data['config'], 'backend', scope.defaultConfig['backend']
+                      hideVideo: extractConfig data['config'], 'hideVideo', scope.defaultConfig['hideVideo']
+                      disableMemberEditing: extractConfig data['config'], 'disableMemberEditing', scope.defaultConfig['disableMemberEditing']
+                      bus: extractConfig data['config'], 'bus', scope.defaultConfig['bus']
+                      videoTrialAccount: extractConfig data['config'], 'videoTrialAccount'
+                      videoTrialPassword: extractConfig data['config'], 'videoTrialPassword'
+                      enableHealthRecordManagement: extractConfig data['config'], 'enableHealthRecordManagement', scope.defaultConfig['enableHealthRecordManagement']
+                      enableFinancialManagement: extractConfig data['config'], 'enableFinancialManagement', scope.defaultConfig['enableFinancialManagement']
+                      enableWarehouseManagement: extractConfig data['config'], 'enableWarehouseManagement', scope.defaultConfig['enableWarehouseManagement']
+                      enableDietManagement: extractConfig data['config'], 'enableDietManagement', scope.defaultConfig['enableDietManagement']
+                    kg.configArray = scope.generateConfigArray(kg.config)
+                  kg
+          else
+            scope.kindergartens = []
           scope.admins = Employee.query()
+          scope.loading = false
 
 
       scope.refresh()
@@ -231,5 +236,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
       scope.BSOptionDialog = ->
         scope.advancedEdting = 2
+
+      scope.filterSchool =
+        _.debounce ->
+            scope.refresh(scope.searchText.replace("'", ''))
+          , 300
   ]
 
