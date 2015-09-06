@@ -7,7 +7,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
-      scope.itemsPerPage = 8
+      scope.itemsPerPage = 20
 
       extractConfig = ConfigExtract
       scope.generateConfigArray = (all) ->
