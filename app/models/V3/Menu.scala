@@ -120,8 +120,8 @@ case class Menu(id: Option[Long], name: Option[String], weight: Option[String], 
   def create(kg: Long): Option[Menu] = DB.withTransaction {
     implicit c =>
       try {
-        val insert: Option[Long] = SQL("insert into dietmenu (school_id, name, weight, arrange_type, food_type_id, former_id, updated_at) values (" +
-          "{school_id}, {name}, {weight}, {arrange_type}, {food_type_id}, {former_id}, {time})")
+        val insert: Option[Long] = SQL("insert into dietmenu (school_id, name, weight, arrange_type, store_type, food_type_id, former_id, updated_at) values (" +
+          "{school_id}, {name}, {weight}, {arrange_type}, {store_type}, {food_type_id}, {former_id}, {time})")
           .on(
             'school_id -> kg,
             'name -> name,
