@@ -113,11 +113,11 @@ object AgentSchool {
 
   val simpleSummary = {
     get[Long]("agent") ~
-      get[Long]("school_id") ~
+      get[String]("school_id") ~
       get[Long]("contractor") ~
       get[Long]("activity") map {
       case agent ~ kg ~ contractor ~ activity =>
-        AgentSummaryInSchool(agent, AgentReport(5, contractor), AgentReport(5, activity), kg)
+        AgentSummaryInSchool(agent, AgentReport(5, contractor), AgentReport(5, activity), kg.toLong)
     }
   }
 }

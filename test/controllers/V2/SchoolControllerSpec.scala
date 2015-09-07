@@ -1,4 +1,4 @@
-package models.V2
+package controllers.V2
 
 import helper.TestSupport
 import org.junit.runner.RunWith
