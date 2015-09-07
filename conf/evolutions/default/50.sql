@@ -13,9 +13,9 @@ CREATE TABLE workshiftdate (
   KEY (base_id)
 );
 
-INSERT INTO workshiftdate (school_id, base_id, date, updated_at) VALUES
-('93740362', 1, '5-18', 1393390313123),
-('93740362', 1, '5-28', 1393390313123);
+INSERT INTO workshiftdate (school_id, base_id, date, shift_status, updated_at) VALUES
+('93740362', 1, '5-18', 1, 1393390313123),
+('93740362', 1, '5-28', 2, 1393390313123);
 
 # --- !Downs
 

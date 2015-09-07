@@ -8,7 +8,7 @@ import play.api.libs.json.Json
 import play.api.Play.current
 import scala.language.postfixOps
 
-case class WorkShiftDate(id: Option[Long], base_id: Option[Long], date: Option[String], status: Option[Int]) {
+case class WorkShiftDate(id: Option[Long], base_id: Option[Long], date: Option[String], shift_status: Option[Int]) {
   def exists(id: Long) = DB.withTransaction {
     implicit c =>
       SQL("select count(1) from workshiftdate where uid={id}")
@@ -32,7 +32,7 @@ case class WorkShiftDate(id: Option[Long], base_id: Option[Long], date: Option[S
           'school_id -> kg,
           'base_id -> base,
           'date -> date,
-          'status -> status,
+          'status -> shift_status,
           'time -> System.currentTimeMillis
         ).executeUpdate()
       WorkShiftDate.show(kg, base_id.getOrElse(0), id.getOrElse(0))
@@ -46,7 +46,7 @@ case class WorkShiftDate(id: Option[Long], base_id: Option[Long], date: Option[S
           'school_id -> kg,
           'base_id -> base,
           'date -> date,
-          'status -> status,
+          'status -> shift_status,
           'time -> System.currentTimeMillis
         ).executeInsert()
       WorkShiftDate.show(kg, base_id.getOrElse(0), insert.getOrElse(0))
