@@ -20,17 +20,17 @@ object Charge {
   def countActivePhones(kg: Long) = DB.withConnection {
     implicit c =>
       val countActive: Long = SQL("select count(1) from accountinfo where active=1 and accountid in (select phone from parentinfo where school_id={kg})")
-        .on('kg -> kg).as(get[Long]("count(1)") single)
+        .on('kg -> kg.toString).as(get[Long]("count(1)") single)
       val countAll: Long = SQL("select count(1) from accountinfo where accountid in (select phone from parentinfo where school_id={kg})")
-        .on('kg -> kg).as(get[Long]("count(1)") single)
+        .on('kg -> kg.toString).as(get[Long]("count(1)") single)
 
       val countMember: Long = SQL("select count(1) from accountinfo where accountid in " +
         "(select phone from parentinfo where school_id={kg} and member_status=1)")
-        .on('kg -> kg).as(get[Long]("count(1)") single)
+        .on('kg -> kg.toString).as(get[Long]("count(1)") single)
       val countVideoMember: Long = SQL("select count(1) from accountinfo where accountid in " +
         "(select phone from parentinfo p, videomembers v where p.school_id = v.school_id and " +
         "p.school_id={kg} and p.parent_id = v.parent_id)")
-        .on('kg -> kg).as(get[Long]("count(1)") single)
+        .on('kg -> kg.toString).as(get[Long]("count(1)") single)
 
       val countActiveCheckIn = SQL("select count(1) from (SELECT p.parent_id as parent, count(1) as times " +
         "FROM DAILYLOG d, parentinfo p, relationmap r " +
@@ -39,9 +39,9 @@ object Charge {
         "group by p.parent_id having times > 10) people_checkin")
         .on('oneMonthAgo -> DateTime.now().minusDays(30).getMillis,
           'now -> System.currentTimeMillis(),
-        'kg -> kg).as(get[Long]("count(1)") single)
+        'kg -> kg.toString).as(get[Long]("count(1)") single)
       val countChildren: Long = SQL("select count(1) from childinfo where school_id={kg} and status=1")
-        .on('kg -> kg).as(get[Long]("count(1)") single)
+        .on('kg -> kg.toString).as(get[Long]("count(1)") single)
       ActiveCount(kg, countActive, countAll, countMember, countVideoMember, countActiveCheckIn, countChildren)
   }
 
