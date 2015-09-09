@@ -29,10 +29,14 @@
     <td class="col-xs-2">{{agent.name}}</td>
     <td class="col-xs-1">{{agent.schools.length}}</td>
     <td class="col-xs-2">{{agent.expire | date:'yyyy年MM月dd日'}}</td>
-    <td class="col-xs-1" ng-show="agent.waitingContractors.length > 0"><a ng-href="/agent#/main/{{agent.id}}/commercial" ng-click="$event.stopPropagation()">{{agent.waitingContractors.length}}</a></td>
-    <td class="col-xs-1" ng-hide="agent.waitingContractors.length > 0">0</td>
-    <td class="col-xs-1" ng-show="agent.waitingActivities.length > 0"><a ng-href="/agent#/main/{{agent.id}}/commercial" ng-click="$event.stopPropagation()">{{agent.waitingActivities.length}}</a></td>
-    <td class="col-xs-1" ng-hide="agent.waitingActivities.length > 0">0</td>
+    <td class="col-xs-1" >
+      <a ng-show="agent.waitingContractors.length > 0" ng-href="/agent#/main/{{agent.id}}/commercial" ng-click="$event.stopPropagation()">{{agent.waitingContractors.length}}</a>
+      <span ng-hide="agent.waitingContractors.length > 0">0</span>
+    </td>
+    <td class="col-xs-1" >
+      <a ng-show="agent.waitingActivities.length > 0" ng-href="/agent#/main/{{agent.id}}/commercial" ng-click="$event.stopPropagation()">{{agent.waitingActivities.length}}</a>
+      <span ng-hide="agent.waitingActivities.length > 0">0</span>
+    </td>
     <td class="col-xs-2">
       <button class="btn btn-xs btn-danger" ng-confirm-msg="这个操作将彻底删除{{::agent.name}}的所有数据，确定继续?"
               ng-confirm-click="deleteAgent(agent);$event.stopPropagation()">删除
