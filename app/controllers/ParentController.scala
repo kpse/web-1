@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.V3.RelativeController
 import play.api.mvc._
 import play.api.libs.json.{JsError, Json}
 import play.api.data.Form
@@ -100,6 +101,7 @@ object ParentController extends Controller with Secured {
     case (deletedParent) if !Parent.idExists(deletedParent.parent_id) && deletedParent.status.equals(Some(0)) =>
       Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
     case (phoneTransfer) if Parent.idExists(phoneTransfer.parent_id) && Parent.phoneDeleted(kg, phoneTransfer.phone) =>
+      RelativeController.clearCurrentCache()
       phoneTransfer.transfer match {
         case Some(p) =>
           Ok(Json.toJson(p))
@@ -107,8 +109,10 @@ object ParentController extends Controller with Secured {
           InternalServerError(Json.toJson(ErrorResponse(s"交换已有号码失败。(failed exchanging existing phone number to parent ${phoneTransfer.parent_id})")))
       }
     case (update) if Parent.idExists(update.parent_id) =>
+      RelativeController.clearCurrentCache()
       Ok(Json.toJson(Parent.update(update)))
     case (phoneReuse) if phoneReuse.parent_id.nonEmpty && Parent.phoneDeleted(kg, phoneReuse.phone) =>
+      RelativeController.clearCurrentCache()
       phoneReuse.reusePhone match {
         case Some(p) =>
           Ok(Json.toJson(p))
@@ -116,6 +120,7 @@ object ParentController extends Controller with Secured {
           InternalServerError(Json.toJson(ErrorResponse("覆盖已有号码失败。(failed overriding existing phone number)")))
       }
     case (phoneUpdate) if Parent.phoneExists(kg, phoneUpdate.phone) =>
+      RelativeController.clearCurrentCache()
       Parent.updateWithPhone(kg, phoneUpdate) match {
         case Some(p) =>
           Ok(Json.toJson(p))
@@ -123,6 +128,7 @@ object ParentController extends Controller with Secured {
           InternalServerError(Json.toJson(ErrorResponse("按号码更新失败。(failed updating by existing phone number)")))
       }
     case (newParent) =>
+      RelativeController.clearCurrentCache()
       Ok(Json.toJson(Parent.create(kg, newParent)))
   }
 
@@ -130,6 +136,7 @@ object ParentController extends Controller with Secured {
     u => _ =>
       val parent: Option[Parent] = Parent.delete(kg)(phone)
       parent map {case p => VideoMember.delete(kg, p.parent_id.getOrElse("null"))}
+      RelativeController.clearCurrentCache()
       Ok(Json.toJson(new SuccessResponse))
   }
 

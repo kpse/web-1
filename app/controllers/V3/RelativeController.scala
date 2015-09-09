@@ -6,10 +6,23 @@ import models.{Relationship, ErrorResponse, SuccessResponse}
 import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
+import controllers.helper.CacheHelper._
 
 object RelativeController extends Controller with Secured {
+
+  implicit val RelativesCacheKey = "index_v3_relatives"
+  createKeyCache
+
+  def clearCurrentCache() = clearAllCache
+
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Relative.index(kg, from, to, most)))
+    val cacheKey: String = s"Relatives_${kg}_${from}_${to}_${most}"
+    Logger.info(s"RelativeController entering index = ${cacheKey}")
+
+    val value: List[Relative] = digFromCache[List[Relative]](cacheKey, 600, () => {
+      Relative.index(kg, from, to, most)
+    })
+    Ok(Json.toJson(value))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
@@ -32,6 +45,7 @@ object RelativeController extends Controller with Secured {
         BadRequest(Json.toJson(ErrorResponse("手机与现有未删除家长重复，请先删除再创建。(duplicated phone number with another parent)", 6)))
       case (s) =>
         Relative.removeDirtyDataIfExists(s)
+        clearAllCache
         Ok(Json.toJson(s.create))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -48,6 +62,7 @@ object RelativeController extends Controller with Secured {
       case (s) if s.id.isEmpty  =>
         BadRequest(Json.toJson(ErrorResponse("没有id无法更新。(no id for update)", 5)))
       case (s) =>
+        clearAllCache
         Ok(Json.toJson(s.update))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -59,6 +74,7 @@ object RelativeController extends Controller with Secured {
       case Some(x) =>
         Relative.deleteById(kg, id)
         x.basic.parent_id foreach Relationship.deleteCardByParentId
+        clearAllCache
         Ok(Json.toJson(new SuccessResponse()))
       case None =>
         NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的父母。(No such relative)")))

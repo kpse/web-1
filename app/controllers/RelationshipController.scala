@@ -1,13 +1,12 @@
 package controllers
 
+import controllers.helper.CacheHelper._
 import controllers.helper.JsonLogger._
 import models.V3.CardV3
 import models._
 import play.Logger
-import play.api.cache.Cache
 import play.api.libs.json.{JsError, JsValue, Json}
 import play.api.mvc.Controller
-import controllers.helper.CacheHelper._
 
 object RelationshipController extends Controller with Secured {
 
