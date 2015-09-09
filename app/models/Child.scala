@@ -37,6 +37,7 @@ object Children {
 
   def delete(kg: Long, childId: String) = DB.withConnection {
     implicit c =>
+      RelationshipController.clearCurrentCache()
       SQL("update childinfo set status=0, update_at={timestamp} where child_id={child_id} and school_id={kg}")
         .on(
           'child_id -> childId,
@@ -47,7 +48,6 @@ object Children {
         .on(
           'child_id -> childId
         ).executeUpdate
-      RelationshipController.clearCurrentCache()
   }
 
   def idExists(childId: Option[String]): Boolean = DB.withConnection {

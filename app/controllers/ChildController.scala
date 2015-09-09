@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.V3.StudentController
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import play.api.Logger
@@ -68,8 +69,10 @@ object ChildController extends Controller with Secured {
           case (info) if !Children.idExists(info.child_id) && info.status == Some(0) =>
             Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
           case (info) if Children.idExists(info.child_id) =>
+            StudentController.clearCurrentCache()
             Ok(Json.toJson(Children.update(kg, info)))
           case (info) =>
+            StudentController.clearCurrentCache()
             Ok(Json.toJson(Children.create(kg, info)))
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -91,8 +94,10 @@ object ChildController extends Controller with Secured {
           case (info) if !Children.idExists(info.child_id) && info.status == Some(0) =>
             Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
           case (info) if Children.idExists(Some(childId)) =>
+            StudentController.clearCurrentCache()
             Ok(Json.toJson(Children.update(kg, info)))
           case (info) =>
+            StudentController.clearCurrentCache()
             Ok(Json.toJson(Children.create(kg, info)))
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -102,6 +107,7 @@ object ChildController extends Controller with Secured {
 
   def delete(kg: Long, childId: String) = IsLoggedIn {
     u => _ =>
+      StudentController.clearCurrentCache()
       Ok(Json.toJson(Children.delete(kg, childId)))
   }
 

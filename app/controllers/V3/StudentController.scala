@@ -1,6 +1,7 @@
 package controllers.V3
 
 import controllers.Secured
+import controllers.helper.CacheHelper._
 import models.V3.{Student, StudentExt}
 import models._
 import play.api.Logger
@@ -11,8 +12,19 @@ import models.Children.writeChildInfo
 
 
 object StudentController extends Controller with Secured {
+  implicit val RelativesCacheKey = "index_v3_students"
+  createKeyCache
+
+  def clearCurrentCache() = clearAllCache
+
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
-    Ok(Json.toJson(Student.index(kg, from, to, most)))
+    val cacheKey: String = s"Student_${kg}_${from}_${to}_${most}"
+    Logger.info(s"StudentController entering index = ${cacheKey}")
+
+    val value: List[Student] = digFromCache[List[Student]](cacheKey, 600, () => {
+      Student.index(kg, from, to, most)
+    })
+    Ok(Json.toJson(value))
   }
 
   def show(kg: Long, id: Long) = IsLoggedIn { u => _ =>
@@ -31,6 +43,7 @@ object StudentController extends Controller with Secured {
       case (s) if s.ext.isEmpty =>
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
       case (s) =>
+        clearAllCache
         Ok(Json.toJson(s.create))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -43,6 +56,7 @@ object StudentController extends Controller with Secured {
       case (s) if s.ext.isEmpty =>
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
       case (s) =>
+        clearAllCache
         Ok(Json.toJson(s.update))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -54,6 +68,7 @@ object StudentController extends Controller with Secured {
       case Some(x) =>
         Student.deleteById(kg, id)
         x.basic.child_id foreach Relationship.deleteCardByChildId
+        clearAllCache
         Ok(Json.toJson(new SuccessResponse()))
       case None =>
         NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的学生。(No such student)")))
