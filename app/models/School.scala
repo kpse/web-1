@@ -1,5 +1,6 @@
 package models
 
+import controllers.RelationshipController
 import play.api.db.DB
 import anorm._
 import anorm.SqlParser._
@@ -132,6 +133,7 @@ object School {
               .on('kg -> kg.toString).execute()
         }
         c.commit()
+        RelationshipController.clearCurrentCache()
       }
       catch {
         case t: Throwable =>

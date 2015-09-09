@@ -2,6 +2,7 @@ package models
 
 import anorm.SqlParser._
 import anorm._
+import controllers.RelationshipController
 import play.Logger
 import play.api.db.DB
 import play.api.Play.current
@@ -164,6 +165,7 @@ object Parent {
       SQL("delete from relationmap where parent_id in (select parent_id from parentinfo where phone={phone})").on('phone -> phone).execute()
       SQL("delete from parentinfo where phone={phone}").on('phone -> phone).execute()
       SQL("delete from accountinfo where accountid={phone}").on('phone -> phone).execute()
+      RelationshipController.clearCurrentCache()
   }
 
   def permanentRemoveById(id: String) = DB.withConnection {

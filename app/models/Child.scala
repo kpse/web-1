@@ -4,6 +4,7 @@ import java.util.Date
 
 import anorm.SqlParser._
 import anorm._
+import controllers.RelationshipController
 import models.helper.TimeHelper.any2DateTime
 import play.Logger
 import play.api.Play.current
@@ -46,6 +47,7 @@ object Children {
         .on(
           'child_id -> childId
         ).executeUpdate
+      RelationshipController.clearCurrentCache()
   }
 
   def idExists(childId: Option[String]): Boolean = DB.withConnection {

@@ -22,6 +22,7 @@ object RelationshipController extends Controller with Secured {
   implicit val relationshipCacheKey = "index_relationships"
   createKeyCache
 
+  def clearCurrentCache() = clearAllCache
   def index(kg: Long, parent: Option[String], child: Option[String], classId: Option[Long]) = IsLoggedIn {
     u => _ =>
       val cacheKey: String = s"Relationship_${kg}_${parent}_${child}_${classId}"
