@@ -1,6 +1,7 @@
 package models
 
 import java.sql.Connection
+import java.util.Date
 
 import play.api.Play.current
 import play.api.db.DB
@@ -9,6 +10,7 @@ import anorm.SqlParser._
 import anorm.~
 import play.Logger
 import scala.util.Random
+import models.helper.TimeHelper.any2DateTime
 
 case class Relationship(parent: Option[Parent], child: Option[ChildInfo], card: String, relationship: String, id: Option[Long] = None)
 
@@ -211,6 +213,46 @@ object Relationship {
     }
   }
 
+  def fullRelationship(kg: Long) = {
+    get[Long]("relationmap.uid") ~
+      get[Long]("parentinfo.uid") ~
+      get[Long]("childinfo.uid") ~
+      get[String]("parentinfo.parent_id") ~
+      get[String]("childinfo.child_id") ~
+      get[String]("card_num") ~
+      get[String]("relationship") ~
+      get[String]("parentinfo.name") ~
+      get[String]("parentinfo.phone") ~
+      get[Int]("parentinfo.gender") ~
+      get[Option[String]]("parentinfo.picurl") ~
+      get[Date]("parentinfo.birthday") ~
+      get[Int]("member_status") ~
+      get[Int]("parentinfo.status") ~
+      get[Option[String]]("parentinfo.company") ~
+      get[Long]("parentinfo.update_at") ~
+      get[Long]("parentinfo.created_at") ~
+      get[String]("childinfo.name") ~
+      get[String]("nick") ~
+      get[Option[String]]("childinfo.picurl") ~
+      get[Int]("childinfo.gender") ~
+      get[Date]("childinfo.birthday") ~
+      get[Int]("childinfo.class_id") ~
+      get[String]("classinfo.class_name") ~
+      get[Option[String]]("childinfo.address") ~
+      get[Long]("childinfo.update_at") ~
+      get[Long]("childinfo.created_at") ~
+      get[Int]("childinfo.status") map {
+      case id ~ pId ~ cId ~ parent ~ child ~ cardNum ~ r ~ name ~ phone ~ pGender ~ pImage ~ pBirthday ~ member
+        ~ pStatus ~ pCompany ~ pUpdated ~ pCreated ~ childName ~ nick ~ icon_url ~ childGender
+        ~ childBirthday ~ classId ~ className ~ address ~ cUpdated ~ cCreated ~ cStatus =>
+        Relationship(Some(Parent(Some(parent), kg, name, phone, Some(pImage.getOrElse("")), pGender, pBirthday.toDateOnly,
+          Some(pUpdated), Some(member), Some(pStatus), pCompany, None, Some(pCreated), Some(pId))),
+          Some(ChildInfo(Some(child), childName, nick, childBirthday.toDateOnly, childGender,
+            Some(icon_url.getOrElse("")), classId, Some(className), Some(cUpdated), Some(kg), address, Some(cStatus),
+            Some(cCreated), Some(cId))), cardNum, r, Some(id))
+    }
+  }
+
   val searchSample = {
     get[Long]("uid") ~
       get[String]("parent_id") ~
@@ -232,13 +274,13 @@ object Relationship {
           'phone -> parent,
           'child_id -> child,
           'class_id -> classId
-        ).as(simple(kg) *)
+        ).as(fullRelationship(kg) *)
   }
 
 
   def generateQuery(parent: Option[String], child: Option[String], classId: Option[Long]) = {
-    var sql = "select r.* from relationmap r, childinfo c, parentinfo p where r.child_id=c.child_id and p.parent_id=r.parent_id" +
-      " and p.school_id={kg} and p.status=1 and r.status=1 and p.school_id=c.school_id and c.status=1 "
+    var sql = "select * from relationmap r, childinfo c, parentinfo p, classinfo cl where r.child_id=c.child_id and p.parent_id=r.parent_id" +
+      " and p.school_id={kg} and p.status=1 and r.status=1 and p.school_id=c.school_id and c.status=1 and cl.school_id=c.school_id and cl.class_id=c.class_id and cl.status=1"
     val morethanOneChild = "^([\\w_]+)(,[\\w_]+)*$".r
     val oneChild = "^([\\w_]+)$".r
     parent foreach {
@@ -248,7 +290,7 @@ object Relationship {
     child foreach {
       case oneChild(one) =>
         sql += " and r.child_id={child_id}"
-      case morethanOneChild(args @ _*) =>
+      case morethanOneChild(args@_*) =>
         sql += s" and r.child_id in ('${child.get.split(",").mkString("','")}')"
     }
     classId foreach {
