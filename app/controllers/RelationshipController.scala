@@ -55,7 +55,7 @@ object RelationshipController extends Controller with Secured {
             Ok(Json.toJson(new ErrorResponse(s"卡号${card}未授权，请联系库贝人员。(Invalid card number)", 4)))
           case exists if exists && uid.isDefined =>
             Logger.info("update existing 1, reusing existing card")
-            clearAllCache
+            clearCurrentCache()
             Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, uid.get)))
           case exists if exists && uid.isEmpty =>
             BadRequest(loggedJson(ErrorResponse(s"创建关系失败，${card}号卡已经关联过家长。(Card is connected to parent before)", 5)))
@@ -63,15 +63,15 @@ object RelationshipController extends Controller with Secured {
             BadRequest(loggedJson(ErrorResponse(s"修改关系失败，${card}号卡已经关联过家长。(Card is connected to parent before)", 6)))
           case exists if !exists && uid.isDefined =>
             Logger.info("update existing 2")
-            clearAllCache
+            clearCurrentCache()
             Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, uid.get)))
           case exists if !exists && uid.isEmpty && Relationship.deleted(card) =>
             Logger.info("update existing 3, reusing deleted card")
-            clearAllCache
+            clearCurrentCache()
             Ok(Json.toJson(Relationship.reuseDeletedCard(kg, card, relationship, phone, childId)))
           case exists if !exists && uid.isEmpty =>
             Logger.info("create new")
-            clearAllCache
+            clearCurrentCache()
             Ok(Json.toJson(Relationship.create(kg, card, relationship, phone, childId)))
         }
 
@@ -95,7 +95,7 @@ object RelationshipController extends Controller with Secured {
             BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。(Duplicated relationship)", 3)))
           case (p, c) =>
             Logger.info("create new")
-            clearAllCache
+            clearCurrentCache()
             Ok(Json.toJson(Relationship.fakeCardCreate(kg, relationship, p, c)))
         }
 
@@ -108,7 +108,7 @@ object RelationshipController extends Controller with Secured {
 
   def delete(kg: Long, card: String) = IsLoggedIn {
     u => _ =>
-      clearAllCache
+      clearCurrentCache()
       Ok(Json.toJson(Relationship.delete(kg, card)))
   }
 

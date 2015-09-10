@@ -175,6 +175,7 @@ object Parent {
           SQL("delete from relationmap where parent_id={id}").on('id -> id).execute()
           SQL("delete from accountinfo where accountid in (select phone from parentinfo where parent_id={id})").on('id -> id).execute()
           SQL("delete from parentinfo where parent_id={id}").on('id -> id).execute()
+          RelationshipController.clearCurrentCache()
           None
         case false =>
           Some(BatchImportReport(id, "家长 %s 不存在。".format(id)))

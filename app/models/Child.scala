@@ -5,6 +5,7 @@ import java.util.Date
 import anorm.SqlParser._
 import anorm._
 import controllers.RelationshipController
+import controllers.V3.StudentController
 import models.helper.TimeHelper.any2DateTime
 import play.Logger
 import play.api.Play.current
@@ -37,7 +38,7 @@ object Children {
 
   def delete(kg: Long, childId: String) = DB.withConnection {
     implicit c =>
-      RelationshipController.clearCurrentCache()
+      clearCurrentCache()
       SQL("update childinfo set status=0, update_at={timestamp} where child_id={child_id} and school_id={kg}")
         .on(
           'child_id -> childId,
@@ -232,5 +233,9 @@ object Children {
         .on('child_id -> child, 'kg -> schoolId.toString).as(childInformation singleOpt)
   }
 
+  def clearCurrentCache() = {
+    StudentController.clearCurrentCache()
+    RelationshipController.clearCurrentCache()
+  }
 
 }

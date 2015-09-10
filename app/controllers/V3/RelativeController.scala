@@ -1,6 +1,6 @@
 package controllers.V3
 
-import controllers.Secured
+import controllers.{RelationshipController, Secured}
 import models.V3.Relative
 import models.{Relationship, ErrorResponse, SuccessResponse}
 import play.api.Logger
@@ -13,7 +13,11 @@ object RelativeController extends Controller with Secured {
   implicit val RelativesCacheKey = "index_v3_relatives"
   createKeyCache
 
-  def clearCurrentCache() = clearAllCache
+  def clearCurrentCache() = {
+    clearAllCache
+    RelationshipController.clearCurrentCache()
+  }
+
 
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
     val cacheKey: String = s"Relatives_${kg}_${from}_${to}_${most}"
@@ -45,7 +49,7 @@ object RelativeController extends Controller with Secured {
         BadRequest(Json.toJson(ErrorResponse("手机与现有未删除家长重复，请先删除再创建。(duplicated phone number with another parent)", 6)))
       case (s) =>
         Relative.removeDirtyDataIfExists(s)
-        clearAllCache
+        clearCurrentCache()
         Ok(Json.toJson(s.create))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -62,7 +66,7 @@ object RelativeController extends Controller with Secured {
       case (s) if s.id.isEmpty  =>
         BadRequest(Json.toJson(ErrorResponse("没有id无法更新。(no id for update)", 5)))
       case (s) =>
-        clearAllCache
+        clearCurrentCache()
         Ok(Json.toJson(s.update))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -74,7 +78,7 @@ object RelativeController extends Controller with Secured {
       case Some(x) =>
         Relative.deleteById(kg, id)
         x.basic.parent_id foreach Relationship.deleteCardByParentId
-        clearAllCache
+        clearCurrentCache()
         Ok(Json.toJson(new SuccessResponse()))
       case None =>
         NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的父母。(No such relative)")))

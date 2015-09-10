@@ -134,8 +134,7 @@ object School {
               .on('kg -> kg.toString).execute()
         }
         c.commit()
-        RelationshipController.clearCurrentCache()
-        RelativeController.clearCurrentCache()
+        clearCurrentCache()
       }
       catch {
         case t: Throwable =>
@@ -329,6 +328,11 @@ object School {
       case name ~ value =>
         ConfigItem(name, value)
     }
+  }
+
+  def clearCurrentCache() = {
+    RelativeController.clearCurrentCache()
+    RelationshipController.clearCurrentCache()
   }
 
 }
