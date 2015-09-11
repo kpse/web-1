@@ -220,7 +220,7 @@ object Relationship {
       get[String]("parentinfo.parent_id") ~
       get[String]("childinfo.child_id") ~
       get[String]("card_num") ~
-      get[String]("relationship") ~
+      get[String]("relationmap.relationship") ~
       get[String]("parentinfo.name") ~
       get[String]("parentinfo.phone") ~
       get[Int]("parentinfo.gender") ~
