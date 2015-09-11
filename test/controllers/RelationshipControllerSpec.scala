@@ -170,10 +170,10 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       (parent \ "name").as[String] must equalTo("袋鼠")
       (parent \ "company").as[String] must equalTo("某公司")
       (parent \ "timestamp").as[Long] must equalTo(0)
-      (parent \ "created_at").as[Long] must equalTo(0)
       (parent \ "member_status").as[Int] must equalTo(1)
       (parent \ "status").as[Int] must equalTo(1)
       (parent \ "id").as[Long] must equalTo(3)
+      (parent \ "created_at").as[Long] must equalTo(0)
 
       private val child: JsValue = head \ "child"
       (child \ "child_id").as[String] must equalTo("1_1391836223533")
