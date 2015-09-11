@@ -193,24 +193,24 @@ object EmployeeV3 {
         ).executeUpdate()
   }
 
-  def removeDirtyDataIfExists(r: EmployeeV3) = DB.withConnection {
+  def removeDirtyDataIfExists(r: Employee) = DB.withConnection {
     implicit c =>
       val deletableCondition: String = " where status=0 and (phone={phone} or employee_id={id} or login_name={login}) "
       val execute1: Boolean = SQL(s"delete from employeeext where base_id in (select uid from employeeinfo $deletableCondition)")
         .on(
-          'kg -> r.basic.school_id,
-          'id -> r.basic.id.getOrElse(""),
-          'login -> r.basic.login_name,
-          'phone -> r.basic.phone
+          'kg -> r.school_id,
+          'id -> r.id.getOrElse(""),
+          'login -> r.login_name,
+          'phone -> r.phone
         ).execute()
       val execute2: Boolean = SQL(s"delete from employeeinfo $deletableCondition")
         .on(
-          'kg -> r.basic.school_id,
-          'id -> r.basic.id.getOrElse(""),
-          'login -> r.basic.login_name,
-          'phone -> r.basic.phone
+          'kg -> r.school_id,
+          'id -> r.id.getOrElse(""),
+          'login -> r.login_name,
+          'phone -> r.phone
         ).execute()
-      Logger.info(s"employee removeDirtyDataIfExists ${r.basic}  $execute1 $execute2")
+      Logger.info(s"employee removeDirtyDataIfExists ${r}  $execute1 $execute2")
   }
 
   val simple = {

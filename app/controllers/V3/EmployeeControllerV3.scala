@@ -32,7 +32,7 @@ object EmployeeControllerV3 extends Controller with Secured {
       case (s) if s.existsInOtherSchool(kg) =>
         InternalServerError(Json.toJson(ErrorResponse("该号码，员工id，登录名三者至少有一样出现在另一个学校未删除老师的信息里。(the given employee critical info belongs to another school)", 6)))
       case (s) =>
-        EmployeeV3.removeDirtyDataIfExists(s)
+        EmployeeV3.removeDirtyDataIfExists(s.basic)
         Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))

@@ -4,6 +4,7 @@ import java.util.Date
 
 import anorm.SqlParser._
 import anorm.{~, _}
+import models.V3.EmployeeV3
 import models.helper.MD5Helper.md5
 import models.helper.PasswordHelper
 import models.helper.TimeHelper.any2DateTime
@@ -299,13 +300,13 @@ object Employee {
     implicit c =>
       id match {
         case Some(i) =>
-          SQL("select (select count(1) from employeeinfo where login_name={login}) + (select count(1) from agentinfo where login_name={login} and uid <> {id}) as count")
+          SQL("select (select count(1) from employeeinfo where login_name={login} and status=1) + (select count(1) from agentinfo where login_name={login} and uid <> {id} and status=1) as count")
             .on(
               'login -> loginName,
               'id -> i
             ).as(get[Long]("count") single) > 0
         case None =>
-          SQL("select (select count(1) from employeeinfo where login_name={login}) + (select count(1) from agentinfo where login_name={login}) as count")
+          SQL("select (select count(1) from employeeinfo where login_name={login} and status=1) + (select count(1) from agentinfo where login_name={login} and status=1) as count")
             .on(
               'login -> loginName
             ).as(get[Long]("count") single) > 0
@@ -395,6 +396,7 @@ object Employee {
 
   def update(employee: Employee) = DB.withConnection {
     implicit c =>
+      EmployeeV3.removeDirtyDataIfExists(employee)
       employee.update
       show(employee.phone)
   }
@@ -444,6 +446,7 @@ object Employee {
 
   def create(employee: Employee) = DB.withConnection {
     implicit c =>
+      EmployeeV3.removeDirtyDataIfExists(employee)
       employee.create
       show(employee.phone)
   }

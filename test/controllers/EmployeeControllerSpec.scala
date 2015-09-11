@@ -1,7 +1,7 @@
 package controllers
 
 import _root_.helper.TestSupport
-import models.{LoginNameCheck, ChildInfo}
+import models.{Employee, LoginNameCheck, ChildInfo}
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
@@ -135,29 +135,69 @@ class EmployeeControllerSpec extends Specification with TestSupport {
   }
 
   "reject login name when name belongs to agent" in new WithApplication {
-      private val requestBody = Json.toJson(LoginNameCheck(None, "a0001", None))
+    private val requestBody = Json.toJson(LoginNameCheck(None, "a0001", None))
 
-      val checkResponse = route(principalLoggedRequest(POST, "/api/v1/kindergarten/93740362/login_name_check").withJsonBody(requestBody)).get
+    val checkResponse = route(principalLoggedRequest(POST, "/api/v1/kindergarten/93740362/login_name_check").withJsonBody(requestBody)).get
 
-      status(checkResponse) must equalTo(OK)
-      contentType(checkResponse) must beSome.which(_ == "application/json")
+    status(checkResponse) must equalTo(OK)
+    contentType(checkResponse) must beSome.which(_ == "application/json")
 
-      val response: JsValue = Json.parse(contentAsString(checkResponse))
-      (response \ "error_code").as[Int] must equalTo(52)
+    val response: JsValue = Json.parse(contentAsString(checkResponse))
+    (response \ "error_code").as[Int] must equalTo(52)
 
-    }
+  }
 
   "accept agent login name when name belongs to agent however matches the id" in new WithApplication {
-      private val requestBody = Json.toJson(LoginNameCheck(Some(1), "a0001", None))
+    private val requestBody = Json.toJson(LoginNameCheck(Some(1), "a0001", None))
 
-      val checkResponse = route(principalLoggedRequest(POST, "/api/v1/kindergarten/93740362/login_name_check").withJsonBody(requestBody)).get
+    val checkResponse = route(principalLoggedRequest(POST, "/api/v1/kindergarten/93740362/login_name_check").withJsonBody(requestBody)).get
 
-      status(checkResponse) must equalTo(OK)
-      contentType(checkResponse) must beSome.which(_ == "application/json")
+    status(checkResponse) must equalTo(OK)
+    contentType(checkResponse) must beSome.which(_ == "application/json")
 
-      val response: JsValue = Json.parse(contentAsString(checkResponse))
-      (response \ "error_code").as[Int] must equalTo(0)
+    val response: JsValue = Json.parse(contentAsString(checkResponse))
+    (response \ "error_code").as[Int] must equalTo(0)
 
-    }
+  }
 
+  "reuse deleted login name in creating" in new WithApplication {
+    val response = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/23258249821")).get
+
+    status(response) must equalTo(OK)
+
+    private val requestBody = Json.toJson(createEmployee("e0011"))
+
+    val response2 = route(principalLoggedRequest(POST, "/kindergarten/93740362/employee/23258249822").withBody(requestBody)).get
+
+    status(response2) must equalTo(OK)
+
+    val response3 = route(principalLoggedRequest(GET, "/kindergarten/93740362/employee/23258249822")).get
+
+    status(response3) must equalTo(OK)
+    val UpdatedLoginName: JsValue = Json.parse(contentAsString(response3))
+    (UpdatedLoginName \ "login_name").as[String] must equalTo("e0011")
+  }
+
+  "reuse deleted login name in updating" in new WithApplication {
+    val response = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/13060003702")).get
+
+    status(response) must equalTo(OK)
+
+    private val requestBody = Json.toJson(createEmployee("e0003"))
+
+    val response2 = route(principalLoggedRequest(POST, "/kindergarten/93740362/employee/23258249821").withBody(requestBody)).get
+
+    status(response2) must equalTo(OK)
+
+    val response3 = route(principalLoggedRequest(GET, "/kindergarten/93740362/employee/23258249822")).get
+
+    status(response3) must equalTo(OK)
+    val UpdatedLoginName: JsValue = Json.parse(contentAsString(response3))
+    (UpdatedLoginName \ "login_name").as[String] must equalTo("e0003")
+
+  }
+
+  def createEmployee(loginName: String): Employee = {
+    Employee(None, "name", "23258249822", 0, "", "", None, "1980-01-01", 93740362, loginName, None, None)
+  }
 }
