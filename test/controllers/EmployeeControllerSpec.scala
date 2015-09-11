@@ -1,11 +1,11 @@
 package controllers
 
 import _root_.helper.TestSupport
-import models.ChildInfo
+import models.{LoginNameCheck, ChildInfo}
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
-import play.Logger
+import models.Employee.writeLoginNameCheck
 import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, WithServer}
@@ -80,5 +80,84 @@ class EmployeeControllerSpec extends Specification with TestSupport {
       status(response) must equalTo(UNAUTHORIZED)
 
     }
+
+    "accept login name check when name has not been used" in new WithApplication {
+      private val requestBody = Json.toJson(LoginNameCheck(None, "nonexists", None))
+
+      val checkResponse = route(principalLoggedRequest(POST, "/api/v1/kindergarten/93740362/login_name_check").withJsonBody(requestBody)).get
+
+      status(checkResponse) must equalTo(OK)
+      contentType(checkResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(checkResponse))
+      (response \ "error_code").as[Int] must equalTo(0)
+
+    }
+
+    "accept login name when name and id are matching" in new WithApplication {
+      private val requestBody = Json.toJson(LoginNameCheck(None, "e0001", Some("3_93740362_1122")))
+
+      val checkResponse = route(principalLoggedRequest(POST, "/api/v1/kindergarten/93740362/login_name_check").withJsonBody(requestBody)).get
+
+      status(checkResponse) must equalTo(OK)
+      contentType(checkResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(checkResponse))
+      (response \ "error_code").as[Int] must equalTo(0)
+
+    }
+
+    "reject login name when name and id are not matching" in new WithApplication {
+      private val requestBody = Json.toJson(LoginNameCheck(None, "e0001", Some("2_93740362_456")))
+
+      val checkResponse = route(principalLoggedRequest(POST, "/api/v1/kindergarten/93740362/login_name_check").withJsonBody(requestBody)).get
+
+      status(checkResponse) must equalTo(OK)
+      contentType(checkResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(checkResponse))
+      (response \ "error_code").as[Int] must equalTo(51)
+
+    }
+
+    "reject login name when name exists and id is missing" in new WithApplication {
+      private val requestBody = Json.toJson(LoginNameCheck(None, "e0001", None))
+
+      val checkResponse = route(principalLoggedRequest(POST, "/api/v1/kindergarten/93740362/login_name_check").withJsonBody(requestBody)).get
+
+      status(checkResponse) must equalTo(OK)
+      contentType(checkResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(checkResponse))
+      (response \ "error_code").as[Int] must equalTo(51)
+
+    }
   }
+
+  "reject login name when name belongs to agent" in new WithApplication {
+      private val requestBody = Json.toJson(LoginNameCheck(None, "a0001", None))
+
+      val checkResponse = route(principalLoggedRequest(POST, "/api/v1/kindergarten/93740362/login_name_check").withJsonBody(requestBody)).get
+
+      status(checkResponse) must equalTo(OK)
+      contentType(checkResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(checkResponse))
+      (response \ "error_code").as[Int] must equalTo(52)
+
+    }
+
+  "accept agent login name when name belongs to agent however matches the id" in new WithApplication {
+      private val requestBody = Json.toJson(LoginNameCheck(Some(1), "a0001", None))
+
+      val checkResponse = route(principalLoggedRequest(POST, "/api/v1/kindergarten/93740362/login_name_check").withJsonBody(requestBody)).get
+
+      status(checkResponse) must equalTo(OK)
+      contentType(checkResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(checkResponse))
+      (response \ "error_code").as[Int] must equalTo(0)
+
+    }
+
 }

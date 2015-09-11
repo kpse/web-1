@@ -154,8 +154,8 @@ object Employee {
 
   implicit val writeEmployee = Json.writes[Employee]
   implicit val readEmployee = Json.reads[Employee]
-  implicit val writeEmployeeLoginNameCheck = Json.writes[LoginNameCheck]
-  implicit val readEmployeeLoginNameCheck = Json.reads[LoginNameCheck]
+  implicit val writeLoginNameCheck = Json.writes[LoginNameCheck]
+  implicit val readLoginNameCheck = Json.reads[LoginNameCheck]
 
   def removed(kg: Long) = DB.withConnection {
     implicit c =>

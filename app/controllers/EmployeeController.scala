@@ -7,7 +7,7 @@ import play.api.libs.json.{JsError, Json}
 import play.Logger
 import controllers.helper.JsonLogger._
 import models.EmployeePassword
-import models.Employee.readEmployeeLoginNameCheck
+import models.Employee.readLoginNameCheck
 import models.EmployeeResetPassword
 import models.ErrorResponse
 import models.helper.PasswordHelper
@@ -193,7 +193,7 @@ object EmployeeController extends Controller with Secured {
       Ok(Json.toJson(new SuccessResponse))
   }
 
-  def isGoodToUse = IsLoggedIn(parse.json) {
+  def isGoodToUse(kg: Long) = IsLoggedIn(parse.json) {
     u => request =>
       request.body.validate[LoginNameCheck].map {
         case (employee) if employee.login_name.nonEmpty =>
@@ -204,12 +204,12 @@ object EmployeeController extends Controller with Secured {
               Ok(Json.toJson(SuccessResponse(s"已删除的登录名 ${employee.login_name}，可以重复使用。(deleted login name can be reused)")))
             case Some(me) =>
               Ok(Json.toJson(ErrorResponse(s"已使用的登录名 ${employee.login_name}。(occupied login name)", 51)))
-            case _ =>
+            case agent =>
               AgentWithLoginName.unapply(employee.login_name) match {
                 case Some(me) if employee.id.isDefined && me.id == employee.id =>
                   Ok(Json.toJson(SuccessResponse(s"ID与登录名 ${employee.login_name}匹配。(login name matches the agent id)")))
                 case Some(me) =>
-                  Ok(Json.toJson(ErrorResponse(s"已使用的登录名 ${employee.login_name}。(occupied login name)", 52)))
+                  Ok(Json.toJson(ErrorResponse(s"已使用的登录名 ${employee.login_name}。(occupied agent login name)", 52)))
                 case _ =>
                   Ok(Json.toJson(SuccessResponse(s"未占用的登录名 ${employee.login_name}.(unoccupied login name)")))
               }
