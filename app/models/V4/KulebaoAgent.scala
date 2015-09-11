@@ -270,3 +270,14 @@ object KulebaoAgent {
     }
   }
 }
+
+object AgentWithLoginName {
+  def unapply(loginName: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from agentinfo where login_name={login_name} and status=1")
+        .on(
+          'login_name -> loginName
+        ).as(KulebaoAgent.simple singleOpt)
+  }
+}
+

@@ -147,10 +147,15 @@ case class EmployeePassword(employee_id: String, school_id: Long, phone: String,
 
 case class EmployeeResetPassword(id: String, school_id: Long, phone: String, login_name: String, new_password: String)
 
+
+case class LoginNameCheck(id: Option[Long], login_name: String, employee_id: Option[String])
+
 object Employee {
 
   implicit val writeEmployee = Json.writes[Employee]
   implicit val readEmployee = Json.reads[Employee]
+  implicit val writeEmployeeLoginNameCheck = Json.writes[LoginNameCheck]
+  implicit val readEmployeeLoginNameCheck = Json.reads[LoginNameCheck]
 
   def removed(kg: Long) = DB.withConnection {
     implicit c =>
