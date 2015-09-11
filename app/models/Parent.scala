@@ -86,6 +86,7 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
     implicit c =>
       try {
         sanitizePhoneNumber.executeUpdate()
+        Parent.fixUpPushAccount(this)
         SQL("update parentinfo set name={name}, " +
           "phone={phone}, gender={gender}, company={company}, " +
           "picurl={picurl}, birthday={birthday}, " +
@@ -316,13 +317,19 @@ object Parent {
 
   def isConflicting(parent: Parent) = DB.withConnection {
     implicit c =>
+      SQL("select count(1) from accountinfo a, parentinfo p where a.accountid=p.phone and p.status = 1 and accountid={phone}")
+        .on('phone -> parent.phone).as(get[Long]("count(1)") single) > 0
+  }
+
+  def existsInPushAccount(parent: Parent) = DB.withConnection {
+    implicit c =>
       SQL("select count(1) from accountinfo where accountid={phone}")
         .on('phone -> parent.phone).as(get[Long]("count(1)") single) > 0
   }
 
   def isConflictingInConversation(parent: Parent) = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from conversation where phone={phone}")
+      SQL("select count(1) from conversation a, parentinfo p where a.phone=p.phone and p.status = 1 and p.phone={phone}")
         .on('phone -> parent.phone).as(get[Long]("count(1)") single) > 0
   }
 
@@ -455,7 +462,7 @@ object Parent {
 
   def manipulatePushAccount(parent: Parent)(existingHandler: (Parent) => Option[Long]) = DB.withConnection {
     implicit c =>
-      isConflicting(parent) match {
+      existsInPushAccount(parent) match {
         case false =>
           Logger.info(s"inert PushAccount for ${parent.phone}")
           SQL("INSERT INTO accountinfo(accountid, password) " +

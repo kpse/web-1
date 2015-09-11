@@ -94,9 +94,9 @@ object ParentController extends Controller with Secured {
   def handleCreateOrUpdate(kg: Long, parent: Parent) = parent match {
     case (error) if kg != error.school_id =>
       BadRequest(Json.toJson(ErrorResponse("请求的学校不正确。")))
-    case (error) if error.isAMember && Charge.limitExceed(kg)  =>
+    case (error) if error.isAMember && Charge.limitExceed(kg) =>
       BadRequest(Json.toJson(ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))
-    case (error) if error.isAVideoMember && VideoMember.limitExceed(kg)  =>
+    case (error) if error.isAVideoMember && VideoMember.limitExceed(kg) =>
       BadRequest(Json.toJson(ErrorResponse("已达到学校视频授权人数上限，无法再开通新视频账号，请联系幼乐宝技术支持4009984998")))
     case (error) if Parent.existsInOtherSchool(kg, error) =>
       BadRequest(Json.toJson(ErrorResponse("手机号码‘%s’已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998".format(error.phone))))
@@ -139,7 +139,7 @@ object ParentController extends Controller with Secured {
   def delete(kg: Long, phone: String) = IsLoggedIn {
     u => _ =>
       val parent: Option[Parent] = Parent.delete(kg)(phone)
-      parent map {case p => VideoMember.delete(kg, p.parent_id.getOrElse("null"))}
+      parent map { case p => VideoMember.delete(kg, p.parent_id.getOrElse("null")) }
       clearCurrentCache()
       Ok(Json.toJson(new SuccessResponse))
   }
@@ -153,6 +153,7 @@ object ParentController extends Controller with Secured {
 
   implicit val read6 = Json.reads[ParentPhoneCheck]
   implicit val read7 = Json.reads[EmployeePhoneCheck]
+
   def isGoodToUse(phone: String, isEmployee: Option[String]) = IsAuthenticated(parse.json) {
     u => request =>
       isEmployee match {
@@ -173,6 +174,7 @@ object ParentController extends Controller with Secured {
       }
 
   }
+
   def numberCheck[T](person: PhoneCheck[T], exist: Option[T]) = exist.fold(Ok(Json.toJson(new SuccessResponse("号码不存在。"))))({
     case p if person.isTheSame(p) =>
       Ok(Json.toJson(SuccessResponse("号码已存在，且与id匹配。(phone number matches id)")))

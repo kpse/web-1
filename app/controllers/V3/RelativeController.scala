@@ -2,7 +2,7 @@ package controllers.V3
 
 import controllers.{RelationshipController, Secured}
 import models.V3.Relative
-import models.{Relationship, ErrorResponse, SuccessResponse}
+import models._
 import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
@@ -48,7 +48,7 @@ object RelativeController extends Controller with Secured {
       case (s) if s.basic.duplicatedPhoneWithOthers =>
         BadRequest(Json.toJson(ErrorResponse("手机与现有未删除家长重复，请先删除再创建。(duplicated phone number with another parent)", 6)))
       case (s) =>
-        Relative.removeDirtyDataIfExists(s)
+        Relative.removeDirtyDataIfExists(s.basic)
         clearCurrentCache()
         Ok(Json.toJson(s.create))
     }.recoverTotal {
@@ -65,9 +65,29 @@ object RelativeController extends Controller with Secured {
         BadRequest(Json.toJson(ErrorResponse("内外id不一致。(ids should be consistent)", 3)))
       case (s) if s.id.isEmpty  =>
         BadRequest(Json.toJson(ErrorResponse("没有id无法更新。(no id for update)", 5)))
+      case (error) if kg != error.basic.school_id =>
+        BadRequest(Json.toJson(ErrorResponse("请求的学校不正确。")))
+      case (error) if error.basic.isAMember && Charge.limitExceed(kg) =>
+        BadRequest(Json.toJson(ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))
+      case (error) if error.basic.isAVideoMember && VideoMember.limitExceed(kg) =>
+        BadRequest(Json.toJson(ErrorResponse("已达到学校视频授权人数上限，无法再开通新视频账号，请联系幼乐宝技术支持4009984998")))
+      case (error) if Parent.existsInOtherSchool(kg, error.basic) =>
+        BadRequest(Json.toJson(ErrorResponse(s"手机号码‘${error.basic.phone}’已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998")))
+      case (error) if error.basic.parent_id.isDefined && error.basic.duplicatedPhoneWithOthers =>
+        BadRequest(Json.toJson(ErrorResponse(s"手机号码‘${error.basic.phone}’已经存在，请检查输入号码是否正确")))
+      case (deletedParent) if !Parent.idExists(deletedParent.basic.parent_id) && deletedParent.basic.status.equals(Some(0)) =>
+        Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
+      case (phoneTransfer) if Parent.idExists(phoneTransfer.basic.parent_id) && Parent.phoneDeleted(kg, phoneTransfer.basic.phone) =>
+        clearCurrentCache()
+        phoneTransfer.update(_.transfer) match {
+          case Some(p) =>
+            Ok(Json.toJson(p))
+          case None =>
+            InternalServerError(Json.toJson(ErrorResponse(s"交换已有号码失败。(failed exchanging existing phone number to parent ${phoneTransfer.basic.parent_id})")))
+        }
       case (s) =>
         clearCurrentCache()
-        Ok(Json.toJson(s.update))
+        Ok(Json.toJson(s.update(Parent.update)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }

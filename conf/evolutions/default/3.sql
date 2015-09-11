@@ -9,6 +9,7 @@ CREATE TABLE accountinfo (
   active  INT NOT NULL DEFAULT 0,
   pwd_change_time bigint(20) NOT NULL DEFAULT 0,
   device INT NOT NULL DEFAULT 3,
+  UNIQUE (accountid),
   PRIMARY KEY (uid)
 );
 

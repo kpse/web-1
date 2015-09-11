@@ -46,7 +46,7 @@ object RelativeControllerSpec extends Specification with TestSupport {
       val response: JsValue = Json.parse(contentAsString(res))
       (response \ "basic" \ "phone").as[String] must equalTo("22222222226")
 
-      val id =  (response \ "id").as[Long]
+      val id = (response \ "id").as[Long]
 
       val getRes = route(loggedRequest(GET, s"/api/v3/kindergarten/93740362/relative/$id")).get
 
@@ -73,6 +73,38 @@ object RelativeControllerSpec extends Specification with TestSupport {
 
       val response: JsValue = Json.parse(contentAsString(bindingRes))
       (response \ "error_code").as[Long] must equalTo(0)
+    }
+
+    "reuse deleted phone number in creating" in new WithApplication {
+      val response = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/relative/1")).get
+
+      status(response) must equalTo(OK)
+
+      private val requestBody = Json.toJson(createRelative("13402815317"))
+
+      val response2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/relative").withBody(requestBody)).get
+
+      status(response2) must equalTo(OK)
+
+      val newCreatedRelative: JsValue = Json.parse(contentAsString(response2))
+      (newCreatedRelative \ "basic" \ "phone").as[String] must equalTo("13402815317")
+    }
+
+    "reuse deleted phone in updating" in new WithApplication {
+      val response = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/relative/1")).get
+
+      status(response) must equalTo(OK)
+
+      private val requestBody = Json.toJson(createRelative("13402815317", Some(2)))
+
+      val response2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/relative/2").withBody(requestBody)).get
+
+      status(response2) must equalTo(OK)
+
+      Logger.info(contentAsString(response2))
+      val UpdatedPhoneRelative: JsValue = Json.parse(contentAsString(response2))
+      (UpdatedPhoneRelative \ "basic" \ "phone").as[String] must equalTo("13402815317")
+
     }
 
   }

@@ -59,10 +59,10 @@ case class ParentExt(display_name: Option[String], social_id: Option[String], na
 }
 
 case class Relative(id: Option[Long], basic: Parent, ext: Option[ParentExt]) {
-  def update: Option[Relative] = DB.withTransaction {
+  def update(callback: (Parent) => Option[Parent]): Option[Relative] = DB.withTransaction {
     implicit c =>
       try {
-        val updatedParent: Option[Parent] = Parent.update(basic)
+        val updatedParent: Option[Parent] = callback(basic)
         ext foreach (_.handleExt(id.get))
         c.commit()
         Logger.info(updatedParent.toString)
@@ -148,26 +148,26 @@ object Relative {
         ).executeUpdate()
   }
 
-  def removeDirtyDataIfExists(r: Relative) = DB.withConnection {
+  def removeDirtyDataIfExists(r: Parent) = DB.withConnection {
     implicit c =>
       val deletableCondition: String = " where status=0 and school_id={kg} and (phone={phone} or parent_id={id}) "
       val execute: Boolean = SQL(s"delete from accountinfo where accountid={phone}")
         .on(
-          'phone -> r.basic.phone
+          'phone -> r.phone
         ).execute()
       val execute1: Boolean = SQL(s"delete from parentext where base_id in (select uid from parentinfo $deletableCondition)")
         .on(
-          'kg -> r.basic.school_id,
-          'id -> r.basic.parent_id.getOrElse(""),
-          'phone -> r.basic.phone
+          'kg -> r.school_id,
+          'id -> r.parent_id.getOrElse(""),
+          'phone -> r.phone
         ).execute()
       val execute2: Boolean = SQL(s"delete from parentinfo $deletableCondition")
         .on(
-          'kg -> r.basic.school_id,
-          'id -> r.basic.parent_id.getOrElse(""),
-          'phone -> r.basic.phone
+          'kg -> r.school_id,
+          'id -> r.parent_id.getOrElse(""),
+          'phone -> r.phone
         ).execute()
-      Logger.info(s"relative removeDirtyDataIfExists ${r.basic} $execute $execute1 $execute2")
+      Logger.info(s"relative removeDirtyDataIfExists $r $execute $execute1 $execute2")
   }
 
   val simple = {
