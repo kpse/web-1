@@ -1,7 +1,7 @@
 angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$q', '$modal', '$alert', 'currentAgent', 'loggedUser', 'agentContractorService',
+  ['$scope', '$rootScope', '$stateParams', '$q', '$modal', '$alert', '$filter', 'currentAgent', 'loggedUser', 'agentContractorService',
    'agentContractorInSchoolService', 'agentSchoolService', 'agentRawActivityService', 'agentSchoolDataService', 'fullResponseService',
-    (scope, $rootScope, stateParams, $q, Modal, Alert, Agent, User, Contractor, ContractorInSchool, Schools, Activity,
+    (scope, $rootScope, stateParams, $q, Modal, Alert, $filter, Agent, User, Contractor, ContractorInSchool, Schools, Activity,
      SchoolData, FullRes) ->
       scope.adminUser = User
       scope.currentAgent = Agent
@@ -89,15 +89,19 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
 
       scope.checkAll = (check) ->
         scope.unSelectedSchools = [] unless scope.unSelectedSchools?
-        scope.unSelectedSchools = _.each scope.unSelectedSchools, (r) ->
-          r.checked = check
+        scope.unSelectedSchools = _.map scope.unSelectedSchools, (r) ->
+          r.checked = false
           r
+        _.each $filter('filter')(scope.unSelectedSchools, this.searchText), (r) ->
+          r.checked = check
 
       scope.checkAllDistributed = (check) ->
         scope.selectedSchools = [] unless scope.selectedSchools?
         scope.selectedSchools = _.map scope.selectedSchools, (r) ->
-          r.checked = check
+          r.checked = false
           r
+        _.each $filter('filter')(scope.selectedSchools, this.searchText), (r) ->
+          r.checked = check
 
       scope.multipleDelete = ->
         checked = _.filter scope.selectedSchools, (r) -> r.checked? && r.checked == true
@@ -138,8 +142,9 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
         scope.selection =
           allCheck: false
           allDistributedCheck: false
-        scope.checkAllDistributed false
-        scope.checkAll false
+        scope.currentAgent.schools = _.map scope.currentAgent.schools, (r) ->
+          r.checked = false
+          r
 
       handleError = (res) ->
         Alert

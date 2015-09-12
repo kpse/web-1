@@ -1,8 +1,8 @@
 angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', '$alert', 'currentAgent', 'loggedUser', 'agentRawActivityService',
+  ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', '$alert', '$filter', 'currentAgent', 'loggedUser', 'agentRawActivityService',
    'agentActivityInSchoolService', 'agentSchoolService', 'agentSchoolDataService', 'fullResponseService', 'agentContractorService',
     'agentActivityEnrollmentService',
-    (scope, $rootScope, stateParams, $q, $state, Modal, Alert, Agent, User, Activity, ActivityInSchool, Schools,
+    (scope, $rootScope, stateParams, $q, $state, Modal, Alert, $filter, Agent, User, Activity, ActivityInSchool, Schools,
      SchoolData, FullRes, Contractor, Enrollment) ->
       scope.adminUser = User
       scope.currentAgent = Agent
@@ -117,14 +117,18 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
       scope.checkAll = (check) ->
         scope.unSelectedSchools = [] unless scope.unSelectedSchools?
         scope.unSelectedSchools = _.each scope.unSelectedSchools, (r) ->
-          r.checked = check
+          r.checked = false
           r
+        _.each $filter('filter')(scope.unSelectedSchools, this.searchText), (r) ->
+          r.checked = check
 
       scope.checkAllDistributed = (check) ->
         scope.selectedSchools = [] unless scope.selectedSchools?
         scope.selectedSchools = _.map scope.selectedSchools, (r) ->
-          r.checked = check
+          r.checked = false
           r
+        _.each $filter('filter')(scope.selectedSchools, this.searchText), (r) ->
+          r.checked = check
 
       scope.multipleDelete = ->
         checked = _.filter scope.selectedSchools, (r) -> r.checked? && r.checked == true
@@ -165,8 +169,9 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
         scope.selection =
           allCheck: false
           allDistributedCheck: false
-        scope.checkAllDistributed false
-        scope.checkAll false
+        scope.currentAgent.schools = _.map scope.currentAgent.schools, (r) ->
+          r.checked = false
+          r
 
       handleError = (res) ->
         Alert
