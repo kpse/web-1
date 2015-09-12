@@ -118,14 +118,18 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
       scope.checkAll = (check) ->
         scope.unSelectedSchools = [] unless scope.unSelectedSchools?
         scope.unSelectedSchools = _.each scope.unSelectedSchools, (r) ->
-          r.checked = check
+          r.checked = false
           r
+        _.each $filter('filter')(scope.unSelectedSchools, this.searchText), (r) ->
+          r.checked = check
 
       scope.checkAgentAll = (check) ->
         if scope.currentAgent?
           scope.currentAgent.schools = _.map scope.currentAgent.schools, (r) ->
-            r.checked = check
+            r.checked = false
             r
+          _.each $filter('filter')(scope.currentAgent.schools, this.searchText), (r) ->
+            r.checked = check
 
       scope.multipleDelete = ->
         checked = _.filter scope.currentAgent.schools, (r) -> r.checked? && r.checked == true
@@ -166,8 +170,9 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
         scope.selection =
           allCheck: false
           allAgentCheck: false
-        scope.checkAgentAll false
-        scope.checkAll false
+        scope.kindergartens = _.map scope.kindergartens, (k) ->
+          k.checked = false
+          k
 
   ]
 
