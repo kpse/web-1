@@ -7,6 +7,7 @@ import anorm.~
 import play.api.Play.current
 import play.Logger
 import helper.JsonStringHelper.any2JsonString
+import play.api.libs.json.Json
 
 case class SchedulePreviewResponse(error_code: Int, school_id: Long, class_id: Long, schedule_id: Long, timestamp: Long)
 
@@ -20,6 +21,18 @@ case class Schedule(school_id: Long, class_id: Long, week: WeekSchedule)
 
 
 object Schedule {
+  implicit val writeSchedulePreviewResponse = Json.writes[SchedulePreviewResponse]
+  implicit val writeDaySchedule = Json.writes[DaySchedule]
+  implicit val writeWeekSchedule = Json.writes[WeekSchedule]
+  implicit val writeScheduleDetail = Json.writes[ScheduleDetail]
+  implicit val writeSchedule = Json.writes[Schedule]
+
+  implicit val readDaySchedule = Json.reads[DaySchedule]
+  implicit val readWeekSchedule = Json.reads[WeekSchedule]
+  implicit val readScheduleDetail = Json.reads[ScheduleDetail]
+  implicit val readSchedule = Json.reads[Schedule]
+
+
   def create(kg: Long, classId: Long, schedule: Schedule) = insertNew(ScheduleDetail(0, kg, classId, 0L, 0L, schedule.week))
 
   def all(kg: Long, classId: Long) = DB.withConnection {
@@ -63,13 +76,13 @@ object Schedule {
             'fri_pm -> schedule.week.fri.getOrElse(emptyDay).pm
           ).executeInsert()
         c.commit()
-        findById(newId.get)
+        newId flatMap findById
       }
       catch {
         case t: Throwable =>
-          Logger.info("error %s".format(t.toString))
+          Logger.info("models.Schedule insertNew error %s".format(t.toString))
           c.rollback()
-          findById(-1)
+          None
       }
 
 

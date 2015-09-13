@@ -3,21 +3,10 @@ package controllers
 import play.api.mvc._
 import play.api.libs.json.{JsError, Json}
 import models._
-import models.DaySchedule
-import models.SchedulePreviewResponse
-import models.WeekSchedule
+import models.Schedule._
 import helper.JsonLogger.loggedJson
 
 object ScheduleController extends Controller with Secured {
-  implicit val write1 = Json.writes[SchedulePreviewResponse]
-  implicit val write2 = Json.writes[DaySchedule]
-  implicit val write3 = Json.writes[WeekSchedule]
-  implicit val write4 = Json.writes[ScheduleDetail]
-
-  implicit val read1 = Json.reads[DaySchedule]
-  implicit val read2 = Json.reads[WeekSchedule]
-  implicit val read3 = Json.reads[ScheduleDetail]
-  implicit val read4 = Json.reads[Schedule]
 
   case class EmptyResult(error_code: Int)
 
@@ -32,7 +21,7 @@ object ScheduleController extends Controller with Secured {
     u => _ =>
       Schedule.show(kg, classId, scheduleId) match {
         case Some(r) => Ok(Json.toJson(r))
-        case _ => Ok(Json.toJson(EmptyResult(1)))
+        case None => Ok(Json.toJson(EmptyResult(1)))
       }
 
   }
@@ -42,7 +31,11 @@ object ScheduleController extends Controller with Secured {
       implicit request =>
         request.body.validate[ScheduleDetail].map {
           case (detail) =>
-            Ok(Json.toJson(Schedule.insertNew(detail)))
+            Schedule.insertNew(detail.copy(school_id = kg, class_id = classId, schedule_id = scheduleId)) match {
+              case Some(data) => Ok(Json.toJson(data))
+              case None => InternalServerError(Json.toJson(ErrorResponse("创建课程表失败。(failed updating class schedule)")))
+            }
+
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
         }
