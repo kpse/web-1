@@ -88,7 +88,7 @@ object Schedule {
 
   def show(kg: Long, classId: Long, scheduleId: Long) = DB.withConnection {
     implicit c =>
-      SQL("select * from scheduleinfo where status=1 and school_id={school_id} and class_id={class_id} and schedule_id={schedule_id}")
+      SQL("select * from scheduleinfo where status=1 and school_id={school_id} and class_id={class_id} and schedule_id={schedule_id} order by uid DESC limit 1")
         .on('school_id -> kg.toString,
           'class_id -> classId,
           'schedule_id -> scheduleId
