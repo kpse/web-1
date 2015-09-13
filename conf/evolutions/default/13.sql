@@ -23,6 +23,7 @@ CREATE TABLE employeeinfo (
   created_at   BIGINT     DEFAULT 0,
   PRIMARY KEY (uid),
   UNIQUE KEY (login_name),
+  UNIQUE KEY (employee_id),
   UNIQUE KEY phone (phone)
 );
 

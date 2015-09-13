@@ -32,6 +32,8 @@ CREATE TABLE cookbookinfo (
   extra_tip     TEXT NOT NULL,
   status     INT default 1,
   timestamp BIGINT(20) NOT NULL DEFAULT 0,
+  KEY (school_id),
+  UNIQUE (school_id, cookbook_id),
   PRIMARY KEY (uid)
 );
 

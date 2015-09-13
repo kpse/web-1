@@ -22,6 +22,9 @@ CREATE TABLE scheduleinfo (
   fri_pm      VARCHAR(40)          DEFAULT '',
   status      INT                  DEFAULT 1,
   timestamp   BIGINT(20)  NOT NULL DEFAULT 0,
+  UNIQUE (school_id, class_id, schedule_id),
+  KEY (school_id, class_id),
+  KEY (school_id),
   PRIMARY KEY (uid)
 );
 
