@@ -26,6 +26,8 @@ object AgentSchoolController extends Controller with Secured {
      request.body.validate[AgentSchool].map {
        case (s) if s.id.isDefined =>
          BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
+       case (s) if s.connected =>
+         BadRequest(Json.toJson(ErrorResponse("该学校已经被关联(the school has been connected to agent already)", 5)))
        case (s) =>
          Ok(Json.toJson(s.create(agentId)))
      }.recoverTotal {
@@ -54,7 +56,7 @@ object AgentSchoolController extends Controller with Secured {
       case true =>
         Ok(Json.toJson(Charge.countActivePhones(kg)))
       case false =>
-        NotFound(Json.toJson(ErrorResponse("权限不足(insufficient privilege)", 3)))
+        NotFound(Json.toJson(ErrorResponse("权限不足(insufficient privilege)", 4)))
     }
 
   }

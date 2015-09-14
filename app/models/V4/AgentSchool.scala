@@ -3,9 +3,9 @@ package models.V4
 import anorm.SqlParser._
 import anorm._
 import models.helper.RangerHelper
+import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
-import play.api.Play.current
 
 case class AgentReport(threshold: Long, current: Long)
 case class AgentSummaryInSchool(agent_id: Long, contractor: AgentReport, activity: AgentReport, school_id: Long)
@@ -37,7 +37,16 @@ case class AgentSchool(id: Option[Long], school_id: Long, name: String) {
         ).executeInsert()
       insert flatMap (AgentSchool.show(_, base))
   }
+
+  def connected = DB.withTransaction {
+    implicit c =>
+      SQL("select count(1) from agentschool where school_id={kg} and status=1)")
+        .on(
+          'school_id -> school_id
+        ).as(get[Long]("count(1)") single) > 0
+  }
 }
+
 object AgentSchool {
   implicit val writeAgentSchool = Json.writes[AgentSchool]
   implicit val readAgentSchool = Json.reads[AgentSchool]
@@ -96,7 +105,7 @@ object AgentSchool {
       SQL(s"select (select count(a.uid) from agentcontractorinschool s, agentcontractor a where s.contractor_id=a.uid and s.school_id={kg} and a.status=1 and s.status=1 and a.publish_status=4) as contractor, " +
         s"(select count(a.uid) from agentactivityinschool s, agentactivity a where s.activity_id=a.uid and s.school_id={kg} and a.status=1 and s.status=1 and a.publish_status=4) as activity, " +
         s"{kg} as school_id, " +
-        s"(select agent_id from agentschool where school_id={kg} and status=1) as agent")
+        s"(select agent_id from agentschool where school_id={kg} and status=1 limit 1) as agent")
         .on(
           'kg -> kg.toString
         ).as(simpleSummary single)
