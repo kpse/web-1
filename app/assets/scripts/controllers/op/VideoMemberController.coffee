@@ -53,7 +53,7 @@ angular.module('kulebaoOp').controller 'OpVideoMemberInClassCtrl',
         p.reltaionship? && p.reltaionship.$resolved && p.reltaionship.length > 0 && p.reltaionship[0].child.class_id == parseInt stateParams.class_id
 
       scope.accountsInSchool = (parents, classId) ->
-        _.map (_.filter parents, (f) -> !classId? || scope.display(f)), (p) -> 'account': p.account, 'password': p.password, 'name': p.detail.name + p.detail.school_id
+        _.map (_.filter parents, (f) -> !classId? || scope.display(f)), (p) -> 'account': p.account, 'password': p.password, 'name': p.detail.name + p.detail.phone
 
       scope.downloadEnabled = (parents)->
         _.any parents, (f) -> scope.display(f)
