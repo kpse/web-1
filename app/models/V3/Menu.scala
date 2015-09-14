@@ -162,11 +162,12 @@ case class Menu(id: Option[Long], name: Option[String], weight: Option[String], 
   def validUnits(kg: Long) : Boolean = DB.withTransaction {
     implicit c =>
       val unitIds: List[Long] = nutrition_units.filter(_.id.nonEmpty).map(_.id.get)
-      SQL(s"select count(1) from dietstructure where menu_id={menu} and school_id={kg} and uid in (${unitIds.mkString(",")})")
+      lazy val validUnitSize: Long = SQL(s"select count(1) from dietstructure where menu_id={menu} and school_id={kg} and uid in (${unitIds.mkString(",")})")
         .on(
           'menu -> id,
           'kg -> kg.toString
-        ).as(get[Long]("count(1)") single) == unitIds.size
+        ).as(get[Long]("count(1)") single)
+      unitIds.isEmpty || validUnitSize == unitIds.size
   }
 }
 
