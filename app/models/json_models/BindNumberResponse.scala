@@ -40,7 +40,7 @@ object Binding {
           'accountid -> request.phonenum,
           'token -> request.access_token.toLong
         ).as(response(request.access_token) singleOpt)
-      Logger.info(row.toString)
+      Logger.warn(s"old version binding api ${row.toString}")
       row match {
         case Some(r) =>
           updateTokenAfterBinding(request)
