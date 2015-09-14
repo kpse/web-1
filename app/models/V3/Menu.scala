@@ -84,7 +84,8 @@ case class Menu(id: Option[Long], name: Option[String], weight: Option[String], 
   def update(kg: Long): Option[Menu] = DB.withTransaction {
     implicit c =>
       try {
-        SQL("update dietmenu set school_id={school_id}, name={name}, weight={weight}, food_type_id={food_type_id}, former_id={former_id}, " +
+        SQL("update dietmenu set school_id={school_id}, name={name}, weight={weight}, food_type_id={food_type_id}, " +
+          "former_id={former_id}, recipe={recipe}, property={property}, tips={tips}, " +
           "arrange_type={arrange_type}, store_type={store_type}, updated_at={time} where school_id={school_id} and uid={id}")
           .on(
             'id -> id,
@@ -95,6 +96,9 @@ case class Menu(id: Option[Long], name: Option[String], weight: Option[String], 
             'store_type -> store_type,
             'food_type_id -> food_type_id,
             'former_id -> former_id,
+            'recipe -> recipe,
+            'property -> property,
+            'tips -> tips,
             'time -> System.currentTimeMillis
           ).executeUpdate()
         id foreach {
@@ -120,8 +124,10 @@ case class Menu(id: Option[Long], name: Option[String], weight: Option[String], 
   def create(kg: Long): Option[Menu] = DB.withTransaction {
     implicit c =>
       try {
-        val insert: Option[Long] = SQL("insert into dietmenu (school_id, name, weight, arrange_type, store_type, food_type_id, former_id, updated_at) values (" +
-          "{school_id}, {name}, {weight}, {arrange_type}, {store_type}, {food_type_id}, {former_id}, {time})")
+        val insert: Option[Long] = SQL("insert into dietmenu (school_id, name, weight, arrange_type, store_type, " +
+          "food_type_id, former_id, recipe, property, tips, updated_at) values (" +
+          "{school_id}, {name}, {weight}, {arrange_type}, {store_type}, {food_type_id}, {former_id}, {recipe}, " +
+          "{property}, {tips}, {time})")
           .on(
             'school_id -> kg,
             'name -> name,
@@ -130,6 +136,9 @@ case class Menu(id: Option[Long], name: Option[String], weight: Option[String], 
             'store_type -> store_type,
             'food_type_id -> food_type_id,
             'former_id -> former_id,
+            'recipe -> recipe,
+            'property -> property,
+            'tips -> tips,
             'time -> System.currentTimeMillis
           ).executeInsert()
         insert foreach {
