@@ -229,7 +229,7 @@ object Employee {
 
   def findByName(kg: Long, name: String) = DB.withConnection {
     implicit c =>
-      SQL("select * from employeeinfo where name={name} and school_id={kg} and status=1")
+      SQL("select * from employeeinfo where name={name} and school_id={kg} and status=1 limit 1")
         .on(
           'name -> name,
           'kg -> kg.toString
