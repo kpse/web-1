@@ -16,7 +16,7 @@ describe 'VideoMemberController', ->
 
 
   describe 'excel exporting', ->
-    it 'should exports all video account', ->
+    it 'should export all video account', ->
       $scope = $rootScope.$new()
       rootScope = $rootScope.$new()
       $stateParams.school_id = 1
@@ -46,6 +46,20 @@ describe 'VideoMemberController', ->
       result = $scope.accountsInSchool($scope.parents, 2)
 
       expect(result.length).toBe 0
+
+    it 'should export video accounts in matched class', ->
+      $scope = $rootScope.$new()
+      rootScope = $rootScope.$new()
+      $stateParams.school_id = 1
+      $stateParams.class_id = 1
+
+      controller = $controller('OpVideoMemberInClassCtrl', $scope: $scope, $rootScope: rootScope)
+      prepareForRefreshing()
+      $httpBackend.flush()
+
+      result = $scope.accountsInSchool($scope.parents, 1)
+
+      expect(result.length).toBe 1
 
   videoMemberOfPhone = (phone) ->
     "phone": phone,

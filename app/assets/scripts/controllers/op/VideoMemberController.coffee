@@ -49,11 +49,11 @@ angular.module('kulebaoOp').controller 'OpVideoMemberInClassCtrl',
           scope.currentClass = _.find scope.kindergarten.classes, (c) -> c.class_id == parseInt scope.current_class
 
 
-      scope.display = (p) ->
-        p.reltaionship? && p.reltaionship.$resolved && p.reltaionship.length > 0 && p.reltaionship[0].child.class_id == parseInt stateParams.class_id
+      scope.display = (p, classId) ->
+        p.reltaionship? && p.reltaionship.$resolved && p.reltaionship.length > 0 && p.reltaionship[0].child.class_id == classId
 
       scope.accountsInSchool = (parents, classId) ->
-        _.map (_.filter parents, (f) -> !classId? || scope.display(f)), (p) -> 'account': p.account, 'password': p.password, 'name': p.detail.name + p.detail.phone
+        _.map (_.filter parents, (f) -> !classId? || scope.display(f, classId)), (p) -> 'account': p.account, 'password': p.password, 'name': p.detail.name + p.detail.phone
 
       scope.downloadEnabled = (parents)->
         _.any parents, (f) -> scope.display(f)
