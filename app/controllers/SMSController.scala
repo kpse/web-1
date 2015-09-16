@@ -38,17 +38,17 @@ object SMSController extends Controller with Secured {
 
   def sendSMS(phone: String): Future[SimpleResult] = {
 
-    val url = Play.current.configuration.getString("sms.ws.url").getOrElse("")
-    val generate = Verification.generate(phone)
+    val provider: SMSProvider = SMSProvider.create
+    val generate = Verification.generate(phone)(provider)
     Logger.info(generate.toString())
-    WS.url(url).withHeaders("Content-Type" -> "application/x-www-form-urlencoded;charset=UTF-8")
+    WS.url(provider.url()).withHeaders("Content-Type" -> "application/x-www-form-urlencoded;charset=UTF-8")
       .post(generate).map {
       response =>
         Logger.info("server returns: " + response.xml.toString)
-        response.xml.map(_.text.toLong) match {
-          case List(num) if num > 0 =>
+        provider.result(response.xml) match {
+          case true =>
             Ok(Json.toJson(new SuccessResponse))
-          case _ =>
+          case false =>
             Ok(Json.toJson(ErrorResponse("验证码发送失败。(sending error from mb345 side)", 4)))
         }
     }
