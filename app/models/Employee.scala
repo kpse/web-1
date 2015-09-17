@@ -6,7 +6,8 @@ import anorm.SqlParser._
 import anorm.{~, _}
 import models.V3.EmployeeV3
 import models.helper.MD5Helper.md5
-import models.helper.PasswordHelper
+import models.helper.PasswordHelper.generateNewPassword
+import models.helper.PasswordHelper.isValid
 import models.helper.TimeHelper.any2DateTime
 import play.Logger
 import play.api.Play.current
@@ -69,7 +70,7 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
             'birthday -> birthday.toString,
             'school_id -> school_id,
             'login_name -> login_name,
-            'login_password -> md5(phone),
+            'login_password -> generateNewPassword(phone),
             'update_at -> System.currentTimeMillis,
             'created -> System.currentTimeMillis
           ).executeInsert()
@@ -225,7 +226,7 @@ object Employee {
         ).as(get[String]("phone") singleOpt).getOrElse("")
   }
 
-  def matchPasswordRule(password: EmployeePassword) = PasswordHelper.isValid(password.new_password)
+  def matchPasswordRule(password: EmployeePassword) = isValid(password.new_password)
 
   def findByName(kg: Long, name: String) = DB.withConnection {
     implicit c =>

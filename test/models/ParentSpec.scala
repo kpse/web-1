@@ -2,7 +2,7 @@ package models
 
 import _root_.helper.TestSupport
 import org.specs2.mutable.Specification
-import models.json_models.{CheckInfo, CheckingMessage}
+import models.json_models.{MobileLogin, LoginCheck, CheckInfo, CheckingMessage}
 
 class ParentSpec extends Specification with TestSupport {
   val kg: Long = 93740362
@@ -82,5 +82,15 @@ class ParentSpec extends Specification with TestSupport {
       createdParent must beNone
     }
 
+    "have default password as phone number" in new WithApplication {
+
+      Parent.create(kg, createParent("11223344556"))
+
+      private val result = LoginCheck(MobileLogin("11223344556", "11223344556"))
+      result.error_code must equalTo(0)
+    }
+
+
   }
+  def createParent(phone: String) = Parent(None, kg, "name", phone, None, 0, "1980-01-01", None, None, None)
 }

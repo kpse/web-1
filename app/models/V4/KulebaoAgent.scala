@@ -1,6 +1,7 @@
 package models.V4
 
 import models.helper.MD5Helper._
+import models.helper.PasswordHelper._
 import anorm.SqlParser._
 import anorm._
 import models.helper.RangerHelper
@@ -64,7 +65,7 @@ case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[Str
           'area -> area,
           'phone -> phone,
           'logo_url -> logo,
-          'login_password -> md5(phone.getOrElse("secret")),
+          'login_password -> generateNewPassword(phone.getOrElse("secret")),
           'login_name -> login_name,
           'contact_info -> contact_info,
           'memo -> memo,
@@ -124,7 +125,7 @@ object KulebaoAgent {
         .on(
           'id -> id
         ).as(get[Long]("count(1)") single) > 0
-      Logger.info(s"request path is $path")
+      Logger.debug(s"request path is $path")
       isAgent && (path.matches(s"^(?:/api/v\\d+)?/agent/$id(/.+)?") || path.matches(s"^/agent#/main/$id(/.+)?")) ||
         path.matches("^/agent") || path.matches(s"^/main/$id(/.+)?")
   }
@@ -150,8 +151,8 @@ object KulebaoAgent {
   def stats(agentId: Long) = DB.withConnection {
     implicit c =>
       val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
-      Logger.info(s"from = ${pattern.print(DateTime.now().minusMonths(12))}")
-      Logger.info(s"to = ${pattern.print(DateTime.now().minusMonths(1))}")
+      Logger.debug(s"from = ${pattern.print(DateTime.now().minusMonths(12))}")
+      Logger.debug(s"to = ${pattern.print(DateTime.now().minusMonths(1))}")
       SQL(s"select * from agentstatistics where month >= {from} and month <= {to} and agent_id={agent}")
         .on(
           'agent -> agentId,
@@ -172,10 +173,10 @@ object KulebaoAgent {
   def collectData(data: AgentStatistics) = DB.withConnection {
     implicit c =>
       val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
-      Logger.info(s"lastMonth = ${pattern.print(DateTime.now().minusMonths(1))}")
+      Logger.debug(s"lastMonth = ${pattern.print(DateTime.now().minusMonths(1))}")
       historyDataExists(data) match {
         case false =>
-          Logger.info(s"insert data for ${pattern.print(DateTime.now().minusMonths(1))} in ${data.school_id}")
+          Logger.debug(s"insert data for ${pattern.print(DateTime.now().minusMonths(1))} in ${data.school_id}")
           SQL(s"insert into agentstatistics (agent_id, school_id, month, child_count, logged_once, logged_ever, created_at) values " +
             s"({agent}, {school_id}, {month}, {child}, {once}, {ever}, {time})")
             .on(
@@ -197,8 +198,8 @@ object KulebaoAgent {
     implicit c =>
       val firstMilli = lastMonth.withDayOfMonth(1).withMillisOfDay(1).getMillis
       val lastMilli = lastMonth.plusMonths(1).withDayOfMonth(1).withMillisOfDay(1).getMillis
-      Logger.info(s"collectTheWholeMonth firstMilli = $firstMilli")
-      Logger.info(s"collectTheWholeMonth lastMilli = $lastMilli")
+      Logger.debug(s"collectTheWholeMonth firstMilli = $firstMilli")
+      Logger.debug(s"collectTheWholeMonth lastMilli = $lastMilli")
       val loggedOnce: Long = SQL(s"SELECT count(distinct phone) count FROM bindinghistory where phone in (select phone from parentinfo where school_id={kg} and status=1) and updated_at > {begin} and updated_at < {end}")
         .on(
           'kg -> school_id,

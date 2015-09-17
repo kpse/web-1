@@ -7,5 +7,5 @@ object PasswordHelper {
 
   def isValid(password: String): Boolean = password.matches("^\\w{6,16}$")
 
-  def generateNewPassword(number: String) = md5(number.drop(3))
+  def generateNewPassword = md5 _
 }
