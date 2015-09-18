@@ -211,6 +211,19 @@
   }
 }
 
+.importing {
+  max-height: 500px;
+  min-height: 300px;
+  overflow-y: scroll;
+  border: 1px solid #eee;
+  &.imported {
+    background-color: #eeeeff;
+  }
+  &.error-importing {
+    background-color: #f5ad66;
+  }
+}
+
 @import "d3style.less";
 @import "animates.less";
 

@@ -180,6 +180,15 @@ angular.module('kulebaoAdmin',
       templateUrl: 'templates/admin/classes_management.html',
       controller: 'ClassesManagementCtrl'
 
+    .state 'kindergarten.video',
+      url: '/video'
+      templateUrl: 'templates/admin/video_member_list.html'
+      controller: 'VideoMemberManagementCtrl'
+    .state 'kindergarten.video_import',
+      url: '/video_import'
+      templateUrl: 'templates/admin/video_import.html'
+      controller: 'VideoMemberImportCtrl'
+
     .state 'kindergarten.bus',
       url: '/bus'
       templateUrl: 'templates/admin/search_panel.html'

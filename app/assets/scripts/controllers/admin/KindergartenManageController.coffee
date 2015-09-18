@@ -74,6 +74,9 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.goBusLocation = ->
         $state.go 'kindergarten.bus.plans', kindergarten: $stateParams.kindergarten unless $state.includes 'kindergarten.bus', kindergarten: $stateParams.kindergarten
 
+      scope.goVideoMemberManagement = ->
+        $state.go 'kindergarten.video', kindergarten: $stateParams.kindergarten unless $state.includes 'kindergarten.video', kindergarten: $stateParams.kindergarten
+
       scope.changePassword = (user) ->
         scope.user = angular.copy user
         scope.currentModal = Modal
