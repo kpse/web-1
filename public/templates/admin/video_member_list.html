@@ -10,16 +10,22 @@
     <table class="table table-hover table-condensed schools-list">
       <thead>
       <tr class="row">
-        <th class="col-xs-4">家长姓名</th>
+        <th class="col-xs-2">家长姓名</th>
         <th class="col-xs-4">手机</th>
         <th class="col-xs-4">已开通账号</th>
+        <th class="col-xs-2">操作</th>
       </tr>
       </thead>
       <tbody>
       <tr ng-repeat="p in parents | filter: searchText " class="row">
-        <td class="col-xs-4">{{p.detail.name}}</td>
+        <td class="col-xs-2">{{p.detail.name}}</td>
         <td class="col-xs-4">{{p.detail.phone | phone}}</td>
         <td class="col-xs-4">{{p.account}}</td>
+        <td class="col-xs-2">
+          <button ng-disabled="loading" class="btn btn-xs btn-danger" ng-confirm-click="deleteAccount(p.detail)"
+                  ng-confirm-msg="将删除{{p.detail.name}}的看宝宝账号，是否继续？">删除
+          </button>
+        </td>
       </tr>
       </tbody>
     </table>
@@ -28,8 +34,10 @@
   <h3>导入Excel开通看宝宝账号</h3>
 
   <div kl-excel-parse ng-model="excel" on-success="onSuccess"></div>
-  <button ng-show="importingData" class="btn btn-success" ng-click="import(importingData)">导入</button>
-  <button ng-show="importingData" class="btn btn-default" ng-click="cancelImporting()">取消</button>
+  <button ng-show="importingData" ng-disabled="loading" class="btn btn-success" ng-confirm-click="import(importingData)"
+          ng-confirm-msg="只能导入“可导入列表的”{{importingData.length}}个账号，其余栏目数据将忽略。是否继续？">导入
+  </button>
+  <button ng-show="importingData" ng-disabled="loading" class="btn btn-default" ng-click="cancelImporting()">取消</button>
   <div class="row">
     <div class="col-xs-6" ng-show="importingData">
       <h4>可导入列表</h4>

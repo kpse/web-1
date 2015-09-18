@@ -85,6 +85,11 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
         delete scope.enabledData
         scope.loading = false
 
+      scope.deleteAccount = (parent) ->
+        scope.loading = true
+        VideoMember.delete school_id: parent.school_id, id: parent.parent_id, ->
+          $state.reload()
+          scope.loading = false
   ]
 
 angular.module('kulebaoAdmin').controller 'VideoMemberImportCtrl',
