@@ -150,20 +150,18 @@ object Relative {
 
   def removeDirtyDataIfExists(r: Parent) = DB.withConnection {
     implicit c =>
-      val deletableCondition: String = " where status=0 and school_id={kg} and (phone={phone} or parent_id={id}) "
+      val deletableCondition: String = " where status=0 and (phone={phone} or parent_id={id}) "
       val execute: Boolean = SQL(s"delete from accountinfo where accountid={phone}")
         .on(
           'phone -> r.phone
         ).execute()
       val execute1: Boolean = SQL(s"delete from parentext where base_id in (select uid from parentinfo $deletableCondition)")
         .on(
-          'kg -> r.school_id,
           'id -> r.parent_id.getOrElse(""),
           'phone -> r.phone
         ).execute()
       val execute2: Boolean = SQL(s"delete from parentinfo $deletableCondition")
         .on(
-          'kg -> r.school_id,
           'id -> r.parent_id.getOrElse(""),
           'phone -> r.phone
         ).execute()

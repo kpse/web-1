@@ -107,6 +107,19 @@ object RelativeControllerSpec extends Specification with TestSupport {
 
     }
 
+    "reuse deleted phone from different school in creation" in new WithApplication {
+      private val requestBody = Json.toJson(createRelative("22222222225"))
+
+      val response2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/relative").withBody(requestBody)).get
+
+      status(response2) must equalTo(OK)
+
+      Logger.info(contentAsString(response2))
+      val createdPhoneRelative: JsValue = Json.parse(contentAsString(response2))
+      (createdPhoneRelative \ "basic" \ "phone").as[String] must equalTo("22222222225")
+
+    }
+
   }
 
   def createRelative(phone: String, id: Option[Long] = None): JsValue = {
