@@ -50,9 +50,13 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
           [scope.importingData, scope.errorDataWrongName] = _.partition scope.importingData, (d) ->
             group[d['家长A手机号']]? && group[d['家长A手机号']][0].name == d['家长A姓名']
 
+          scope.importingData = _.map scope.importingData, (d) -> d.detail = group[d['家长A手机号']][0];d
+
           scope.errorDataWrongName = _.map scope.errorDataWrongName, (d) -> d.error = '名字不匹配。';d
 
           [scope.importingData, scope.errorDataNoConnection] = _.partition scope.importingData, (d) -> _.has relationshipGroup, d['家长A手机号']
+
+          scope.importingData = _.map scope.importingData, (d) -> d.relationship = relationshipGroup[d['家长A手机号']];d
 
           scope.errorDataNoConnection = _.map scope.errorDataNoConnection, (d) -> d.error = '没有关联小孩。';d
 
@@ -68,6 +72,18 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
 
           scope.errorData = _.flatten [scope.errorDataNoPhone, scope.errorDataWrongName, scope.errorDataNoConnection, scope.errorDataClassNotMatch]
 
+      scope.import = (data) ->
+        scope.loading = true
+        queue = _.map data, (d) -> VideoMember.save(school_id: d.detail.school_id, id: d.detail.parent_id).$promise
+        all = $q.all queue
+        all.then ->
+          $state.reload()
+      scope.cancelImporting = ->
+        scope.loading = true
+        delete scope.importingData
+        delete scope.errorData
+        delete scope.enabledData
+        scope.loading = false
 
   ]
 

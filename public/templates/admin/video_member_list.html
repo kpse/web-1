@@ -28,8 +28,8 @@
   <h3>导入Excel开通看宝宝账号</h3>
 
   <div kl-excel-parse ng-model="excel" on-success="onSuccess"></div>
-  <button ng-show="importingData" class="btn btn-success">导入</button>
-  <button ng-show="importingData" class="btn btn-default">取消</button>
+  <button ng-show="importingData" class="btn btn-success" ng-click="import(importingData)">导入</button>
+  <button ng-show="importingData" class="btn btn-default" ng-click="cancelImporting()">取消</button>
   <div class="row">
     <div class="col-xs-6" ng-show="importingData">
       <h4>可导入列表</h4>
