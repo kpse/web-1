@@ -37,22 +37,36 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
 
       scope.onSuccess = (importingData)->
         console.log importingData
-        ParentSearch.query school_id: $stateParams.kindergarten, (parents) ->
-          group = _.groupBy parents, 'phone'
+        queue = [ParentSearch.query(school_id: $stateParams.kindergarten).$promise
+          Relationship.query(school_id: $stateParams.kindergarten).$promise]
+        all = $q.all(queue)
+        all.then (q) ->
+          group = _.groupBy q[0], 'phone'
+          relationshipGroup = _.groupBy q[1], 'parent.phone'
           [scope.importingData, scope.errorDataNoPhone] = _.partition importingData, (d) -> _.has group, d['家长A手机号']
 
           scope.errorDataNoPhone = _.map scope.errorDataNoPhone, (d) -> d.error = '学校无此号码。';d
 
-          [scope.importingData, scope.errorDataWrongName] = _.partition scope.importingData, (d) -> group[d['家长A手机号']]? && group[d['家长A手机号']][0].name == d['家长A姓名']
+          [scope.importingData, scope.errorDataWrongName] = _.partition scope.importingData, (d) ->
+            group[d['家长A手机号']]? && group[d['家长A手机号']][0].name == d['家长A姓名']
 
           scope.errorDataWrongName = _.map scope.errorDataWrongName, (d) -> d.error = '名字不匹配。';d
+
+          [scope.importingData, scope.errorDataNoConnection] = _.partition scope.importingData, (d) -> _.has relationshipGroup, d['家长A手机号']
+
+          scope.errorDataNoConnection = _.map scope.errorDataNoConnection, (d) -> d.error = '没有关联小孩。';d
+
+          [scope.importingData, scope.errorDataClassNotMatch] = _.partition scope.importingData, (d) ->
+            relationshipGroup[d['家长A手机号']]? && _.any relationshipGroup[d['家长A手机号']], (r) -> r.child.class_name == d['所属班级']
+
+          scope.errorDataClassNotMatch = _.map scope.errorDataClassNotMatch, (d) -> d.error = '班级名称不匹配。';d
 
           [scope.enabledData, scope.importingData] = _.partition scope.importingData, (d) ->
             _.any scope.parents, (p) -> p.phone == d['家长A手机号']
 
           scope.enabledData = _.map scope.enabledData, (d) -> d.error = '该号码已经开通看宝宝。';d
 
-          scope.errorData = _.flatten [scope.errorDataNoPhone, scope.errorDataWrongName]
+          scope.errorData = _.flatten [scope.errorDataNoPhone, scope.errorDataWrongName, scope.errorDataNoConnection, scope.errorDataClassNotMatch]
 
 
   ]
