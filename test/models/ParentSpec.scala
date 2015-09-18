@@ -86,7 +86,7 @@ class ParentSpec extends Specification with TestSupport {
 
       Parent.create(kg, createParent("11223344556"))
 
-      private val result = LoginCheck(MobileLogin("11223344556", "11223344556"))
+      private val result = LoginCheck(MobileLogin("11223344556", "23344556"))
       result.error_code must equalTo(0)
     }
 

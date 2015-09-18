@@ -468,7 +468,7 @@ object Parent {
           SQL("INSERT INTO accountinfo(accountid, password) " +
             "VALUES ({accountid},{password})")
             .on('accountid -> parent.phone,
-              'password -> generateNewPassword(parent.phone)).executeInsert()
+              'password -> generateNewPassword(parent.phone.drop(3))).executeInsert()
         case true => existingHandler(parent)
       }
   }
