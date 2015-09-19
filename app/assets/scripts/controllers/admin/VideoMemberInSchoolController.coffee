@@ -16,14 +16,21 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
       all = $q.all(queue)
       all.then (q) ->
         scope.charge = q[0]
-        scope.parents = _.map q[1], (p) ->
+        [defaultAccounts, parents] = _.partition q[1], (a) -> a.id == 'default'
+        parents = _.map parents, (p) ->
           Parent.get school_id: $stateParams.kindergarten, id: p.id, type: 'p', (data)->
             p.detail = data
             p.reltaionship = Relationship.query
               school_id: $stateParams.kindergarten, parent: p.detail.phone if p.detail.phone?
             extendFilterFriendlyProperties(p)
           p
+        defaultAccounts = _.map defaultAccounts, (d) ->
+          d.detail =
+             name : '试用账号'
+             phone :'试用账号'
+          d
 
+        scope.parents = _.flatten [parents, defaultAccounts]
         scope.loading = false
 
       scope.display = (p, classId) ->
