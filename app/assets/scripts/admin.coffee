@@ -184,6 +184,10 @@ angular.module('kulebaoAdmin',
       url: '/video'
       templateUrl: 'templates/admin/video_member_list.html'
       controller: 'VideoMemberManagementCtrl'
+    .state 'kindergarten.video_default',
+      url: '/video_default'
+      templateUrl: 'templates/admin/video_member_all_default.html'
+      controller: 'VideoMemberDefaultAccountWarningCtrl'
     .state 'kindergarten.video_import',
       url: '/video_import'
       templateUrl: 'templates/admin/video_import.html'

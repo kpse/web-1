@@ -29,7 +29,7 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
              name : '试用账号'
              phone :'试用账号'
           d
-
+        $state.go 'kindergarten.video_default', kindergarten: $stateParams.kindergarten if defaultAccounts.length > 0
         scope.parents = _.flatten [parents, defaultAccounts]
         scope.loading = false
 
@@ -121,38 +121,11 @@ angular.module('kulebaoAdmin').controller 'VideoMemberImportCtrl',
         $location.path "main/video_in_school/#{stateParams.school_id}/class/#{c.class_id}"
   ]
 
-angular.module('kulebaoAdmin').controller 'OpVideoMemberInClassCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', '$filter', 'schoolService', 'videoMemberService',
-   'senderService',
-   'relationshipService', 'classService',
-    (scope, rootScope, stateParams, $location, $filter, School, VideoMember, Parent, Relationship, Class) ->
-      scope.loading = true
+angular.module('kulebaoAdmin').controller 'VideoMemberDefaultAccountWarningCtrl',
+  ['$scope', '$rootScope',
+    (scope, rootScope) ->
+      rootScope.tabName = 'video'
 
-      scope.current_class = stateParams.class_id
-      scope.kindergarten = School.get school_id: stateParams.school_id, ->
-        scope.kindergarten.classes = Class.query school_id: stateParams.school_id, ->
-          scope.parents = VideoMember.query school_id: stateParams.school_id, (all)->
-            _.forEach all, (p) ->
-              Parent.get school_id: stateParams.school_id, id: p.id, type: 'p', (data)->
-                p.detail = data
-                p.reltaionship = Relationship.query
-                  school_id: stateParams.school_id, parent: p.detail.phone if p.detail.phone?
-                extendFilterFriendlyProperties(p)
-            scope.loading = false
-          scope.currentClass = _.find scope.kindergarten.classes, (c) -> c.class_id == parseInt scope.current_class
-
-
-      scope.display = (p, classId) ->
-        p.reltaionship? && p.reltaionship.$resolved && p.reltaionship.length > 0 && p.reltaionship[0].child.class_id == classId
-
-      scope.accountsInSchool = (parents, classId) ->
-        _.map (_.filter parents, (f) -> !classId? || scope.display(f, classId)), (p) ->
-          'account': p.account,
-          'password': p.password,
-          'name': p.detail.name + p.detail.phone
-
-      scope.downloadEnabled = (parents)->
-        _.any parents, (f) -> scope.display(f)
   ]
 
 
