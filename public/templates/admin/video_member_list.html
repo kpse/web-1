@@ -39,8 +39,11 @@
   <h3>导入Excel开通看宝宝账号</h3>
 
   <div kl-excel-parse ng-model="excel" on-success="onSuccess"></div>
-  <button ng-show="importingData" ng-disabled="loading" class="btn btn-success" ng-confirm-click="import(importingData)"
-          ng-confirm-msg="只能导入“可导入列表的”{{importingData.length}}个账号，其余栏目数据将忽略。是否继续？">导入
+  <button ng-show="importingData" ng-disabled="loading" class="btn btn-success" ng-confirm-click="import(newParentsInClass)"
+          ng-confirm-msg="导入当前班级的{{newParentsInClass.length}}个账号。是否继续？">确认开通{{currentImportingClass}}
+  </button>
+  <button ng-show="importingData" ng-disabled="loading" class="btn btn-primary" ng-confirm-click="import(importingData)"
+          ng-confirm-msg="导入全部“可导入列表的”{{importingData.length}}个账号。是否继续？">全部开通
   </button>
   <button ng-show="importingData" ng-disabled="loading" class="btn btn-default" ng-click="cancelImporting()">取消</button>
   <div class="row">
@@ -49,8 +52,8 @@
 
       <div class="importing">
         <ul class="nav nav-tabs">
-          <li ng-repeat="c in importingClasses" ng-class="{active: c.class_id == current_class}">
-            <a ng-click="navigateToImportingClass(c)">{{c.name}}</a>
+          <li ng-repeat="c in importingClasses" ng-class="{active: c.name == currentImportingClass}">
+            <a ng-click="navigateToImportingClass(c.name)">{{c.name}}</a>
           </li>
         </ul>
         <table class="table table-hover table-condensed parent-list">

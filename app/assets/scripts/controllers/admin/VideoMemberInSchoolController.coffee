@@ -120,10 +120,8 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
 
 
           if scope.errorData.length == 0
-            scope.importingClasses = scope.importingData
-            classesGroup = _.groupBy scope.importingClasses, classFieldName
-            classes = _.keys(classesGroup)
-            scope.navigateToImportingClass(classes[0])
+            scope.importingClasses = angular.copy scope.kindergarten.classes
+            scope.navigateToImportingClass(scope.importingClasses[0].name)
           else
             scope.currentModal = Modal
               scope: scope
@@ -153,7 +151,8 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
         scope.refresh()
 
       scope.navigateToImportingClass = (clz) ->
-        scope.newParentsInClass = _.filter scope.importingClasses, (c) -> c[classFieldName] == clz
+        scope.currentImportingClass = clz
+        scope.newParentsInClass = _.filter scope.importingData, (c) -> c.className == clz
 
   ]
 
