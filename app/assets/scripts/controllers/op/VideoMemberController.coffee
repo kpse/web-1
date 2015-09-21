@@ -50,7 +50,11 @@ angular.module('kulebaoOp').controller 'OpVideoMemberInClassCtrl',
 
 
       scope.display = (p, classId) ->
-        p.reltaionship? && p.reltaionship.$resolved && p.reltaionship.length > 0 && p.reltaionship[0].child.class_id == classId
+        connected = p.reltaionship? && p.reltaionship.$resolved && p.reltaionship.length > 0
+        if classId?
+          connected && p.reltaionship[0].child.class_id == classId
+        else
+          connected
 
       scope.accountsInSchool = (parents, classId) ->
         _.map (_.filter parents, (f) -> !classId? || scope.display(f, classId)), (p) -> 'account': p.account, 'password': p.password, 'name': p.detail.name + p.detail.phone

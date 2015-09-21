@@ -1,6 +1,6 @@
 <button class="btn btn-success" type="button" ng-csv="accountsInSchool(parents)" add-bom="U+FEFF"
         filename="{{kindergarten.name}}_{{kindergarten.school_id}}_视频账号.csv" ng-disabled="parents.length == 0">导出{{kindergarten.name}}全部家长</button>
-<button class="btn btn-warning" type="button" ng-csv="accountsInSchool(parents, current_class)" add-bom="U+FEFF"
+<button class="btn btn-warning" type="button" ng-csv="accountsInSchool(parents, currentClass.class_id)" add-bom="U+FEFF"
         filename="{{kindergarten.name}}_{{kindergarten.school_id}}_{{currentClass.name}}_视频账号.csv"
         ng-disabled="!downloadEnabled(parents)">导出{{currentClass.name}}的家长</button>
 <ul class="nav nav-tabs">
@@ -18,7 +18,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr ng-repeat="p in parents | filter: searchText " class="row" ng-show="display(p)">
+  <tr ng-repeat="p in parents | filter: searchText " class="row" ng-show="display(p, currentClass.class_id)">
     <td class="col-xs-4"><a ng-href="/admin#/kindergarten/{{kindergarten.school_id}}/relationship/type/connected/class/{{p.reltaionship[0].child.class_id}}/list">{{p.detail.name}}</a></td>
     <td class="col-xs-4">{{p.detail.phone | phone}}</td>
     <td class="col-xs-4">{{p.account}}</td>
