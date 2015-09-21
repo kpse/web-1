@@ -81,10 +81,10 @@
     background: #34393D url(../../images/left-btns.png) no-repeat -239px -477px;
   }
   .modules-list-container .modules-list .bus-location {
-    background: #34393D url(../../images/left-btns.png) no-repeat -15px -525px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -526px;
   }
   .modules-list-container .modules-list .bus-location:hover {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -525px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -526px;
   }
   .modules-list-container .modules-list .relationship {
     background: #34393D url(../../images/left-btns.png) no-repeat -15px -575px;
@@ -147,7 +147,7 @@
     background: #34393D url(../../images/left-btns.png) no-repeat -239px -477px;
   }
   .modules-list-container .active .bus-location {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -525px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -526px;
   }
   .modules-list-container .active .relationship {
     background: #34393D url(../../images/left-btns.png) no-repeat -239px -575px;

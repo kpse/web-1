@@ -371,11 +371,11 @@
   }
   .main-body .main-view .modules-list-container .modules-list .bus-location,
   .main-body .modal .modules-list-container .modules-list .bus-location {
-    background: #34393D url(../../images/left-btns.png) no-repeat -15px -525px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -526px;
   }
   .main-body .main-view .modules-list-container .modules-list .bus-location:hover,
   .main-body .modal .modules-list-container .modules-list .bus-location:hover {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -525px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -526px;
   }
   .main-body .main-view .modules-list-container .modules-list .relationship,
   .main-body .modal .modules-list-container .modules-list .relationship {
@@ -459,7 +459,7 @@
   }
   .main-body .main-view .modules-list-container .active .bus-location,
   .main-body .modal .modules-list-container .active .bus-location {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -525px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -526px;
   }
   .main-body .main-view .modules-list-container .active .relationship,
   .main-body .modal .modules-list-container .active .relationship {
