@@ -1,6 +1,6 @@
 angular.module('kulebaoOp').controller 'OpVideoMemberCtrl',
-  ['$scope', '$rootScope', '$location', 'schoolService', 'chargeService', 'videoMemberService',
-    (scope, rootScope, $location, School, Charge, VideoMember) ->
+  ['$scope', '$rootScope', '$state', 'schoolService', 'chargeService', 'videoMemberService',
+    (scope, rootScope, $state, School, Charge, VideoMember) ->
       rootScope.tabName = 'video'
       scope.loading = true
       scope.kindergartens = School.query (all)->
@@ -10,20 +10,21 @@ angular.module('kulebaoOp').controller 'OpVideoMemberCtrl',
         scope.loading = false
 
       scope.detail = (kg) ->
-        $location.path "main/video_in_school/#{kg.school_id}"
+        $state.go "main.video_school", school_id: kg.school_id
   ]
 
 angular.module('kulebaoOp').controller 'OpVideoMemberInSchoolCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService',
-    (scope, rootScope, stateParams, $location, School, Class) ->
+  ['$scope', '$rootScope', '$stateParams', '$state', 'schoolService', 'classService',
+    (scope, rootScope, stateParams, $state, School, Class) ->
+      rootScope.tabName = 'video'
       scope.loading = true
       scope.kindergarten = School.get school_id: stateParams.school_id, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.school_id, (classes)->
-          scope.navigateTo(classes[0]) if $location.path().indexOf '/class' <= 0
+          scope.navigateTo(classes[0]) unless $state.is 'main.video_school.class'
         scope.loading = false
 
       scope.navigateTo = (c) ->
-        $location.path "main/video_in_school/#{stateParams.school_id}/class/#{c.class_id}"
+        $state.go 'main.video_school.class', {school_id: stateParams.school_id, class_id: c.class_id}
   ]
 
 angular.module('kulebaoOp').controller 'OpVideoMemberInClassCtrl',
