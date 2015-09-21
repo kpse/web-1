@@ -119,13 +119,20 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
                                        scope.errorDataClassNotMatch, scope.errorDataErrorChildName]
 
 
-          if scope.errorData.length == 0
-            scope.importingClasses = angular.copy scope.kindergarten.classes
-            scope.navigateToImportingClass(scope.importingClasses[0].name)
-          else
+          if scope.errorData.length > 0
             scope.currentModal = Modal
               scope: scope
               contentTemplate: 'templates/admin/video_import_warning.html'
+          else if scope.importingData.length == 0 && scope.enabledData.length > 0
+            alert 'excel中所有家长均已开通看宝宝服务，请检查输入数据'
+            scope.cancelImporting()
+          else if scope.importingData.length == 0
+            alert '没有可用的数据，请检查输入数据'
+            scope.cancelImporting()
+          else
+            scope.importingClasses = angular.copy scope.kindergarten.classes
+            scope.navigateToImportingClass(scope.importingClasses[0].name)
+
 
       scope.import = (data) ->
         scope.loading = true
