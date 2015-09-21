@@ -1,37 +1,53 @@
 angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
   ['$scope', '$rootScope', '$state', '$stateParams', '$q', '$filter', 'chargeService', 'videoMemberService',
-   'senderService', 'relationshipService', 'classService', 'parentService'
-    (scope, rootScope, $state, $stateParams, $q, $filter, Charge, VideoMember, Parent, Relationship, Class, ParentSearch) ->
+   'senderService', 'relationshipService', 'classService', 'parentService', '$modal',
+    (scope, rootScope, $state, $stateParams, $q, $filter, Charge, VideoMember, Parent, Relationship, Class, ParentSearch, Modal) ->
       rootScope.tabName = 'video'
       scope.loading = true
       extendFilterFriendlyProperties = (p) ->
         p.phone = p.detail.phone
         p.formattedPhone = $filter('phone')(p.detail.phone)
         p
-      scope.kindergarten =
-        classes: Class.query(school_id: $stateParams.kindergarten)
 
-      queue = [Charge.query(school_id: $stateParams.kindergarten).$promise
-               VideoMember.query(school_id: $stateParams.kindergarten).$promise]
-      all = $q.all(queue)
-      all.then (q) ->
-        scope.charge = q[0]
-        [defaultAccounts, parents] = _.partition q[1], (a) -> a.id == 'default'
-        parents = _.map parents, (p) ->
-          Parent.get school_id: $stateParams.kindergarten, id: p.id, type: 'p', (data)->
-            p.detail = data
-            p.reltaionship = Relationship.query
-              school_id: $stateParams.kindergarten, parent: p.detail.phone if p.detail.phone?
-            extendFilterFriendlyProperties(p)
-          p
-        defaultAccounts = _.map defaultAccounts, (d) ->
-          d.detail =
-             name : '试用账号'
-             phone :'试用账号'
-          d
-        $state.go 'kindergarten.video_default', kindergarten: $stateParams.kindergarten if defaultAccounts.length > 0
-        scope.parents = _.flatten [parents, defaultAccounts]
-        scope.loading = false
+      Class.query school_id: $stateParams.kindergarten, (data)->
+        scope.kindergarten =
+          classes : data
+        scope.current_class = scope.kindergarten.classes[0].class_id unless scope.current_class?
+        queue = [Charge.query(school_id: $stateParams.kindergarten).$promise
+                 VideoMember.query(school_id: $stateParams.kindergarten).$promise]
+        all = $q.all(queue)
+        all.then (q) ->
+          scope.charge = q[0]
+          [defaultAccounts, parents] = _.partition q[1], (a) -> a.id == 'default'
+          parents = _.map parents, (p) ->
+            p.promise =
+              $q (resolve, reject) ->
+                Parent.get school_id: $stateParams.kindergarten, id: p.id, type: 'p', (data)->
+                    p.detail = data
+                    if p.detail.phone?
+                      p.reltaionship = Relationship.query school_id: $stateParams.kindergarten, parent: p.detail.phone, ->
+                          resolve()
+                        , -> resolve()
+                      extendFilterFriendlyProperties(p)
+                    else
+                      resolve()
+                  , -> resolve()
+            p
+
+          defaultAccounts = _.map defaultAccounts, (d) ->
+            d.detail =
+              name : '试用账号'
+              phone :'试用账号'
+            d
+          $state.go 'kindergarten.video_default', kindergarten: $stateParams.kindergarten if defaultAccounts.length > 0
+          scope.parents = _.flatten [parents, defaultAccounts]
+          allLoading = _.map scope.parents, (p) -> p.promise
+          $q.all(allLoading).then (q) ->
+            scope.refresh()
+            scope.loading = false
+
+      scope.refresh = (clz = scope.current_class) ->
+        scope.parentsInClass = _.filter scope.parents, (c) -> scope.display(c, clz)
 
       scope.display = (p, classId) ->
         p.reltaionship? && p.reltaionship.$resolved && p.reltaionship.length > 0 && p.reltaionship[0].child.class_id == classId
@@ -42,15 +58,16 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
           'password': p.password,
           'name': p.detail.name + p.detail.phone
 
-      phoneFieldName = '家长A手机号'
-      nameFieldName = '家长A姓名'
-      classFieldName = '所属班级'
+      phoneFieldName = '家长手机号'
+      nameFieldName = '家长姓名'
+      classFieldName = '班级'
+      childFieldName = '学生姓名'
 
       validateData = (data) ->
-        data? && _.all data, (d) -> _.all [phoneFieldName, nameFieldName, classFieldName], (n) -> _.has d, n
+        data? && _.all data, (d) -> _.all [phoneFieldName, nameFieldName, classFieldName, childFieldName], (n) -> _.has d, n
 
       scope.onSuccess = (importingData)->
-        return alert("导入文件格式错误，每行至少要包含‘#{phoneFieldName}’，‘#{nameFieldName}’， ‘#{classFieldName}’列，请检查excel内容。") unless validateData(importingData)
+        return alert("导入文件格式错误，每行至少要包含‘#{phoneFieldName}’，‘#{nameFieldName}’， ‘#{classFieldName}’，‘#{childFieldName}’列，请检查excel内容。") unless validateData(importingData)
         console.log importingData
         queue = [ParentSearch.query(school_id: $stateParams.kindergarten).$promise
           Relationship.query(school_id: $stateParams.kindergarten).$promise]
@@ -58,35 +75,59 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
         all.then (q) ->
           group = _.groupBy q[0], 'phone'
           relationshipGroup = _.groupBy q[1], 'parent.phone'
+          importingData = _.map importingData, (d, i) ->
+            d.name = d[nameFieldName]
+            d.className = d[classFieldName]
+            d.phone = d[phoneFieldName]
+            d.childName = d[childFieldName]
+            d.index = i + 1
+            d
 
-          [scope.importingData, scope.errorDataNoPhone] = _.partition importingData, (d) -> _.has group, d[phoneFieldName]
+          [scope.importingData, scope.errorDataNoPhone] = _.partition importingData, (d) -> _.has group, d.phone
 
-          scope.errorDataNoPhone = _.map scope.errorDataNoPhone, (d) -> d.error = '学校无此号码。';d
+          scope.errorDataNoPhone = _.map scope.errorDataNoPhone, (d) -> d.error = '无此手机号码。';d
 
           [scope.importingData, scope.errorDataWrongName] = _.partition scope.importingData, (d) ->
-            group[d[phoneFieldName]]? && group[d[phoneFieldName]][0].name == d[nameFieldName]
+            group[d.phone]? && group[d.phone][0].name == d.name
 
-          scope.importingData = _.map scope.importingData, (d) -> d.detail = group[d[phoneFieldName]][0];d
+          scope.importingData = _.map scope.importingData, (d) -> d.detail = group[d.phone][0];d
 
-          scope.errorDataWrongName = _.map scope.errorDataWrongName, (d) -> d.error = '名字不匹配。';d
+          scope.errorDataWrongName = _.map scope.errorDataWrongName, (d) -> d.error = '家长姓名不符。';d
 
-          [scope.importingData, scope.errorDataNoConnection] = _.partition scope.importingData, (d) -> _.has relationshipGroup, d[phoneFieldName]
+          [scope.importingData, scope.errorDataNoConnection] = _.partition scope.importingData, (d) -> _.has relationshipGroup, d.phone
 
-          scope.importingData = _.map scope.importingData, (d) -> d.relationship = relationshipGroup[d[phoneFieldName]];d
+          scope.importingData = _.map scope.importingData, (d) -> d.relationship = relationshipGroup[d.phone];d
 
-          scope.errorDataNoConnection = _.map scope.errorDataNoConnection, (d) -> d.error = '没有关联小孩。';d
+          scope.errorDataNoConnection = _.map scope.errorDataNoConnection, (d) -> d.error = '家长没有关联的学生。';d
+
+          [scope.importingData, scope.errorDataErrorChildName] = _.partition scope.importingData, (d) ->
+            relationshipGroup[d.phone]? && _.any relationshipGroup[d.phone], (r) -> r.child.name == d.childName
+
+          scope.errorDataErrorChildName = _.map scope.errorDataErrorChildName, (d) -> d.error = '学生姓名不符。';d
 
           [scope.importingData, scope.errorDataClassNotMatch] = _.partition scope.importingData, (d) ->
-            relationshipGroup[d[phoneFieldName]]? && _.any relationshipGroup[d[phoneFieldName]], (r) -> r.child.class_name == d[classFieldName]
+            relationshipGroup[d.phone]? && _.any relationshipGroup[d.phone], (r) -> r.child.class_name == d.className
 
-          scope.errorDataClassNotMatch = _.map scope.errorDataClassNotMatch, (d) -> d.error = '班级名称不匹配。';d
+          scope.errorDataClassNotMatch = _.map scope.errorDataClassNotMatch, (d) -> d.error = '班级不符。';d
 
           [scope.enabledData, scope.importingData] = _.partition scope.importingData, (d) ->
-            _.any scope.parents, (p) -> p.phone == d[phoneFieldName]
+            _.any scope.parents, (p) -> p.phone == d.phone
 
-          scope.enabledData = _.map scope.enabledData, (d) -> d.error = '该号码已经开通看宝宝。';d
+          scope.enabledData = _.map scope.enabledData, (d) -> d.error = "该号码#{d.phone}已经开通看宝宝。";d
 
-          scope.errorData = _.flatten [scope.errorDataNoPhone, scope.errorDataWrongName, scope.errorDataNoConnection, scope.errorDataClassNotMatch]
+          scope.errorData = _.flatten [scope.errorDataNoPhone, scope.errorDataWrongName, scope.errorDataNoConnection,
+                                       scope.errorDataClassNotMatch, scope.errorDataErrorChildName]
+
+
+          if scope.errorData.length == 0
+            scope.importingClasses = scope.importingData
+            classesGroup = _.groupBy scope.importingClasses, classFieldName
+            classes = _.keys(classesGroup)
+            scope.navigateToImportingClass(classes[0])
+          else
+            scope.currentModal = Modal
+              scope: scope
+              contentTemplate: 'templates/admin/video_import_warning.html'
 
       scope.import = (data) ->
         scope.loading = true
@@ -106,6 +147,14 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
         VideoMember.delete school_id: parent.school_id, id: parent.parent_id, ->
           $state.reload()
           scope.loading = false
+
+      scope.navigateTo = (clz) ->
+        scope.current_class = clz.class_id
+        scope.refresh()
+
+      scope.navigateToImportingClass = (clz) ->
+        scope.newParentsInClass = _.filter scope.importingClasses, (c) -> c[classFieldName] == clz
+
   ]
 
 angular.module('kulebaoAdmin').controller 'VideoMemberImportCtrl',

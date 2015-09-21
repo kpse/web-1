@@ -1,0 +1,63 @@
+<div class="panel panel-default">
+  <div class="panel-heading"><h4>错误数据</h4></div>
+  <div class="panel-body">
+    <div class="col-xs-12" ng-show="errorData">
+
+
+      <div class="importing error-importing">
+        <table class="table table-hover table-condensed parent-list">
+          <thead>
+          <tr class="row">
+            <th class="col-xs-1">行数</th>
+            <th class="col-xs-2">家长姓名</th>
+            <th class="col-xs-2">手机</th>
+            <th class="col-xs-3">班级</th>
+            <th class="col-xs-4">错误信息</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr ng-repeat="d in errorData | filter: searchText " class="row">
+            <td class="col-xs-1">第{{d.index}}行</td>
+            <td class="col-xs-2">{{d.name}}</td>
+            <td class="col-xs-2">{{d.phone | phone}}</td>
+            <td class="col-xs-3">{{d.className}}</td>
+            <td class="col-xs-4">{{d.error}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-xs-12" ng-show="enabledData">
+      <h4>以下家长已经开通看宝宝</h4>
+
+      <div class="importing imported">
+        <table class="table table-hover table-condensed parent-list">
+          <thead>
+          <tr class="row">
+            <th class="col-xs-1">行数</th>
+            <th class="col-xs-3">家长姓名</th>
+            <th class="col-xs-4">手机</th>
+            <th class="col-xs-4">班级</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr ng-repeat="d in enabledData | filter: searchText " class="row">
+            <td class="col-xs-1">第{{d.index}}行</td>
+            <td class="col-xs-2">{{d.name}}</td>
+            <td class="col-xs-2">{{d.phone | phone}}</td>
+            <td class="col-xs-3">{{d.className}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="panel-footer">
+
+    <div class="btn-group">
+      <button class="btn btn-default pull-right" ng-click="$hide()">关闭</button>
+    </div>
+  </div>
+
+</div>

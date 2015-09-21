@@ -174,9 +174,13 @@
 }
 .importing.imported {
   background-color: #eeeeff;
+  max-height: 300px;
+  min-height: 200px;
 }
 .importing.error-importing {
   background-color: #f5ad66;
+  max-height: 200px;
+  min-height: 150px;
 }
 .axis path,
 .axis line {

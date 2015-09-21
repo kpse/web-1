@@ -7,6 +7,11 @@
   <h4>已开通开宝宝的家长列表</h4>
 
   <div class="importing">
+    <ul class="nav nav-tabs">
+      <li ng-repeat="c in kindergarten.classes" ng-class="{active: c.class_id == current_class}">
+        <a ng-click="navigateTo(c)">{{c.name}}</a>
+      </li>
+    </ul>
     <table class="table table-hover table-condensed schools-list">
       <thead>
       <tr class="row">
@@ -17,13 +22,13 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="p in parents | filter: searchText " class="row">
+      <tr ng-repeat="p in parentsInClass | filter: searchText " class="row">
         <td class="col-xs-2">{{p.detail.name}}</td>
         <td class="col-xs-4">{{p.detail.phone | phone}}</td>
         <td class="col-xs-4">{{p.account}}</td>
         <td class="col-xs-2">
           <button ng-disabled="loading" class="btn btn-xs btn-danger" ng-confirm-click="deleteAccount(p.detail)"
-                  ng-confirm-msg="将删除{{p.detail.name}}的看宝宝账号，是否继续？">删除
+                  ng-confirm-msg="将关闭{{p.detail.name}}的看宝宝账号，是否继续？">关闭
           </button>
         </td>
       </tr>
@@ -39,75 +44,34 @@
   </button>
   <button ng-show="importingData" ng-disabled="loading" class="btn btn-default" ng-click="cancelImporting()">取消</button>
   <div class="row">
-    <div class="col-xs-6" ng-show="importingData">
+    <div class="col-xs-12" ng-show="importingData">
       <h4>可导入列表</h4>
 
       <div class="importing">
+        <ul class="nav nav-tabs">
+          <li ng-repeat="c in importingClasses" ng-class="{active: c.class_id == current_class}">
+            <a ng-click="navigateToImportingClass(c)">{{c.name}}</a>
+          </li>
+        </ul>
         <table class="table table-hover table-condensed parent-list">
           <thead>
           <tr class="row">
+            <th class="col-xs-4">学生姓名</th>
             <th class="col-xs-4">家长姓名</th>
-            <th class="col-xs-4">手机</th>
-            <th class="col-xs-4">班级</th>
+            <th class="col-xs-4">家长手机</th>
           </tr>
           </thead>
           <tbody>
-          <tr ng-repeat="d in importingData | filter: searchText " class="row correct-importing">
-            <td class="col-xs-4">{{d['家长A姓名']}}</td>
-            <td class="col-xs-4">{{d['家长A手机号'] | phone}}</td>
-            <td class="col-xs-4">{{d['所属班级']}}</td>
+          <tr ng-repeat="d in newParentsInClass | filter: searchText " class="row correct-importing">
+            <td class="col-xs-4">{{d.childName}}</td>
+            <td class="col-xs-4">{{d.name}}</td>
+            <td class="col-xs-4">{{d.phone | phone}}</td>
           </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <div class="col-xs-6" ng-show="errorData">
-      <h4>错误数据</h4>
 
-      <div class="importing error-importing">
-        <table class="table table-hover table-condensed parent-list">
-          <thead>
-          <tr class="row">
-            <th class="col-xs-2">家长姓名</th>
-            <th class="col-xs-3">手机</th>
-            <th class="col-xs-3">班级</th>
-            <th class="col-xs-4">错误信息</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr ng-repeat="d in errorData | filter: searchText " class="row">
-            <td class="col-xs-2">{{d['家长A姓名']}}</td>
-            <td class="col-xs-3">{{d['家长A手机号'] | phone}}</td>
-            <td class="col-xs-3">{{d['所属班级']}}</td>
-            <td class="col-xs-4">{{d.error}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="col-xs-12" ng-show="enabledData">
-      <h4>以下家长已经开通看宝宝</h4>
-
-      <div class="importing imported">
-        <table class="table table-hover table-condensed parent-list">
-          <thead>
-          <tr class="row">
-            <th class="col-xs-4">家长姓名</th>
-            <th class="col-xs-4">手机</th>
-            <th class="col-xs-4">班级</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr ng-repeat="d in enabledData | filter: searchText " class="row">
-            <td class="col-xs-4">{{d['家长A姓名']}}</td>
-            <td class="col-xs-4">{{d['家长A手机号'] | phone}}</td>
-            <td class="col-xs-4">{{d['所属班级']}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
   </div>
 </div>
