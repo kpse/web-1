@@ -1,4 +1,4 @@
-util.print: Use console.log instead
+(node) util.print is deprecated. Use console.log instead.
 @media screen and (min-width: 769px) {
   .module-view-container {
     float: right;
@@ -75,10 +75,10 @@ util.print: Use console.log instead
     background: #34393D url(../../images/left-btns.png) no-repeat -15px 0px;
   }
   .modules-list-container .modules-list .dailylog {
-    background: #34393D url(../../images/left-btns.png) no-repeat -15px -475px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -477px;
   }
   .modules-list-container .modules-list .dailylog:hover {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -475px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -477px;
   }
   .modules-list-container .modules-list .bus-location {
     background: #34393D url(../../images/left-btns.png) no-repeat -15px -525px;
@@ -116,6 +116,12 @@ util.print: Use console.log instead
   .modules-list-container .modules-list .intro:hover {
     background: #34393D url(../../images/left-btns.png) no-repeat -239px -771px;
   }
+  .modules-list-container .modules-list .video {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -821px;
+  }
+  .modules-list-container .modules-list .video:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -820px;
+  }
   .modules-list-container .active .news {
     background: #34393D url(../../images/left-btns.png) no-repeat -239px -86px;
   }
@@ -138,7 +144,7 @@ util.print: Use console.log instead
     background: #34393D url(../../images/left-btns.png) no-repeat -239px -382px;
   }
   .modules-list-container .active .dailylog {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -475px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -477px;
   }
   .modules-list-container .active .bus-location {
     background: #34393D url(../../images/left-btns.png) no-repeat -239px -525px;
@@ -157,6 +163,9 @@ util.print: Use console.log instead
   }
   .modules-list-container .active .intro {
     background: #34393D url(../../images/left-btns.png) no-repeat -239px -771px;
+  }
+  .modules-list-container .active .video {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -820px;
   }
 }
 @media screen and (max-width: 768px) {

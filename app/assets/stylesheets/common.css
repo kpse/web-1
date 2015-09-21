@@ -363,11 +363,11 @@
   }
   .main-body .main-view .modules-list-container .modules-list .dailylog,
   .main-body .modal .modules-list-container .modules-list .dailylog {
-    background: #34393D url(../../images/left-btns.png) no-repeat -15px -475px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -477px;
   }
   .main-body .main-view .modules-list-container .modules-list .dailylog:hover,
   .main-body .modal .modules-list-container .modules-list .dailylog:hover {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -475px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -477px;
   }
   .main-body .main-view .modules-list-container .modules-list .bus-location,
   .main-body .modal .modules-list-container .modules-list .bus-location {
@@ -417,6 +417,14 @@
   .main-body .modal .modules-list-container .modules-list .intro:hover {
     background: #34393D url(../../images/left-btns.png) no-repeat -239px -771px;
   }
+  .main-body .main-view .modules-list-container .modules-list .video,
+  .main-body .modal .modules-list-container .modules-list .video {
+    background: #34393D url(../../images/left-btns.png) no-repeat -15px -821px;
+  }
+  .main-body .main-view .modules-list-container .modules-list .video:hover,
+  .main-body .modal .modules-list-container .modules-list .video:hover {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -820px;
+  }
   .main-body .main-view .modules-list-container .active .news,
   .main-body .modal .modules-list-container .active .news {
     background: #34393D url(../../images/left-btns.png) no-repeat -239px -86px;
@@ -447,7 +455,7 @@
   }
   .main-body .main-view .modules-list-container .active .dailylog,
   .main-body .modal .modules-list-container .active .dailylog {
-    background: #34393D url(../../images/left-btns.png) no-repeat -239px -475px;
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -477px;
   }
   .main-body .main-view .modules-list-container .active .bus-location,
   .main-body .modal .modules-list-container .active .bus-location {
@@ -472,6 +480,10 @@
   .main-body .main-view .modules-list-container .active .intro,
   .main-body .modal .modules-list-container .active .intro {
     background: #34393D url(../../images/left-btns.png) no-repeat -239px -771px;
+  }
+  .main-body .main-view .modules-list-container .active .video,
+  .main-body .modal .modules-list-container .active .video {
+    background: #34393D url(../../images/left-btns.png) no-repeat -239px -820px;
   }
 }
 @media screen and (max-width: 768px) {

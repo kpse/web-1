@@ -1,0 +1,105 @@
+@media screen and (min-width: 769px) {
+  .hoverBkImage(@x) {
+    background: e(%("#34393D url(../../images/left-btns-agent.png) no-repeat -239px %spx", @x));
+  }
+
+  .bkImage(@x) {
+    background: e(%("#34393D url(../../images/left-btns-agent.png) no-repeat -15px %spx", @x));
+  }
+
+  .module-view-container {
+    float: right;
+    width: 963px;
+    height: 739px;
+    top: 121px;
+    position: absolute;
+    margin-left: 222px;
+  }
+
+  .modules-list-container {
+    background: #34393d url(../../images/tabs-bg.png) no-repeat;
+    min-width: 252px;
+    max-width: 252px;
+    margin-left: -30px;
+    height: 739px;
+    .modules-list {
+      .action {
+        display: block;
+        a.btn {
+          background-color: #34393D;
+        }
+
+      }
+
+      .btn {
+        span {
+          display: none;
+          &.force-show {
+            display: inline;
+          }
+        }
+        min-height: 47px;
+        min-width: 223px;
+        width: 223px;
+      }
+
+      .schools {
+        .bkImage(-86);
+        &:hover {
+          .hoverBkImage(-86);
+        }
+      }
+      .commercials {
+        .bkImage(-136);
+        &:hover {
+          .hoverBkImage(-136);
+        }
+      }
+      .stats {
+        .bkImage(-185);
+        &:hover {
+          .hoverBkImage(-185);
+        }
+      }
+
+    }
+    .active .schools {
+      .hoverBkImage(-86);
+    }
+    .active .commercials {
+      .hoverBkImage(-136);
+    }
+    .active .stats {
+      .hoverBkImage(-185);
+    }
+
+  }
+
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    margin-top: -78px;
+    .admin-features {
+      display: block;
+    }
+  }
+
+  .modules-list-container {
+    margin-top: 150px;
+    .btn.placeholder {
+      display: none;
+    }
+  }
+
+  .module-view-container {
+    margin-top: 50px;
+  }
+}
+
+.action .badge {
+  margin-left: 185px;
+  display: inline;
+  background-color: white;
+  color: red;
+}
