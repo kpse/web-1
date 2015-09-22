@@ -40,9 +40,9 @@ case class AgentSchool(id: Option[Long], school_id: Long, name: String) {
 
   def connected = DB.withTransaction {
     implicit c =>
-      SQL("select count(1) from agentschool where school_id={kg} and status=1)")
+      SQL("select count(1) from agentschool where school_id={kg} and status=1")
         .on(
-          'school_id -> school_id
+          'kg -> school_id.toString
         ).as(get[Long]("count(1)") single) > 0
   }
 }
