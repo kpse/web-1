@@ -7,11 +7,12 @@
       <span>检索：</span>
       <input ng-model="searchText"/>
     </div>
-    <h3>已选择新学校</h3>
+    <h3>当前关联学校</h3>
     <button ng-disabled="!hasSelection(currentAgent.schools)" class="btn btn-danger multiple-school-operation"
             ng-confirm-msg="你确定要删除吗?"
             ng-confirm-click="multipleDelete()">取消关联
     </button>
+    <div class="loading" ng-show="loading"></div>
     <table class="table table-hover table-condensed schools-list">
       <thead>
       <tr class="row">
@@ -35,12 +36,13 @@
       </tbody>
     </table>
 
-    <div class="loading" ng-show="loading"></div>
+
     <h3>添加新学校</h3>
     <button ng-disabled="!hasSelection(unSelectedSchools)" class="btn btn-success multiple-school-operation"
             ng-confirm-msg="你确定要添加吗?"
             ng-confirm-click="multipleAdd()">关联到代理商
     </button>
+    <div class="loading" ng-show="loading"></div>
     <table class="table table-hover table-condensed schools-list">
       <thead>
       <tr class="row">

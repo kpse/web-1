@@ -5,24 +5,26 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
     (scope, rootScope, $filter, $q, Agent, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert, location,
      AgentSchool, AllSchool, AgentContractor, AgentActivity, FullResponse) ->
       rootScope.tabName = 'agent'
-
+      scope.loading = false
       scope.refresh = (agent)->
+        scope.loading = true
+        scope.kindergartens = AllSchool.query()
         Agent.query (data) ->
-          scope.agents = _.each data, (a) ->
+          scope.agents = _.each data, (a, i) ->
             a.expireDisplayValue = $filter('date')(a.expire, 'yyyy-MM-dd')
-            FullResponse(AgentSchool, agent_id: a.id, most:5).then (d2) ->
+            FullResponse(AgentSchool, agent_id: a.id, most:25).then (d2) ->
               a.schoolIds = d2
               a.schools = _.map a.schoolIds, (kg) -> AllSchool.get(school_id: kg.school_id)
               _.each a.schools, (kg) -> kg.checked = false
 
             AgentContractor.query agent_id: a.id, (data) ->
               a.waitingContractors = _.filter data, (d) -> d.publishing.publish_status == 99
+              scope.loading = false
             AgentActivity.query agent_id: a.id, (data) ->
               a.waitingActivities = _.filter data, (d) -> d.publishing.publish_status == 99
+              scope.loading = false
           if agent?
             scope.currentAgent = _.find scope.agents, (a) -> a.id == agent.id
-        scope.kindergartens = AllSchool.query()
-
 
       scope.refresh()
 
@@ -36,6 +38,7 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
         location.path '/main/charge'
 
       scope.endEditing = (kg) ->
+        scope.loading = true
         Agent.save kg, ->
             scope.refresh()
             scope.currentModal.hide()
@@ -59,6 +62,7 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
           contentTemplate: 'templates/op/connect_school.html'
 
       scope.deleteAgent = (agent)->
+        scope.loading = true
         agent.$delete ->
           scope.refresh()
 
@@ -92,6 +96,7 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
           duration: 3
 
       scope.saveAgent = (agent) ->
+        scope.loading = true
         agent.expire = new Date(agent.expireDisplayValue).getTime()
         Agent.save agent, ->
             scope.refresh()
@@ -132,6 +137,7 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
             r.checked = check
 
       scope.multipleDelete = ->
+        scope.loading = true
         checked = _.filter scope.currentAgent.schools, (r) -> r.checked? && r.checked == true
         queue = _.map checked, (kg) -> scope.disconnect kg, scope.currentAgent
         all = $q.all queue
@@ -142,6 +148,7 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
             handleError res
 
       scope.multipleAdd = ->
+        scope.loading = true
         checked = _.filter scope.unSelectedSchools, (r) -> r.checked? && r.checked == true
         queue = _.map checked, (kg) -> scope.connect kg, scope.currentAgent
         all = $q.all queue
