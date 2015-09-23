@@ -7,7 +7,7 @@ CREATE TABLE parentext (
   social_id VARCHAR(20),
   nationality VARCHAR(20),
   fixed_line VARCHAR(20),
-  memo VARCHAR(512),
+  memo TEXT,
   PRIMARY KEY (uid),
   UNIQUE (base_id)
 );

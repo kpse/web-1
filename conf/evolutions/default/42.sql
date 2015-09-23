@@ -24,7 +24,7 @@ CREATE TABLE visitor (
   quantity INT,
   visitor_user_id   INT(11),
   visitor_user_type INT,
-  memo VARCHAR(512),
+  memo TEXT,
   photo_record TEXT,
   sgid_picture TEXT,
   status INT DEFAULT 1,

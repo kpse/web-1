@@ -20,7 +20,7 @@ CREATE TABLE studentext (
   in_date BIGINT,
   interest VARCHAR(512),
   bed_number VARCHAR(20),
-  memo VARCHAR(512),
+  memo TEXT,
   bus_status INT,
   medical_history VARCHAR(2048),
   PRIMARY KEY (uid),

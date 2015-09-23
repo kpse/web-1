@@ -9,7 +9,7 @@ CREATE TABLE dietmenu (
   former_id   INT(11),
   name   VARCHAR(50),
   weight   VARCHAR(10),
-  recipe   VARCHAR(500),
+  recipe   TEXT,
   property   VARCHAR(100),
   tips   VARCHAR(100),
   arrange_type INT,

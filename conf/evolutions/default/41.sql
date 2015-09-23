@@ -11,7 +11,7 @@ CREATE TABLE checkingrecord (
   school_id   VARCHAR(20) NOT NULL,
   base_id   INT(11) NOT NULL,
   create_user INT(11) NOT NULL,
-  memo VARCHAR(512),
+  memo TEXT,
   error_status INT DEFAULT 1,
   PRIMARY KEY (uid)
 );

@@ -43,7 +43,7 @@ CREATE TABLE employeeext (
   education VARCHAR(20),
   fixed_line VARCHAR(20),
   address VARCHAR(200),
-  memo VARCHAR(512),
+  memo TEXT,
   work_id VARCHAR(20),
   work_group INT,
   in_date BIGINT,
