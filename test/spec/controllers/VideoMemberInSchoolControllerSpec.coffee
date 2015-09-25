@@ -68,8 +68,6 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
 
     expect($scope.importingData.length).toBe 1
 
-
-
   classOfId = (id) ->
     "class_id": id
     "class_name": "name"
