@@ -13,7 +13,7 @@ case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: St
 
 case class CreatingSchool(school_id: Long, phone: String, name: String, token: String, principal: PrincipalOfSchool, charge: ChargeInfo, address: String, full_name: Option[String])
 
-case class PrincipalOfSchool(admin_login: String, admin_password: String)
+case class PrincipalOfSchool(admin_login: String, admin_password: String, phone: String)
 
 case class SchoolIntroDetail(error_code: Option[Int], school_id: Long, school_info: Option[SchoolIntro])
 
@@ -58,7 +58,7 @@ object SchoolIntro {
             'token -> school.token,
             'full_name -> school.full_name
           ).executeInsert()
-        val employee = Employee(None, "%s校长".format(school.name), school.phone, 0,
+        val employee = Employee(None, "%s校长".format(school.name), school.principal.phone, 0,
           "", "", None, "1980-01-01", school.school_id, school.principal.admin_login, None, None, Some(1))
         val createdPrincipal = school.phone match {
           case (reCreation) if Employee.hasBeenDeleted(reCreation) =>
