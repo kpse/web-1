@@ -65,7 +65,7 @@ class SchoolSummaryControllerSpec extends Specification with TestSupport {
         status(detailResponse) must equalTo(NOT_FOUND)
 
         private val charge: ChargeInfo = ChargeInfo(93740362, 10, "2016-01-01", 1, 1)
-        private val json: JsValue = Json.toJson(CreatingSchool(93740362, "100", "full name", "", PrincipalOfSchool("admin_this", "admin_this"), charge, "", Some("93740362")))
+        private val json: JsValue = Json.toJson(CreatingSchool(93740362, "100", "full name", "", PrincipalOfSchool("admin_this", "admin_this", "139999999999"), charge, "", Some("93740362")))
         val createResponse = route(requestByOperator(POST, "/kindergarten").withBody(json)).get
 
         status(createResponse) must equalTo(OK)

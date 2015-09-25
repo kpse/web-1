@@ -50,7 +50,7 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
     $httpBackend.flush()
     backUpAlert = alert
     alert = ->
-    $scope.onSuccess(['家长手机号': '12345678991', '家长姓名': 'display name', '班级': '二班', '学生姓名': '二宝'])
+    $scope.onSuccess(sheet1: ['家长手机号': '12345678991', '家长姓名': 'display name', '班级': '二班', '学生姓名': '二宝'])
     alert = backUpAlert
 
     $httpBackend.expectGET('/kindergarten/93740362/parent')
