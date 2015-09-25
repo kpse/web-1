@@ -66,8 +66,13 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
       validateData = (data) ->
         data? && _.all data, (d) -> _.all [phoneFieldName, nameFieldName, classFieldName, childFieldName], (n) -> _.has d, n
 
-      scope.onSuccess = (importingData)->
-        return alert("导入文件格式错误，每行至少要包含‘#{phoneFieldName}’，‘#{nameFieldName}’， ‘#{classFieldName}’，‘#{childFieldName}’列，请检查excel内容。") unless validateData(importingData)
+      pickUpCorrectData = (rawData) ->
+        _.find rawData, validateData
+
+
+      scope.onSuccess = (rawData)->
+        importingData = pickUpCorrectData(rawData)
+        return alert("导入文件格式错误，每行至少要包含‘#{phoneFieldName}’，‘#{nameFieldName}’， ‘#{classFieldName}’，‘#{childFieldName}’列，请检查excel内容。") unless importingData?
         console.log importingData
         queue = [ParentSearch.query(school_id: $stateParams.kindergarten).$promise
           Relationship.query(school_id: $stateParams.kindergarten).$promise]

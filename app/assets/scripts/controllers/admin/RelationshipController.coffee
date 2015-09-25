@@ -425,14 +425,14 @@ angular.module('kulebaoAdmin')
       parentRange = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
       allParents = ->
-        _.map parentRange, (r) ->
-          "家长#{r}"
+        _.map parentRange, (r) -> "家长#{r}"
 
       extractGender = (input) ->
         if (input == '男') then 1 else 0
 
-      scope.onSuccess = (data)->
-        scope.excel = data
+      scope.onSuccess = (data) ->
+        pickUpTheFirst = _.compose _.first, _.value
+        scope.excel = pickUpTheFirst(data)
         scope.relationships = []
         scope.classesScope = []
         scope.relationships = _.filter (_.flatten _.map scope.excel, (row) ->

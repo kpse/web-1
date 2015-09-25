@@ -54,6 +54,7 @@ angular.module("kulebao.directives").directive "klExcelParse", ->
         _.reduce workbook.SheetNames, (all, sheetName) ->
             roa = scope.excelUtil.utils.sheet_to_row_object_array(workbook.Sheets[sheetName])
             all[sheetName] = roa  if roa.length > 0
+            all
           , {};
 
       scope.parseFile = ->
