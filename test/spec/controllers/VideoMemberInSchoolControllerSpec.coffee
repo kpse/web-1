@@ -48,10 +48,8 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
         kindergarten: 93740362
     }
     $httpBackend.flush()
-    backUpAlert = alert
-    alert = ->
+
     $scope.onSuccess(sheet1: ['家长手机号': '12345678991', '家长姓名': 'display name', '班级': '二班', '学生姓名': '二宝'])
-    alert = backUpAlert
 
     $httpBackend.expectGET('/kindergarten/93740362/parent')
     .respond [
@@ -67,6 +65,22 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
     $httpBackend.flush()
 
     expect($scope.importingData.length).toBe 1
+
+  it 'should attach no parent when no valid data', () ->
+    $scope = $rootScope.$new()
+
+    videoMemberController = $controller 'VideoMemberManagementCtrl', {
+      $scope: $scope
+      $stateParams:
+        kindergarten: 93740362
+    }
+    $httpBackend.flush()
+
+    spyOn(window, 'alert');
+    $scope.onSuccess({})
+
+    expect(window.alert).toHaveBeenCalledWith('导入文件格式错误，每行至少要包含‘家长手机号’，‘家长姓名’， ‘班级’，‘学生姓名’列，请检查excel内容。');
+    expect($scope.importingData).toBeUndefined()
 
   classOfId = (id) ->
     "class_id": id
