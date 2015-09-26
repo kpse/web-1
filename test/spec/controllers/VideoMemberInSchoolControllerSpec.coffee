@@ -82,6 +82,60 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
     expect(window.alert).toHaveBeenCalledWith('导入文件格式错误，每行至少要包含‘家长手机号’，‘家长姓名’， ‘班级’，‘学生姓名’列，请检查excel内容。');
     expect($scope.importingData).toBeUndefined()
 
+  it 'should pick the correct data from input', () ->
+    $scope = $rootScope.$new()
+
+    videoMemberController = $controller 'VideoMemberManagementCtrl', {
+      $scope: $scope
+      $stateParams:
+        kindergarten: 93740362
+    }
+    $httpBackend.flush()
+
+    $scope.onSuccess(sheet2: ['错误字段':'1'], sheet1: ['家长手机号': '12345678991', '家长姓名': 'display name', '班级': '二班', '学生姓名': '二宝'])
+
+    $httpBackend.expectGET('/kindergarten/93740362/parent')
+    .respond [
+      parentOfPhone "12345678998"
+      parentOfPhone "12345678991"
+    ]
+
+    $httpBackend.expectGET('/kindergarten/93740362/relationship')
+    .respond [
+      relationshipOfPhone "12345678998"
+      relationshipOfPhone "12345678991"
+    ]
+    $httpBackend.flush()
+
+    expect($scope.importingData.length).toBe 1
+
+  it 'should ignore an empty list from one sheet', () ->
+    $scope = $rootScope.$new()
+
+    videoMemberController = $controller 'VideoMemberManagementCtrl', {
+      $scope: $scope
+      $stateParams:
+        kindergarten: 93740362
+    }
+    $httpBackend.flush()
+
+    $scope.onSuccess(sheet2: [], sheet1: ['家长手机号': '12345678991', '家长姓名': 'display name', '班级': '二班', '学生姓名': '二宝'])
+
+    $httpBackend.expectGET('/kindergarten/93740362/parent')
+    .respond [
+      parentOfPhone "12345678998"
+      parentOfPhone "12345678991"
+    ]
+
+    $httpBackend.expectGET('/kindergarten/93740362/relationship')
+    .respond [
+      relationshipOfPhone "12345678998"
+      relationshipOfPhone "12345678991"
+    ]
+    $httpBackend.flush()
+
+    expect($scope.importingData.length).toBe 1
+
   classOfId = (id) ->
     "class_id": id
     "class_name": "name"

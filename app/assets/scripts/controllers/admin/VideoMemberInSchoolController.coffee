@@ -64,7 +64,7 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
       childFieldName = '学生姓名'
 
       validateData = (data) ->
-        data? && _.all data, (d) -> _.all [phoneFieldName, nameFieldName, classFieldName, childFieldName], (n) -> _.has d, n
+        data? && data.length > 0 && _.all data, (d) -> _.all [phoneFieldName, nameFieldName, classFieldName, childFieldName], (n) -> _.has d, n
 
       pickUpCorrectData = (rawData) ->
         _.find rawData, validateData
