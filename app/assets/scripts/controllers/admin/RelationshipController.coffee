@@ -431,7 +431,7 @@ angular.module('kulebaoAdmin')
         if (input == '男') then 1 else 0
 
       scope.onSuccess = (data) ->
-        pickUpTheFirst = _.compose _.first, _.value
+        pickUpTheFirst = _.compose _.first, _.values
         scope.excel = pickUpTheFirst(data)
         scope.relationships = []
         scope.classesScope = []
