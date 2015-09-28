@@ -83,6 +83,8 @@ object KulebaoAgent {
   implicit val writeAgentStatistics = Json.writes[AgentStatistics]
   implicit val readAgentStatistics = Json.reads[AgentStatistics]
 
+  val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
+
   def show(id: Long) = DB.withConnection {
     implicit c =>
       SQL("select * from agentinfo where uid={id} and status=1")
@@ -118,7 +120,7 @@ object KulebaoAgent {
         ).as(simple singleOpt)
   }
 
-  def isAgent(id: String, path: String) : Boolean = DB.withConnection {
+  def isAgent(id: String, path: String): Boolean = DB.withConnection {
     implicit c =>
       if (id.contains("_")) return false
       val isAgent: Boolean = SQL("select count(1) from agentinfo where uid={id} and status=1")
@@ -148,16 +150,17 @@ object KulebaoAgent {
 
   }
 
+  private val lastMonth: DateTime = DateTime.now().minusMonths(1)
+
   def stats(agentId: Long) = DB.withConnection {
     implicit c =>
-      val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
       Logger.debug(s"from = ${pattern.print(DateTime.now().minusMonths(12))}")
-      Logger.debug(s"to = ${pattern.print(DateTime.now().minusMonths(1))}")
+      Logger.debug(s"to = ${pattern.print(lastMonth)}")
       SQL(s"select * from agentstatistics where month >= {from} and month <= {to} and agent_id={agent}")
         .on(
           'agent -> agentId,
           'from -> pattern.print(DateTime.now().minusMonths(12)),
-          'to -> pattern.print(DateTime.now().minusMonths(1))
+          'to -> pattern.print(lastMonth)
         ).as(simpleStatistics *)
   }
 
@@ -172,26 +175,18 @@ object KulebaoAgent {
 
   def collectData(data: AgentStatistics) = DB.withConnection {
     implicit c =>
-      val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
-      Logger.debug(s"lastMonth = ${pattern.print(DateTime.now().minusMonths(1))}")
-      historyDataExists(data) match {
-        case false =>
-          Logger.debug(s"insert data for ${pattern.print(DateTime.now().minusMonths(1))} in ${data.school_id}")
-          SQL(s"insert into agentstatistics (agent_id, school_id, month, child_count, logged_once, logged_ever, created_at) values " +
-            s"({agent}, {school_id}, {month}, {child}, {once}, {ever}, {time})")
-            .on(
-              'agent -> data.agent,
-              'school_id -> data.school_id,
-              'month -> data.month,
-              'child -> data.child_count,
-              'once -> data.logged_once,
-              'ever -> data.logged_ever,
-              'time -> System.currentTimeMillis()
-            ).executeInsert()
-        case true =>
-          Logger.info(s"no data insertion for ${pattern.print(DateTime.now().minusMonths(1))} in ${data.school_id} is needed.")
-          0
-      }
+      Logger.debug(s"lastMonth = ${pattern.print(lastMonth)}")
+      SQL(s"insert into agentstatistics (agent_id, school_id, month, child_count, logged_once, logged_ever, created_at) values " +
+        s"({agent}, {school_id}, {month}, {child}, {once}, {ever}, {time})")
+        .on(
+          'agent -> data.agent,
+          'school_id -> data.school_id,
+          'month -> data.month,
+          'child -> data.child_count,
+          'once -> data.logged_once,
+          'ever -> data.logged_ever,
+          'time -> System.currentTimeMillis()
+        ).executeInsert()
   }
 
   def collectTheWholeMonth(agent: Long, school_id: Long, lastMonth: DateTime): AgentStatistics = DB.withConnection {
@@ -216,15 +211,13 @@ object KulebaoAgent {
         .on(
           'kg -> school_id
         ).as(get[Long]("count") single)
-      val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
       AgentStatistics(0, agent, school_id, pattern.print(lastMonth), loggedOnce, loggedEver, 0, childCount)
-
   }
 
-  def historyDataExists(data: AgentStatistics): Boolean = DB.withConnection {
+  def historyDataExists(agent: Long, kg: Long, month: DateTime): Boolean = DB.withConnection {
     implicit c =>
       SQL(s"select count(1) from agentstatistics where agent_id={agent} and school_id={kg} and month={month}")
-        .on('agent -> data.agent, 'kg -> data.school_id, 'month -> data.month).as(get[Long]("count(1)") single) > 0
+        .on('agent -> agent, 'kg -> kg, 'month -> pattern.print(month)).as(get[Long]("count(1)") single) > 0
   }
 
   def monthlyStatistics() = {
@@ -232,9 +225,14 @@ object KulebaoAgent {
       case agent =>
         AgentSchool.index(agent.id.get, None, None, None).foreach {
           case school =>
-            val monthData: AgentStatistics = KulebaoAgent.collectTheWholeMonth(agent.id.get, school.school_id, DateTime.now().minusMonths(1))
-            Logger.info(s"${agent.id.get}, ${school.school_id}, ${monthData.logged_once}, ${monthData.logged_ever}")
-            collectData(monthData)
+            historyDataExists(agent.id.get, school.school_id, lastMonth) match {
+              case false =>
+                val monthData: AgentStatistics = KulebaoAgent.collectTheWholeMonth(agent.id.get, school.school_id, lastMonth)
+                Logger.info(s"insert data ${monthData.logged_once}, ${monthData.logged_ever} for agent ${agent.id.get} ${pattern.print(lastMonth)} in ${monthData.school_id}")
+                collectData(monthData)
+              case true =>
+                Logger.info(s"no data insertion for ${pattern.print(lastMonth)} in ${school.school_id} is needed.")
+            }
         }
     }
   }
