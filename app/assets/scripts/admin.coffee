@@ -181,7 +181,7 @@ angular.module('kulebaoAdmin',
       controller: 'ClassesManagementCtrl'
 
     .state 'kindergarten.video',
-      url: '/video'
+      url: '/video?class'
       templateUrl: 'templates/admin/video_member_list.html'
       controller: 'VideoMemberManagementCtrl'
     .state 'kindergarten.video_default',
