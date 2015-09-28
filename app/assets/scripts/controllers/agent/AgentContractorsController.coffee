@@ -45,6 +45,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
       scope.editAd = (ad) ->
         scope.newAd = angular.copy ad
         _.assign scope.newAd, agent_id: scope.currentAgent.id
+        scope.disableUploading = scope.dynamicDisable(scope.newAd)
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/add_contractor.html'

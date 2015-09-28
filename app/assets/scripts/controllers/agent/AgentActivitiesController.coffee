@@ -71,6 +71,7 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
         if ad.contractor_id?
           _.assign ad, contractor: (_.find scope.contractors, (c) -> c.id == ad.contractor_id)
         scope.newAd = angular.copy ad
+        scope.disableUploading = scope.dynamicDisable(scope.newAd)
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/add_activity.html'
