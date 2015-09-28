@@ -31,6 +31,8 @@ object EmployeeCardController extends Controller with Secured {
         InternalServerError(Json.toJson(ErrorResponse("卡号重复(duplicated card number)", 4)))
       case (s) if s.cardDeleted =>
         Ok(Json.toJson(s.reuseDeleted(kg)))
+      case (s) if s.employeeDeleted =>
+        Ok(Json.toJson(s.changeOwner(kg)))
       case (s) =>
         Ok(Json.toJson(s.create(kg)))
     }.recoverTotal {

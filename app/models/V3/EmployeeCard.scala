@@ -14,7 +14,20 @@ case class EmployeeCard(id: Option[Long], school_id: Long, employee_id: Long, ca
       SQL("update employeecard set status=1, employee_id={employee}, updated_at={time} where school_id={school_id} and card={card} and status=0")
         .on(
           'id -> id,
-          'school_id -> school_id,
+          'school_id -> kg,
+          'employee -> employee_id,
+          'card -> card,
+          'time -> System.currentTimeMillis
+        ).executeUpdate()
+      EmployeeCard.searchByCard(kg, card)
+  }
+
+  def changeOwner(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("update employeecard set status=1, updated_at={time}, card={card} where school_id={school_id} and employee_id={employee} and status=0")
+        .on(
+          'id -> id,
+          'school_id -> kg,
           'employee -> employee_id,
           'card -> card,
           'time -> System.currentTimeMillis
@@ -61,6 +74,14 @@ case class EmployeeCard(id: Option[Long], school_id: Long, employee_id: Long, ca
       SQL("select count(1) from employeecard where status=0 and card={card}")
         .on(
           'card -> card
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
+  def employeeDeleted = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from employeecard where status=0 and employee_id={employee}")
+        .on(
+          'employee -> employee_id
         ).as(get[Long]("count(1)") single) > 0
   }
 }

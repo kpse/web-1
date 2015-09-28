@@ -1,6 +1,7 @@
 package controllers.V3
 
 import helper.TestSupport
+import models.V3.EmployeeCard
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
@@ -86,6 +87,34 @@ object EmployeeCardControllerSpec extends Specification with TestSupport {
 
       val response: JsValue = Json.parse(contentAsString(res))
       (response \ "error_code").as[Long] must equalTo(2)
+    }
+
+    "reuse deleted card" in new WithApplication {
+      //('93740362', 1, '0001112221', 1393395313123),
+      val res = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/employee_card/1")).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+      val json = Json.toJson(EmployeeCard(None, 93740362, 11, "0001112221", None))
+      val res2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/employee_card").withBody(json)).get
+      status(res2) must equalTo(OK)
+      contentType(res2) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res2))
+      (response \ "card").as[String] must equalTo("0001112221")
+    }
+
+    "reuse deleted employee" in new WithApplication {
+      //('93740362', 1, '0001112221', 1393395313123),
+      val res = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/employee_card/1")).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+      val json = Json.toJson(EmployeeCard(None, 93740362, 1, "0001112231", None))
+      val res2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/employee_card").withBody(json)).get
+      status(res2) must equalTo(OK)
+      contentType(res2) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res2))
+      (response \ "card").as[String] must equalTo("0001112231")
     }
   }
 }
