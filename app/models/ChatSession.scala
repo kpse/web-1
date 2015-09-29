@@ -157,10 +157,19 @@ object ChatSession {
     implicit c =>
       classes match {
         case Some(ids) =>
-          SQL("select * from sessionlog s," +
-            "(select session_id, MAX(update_at) last from sessionlog where status=1 and " +
-            "session_id in (select child_id from childinfo where school_id={kg} and status=1 " + generateClassQuery(ids) + ") " +
-            "group by session_id) a where a.last=s.update_at and s.session_id = a.session_id")
+          SQL("select *" +
+            "            from sessionlog s," +
+            "            (" +
+            "              select session_id, MAX(s.update_at) last" +
+            "              from sessionlog s, childinfo c" +
+            "              where s.status= 1" +
+            "              and s.school_id= {kg}" +
+            "      and session_id= child_id" +
+            "      and c.status= 1" +
+                  generateClassQuery(ids) +
+            "      group by session_id) a" +
+            "      where a.last= s.update_at" +
+            "      and s.session_id= a.session_id")
             .on(
               'kg -> kg.toString
             ).as(simple() *)
