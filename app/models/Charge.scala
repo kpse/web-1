@@ -19,18 +19,31 @@ object Charge {
 
   def countActivePhones(kg: Long) = DB.withConnection {
     implicit c =>
-      val countActive: Long = SQL("select count(1) from accountinfo where active=1 and accountid in (select phone from parentinfo where school_id={kg})")
+      val countActive: Long = SQL("select count(1)" +
+        "  from accountinfo a, parentinfo p" +
+        " where active=1 and  school_id= {kg}" +
+        "   and accountid  = phone")
         .on('kg -> kg.toString).as(get[Long]("count(1)") single)
-      val countAll: Long = SQL("select count(1) from accountinfo where accountid in (select phone from parentinfo where school_id={kg})")
+      val countAll: Long = SQL("select count(1)" +
+        "  from accountinfo a, parentinfo p" +
+        " where school_id= {kg}" +
+        "   and accountid  = phone")
         .on('kg -> kg.toString).as(get[Long]("count(1)") single)
 
-      val countMember: Long = SQL("select count(1) from accountinfo where accountid in " +
-        "(select phone from parentinfo where school_id={kg} and member_status=1)")
+      val countMember: Long = SQL("select count(1)" +
+        "  from accountinfo a, parentinfo p" +
+        " where school_id= {kg}" +
+        "   and accountid  = phone and member_status=1")
         .on('kg -> kg.toString).as(get[Long]("count(1)") single)
-      val countVideoMember: Long = SQL("select count(1) from accountinfo where accountid in " +
-        "(select phone from parentinfo p, videomembers v where p.school_id = v.school_id and " +
-        "p.school_id={kg} and p.parent_id = v.parent_id)")
-        .on('kg -> kg.toString).as(get[Long]("count(1)") single)
+      val countVideoMember: Long = SQL("select count(distinct phone) count" +
+        "  from accountinfo a," +
+        "       parentinfo p," +
+        "       videomembers v" +
+        " where phone= accountid" +
+        "   and p.school_id= v.school_id" +
+        "   and p.school_id= {kg}" +
+        "and p.parent_id= v.parent_id")
+        .on('kg -> kg.toString).as(get[Long]("count") single)
 
       val countActiveCheckIn = SQL("select count(1) from (SELECT p.parent_id as parent, count(1) as times " +
         "FROM DAILYLOG d, parentinfo p, relationmap r " +
