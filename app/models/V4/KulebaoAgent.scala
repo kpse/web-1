@@ -195,19 +195,30 @@ object KulebaoAgent {
       val lastMilli = lastMonth.plusMonths(1).withDayOfMonth(1).withMillisOfDay(1).getMillis
       Logger.debug(s"collectTheWholeMonth firstMilli = $firstMilli")
       Logger.debug(s"collectTheWholeMonth lastMilli = $lastMilli")
-      val loggedOnce: Long = SQL(s"SELECT count(distinct phone) count FROM bindinghistory where phone in (select phone from parentinfo where school_id={kg} and status=1) and updated_at > {begin} and updated_at < {end}")
+      val loggedOnce: Long = SQL("SELECT count(distinct b.phone) count" +
+        "  FROM bindinghistory b," +
+        "       parentinfo p" +
+        " where b.phone= p.phone" +
+        "   and p.school_id= {kg}" +
+        "   and p.status= 1 and b.updated_at > {begin} and b.updated_at < {end}")
         .on(
-          'kg -> school_id,
+          'kg -> school_id.toString,
           'begin -> firstMilli,
           'end -> lastMilli
         ).as(get[Long]("count") single)
-      val loggedEver: Long = SQL(s"SELECT count(distinct phone) count FROM bindinghistory where phone in (select phone from parentinfo where school_id={kg} and status=1) and updated_at < {end}")
+      val loggedEver: Long = SQL("SELECT count(distinct b.phone) count" +
+        "  FROM bindinghistory b," +
+        "       parentinfo p" +
+        " where b.phone= p.phone" +
+        "   and p.school_id= {kg}" +
+        "   and p.status= 1 and b.updated_at > {begin} and b.updated_at < {end}" +
+        " and b.updated_at < {end}")
         .on(
-          'kg -> school_id,
+          'kg -> school_id.toString,
           'begin -> firstMilli,
           'end -> lastMilli
         ).as(get[Long]("count") single)
-      val childCount: Long = SQL(s"SELECT count(distinct child_id) count FROM childinfo where school_id={kg} and status=1")
+      val childCount: Long = SQL("SELECT count(distinct child_id) count FROM childinfo where school_id={kg} and status=1")
         .on(
           'kg -> school_id
         ).as(get[Long]("count") single)
