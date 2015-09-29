@@ -4,7 +4,6 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
     (scope, rootScope, $state, $stateParams, $q, $filter, Charge, VideoMember, Parent, Relationship, Class, ParentSearch, Modal) ->
       rootScope.tabName = 'video'
       scope.loading = true
-      console.log $state.params.class
       extendFilterFriendlyProperties = (p) ->
         p.phone = p.detail.phone
         p.formattedPhone = $filter('phone')(p.detail.phone)
@@ -75,7 +74,6 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
       scope.onSuccess = (rawData)->
         importingData = pickUpCorrectData(rawData)
         return alert("导入文件格式错误，每行至少要包含‘#{phoneFieldName}’，‘#{nameFieldName}’， ‘#{classFieldName}’，‘#{childFieldName}’列，请检查excel内容。") unless importingData?
-        console.log importingData
         queue = [ParentSearch.query(school_id: $stateParams.kindergarten).$promise
           Relationship.query(school_id: $stateParams.kindergarten).$promise]
         all = $q.all(queue)
