@@ -16,7 +16,8 @@ CREATE TABLE parentinfo (
   update_at       BIGINT      NOT NULL DEFAULT 0,
   created_at   BIGINT     DEFAULT 0,
   UNIQUE (phone),
-  PRIMARY KEY (uid)
+  PRIMARY KEY (uid),
+  INDEX (SCHOOL_ID,PHONE,PARENT_ID)
 );
 
 --

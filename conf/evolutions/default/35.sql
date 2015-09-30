@@ -8,7 +8,8 @@ CREATE TABLE bindinghistory (
   version_code VARCHAR(10) NOT NULL,
   updated_at BIGINT               DEFAULT 0,
   PRIMARY KEY (uid),
-  INDEX (phone)
+  INDEX (phone),
+  INDEX (phone, updated_at)
 );
 
 # --- !Downs

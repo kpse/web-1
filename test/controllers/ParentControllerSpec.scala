@@ -62,7 +62,7 @@ class ParentControllerSpec extends Specification with TestSupport {
       jsonResponse match {
         case JsArray(arr) =>
           arr.length must equalTo(8)
-          (arr(0) \ "parent_id").as[String] must equalTo("2_93740362_789")
+          (arr.head \ "parent_id").as[String] must equalTo("2_93740362_000")
         case _ => failure
       }
     }
