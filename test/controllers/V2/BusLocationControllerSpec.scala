@@ -31,7 +31,7 @@ class BusLocationControllerSpec extends Specification with TestSupport {
       val response1 = route(FakeRequest(GET, "/api/v2/kindergarten/93740362/bus_driver/3_93740362_11322/location")).get
       private val json1: JsValue = Json.toJson(BusLocation(93740362, "3_93740362_11322", 1, 2, 3, 4, Some("address"), None, None))
       val response2 = route(FakeRequest(POST, "/api/v2/kindergarten/93740362/bus_driver/3_93740362_11322/location").withBody(json1)).get
-      val response3 = route(FakeRequest(GET, "/api/v2/kindergarten/93740362/last_bus_location/:childId")).get
+      val response3 = route(FakeRequest(GET, "/api/v2/kindergarten/93740362/last_bus_location/1_1391836223533")).get
       private val json2: JsValue = Json.toJson(CheckInfo(93740362, "0001234567", 1, 2, "", 0))
       val response4 = route(FakeRequest(POST, "/api/v2/kindergarten/93740362/bus_driver/3_93740362_11322/check_in").withBody(json2)).get
       val response5 = route(FakeRequest(POST, "/api/v2/kindergarten/93740362/bus_driver/3_93740362_11322/check_out").withBody(json2)).get

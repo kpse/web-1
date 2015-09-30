@@ -96,10 +96,12 @@ object PushController extends Controller {
   }
 
   def createSwipeMessage(check: CheckNotification) = check.channelid match {
+    case "0" =>
+      Logger.info("PushController: channel id is a invalid zero")
     case p if p.length > 0 =>
       runWithLog(check, triggerSinglePush)
     case _ =>
-      Logger.info("No channel id available.")
+      Logger.info("PushController: No channel id available.")
   }
 
   def forwardSwipe(kg: Long) = Action(parse.json) {
