@@ -22,6 +22,7 @@
 }
 .publishing-status.success {
   background-color: #1c964b;
+  color: white;
 }
 .publishing-status.danger {
   background-color: #d64928;
@@ -31,6 +32,7 @@
 }
 .publishing-status.active {
   background-color: #0568f4 !important;
+  color: white !important;
 }
 .publishing-status.inactive {
   background-color: white !important;
