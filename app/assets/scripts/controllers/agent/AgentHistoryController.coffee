@@ -26,16 +26,17 @@ angular.module('kulebaoAgent')
           _(scope.currentAgent.schools).map (s) ->
             id: s.school_id
             name: s.name
-            data: (_.find s.activeData, (d) -> d.month == currentMonth)
+            data: (_.find s.activeData, (d) -> d.data.month == currentMonth)
           .filter (s) ->
             s.data?
           .sortBy('school_id')
           .map (s) ->
+            s.monthlyData = s.data.data
             id: s.id
             name: s.name
-            childrenCount: s.data.child_count
-            parentsCount: s.data.logged_ever
-            parentsLastMonth: s.data.logged_once
+            childrenCount: s.monthlyData.child_count
+            parentsCount: s.monthlyData.logged_ever
+            parentsLastMonth: s.monthlyData.logged_once
             childRate: s.data.childRate
             rate: s.data.rate
           .value()
@@ -68,13 +69,14 @@ angular.module('kulebaoAgent')
         queue = [Stats.query(agent_id: currentAgent.id).$promise,
                  scope.waitForSchoolsReady()]
         $q.all(queue).then (q) ->
-          groups = _.groupBy(q[0], 'month')
+          groups = _.groupBy(q[0], (d) -> d.data.month )
           scope.lastActiveData = groups[scope.currentMonth]
           _.each currentAgent.schools, (s) ->
-            s.stats = _.find scope.lastActiveData, (f) -> f.school_id == s.school_id
+            s.stats = _.find scope.lastActiveData, (f) -> f.data.school_id == s.school_id
             if s.stats?
-              s.stats.rate = scope.calcRate s.stats
-              s.stats.childRate = scope.calcChildRate s.stats
+              s.stats.rate = scope.calcRate s.stats.data
+              s.stats.childRate = scope.calcChildRate s.stats.data
+              s.stats = _.assign s.stats, s.stats.data
           scope.$emit 'stats_ready', currentAgent.schools
 
       scope.refresh()

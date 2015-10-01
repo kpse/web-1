@@ -30,13 +30,13 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
                  FullRes AgentSchool, agent_id: currentAgent.id ]
         $q.all(queue).then (q) ->
           currentAgent.schools = q[1]
-          groups = _.groupBy(q[0], 'school_id')
+          groups = _.groupBy(q[0], (d) -> d.data.school_id)
           _.each currentAgent.schools, (kg) ->
             kg.checked = false
-            kg.activeData = _.uniq groups[kg.school_id], (u) -> u.month
+            kg.activeData = _.uniq groups[kg.school_id], (u) -> u.data.month
             _.each kg.activeData, (d) ->
-              d.rate = scope.calcRate(d)
-              d.childRate = scope.calcChildRate(d)
+              d.rate = scope.calcRate(d.data)
+              d.childRate = scope.calcChildRate(d.data)
             kg.lastActiveData = _.last _.sortBy kg.activeData, 'month'
 
           scope.$broadcast 'schools_ready', currentAgent.schools
