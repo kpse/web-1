@@ -37,12 +37,24 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
       scope.detail = (kg) ->
         location.path "main/school_report/#{kg.school_id}"
 
+      lastMonthOfNow = (time) ->
+        time.setDate(1)
+        time.setMonth(time.getMonth() - 1)
+        time.getFullYear() + ('0' + (time.getMonth() + 1)).slice(-2) + ""
+      scope.currentMonth = lastMonthOfNow(new Date())
+
+      scope.forceToReCalculate = ->
+      scope.export = ->
+      scope.exportHeader = -> ['学校全称', '学生总数', '家长总数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
+      scope.csvName = "monthly_report_#{scope.currentMonth}.csv"
+
   ]
 
 .controller 'OpSchoolReportingCtrl',
   ['$scope', '$rootScope', '$stateParams', '$http', 'parentService', 'childService',
    'schoolEmployeesService', 'classService', 'schoolService', 'adminNewsPreview', 'StatsService', 'activeCountService',
     (scope, rootScope, stateParams, $http, Parent, Child, Employee, Class, School, News, Statistics, ActiveCount) ->
+      rootScope.tabName = 'reporting'
       scope.loading = true
 
       Chat = Statistics 'session'
