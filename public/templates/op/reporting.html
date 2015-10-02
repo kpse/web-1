@@ -29,20 +29,20 @@
     <td class="col-xs-2">合计：</td>
     <td class="col-xs-1">{{allChildren.length}}</td>
     <td class="col-xs-1">{{allParents.length}}</td>
-    <td class="col-xs-2">{{allMembers}}</td>
-    <td class="col-xs-2">{{allAuthorised}}</td>
-    <td class="col-xs-2">{{allVideoMembers}}</td>
-    <td class="col-xs-2">{{allActiveParents}}</td>
+    <td class="col-xs-2">{{allLoggedEver}}</td>
+    <td class="col-xs-2">{{allLoggedOnce}}</td>
+    <td class="col-xs-2">N/A</td>
+    <td class="col-xs-2">N/A</td>
   </tr>
 
-  <tr ng-repeat="kg in kindergartens | filter: searchText | orderBy:['-active.video', '-active.check_in_out', '-active.member']" class="row" ng-class="{editable: detail}" ng-click="detail(kg)">
+  <tr ng-repeat="kg in kindergartens | filter: searchText | orderBy:['-monthly.logged_ever', '-monthlyRate', '-monthlyChildRate']" class="row" ng-class="{editable: detail}" ng-click="detail(kg)">
     <td class="col-xs-2"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{kg.full_name}}</a></td>
     <td class="col-xs-1">{{kg.children.length}}</td>
     <td class="col-xs-1">{{kg.parents.length}}</td>
-    <td class="col-xs-2">{{kg.charge[0].total_phone_number}}</td>
-    <td class="col-xs-2">{{kg.active.video}}</td>
-    <td class="col-xs-2">{{kg.active.member}}</td>
-    <td class="col-xs-2">{{kg.active.check_in_out}}</td>
+    <td class="col-xs-2">{{kg.monthly.logged_ever}}</td>
+    <td class="col-xs-2">{{kg.monthly.logged_once}}</td>
+    <td class="col-xs-2">{{kg.monthlyRate}}</td>
+    <td class="col-xs-2">{{kg.monthlyChildRate}}</td>
   </tr>
   </tbody>
 </table>

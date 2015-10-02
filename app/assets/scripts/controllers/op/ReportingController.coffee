@@ -1,36 +1,30 @@
 angular.module('kulebaoOp').controller 'OpReportingCtrl',
   ['$scope', '$rootScope', '$location', '$http', 'parentService', 'childService',
-   'schoolEmployeesService', 'classService', 'schoolService', 'activeCountService', 'chargeService',
-    (scope, rootScope, location, $http, Parent, Child, Employee, Class, School, ActiveCount, Charge) ->
+   'schoolEmployeesService', 'classService', 'schoolService', 'activeCountService', 'chargeService', 'StatsServiceV4',
+   'monthlyChildRateService', 'monthlySchoolRateService',
+    (scope, rootScope, location, $http, Parent, Child, Employee, Class, School, ActiveCount, Charge, Statistics,
+     ChildRate, SchoolRate) ->
       rootScope.tabName = 'reporting'
 
+      Monthly = Statistics 'monthly'
+
       scope.loading = true
-      scope.allClasses = []
-      scope.allEmployees = []
       scope.allChildren = []
       scope.allParents = []
-      scope.allActiveMembers = 0
-      scope.allAuthorised = 0
-      scope.allMembers = 0
-      scope.allVideoMembers = 0
-      scope.allActiveParents = 0
+      scope.allLoggedOnce = 0
+      scope.allLoggedEver = 0
       scope.kindergartens = School.query ->
         _.forEach scope.kindergartens, (k) ->
-          k.classes = Class.query school_id: k.school_id, ->
-            scope.allClasses = scope.allClasses.concat k.classes
           k.parents = Parent.query school_id: k.school_id, ->
             scope.allParents = scope.allParents.concat k.parents
           k.children = Child.query school_id: k.school_id, ->
             scope.allChildren = scope.allChildren.concat k.children
-          k.employees = Employee.query school_id: k.school_id, ->
-            scope.allEmployees = scope.allEmployees.concat k.employees
-          k.active = ActiveCount.get school_id: k.school_id, ->
-            scope.allActiveMembers = scope.allActiveMembers + k.active.activated
-            scope.allMembers = scope.allMembers + k.active.member
-            scope.allVideoMembers = scope.allVideoMembers + k.active.video
-            scope.allActiveParents = scope.allActiveParents + k.active.check_in_out
-          k.charge = Charge.query school_id: k.school_id, ->
-            scope.allAuthorised = scope.allAuthorised + k.charge[0].total_phone_number
+          k.charge = Charge.query school_id: k.school_id
+          k.monthly = Monthly.get school_id: k.school_id, ->
+            scope.allLoggedOnce = scope.allLoggedOnce + k.monthly.logged_once
+            scope.allLoggedEver = scope.allLoggedEver + k.monthly.logged_ever
+            k.monthlyRate = SchoolRate(k.monthly)
+            k.monthlyChildRate = ChildRate(k.monthly)
 
         scope.loading = false
 
@@ -53,13 +47,16 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
 .controller 'OpSchoolReportingCtrl',
   ['$scope', '$rootScope', '$stateParams', '$http', 'parentService', 'childService',
    'schoolEmployeesService', 'classService', 'schoolService', 'adminNewsPreview', 'StatsService', 'activeCountService',
-    (scope, rootScope, stateParams, $http, Parent, Child, Employee, Class, School, News, Statistics, ActiveCount) ->
+   'monthlyChildRateService', 'monthlySchoolRateService', 'StatsServiceV4',
+    (scope, rootScope, stateParams, $http, Parent, Child, Employee, Class, School, News, Statistics, ActiveCount,
+     ChildRate, SchoolRate, StatisticsV4) ->
       rootScope.tabName = 'reporting'
       scope.loading = true
 
       Chat = Statistics 'session'
       History = Statistics 'history'
       DailyLog = Statistics 'dailylog'
+      Monthly = StatisticsV4 'monthly'
 
       scope.childrenInSchool = 0
       scope.kindergarten = School.get school_id: stateParams.school_id, ->
@@ -75,6 +72,9 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
           scope.allChats = Chat.get school_id: stateParams.school_id
           scope.allHistoryRecords = History.get school_id: stateParams.school_id
           scope.active = ActiveCount.get school_id: stateParams.school_id
+          scope.monthly = Monthly.get school_id: stateParams.school_id
+          scope.monthlyRate = SchoolRate(scope.monthly)
+          scope.monthlyChildRate = ChildRate(scope.monthly)
           scope.loading = false
 
   ]

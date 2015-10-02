@@ -12,6 +12,11 @@ CREATE TABLE bindinghistory (
   INDEX (phone, updated_at)
 );
 
+INSERT INTO bindinghistory (phone, device_type, access_token, version_code, updated_at) VALUES
+('13402815317', 'ios', '0', '99', 1441036610001),
+('13408654680', 'ios', '0', '99', 1441036610001),
+('13402815317', 'ios', '0', '99', 1441036810001);
+
 # --- !Downs
 
 DROP TABLE IF EXISTS bindinghistory;
