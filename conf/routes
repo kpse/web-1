@@ -663,6 +663,8 @@ DELETE        /api/v4/agent/:agentId/statistics/:id                             
 GET           /api/v4/agent/:agentId/kindergarten/:kg/active                                   controllers.V4.AgentSchoolController.schoolData(agentId: Long, kg: Long)
 POST          /api/v4/agent_statistics                                                         controllers.V4.AgentController.monthlyStatistics
 
+GET           /api/v4/statistics/monthly/:schoolId                                             controllers.V4.StatisticsController.monthlyCounting(schoolId: Long)
+
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                         controllers.ChildController.index(kg: Long, parentId: String)
 GET           /kindergarten/:kg/parent/:parentId/child/:childId                                controllers.ChildController.show(kg: Long, parentId: String, childId: String)
