@@ -39,8 +39,7 @@ object SchoolMonthlyStatistics {
         "       parentinfo p" +
         " where b.phone= p.phone" +
         "   and p.school_id= {kg}" +
-        "   and p.status= 1 and b.updated_at > {begin} and b.updated_at < {end}" +
-        " and b.updated_at < {end}")
+        "   and p.status= 1 and b.updated_at < {end}")
         .on(
           'kg -> school_id.toString,
           'begin -> firstMilli,
