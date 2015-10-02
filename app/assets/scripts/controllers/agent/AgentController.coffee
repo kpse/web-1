@@ -1,7 +1,7 @@
 angular.module('kulebaoAgent').controller 'AgentCtrl',
   ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter', '$modal', '$q', 'loggedUser', 'currentAgent',
-   'agentSchoolService', 'agentPasswordService', 'agentStatsService', 'fullResponseService',
-    (scope, $rootScope, $stateParams, $state, $location, $filter, Modal, $q, User, CurrentAgent, AgentSchool, Password, Stats, FullRes) ->
+   'agentSchoolService', 'agentPasswordService', 'agentStatsService', 'fullResponseService', 'monthlyChildRateService', 'monthlySchoolRateService',
+    (scope, $rootScope, $stateParams, $state, $location, $filter, Modal, $q, User, CurrentAgent, AgentSchool, Password, Stats, FullRes, ChildRate, SchoolRate) ->
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
 
@@ -16,11 +16,9 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
           scope.$on 'schools_ready', -> resolve()
           resolve() if scope.currentAgent && scope.currentAgent.schools?
 
-      scope.calcChildRate = (d) ->
-        result = if d.child_count == 0 then 0 else (d.logged_ever / d.child_count * 1.5 * 100 ).toFixed 2
-        if result > 100 then 100 else result
+      scope.calcChildRate = ChildRate
 
-      scope.calcRate = (d) -> if !d? || !d.logged_ever? || d.logged_ever == 0 then 0 else (d.logged_once/d.logged_ever * 100).toFixed 2
+      scope.calcRate = SchoolRate
 
       scope.refresh = ->
         scope.d3Data = []
