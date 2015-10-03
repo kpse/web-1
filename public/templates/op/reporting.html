@@ -1,4 +1,4 @@
-<h2>用户统计</h2>
+<h2>学校月度报告汇总</h2>
 <div class="well schools-search-panel">
   <span>检索：</span>
   <input ng-model="searchText"/>
@@ -43,3 +43,7 @@
   </tbody>
 </table>
 
+<button type="submit" class="btn btn-success col-xs-offset-1 col-xs-2" ng-disabled="loading || !export"
+        ng-csv="export()" csv-header="exportHeader()" add-bom="U+FEFF"
+        filename="{{csvName}}">导出{{currentMonth}}数据
+</button>
