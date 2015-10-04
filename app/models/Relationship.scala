@@ -9,6 +9,7 @@ import anorm._
 import anorm.SqlParser._
 import anorm.~
 import play.Logger
+import play.api.libs.json.Json
 import scala.util.Random
 import models.helper.TimeHelper.any2DateTime
 
@@ -17,6 +18,10 @@ case class Relationship(parent: Option[Parent], child: Option[ChildInfo], card: 
 case class RelationshipIdentity(id: Long, card: String)
 
 object Relationship {
+  implicit val writeParent = Json.writes[Parent]
+  implicit val writeChildInfo = Json.writes[ChildInfo]
+  implicit val writeRelationship = Json.writes[Relationship]
+
   def deleted(card: String): Boolean = DB.withConnection {
     implicit c =>
       SQL("select count(1) from relationmap where card_num={card} and status=0")
