@@ -105,7 +105,7 @@ case class ImportedRelationship(id: String, card: String, parent: IdItem, child:
       }
       catch {
         case e: Throwable =>
-          Logger.info(e.getLocalizedMessage)
+          Logger.warn(e.getLocalizedMessage)
           c.rollback()
           Some(BatchImportReport(id, "卡号 %s（%s <-> %s）创建失败。".format(card, parent.id, child.id)))
       }

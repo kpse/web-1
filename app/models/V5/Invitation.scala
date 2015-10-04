@@ -25,7 +25,7 @@ case class Invitation(from: Parent, to: NewParent) {
       }
       catch {
         case e: Throwable => c.rollback()
-          Logger.info(e.getLocalizedMessage)
+          Logger.warn(e.getLocalizedMessage)
           List()
       }
   }

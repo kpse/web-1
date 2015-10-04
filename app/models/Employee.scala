@@ -83,7 +83,7 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
       }
       catch {
         case e: Throwable =>
-          Logger.info(e.getLocalizedMessage)
+          Logger.warn(e.getLocalizedMessage)
           c.rollback()
           None
       }

@@ -148,7 +148,7 @@ object Children {
       }
       catch {
         case e: Throwable =>
-          Logger.info(e.getLocalizedMessage)
+          Logger.warn(e.getLocalizedMessage)
           c.rollback()
           None
       }

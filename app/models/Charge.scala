@@ -99,7 +99,7 @@ object Charge {
       }
       catch {
         case e: Throwable => c.rollback()
-          Logger.info(e.getLocalizedMessage)
+          Logger.warn(e.getLocalizedMessage)
           1
       }
   }

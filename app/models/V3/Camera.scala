@@ -31,7 +31,7 @@ case class Camera(id: Option[Long], account: String, password: String, hardware:
       catch {
         case e: Throwable =>
           c.rollback()
-          Logger.info(e.getLocalizedMessage)
+          Logger.warn(e.getLocalizedMessage)
           None
       }
   }
@@ -55,7 +55,7 @@ case class Camera(id: Option[Long], account: String, password: String, hardware:
       catch {
         case e: Throwable =>
           c.rollback()
-          Logger.info(e.getLocalizedMessage)
+          Logger.warn(e.getLocalizedMessage)
           None
       }
   }
@@ -79,6 +79,7 @@ case class Camera(id: Option[Long], account: String, password: String, hardware:
       catch {
         case e: Throwable =>
           c.rollback()
+          Logger.warn(e.getLocalizedMessage)
           ErrorResponse(e.getLocalizedMessage)
       }
   }

@@ -1,5 +1,6 @@
 package models
 
+import play.Logger
 import play.api.db.DB
 import anorm._
 import models.helper.RangerHelper._
@@ -38,6 +39,7 @@ object Assess {
       }
       catch {
         case e: Throwable => c.rollback()
+          Logger.warn(e.getLocalizedMessage)
           ErrorResponse(e.getLocalizedMessage)
           List[Assess]()
       }

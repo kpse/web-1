@@ -200,8 +200,8 @@ object Relationship {
       catch {
         case e: Throwable =>
           c.rollback()
-          Logger.info("create relationship error...")
-          Logger.info(e.getLocalizedMessage)
+          Logger.warn("create relationship error...")
+          Logger.warn(e.getLocalizedMessage)
           None
       }
   }
