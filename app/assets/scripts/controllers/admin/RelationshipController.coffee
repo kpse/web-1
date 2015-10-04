@@ -261,8 +261,9 @@ angular.module('kulebaoAdmin')
 
       scope.cardNumberEditing = 0
       scope.editing = (r) ->
-        scope.cardNumberEditing = r.card
         scope.oldRelationship = angular.copy r
+        r.card = '0000000000' if scope.invalidCard(r)
+        scope.cardNumberEditing = r.id
 
       scope.cancelEditing = (r)->
         scope.cardNumberEditing = 0
@@ -283,6 +284,8 @@ angular.module('kulebaoAdmin')
       scope.membersInformation =
         members : [{id: 0, desc:'未开通'}, {id: 1, desc: '已开通'}]
         videoMembers : [{id: 0, desc:'未开通'}, {id: 1, desc: '已开通'}]
+
+      scope.invalidCard = (r) -> !r.card? or 'f' == _.first r.card
   ]
 
 .controller 'connectedCtrl',
