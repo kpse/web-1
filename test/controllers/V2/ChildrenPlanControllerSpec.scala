@@ -90,11 +90,11 @@ class ChildrenPlanControllerSpec extends Specification with TestSupport {
       private val json1: JsValue = Json.toJson(BusLocation(93740362, driver, 100.11, 2, 3, 4, Some("address"), None, None))
       val locationResponse = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver}/location").withBody(json1)).get
 
-      private val json2: JsValue = Json.toJson(BusLocation(93740362, driver2, 99.11, 2, 3, 4, Some("address"), None, None))
-      val locationResponse2 = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver}/location").withBody(json2)).get
-
       private val onBoarding: JsValue = Json.toJson(CheckInfo(93740362, "0001234570", 1, 2, "", 0))
-      val checkInResponse = route(driverRequest(POST, "/api/v2/kindergarten/93740362/bus_driver/${driver2}/check_in").withBody(onBoarding)).get
+      val checkInResponse = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver2}/check_in").withBody(onBoarding)).get
+
+      private val json2: JsValue = Json.toJson(BusLocation(93740362, driver2, 99.11, 2, 3, 4, Some("address"), None, None))
+      val locationResponse2 = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver2}/location").withBody(json2)).get
 
       val checkResponse2 = route(parentRequest(GET, s"/api/v2/kindergarten/93740362/last_bus_location/$childId")).get
 
