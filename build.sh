@@ -16,7 +16,7 @@ function load_env {
 function build_local {
     load_env
     JAVA_OPTS=-Xmx4g node_modules/karma/bin/karma start --single-run && \
-    play -Dlogger.resource=travis-logger.xml -Dconfig.resource=test.conf pmd checkstyle findbugs test
+    play -Dconfig.resource=conf/test.conf pmd checkstyle findbugs test
 }
 
 function build_and_push {
