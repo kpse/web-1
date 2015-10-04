@@ -76,26 +76,34 @@ object RelativeControllerSpec extends Specification with TestSupport {
     }
 
     "reuse deleted phone number in creating" in new WithApplication {
+      val firstPhone = route(loggedRequest(GET, "/api/v3/kindergarten/93740362/relative/1")).get
+      val firstRelative: JsValue = Json.parse(contentAsString(firstPhone))
+      private val phone: String = (firstRelative \ "basic" \ "phone").as[String]
+
       val response = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/relative/1")).get
 
       status(response) must equalTo(OK)
 
-      private val requestBody = Json.toJson(createRelative("13402815317"))
+      private val requestBody = Json.toJson(createRelative(phone))
 
       val response2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/relative").withBody(requestBody)).get
 
       status(response2) must equalTo(OK)
 
       val newCreatedRelative: JsValue = Json.parse(contentAsString(response2))
-      (newCreatedRelative \ "basic" \ "phone").as[String] must equalTo("13402815317")
+      (newCreatedRelative \ "basic" \ "phone").as[String] must equalTo(phone)
     }
 
     "reuse deleted phone in updating" in new WithApplication {
+      val firstPhone = route(loggedRequest(GET, "/api/v3/kindergarten/93740362/relative/1")).get
+      val firstRelative: JsValue = Json.parse(contentAsString(firstPhone))
+      private val phone: String = (firstRelative  \ "basic" \ "phone").as[String]
+
       val response = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/relative/1")).get
 
       status(response) must equalTo(OK)
 
-      private val requestBody = Json.toJson(createRelative("13402815317", Some(2)))
+      private val requestBody = Json.toJson(createRelative(phone, Some(2)))
 
       val response2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/relative/2").withBody(requestBody)).get
 
@@ -103,7 +111,7 @@ object RelativeControllerSpec extends Specification with TestSupport {
 
       Logger.info(contentAsString(response2))
       val UpdatedPhoneRelative: JsValue = Json.parse(contentAsString(response2))
-      (UpdatedPhoneRelative \ "basic" \ "phone").as[String] must equalTo("13402815317")
+      (UpdatedPhoneRelative \ "basic" \ "phone").as[String] must equalTo(phone)
 
     }
 

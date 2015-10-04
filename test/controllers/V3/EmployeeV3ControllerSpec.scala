@@ -1,9 +1,12 @@
 package controllers.V3
 
 import helper.TestSupport
+import models.V3.{EmployeeExt, EmployeeV3}
+import models.V3.EmployeeV3.writeEmployeeV3
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
+import play.Logger
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -57,12 +60,13 @@ object EmployeeV3ControllerSpec extends Specification with TestSupport {
     }
 
     "ignore the school id from updating json" in new WithApplication {
-
-      val employeeBody = Json.parse("{\"id\":142, \"basic\":{\"id\":\"3_93740362_6112211\",\"name\":\"李毅老师\",\"phone\":\"13402815317\"," +
-        "\"gender\":0,\"workgroup\":\"教师组\",\"workduty\":\"教师\",\"portrait\":\"\",\"birthday\":\"1986-06-04\",\"school_id\":9999," +
-        "\"login_name\":\"somenewlogin\",\"timestamp\":0,\"privilege_group\":\"teacher\",\"status\":1,\"created_at\":0, \"uid\":142}, " +
-        "\"ext\": {\"display_name\": \"display_name\"}}")
-      val res2 = route(principalLoggedRequest(POST, "/api/v3/kindergarten/93740362/employee/142").withBody(employeeBody)).get
+      val res1 = route(principalLoggedRequest(GET, "/api/v3/kindergarten/93740362/employee/142")).get
+      val employee142: JsValue = Json.parse(contentAsString(res1))
+      private val employeeInfo: EmployeeV3 = employee142.as[EmployeeV3]
+      val employeeWithWrongSchoolId = Json.toJson(employeeInfo.copy(basic = employeeInfo.basic.copy(school_id = 9999),
+        ext = Some(EmployeeExt(None, None, None, None, None, None, None, None, None, None, None, None, None, None,None, None, None, None))))
+      Logger.info("employeeWithWrongSchoolId: " + employeeWithWrongSchoolId.toString)
+      val res2 = route(principalLoggedRequest(POST, "/api/v3/kindergarten/93740362/employee/142").withBody(employeeWithWrongSchoolId)).get
       status(res2) must equalTo(OK)
       val response2: JsValue = Json.parse(contentAsString(res2))
 

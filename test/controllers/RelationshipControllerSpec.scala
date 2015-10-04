@@ -165,7 +165,7 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       (parent \ "phone").as[String] must equalTo("13408654680")
       (parent \ "gender").as[Int] must equalTo(0)
       (parent \ "school_id").as[Long] must equalTo(93740362)
-      (parent \ "birthday").as[String] must equalTo("1799-12-31")
+      (parent \ "birthday").as[String] must equalTo("1999-01-01")
       (parent \ "portrait").as[String] must equalTo("")
       (parent \ "name").as[String] must equalTo("袋鼠")
       (parent \ "company").as[String] must equalTo("某公司")
