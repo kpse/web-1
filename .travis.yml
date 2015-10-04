@@ -20,4 +20,4 @@ before_script:
   - npm install
 script:
   - ./node_modules/karma/bin/karma start --single-run --browsers PhantomJS karma.conf.coffee
-  - play-${PLAY_VERSION}/play -Dlogger.resource=travis-logger.xml "test-only * -- exclude massive_import"
+  - play-${PLAY_VERSION}/play -Dlogger.resource=travis-logger.xml -Dconfig.resource=test.conf "test-only * -- exclude massive_import"
