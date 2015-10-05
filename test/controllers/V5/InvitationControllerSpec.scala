@@ -12,14 +12,18 @@ import play.api.test.Helpers._
 
 @RunWith(classOf[JUnitRunner])
 class InvitationControllerSpec extends Specification with TestSupport {
-  def loggedRequest(method: String, url: String) = {
+  def loggedOneChildParent(method: String, url: String) = {
     FakeRequest(method, url).withSession("username" -> "13408654680", "token" -> "1386849160798")
+  }
+  
+  def loggedTwoChildrenParent(method: String, url: String) = {
+    FakeRequest(method, url).withSession("username" -> "13408654681", "token" -> "1386849160798")
   }
 
   "InvitationController" should {
     "create the same relationships as it's host" in new WithApplication {
 
-      val invitationRes = route(loggedRequest(POST, "/api/v5/kindergarten/93740362/invitation").withBody(theHost)).get
+      val invitationRes = route(loggedOneChildParent(POST, "/api/v5/kindergarten/93740362/invitation").withBody(theHost())).get
 
       status(invitationRes) must equalTo(OK)
       contentType(invitationRes) must beSome.which(_ == "application/json")
@@ -32,7 +36,7 @@ class InvitationControllerSpec extends Specification with TestSupport {
 
     "create as many relationships as it's host" in new WithApplication {
 
-      val invitationRes = route(loggedRequest(POST, "/api/v5/kindergarten/93740362/invitation").withBody(twoRelationshipsHost)).get
+      val invitationRes = route(loggedTwoChildrenParent(POST, "/api/v5/kindergarten/93740362/invitation").withBody(twoRelationshipsHost)).get
 
       status(invitationRes) must equalTo(OK)
       contentType(invitationRes) must beSome.which(_ == "application/json")
@@ -42,10 +46,27 @@ class InvitationControllerSpec extends Specification with TestSupport {
       (response(1) \ "child" \ "child_id").as[String] must equalTo("1_93740362_778")
 
     }
+    
+    "check phone number before accept the invitation" in new WithApplication {
+
+      val invitationRes = route(loggedOneChildParent(POST, "/api/v5/kindergarten/93740362/invitation").withBody(twoRelationshipsHost)).get
+
+      status(invitationRes) must equalTo(INTERNAL_SERVER_ERROR)
+      contentType(invitationRes) must beSome.which(_ == "application/json")
+    }
+
+    "check invitee phone number is not existing" in new WithApplication {
+
+      val invitationRes = route(loggedOneChildParent(POST, "/api/v5/kindergarten/93740362/invitation").withBody(theHost(aExistingPhone))).get
+
+      status(invitationRes) must equalTo(INTERNAL_SERVER_ERROR)
+      contentType(invitationRes) must beSome.which(_ == "application/json")
+    }
   }
   val newPhone: String = "13321147894"
-  def theHost: JsValue  = {
-    Json.toJson(Invitation(Parent.findById(93740362, "2_93740362_789").get, NewParent(newPhone, "搜索", "妈妈")))
+  val aExistingPhone: String = "13408654681"
+  def theHost(phone: String = newPhone): JsValue  = {
+    Json.toJson(Invitation(Parent.findById(93740362, "2_93740362_789").get, NewParent(phone, "搜索", "妈妈")))
   }
 
   def twoRelationshipsHost: JsValue  = {

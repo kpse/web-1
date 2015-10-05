@@ -1,7 +1,7 @@
 package controllers.V5
 
 import controllers.Secured
-import models.Relationship
+import models.{Parent, ErrorResponse, Relationship}
 import models.Relationship.{writeRelationship, writeChildInfo, writeParent}
 import models.V5.Invitation
 import play.api.Logger
@@ -14,6 +14,10 @@ object InvitationController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString())
         request.body.validate[Invitation].map {
+          case (me) if me.from.phone != u =>
+            InternalServerError(Json.toJson(ErrorResponse("邀请人信息不正确。(wrong host information)")))
+          case (me) if Parent.phoneSearch(me.to.phone).exists(_.status == Some(1)) =>
+            InternalServerError(Json.toJson(ErrorResponse("被邀请号码已存在。(invitee's phone number exists already)")))
           case (me) =>
             val newCreation: List[Relationship] = me.copy(from = me.from.copy(school_id = schoolId)).settle
             Logger.info("invitation creates : " + newCreation.toString)
