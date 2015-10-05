@@ -17,6 +17,11 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
                   gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int],
                   company: Option[String] = None, video_member_status: Option[Long] = None, created_at: Option[Long] = None,
                   id: Option[Long] = None) {
+  def nonEmptyBirthday: String = birthday match {
+    case b if b.nonEmpty => b
+    case _ => "1980-01-01"
+  }
+
   def hasHistory(historyId: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from sessionlog where uid={id} and sender={sender}")
@@ -349,7 +354,7 @@ object Parent {
           'company -> parent.company,
           'kg -> parent.school_id.toString,
           'picurl -> parent.portrait.getOrElse(""),
-          'birthday -> parent.birthday,
+          'birthday -> parent.nonEmptyBirthday,
           'parent_id -> parent.parent_id,
           'member -> parent.member_status.getOrElse(0),
           'status -> parent.status.getOrElse(1),
@@ -368,7 +373,7 @@ object Parent {
           'gender -> parent.gender,
           'company -> parent.company,
           'picurl -> parent.portrait.getOrElse(""),
-          'birthday -> parent.birthday,
+          'birthday -> parent.nonEmptyBirthday,
           'timestamp -> timestamp,
           'member -> parent.member_status.getOrElse(0),
           'status -> parent.status.getOrElse(1),
@@ -412,6 +417,7 @@ object Parent {
     implicit c =>
       val timestamp = System.currentTimeMillis
       val parentId = parent.parent_id.getOrElse("1_%d_%d".format(kg, timestamp % 100000))
+
       try {
         val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status, created_at) " +
           "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member},{created})")
@@ -423,7 +429,7 @@ object Parent {
             'gender -> parent.gender,
             'company -> parent.company,
             'picurl -> parent.portrait.getOrElse(""),
-            'birthday -> parent.birthday,
+            'birthday -> parent.nonEmptyBirthday,
             'school_id -> kg.toString,
             'status -> 1,
             'member -> parent.member_status.getOrElse(0),

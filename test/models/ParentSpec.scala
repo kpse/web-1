@@ -90,7 +90,15 @@ class ParentSpec extends Specification with TestSupport {
       result.error_code must equalTo(0)
     }
 
+    "be created despite of empty birthday" in new WithApplication {
+      Parent.create(kg, createParent("11223344556").copy(birthday = ""))
+
+      private val result = LoginCheck(MobileLogin("11223344556", "23344556"))
+      result.error_code must equalTo(0)
+    }
+
 
   }
+
   def createParent(phone: String) = Parent(None, kg, "name", phone, None, 0, "1980-01-01", None, None, None)
 }
