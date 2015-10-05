@@ -6,13 +6,22 @@ module.exports = function (grunt) {
       basic: {
         options: {},
         files: [{
-          src: ['app/assets/scripts/admin.coffee', 'app/assets/scripts/controllers/admin/*.coffee'],
+          src: ['app/assets/scripts/admin.coffee'],
           dest: 'dist/admin.js'
         }, {
-          src: ['app/assets/scripts/op.coffee', 'app/assets/scripts/controllers/op/*.coffee'],
+          src: ['app/assets/scripts/controllers/admin/*.coffee'],
+          dest: 'dist/admin_controllers.js'
+        }, {
+          src: ['app/assets/scripts/op.coffee'],
           dest: 'dist/op.js'
         }, {
-          src: ['app/assets/scripts/agent.coffee', 'app/assets/scripts/controllers/agent/*.coffee'],
+          src: ['app/assets/scripts/controllers/op/*.coffee'],
+          dest: 'dist/op_controllers.js'
+        }, {
+          src: ['app/assets/scripts/controllers/agent/*.coffee'],
+          dest: 'dist/agent_controllers.js'
+        }, {
+          src: ['app/assets/scripts/agent.coffee'],
           dest: 'dist/agent.js'
         }, {
           src: ['app/assets/scripts/directives/*.coffee'],
@@ -75,18 +84,18 @@ module.exports = function (grunt) {
       }
     },
     concat: {
-      //admin: {
-      //  src: ['app/assets/scripts/admin.js', 'app/assets/scripts/controllers/admin/*.js'],
-      //  dest: 'dist/admin.js'
-      //},
-      //op: {
-      //  src: ['app/assets/scripts/op.js', 'app/assets/scripts/controllers/op/*.js'],
-      //  dest: 'dist/op.js'
-      //},
-      //agent: {
-      //  src: ['app/assets/scripts/agent.js', 'app/assets/scripts/controllers/agent/*.js'],
-      //  dest: 'dist/agent.js'
-      //},
+      admin: {
+        src: ['dist/admin.js', 'dist/admin_controllers.js'],
+        dest: 'dist/admin.js'
+      },
+      op: {
+        src: ['dist/op.js', 'dist/op_controllers.js'],
+        dest: 'dist/op.js'
+      },
+      agent: {
+        src: ['dist/agent.js', 'dist/agent_controllers.js'],
+        dest: 'dist/agent.js'
+      },
       //directives: {
       //  src: ['app/assets/scripts/directives/*.js'],
       //  dest: 'dist/all_directives.js'
