@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('kulebao.services')
-.factory 'StatsService', ['$resource', ($resource) ->
+.factory('StatsService', ['$resource', ($resource) ->
   (name) ->
     $resource "/api/v1/statistics/#{name}/:school_id",
       {
@@ -14,7 +14,7 @@ angular.module('kulebao.services')
         }
       }
 ]
-.factory 'StatsServiceV4', ['$resource', ($resource) ->
+).factory('StatsServiceV4', ['$resource', ($resource) ->
   (name) ->
     $resource "/api/v4/statistics/#{name}/:school_id",
       {
@@ -29,6 +29,6 @@ angular.module('kulebao.services')
           cache: true
         }
       }
-]
+])
 
 

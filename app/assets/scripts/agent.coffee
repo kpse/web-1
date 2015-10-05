@@ -10,7 +10,7 @@ angular.module('kulebaoAdmin',
    'ngCookies'])
 angular.module('kulebaoAgent',
   ['kulebaoAdmin', 'ngCsv'])
-.config ['$stateProvider', '$urlRouterProvider', '$compileProvider', ($stateProvider, $urlRouterProvider, $compileProvider) ->
+.config(['$stateProvider', '$urlRouterProvider', '$compileProvider', ($stateProvider, $urlRouterProvider, $compileProvider) ->
     $stateProvider
     .state 'main',
       url: '/main/:agent_id'
@@ -74,8 +74,7 @@ angular.module('kulebaoAgent',
 
     $compileProvider.debugInfoEnabled(true)
 
-]
-.config(($modalProvider) ->
+]).config(($modalProvider) ->
   angular.extend $modalProvider.defaults,
     animation: 'am-fade'
     placement: 'center'

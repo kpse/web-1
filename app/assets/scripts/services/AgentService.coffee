@@ -1,5 +1,5 @@
 angular.module('kulebao.services')
-.factory 'agentService', ['$resource', 'session',
+.factory('agentService', ['$resource', 'session',
   ($resource, Session) ->
     $resource '/api/v4/agent/:id',
       {
@@ -14,7 +14,7 @@ angular.module('kulebao.services')
       }
   ]
 
-.factory 'agentManagementService', ['$resource',
+).factory('agentManagementService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:id',
       {
@@ -22,7 +22,7 @@ angular.module('kulebao.services')
       }
   ]
 
-.factory 'agentSchoolService', ['$resource',
+).factory('agentSchoolService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/kindergarten/:kg',
       {
@@ -31,7 +31,7 @@ angular.module('kulebao.services')
       }
   ]
 
-.factory 'agentContractorService', ['$resource',
+).factory('agentContractorService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/contractor/:id',
       {
@@ -56,7 +56,7 @@ angular.module('kulebao.services')
       }
   ]
 
-.factory 'agentActivityService', ['$resource',
+).factory('agentActivityService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/contractor/:contractor_id/activity/:id',
       {
@@ -76,7 +76,7 @@ angular.module('kulebao.services')
       }
   ]
 
-.factory 'agentRawActivityService', ['$resource',
+).factory('agentRawActivityService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/activity/:id',
       {
@@ -101,7 +101,7 @@ angular.module('kulebao.services')
       }
   ]
 
-.factory 'agentContractorInSchoolService', ['$resource',
+).factory('agentContractorInSchoolService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/kindergarten/:school_id/contractor/:id',
       {
@@ -111,7 +111,7 @@ angular.module('kulebao.services')
       }
   ]
 
-.factory 'agentActivityInSchoolService', ['$resource',
+).factory('agentActivityInSchoolService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/kindergarten/:school_id/activity/:id',
       {
@@ -121,7 +121,7 @@ angular.module('kulebao.services')
       }
   ]
 
-.factory 'agentPasswordService', ['$resource',
+).factory('agentPasswordService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/password',
       {
@@ -129,15 +129,14 @@ angular.module('kulebao.services')
       }
   ]
 
-.factory 'agentResetPasswordService', ['$resource',
+).factory('agentResetPasswordService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/password_reset',
       {
         agent_id: "@agent_id"
       }
   ]
-
-.factory 'agentStatsService', ['$resource',
+).factory('agentStatsService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/statistics/:id',
       {
@@ -145,8 +144,7 @@ angular.module('kulebao.services')
         id: "@id"
       }
   ]
-
-.factory 'agentSchoolDataService', ['$resource',
+).factory('agentSchoolDataService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/kindergarten/:school_id/active',
       {
@@ -158,8 +156,7 @@ angular.module('kulebao.services')
           cache: true
       }
   ]
-
-.factory 'agentActivityEnrollmentService', ['$resource',
+).factory('agentActivityEnrollmentService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/activity/:id/enrollment',
       {
@@ -167,19 +164,15 @@ angular.module('kulebao.services')
         id: "@id"
       }
   ]
-
-.factory 'agentStatsOperatorService', ['$resource',
+).factory('agentStatsOperatorService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent_statistics',{}
   ]
-
-angular.module('kulebao.services')
-.service 'monthlyChildRateService', ->
+).service 'monthlyChildRateService', ->
   (data) ->
     result = if data.child_count == 0 then 0 else (data.logged_ever / data.child_count * 1.5 * 100 ).toFixed 2
     if result > 100 then 100 else result
 
-angular.module('kulebao.services')
 .service 'monthlySchoolRateService', ->
   (data) ->
     if !data? || !data.logged_ever? || data.logged_ever == 0

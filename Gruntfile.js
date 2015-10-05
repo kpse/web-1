@@ -2,6 +2,30 @@ module.exports = function (grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    coffeeify: {
+      basic: {
+        options: {},
+        files: [{
+          src: ['app/assets/scripts/admin.coffee', 'app/assets/scripts/controllers/admin/*.coffee'],
+          dest: 'dist/admin.js'
+        }, {
+          src: ['app/assets/scripts/op.coffee', 'app/assets/scripts/controllers/op/*.coffee'],
+          dest: 'dist/op.js'
+        }, {
+          src: ['app/assets/scripts/agent.coffee', 'app/assets/scripts/controllers/agent/*.coffee'],
+          dest: 'dist/agent.js'
+        }, {
+          src: ['app/assets/scripts/directives/*.coffee'],
+          dest: 'dist/all_directives.js'
+        }, {
+          src: ['app/assets/scripts/filters/*.coffee'],
+          dest: 'dist/all_filters.js'
+        }, {
+          src: ['app/assets/scripts/services/*.coffee'],
+          dest: 'dist/all_services.js'
+        }]
+      }
+    },
     bower: {
       install: {
         options: {
@@ -23,7 +47,7 @@ module.exports = function (grunt) {
         dest: 'public/vendor/css/fonts'
       }
     },
-    clean: ["dist"],
+    clean: ['dist'],
     ngmin: {
       admin_controllers: {
         src: ['dist/admin.js'],
@@ -51,31 +75,34 @@ module.exports = function (grunt) {
       }
     },
     concat: {
-      admin: {
-        src: ['app/assets/scripts/admin.js', 'app/assets/scripts/controllers/admin/*.js'],
-        dest: 'dist/admin.js'
-      },
-      op: {
-        src: ['app/assets/scripts/op.js', 'app/assets/scripts/controllers/op/*.js'],
-        dest: 'dist/op.js'
-      },
-      agent: {
-        src: ['app/assets/scripts/agent.js', 'app/assets/scripts/controllers/agent/*.js'],
-        dest: 'dist/agent.js'
-      },
-      directives: {
-        src: ['app/assets/scripts/directives/*.js'],
-        dest: 'dist/all_directives.js'
-      },
-      filters: {
-        src: ['app/assets/scripts/filters/*.js'],
-        dest: 'dist/all_filters.js'
-      },
-      services: {
-        src: ['app/assets/scripts/services/*.js'],
+      //admin: {
+      //  src: ['app/assets/scripts/admin.js', 'app/assets/scripts/controllers/admin/*.js'],
+      //  dest: 'dist/admin.js'
+      //},
+      //op: {
+      //  src: ['app/assets/scripts/op.js', 'app/assets/scripts/controllers/op/*.js'],
+      //  dest: 'dist/op.js'
+      //},
+      //agent: {
+      //  src: ['app/assets/scripts/agent.js', 'app/assets/scripts/controllers/agent/*.js'],
+      //  dest: 'dist/agent.js'
+      //},
+      //directives: {
+      //  src: ['app/assets/scripts/directives/*.js'],
+      //  dest: 'dist/all_directives.js'
+      //},
+      //filters: {
+      //  src: ['app/assets/scripts/filters/*.js'],
+      //  dest: 'dist/all_filters.js'
+      //},
+      //services: {
+      //  src: ['app/assets/scripts/services/*.js'],
+      //  dest: 'dist/all_services.js'
+      //}
+      d3_services: {
+        src: ['dist/all_services.js', 'app/assets/scripts/services/d3.js'],
         dest: 'dist/all_services.js'
       }
-
     },
     uglify: {
       options: {
@@ -94,6 +121,7 @@ module.exports = function (grunt) {
     }
   });
 
+  grunt.loadNpmTasks('grunt-coffeeify');
   grunt.loadNpmTasks('grunt-bower-task');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-concat');
@@ -103,6 +131,6 @@ module.exports = function (grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['bower:install', 'copy']);
-  grunt.registerTask('minjs', ['clean', 'concat','ngmin', 'uglify']);
+  grunt.registerTask('minjs', ['clean', 'coffeeify', 'concat', 'ngmin', 'uglify']);
 
 };

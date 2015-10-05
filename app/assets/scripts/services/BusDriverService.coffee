@@ -1,14 +1,14 @@
 'use strict'
 
 angular.module('kulebao.services')
-.factory 'busDriverService', ['$resource', ($resource) ->
+.factory( 'busDriverService', ['$resource', ($resource) ->
   $resource "/api/v2/kindergarten/:school_id/bus_driver/:driver/plans",
     {
       school_id: '@school_id'
       driver: '@driver_id'
     }
 ]
-.factory 'schoolBusService', ['$resource', ($resource) ->
+).factory( 'schoolBusService', ['$resource', ($resource) ->
   $resource "/api/v2/kindergarten/:school_id/bus/:id",
     {
       school_id: '@school_id'
@@ -16,7 +16,7 @@ angular.module('kulebao.services')
     }
 ]
 
-.factory 'childrenPlanService', ['$resource', ($resource) ->
+).factory( 'childrenPlanService', ['$resource', ($resource) ->
   $resource "/api/v2/kindergarten/:school_id/child/:child_id/plan",
     {
       school_id: '@school_id'
@@ -24,12 +24,12 @@ angular.module('kulebao.services')
     }
 ]
 
-.factory 'busLocationService', ['$resource', ($resource) ->
+).factory( 'busLocationService', ['$resource', ($resource) ->
   $resource "/api/v2/kindergarten/:school_id/bus_driver/:driver_id/location",
     {
       school_id: '@school_id'
       driver_id: '@driver_id'
     }
-]
+])
 
 

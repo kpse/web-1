@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('kulebao.services')
-.factory 'chatSessionService', ['$resource',
+.factory( 'chatSessionService', ['$resource',
     ($resource) ->
       $resource '/kindergarten/:school_id/session/:topic/record/:rid',
         {
@@ -10,7 +10,7 @@ angular.module('kulebao.services')
           rid: '@id'
         }
 ]
-.factory 'senderService', ['$resource',
+).factory( 'senderService', ['$resource',
     ($resource) ->
       $resource '/kindergarten/:school_id/sender/:id',
         {
@@ -19,7 +19,7 @@ angular.module('kulebao.services')
           type: '@sender.type'
         }
 ]
-.factory 'historyService', ['$resource',
+).factory( 'historyService', ['$resource',
   ($resource) ->
     $resource '/kindergarten/:school_id/history/:topic/record/:rid',
       {
@@ -28,7 +28,7 @@ angular.module('kulebao.services')
         rid: '@id'
       }
 ]
-.factory 'historyShareService', ['$resource',
+).factory( 'historyShareService', ['$resource',
   ($resource) ->
     $resource '/api/v3/kindergarten/:school_id/history/:topic/record/:rid/share',
       {
@@ -36,4 +36,4 @@ angular.module('kulebao.services')
         topic: '@topic'
         rid: '@id'
       }
-]
+])

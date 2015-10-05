@@ -5,7 +5,7 @@ angular.module('kulebaoApp', ['ui.router', 'ngResource', 'ngRoute', 'angulartics
 angular.module('kulebaoAdmin',
   ['kulebaoApp', 'ui.bootstrap', 'ui.mask', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap', 'mgcrea.ngStrap.helpers.dimensions', 'mgcrea.ngStrap.tooltip', 'ngDragDrop',
    'ngCookies', 'ui.calendar'])
-.config ['$stateProvider', '$urlRouterProvider', '$compileProvider',
+.config(['$stateProvider', '$urlRouterProvider', '$compileProvider',
   ($stateProvider, $urlRouterProvider, $compileProvider) ->
     $stateProvider
     .state 'kindergarten',
@@ -267,7 +267,7 @@ angular.module('kulebaoAdmin',
 
     $compileProvider.debugInfoEnabled(false);
 ]
-.config(($modalProvider) ->
+).config(($modalProvider) ->
   angular.extend $modalProvider.defaults,
     animation: 'am-fade'
     placement: 'center'

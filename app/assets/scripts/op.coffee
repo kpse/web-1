@@ -10,7 +10,7 @@ angular.module('kulebaoAdmin',
    'ngCookies'])
 angular.module('kulebaoOp',
   ['kulebaoAdmin', 'emoji', 'ngCsv'])
-.config ['$stateProvider', '$urlRouterProvider', '$compileProvider',
+.config(['$stateProvider', '$urlRouterProvider', '$compileProvider',
   ($stateProvider, $urlRouterProvider, $compileProvider) ->
     $stateProvider
     .state 'main',
@@ -147,8 +147,7 @@ angular.module('kulebaoOp',
       $location.path '/main/school'
 
     $compileProvider.debugInfoEnabled(false);
-]
-.config(($modalProvider) ->
+]).config(($modalProvider) ->
   angular.extend $modalProvider.defaults,
     animation: 'am-fade'
     placement: 'center'
