@@ -96,18 +96,6 @@ module.exports = function (grunt) {
         src: ['dist/agent.js', 'dist/agent_controllers.js'],
         dest: 'dist/agent.js'
       },
-      //directives: {
-      //  src: ['app/assets/scripts/directives/*.js'],
-      //  dest: 'dist/all_directives.js'
-      //},
-      //filters: {
-      //  src: ['app/assets/scripts/filters/*.js'],
-      //  dest: 'dist/all_filters.js'
-      //},
-      //services: {
-      //  src: ['app/assets/scripts/services/*.js'],
-      //  dest: 'dist/all_services.js'
-      //}
       d3_services: {
         src: ['dist/all_services.js', 'app/assets/scripts/services/d3.js'],
         dest: 'dist/all_services.js'
@@ -140,6 +128,7 @@ module.exports = function (grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['bower:install', 'copy']);
+  // minify js scripts
   grunt.registerTask('minjs', ['clean', 'coffeeify', 'concat', 'ngmin', 'uglify']);
 
 };
