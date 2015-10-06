@@ -56,7 +56,7 @@ module.exports = function (grunt) {
         dest: 'public/vendor/css/fonts'
       }
     },
-    clean: ['dist'],
+    clean: ['dist', 'app/assets/scripts/min'],
     ngmin: {
       admin_controllers: {
         src: ['dist/admin.js'],
