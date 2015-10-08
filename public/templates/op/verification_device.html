@@ -6,8 +6,8 @@
 </div>
 <div class="well device-management-panel">
   <form class="form-horizontal row" role="form" name="form">
-    <div class="form-group col-sm-7"><label for="school_id" class="form-control-static">学校</label>
-      <select class="form-control school-select" ng-model="device.school_id"
+    <div class="form-group col-sm-7"><label for="school-id" class="form-control-static">学校</label>
+      <select id="school-id" class="form-control school-select" ng-model="device.school_id"
               ng-options="value.school_id as value.name for (key, value) in allSchools"
               data-style="btn-primary" name="school" required></select>
       <span class="error-field" ng-show="form.school.$dirty && form.school.$error.required">请选择学校</span>
