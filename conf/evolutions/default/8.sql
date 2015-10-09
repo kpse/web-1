@@ -12,7 +12,8 @@ CREATE TABLE appinfo (
   package_type VARCHAR(20) NOT NULL default 'parent',
   file_size    BIGINT(20)       NOT NULL,
   release_time  BIGINT(20)        NOT NULL,
-  PRIMARY KEY (uid)
+  PRIMARY KEY (uid),
+  UNIQUE (package_type, version_code)
 );
 
 --

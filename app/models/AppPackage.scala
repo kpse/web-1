@@ -58,7 +58,7 @@ object AppPackage {
 
   def latest(typ: Option[String] = None) = DB.withConnection {
     implicit c =>
-      SQL("select * from appinfo where version_code=(SELECT MAX(version_code) FROM appinfo where package_type={type})")
+      SQL("select * from appinfo where package_type={type} and version_code=(SELECT MAX(version_code) FROM appinfo where package_type={type}) limit 1")
         .on('type -> typ.getOrElse("parent")).as(simple singleOpt)
   }
 }
