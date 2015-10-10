@@ -87,14 +87,18 @@ class ChildrenPlanControllerSpec extends Specification with TestSupport {
       status(createPlanResponse) must equalTo(OK)
       (Json.parse(contentAsString(createPlanResponse)) \ "id").as[Long] must be greaterThan(1)
 
-      private val json1: JsValue = Json.toJson(BusLocation(93740362, driver, 100.11, 2, 3, 4, Some("address"), None, None))
-      val locationResponse = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver}/location").withBody(json1)).get
-
       private val onBoarding: JsValue = Json.toJson(CheckInfo(93740362, "0001234570", 1, 2, "", 0))
       val checkInResponse = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver2}/check_in").withBody(onBoarding)).get
 
-      private val json2: JsValue = Json.toJson(BusLocation(93740362, driver2, 99.11, 2, 3, 4, Some("address"), None, None))
-      val locationResponse2 = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver2}/location").withBody(json2)).get
+      private val plannedBusLocation: JsValue = Json.toJson(BusLocation(93740362, driver, 100.11, 2, 3, 4, Some("address"), None, None))
+      val locationResponse = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver}/location").withBody(plannedBusLocation)).get
+
+      status(locationResponse) must equalTo(OK)
+
+      private val realOnBoardingBus: JsValue = Json.toJson(BusLocation(93740362, driver2, 99.11, 2, 3, 4, Some("address"), None, None))
+      val locationResponse2 = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver2}/location").withBody(realOnBoardingBus)).get
+
+      status(locationResponse2) must equalTo(OK)
 
       val checkResponse2 = route(parentRequest(GET, s"/api/v2/kindergarten/93740362/last_bus_location/$childId")).get
 
