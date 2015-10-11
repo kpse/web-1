@@ -22,6 +22,12 @@ class InvitationControllerSpec extends Specification with TestSupport {
   }
 
   "InvitationController" should {
+    "check authentication first" in new WithApplication {
+      val response = route(FakeRequest(POST, "/api/v5/kindergarten/93740362/invitation").withBody(theHost())).get
+
+      status(response) must equalTo(UNAUTHORIZED)
+    }
+
     "create the same relationships as it's host" in new WithApplication {
       setUpVerification()
       val invitationRes = route(loggedOneChildParent(POST, "/api/v5/kindergarten/93740362/invitation").withBody(theHost())).get

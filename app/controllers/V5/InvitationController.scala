@@ -14,14 +14,14 @@ object InvitationController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString())
         request.body.validate[Invitation].map {
-          case (me) if me.code.phone != me.to.phone || !Verification.isMatched(me.code) =>
+          case (invitation) if invitation.code.phone != invitation.to.phone || !Verification.isMatched(invitation.code) =>
             InternalServerError(Json.toJson(ErrorResponse("验证码不正确。(wrong verification code)")))
-          case (me) if me.from.phone != u =>
+          case (invitation) if invitation.from.phone != u =>
             InternalServerError(Json.toJson(ErrorResponse("邀请人信息不正确。(wrong host information)", 10)))
-          case (me) if Parent.phoneSearch(me.to.phone).exists(_.status == Some(1)) =>
+          case (invitation) if Parent.phoneSearch(invitation.to.phone).exists(_.status == Some(1)) =>
             InternalServerError(Json.toJson(ErrorResponse("被邀请号码已存在。(invitee's phone number exists already)", 20)))
-          case (me) =>
-            val newCreation: List[Relationship] = me.copy(from = me.from.copy(school_id = schoolId)).settle
+          case (invitation) =>
+            val newCreation: List[Relationship] = invitation.copy(from = invitation.from.copy(school_id = schoolId)).settle
             Logger.info("invitation creates : " + newCreation.toString)
             Ok(Json.toJson(newCreation))
         }.recoverTotal {
