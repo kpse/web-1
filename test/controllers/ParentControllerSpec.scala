@@ -34,11 +34,9 @@ class ParentControllerSpec extends Specification with TestSupport {
       val response = route(FakeRequest(GET, "/kindergarten/93740362/parent")).get
 
       status(response) must equalTo(UNAUTHORIZED)
-
     }
 
     "show all parents to principal" in new WithApplication {
-
       val response = route(principalLoggedRequest(GET, "/kindergarten/93740362/parent")).get
 
       status(response) must equalTo(OK)
@@ -53,9 +51,7 @@ class ParentControllerSpec extends Specification with TestSupport {
     }
 
     "show partial parents to manager" in new WithApplication {
-
       val response = route(twoClassesManagerLoggedRequest(GET, "/kindergarten/93740362/parent")).get
-
       status(response) must equalTo(OK)
 
       val jsonResponse: JsValue = Json.parse(contentAsString(response))

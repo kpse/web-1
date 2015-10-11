@@ -19,9 +19,7 @@ class RelationshipControllerSpec extends Specification with TestSupport {
   "Relationship" should {
     "check authentication first" in new WithApplication {
       val response = route(FakeRequest(GET, "/kindergarten/93740362/relationship")).get
-
       status(response) must equalTo(UNAUTHORIZED)
-
     }
 
     "be retrieved by card number" in new WithApplication {
@@ -46,10 +44,8 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       (response \ "card").as[String] must equalTo("0001234567")
     }
 
-    "check card is good to use" in new WithApplication {
-
-      private val jsBody = newCard
-      val res = route(loggedRequest(POST, "/api/v1/card_check").withBody(jsBody)).get
+    "check if card is good to use" in new WithApplication {
+      val res = route(loggedRequest(POST, "/api/v1/card_check").withBody(newCard)).get
 
       status(res) must equalTo(OK)
       contentType(res) must beSome.which(_ == "application/json")
@@ -59,9 +55,8 @@ class RelationshipControllerSpec extends Specification with TestSupport {
 
     "be invalid card if it does not exist in cardrecord table" in new WithApplication {
 
-      private val jsBody = invalidCard
       private val card = (invalidCard \ "card").as[String]
-      val res = route(loggedRequest(POST, "/api/v1/card_check").withBody(jsBody)).get
+      val res = route(loggedRequest(POST, "/api/v1/card_check").withBody(invalidCard)).get
 
       status(res) must equalTo(OK)
       contentType(res) must beSome.which(_ == "application/json")

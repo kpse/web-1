@@ -1,7 +1,6 @@
 package controllers.V2
 
 import controllers.Secured
-import controllers.helper.JsonLogger.loggedJson
 import models.V2.NewsV2
 import models.V2.NewsV2._
 import models.{SuccessResponse, _}
@@ -17,11 +16,9 @@ object NewsControllerV2 extends Controller with Secured {
     u => _ =>
       tag match {
         case Some(true) =>
-          val jsons = NewsV2.allSortedWithTag(kg, classId, from, to, most)
-          Ok(loggedJson(jsons))
+          Ok(Json.toJson(NewsV2.allSortedWithTag(kg, classId, from, to, most)))
         case _ =>
-          val jsons = News.allSorted(kg, classId, from, to, most)
-          Ok(Json.toJson(jsons))
+          Ok(Json.toJson(News.allSorted(kg, classId, from, to, most)))
       }
   }
 

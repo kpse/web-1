@@ -40,7 +40,7 @@ class NewsControllerV2Spec extends Specification with TestSupport {
       response match {
         case JsArray(arr) =>
           arr.length must be lessThan 25
-          (arr(0) \ "news_id").as[Long] must equalTo(6L)
+          (arr.head \ "news_id").as[Long] must equalTo(6L)
         case _ => failure
       }
     }
@@ -56,7 +56,7 @@ class NewsControllerV2Spec extends Specification with TestSupport {
       response match {
         case JsArray(arr) =>
           arr.length must equalTo(1)
-          (arr(0) \ "news_id").as[Long] must equalTo(6L)
+          (arr.head \ "news_id").as[Long] must equalTo(6L)
         case _ => failure
       }
 
@@ -73,7 +73,7 @@ class NewsControllerV2Spec extends Specification with TestSupport {
       response match {
         case JsArray(arr) =>
           arr.length must greaterThan(1)
-          (arr(0) \ "news_id").as[Long] must equalTo(4L)
+          (arr.head \ "news_id").as[Long] must equalTo(4L)
         case _ => failure
       }
 
@@ -90,7 +90,7 @@ class NewsControllerV2Spec extends Specification with TestSupport {
       response match {
         case JsArray(arr) =>
           arr.length must equalTo(2)
-          (arr(0) \ "news_id").as[Long] must equalTo(6L)
+          (arr.head \ "news_id").as[Long] must equalTo(6L)
         case _ => failure
       }
 
@@ -103,7 +103,7 @@ class NewsControllerV2Spec extends Specification with TestSupport {
           93740362,
           "title",
           "created successfully with tags", None,
-          false, None,
+          published = false, None,
           Some(777666),
           None,
           Some("3_93740362_1122"), Some(false), List("作业", "活动")))
