@@ -4,7 +4,7 @@ import anorm.SqlParser._
 import anorm.{~, _}
 import models.Advertisement
 import org.joda.time.DateTime
-import play.Logger
+import play.api.Logger
 import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
@@ -36,6 +36,7 @@ case class EmployeeCheckInfo(school_id: Long, employee_id: Long, card_no: String
 }
 
 case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long, id: Option[Long] = None) {
+  private val logger: Logger = Logger(classOf[CheckInfo])
   def toNotifications: List[CheckNotification] = DB.withConnection {
     implicit c =>
       def generateNotice(childName: String): IOSField = {
@@ -83,7 +84,7 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
 
   def save(notifications: List[CheckNotification]): Option[Long] = DB.withTransaction {
     implicit c =>
-      Logger.info(s"messages in saving checking info: ${notifications}")
+      logger.debug(s"messages in saving checking info: ${notifications}")
       notifications match {
         case x::xs =>
           SQL("insert into dailylog (child_id, record_url, check_at, card_no, notice_type, school_id, parent_name) " +

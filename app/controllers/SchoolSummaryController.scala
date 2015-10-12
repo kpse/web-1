@@ -1,13 +1,12 @@
 package controllers
 
+import play.api.Logger
 import play.api.mvc._
 import play.api.libs.json.{JsError, Json}
 import models.json_models._
 import models.json_models.SchoolIntro._
-import play.Logger
 import models._
 import models.School._
-import controllers.helper.JsonLogger.loggedJson
 
 object SchoolSummaryController extends Controller with Secured {
   implicit val writes1 = Json.writes[SchoolIntroPreviewResponse]
@@ -15,6 +14,8 @@ object SchoolSummaryController extends Controller with Secured {
   implicit val writes3 = Json.writes[SchoolIntroDetail]
   implicit val writes4 = Json.writes[ErrorResponse]
   implicit val writes5 = Json.writes[SuccessResponse]
+
+  private val logger: Logger = Logger(classOf[SchoolIntroDetail])
 
   def preview(kg: Long, q: Option[String]) = IsLoggedIn {
     u => _ =>
@@ -32,7 +33,7 @@ object SchoolSummaryController extends Controller with Secured {
   def update(kg: Long) = IsLoggedIn(parse.json) {
     u =>
       request =>
-        Logger.info(request.body.toString())
+        logger.debug(request.body.toString())
         request.body.validate[SchoolIntro].map {
           case (detail) if SchoolIntro.schoolExists(detail.school_id) =>
             SchoolIntro.updateExists(detail)
@@ -51,7 +52,7 @@ object SchoolSummaryController extends Controller with Secured {
   def create = IsOperator(parse.json) {
     u =>
       request =>
-        Logger.info(request.body.toString())
+        logger.debug(request.body.toString())
         request.body.validate[CreatingSchool].map {
           case (detail) if Employee.phoneExists(detail.phone) =>
             BadRequest(Json.toJson(ErrorResponse("校长手机号已经存在。")))
@@ -82,12 +83,12 @@ object SchoolSummaryController extends Controller with Secured {
 
   def config(kg: Long) = IsAuthenticated {
     u => request =>
-      Ok(loggedJson(School.config(kg)))
+      Ok(Json.toJson(School.config(kg)))
   }
 
   def addConfig(kg: Long) = IsOperator(parse.json) {
     u => request =>
-      Logger.info(request.body.toString())
+      logger.debug(request.body.toString())
       request.body.validate[SchoolConfig].map {
         case (current) if current.config.nonEmpty =>
           current.config.map(Charge.addConfig(kg, _))

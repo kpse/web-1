@@ -174,7 +174,7 @@ object SchoolIntro {
 
   def preview(kg: Long, q: Option[String]) = DB.withConnection {
     implicit c =>
-      logger.info("preview" + generateQ(q))
+      logger.debug("preview query = " + generateQ(q))
       SQL(s"select update_at, school_id from schoolinfo where school_id={school_id} ${generateQ(q)} order by school_id")
         .on('school_id -> kg.toString).as(previewSimple *)
   }

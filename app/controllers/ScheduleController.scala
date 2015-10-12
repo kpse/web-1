@@ -4,7 +4,6 @@ import play.api.mvc._
 import play.api.libs.json.{JsError, Json}
 import models._
 import models.Schedule._
-import helper.JsonLogger.loggedJson
 
 object ScheduleController extends Controller with Secured {
 
@@ -14,7 +13,7 @@ object ScheduleController extends Controller with Secured {
 
   def preview(kg: Long, classId: Long) = IsLoggedIn {
     u => _ =>
-      Ok(loggedJson(Schedule.preview(kg, classId)))
+      Ok(Json.toJson(Schedule.preview(kg, classId)))
   }
 
   def show(kg: Long, classId: Long, scheduleId: Long) = IsLoggedIn {

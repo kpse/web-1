@@ -33,7 +33,6 @@ object ChildController extends Controller with Secured {
       val accesses: List[UserAccess] = UserAccess.queryByUsername(u, kg)
       val all = UserAccess.filterClassIds(accesses)(classIds) match {
         case ids if ids.length > 0 =>
-          Logger.info(ids)
           Children.findAllInClass(kg, Some(ids), connect)
         case wrong if wrong.isEmpty && classIds.nonEmpty =>
           List[ChildInfo]()

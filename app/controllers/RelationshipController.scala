@@ -4,7 +4,7 @@ import controllers.helper.CacheHelper._
 import controllers.helper.JsonLogger._
 import models.V3.CardV3
 import models._
-import play.Logger
+import play.api.Logger
 import play.api.libs.json.{JsError, JsValue, Json}
 import play.api.mvc.Controller
 
@@ -17,6 +17,7 @@ object RelationshipController extends Controller with Secured {
   implicit val read1 = Json.reads[ChildInfo]
   implicit val read2 = Json.reads[Parent]
   implicit val read3 = Json.reads[Relationship]
+  private val logger: Logger = Logger(classOf[Relationship])
 
   implicit val relationshipCacheKey = "index_relationships"
   createKeyCache
@@ -25,7 +26,7 @@ object RelationshipController extends Controller with Secured {
   def index(kg: Long, parent: Option[String], child: Option[String], classId: Option[Long]) = IsLoggedIn {
     u => _ =>
       val cacheKey: String = s"Relationship_${kg}_${parent}_${child}_${classId}"
-      Logger.info(s"RelationshipController entering index = ${cacheKey}")
+      logger.debug(s"RelationshipController entering index = ${cacheKey}")
 
       val value: List[Relationship] = digFromCache[List[Relationship]](cacheKey, 600, () => {
         Relationship.index(kg, parent, child, classId)
@@ -36,7 +37,7 @@ object RelationshipController extends Controller with Secured {
   def createOrUpdate(kg: Long, card: String) = IsAuthenticated(parse.json) {
     u =>
       implicit request =>
-        Logger.info(request.body.toString())
+        logger.debug(request.body.toString())
         val body: JsValue = request.body
         val relationship: String = (body \ "relationship").as[String]
         val phone: String = (body \ "parent" \ "phone").as[String]
@@ -54,7 +55,7 @@ object RelationshipController extends Controller with Secured {
           case c if !CardV3.valid(card) =>
             Ok(Json.toJson(new ErrorResponse(s"卡号${card}未授权，请联系库贝人员。(Invalid card number)", 4)))
           case exists if exists && uid.isDefined =>
-            Logger.info("update existing 1, reusing existing card")
+            logger.debug("update existing 1, reusing existing card")
             clearCurrentCache()
             Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, uid.get)))
           case exists if exists && uid.isEmpty =>
@@ -62,15 +63,15 @@ object RelationshipController extends Controller with Secured {
           case exists if !exists && uid.isDefined && Relationship.cardExists(card, None) =>
             BadRequest(loggedJson(ErrorResponse(s"修改关系失败，${card}号卡已经关联过家长。(Card is connected to parent before)", 6)))
           case exists if !exists && uid.isDefined =>
-            Logger.info("update existing 2")
+            logger.debug("update existing 2")
             clearCurrentCache()
             Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, uid.get)))
           case exists if !exists && uid.isEmpty && Relationship.deleted(card) =>
-            Logger.info("update existing 3, reusing deleted card")
+            logger.debug("update existing 3, reusing deleted card")
             clearCurrentCache()
             Ok(Json.toJson(Relationship.reuseDeletedCard(kg, card, relationship, phone, childId)))
           case exists if !exists && uid.isEmpty =>
-            Logger.info("create new")
+            logger.debug("create new")
             clearCurrentCache()
             Ok(Json.toJson(Relationship.create(kg, card, relationship, phone, childId)))
         }
@@ -80,7 +81,7 @@ object RelationshipController extends Controller with Secured {
   def create(kg: Long) = IsAuthenticated(parse.json) {
     u =>
       implicit request =>
-        Logger.info(request.body.toString())
+        logger.debug(request.body.toString())
         val body: JsValue = request.body
         val relationship: String = (body \ "relationship").as[String]
         val phone: String = (body \ "parent" \ "phone").as[String]
@@ -94,7 +95,6 @@ object RelationshipController extends Controller with Secured {
           case (p, c) if Relationship.getCard(p, c).nonEmpty =>
             BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。(Duplicated relationship)", 3)))
           case (p, c) =>
-            Logger.info("create new")
             clearCurrentCache()
             Ok(Json.toJson(Relationship.fakeCardCreate(kg, relationship, p, c)))
         }

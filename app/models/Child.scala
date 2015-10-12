@@ -7,7 +7,7 @@ import anorm._
 import controllers.RelationshipController
 import controllers.V3.StudentController
 import models.helper.TimeHelper.any2DateTime
-import play.Logger
+import play.api.Logger
 import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
@@ -19,6 +19,7 @@ case class ChildInfo(child_id: Option[String], name: String, nick: String, birth
 object Children {
   implicit val writeChildInfo = Json.writes[ChildInfo]
   implicit val readChildInfo = Json.reads[ChildInfo]
+  private val logger: Logger = Logger(classOf[ChildInfo])
 
   def removed(kg: Long) = DB.withConnection {
     implicit c =>
@@ -138,17 +139,17 @@ object Children {
             'class_id -> child.class_id,
             'timestamp -> timestamp,
             'created -> timestamp).executeInsert()
-        Logger.info("created childinfo %s".format(childUid))
+        logger.debug("created childinfo %s".format(childUid))
         c.commit()
         childUid.flatMap {
           uid =>
-            Logger.info("finding child %d".format(uid))
+            logger.warn("finding child %d".format(uid))
             findById(kg, uid)
         }
       }
       catch {
         case e: Throwable =>
-          Logger.warn(e.getLocalizedMessage)
+          logger.warn(e.getLocalizedMessage)
           c.rollback()
           None
       }
@@ -189,7 +190,7 @@ object Children {
       val sql = "select c.*, c2.class_name from childinfo c, classinfo c2 " +
         "where c.class_id=c2.class_id and c.status=1 and c.school_id={kg} and c.school_id=c2.school_id "
       val l: String = generateSQL(sql, classIds, connected)
-      Logger.info(l)
+      logger.debug(l)
       SQL(l)
         .on(
           'classId -> classIds,
