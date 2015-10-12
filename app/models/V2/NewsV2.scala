@@ -3,13 +3,14 @@ package models.V2
 import anorm.SqlParser._
 import anorm._
 import models.News
-import play.Logger
+import play.api.Logger
 import play.api.db.DB
 import anorm.~
 import play.api.Play.current
 import play.api.libs.json.Json
 
 object NewsV2 {
+  private val logger: Logger = Logger(classOf[News])
   def allIncludeNonPublished(kg: Long, classIds: Option[String], restricted: Boolean, from: Option[Long], to: Option[Long], most: Option[Int]) =
     News.allIncludeNonPublished(kg, classIds, restricted, from, to, most) map tags
 
@@ -46,10 +47,10 @@ object NewsV2 {
       }
       catch {
         case t: Throwable =>
-          Logger.info(s"creating rollback:${t.getMessage}")
+          logger.warn(s"creating rollback:${t.getMessage}")
           c.rollback()
       }
-      Logger.info(s"created news id: $createdId")
+      logger.info(s"created news id: $createdId")
       showWithTag(news.school_id, createdId.getOrElse(-1))
   }
 
@@ -73,10 +74,10 @@ object NewsV2 {
       }
       catch {
         case t: Throwable =>
-          Logger.info(s"updating rollback:${t.getMessage}")
+          logger.warn(s"updating rollback:${t.getMessage}")
           c.rollback()
       }
-      Logger.info(s"update news.news_id: ${news.news_id}")
+      logger.info(s"update news.news_id: ${news.news_id}")
       showWithTag(news.school_id, news.news_id.getOrElse(0))
   }
 

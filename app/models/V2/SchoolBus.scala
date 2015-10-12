@@ -3,7 +3,7 @@ package models.V2
 import anorm.SqlParser._
 import anorm._
 import models.Employee
-import play.Logger
+import play.api.Logger
 import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
@@ -137,6 +137,7 @@ case class SchoolBus(id: Option[Long], name: String, driver: Option[Employee], s
 object SchoolBus {
   implicit val writeSchoolBus = Json.writes[SchoolBus]
   implicit val readSchoolBus = Json.reads[SchoolBus]
+  private val logger: Logger = Logger(classOf[SchoolBus])
 
   def driverIsExisting(driverId: String): Boolean = DB.withConnection {
     implicit c =>
@@ -144,7 +145,6 @@ object SchoolBus {
         .on('driver -> driverId)
         .as(get[Long]("count(1)") single) > 0
   }
-
 
 
   def driverDoesNotMatch(driverId: String, busId: Long): Boolean = DB.withConnection {
@@ -171,8 +171,8 @@ object SchoolBus {
       }
       catch {
         case t: Throwable =>
-          Logger.info(t.getLocalizedMessage)
-          Logger.info(t.getMessage)
+          logger.warn(t.getLocalizedMessage)
+          logger.warn(t.getMessage)
           c.rollback()
           0
       }
