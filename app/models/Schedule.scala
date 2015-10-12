@@ -1,11 +1,11 @@
 package models
 
+import play.api.Logger
 import play.api.db.DB
 import anorm._
 import anorm.SqlParser._
 import anorm.~
 import play.api.Play.current
-import play.Logger
 import helper.JsonStringHelper.any2JsonString
 import play.api.libs.json.Json
 
@@ -32,6 +32,7 @@ object Schedule {
   implicit val readScheduleDetail = Json.reads[ScheduleDetail]
   implicit val readSchedule = Json.reads[Schedule]
 
+  private val logger: Logger = Logger(classOf[Schedule])
 
   def create(kg: Long, classId: Long, schedule: Schedule) = insertNew(ScheduleDetail(0, kg, classId, 0L, 0L, schedule.week))
 
@@ -80,7 +81,7 @@ object Schedule {
       }
       catch {
         case t: Throwable =>
-          Logger.info("models.Schedule insertNew error %s".format(t.toString))
+          logger.warn("insertNew error %s".format(t.toString))
           c.rollback()
           None
       }

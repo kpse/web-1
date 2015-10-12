@@ -4,7 +4,7 @@ import anorm.SqlParser._
 import anorm.{~, _}
 import models._
 import org.joda.time.DateTime
-import play.Logger
+import play.api.Logger
 import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
@@ -31,6 +31,8 @@ object SchoolIntro {
   implicit val chargeInfoWrite = Json.writes[ChargeInfo]
   implicit val creatingSchoolRead = Json.reads[CreatingSchool]
   implicit val creatingSchoolWrite = Json.writes[CreatingSchool]
+
+  private val logger: Logger = Logger(classOf[SchoolIntro])
 
   def adminExists(adminLogin: String) = DB.withConnection {
     implicit c =>
@@ -89,7 +91,7 @@ object SchoolIntro {
       }
       catch {
         case t: Throwable =>
-          Logger.info("error %s".format(t.toString))
+          logger.warn("error %s".format(t.toString))
           c.rollback()
           throw new IllegalArgumentException(s"创建学校失败。\n${t.getMessage}", t)
       }
@@ -114,7 +116,7 @@ object SchoolIntro {
 
   def previewIndex(q: Option[String]) = DB.withConnection {
     implicit c =>
-      Logger.info(generateQ(q))
+      logger.info("previewIndex " + generateQ(q))
       SQL(s"select school_id, update_at from schoolinfo where 1=1 ${generateQ(q)} order by school_id").as(previewSimple *)
   }
 
@@ -133,7 +135,7 @@ object SchoolIntro {
   def updateExists(info: SchoolIntro) = DB.withTransaction {
     implicit c =>
       val timestamp = System.currentTimeMillis
-      Logger.info(info.toString)
+      logger.info(info.toString)
 
       try {
         SQL("update schoolinfo set name={name}, " +
@@ -156,7 +158,7 @@ object SchoolIntro {
       }
       catch {
         case t: Throwable =>
-          Logger.info("error %s".format(t.toString))
+          logger.warn("error %s".format(t.toString))
           c.rollback()
       }
 
@@ -172,7 +174,7 @@ object SchoolIntro {
 
   def preview(kg: Long, q: Option[String]) = DB.withConnection {
     implicit c =>
-      Logger.info(generateQ(q))
+      logger.info("preview" + generateQ(q))
       SQL(s"select update_at, school_id from schoolinfo where school_id={school_id} ${generateQ(q)} order by school_id")
         .on('school_id -> kg.toString).as(previewSimple *)
   }

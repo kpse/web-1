@@ -2,12 +2,12 @@ package models
 
 import controllers.RelationshipController
 import controllers.V3.RelativeController
+import play.api.Logger
 import play.api.db.DB
 import anorm._
 import anorm.SqlParser._
 import anorm.~
 import play.api.Play.current
-import play.Logger
 import play.api.libs.json.Json
 
 case class School(school_id: Long, name: String)
@@ -47,6 +47,7 @@ object School {
   implicit val configItemReader = Json.reads[ConfigItem]
   implicit val schoolConfigWriter = Json.writes[SchoolConfig]
   implicit val schoolConfigReader = Json.reads[SchoolConfig]
+  private val logger: Logger = Logger(classOf[School])
 
   def classNameExists(clazz: SchoolClass) = DB.withConnection {
     implicit c =>
@@ -107,7 +108,7 @@ object School {
       }
       catch {
         case t: Throwable =>
-          Logger.info("error %s".format(t.toString))
+          logger.warn("error %s".format(t.toString))
           c.rollback()
       }
   }
@@ -138,7 +139,7 @@ object School {
       }
       catch {
         case t: Throwable =>
-          Logger.info("error %s".format(t.toString))
+          logger.warn("error %s".format(t.toString))
           c.rollback()
       }
   }
@@ -215,14 +216,13 @@ object School {
 
   def updateManager(clazz: SchoolClass) = DB.withConnection {
     implicit c =>
-      Logger.info(clazz.toString)
       if (clazz.managers.nonEmpty) {
         SQL("delete from privilege where school_id={kg} and subordinate={class}")
           .on('kg -> clazz.school_id.toString, 'class -> clazz.class_id.getOrElse(-1).toString).execute()
       }
       clazz.managers.getOrElse(List()) map {
         manager =>
-          Logger.info(Employee.findByName(clazz.school_id, manager).toString)
+          logger.info(Employee.findByName(clazz.school_id, manager).toString)
           SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) values " +
             "({kg},{id},{group},{subordinate},{promoter}, {time})").on(
               'kg -> clazz.school_id.toString,
@@ -243,7 +243,7 @@ object School {
         'id -> clazz.class_id.getOrElse(-1)
       ).as(get[Long]("count(1)") single)
 
-      Logger.info("exist is %s".format(exist))
+      logger.info("exist is %s".format(exist))
       exist match {
         case 0 =>
           createClass(clazz.school_id, clazz)

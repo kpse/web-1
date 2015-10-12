@@ -1,11 +1,11 @@
 package models
 
+import play.api.Logger
 import play.api.db.DB
 import anorm._
 import play.api.Play.current
 import anorm.SqlParser._
 import anorm.~
-import play.Logger
 import helper.JsonStringHelper.any2JsonString
 
 case class CookbookPreviewResponse(error_code: Int, school_id: Long, cookbook_id: Long, timestamp: Long)
@@ -18,6 +18,7 @@ case class CookbookDetail(error_code: Option[Int], school_id: Long, cookbook_id:
 
 
 object CookBook {
+  private val logger = Logger(classOf[CookbookDetail])
   def insertNew(cookbook: CookbookDetail) : Option[CookbookDetail] = DB.withTransaction {
     implicit c =>
       try {
@@ -63,7 +64,7 @@ object CookBook {
       }
       catch {
         case t: Throwable  =>
-          Logger.info("error %s".format(t.toString))
+          logger.warn("error %s".format(t.toString))
           c.rollback()
           findById(-1)
       }
