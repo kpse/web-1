@@ -63,7 +63,7 @@ object Auth extends Controller {
    * Logout and clean the session.
    */
   def logout = Action {
-    Redirect(routes.Auth.login).withNewSession.flashing(
+    Redirect(routes.Auth.login()).withNewSession.flashing(
       "success" -> "你已经成功退出登陆。"
     )
   }
@@ -138,7 +138,7 @@ trait Secured {
    * Redirect to login if the user in not authorized.
    */
   private def redirectToLogin(request: RequestHeader) = {
-    request.headers.get("source").fold(Results.Redirect(routes.Auth.login))({
+    request.headers.get("source").fold(Results.Redirect(routes.Auth.login()))({
       case _ => forbidAccess(request)
     })
 
