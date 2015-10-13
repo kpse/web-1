@@ -20,7 +20,8 @@ CREATE TABLE childinfo (
   status       INT      NOT NULL DEFAULT 1,
   update_at BIGINT NOT NULL DEFAULT 0,
   created_at   BIGINT     DEFAULT 0,
-  PRIMARY KEY (uid)
+  PRIMARY KEY (uid),
+  KEY (school_id, class_id, CHILD_ID)
 );
 
 --
