@@ -667,6 +667,9 @@ GET           /api/v4/statistics/monthly/:schoolId                              
 
 POST          /api/v5/kindergarten/:schoolId/invitation                                        controllers.V5.InvitationController.create(schoolId: Long)
 
+POST          /api/v6/payment                                                                  controllers.V6.PaymentRecordController.create
+GET           /api/v6/payment                                                        controllers.V6.PaymentRecordController.index(parentId: Option[String])
+
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                         controllers.ChildController.index(kg: Long, parentId: String)
 GET           /kindergarten/:kg/parent/:parentId/child/:childId                                controllers.ChildController.show(kg: Long, parentId: String, childId: String)
