@@ -107,7 +107,7 @@ class ChildControllerSpec extends Specification with TestSupport {
       jsonResponse match {
         case JsArray(arr) =>
           arr.length must lessThan(7)
-          (arr(0) \ "child_id").as[String] must equalTo("1_1391836223533")
+          (arr.head \ "child_id").as[String] must not beEmpty
         case _ => failure
       }
     }
@@ -118,12 +118,8 @@ class ChildControllerSpec extends Specification with TestSupport {
 
       status(response) must equalTo(OK)
 
-      val jsonResponse: JsValue = Json.parse(contentAsString(response))
-      jsonResponse match {
-        case JsArray(arr) =>
-          arr.length must beEqualTo(0)
-        case _ => failure
-      }
+      val jsonResponse: JsArray = Json.parse(contentAsString(response)).as[JsArray]
+      jsonResponse.value.length must beEqualTo(0)
     }
 
     "show no children to no access teacher even specific class id" in new WithServer {

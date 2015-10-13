@@ -40,8 +40,38 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       status(res) must equalTo(OK)
       contentType(res) must beSome.which(_ == "application/json")
 
-      val response: JsValue = Json.parse(contentAsString(res))
-      (response \ "card").as[String] must equalTo("0001234567")
+      val head: JsValue = Json.parse(contentAsString(res))
+      (head \ "card").as[String] must equalTo("0001234567")
+      (head \ "relationship").as[String] must equalTo("妈妈")
+
+      private val parent: JsValue = head \ "parent"
+      (parent \ "parent_id").as[String] must equalTo("2_93740362_789")
+      (parent \ "phone").as[String] must equalTo("13408654680")
+      (parent \ "gender").as[Int] must equalTo(0)
+      (parent \ "school_id").as[Long] must equalTo(93740362)
+      (parent \ "birthday").as[String] must equalTo("1999-01-01")
+      (parent \ "portrait").as[String] must equalTo("")
+      (parent \ "name").as[String] must equalTo("袋鼠")
+      (parent \ "company").as[String] must equalTo("某公司")
+      (parent \ "timestamp").as[Long] must equalTo(0)
+      (parent \ "member_status").as[Int] must equalTo(1)
+      (parent \ "status").as[Int] must equalTo(1)
+      (parent \ "id").as[Long] must equalTo(3)
+      (parent \ "created_at").as[Long] must equalTo(0)
+
+      private val child: JsValue = head \ "child"
+      (child \ "child_id").as[String] must equalTo("1_1391836223533")
+      (child \ "birthday").as[String] must equalTo("2007-06-04")
+      (child \ "portrait").as[String] must equalTo("http://www.qqw21.com/article/uploadpic/2013-1/201311101516591.jpg")
+      (child \ "class_id").as[Int] must equalTo(777888)
+      (child \ "class_id").as[Int] must equalTo(777888)
+      (child \ "class_name").as[String] must equalTo("苹果班")
+      (child \ "school_id").as[Long] must equalTo(93740362)
+      (child \ "id").as[Long] must equalTo(1)
+      (child \ "timestamp").as[Long] must equalTo(1387360036)
+      (child \ "address").as[String] must equalTo("")
+      (child \ "status").as[Int] must equalTo(1)
+      (child \ "created_at").as[Long] must equalTo(0)
     }
 
     "check if card is good to use" in new WithApplication {
@@ -150,39 +180,6 @@ class RelationshipControllerSpec extends Specification with TestSupport {
 
       val responseArr: JsArray = Json.parse(contentAsString(res)).as[JsArray]
       responseArr.value.size must equalTo(7)
-      private val head: JsValue = responseArr.value.head
-      Logger.info(head.toString())
-      (head \ "card").as[String] must equalTo("0001234567")
-      (head \ "relationship").as[String] must equalTo("妈妈")
-
-      private val parent: JsValue = head \ "parent"
-      (parent \ "parent_id").as[String] must equalTo("2_93740362_789")
-      (parent \ "phone").as[String] must equalTo("13408654680")
-      (parent \ "gender").as[Int] must equalTo(0)
-      (parent \ "school_id").as[Long] must equalTo(93740362)
-      (parent \ "birthday").as[String] must equalTo("1999-01-01")
-      (parent \ "portrait").as[String] must equalTo("")
-      (parent \ "name").as[String] must equalTo("袋鼠")
-      (parent \ "company").as[String] must equalTo("某公司")
-      (parent \ "timestamp").as[Long] must equalTo(0)
-      (parent \ "member_status").as[Int] must equalTo(1)
-      (parent \ "status").as[Int] must equalTo(1)
-      (parent \ "id").as[Long] must equalTo(3)
-      (parent \ "created_at").as[Long] must equalTo(0)
-
-      private val child: JsValue = head \ "child"
-      (child \ "child_id").as[String] must equalTo("1_1391836223533")
-      (child \ "birthday").as[String] must equalTo("2007-06-04")
-      (child \ "portrait").as[String] must equalTo("http://www.qqw21.com/article/uploadpic/2013-1/201311101516591.jpg")
-      (child \ "class_id").as[Int] must equalTo(777888)
-      (child \ "class_id").as[Int] must equalTo(777888)
-      (child \ "class_name").as[String] must equalTo("苹果班")
-      (child \ "school_id").as[Long] must equalTo(93740362)
-      (child \ "id").as[Long] must equalTo(1)
-      (child \ "timestamp").as[Long] must equalTo(1387360036)
-      (child \ "address").as[String] must equalTo("")
-      (child \ "status").as[Int] must equalTo(1)
-      (child \ "created_at").as[Long] must equalTo(0)
     }
 
 

@@ -211,6 +211,8 @@ object Children {
   def classesScope(classIds: Option[String]): String = classIds match {
     case Some(ids) if ids.length > 0 =>
        s" and c.class_id in (${ids}) "
+    case Some("") =>
+       " and 1=0 "
     case _ => " "
   }
 

@@ -39,9 +39,9 @@ class RelationshipSpec extends Specification with TestSupport {
       private val index = Relationship.index(93740362, None, Some("1_93740362_374,1_93740362_456"), None)
 
       index.size must equalTo(3)
-      index.head.child.get.child_id must beSome("1_93740362_456")
+      index.head.child.get.child_id must beSome("1_93740362_374")
       index(1).child.get.child_id must beSome("1_93740362_374")
-      index(2).child.get.child_id must beSome("1_93740362_374")
+      index(2).child.get.child_id must beSome("1_93740362_456")
 
     }
 
