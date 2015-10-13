@@ -9,7 +9,7 @@ import play.api.Play.current
 
 case class PaymentDetail(buyer_email: Option[String])
 
-case class KulebaoCustomerInfo(parent_id: Option[String], school_id: Option[Long])
+case class KulebaoCustomerInfo(parent_id: Option[String], school_id: Option[Long], phone: Option[Long])
 
 case class PaymentInfo(sign: String, timestamp: Long, channel_type: String, transaction_type: String, transaction_id: String, transaction_fee: Long, messageDetail: PaymentDetail, optional: KulebaoCustomerInfo) {
   private val logger: Logger = Logger(classOf[PaymentInfo])
@@ -24,11 +24,12 @@ case class PaymentInfo(sign: String, timestamp: Long, channel_type: String, tran
 
   def save(fullContent: String) = DB.withConnection {
     implicit c =>
-      SQL("insert into paymenthistory (school_id, parent_id, transaction_id, transaction_type, channel_type, transaction_fee, buyer_email, content, created_at) " +
-        "values ({kg}, {parent_id}, {transaction_id}, {transaction_type}, {channel_type}, {transaction_fee}, {buyer_email}, {content}, {created_at})")
+      SQL("insert into paymenthistory (school_id, parent_id, phone, transaction_id, transaction_type, channel_type, transaction_fee, buyer_email, content, created_at) " +
+        "values ({kg}, {parent_id}, {phone}, {transaction_id}, {transaction_type}, {channel_type}, {transaction_fee}, {buyer_email}, {content}, {created_at})")
         .on(
           'kg -> optional.school_id,
           'parent_id -> optional.parent_id,
+          'phone -> optional.phone,
           'transaction_id -> transaction_id,
           'transaction_type -> transaction_type,
           'channel_type -> channel_type,
