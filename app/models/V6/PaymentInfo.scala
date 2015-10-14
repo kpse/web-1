@@ -9,7 +9,7 @@ import play.api.Play.current
 
 case class PaymentDetail(buyer_email: Option[String])
 
-case class KulebaoCustomerInfo(parent_id: Option[String], school_id: Option[Long], phone: Option[Long])
+case class KulebaoCustomerInfo(parent_id: Option[String], school_id: Option[Long], phone: Option[String])
 
 case class PaymentInfo(sign: String, timestamp: Long, channel_type: String, transaction_type: String, transaction_id: String, transaction_fee: Long, messageDetail: PaymentDetail, optional: KulebaoCustomerInfo) {
   private val logger: Logger = Logger(classOf[PaymentInfo])
