@@ -35,9 +35,31 @@ class InvitationControllerSpec extends Specification with TestSupport {
       status(invitationRes) must equalTo(OK)
       contentType(invitationRes) must beSome.which(_ == "application/json")
       val response: JsArray = Json.parse(contentAsString(invitationRes)).as[JsArray]
-      (response(0) \ "card").as[String] must not be empty
+      private val fakeCard: String = (response(0) \ "card").as[String]
+      fakeCard must not be empty
       (response(0) \ "parent" \ "phone").as[String] must equalTo(newPhone)
       (response(0) \ "child" \ "child_id").as[String] must equalTo("1_1391836223533")
+
+      val parentRes = route(loggedOneChildParent(GET, "/kindergarten/93740362/parent/" + newPhone)).get
+      status(parentRes) must equalTo(OK)
+      contentType(parentRes) must beSome.which(_ == "application/json")
+
+      val parent: JsValue = Json.parse(contentAsString(parentRes))
+
+      (parent \ "phone").as[String] must equalTo(newPhone)
+      (parent \ "name").as[String] must equalTo(newName)
+
+      val relationRes = route(loggedOneChildParent(GET, "/kindergarten/93740362/relationship/" + fakeCard)).get
+      status(relationRes) must equalTo(OK)
+      contentType(relationRes) must beSome.which(_ == "application/json")
+
+      val relationship: JsValue = Json.parse(contentAsString(relationRes))
+
+      (relationship \ "card").as[String] must equalTo(fakeCard)
+      (relationship \ "parent" \ "phone").as[String] must equalTo(newPhone)
+      (relationship \ "parent" \ "name").as[String] must equalTo(newName)
+      (relationship \ "child" \ "child_id").as[String] must equalTo("1_1391836223533")
+      (relationship \ "relationship").as[String] must equalTo(newRelationship)
 
     }
 
@@ -105,8 +127,12 @@ class InvitationControllerSpec extends Specification with TestSupport {
   }
   val newPhone: String = "13321147894"
   val aExistingPhone: String = "13408654681"
+  private val newName: String = "搜索"
+
+  private val newRelationship: String = "妈妈"
+
   def theHost(phone: String = newPhone, code: Verification = correctCode): JsValue  = {
-    Json.toJson(Invitation(Parent.findById(93740362, "2_93740362_789").get, NewParent(phone, "搜索", "妈妈"), code))
+    Json.toJson(Invitation(Parent.findById(93740362, "2_93740362_789").get, NewParent(phone, newName, newRelationship), code))
   }
 
   def noCodeRequest: JsValue  = {
@@ -118,7 +144,7 @@ class InvitationControllerSpec extends Specification with TestSupport {
   }
 
   def twoRelationshipsHost: JsValue  = {
-    Json.toJson(Invitation(Parent.findById(93740362, "2_93740362_792").get, NewParent(newPhone, "搜索", "妈妈"), correctCode))
+    Json.toJson(Invitation(Parent.findById(93740362, "2_93740362_792").get, NewParent(newPhone, newName, newRelationship), correctCode))
   }
 
   val correctCode = Verification(newPhone, "123456")
