@@ -15,9 +15,9 @@ object PaymentRecordController extends Controller with Secured {
   private val logger: Logger = Logger(classOf[PaymentInfo])
   def create = Action(parse.json) {
     request =>
+      logger.info(request.body.toString())
       request.body.validate[PaymentInfo].map {
         case (payment) if payment.isValid =>
-          logger.info(request.body.toString())
           payment.save(request.body.toString())
           Ok("success")
         case _ =>
