@@ -1,6 +1,6 @@
 package controllers.V5
 
-import controllers.Secured
+import controllers.{RelationshipController, Secured}
 import models.{Verification, Parent, ErrorResponse, Relationship}
 import models.Relationship.{writeRelationship, writeChildInfo, writeParent}
 import models.V5.Invitation
@@ -22,6 +22,7 @@ object InvitationController extends Controller with Secured {
             InternalServerError(Json.toJson(ErrorResponse("被邀请号码已存在。(invitee's phone number exists already)", 20)))
           case (invitation) =>
             val newCreation: List[Relationship] = invitation.copy(from = invitation.from.copy(school_id = schoolId)).settle
+            RelationshipController.clearCurrentCache(schoolId)
             Logger.info("invitation creates : " + newCreation.toString)
             Ok(Json.toJson(newCreation))
         }.recoverTotal {
