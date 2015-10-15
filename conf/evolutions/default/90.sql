@@ -7,9 +7,9 @@
 
 CREATE TABLE paymenthistory (
   uid int(11) NOT NULL AUTO_INCREMENT,
-  school_id varchar(20)   NOT NULL,
-  parent_id VARCHAR(40) NOT NULL,
-  phone VARCHAR(20) NOT NULL,
+  school_id VARCHAR(20),
+  parent_id VARCHAR(40),
+  phone VARCHAR(20),
   transaction_id VARCHAR(50) NOT NULL,
   transaction_type VARCHAR(20) NOT NULL,
   channel_type VARCHAR(20) NOT NULL,

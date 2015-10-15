@@ -9,8 +9,6 @@ import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Action, Controller}
 
-
-
 object PaymentRecordController extends Controller with Secured {
   private val logger: Logger = Logger(classOf[PaymentInfo])
   def create = Action(parse.json) {
@@ -21,9 +19,11 @@ object PaymentRecordController extends Controller with Secured {
           payment.save(request.body.toString())
           Ok("success")
         case _ =>
-          Ok(Json.toJson(ErrorResponse("错误的webhook数据。(invalid webhook data)")))
+          logger.warn("错误的webhook数据。(invalid webhook data)")
+          Ok("success")
       }.recoverTotal {
-        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+        e => logger.warn("Detected error:" + JsError.toFlatJson(e))
+          Ok("success")
       }
   }
 
