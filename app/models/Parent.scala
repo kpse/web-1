@@ -171,7 +171,7 @@ object Parent {
       SQL("delete from relationmap where parent_id in (select parent_id from parentinfo where phone={phone})").on('phone -> phone).execute()
       SQL("delete from parentinfo where phone={phone}").on('phone -> phone).execute()
       SQL("delete from accountinfo where accountid={phone}").on('phone -> phone).execute()
-      RelationshipController.clearCurrentCache()
+      RelationshipController.clearCurrentCache(0)
   }
 
   def permanentRemoveById(id: String) = DB.withConnection {
@@ -181,7 +181,7 @@ object Parent {
           SQL("delete from relationmap where parent_id={id}").on('id -> id).execute()
           SQL("delete from accountinfo where accountid in (select phone from parentinfo where parent_id={id})").on('id -> id).execute()
           SQL("delete from parentinfo where parent_id={id}").on('id -> id).execute()
-          RelationshipController.clearCurrentCache()
+          RelationshipController.clearCurrentCache(0)
           None
         case false =>
           Some(BatchImportReport(id, "家长 %s 不存在。".format(id)))

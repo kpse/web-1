@@ -15,9 +15,14 @@ object StudentController extends Controller with Secured {
   implicit val RelativesCacheKey = "index_v3_students"
   createKeyCache
 
-  def clearCurrentCache() = {
-    clearAllCache
-    RelationshipController.clearCurrentCache()
+  def clearCurrentCache(kg: Long) = {
+    clearStudentCache(kg)
+    RelationshipController.clearCurrentCache(kg)
+  }
+
+  def clearStudentCache(kg: Long = 0) = kg match {
+    case 0 => clearAllCache(s"Student_")
+    case _ => clearAllCache(s"Student_$kg")
   }
 
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
@@ -46,7 +51,7 @@ object StudentController extends Controller with Secured {
       case (s) if s.ext.isEmpty =>
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
       case (s) =>
-        clearCurrentCache()
+        clearCurrentCache(kg)
         Ok(Json.toJson(s.create))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -59,7 +64,7 @@ object StudentController extends Controller with Secured {
       case (s) if s.ext.isEmpty =>
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
       case (s) =>
-        clearCurrentCache()
+        clearCurrentCache(kg)
         Ok(Json.toJson(s.update))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -71,7 +76,7 @@ object StudentController extends Controller with Secured {
       case Some(x) =>
         Student.deleteById(kg, id)
         x.basic.child_id foreach Relationship.deleteCardByChildId
-        clearCurrentCache()
+        clearCurrentCache(kg)
         Ok(Json.toJson(new SuccessResponse()))
       case None =>
         NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的学生。(No such student)")))

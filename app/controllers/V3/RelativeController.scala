@@ -13,9 +13,14 @@ object RelativeController extends Controller with Secured {
   implicit val RelativesCacheKey = "index_v3_relatives"
   createKeyCache
 
-  def clearCurrentCache() = {
-    clearAllCache
-    RelationshipController.clearCurrentCache()
+  def clearCurrentCache(kg: Long) = {
+    clearRelativeCache(kg)
+    RelationshipController.clearCurrentCache(kg)
+  }
+
+  def clearRelativeCache(kg: Long = 0) = kg match {
+    case 0 => clearAllCache(s"Relatives_")
+    case _ => clearAllCache(s"Relatives_$kg")
   }
 
 
@@ -49,7 +54,7 @@ object RelativeController extends Controller with Secured {
         BadRequest(Json.toJson(ErrorResponse("手机与现有未删除家长重复，请先删除再创建。(duplicated phone number with another parent)", 6)))
       case (s) =>
         Relative.removeDirtyDataIfExists(s.basic)
-        clearCurrentCache()
+        clearCurrentCache(kg)
         Ok(Json.toJson(s.create))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -78,7 +83,7 @@ object RelativeController extends Controller with Secured {
       case (deletedParent) if !Parent.idExists(deletedParent.basic.parent_id) && deletedParent.basic.status.equals(Some(0)) =>
         Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
       case (phoneTransfer) if Parent.idExists(phoneTransfer.basic.parent_id) && Parent.phoneDeleted(kg, phoneTransfer.basic.phone) =>
-        clearCurrentCache()
+        clearCurrentCache(kg)
         phoneTransfer.update(_.transfer) match {
           case Some(p) =>
             Ok(Json.toJson(p))
@@ -86,7 +91,7 @@ object RelativeController extends Controller with Secured {
             InternalServerError(Json.toJson(ErrorResponse(s"交换已有号码失败。(failed exchanging existing phone number to parent ${phoneTransfer.basic.parent_id})")))
         }
       case (s) =>
-        clearCurrentCache()
+        clearCurrentCache(kg)
         Ok(Json.toJson(s.update(Parent.update)))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -98,7 +103,7 @@ object RelativeController extends Controller with Secured {
       case Some(x) =>
         Relative.deleteById(kg, id)
         x.basic.parent_id foreach Relationship.deleteCardByParentId
-        clearCurrentCache()
+        clearCurrentCache(kg)
         Ok(Json.toJson(new SuccessResponse()))
       case None =>
         NotFound(Json.toJson(ErrorResponse(s"没有ID为${id}的父母。(No such relative)")))

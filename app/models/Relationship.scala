@@ -272,7 +272,7 @@ object Relationship {
   def index(kg: Long, parent: Option[String], child: Option[String], classId: Option[Long]) = DB.withConnection {
     implicit c =>
       val query: String = generateQuery(parent, child, classId)
-      Logger.info(query)
+      Logger.debug(query)
       SQL(query)
         .on(
           'kg -> kg.toString,

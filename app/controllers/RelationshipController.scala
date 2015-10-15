@@ -22,7 +22,14 @@ object RelationshipController extends Controller with Secured {
   implicit val relationshipCacheKey = "index_relationships"
   createKeyCache
 
-  def clearCurrentCache() = clearAllCache
+  def clearCurrentCache(kg: Long) = kg match {
+    case 0 =>
+      clearAllCache(s"Relationship")
+    case _ =>
+      logger.debug("relationship cleaned")
+      clearAllCache(s"Relationship_$kg")
+  }
+
   def index(kg: Long, parent: Option[String], child: Option[String], classId: Option[Long]) = IsLoggedIn {
     u => _ =>
       val cacheKey: String = s"Relationship_${kg}_${parent}_${child}_${classId}"
@@ -56,7 +63,7 @@ object RelationshipController extends Controller with Secured {
             Ok(Json.toJson(new ErrorResponse(s"卡号${card}未授权，请联系库贝人员。(Invalid card number)", 4)))
           case exists if exists && uid.isDefined =>
             logger.debug("update existing 1, reusing existing card")
-            clearCurrentCache()
+            clearCurrentCache(kg)
             Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, uid.get)))
           case exists if exists && uid.isEmpty =>
             BadRequest(loggedJson(ErrorResponse(s"创建关系失败，${card}号卡已经关联过家长。(Card is connected to parent before)", 5)))
@@ -64,15 +71,15 @@ object RelationshipController extends Controller with Secured {
             BadRequest(loggedJson(ErrorResponse(s"修改关系失败，${card}号卡已经关联过家长。(Card is connected to parent before)", 6)))
           case exists if !exists && uid.isDefined =>
             logger.debug("update existing 2")
-            clearCurrentCache()
+            clearCurrentCache(kg)
             Ok(Json.toJson(Relationship.update(kg, card, relationship, phone, childId, uid.get)))
           case exists if !exists && uid.isEmpty && Relationship.deleted(card) =>
             logger.debug("update existing 3, reusing deleted card")
-            clearCurrentCache()
+            clearCurrentCache(kg)
             Ok(Json.toJson(Relationship.reuseDeletedCard(kg, card, relationship, phone, childId)))
           case exists if !exists && uid.isEmpty =>
             logger.debug("create new")
-            clearCurrentCache()
+            clearCurrentCache(kg)
             Ok(Json.toJson(Relationship.create(kg, card, relationship, phone, childId)))
         }
 
@@ -95,7 +102,7 @@ object RelationshipController extends Controller with Secured {
           case (p, c) if Relationship.getCard(p, c).nonEmpty =>
             BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。(Duplicated relationship)", 3)))
           case (p, c) =>
-            clearCurrentCache()
+            clearCurrentCache(kg)
             Ok(Json.toJson(Relationship.fakeCardCreate(kg, relationship, p, c)))
         }
 
@@ -108,7 +115,7 @@ object RelationshipController extends Controller with Secured {
 
   def delete(kg: Long, card: String) = IsLoggedIn {
     u => _ =>
-      clearCurrentCache()
+      clearCurrentCache(kg)
       Ok(Json.toJson(Relationship.delete(kg, card)))
   }
 

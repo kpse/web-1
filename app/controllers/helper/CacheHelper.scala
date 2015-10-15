@@ -14,10 +14,12 @@ object CacheHelper {
     logger.debug(s"$name all keys ${Cache.get(name).mkString(",")}")
   }
 
-  def clearAllCache(implicit name: String): Unit = {
-    Cache.getAs[List[String]](name) foreach (_ foreach Cache.remove)
-    Cache.set(name, List())
-    logger.debug(s"$name cache clean up!")
+  def clearAllCache(prefix: String)(implicit name: String): Unit = {
+    val partition = Cache.getAs[List[String]](name).partition(_ startsWith prefix)
+    logger.debug(s"prefix = $prefix \n partition1 = ${partition._1} \n partition2 = ${partition._2}")
+    partition._2 foreach (_ foreach Cache.remove)
+    Cache.set(name, partition._1.toList)
+    logger.debug(s"$name with prefix $prefix cache cleaned up!")
   }
 
   def createKeyCache(implicit name: String): List[String] = {

@@ -1,7 +1,7 @@
 package models
 
 import controllers.RelationshipController
-import controllers.V3.RelativeController
+import controllers.V3.{StudentController, RelativeController}
 import play.api.Logger
 import play.api.db.DB
 import anorm._
@@ -135,7 +135,7 @@ object School {
               .on('kg -> kg.toString).execute()
         }
         c.commit()
-        clearCurrentCache()
+        clearCurrentCache(kg)
       }
       catch {
         case t: Throwable =>
@@ -330,9 +330,9 @@ object School {
     }
   }
 
-  def clearCurrentCache() = {
-    RelativeController.clearCurrentCache()
-    RelationshipController.clearCurrentCache()
+  def clearCurrentCache(kg: Long) = {
+    RelativeController.clearCurrentCache(kg)
+    StudentController.clearCurrentCache(kg)
   }
 
 }

@@ -68,10 +68,10 @@ object ChildController extends Controller with Secured {
           case (info) if !Children.idExists(info.child_id) && info.status == Some(0) =>
             Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
           case (info) if Children.idExists(info.child_id) =>
-            clearCurrentCache()
+            clearCurrentCache(kg)
             Ok(Json.toJson(Children.update(kg, info)))
           case (info) =>
-            clearCurrentCache()
+            clearCurrentCache(kg)
             Ok(Json.toJson(Children.create(kg, info)))
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -93,10 +93,10 @@ object ChildController extends Controller with Secured {
           case (info) if !Children.idExists(info.child_id) && info.status == Some(0) =>
             Ok(Json.toJson(ErrorResponse("忽略已删除数据。")))
           case (info) if Children.idExists(Some(childId)) =>
-            clearCurrentCache()
+            clearCurrentCache(kg)
             Ok(Json.toJson(Children.update(kg, info)))
           case (info) =>
-            clearCurrentCache()
+            clearCurrentCache(kg)
             Ok(Json.toJson(Children.create(kg, info)))
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -110,9 +110,8 @@ object ChildController extends Controller with Secured {
       Ok(Json.toJson(Children.delete(kg, childId)))
   }
 
-  def clearCurrentCache() = {
-    StudentController.clearCurrentCache()
-    RelationshipController.clearCurrentCache()
+  def clearCurrentCache(kg: Long) = {
+    StudentController.clearCurrentCache(kg)
   }
 
 }

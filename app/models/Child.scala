@@ -39,7 +39,7 @@ object Children {
 
   def delete(kg: Long, childId: String) = DB.withConnection {
     implicit c =>
-      clearCurrentCache()
+      clearCurrentCache(kg)
       SQL("update childinfo set status=0, update_at={timestamp} where child_id={child_id} and school_id={kg}")
         .on(
           'child_id -> childId,
@@ -236,9 +236,8 @@ object Children {
         .on('child_id -> child, 'kg -> schoolId.toString).as(childInformation singleOpt)
   }
 
-  def clearCurrentCache() = {
-    StudentController.clearCurrentCache()
-    RelationshipController.clearCurrentCache()
+  def clearCurrentCache(kg: Long) = {
+    StudentController.clearCurrentCache(kg)
   }
 
 }
