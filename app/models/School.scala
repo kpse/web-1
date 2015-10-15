@@ -90,7 +90,8 @@ object School {
   def cleanSchoolData(kg: Long) = DB.withConnection {
     implicit c =>
       List("employeeinfo", "privilege", "chargeinfo", "macwhitelist", "videomembers", "videoprovidertoken",
-        "advertisement", "schoolconfig", "buslocation", "childrenonbus", "childrenbusplan", "schoolbus").map {
+        "advertisement", "schoolconfig", "buslocation", "childrenonbus", "childrenbusplan", "schoolbus", "agentschool",
+        "agentcontractorinschool", "agentactivityenrollment", "agentactivityinschool").map {
         table =>
           SQL("delete from " + table + " where school_id={kg}")
             .on('kg -> kg.toString).execute()
