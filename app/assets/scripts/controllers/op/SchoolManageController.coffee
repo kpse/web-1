@@ -1,9 +1,9 @@
 angular.module('kulebaoOp').controller 'OpSchoolCtrl',
   ['$scope', '$rootScope', '$filter', 'schoolService', 'classService', '$modal', 'principalService', 'allEmployeesService',
    '$resource', 'chargeService', 'adminCreatingService', '$alert', '$location', 'schoolConfigService',
-   'schoolConfigExtractService', 'schoolPreviewService', 'schoolPaginationService',
+   'schoolConfigExtractService', 'schoolPreviewService', 'schoolPaginationService', 'schoolService',
     (scope, rootScope, $filter, School, Clazz, Modal, Principal, Employee, $resource, Charge, AdminCreating, Alert,
-     location, SchoolConfig, ConfigExtract, Preview, SchoolPagination) ->
+     location, SchoolConfig, ConfigExtract, Preview, SchoolPagination, SchoolManagement) ->
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
@@ -126,7 +126,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
 
       scope.delete = (kg)->
-        kg.$delete ->
+        SchoolManagement.delete kg, ->
           scope.refresh()
 
 
