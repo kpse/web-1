@@ -131,7 +131,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
 
       scope.newSchool = ->
-        id = nextId(scope.kindergartens)
+        id = nextId(scope.preview)
         new School
           school_id: id
           address: ''
@@ -204,8 +204,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           form.$setValidity 'unique', true
 
       nextId = (schools)->
-        13 + _.max _.map schools, (c) ->
-          c.school_id
+        13 + _.max(schools, 'school_id').school_id
 
       scope.displayIcon = (type) ->
         switch type

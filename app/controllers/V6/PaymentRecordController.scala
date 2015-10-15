@@ -1,10 +1,8 @@
 package controllers.V6
 
 import controllers.Secured
-import models.ErrorResponse
 import models.V6.PaymentInfo
-import models.V6.PaymentInfo.readPaymentInfo
-import models.V6.PaymentInfo.writePaymentInfo
+import models.V6.PaymentInfo.{readPaymentInfo, writePaymentInfo}
 import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Action, Controller}
