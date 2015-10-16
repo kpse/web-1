@@ -105,9 +105,26 @@ object KulebaoAgent {
         ).as(simple *)
   }
 
-  def deleteById(id: Long) = DB.withConnection {
+  def deleteById(id: Long) = DB.withTransaction {
     implicit c =>
-      SQL(s"update agentinfo set status=0 where uid={id} and status=1")
+      try {
+        List("agentschool", "agentcontractor", "agentcontractorinschool", "agentactivity", "agentactivityenrollment",
+          "agentactivityinschool").map(removeAgentFromTable(_, id))
+        SQL(s"update agentinfo set status=0 where uid={id} and status=1")
+          .on(
+            'id -> id
+          ).executeUpdate()
+        c.commit()
+      }
+      catch {
+        case t: Throwable => c.rollback()
+          Logger.warn(t.getLocalizedMessage)
+      }
+  }
+
+  def removeAgentFromTable(name: String, id: Long): Int = DB.withTransaction {
+    implicit c =>
+      SQL(s"update $name set status=0 where agent_id={id} and status=1")
         .on(
           'id -> id
         ).executeUpdate()
