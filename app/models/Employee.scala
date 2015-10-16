@@ -244,7 +244,7 @@ object Employee {
           'id -> employee.id,
           'kg -> kg.toString
         ).as(get[String]("subordinate") *)
-      Logger.info(classes.toString())
+      Logger.debug(classes.toString())
       classes filter {
         _.length > 0
       } map {

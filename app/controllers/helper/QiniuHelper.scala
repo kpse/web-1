@@ -10,7 +10,7 @@ object QiniuHelper {
   def createAuth = {
     val ACCESS_KEY = Play.current.configuration.getString("oss.ak").getOrElse("")
     val SECRET_KEY = Play.current.configuration.getString("oss.sk").getOrElse("")
-    Logger.info("ACCESS_KEY = %s, SECRET_KEY = %s".format(ACCESS_KEY, SECRET_KEY))
+    Logger.debug("ACCESS_KEY = %s, SECRET_KEY = %s".format(ACCESS_KEY, SECRET_KEY))
     QiqiuAuth.create(ACCESS_KEY, SECRET_KEY)
   }
 
