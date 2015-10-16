@@ -7,7 +7,7 @@ import play.api.libs.json.Json
 import models.helper.MD5Helper.md5
 import play.api.Play.current
 
-case class PaymentDetail(buyer_email: Option[String])
+case class PaymentDetail(buyer_email: Option[String], transaction_id: Option[String])
 
 case class KulebaoCustomerInfo(parent_id: Option[String], school_id: Option[Long], phone: Option[String])
 
@@ -24,8 +24,10 @@ case class PaymentInfo(sign: String, timestamp: Long, channel_type: String, tran
 
   def save(fullContent: String) = DB.withConnection {
     implicit c =>
-      SQL("insert into paymenthistory (school_id, parent_id, phone, transaction_id, transaction_type, channel_type, transaction_fee, buyer_email, content, created_at) " +
-        "values ({kg}, {parent_id}, {phone}, {transaction_id}, {transaction_type}, {channel_type}, {transaction_fee}, {buyer_email}, {content}, {created_at})")
+      SQL("insert into paymenthistory (school_id, parent_id, phone, transaction_id, transaction_type, channel_type, " +
+        "transaction_fee, buyer_email, weixin_transaction_id, content, created_at) " +
+        "values ({kg}, {parent_id}, {phone}, {transaction_id}, {transaction_type}, {channel_type}, {transaction_fee}, " +
+        "{buyer_email}, {weixin_transaction_id}, {content}, {created_at})")
         .on(
           'kg -> optional.school_id,
           'parent_id -> optional.parent_id,
@@ -35,6 +37,7 @@ case class PaymentInfo(sign: String, timestamp: Long, channel_type: String, tran
           'channel_type -> channel_type,
           'transaction_fee -> transaction_fee,
           'buyer_email -> messageDetail.buyer_email,
+          'weixin_transaction_id -> messageDetail.transaction_id,
           'content -> fullContent,
           'created_at -> timestamp
         ).executeInsert()

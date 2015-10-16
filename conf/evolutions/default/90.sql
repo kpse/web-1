@@ -15,6 +15,7 @@ CREATE TABLE paymenthistory (
   channel_type VARCHAR(20) NOT NULL,
   transaction_fee int NOT NULL,
   buyer_email VARCHAR(256),
+  weixin_transaction_id VARCHAR(256),
   content TEXT,
   created_at bigint(20) NOT NULL DEFAULT 0,
   status INT(4) DEFAULT 1,
