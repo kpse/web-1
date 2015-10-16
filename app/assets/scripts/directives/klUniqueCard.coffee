@@ -12,6 +12,7 @@ angular.module("kulebao.directives").directive "klUniqueCard",
         link: (scope, element, attrs, c) ->
           scope.$watch 'klUniqueCard.card', (n, o) ->
             return unless n?
+            return if n == o
             scope.check(scope.klUniqueCard) if n.length == 10
 
           scope.check = (relationship) ->
