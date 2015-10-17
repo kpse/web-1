@@ -45,8 +45,8 @@
 
 
     <td class="col-xs-4">
-      <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
-              ng-confirm-click="delete(r.card)" ng-show="config.deletable">删除
+      <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要解除亲属关系，释放卡片{{cardDisplay(r.card)}}吗?"
+              ng-confirm-click="delete(r.card)" ng-show="config.deletable">解除关系
       </button>
       <button class="btn btn-xs btn-info" ng-click="sendMessage(r, 1)"
               ng-show="adminUser.privilege_group == 'operator'">到校

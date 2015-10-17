@@ -288,11 +288,13 @@ angular.module('kulebaoAdmin')
       scope.invalidCard = (r) -> !r.card? or 'f' == _.first r.card
 
       scope.fastCreate = ->
+        scope.fastCreation = scope.createFastCreation()
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/fast_creating.html'
 
       scope.saveFastCreating = (fastCreating)->
+        scope.saving = true
         newChild = _.assign scope.createChild(), {class_id: fastCreating.class_id, name: fastCreating.child_name}
         newParent = _.assign scope.createParent(), {name: fastCreating.parent_name, phone: fastCreating.phone}
         newRelationship = scope.createRelationship(newChild, newParent)
@@ -301,6 +303,7 @@ angular.module('kulebaoAdmin')
                 newRelationship.$save ->
                     scope.currentModal.hide()
                     scope.$broadcast 'refreshing'
+                    scope.saving = false
                   , (res) ->
                     handleError('关系', res)
               , (res) ->
@@ -308,12 +311,18 @@ angular.module('kulebaoAdmin')
           , (res) ->
             handleError('学生', res)
 
-      scope.fastCreation =
+      scope.createFastCreation = ->
         class_id : scope.kindergarten.classes[0].class_id
         child_name : ''
         parent_name : ''
         phone : ''
         relationship : ''
+
+      scope.cardDisplay = (card) ->
+        if 'f' == _.first card
+          ''
+        else
+          card
 
   ]
 
