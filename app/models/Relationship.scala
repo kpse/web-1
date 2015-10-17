@@ -3,6 +3,7 @@ package models
 import java.sql.Connection
 import java.util.Date
 
+import models.helper.MD5Helper._
 import play.api.Play.current
 import play.api.db.DB
 import anorm._
@@ -38,14 +39,15 @@ object Relationship {
   def fakeCardCreate(kg: Long, relationship: String, phone: String, childId: String) = DB.withTransaction {
     implicit c =>
       val random: Random = new Random(System.currentTimeMillis)
+      val fakeCardNumber: String = "f" + md5(s"${phone}_$childId").take(19)
       try {
         val id: Option[Long] = SQL("insert into relationmap (child_id, parent_id, card_num, relationship, reference_id) " +
-          " select {child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg}), (SELECT concat('F', LPAD(max(uid) + {factor}, 9, '0')) from relationmap), {relationship}, {reference_id}")
+          " select {child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg}), {card}, {relationship}, {reference_id}")
           .on(
             'phone -> phone,
             'child_id -> childId,
             'relationship -> relationship,
-            'factor -> 1,
+            'card -> fakeCardNumber,
             'kg -> kg.toString,
             'reference_id -> "%s_%s_%d".format(childId, phone, random.nextInt(10000))
           ).executeInsert()

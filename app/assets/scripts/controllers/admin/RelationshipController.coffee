@@ -286,6 +286,35 @@ angular.module('kulebaoAdmin')
         videoMembers : [{id: 0, desc:'未开通'}, {id: 1, desc: '已开通'}]
 
       scope.invalidCard = (r) -> !r.card? or 'f' == _.first r.card
+
+      scope.fastCreate = ->
+        scope.currentModal = Modal
+          scope: scope
+          contentTemplate: 'templates/admin/fast_creating.html'
+
+      scope.saveFastCreating = (fastCreating)->
+        newChild = _.assign scope.createChild(), {class_id: fastCreating.class_id, name: fastCreating.child_name}
+        newParent = _.assign scope.createParent(), {name: fastCreating.parent_name, phone: fastCreating.phone}
+        newRelationship = scope.createRelationship(newChild, newParent)
+        newChild.$save ->
+            newParent.$save ->
+                newRelationship.$save ->
+                    scope.currentModal.hide()
+                    scope.$broadcast 'refreshing'
+                  , (res) ->
+                    handleError('关系', res)
+              , (res) ->
+                handleError('家长', res)
+          , (res) ->
+            handleError('学生', res)
+
+      scope.fastCreation =
+        class_id : scope.kindergarten.classes[0].class_id
+        child_name : ''
+        parent_name : ''
+        phone : ''
+        relationship : ''
+
   ]
 
 .controller 'connectedCtrl',
