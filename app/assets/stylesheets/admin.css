@@ -182,6 +182,11 @@
   max-height: 200px;
   min-height: 150px;
 }
+.toggle-card-number-display {
+  padding-left: 5em;
+  float: right;
+  padding-top: 7px;
+}
 .axis path,
 .axis line {
   fill: none;

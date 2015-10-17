@@ -141,9 +141,8 @@ angular.module('kulebaoAdmin')
               contentTemplate: 'templates/admin/add_child.html'
 
       scope.isCardDuplicated = (card) ->
-        return false if card is undefined || card.length < 10
-        undefined isnt _.find scope.relationships, (r) ->
-          r.card == card
+        return false if card is undefined
+        _.any scope.relationships, (r) -> r.card == card
 
       handleError = (obj, res) ->
         Alert
@@ -324,6 +323,15 @@ angular.module('kulebaoAdmin')
         else
           card
 
+      scope.noCard = false
+      scope.toggleFakeCard = (form) ->
+        scope.noCard = !scope.noCard
+        cleanUpCardErrors(form)
+
+      cleanUpCardErrors = (form) ->
+        scope.relationship.card = ''
+        form.$setPristine()
+        form.card.$setValidity "registered", true
   ]
 
 .controller 'connectedCtrl',
