@@ -49,7 +49,7 @@ class ParentSpec extends Specification with TestSupport {
           p.member_status must beSome(0)
           p.status must beSome(1)
       }
-      val child = Children.create(kg, ChildInfo(None, "child", "nick", "2009-01-02", 0, None, 777666, None, None, None))
+      val child = Children.create(kg, ChildInfo(None, "child", "nick", None, 0, None, 777666, None, None, None))
       private val card = "123"
       Relationship.create(kg, card, "mama", newPhone, child.get.child_id.get)
       private val convert = CheckingMessage.convert(CheckInfo(kg, card, 2, 0, "", 0))
@@ -68,7 +68,7 @@ class ParentSpec extends Specification with TestSupport {
           p.member_status must beSome(1)
           p.status must beSome(1)
       }
-      val child = Children.create(kg, ChildInfo(None, "child", "nick", "2009-01-02", 0, None, 777666, None, None, None))
+      val child = Children.create(kg, ChildInfo(None, "child", "nick", None, 0, None, 777666, None, None, None))
       private val card = "123321"
       Relationship.create(kg, card, "mama", newPhone, child.get.child_id.get)
       private val convert = CheckingMessage.convert(CheckInfo(kg, card, 2, 0, "", 0))

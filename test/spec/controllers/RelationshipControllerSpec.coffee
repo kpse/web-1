@@ -18,7 +18,10 @@ describe 'Controller: RelationshipController', ($alert) ->
 
   it 'should extract relationships from excel data', () ->
     $scope = $rootScope.$new()
-
+    $scope.kindergarten =
+      classes: [
+        name: '二班'
+      ]
     batchImportCtrl = $controller 'batchImportCtrl', {
       $scope: $scope
       $stateParams:
@@ -29,6 +32,14 @@ describe 'Controller: RelationshipController', ($alert) ->
 
     $httpBackend.expectPOST('api/v1/kindergarten/93740362/phone_check/12345678991')
     .respond phoneNumberIsFine
+    $httpBackend.expectDELETE('/kindergarten/93740362/class')
+    .respond
+      error_code: 0
+    $httpBackend.expectPOST('/kindergarten/93740362/class/1000')
+    .respond
+        name: '二班'
+        class_id: 1000
+        school_id: 93740362
 
     $httpBackend.flush()
 

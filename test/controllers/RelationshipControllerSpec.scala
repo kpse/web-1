@@ -192,20 +192,20 @@ class RelationshipControllerSpec extends Specification with TestSupport {
   def createAExistingRelationship(card: String, phone: String, childId: String, id: Long): JsValue = {
     Json.toJson(Relationship(
       Some(Parent(None, 0, "", phone, None, 0, "", None, None, None, None)),
-      Some(ChildInfo(Some(childId), "", "", "", 0, None, 0, None, None, None)),
+      Some(ChildInfo(Some(childId), "", "", None, 0, None, 0, None, None, None)),
       card, "妈妈", Some(id)))
   }
 
   def createANewRelationship(card: String, phone: String, childId: String): JsValue = {
     Json.toJson(Relationship(
       Some(Parent(None, 0, "", phone, None, 0, "", None, None, None, None)),
-      Some(ChildInfo(Some(childId), "", "", "", 0, None, 0, None, None, None)),
+      Some(ChildInfo(Some(childId), "", "", None, 0, None, 0, None, None, None)),
       card, "妈妈", None))
   }
 
   def createCard(card: String) = Json.toJson(Relationship(
     Some(Parent(None, 0, "", "", None, 0, "", None, None, None, None)),
-    Some(ChildInfo(Some(""), "", "", "", 0, None, 0, None, None, None)),
+    Some(ChildInfo(Some(""), "", "", None, 0, None, 0, None, None, None)),
     card, "", None))
 
   def newCard: JsValue = {

@@ -40,7 +40,7 @@ class ChildControllerSpec extends Specification with TestSupport {
     }
 
     "be updated with icon_url" in new WithServer {
-      private val requestHeader = Json.toJson(ChildInfo(Some("1_1394545098158"), "", "", "1999-01-02", 0, Some("url"), 777888, None, None, Some(93740362)))
+      private val requestHeader = Json.toJson(ChildInfo(Some("1_1394545098158"), "", "", Some("1999-01-02"), 0, Some("url"), 777888, None, None, Some(93740362)))
 
       val updateResponse = route(loggedRequest(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
 
@@ -54,7 +54,7 @@ class ChildControllerSpec extends Specification with TestSupport {
     }
 
     "be updated with nick" in new WithServer {
-      private val requestHeader = Json.toJson(ChildInfo(Some("1_1394545098158"), "", "new_nick_name", "1999-01-02", 0, Some("portrait"), 777888, None, None, Some(93740362)))
+      private val requestHeader = Json.toJson(ChildInfo(Some("1_1394545098158"), "", "new_nick_name", Some("1999-01-02"), 0, Some("portrait"), 777888, None, None, Some(93740362)))
 
       val updateResponse = route(loggedRequest(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
 
@@ -68,7 +68,7 @@ class ChildControllerSpec extends Specification with TestSupport {
     }
 
     "be updated with birthday" in new WithServer {
-      private val requestHeader = Json.toJson(ChildInfo(Some("1_1394545098158"), "", "new_nick_name", "1999-01-02", 0, Some("portrait"), 777888, None, None, Some(93740362)))
+      private val requestHeader = Json.toJson(ChildInfo(Some("1_1394545098158"), "", "new_nick_name", Some("1999-01-02"), 0, Some("portrait"), 777888, None, None, Some(93740362)))
 
       val updateResponse = route(loggedRequest(POST, "/kindergarten/93740362/child/1_1394545098158").withJsonBody(requestHeader)).get
 
