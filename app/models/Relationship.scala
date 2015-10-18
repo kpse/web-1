@@ -254,7 +254,7 @@ object Relationship {
         ~ childBirthday ~ classId ~ className ~ address ~ cUpdated ~ cCreated ~ cStatus =>
         Relationship(Some(Parent(Some(parent), kg, name, phone, Some(pImage.getOrElse("")), pGender, pBirthday.toDateOnly,
           Some(pUpdated), Some(member), Some(pStatus), pCompany, None, Some(pCreated), Some(pId))),
-          Some(ChildInfo(Some(child), childName, nick, childBirthday.toDateOnly, childGender,
+          Some(ChildInfo(Some(child), childName, nick, Some(childBirthday.toDateOnly), childGender,
             Some(icon_url.getOrElse("")), classId, Some(className), Some(cUpdated), Some(kg), address, Some(cStatus),
             Some(cCreated), Some(cId))), cardNum, r, Some(id))
     }

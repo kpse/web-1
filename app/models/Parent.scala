@@ -507,7 +507,7 @@ object Parent {
         nick ~ childBirthday ~ childGender ~ childPortrait ~ child_id ~ classId ~ card ~ phone ~ address ~ className ~ childTime =>
         ParentInfo(Some(id), birthday.toDateOnly, gender.toInt, portrait.getOrElse(""), name, phone,
           School(schoolId.toLong, schoolName), relationship,
-          ChildInfo(Some(child_id), childName, nick, childBirthday.toDateOnly, childGender.toInt,
+          ChildInfo(Some(child_id), childName, nick, Some(childBirthday.toDateOnly), childGender.toInt,
             Some(childPortrait.getOrElse("")), classId, Some(className), Some(childTime), Some(schoolId.toLong), address), card)
     }
   }

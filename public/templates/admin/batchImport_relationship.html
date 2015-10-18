@@ -7,4 +7,11 @@
 <div kl-excel-parse ng-model="excel" on-success="onSuccess"></div>
 <div class="clearfix"></div>
 <div class="loading" ng-show="loading"></div>
+<div class="alert alert-danger" role="alert" ng-if="errorClassNames.length > 0">
+  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+  <span>{{importingErrorMessage}}</span>
+  <ul>
+    <li ng-repeat="clazz in errorClassNames">{{::clazz}}</li>
+  </ul>
+</div>
 <div class="import-preview-view" ui-view></div>

@@ -30,14 +30,13 @@ angular.module('kulebaoAdmin')
       scope.refresh = (callback) ->
         scope.loading = true
         scope.disableMemberEditing = false
-        SchoolConfig.get school_id: stateParams.kindergarten, (data)->
+        SchoolConfig.get school_id: stateParams.kindergarten, (data) ->
           backendConfig = _.find data['config'], (item) -> item.name == 'backend'
           backendConfig? && scope.backend = backendConfig.value == 'true'
           disableMemberEditingConfig = _.find data['config'], (item) -> item.name == 'disableMemberEditing'
           disableMemberEditingConfig? && scope.disableMemberEditing = disableMemberEditingConfig.value == 'true'
           scope.videoTrialAccount = ConfigExtract data['config'], 'videoTrialAccount'
           scope.types = scope.allTypes()
-          scope.types.pop() if scope.backend or (!scope.backend and !scope.isSuperUser())
           scope.config =
             deletable : scope.adminUser.privilege_group == 'operator' || !scope.backend
 
@@ -467,7 +466,7 @@ angular.module('kulebaoAdmin')
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'relationshipService',
     '$http', '$filter', '$q', 'classService', '$state', 'batchDataService', '$timeout', '$alert', 'phoneCheckInSchoolService',
-    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, School, $state, BatchData, $timeout, Alert, PhoneCheck) ->
+    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, SchoolClass, $state, BatchData, $timeout, Alert, PhoneCheck) ->
       scope.loading = false
       scope.current_type = 'batchImport'
 
@@ -508,12 +507,34 @@ angular.module('kulebaoAdmin')
           codes = _.map q, (r) -> r.error_code
           scope.errorNumbers = _.uniq _.map (_.filter _.zip(phones, codes), (a) -> a[1] != 0), (p) -> p[0]
 
-        scope.classesScope = _.map (_.uniq _.map scope.relationships, (r) ->
+        scope.newClassesScope = _.map (_.uniq _.map scope.relationships, (r) ->
             r.child.class_name)
         , (c, i) ->
           name: c, class_id: i + 1000, school_id: parseInt(stateParams.kindergarten)
 
-        location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/1000/list")
+        console.log scope.newClassesScope
+        nonExistingClasses = _.partition scope.newClassesScope, (c) -> _.findIndex(scope.kindergarten.classes, 'name', c.name) < 0
+        unless scope.backend
+          scope.classesScope = scope.newClassesScope
+          SchoolClass.delete school_id: stateParams.kindergarten, ->
+            classQueue = _.map scope.classesScope, (c) -> SchoolClass.save(c).$promise
+            allClass = $q.all classQueue
+            allClass.then (q) ->
+              location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/1000/list")
+        else if nonExistingClasses[0].length > 0
+          console.log nonExistingClasses[0]
+          scope.errorClassNames = _.pluck(nonExistingClasses[0], 'name')
+          scope.importingErrorMessage = '以下班级当前并不存在“' + _.pluck(nonExistingClasses[0], 'name').join('”，“') + '”，请检查调整后重新输入。'
+          Alert
+          title: '批量导入失败'
+          content: scope.importingErrorMessage
+          placement: "top-left"
+          type: "danger"
+          container: '.panel-body'
+        else
+          scope.classesScope = scope.kindergarten.classes
+          location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/#{scope.kindergarten.classes[0].class_id}/list")
+
 
       BatchParents = BatchData('parents', stateParams.kindergarten)
       BatchChildren = BatchData('children', stateParams.kindergarten)
@@ -553,40 +574,38 @@ angular.module('kulebaoAdmin')
           r.parent.id = parentByName(r.parent.name).id
           r.child.id = childByName(r.child.name).id
           r.child.class_id = classOfName(r.child.class_name).class_id
-          r.card = "#{schoolId}0#{schoolId}0#{schoolId}#{i}f".slice(-10);
-          r.id = r.card
+          r.card = ''
+          r.id = "#{schoolId}0#{schoolId}0#{schoolId}#{i}f".slice(-10)
           r
 
       scope.applyAllChange = ->
         scope.loading = true
-        School.delete school_id: stateParams.kindergarten, ->
-          classQueue = _.map scope.classesScope, (c) ->
-            School.save(c).$promise
-          allClass = $q.all classQueue
-          allClass.then (q) ->
-            scope.relationships = assignIds(scope.relationships)
-            queue = [BatchParents.save(scope.parents).$promise,
-                     BatchChildren.save(scope.children).$promise,
-                     BatchRelationship.save(scope.relationships).$promise]
-            allCreation = $q.all queue
-            allCreation.then (q) ->
-              success = _.every q, (f) -> f.error_code == 0
-              if success
-                $timeout ->
-                    $state.go('kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: 'connected'})
-                  , 200
-                $state.reload()
-              else
-                error = _.reduce (_.filter q, (f) -> f.error_code != 0),
-                    (all, err) -> all += "\n#{err.error_msg}"
-                  , ""
-                Alert
-                  title: '批量导入失败'
-                  content: error
-                  placement: "top-left"
-                  type: "danger"
-                  container: '.panel-body'
-                scope.loading = false
+        scope.relationships = assignIds(scope.relationships)
+        queue = [BatchParents.save(scope.parents).$promise,
+                 BatchChildren.save(scope.children).$promise,
+                 BatchRelationship.save(scope.relationships).$promise]
+        allCreation = $q.all queue
+        allCreation.then (q) ->
+          success = _.every q, (f) -> f.error_code == 0
+          if success
+            $timeout ->
+                $state.go('kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: 'connected'})
+              , 200
+            $state.reload()
+          else
+            error = _.reduce (_.filter q, (f) -> f.error_code != 0),
+                (all, err) -> all += "\n#{err.error_msg}"
+              , ""
+            Alert
+              title: '批量导入失败'
+              content: error
+              placement: "top-left"
+              type: "danger"
+              container: '.panel-body'
+            scope.loading = false
+
+      scope.importConfirmMessage = '增量导入学生，家长和关系，你确定要导入数据的吗?'
+      scope.importConfirmMessage = '批量导入会删除当前学校的所有数据,包括且不限于公告,家园互动和成长历史.你确定要应用新数据的吗?' unless scope.backend
 
   ]
 

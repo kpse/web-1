@@ -255,7 +255,7 @@ object Student {
       get[Int]("childinfo.status") map {
       case id ~ schoolId ~ childId ~ childName ~ nick ~ icon_url ~ childGender
         ~ childBirthday ~ classId ~ className ~ address ~ t ~ created ~ status =>
-        val info = ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt,
+        val info = ChildInfo(Some(childId), childName, nick, Some(childBirthday.toDateOnly), childGender.toInt,
           Some(icon_url.getOrElse("")), classId, Some(className), Some(t), Some(schoolId.toLong), address, Some(status), Some(created))
         Student(Some(id), info, None)
     }

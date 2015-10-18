@@ -2,6 +2,7 @@ package models
 
 import anorm.SqlParser._
 import anorm._
+import models.helper.MD5Helper._
 import play.api.db.DB
 import play.api.Play.current
 import play.Logger
@@ -31,7 +32,7 @@ case class ImportedParent(id: String, school_id: Long, name: String, phone: Stri
       case Some(x) =>
         None
       case None =>
-        Some(BatchImportReport(parent.parent_id.getOrElse(""), "家长 %s 创建失败。".format(parent.parent_id)))
+        Some(BatchImportReport(parent.parent_id.getOrElse(""), s"家长 ${parent.parent_id} 手机号 ${parent.phone} 创建失败。"))
     }
   }
 
@@ -41,7 +42,7 @@ case class ImportedParent(id: String, school_id: Long, name: String, phone: Stri
   }
 }
 
-case class ImportedChild(id: String, name: String, nick: String, birthday: String,
+case class ImportedChild(id: String, name: String, nick: String, birthday: Option[String],
                          gender: Int, portrait: Option[String], class_id: Int,
                          timestamp: Option[Long], school_id: Option[Long], address: Option[String] = None, status: Option[Int] = Some(1)) {
   def transform = {
@@ -65,7 +66,7 @@ case class ImportedChild(id: String, name: String, nick: String, birthday: Strin
       case Some(x) =>
         None
       case None =>
-        Some(BatchImportReport(child.child_id.getOrElse(""), "小孩 %s 创建失败。".format(child.child_id)))
+        Some(BatchImportReport(child.child_id.getOrElse(""), s"学生 ${child.name} ${child.child_id} 创建失败。"))
     }
   }
 
@@ -90,6 +91,8 @@ case class ImportedRelationship(id: String, card: String, parent: IdItem, child:
 
   def create = DB.withTransaction {
     implicit c =>
+      val cardNumber: String = fakeCardIfNeeded
+      Logger.info(s"cardNumber = $cardNumber")
       try {
         SQL("insert into relationmap (child_id, parent_id, card_num, relationship, reference_id) VALUES" +
           " ({child}, {parent}, {card}, {relationship}, {id})")
@@ -97,7 +100,7 @@ case class ImportedRelationship(id: String, card: String, parent: IdItem, child:
             'parent -> parent.id,
             'child -> child.id,
             'relationship -> relationship,
-            'card -> card,
+            'card -> cardNumber,
             'id -> id
           ).executeInsert()
         c.commit()
@@ -111,8 +114,18 @@ case class ImportedRelationship(id: String, card: String, parent: IdItem, child:
       }
   }
 
+  def fakeCardIfNeeded: String = {
+    val fakeCardNumber: String = "f" + md5(s"${parent}_${child.id}").take(19)
+    card match {
+      case number if number.length() > 0 => number
+      case _ => fakeCardNumber
+    }
+  }
+
   def update = DB.withConnection {
     implicit c =>
+      val cardNumber: String = fakeCardIfNeeded
+      Logger.info(s"cardNumber = $cardNumber")
       SQL("update relationmap set child_id={child}, " +
         "parent_id={parent}, relationship={relationship}, card_num={card} " +
         "where reference_id={id}")
@@ -120,7 +133,7 @@ case class ImportedRelationship(id: String, card: String, parent: IdItem, child:
           'parent -> parent.id,
           'child -> child.id,
           'relationship -> relationship,
-          'card -> card,
+          'card -> cardNumber,
           'id -> id
         ).executeUpdate()
       None
@@ -136,7 +149,7 @@ object BatchImportReport {
     val report = list.filter(_.isDefined).map(_.get)
     report match {
       case x :: xs =>
-        Json.toJson(ErrorResponse(report.toString))
+        Json.toJson(ErrorResponse(report.toString()))
       case List() =>
         Json.toJson(new SuccessResponse)
     }

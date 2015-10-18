@@ -12,7 +12,7 @@ import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
 
-case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: String,
+case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: Option[String] = None,
                      gender: Int, portrait: Option[String], class_id: Int, class_name: Option[String],
                      timestamp: Option[Long], school_id: Option[Long], address: Option[String] = None, status: Option[Int] = Some(1), created_at: Option[Long] = None, id: Option[Long]=None)
 
@@ -127,7 +127,7 @@ object Children {
             'gender -> child.gender,
             'classname -> "",
             'picurl -> child.portrait.getOrElse(""),
-            'birthday -> child.birthday,
+            'birthday -> child.birthday.getOrElse("1700-01-01"),
             'indate -> child.birthday,
             'school_id -> kg.toString,
             'address -> child.address,
@@ -173,7 +173,7 @@ object Children {
       get[Int]("childinfo.status") map {
       case schoolId ~ childId ~ childName ~ nick ~ icon_url ~ childGender
         ~ childBirthday ~ classId ~ className ~ address ~ t ~ created ~ id ~ status =>
-        ChildInfo(Some(childId), childName, nick, childBirthday.toDateOnly, childGender.toInt,
+        ChildInfo(Some(childId), childName, nick, Some(childBirthday.toDateOnly), childGender.toInt,
           Some(icon_url.getOrElse("")), classId, Some(className), Some(t), Some(schoolId.toLong), address, Some(status), Some(created), Some(id))
     }
   }
