@@ -31,7 +31,7 @@ describe 'VideoMemberController', ->
       expect(result.length).toBe 1
       expect(_.first(result).account).toBe 'account'
       expect(_.first(result).password).toBe 'password'
-      expect(_.first(result).name).toBe "display name" + '13060003721'
+      expect(_.first(result).name).toBe '13060003721' + "display name"
 
     it 'should ignore video accounts in another class', ->
       $scope = $rootScope.$new()

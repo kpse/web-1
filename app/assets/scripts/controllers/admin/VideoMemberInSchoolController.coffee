@@ -57,7 +57,7 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
         _.map (_.filter parents, (f) -> !classId? || scope.display(f, classId)), (p) ->
           'account': p.account,
           'password': p.password,
-          'name': p.detail.name + p.detail.phone
+          'name': p.detail.phone + p.detail.name
 
       phoneFieldName = '家长手机号'
       nameFieldName = '家长姓名'
