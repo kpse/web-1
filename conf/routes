@@ -552,6 +552,9 @@ POST          /api/v3/kindergarten/:kg/log_store                                
 POST          /api/v3/kindergarten/:kg/log_store/:id                                           controllers.V3.SchoolLogStoreController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/log_store/:id                                           controllers.V3.SchoolLogStoreController.delete(kg: Long, id: Long)
 
+POST          /api/v3/kindergarten/:kg/class                                                   controllers.V3.ClassController.create(kg: Long)
+POST          /api/v3/kindergarten/:kg/class/:id                                               controllers.V3.ClassController.update(kg: Long, id: Long)
+
 #check binding history
 GET           /api/v3/binding_history/:phone                                                   controllers.Authentication.bindingHistory(phone: String)
 
@@ -668,7 +671,7 @@ GET           /api/v4/statistics/monthly/:schoolId                              
 POST          /api/v5/kindergarten/:schoolId/invitation                                        controllers.V5.InvitationController.create(schoolId: Long)
 
 POST          /api/v6/payment                                                                  controllers.V6.PaymentRecordController.create
-GET           /api/v6/payment                                                        controllers.V6.PaymentRecordController.index(parentId: Option[String])
+GET           /api/v6/payment                                                                  controllers.V6.PaymentRecordController.index(parentId: Option[String])
 
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                         controllers.ChildController.index(kg: Long, parentId: String)
