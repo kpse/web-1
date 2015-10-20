@@ -4,6 +4,7 @@ import models.VideoMember._
 import models._
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Action, Controller}
+import play.cache.Cache
 
 object VideoMemberController extends Controller with Secured {
 
@@ -86,6 +87,19 @@ object VideoMemberController extends Controller with Secured {
   def default(kg: Long) = IsLoggedIn {
     u => _ =>
       Ok(Json.toJson(VideoMember.default(kg)))
+  }
+
+  def updateDefaultAccount(kg: Long) = OperatorPage(parse.json) {
+    u => request =>
+      request.body.validate[VideoMember].map {
+        case (member) =>
+          Cache.remove(VideoMember.cheatCode)
+          Ok(Json.toJson(member.updateDefault(kg)))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+
+
   }
 
   def check(kg: Long, account: String) = IsLoggedIn {

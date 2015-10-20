@@ -235,6 +235,7 @@ GET           /api/v1/video_member                                              
 GET           /api/v1/video_member/available/:kg                                               controllers.VideoMemberController.available(kg: Long)
 
 GET           /api/v1/kindergarten/:kg/video_member/default                                    controllers.VideoMemberController.default(kg: Long)
+POST          /api/v1/kindergarten/:kg/video_member/default                                    controllers.VideoMemberController.updateDefaultAccount(kg: Long)
 GET           /api/v1/kindergarten/:kg/video_member                                            controllers.VideoMemberController.index(kg: Long)
 GET           /api/v1/kindergarten/:kg/video_member/:id                                        controllers.VideoMemberController.show(kg: Long, id: String)
 POST          /api/v1/kindergarten/:kg/video_member                                            controllers.VideoMemberController.create(kg: Long)

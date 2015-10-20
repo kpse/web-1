@@ -7,6 +7,7 @@ import play.api.Play
 import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
+import play.api.cache.Cache
 
 
 case class AvailableSlots(school_id: Long, count: Long)
@@ -14,6 +15,18 @@ case class AvailableSlots(school_id: Long, count: Long)
 case class RawVideoMember(account: String)
 
 case class VideoMember(id: String, account: Option[String], password: Option[String], school_id: Option[Long]) {
+  def updateDefault(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("update videomemberdefault set status=0").executeUpdate()
+      SQL("insert into videomemberdefault (school_id, account, password, created_at) values ({kg}, {account}, {password}, {time})").on(
+        'kg -> kg.toString,
+        'account -> account,
+        'password -> password,
+        'time -> System.currentTimeMillis()
+      ).executeInsert()
+      VideoMember.default(kg)
+  }
+
   def update = DB.withConnection {
     implicit c =>
       SQL("update videomembers set account={account}, status=1 where parent_id={id}")
@@ -49,7 +62,7 @@ case class VideoMember(id: String, account: Option[String], password: Option[Str
 }
 
 object VideoMember {
-  def default(kg: Long) = VideoMember("default", Some("8888"), Some("000000"), Some(kg))
+  val cheatCode: String = "videoMemberDefault"
 
   implicit val write = Json.writes[VideoMember]
   implicit val write2 = Json.writes[AvailableSlots]
@@ -92,6 +105,15 @@ object VideoMember {
     }
   }
 
+  val simpleDefault = {
+    get[String]("school_id") ~
+      get[String]("password") ~
+      get[String]("account") map {
+      case kg ~ password ~ account =>
+        VideoMember("default", Some(account), Some(password), Some(kg.toLong))
+    }
+  }
+
   def fakeAccountAccordingSchool(kg: Long, id: String, account: String) = kg match {
     case 2046 => VideoMember(id, Some("cocbaby"), Some("13880498549"), Some(kg))
     case 2001 => default(2001)
@@ -118,6 +140,15 @@ object VideoMember {
   }
 
   def limitExceed(kg: Long): Boolean = available(kg).count <= 0
+
+  def default(kg: Long) = DB.withConnection {
+    implicit c =>
+      val value: VideoMember = Cache.getOrElse[VideoMember](cheatCode) {
+      val account: Option[VideoMember] = SQL("select * from videomemberdefault where status=1 order by uid DESC limit 1").on('kg -> kg).as(simpleDefault singleOpt)
+      account.getOrElse(VideoMember("default", Some("8888"), Some("8888"), Some(kg)))
+    }
+      value.copy(school_id = Some(kg))
+  }
 }
 
 object RawVideoMember {
