@@ -1,6 +1,6 @@
 angular.module('kulebaoOp').controller 'OpVerificationCtrl',
-  ['$scope', '$rootScope', '$resource', '$alert',
-    (scope, rootScope, $resource, Alert) ->
+  ['$scope', '$rootScope', '$resource', '$alert', 'videoMemberService',
+    (scope, rootScope, $resource, Alert, DefaultVideo) ->
       rootScope.tabName = 'code'
       Code = $resource '/cheatCode'
 
@@ -23,5 +23,20 @@ angular.module('kulebaoOp').controller 'OpVerificationCtrl',
         code.$delete ->
           scope.code = ''
 
+      # video part
+
+      scope.video = DefaultVideo.get school_id: 0, id: 'default', ->
+        scope.loading = false
+
+      scope.editAccount = (video) ->
+        scope.editingAccount = true
+
+      scope.saveAccount = (video) ->
+        video.$save ->
+            scope.editingAccount = false
+          , (res) ->
+            Alert
+              title: ''
+              content: res.data.error_msg
   ]
 
