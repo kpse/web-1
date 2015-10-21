@@ -37,6 +37,7 @@ angular.module('kulebaoAdmin')
           disableMemberEditingConfig? && scope.disableMemberEditing = disableMemberEditingConfig.value == 'true'
           scope.videoTrialAccount = ConfigExtract data['config'], 'videoTrialAccount'
           scope.types = scope.allTypes()
+          scope.types.pop() unless (scope.backend && scope.operatorOnly(scope.adminUser)) || !scope.backend
           scope.config =
             deletable : scope.adminUser.privilege_group == 'operator' || !scope.backend
 

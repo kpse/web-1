@@ -13,7 +13,7 @@
             <span class="error-field" ng-show="newRelationshipForm.card.$dirty && newRelationshipForm.card.$error.unique">与现有卡号重复，请重新输入</span>
             <span class="error-field non-registered-card-error" ng-show="newRelationshipForm.card.$dirty && newRelationshipForm.card.$error.registered">卡未授权，请联系库贝处理</span>
           </div>
-          <a class="toggle-card-number-display" ng-click="toggleFakeCard(newRelationshipForm)">没有卡号？</a>
+          <a class="toggle-card-number-display" ng-show="operatorOnly(adminUser)" ng-click="toggleFakeCard(newRelationshipForm)">没有卡号？</a>
         </div>
         <div class="form-group" ng-show="backend && noCard">
           <label for="parent-card" class="col-sm-4 control-label">暂无卡号</label>
