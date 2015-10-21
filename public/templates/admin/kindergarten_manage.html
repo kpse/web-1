@@ -100,7 +100,7 @@
           <span>开通手机号管理</span>
         </a>
       </li>
-      <li class="action" ng-class="{active : isSelected('video')}" ng-show="isSuperUser(adminUser)">
+      <li class="action" ng-class="{active : isSelected('video')}" ng-show="operatorOnly(adminUser)">
         <a ng-click="goVideoMemberManagement()" class="btn video">
           <span>看宝宝功能开通</span>
         </a>
