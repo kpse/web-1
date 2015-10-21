@@ -187,6 +187,9 @@
   float: right;
   padding-top: 7px;
 }
+.panel-heading .error {
+  color: red;
+}
 .axis path,
 .axis line {
   fill: none;

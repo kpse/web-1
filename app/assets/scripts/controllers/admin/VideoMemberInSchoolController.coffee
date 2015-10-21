@@ -90,7 +90,7 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
 
           [scope.importingData, scope.errorDataNoPhone] = _.partition importingData, (d) -> _.has group, d.phone
 
-          scope.errorDataNoPhone = _.map scope.errorDataNoPhone, (d) -> d.error = '无此手机号码。';d
+          scope.errorDataNoPhone = _.map scope.errorDataNoPhone, (d) -> d.error = '无此手机号码或手机号码错误。';d
 
           [scope.importingData, scope.errorDataWrongName] = _.partition scope.importingData, (d) ->
             group[d.phone]? && group[d.phone][0].name == d.name
