@@ -66,7 +66,7 @@ object Authentication extends Controller with Secured {
             case success if success.error_code == 0 =>
               Ok(loggedJson(success)).withSession("username" -> success.account_name, "token" -> success.access_token)
             case _ =>
-              Logger.info("versioncode in request : (%s)".format(request.headers.get("versioncode")))
+              Logger.info(s"versioncode in request : (${request.headers.get("versioncode")})")
               Ok(loggedJson(result)).withNewSession
           }
       }.recoverTotal {
@@ -90,7 +90,7 @@ object Authentication extends Controller with Secured {
   def hasPackageBeyond(version: Long, pkgType: Option[String] = None): SimpleResult = {
     AppPackage.latest(pkgType).fold(BadRequest(""))({
       case pkg if version < pkg.version_code =>
-        Logger.info("latest version code = %d".format(pkg.version_code))
+        Logger.info(s"latest version code = ${pkg.version_code}")
         Ok(Json.toJson(AppPackage.response(pkg)))
       case _ => Ok(Json.toJson(AppPackage.noUpdate))
     })
@@ -174,13 +174,13 @@ object Authentication extends Controller with Secured {
         case (login) =>
           Logger.info(login.toString)
 
-          BindingV1.record(login, request.headers.get("versioncode").getOrElse("unknown"))
+          login.record(request.headers.get("versioncode").getOrElse("unknown"))
           val result = BindingV1(login)
           result match {
             case success if success.error_code == 0 =>
               Ok(loggedJson(success)).withSession("username" -> success.account_name, "token" -> success.access_token)
             case _ =>
-              Logger.info("versioncode in request : (%s)".format(request.headers.get("versioncode")))
+              Logger.info(s"versioncode in request : (${request.headers.get("versioncode")})")
               Ok(loggedJson(result)).withNewSession
           }
       }.recoverTotal {

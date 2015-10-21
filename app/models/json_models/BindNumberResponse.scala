@@ -8,7 +8,20 @@ import play.api.Logger
 import play.api.Play.current
 import play.api.db.DB
 
-case class BindingNumber(phonenum: String, user_id: String, channel_id: String, device_type: Option[String], access_token: String)
+case class BindingNumber(phonenum: String, user_id: String, channel_id: String, device_type: Option[String], access_token: String) {
+  def record(version: String) = DB.withConnection {
+    implicit c =>
+      SQL("insert into bindinghistory (phone, device_type, access_token, version_code, updated_at) values " +
+        "({phone}, {device}, {token}, {version}, {time})")
+        .on(
+          'phone -> phonenum,
+          'device -> device_type.getOrElse("unknown"),
+          'token -> access_token,
+          'version -> version,
+          'time -> System.currentTimeMillis()
+        ).executeInsert()
+  }
+}
 
 case class BindNumberResponse(error_code: Int,
                               access_token: String = "",
