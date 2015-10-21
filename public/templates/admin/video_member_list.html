@@ -40,10 +40,10 @@
   <h3>导入Excel开通看宝宝账号</h3>
 
   <div kl-excel-parse ng-model="excel" on-success="onSuccess"></div>
-  <button ng-show="importingData" ng-disabled="loading" class="btn btn-success" ng-confirm-click="import(newParentsInClass)"
+  <button ng-show="importingData" ng-disabled="loading || newParentsInClass.length <= 0" class="btn btn-success" ng-confirm-click="import(newParentsInClass)"
           ng-confirm-msg="导入当前班级的{{newParentsInClass.length}}个账号。是否继续？">确认开通{{currentImportingClass}}
   </button>
-  <button ng-show="importingData" ng-disabled="loading" class="btn btn-primary" ng-confirm-click="import(importingData)"
+  <button ng-show="importingData" ng-disabled="loading || importingData.length <= 0" class="btn btn-primary" ng-confirm-click="import(importingData)"
           ng-confirm-msg="导入全部“可导入列表的”{{importingData.length}}个账号。是否继续？">全部开通
   </button>
   <button ng-show="importingData" ng-disabled="loading" class="btn btn-default" ng-click="cancelImporting()">取消</button>

@@ -123,7 +123,7 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
           scope.errorData = _.flatten [scope.errorDataNoPhone, scope.errorDataWrongName, scope.errorDataNoConnection,
                                        scope.errorDataClassNotMatch, scope.errorDataErrorChildName]
 
-
+          scope.newParentsInClass = []
           if scope.errorData.length > 0
             scope.currentModal = Modal
               scope: scope
