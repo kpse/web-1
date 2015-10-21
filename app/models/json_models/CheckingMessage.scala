@@ -68,10 +68,10 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
       SQL(
         """
           |select a.pushid, c.child_id, c.name, a.channelid,
-          |  (select p.name from parentinfo p, relationmap r where p.parent_id = r.parent_id and r.card_num={card_num}) as parent_name,
+          |  (select p.name from parentinfo p, relationmap r where p.parent_id = r.parent_id and r.card_num={card_num} limit 1) as parent_name,
           |  a.device from accountinfo a, childinfo c, parentinfo p, relationmap r
           |where p.parent_id = r.parent_id and r.child_id = c.child_id and
-          |p.phone = a.accountid and c.child_id in (select child_id from relationmap r where r.card_num={card_num})
+          |p.phone = a.accountid and c.child_id = (select child_id from relationmap r where r.card_num={card_num} limit 1)
         """.stripMargin)
         .on(
           'card_num -> card_no
@@ -84,7 +84,7 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
 
   def save(notifications: List[CheckNotification]): Option[Long] = DB.withTransaction {
     implicit c =>
-      logger.debug(s"messages in saving checking info: ${notifications}")
+      logger.debug(s"messages in saving checking info: $notifications")
       notifications match {
         case x::xs =>
           SQL("insert into dailylog (child_id, record_url, check_at, card_no, notice_type, school_id, parent_name) " +
