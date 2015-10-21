@@ -123,7 +123,6 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
           scope.errorData = _.flatten [scope.errorDataNoPhone, scope.errorDataWrongName, scope.errorDataNoConnection,
                                        scope.errorDataClassNotMatch, scope.errorDataErrorChildName]
 
-          scope.newParentsInClass = []
           if scope.errorData.length > 0
             scope.currentModal = Modal
               scope: scope
@@ -135,9 +134,14 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
             alert '没有可用的数据，请检查输入数据'
             scope.cancelImporting()
           else
-            scope.importingClasses = angular.copy scope.kindergarten.classes
-            scope.navigateToImportingClass(scope.importingClasses[0].name)
+            scope.showResult()
 
+      scope.showResult = ->
+        scope.newParentsInClass = []
+        firstPerson = _.first scope.importingData
+        return unless firstPerson?
+        scope.importingClasses = angular.copy scope.kindergarten.classes
+        scope.navigateToImportingClass(firstPerson.className)
 
       scope.import = (data) ->
         scope.loading = true
