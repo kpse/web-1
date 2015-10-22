@@ -576,15 +576,24 @@ angular.module('kulebaoAdmin')
           r.child.id = childByName(r.child.name).id
           r.child.class_id = classOfName(r.child.class_name).class_id
           r.card = ''
-          r.id = "#{schoolId}0#{schoolId}0#{schoolId}#{i}f".slice(-10)
+          r.id = "#{schoolId}0#{r.parent.id}0#{r.child.id}#{i}f".slice(-10)
           r
+      compactRelationship = (list) ->
+        _.map list, (r) ->
+          id: r.id
+          card: r.card
+          parent:
+            id: r.parent.id
+          child:
+            id: r.child.id
+          relationship: r.relationship
 
       scope.applyAllChange = ->
         scope.loading = true
-        scope.relationships = assignIds(scope.relationships)
+        compactRelationships = compactRelationship(assignIds(scope.relationships))
         queue = [BatchParents.save(scope.parents).$promise,
                  BatchChildren.save(scope.children).$promise,
-                 BatchRelationship.save(scope.relationships).$promise]
+                 BatchRelationship.save(compactRelationships).$promise]
         allCreation = $q.all queue
         allCreation.then (q) ->
           success = _.every q, (f) -> f.error_code == 0
@@ -607,6 +616,8 @@ angular.module('kulebaoAdmin')
 
       scope.importConfirmMessage = '增量导入学生，家长和关系，你确定要导入数据的吗?'
       scope.importConfirmMessage = '批量导入会删除当前学校的所有数据,包括且不限于公告,家园互动和成长历史.你确定要应用新数据的吗?' unless scope.backend
+      scope.importButtonTitle = '增量导入新数据'
+      scope.importButtonTitle = '覆盖已有数据' unless scope.backend
 
   ]
 

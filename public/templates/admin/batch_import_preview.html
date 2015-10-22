@@ -1,6 +1,6 @@
 <h3 ng-show="excel">预览即将导入的数据</h3>
 <button ng-disabled="!excel || errorNumbers.length > 0" class="btn btn-danger" ng-confirm-msg="{{importConfirmMessage}}"
-        ng-confirm-click="applyAllChange()">覆盖已有数据
+        ng-confirm-click="applyAllChange()">{{importButtonTitle}}
 </button>
 <div class="loading" ng-show="loading"></div>
 <div class="alert alert-danger" role="alert" ng-if="errorNumbers.length > 0">
