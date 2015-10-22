@@ -67,14 +67,15 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
       }
       SQL(
         """
-          |select a.pushid, c.child_id, c.name, a.channelid,
+          | select a.pushid, c.child_id, c.name, a.channelid,
           |  (select p.name from parentinfo p, relationmap r where p.parent_id = r.parent_id and r.card_num={card_num} limit 1) as parent_name,
           |  a.device from accountinfo a, childinfo c, parentinfo p, relationmap r
-          |where p.parent_id = r.parent_id and r.child_id = c.child_id and
-          |p.phone = a.accountid and c.child_id = (select child_id from relationmap r where r.card_num={card_num} limit 1)
+          | where p.parent_id = r.parent_id and r.child_id = c.child_id and p.school_id={kg} and
+          | p.phone = a.accountid and c.child_id = (select child_id from relationmap r where r.card_num={card_num} limit 1)
         """.stripMargin)
         .on(
-          'card_num -> card_no
+          'card_num -> card_no,
+          'kg -> school_id.toString
         ).as(simpleCheck *)
   }
   def create = DB.withTransaction {
@@ -137,10 +138,11 @@ case class CheckChildInfo(school_id: Long, child_id: String, check_type: Int, ti
           |select a.pushid, c.child_id, c.name, a.channelid, '' as parent_name,
           |  a.device from accountinfo a, childinfo c, parentinfo p, relationmap r
           |where p.parent_id = r.parent_id and r.child_id = c.child_id and
-          |p.phone = a.accountid and c.child_id={child_id}
+          |p.phone = a.accountid and c.child_id={child_id} and p.school_id={kg}
         """.stripMargin)
         .on(
-          'child_id -> child_id
+          'child_id -> child_id,
+          'kg -> school_id.toString
         ).as(simpleChildCheck *)
   }
 }
