@@ -182,6 +182,21 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       responseArr.value.size must equalTo(7)
     }
 
+    "reject existing relationship replacement" in new WithApplication {
+      val cardNumber: String = ""
+      val parentPhone: String = "13408654680"
+      val child_id: String = "1_1391836223533"
+
+      private val jsBody = createAExistingRelationship(cardNumber, parentPhone, child_id, 10)
+      val res = route(loggedRequest(POST, "/kindergarten/93740362/relationship/0001234999").withBody(jsBody)).get
+
+      status(res) must equalTo(BAD_REQUEST)
+      contentType(res) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(res))
+      (response \ "error_code").as[Int] must equalTo(7)
+    }
+
 
   }
 
