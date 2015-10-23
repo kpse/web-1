@@ -2,9 +2,9 @@
 
 angular.module('kulebaoAdmin')
 .controller 'RelationshipMainCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'parentService',
+  ['$scope', '$rootScope', '$stateParams', '$location', '$state', 'parentService',
    'relationshipService', '$modal', 'childService', '$http', '$alert', 'videoMemberService', 'schoolConfigService', 'schoolConfigExtractService',
-    (scope, rootScope, stateParams, location, Parent, Relationship, Modal, Child, $http, Alert, VideoMember, SchoolConfig, ConfigExtract) ->
+    (scope, rootScope, stateParams, $state, location, Parent, Relationship, Modal, Child, $http, Alert, VideoMember, SchoolConfig, ConfigExtract) ->
       rootScope.tabName = 'relationship'
       scope.heading = '管理幼儿及家长基础档案信息'
 
@@ -46,7 +46,6 @@ angular.module('kulebaoAdmin')
             d.school_id = parseInt(stateParams.kindergarten)
             d
           callback() if callback?
-          scope.loading = false
 
       scope.backend = true
       scope.refresh()
@@ -278,7 +277,8 @@ angular.module('kulebaoAdmin')
             handleError('关系', res)
 
       scope.navigateTo = (s) ->
-        location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/#{s.url}") if stateParams.type != s.url
+        if stateParams.type != s.url
+          $state.go 'kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: stateParams.type}
 
       scope.membersInformation =
         members : [{id: 0, desc:'未开通'}, {id: 1, desc: '已开通'}]
@@ -341,14 +341,12 @@ angular.module('kulebaoAdmin')
 
       AccessClass(scope.kindergarten.classes)
 
-      scope.navigateTo = (s) ->
-        location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/#{s.url}") if stateParams.type != s.url
   ]
 
 .controller 'ConnectedInClassCtrl',
-  [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'parentService', 'relationshipService',
-    (scope, rootScope, stateParams, location, Parent, Relationship) ->
+  [ '$scope', '$rootScope', '$stateParams', '$state', '$timeout',
+    'parentService', 'relationshipService',
+    (scope, rootScope, stateParams, $state, $timeout, Parent, Relationship) ->
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.loading = true
@@ -356,10 +354,13 @@ angular.module('kulebaoAdmin')
         scope.relationships = _.map data , (d) ->
           d.school_id = parseInt(stateParams.kindergarten)
           d
-        scope.loading = false
+        $timeout ->
+          scope.loading = false
 
       scope.navigateTo = (c) ->
-        location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/#{stateParams.type}/class/#{c.class_id}/list")
+        scope.loading = true
+        $timeout ->
+          $state.go 'kindergarten.relationship.type.class.list', {kindergarten: stateParams.kindergarten, type: stateParams.type, class_id: c.class_id}
 
   ]
 
@@ -468,7 +469,6 @@ angular.module('kulebaoAdmin')
     '$location', 'relationshipService',
     '$http', '$filter', '$q', 'classService', '$state', 'batchDataService', '$timeout', '$alert', 'phoneCheckInSchoolService',
     (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, SchoolClass, $state, BatchData, $timeout, Alert, PhoneCheck) ->
-      scope.loading = false
       scope.current_type = 'batchImport'
 
       parentRange = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
@@ -625,7 +625,6 @@ angular.module('kulebaoAdmin')
   [ '$scope', '$rootScope', '$stateParams',
     '$location', '$state', '$modal',
     (scope, rootScope, stateParams, location, $state, Modal) ->
-      scope.loading = false
       scope.current_class = parseInt stateParams.class_id
       schoolId = parseInt stateParams.kindergarten
 
