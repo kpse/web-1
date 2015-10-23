@@ -7,7 +7,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
       $rootScope.tabName = 'employee'
 
       scope.refresh = ->
-        scope.loading = true
+        $rootScope.loading = true
         scope.employees = SchoolEmployee.query school_id: $stateParams.kindergarten, (data)->
           scope.employees = _.reject data, (employee) -> employee.id == scope.adminUser.id
           all = _.map scope.employees, (e) ->
@@ -16,7 +16,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
                 e.displayClasses = (_.map e.subordinates, (s) -> s.name).join(',')
                 resolve(e.subordinates)
           $q.all(all).then ->
-            scope.loading = false
+            $rootScope.loading = false
 
       scope.refresh()
 
@@ -114,7 +114,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
     (scope, $rootScope, $stateParams, School, Modal, Employee, SchoolEmployee, Alert, Stats) ->
 
       scope.refresh = ->
-        scope.loading = true
+        $rootScope.loading = true
         scope.employees = SchoolEmployee.query school_id: $stateParams.kindergarten, ->
           scope.assessStats = Stats('assess').query school_id: $stateParams.kindergarten, ->
             _.forEach scope.employees, (e) ->
@@ -129,7 +129,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
               e.news = _.find scope.newsStats, (s) -> e.id == s.employee_id
               e.news = count: 0 unless e.news?
 
-          scope.loading = false
+          $rootScope.loading = false
 
       safeCount = (e) ->
         try

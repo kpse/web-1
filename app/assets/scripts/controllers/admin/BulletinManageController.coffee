@@ -9,17 +9,18 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
       scope.current_class = parseInt(stateParams.class)
 
-      scope.loading = true
-
       scope.classesScope = angular.copy scope.kindergarten.classes
       scope.classesScope.unshift class_id: 0, name: '全校'
       location.path "#{location.path()}/class/0/list" if (location.path().indexOf('/class/') < 0)
 
       scope.navigateTo = (c) ->
+        $rootScope.loading = true
         location.path("kindergarten/#{stateParams.kindergarten}/bulletin/class/#{c.class_id}/list")
 
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)
+
+      $rootScope.loading = false
   ]
 
 .controller 'BulletinCtrl',
@@ -34,7 +35,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
       scope.refresh = ->
         page = scope.currentPage
-        scope.loading = true
+        $rootScope.loading = true
         scope.preview = NewsPreview.query
           school_id: stateParams.kindergarten
           publisher_id: scope.adminUser.id
@@ -51,7 +52,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
               restrict: true
               to: last + 1 || last
               most: scope.itemsPerPage, (all) ->
-                scope.loading = false
+                $rootScope.loading = false
                 _.forEach all, (one) -> one.publisher = Sender.bind(school_id: stateParams.kindergarten, id: one.publisher_id, type: 't').get() if one.publisher_id?
 
       scope.refresh()

@@ -23,7 +23,7 @@ angular.module('kulebaoAdmin')
     '$location', 'chatSessionService', 'childService',
     'senderService', 'readRecordService',
     (scope, rootScope, stateParams, location, Chat, Child, Sender, ReaderLog) ->
-      scope.loading = true
+      rootScope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true).query ->
@@ -37,7 +37,7 @@ angular.module('kulebaoAdmin')
                 child.lastMessage.sender.read_record = ReaderLog.bind(school_id: stateParams.kindergarten, topic: child.child_id, reader: scope.adminUser.id).get ->
                   child.lastMessage.isRead = child.lastMessage.sender.read_record.session_id >= child.lastMessage.id
 
-        scope.loading = false
+        rootScope.loading = false
 
 
       scope.goDetail = (child) ->
@@ -50,13 +50,13 @@ angular.module('kulebaoAdmin')
     '$popover', '$tooltip', 'senderService', 'readRecordService',
     (scope, rootScope, stateParams, location, $http, Message, Child, Modal, Popover, Tooltip, Sender, ReaderLog) ->
 
-      scope.loading = true
+      rootScope.loading = true
       scope.noMore = false
       scope.child = Child.bind(school_id: stateParams.kindergarten, child_id: stateParams.child_id).get ->
         scope.refresh()
 
       scope.refresh = (most=25) ->
-        scope.loading = true
+        rootScope.loading = true
         scope.conversations = Message.bind(school_id: stateParams.kindergarten, topic: scope.child.child_id, most: most).query ->
           _.forEach scope.conversations, (c) ->
             c.sender.info = Sender.bind(school_id: stateParams.kindergarten, id: c.sender.id, type: c.sender.type).get ->
@@ -71,7 +71,7 @@ angular.module('kulebaoAdmin')
             r.$save ->
               scope.$emit 'sessionRead'
           scope.noMore = scope.conversations.length < most
-          scope.loading = false
+          rootScope.loading = false
 
       scope.newMessage = ->
         new Message

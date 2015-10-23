@@ -16,7 +16,7 @@ angular.module('kulebaoAdmin')
 .controller 'AssignmentsInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     (scope, rootScope, stateParams) ->
-      scope.loading = true
+      rootScope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
   ]
 .controller 'AssignmentsCtrl',
@@ -39,9 +39,9 @@ angular.module('kulebaoAdmin')
       scope.buttonLabel = '上传图片'
 
       scope.refresh = ->
-        scope.loading = true
+        rootScope.loading = true
         scope.assignments = Assignment.query school_id: stateParams.kindergarten, class_id: stateParams.class_id, ->
-          scope.loading = false
+          rootScope.loading = false
 
       scope.refresh()
 

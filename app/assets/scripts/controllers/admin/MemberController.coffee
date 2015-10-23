@@ -53,7 +53,7 @@ angular.module('kulebaoAdmin')
         scope.selection.allNonMemberCheck = false
 
       scope.refresh = ->
-        scope.loading = true
+        rootScope.loading = true
         initData()
         scope.members = Parent.members school_id: stateParams.kindergarten, class_id: stateParams.class_id, ->
           generateDetail(scope.members)
@@ -63,7 +63,7 @@ angular.module('kulebaoAdmin')
               scope.$emit 'update_charge'
               scope.membersInClass = _.uniq scope.members, (m) -> m.parent_id
               scope.nonMembersInClass = _.uniq scope.nonMembers, (m) -> m.parent_id
-              scope.loading = false
+              rootScope.loading = false
 
 
       scope.refresh()
@@ -108,7 +108,7 @@ angular.module('kulebaoAdmin')
           scope.reject member
         all = $q.all queue
         all.then (q) ->
-          scope.loading = true
+          rootScope.loading = true
           $timeout ->
               scope.refresh()
             , 500
@@ -120,7 +120,7 @@ angular.module('kulebaoAdmin')
           scope.promote parent
         all = $q.all queue
         all.then (q) ->
-          scope.loading = true
+          rootScope.loading = true
           $timeout ->
               scope.refresh()
             , 500

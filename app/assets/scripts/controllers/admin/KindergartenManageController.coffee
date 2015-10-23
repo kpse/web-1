@@ -10,6 +10,8 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.kindergarten.classes = ClassesInSchool
       scope.classesScope = scope.kindergarten.classes
 
+      $rootScope.loading = true
+
       if (scope.adminUser.privilege_group isnt 'operator') && scope.adminUser.school_id != parseInt $stateParams.kindergarten
         location.path "/kindergarten/#{scope.adminUser.school_id}/welcome"
 

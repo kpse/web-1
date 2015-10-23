@@ -73,7 +73,7 @@
           | date:'yyyy年MM月dd日 HH:mm'}}发布
         </div>
         <div ng-hide="news.published" class="issue-date">未发布</div>
-        <div class="loading" ng-show="loading"></div>
+
         <div class="btn-group">
           <button class="btn btn-default" ng-click="closeDialog(news)">{{ news.published ? '关闭' : '取消' }}</button>
           <button class="btn btn-primary" ng-disabled="newsForm.$invalid || uploading" ng-hide="news.published"

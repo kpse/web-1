@@ -54,7 +54,7 @@ angular.module('kulebaoAdmin')
               when 0 then c.checkInStatus = '已离校'
 
       scope.refresh = ->
-        scope.loading = true
+        rootScope.loading = true
         scope.children = Child.query school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true, ->
           scope.allLog = DailyLog.query school_id: stateParams.kindergarten, class_id: stateParams.class_id, ->
             mappingDetails scope.children, scope.allLog
@@ -62,7 +62,7 @@ angular.module('kulebaoAdmin')
               c.checkInStatus == '未到校'
             scope.childrenNotIn = _.filter scope.children, (c) ->
               c.checkInStatus == '未到校'
-            scope.loading = false
+            rootScope.loading = false
 
       scope.detail = (child)->
         location.path "kindergarten/#{stateParams.kindergarten}/dailylog/class/#{child.class_id}/child/#{child.child_id}"

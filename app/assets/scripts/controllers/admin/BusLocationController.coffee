@@ -27,7 +27,7 @@ angular.module('kulebaoAdmin')
   [ '$scope', '$rootScope', '$stateParams', '$q', '$state', '$animate', '$modal', '$dropdown', '$timeout',
     'busDriverService', 'childService', 'schoolBusService', 'childrenPlanService', 'classService',
     (scope, rootScope, stateParams, $q, $state, $animate, $modal, $dropdown, $timeout, BusDriver, Child, Bus, Plan, Classes) ->
-      scope.loading = false
+      rootScope.loading = false
 
       findChild = (id) ->
         _.find scope.allChildren, (c) -> c.child_id == id
@@ -36,7 +36,7 @@ angular.module('kulebaoAdmin')
       scope.currentBus =
         plans: []
       scope.refresh = ->
-        scope.loading = true
+        rootScope.loading = true
         busQ = Bus.query(school_id: stateParams.kindergarten).$promise
         childQ = Child.query(school_id: stateParams.kindergarten).$promise
         classQ = Classes.query(school_id: stateParams.kindergarten).$promise
@@ -49,7 +49,7 @@ angular.module('kulebaoAdmin')
             scope.currentBus.plans = _.filter (_.map data, (plan) -> findChild(plan.child_id)), (p) -> p?
             scope.waitingChildren = scope.childrenWithoutPlan()
             _.forEach scope.waitingChildren, (c) -> Plan.get c, (-> c.hasPlan = true), (-> c.hasPlan = false)
-          scope.loading = false
+          rootScope.loading = false
 
       scope.inClass = (clazz, children) ->
         _.filter children, (c) -> c.class_id == clazz.class_id
@@ -93,7 +93,7 @@ angular.module('kulebaoAdmin')
         scope.backupPlans = []
 
       scope.saveChildPlan = (driver) ->
-        scope.loading = true
+        rootScope.loading = true
         scope.addingPlan = false
         queue = _.map scope.currentBus.plans, (p) ->
           plan = new Plan
@@ -213,13 +213,13 @@ angular.module('kulebaoAdmin')
       availableDriver = (employees) -> _.reject employees, (d) -> isADriver(d)
 
       scope.refresh = ->
-        scope.loading = true
+        rootScope.loading = true
         scope.allBuses = Bus.query school_id: stateParams.kindergarten, ->
         Driver.query school_id: stateParams.kindergarten, (employees) ->
           scope.drivers = _.map availableDriver(employees), (e) ->
             e.value = e.name
             e
-          scope.loading = false
+          rootScope.loading = false
 
       scope.refresh()
   ]
@@ -258,10 +258,10 @@ angular.module('kulebaoAdmin')
 .controller 'BusOnTheMapCtrl',
   [ '$scope', '$rootScope', '$stateParams', '$state', 'schoolBusService', 'schoolEmployeesService', 'busLocationService',
     (scope, rootScope, stateParams, $state, Bus, Driver, Location) ->
-      scope.loading = true
+      rootScope.loading = true
       Location.query school_id: stateParams.kindergarten, driver_id: stateParams.driver, (data)->
         console.log data[0]
         currentLocation = data[0]
         scope.mapOptions = currentLocation
-        scope.loading = false
+        rootScope.loading = false
   ]

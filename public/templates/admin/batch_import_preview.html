@@ -2,7 +2,6 @@
 <button ng-disabled="!excel || errorNumbers.length > 0" class="btn btn-danger" ng-confirm-msg="{{importConfirmMessage}}"
         ng-confirm-click="applyAllChange()">{{importButtonTitle}}
 </button>
-<div class="loading" ng-show="loading"></div>
 <div class="alert alert-danger" role="alert" ng-if="errorNumbers.length > 0">
   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
   <span>以下号码已存在于其他学校,请检查并修改excel内容后再导入</span>

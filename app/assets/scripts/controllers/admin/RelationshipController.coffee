@@ -2,11 +2,13 @@
 
 angular.module('kulebaoAdmin')
 .controller 'RelationshipMainCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', '$state', 'parentService',
+  ['$scope', '$rootScope', '$stateParams', '$state', 'parentService',
    'relationshipService', '$modal', 'childService', '$http', '$alert', 'videoMemberService', 'schoolConfigService', 'schoolConfigExtractService',
-    (scope, rootScope, stateParams, $state, location, Parent, Relationship, Modal, Child, $http, Alert, VideoMember, SchoolConfig, ConfigExtract) ->
+    (scope, rootScope, stateParams, $state, Parent, Relationship, Modal, Child, $http, Alert, VideoMember, SchoolConfig, ConfigExtract) ->
       rootScope.tabName = 'relationship'
       scope.heading = '管理幼儿及家长基础档案信息'
+
+      rootScope.loading = true
 
       scope.allTypes = -> [
         {
@@ -28,7 +30,7 @@ angular.module('kulebaoAdmin')
       ]
 
       scope.refresh = (callback) ->
-        scope.loading = true
+        rootScope.loading = true
         scope.disableMemberEditing = false
         SchoolConfig.get school_id: stateParams.kindergarten, (data) ->
           backendConfig = _.find data['config'], (item) -> item.name == 'backend'
@@ -46,6 +48,8 @@ angular.module('kulebaoAdmin')
             d.school_id = parseInt(stateParams.kindergarten)
             d
           callback() if callback?
+
+        rootScope.loading = false
 
       scope.backend = true
       scope.refresh()
@@ -88,7 +92,7 @@ angular.module('kulebaoAdmin')
           fix_parent: parent?
 
       scope.newParent = (saveHook, askForConnecting = true) ->
-        scope.loading = true
+        rootScope.loading = true
         scope.parents = Parent.query school_id: stateParams.kindergarten, ->
           scope.parent = scope.createParent()
           scope.parent.saveHook = saveHook
@@ -96,7 +100,7 @@ angular.module('kulebaoAdmin')
           scope.currentModal = Modal
             scope: scope
             contentTemplate: 'templates/admin/add_adult.html'
-          scope.loading = false
+          rootScope.loading = false
 
       scope.buttonLabel = '上传头像'
       scope.newChild = ->
@@ -107,8 +111,9 @@ angular.module('kulebaoAdmin')
           contentTemplate: 'templates/admin/add_child.html'
 
       scope.newRelationship = (child, parent)->
-        scope.loading = true
+        rootScope.loading = true
         scope.refresh ->
+          rootScope.loading = true
           scope.relationship = scope.createRelationship(child, parent)
           scope.parents = Parent.query school_id: stateParams.kindergarten, ->
             _.forEach scope.parents, (p) ->
@@ -117,9 +122,11 @@ angular.module('kulebaoAdmin')
               scope.currentModal = Modal
                 scope: scope
                 contentTemplate: 'templates/admin/add_connection.html'
+              rootScope.loading = false
 
       scope.editParent = (parent) ->
         scope.refresh ->
+          rootScope.loading = true
           scope.parent = Parent.get school_id: stateParams.kindergarten, phone: parent.phone, (p) ->
             scope.parent.video_member_status = 0
             VideoMember.get school_id: stateParams.kindergarten, id: parent.parent_id, ->
@@ -130,6 +137,7 @@ angular.module('kulebaoAdmin')
             scope.currentModal = Modal
               scope: scope
               contentTemplate: 'templates/admin/add_adult.html'
+            rootScope.loading = false
 
       scope.editChild = (child) ->
         scope.refresh ->
@@ -155,16 +163,16 @@ angular.module('kulebaoAdmin')
       scope.saveParent = (parent) ->
         saveHook = parent.saveHook
         video_member_status = parent.video_member_status
-        scope.loading = true
+        rootScope.loading = true
         parent.$save ->
             scope.updateVideoMember(parent, video_member_status == 1)
             scope.$broadcast 'refreshing'
             scope.currentModal.hide()
             saveHook(parent) if typeof saveHook == 'function'
-            scope.loading = false
+            rootScope.loading = false
           , (res) ->
             handleError('家长', res)
-            scope.loading = false
+            rootScope.loading = false
 
 
       scope.updateVideoMember = (parent, save) ->
@@ -174,25 +182,25 @@ angular.module('kulebaoAdmin')
           VideoMember.remove school_id: parent.school_id, id: parent.parent_id
 
       scope.saveRelationship = (relationship) ->
-        scope.loading = true
+        rootScope.loading = true
         relationship.$save ->
             scope.$broadcast 'refreshing'
             scope.refresh()
             scope.currentModal.hide()
-            scope.loading = false
+            rootScope.loading = false
           , (res) ->
             handleError('关系', res)
-            scope.loading = false
+            rootScope.loading = false
 
       scope.saveChild = (child) ->
-        scope.loading = true
+        rootScope.loading = true
         child.$save ->
             scope.$broadcast 'refreshing'
             scope.currentModal.hide()
-            scope.loading = false
+            rootScope.loading = false
           , (res) ->
             handleError('小孩', res)
-            scope.loading = false
+            rootScope.loading = false
 
       scope.alreadyConnected = (parent, child) ->
         return false if parent is undefined || child is undefined
@@ -268,7 +276,7 @@ angular.module('kulebaoAdmin')
         r.card = scope.oldRelationship.card
 
       scope.updateCardNumber = (relationship) ->
-        scope.loading = true
+        rootScope.loading = true
         relationship.$save ->
             scope.$broadcast 'refreshing'
             scope.refresh()
@@ -278,7 +286,8 @@ angular.module('kulebaoAdmin')
 
       scope.navigateTo = (s) ->
         if stateParams.type != s.url
-          $state.go 'kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: stateParams.type}
+          rootScope.loading = true
+          $state.go 'kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: s.url}
 
       scope.membersInformation =
         members : [{id: 0, desc:'未开通'}, {id: 1, desc: '已开通'}]
@@ -335,8 +344,8 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'connectedCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'accessClassService',
-    (scope, rootScope, stateParams, location, AccessClass) ->
+  ['$scope', '$rootScope', '$stateParams', 'accessClassService',
+    (scope, rootScope, stateParams, AccessClass) ->
       scope.current_type = 'connected'
 
       AccessClass(scope.kindergarten.classes)
@@ -349,25 +358,21 @@ angular.module('kulebaoAdmin')
     (scope, rootScope, stateParams, $state, $timeout, Parent, Relationship) ->
       scope.current_class = parseInt(stateParams.class_id)
 
-      scope.loading = true
       Relationship.bind(school_id: stateParams.kindergarten).query (data) ->
         scope.relationships = _.map data , (d) ->
           d.school_id = parseInt(stateParams.kindergarten)
           d
         $timeout ->
-          scope.loading = false
+          rootScope.loading = false
 
       scope.navigateTo = (c) ->
-        scope.loading = true
-        $timeout ->
-          $state.go 'kindergarten.relationship.type.class.list', {kindergarten: stateParams.kindergarten, type: stateParams.type, class_id: c.class_id}
+        rootScope.loading = true
+        $state.go 'kindergarten.relationship.type.class.list', {kindergarten: stateParams.kindergarten, type: stateParams.type, class_id: c.class_id}
 
   ]
 
 .controller 'ConnectedRelationshipCtrl',
-  [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'relationshipService',
-    '$http', '$filter', '$q',
+  [ '$scope', '$rootScope', '$stateParams', '$location', 'relationshipService', '$http', '$filter', '$q',
     (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q) ->
       extendFilterFriendlyProperties = (r) ->
         r.phone = r.parent.phone
@@ -377,12 +382,12 @@ angular.module('kulebaoAdmin')
         r
 
       scope.refreshRelationship = ->
-        scope.loading = true
+        rootScope.loading = true
         relationships = Relationship.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query ->
           scope.relationships = _.map relationships, (r) ->
             _.assign extendFilterFriendlyProperties(r), school_id: parseInt stateParams.kindergarten
 
-          scope.loading = false
+          rootScope.loading = false
 
       scope.refreshRelationship()
 
@@ -589,7 +594,7 @@ angular.module('kulebaoAdmin')
           relationship: r.relationship
 
       scope.applyAllChange = ->
-        scope.loading = true
+        rootScope.loading = true
         compactRelationships = compactRelationship(assignIds(scope.relationships))
         queue = [BatchParents.save(scope.parents).$promise,
                  BatchChildren.save(scope.children).$promise,
@@ -612,19 +617,18 @@ angular.module('kulebaoAdmin')
               placement: "top-left"
               type: "danger"
               container: '.panel-body'
-            scope.loading = false
+            rootScope.loading = false
 
       scope.importConfirmMessage = '增量导入学生，家长和关系，你确定要导入数据的吗?'
       scope.importConfirmMessage = '批量导入会删除当前学校的所有数据,包括且不限于公告,家园互动和成长历史.你确定要应用新数据的吗?' unless scope.backend
       scope.importButtonTitle = '增量导入新数据'
       scope.importButtonTitle = '覆盖已有数据' unless scope.backend
-
   ]
 
 .controller 'ImportPreviewRelationshipCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', '$state', '$modal',
-    (scope, rootScope, stateParams, location, $state, Modal) ->
+    '$state', '$modal',
+    (scope, rootScope, stateParams, $state, Modal) ->
       scope.current_class = parseInt stateParams.class_id
       schoolId = parseInt stateParams.kindergarten
 
@@ -640,14 +644,16 @@ angular.module('kulebaoAdmin')
       scope.children = scope.extractChildren scope.relationships, schoolId
 
       scope.navigateTo = (c) ->
-        location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/#{c.class_id}/list")
+        rootScope.loading = true
+        $state.go 'kindergarten.relationship.type.preview.class.list', {kindergarten: stateParams.kindergarten, type: 'batchImport', class_id: c.class_id}
+
 
       scope.previewChild = ->
-        scope.loading = true
+        rootScope.loading = true
         scope.currentClass = classOfId(stateParams.class_id)
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/children_preview.html'
           id: 'preview-child-modal'
-        scope.loading = false
+        rootScope.loading = false
   ]

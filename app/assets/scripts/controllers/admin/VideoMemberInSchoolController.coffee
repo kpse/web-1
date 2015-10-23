@@ -3,7 +3,7 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
    'senderService', 'relationshipService', 'classService', 'parentService', '$modal',
     (scope, rootScope, $state, $stateParams, $q, $filter, Charge, VideoMember, Parent, Relationship, Class, ParentSearch, Modal) ->
       rootScope.tabName = 'video'
-      scope.loading = true
+      rootScope.loading = true
       extendFilterFriendlyProperties = (p) ->
         p.phone = p.detail.phone
         p.formattedPhone = $filter('phone')(p.detail.phone)
@@ -45,7 +45,7 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
           allLoading = _.map scope.parents, (p) -> p.promise
           $q.all(allLoading).then (q) ->
             scope.refresh()
-            scope.loading = false
+            rootScope.loading = false
 
       scope.refresh = (clz = scope.current_class) ->
         scope.parentsInClass = _.filter scope.parents, (c) -> scope.display(c, clz)
@@ -144,25 +144,25 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
         scope.navigateToImportingClass(firstPerson.className)
 
       scope.import = (data) ->
-        scope.loading = true
+        rootScope.loading = true
         queue = _.map data, (d) -> VideoMember.save(school_id: d.detail.school_id, id: d.detail.parent_id).$promise
         all = $q.all queue
         all.then ->
           $state.reload()
       scope.cancelImporting = ->
-        scope.loading = true
+        rootScope.loading = true
         delete scope.importingData
         delete scope.errorData
         delete scope.enabledData
-        scope.loading = false
+        rootScope.loading = false
 
       scope.deleteAccount = (parent) ->
-        scope.loading = true
+        rootScope.loading = true
         VideoMember.delete school_id: parent.school_id, id: parent.parent_id, ->
           $state.go $state.current,
               class: scope.current_class
             , reload: true
-          scope.loading = false
+          rootScope.loading = false
 
       scope.navigateTo = (clz) ->
         scope.current_class = clz.class_id
@@ -177,11 +177,11 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
 angular.module('kulebaoAdmin').controller 'VideoMemberImportCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService',
     (scope, rootScope, stateParams, $location, School, Class) ->
-      scope.loading = true
+      rootScope.loading = true
       scope.kindergarten = School.get school_id: stateParams.school_id, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.school_id, (classes)->
           scope.navigateTo(classes[0]) if $location.path().indexOf '/class' <= 0
-        scope.loading = false
+        rootScope.loading = false
 
       scope.navigateTo = (c) ->
         $location.path "main/video_in_school/#{stateParams.school_id}/class/#{c.class_id}"
