@@ -46,13 +46,14 @@ angular.module('kulebaoAdmin')
           scope.fetchFullRelationshipsIfNeeded()
           callback() if callback?
 
-      scope.fetchFullRelationshipsIfNeeded = ->
+      scope.fetchFullRelationshipsIfNeeded = (callback)->
         scope.fullRelationships = scope.fullRelationships || []
         if scope.fullRelationships.length == 0
           Relationship.bind(school_id: stateParams.kindergarten).query (data) ->
             scope.fullRelationships = _.map data , (d) ->
               d.school_id = parseInt(stateParams.kindergarten)
               d
+            callback(scope.fullRelationships) if callback?
 
       scope.backend = true
       scope.refresh()
@@ -122,10 +123,13 @@ angular.module('kulebaoAdmin')
             _.forEach scope.parents, (p) ->
               p.validRelationships = possibleRelationship(p)
             scope.children = Child.query school_id: stateParams.kindergarten, ->
-              scope.currentModal = Modal
-                scope: scope
-                contentTemplate: 'templates/admin/add_connection.html'
-              rootScope.loading = false
+              scope.fullRelationships = []
+              scope.fetchFullRelationshipsIfNeeded ->
+                scope.currentModal = Modal
+                  scope: scope
+                  contentTemplate: 'templates/admin/add_connection.html'
+                rootScope.loading = false
+
 
       scope.editParent = (parent) ->
         scope.refresh ->
@@ -356,14 +360,14 @@ angular.module('kulebaoAdmin')
 
 .controller 'ConnectedInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams', '$state', '$timeout',
-    'parentService', 'relationshipService',
-    (scope, rootScope, stateParams, $state, $timeout, Parent, Relationship) ->
+    (scope, rootScope, stateParams, $state, $timeout) ->
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.navigateTo = (c) ->
-        rootScope.loading = true
-        $timeout ->
-          $state.go 'kindergarten.relationship.type.class.list', {kindergarten: stateParams.kindergarten, type: stateParams.type, class_id: c.class_id}
+        if scope.current_class != c.class_id
+          rootScope.loading = true
+          $timeout ->
+            $state.go 'kindergarten.relationship.type.class.list', {kindergarten: stateParams.kindergarten, type: stateParams.type, class_id: c.class_id}
 
   ]
 
@@ -507,11 +511,13 @@ angular.module('kulebaoAdmin')
         ), (r) ->
           r.parent.name?
 
+        rootScope.loading = true
         phones = _.map scope.relationships, (r) -> r.parent.phone
         checkQueue = _.map phones, (p) -> PhoneCheck.check(phone: p, school_id: parseInt(stateParams.kindergarten)).$promise
         $q.all(checkQueue).then (q) ->
           codes = _.map q, (r) -> r.error_code
           scope.errorNumbers = _.uniq _.map (_.filter _.zip(phones, codes), (a) -> a[1] != 0), (p) -> p[0]
+          rootScope.loading = false
 
         scope.newClassesScope = _.map (_.uniq _.map scope.relationships, (r) ->
             r.child.class_name)
@@ -608,6 +614,7 @@ angular.module('kulebaoAdmin')
               , 200
             $state.reload()
           else
+            rootScope.loading = false
             error = _.reduce (_.filter q, (f) -> f.error_code != 0),
                 (all, err) -> all += "\n#{err.error_msg}"
               , ""
@@ -617,7 +624,7 @@ angular.module('kulebaoAdmin')
               placement: "top-left"
               type: "danger"
               container: '.panel-body'
-            rootScope.loading = false
+
 
       scope.importConfirmMessage = '增量导入学生，家长和关系，你确定要导入数据的吗?'
       scope.importConfirmMessage = '批量导入会删除当前学校的所有数据,包括且不限于公告,家园互动和成长历史.你确定要应用新数据的吗?' unless scope.backend
@@ -645,8 +652,9 @@ angular.module('kulebaoAdmin')
       scope.children = scope.extractChildren scope.relationships, schoolId
 
       scope.navigateTo = (c) ->
-        rootScope.loading = true
-        $state.go 'kindergarten.relationship.type.preview.class.list', {kindergarten: stateParams.kindergarten, type: 'batchImport', class_id: c.class_id}
+        if c.class_id != scope.current_class
+          rootScope.loading = true
+          $state.go 'kindergarten.relationship.type.preview.class.list', {kindergarten: stateParams.kindergarten, type: 'batchImport', class_id: c.class_id}
 
 
       scope.previewChild = ->
@@ -657,4 +665,6 @@ angular.module('kulebaoAdmin')
           contentTemplate: 'templates/admin/children_preview.html'
           id: 'preview-child-modal'
         rootScope.loading = false
+
+      rootScope.loading = false
   ]
