@@ -88,7 +88,7 @@
       <input type="file" id="store-url" ng-model="app.url" fileupload="uploadfile" />
       <input type="hidden" ng-model="app.file_size" required/>
       <span class="help-block">上传新的升级包文件到服务器</span>
-      <div class="uploading" ng-show="uploading"/>
+      <div kl-loading="uploading" />
     </div>
   </div>
 

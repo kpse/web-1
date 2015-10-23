@@ -5,4 +5,4 @@
 </button>
 <span ng-class="{error : targetFile.size > 2048000}" class="help-block">excel文件请不要超过2m</span>
 <span ng-show="suffixError" class="error help-block">只接受后缀名{{suffixes}}的文件</span>
-<div class="uploading" ng-show="uploading"></div>
+<div kl-loading="uploading" />
