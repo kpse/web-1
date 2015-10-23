@@ -43,13 +43,16 @@ angular.module('kulebaoAdmin')
           scope.config =
             deletable : scope.adminUser.privilege_group == 'operator' || !scope.backend
 
-        Relationship.bind(school_id: stateParams.kindergarten).query (data) ->
-          scope.relationships = _.map data , (d) ->
-            d.school_id = parseInt(stateParams.kindergarten)
-            d
+          scope.fetchFullRelationshipsIfNeeded()
           callback() if callback?
 
-        rootScope.loading = false
+      scope.fetchFullRelationshipsIfNeeded = ->
+        scope.fullRelationships = scope.fullRelationships || []
+        if scope.fullRelationships.length == 0
+          Relationship.bind(school_id: stateParams.kindergarten).query (data) ->
+            scope.fullRelationships = _.map data , (d) ->
+              d.school_id = parseInt(stateParams.kindergarten)
+              d
 
       scope.backend = true
       scope.refresh()
@@ -149,7 +152,7 @@ angular.module('kulebaoAdmin')
 
       scope.isCardDuplicated = (card) ->
         return false if card is undefined
-        _.any scope.relationships, (r) -> r.card == card
+        _.any scope.fullRelationships, (r) -> r.card == card
 
       handleError = (obj, res) ->
         Alert
@@ -185,7 +188,6 @@ angular.module('kulebaoAdmin')
         rootScope.loading = true
         relationship.$save ->
             scope.$broadcast 'refreshing'
-            scope.refresh()
             scope.currentModal.hide()
             rootScope.loading = false
           , (res) ->
@@ -204,7 +206,7 @@ angular.module('kulebaoAdmin')
 
       scope.alreadyConnected = (parent, child) ->
         return false if parent is undefined || child is undefined
-        _.any scope.relationships, (r) ->
+        _.any scope.fullRelationships, (r) ->
           r.parent.phone == parent.phone && r.child.child_id == child.child_id
 
       scope.availableChildFor = (parent) ->
@@ -358,16 +360,10 @@ angular.module('kulebaoAdmin')
     (scope, rootScope, stateParams, $state, $timeout, Parent, Relationship) ->
       scope.current_class = parseInt(stateParams.class_id)
 
-      Relationship.bind(school_id: stateParams.kindergarten).query (data) ->
-        scope.relationships = _.map data , (d) ->
-          d.school_id = parseInt(stateParams.kindergarten)
-          d
-        $timeout ->
-          rootScope.loading = false
-
       scope.navigateTo = (c) ->
         rootScope.loading = true
-        $state.go 'kindergarten.relationship.type.class.list', {kindergarten: stateParams.kindergarten, type: stateParams.type, class_id: c.class_id}
+        $timeout ->
+          $state.go 'kindergarten.relationship.type.class.list', {kindergarten: stateParams.kindergarten, type: stateParams.type, class_id: c.class_id}
 
   ]
 
@@ -383,11 +379,11 @@ angular.module('kulebaoAdmin')
 
       scope.refreshRelationship = ->
         rootScope.loading = true
-        relationships = Relationship.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query ->
-          scope.relationships = _.map relationships, (r) ->
+        Relationship.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query (data) ->
+          scope.relationships = _.map data, (r) ->
             _.assign extendFilterFriendlyProperties(r), school_id: parseInt stateParams.kindergarten
-
           rootScope.loading = false
+        scope.fetchFullRelationshipsIfNeeded()
 
       scope.refreshRelationship()
 
@@ -438,9 +434,11 @@ angular.module('kulebaoAdmin')
 
       scope.delete = (card) ->
         Relationship.delete school_id: stateParams.kindergarten, card: card, ->
+          scope.fullRelationships = []
           scope.refreshRelationship()
 
       scope.$on 'refreshing', ->
+        scope.fullRelationships = []
         scope.refreshRelationship()
 
       scope.checkAll = (check) ->
@@ -454,6 +452,7 @@ angular.module('kulebaoAdmin')
           Relationship.delete(school_id: stateParams.kindergarten, card: r.card).$promise
         all = $q.all queue
         all.then (q) ->
+          scope.fullRelationships = []
           scope.refreshRelationship()
 
       scope.hasSelection = (relationships) ->
@@ -487,6 +486,7 @@ angular.module('kulebaoAdmin')
       scope.onSuccess = (data) ->
         pickUpTheFirst = _.compose _.first, _.values
         scope.excel = pickUpTheFirst(data)
+        scope.fullRelationships = []
         scope.relationships = []
         scope.classesScope = []
         scope.relationships = _.filter (_.flatten _.map scope.excel, (row) ->
@@ -518,7 +518,7 @@ angular.module('kulebaoAdmin')
         , (c, i) ->
           name: c, class_id: i + 1000, school_id: parseInt(stateParams.kindergarten)
 
-        console.log scope.newClassesScope
+
         nonExistingClasses = _.partition scope.newClassesScope, (c) -> _.findIndex(scope.kindergarten.classes, 'name', c.name) < 0
         unless scope.backend
           scope.classesScope = scope.newClassesScope
@@ -623,6 +623,7 @@ angular.module('kulebaoAdmin')
       scope.importConfirmMessage = '批量导入会删除当前学校的所有数据,包括且不限于公告,家园互动和成长历史.你确定要应用新数据的吗?' unless scope.backend
       scope.importButtonTitle = '增量导入新数据'
       scope.importButtonTitle = '覆盖已有数据' unless scope.backend
+      rootScope.loading = false
   ]
 
 .controller 'ImportPreviewRelationshipCtrl',

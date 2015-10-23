@@ -8,12 +8,14 @@ angular.module('kulebaoAdmin').controller 'DefaultCtrl',
           location.path "/#{res.status}"
       , (res) ->
         location.path "/#{res.status}"
+      $rootScope.loading = false
   ]
 
 .controller 'ExpiredCtrl',
   ['$scope', 'employeeService',
     (scope, Employee) ->
       scope.adminUser = Employee.get()
+      $rootScope.loading = false
   ]
 
 .controller 'WelcomeCtrl',
@@ -31,4 +33,6 @@ angular.module('kulebaoAdmin').controller 'DefaultCtrl',
       scope.children = Child.query school_id: stateParams.kindergarten
       scope.classes = Class.query school_id: stateParams.kindergarten, (classes)->
         scope.noAccess = classes.length == 0
+
+      $rootScope.loading = false
   ]
