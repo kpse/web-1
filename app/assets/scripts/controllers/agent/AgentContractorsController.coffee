@@ -8,7 +8,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
 
       scope.refresh = (contractorId) ->
         scope.cleanUpSearchText()
-        scope.loading = true
+        $rootScope.loading = true
         queue = [FullRes(Contractor, agent_id: scope.currentAgent.id)
                  scope.waitForSchoolsReady()
                  FullRes Activity, agent_id: scope.currentAgent.id]
@@ -31,7 +31,7 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
               s.contractorIds = group[s.school_id]
             if scope.selectedSchools? && contractorId?
               scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.contractor_id == contractorId
-            scope.loading = false
+            $rootScope.loading = false
         scope.resetSelection() if scope.selection?
 
       scope.refresh()

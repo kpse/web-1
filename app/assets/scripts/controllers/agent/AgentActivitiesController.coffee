@@ -16,7 +16,7 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
 
       scope.refresh = (activityId) ->
         scope.cleanUpSearchText()
-        scope.loading = true
+        $rootScope.loading = true
         queue = [FullRes(Activity, agent_id: scope.currentAgent.id)
                  scope.waitForSchoolsReady()
                  FullRes(Contractor, agent_id: scope.currentAgent.id)]
@@ -40,7 +40,7 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
               s.activityIds = group[s.school_id]
             if scope.selectedSchools? && activityId?
               scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.activityIds, (c) -> c.activity_id == activityId
-          scope.loading = false
+          $rootScope.loading = false
         scope.resetSelection() if scope.selection?
 
       scope.refresh()

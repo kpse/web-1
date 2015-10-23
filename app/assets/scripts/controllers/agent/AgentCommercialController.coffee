@@ -108,7 +108,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         newAd.time_span = newAd.startDate + '~' + newAd.endDate
         targetState = newAd.targetState
         newAd.$save ->
-          scope.loading = true
+          $rootScope.loading = true
           if scope.currentModal?
             scope.currentModal.hide()
           else
@@ -119,7 +119,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
             else
               $state.go targetState, reload: true
 
-            scope.loading = false
+            $rootScope.loading = false
 
 
       scope.published = (ad) ->

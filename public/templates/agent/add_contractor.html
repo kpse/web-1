@@ -119,7 +119,7 @@
         <div ng-show="published(newAd)" class="issue-date">已于{{newAd.publishing.published_at | date:'yyyy年MM月dd日 HH:mm'}}审批通过
         </div>
         <div ng-hide="published(newAd)" class="issue-date">未发布</div>
-        <div class="loading" ng-show="loading"></div>
+
         <div class="btn-group">
 
           <button class="btn btn-primary" ng-disabled="commercialForm.$invalid || uploading"

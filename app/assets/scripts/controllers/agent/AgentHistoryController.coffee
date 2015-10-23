@@ -45,10 +45,10 @@ angular.module('kulebaoAgent')
         scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.currentMonth}.csv"
 
       scope.forceToReCalculate = ->
-        scope.loading = true
+        $rootScope.loading = true
         OperatorStats.save ->
           $state.reload()
-          scope.loading = false
+          $rootScope.loading = false
   ]
 
 
