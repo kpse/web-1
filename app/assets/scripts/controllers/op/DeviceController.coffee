@@ -8,14 +8,14 @@ angular.module('kulebaoOp').controller 'OpDeviceCtrl',
       }
 
       scope.refresh = ->
-        scope.loading = true
+        rootScope.loading = true
         scope.allSchools = School.query ->
           scope.allDevices = Device.query ->
             _.forEach scope.allDevices, (d) ->
               school = _.find scope.allSchools, (s) -> s.school_id == d.school_id
               d.school_name = if school? then school.name else '该学校数据已删除'
         scope.device = new Device
-        scope.loading = false
+        rootScope.loading = false
 
       scope.refresh()
 

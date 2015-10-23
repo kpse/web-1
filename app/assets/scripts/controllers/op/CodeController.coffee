@@ -4,9 +4,9 @@ angular.module('kulebaoOp').controller 'OpVerificationCtrl',
       rootScope.tabName = 'code'
       Code = $resource '/cheatCode'
 
-      scope.loading = true
+      rootScope.loading = true
       scope.code = Code.get ->
-        scope.loading = false
+        rootScope.loading = false
 
       scope.edit = (code) ->
         scope.editing = true
@@ -26,7 +26,7 @@ angular.module('kulebaoOp').controller 'OpVerificationCtrl',
       # video part
 
       scope.video = DefaultVideo.get school_id: 0, id: 'default', ->
-        scope.loading = false
+        rootScope.loading = false
 
       scope.editAccount = (video) ->
         scope.editingAccount = true

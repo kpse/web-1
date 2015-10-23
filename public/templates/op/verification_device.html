@@ -35,7 +35,7 @@
   </tr>
   </thead>
   <tbody>
-  <div class="loading" ng-show="loading"></div>
+
   <tr ng-repeat="device in allDevices | filter: searchText | orderBy:'school_id'" class="row">
     <td class="col-xs-2">{{device.school_id}}</td>
     <td class="col-xs-4">{{device.school_name}}</td>

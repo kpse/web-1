@@ -44,7 +44,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           kg.configArray = scope.generateConfigArray(kg.config)
 
       scope.refresh = (q = scope.currentQuery, page = scope.currentPage) ->
-        scope.loading = true
+        rootScope.loading = true
 
         Preview.query q:q, (data) ->
           scope.preview = data
@@ -68,7 +68,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           else
             scope.kindergartens = []
           scope.admins = Employee.query()
-          scope.loading = false
+          rootScope.loading = false
 
 
       scope.refresh()

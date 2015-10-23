@@ -8,7 +8,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
 
       Monthly = Statistics 'monthly'
 
-      scope.loading = true
+      rootScope.loading = true
       scope.allChildren = []
       scope.allParents = []
       scope.allLoggedOnce = 0
@@ -26,7 +26,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
             k.monthlyRate = SchoolRate(k.monthly)
             k.monthlyChildRate = ChildRate(k.monthly)
 
-        scope.loading = false
+        rootScope.loading = false
 
       scope.detail = (kg) ->
         location.path "main/school_report/#{kg.school_id}"
@@ -60,7 +60,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
     (scope, rootScope, stateParams, $http, Parent, Child, Employee, Class, School, News, Statistics, ActiveCount,
      ChildRate, SchoolRate, StatisticsV4) ->
       rootScope.tabName = 'reporting'
-      scope.loading = true
+      rootScope.loading = true
 
       Chat = Statistics 'session'
       History = Statistics 'history'
@@ -84,7 +84,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
           scope.monthly = Monthly.get school_id: stateParams.school_id
           scope.monthlyRate = SchoolRate(scope.monthly)
           scope.monthlyChildRate = ChildRate(scope.monthly)
-          scope.loading = false
+          rootScope.loading = false
 
   ]
 

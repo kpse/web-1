@@ -4,11 +4,11 @@ angular.module('kulebaoOp').controller 'OpAdsCtrl',
       rootScope.tabName = 'ad'
 
       scope.refresh = ->
-        scope.loading = true
+        rootScope.loading = true
         scope.kindergartens = School.query (all)->
           _.forEach all, (k) ->
             k.ad = Ad.query school_id: k.school_id
-          scope.loading = false
+          rootScope.loading = false
 
       scope.refresh()
 
@@ -57,11 +57,11 @@ angular.module('kulebaoOp').controller 'OpAdsCtrl',
 angular.module('kulebaoOp').controller 'OpAdsInSchoolCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'classService',
     (scope, rootScope, stateParams, $location, School, Class) ->
-      scope.loading = true
+      rootScope.loading = true
       scope.kindergarten = School.get school_id: stateParams.school_id, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.school_id, (classes)->
           scope.navigateTo(classes[0]) if $location.path().indexOf '/class' <= 0
-        scope.loading = false
+        rootScope.loading = false
 
       scope.navigateTo = (c) ->
         $location.path "main/ad_in_school/#{stateParams.school_id}/class/#{c.class_id}"
@@ -71,7 +71,7 @@ angular.module('kulebaoOp').controller 'OpAdPositionCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', 'schoolService', 'videoMemberService', 'senderService',
    'relationshipService', 'classService',
     (scope, rootScope, stateParams, $location, School, VideoMember, Parent, Relationship, Class) ->
-      scope.loading = true
+      rootScope.loading = true
       scope.current_class = stateParams.class_id
       scope.kindergarten = School.get school_id: stateParams.school_id, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.school_id
@@ -81,7 +81,7 @@ angular.module('kulebaoOp').controller 'OpAdPositionCtrl',
           Parent.get school_id: stateParams.school_id, id: p.id, type: 'p', (data)->
             p.detail = data
             p.reltaionship = Relationship.query school_id: stateParams.school_id, parent: p.detail.phone
-        scope.loading = false
+        rootScope.loading = false
 
       scope.display = (p) ->
         p.reltaionship? && p.reltaionship.$resolved && p.reltaionship[0].child.class_id == parseInt stateParams.class_id

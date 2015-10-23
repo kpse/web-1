@@ -19,10 +19,10 @@ angular.module('kulebaoOp').controller 'OpPrincipalCtrl',
           else {role: group, rank: -1}
 
       scope.refresh = ->
-        scope.loading = true
+        rootScope.loading = true
         scope.employees = Employee.query ->
           _.forEach scope.employees, (e) -> e.rank = displayRole(e)
-          scope.loading = false
+          rootScope.loading = false
 
       scope.display('校长')
 

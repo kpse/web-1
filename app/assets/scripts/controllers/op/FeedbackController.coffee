@@ -25,9 +25,9 @@ angular.module('kulebaoOp').controller 'OpFeedbackCtrl',
     (scope, rootScope, location, stateParams, Feedback) ->
 
       scope.refresh = ->
-        scope.loading = true
+        rootScope.loading = true
         scope.allFeedback = Feedback.query source: stateParams.source, ->
-          scope.loading = false
+          rootScope.loading = false
 
       scope.refresh()
 
