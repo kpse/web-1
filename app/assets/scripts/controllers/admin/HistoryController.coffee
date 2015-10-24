@@ -10,17 +10,13 @@ angular.module('kulebaoAdmin')
 
       AccessClass(scope.kindergarten.classes)
 
-      scope.navigateTo = (c) ->
-        rootScope.loading = true
-        location.path("kindergarten/#{stateParams.kindergarten}/history/class/#{c.class_id}/list")
-
   ]
 
 .controller 'HistoryInClassCtrl',
-  [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'parentService', 'historyService', 'childService',
+  [ '$scope', '$rootScope', '$stateParams', '$timeout',
+    '$state', 'parentService', 'historyService', 'childService',
     'senderService', 'readRecordService', 'employeeService',
-    (scope, rootScope, stateParams, location, Parent, Chat, Child, Sender, ReaderLog, Employee) ->
+    (scope, rootScope, stateParams, $timeout, $state, Parent, Chat, Child, Sender, ReaderLog, Employee) ->
       rootScope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
 
@@ -40,7 +36,14 @@ angular.module('kulebaoAdmin')
 
       scope.goDetail = (child) ->
         rootScope.loading = true
-        location.path "kindergarten/#{stateParams.kindergarten}/history/class/#{child.class_id}/child/#{child.child_id}"
+        $timeout ->
+          $state.go 'kindergarten.history.class.child', {kindergarten: stateParams.kindergarten, class_id: child.class_id, child_id: child.child_id}
+
+      scope.navigateTo = (c) ->
+        if c.class_id != scope.current_class
+          rootScope.loading = true
+          $timeout ->
+            $state.go 'kindergarten.history.class.list', {kindergarten: stateParams.kindergarten, class_id: c.class_id}
 
   ]
 
