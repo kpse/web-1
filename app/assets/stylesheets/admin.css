@@ -190,6 +190,14 @@
 .panel-heading .error {
   color: red;
 }
+.school-desc {
+  padding: 0;
+  margin: 0;
+}
+.school-desc-label {
+  padding-left: 0;
+  margin-left: 0;
+}
 .axis path,
 .axis line {
   fill: none;

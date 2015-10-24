@@ -23,8 +23,10 @@
           <label for="school-phone" class="control-label">学校联系电话</label>
 
           <input id="school-phone" ng-model="kindergarten.phone" ng-disabled="!isEditing" name="phone"
-                 class="editing-title form-control" required ng-pattern="/^(\d{11}|0\d{2,3}\-\d{7,8})$/" maxlength="13"/>
-          <span class="error-field" ng-show="schoolIntro.phone.$error.pattern">错误的电话，请用座机010-88886666或者手机格式1398886666</span>
+                 class="editing-title form-control" required ng-pattern="/^(\d{11}|0\d{2,3}\-\d{7,8})$/"
+                 maxlength="13"/>
+          <span class="error-field"
+                ng-show="schoolIntro.phone.$error.pattern">错误的电话，请用座机010-88886666或者手机格式1398886666</span>
         </div>
       </div>
 
@@ -40,14 +42,15 @@
           <label for="school-pic" class="col-sm-4 control-label">学校Logo</label>
 
           <div class="col-sm-8">
-            <kl-file-upload user="adminUser.id" on-success="onFileUploadSuccess" on-error="onFileUploadError" disabled="!isEditing"></kl-file-upload>
+            <kl-file-upload user="adminUser.id" on-success="onFileUploadSuccess" on-error="onFileUploadError"
+                            disabled="!isEditing"></kl-file-upload>
           </div>
         </div>
       </div>
-      <div>
-        <div class="form-group">
-          <label for="school-desc" class="col-sm-4 control-label">学校简介</label>
+      <div class="col-sm-12">
+        <label for="school-desc" class="col-sm-4 control-label school-desc-label">学校简介</label>
 
+        <div class="col-sm-12 school-desc">
           <textarea id="school-desc" ng-model="kindergarten.desc" ng-disabled="!isEditing"
                     class="editing-content form-control" required/>
         </div>

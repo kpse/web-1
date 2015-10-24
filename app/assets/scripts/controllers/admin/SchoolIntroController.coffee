@@ -18,9 +18,11 @@ angular.module('kulebaoAdmin')
       scope.isEditing = !scope.isEditing
       console.log 'scope.kindergarten changed: ' + scope.school_changed
       if scope.school_changed
+        rootScope.loading = true
         $cacheFactory.get('$http').removeAll()
         School.save scope.kindergarten, ->
           scope.school_changed = false
+          rootScope.loading = false
 
     scope.onFileUploadSuccess = (url) ->
       scope.$apply ->
@@ -29,4 +31,5 @@ angular.module('kulebaoAdmin')
     scope.onFileUploadError = (res) ->
       alert '上传失败，错误e=' + res.error
 
+    rootScope.loading = false
 ]
