@@ -290,11 +290,6 @@ angular.module('kulebaoAdmin')
           , (res) ->
             handleError('关系', res)
 
-      scope.navigateTo = (s) ->
-        if stateParams.type != s.url
-          rootScope.loading = true
-          $state.go 'kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: s.url}
-
       scope.membersInformation =
         members : [{id: 0, desc:'未开通'}, {id: 1, desc: '已开通'}]
         videoMembers : [{id: 0, desc:'未开通'}, {id: 1, desc: '已开通'}]
@@ -350,12 +345,16 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'connectedCtrl',
-  ['$scope', '$rootScope', '$stateParams', 'accessClassService',
-    (scope, rootScope, stateParams, AccessClass) ->
+  ['$scope', '$rootScope', '$stateParams', '$state', 'accessClassService',
+    (scope, rootScope, stateParams, $state, AccessClass) ->
       scope.current_type = 'connected'
 
       AccessClass(scope.kindergarten.classes)
 
+      scope.navigateTo = (s) ->
+        if stateParams.type != s.url
+          rootScope.loading = true
+          $state.go 'kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: s.url}
   ]
 
 .controller 'ConnectedInClassCtrl',
@@ -625,6 +624,11 @@ angular.module('kulebaoAdmin')
               type: "danger"
               container: '.panel-body'
 
+
+      scope.navigateTo = (s) ->
+        if stateParams.type != s.url
+          rootScope.loading = true
+          $state.go 'kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: s.url}
 
       scope.importConfirmMessage = '增量导入学生，家长和关系，你确定要导入数据的吗?'
       scope.importConfirmMessage = '批量导入会删除当前学校的所有数据,包括且不限于公告,家园互动和成长历史.你确定要应用新数据的吗?' unless scope.backend

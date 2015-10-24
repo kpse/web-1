@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin')
 .controller 'unconnectedParentCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', 'parentService', '$q',
-    (scope, rootScope, stateParams, location, Parent, $q) ->
+  ['$scope', '$rootScope', '$stateParams', '$state', 'parentService', '$q',
+    (scope, rootScope, stateParams, $state, Parent, $q) ->
       scope.current_type = 'unconnectedParent'
 
       scope.$on 'refreshing', ->
@@ -38,4 +38,9 @@ angular.module('kulebaoAdmin')
         scope.selection.allCheck = allChecked
 
       scope.selection = allCheck: false
+
+      scope.navigateTo = (s) ->
+        if stateParams.type != s.url
+          rootScope.loading = true
+          $state.go 'kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: s.url}
   ]
