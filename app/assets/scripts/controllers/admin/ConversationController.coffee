@@ -3,15 +3,12 @@
 angular.module('kulebaoAdmin')
 .controller 'ConversationsListCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'imageCompressService', 'accessClassService',
-    (scope, rootScope, stateParams, location, Compress, AccessClass) ->
+    'imageCompressService', 'accessClassService',
+    (scope, rootScope, stateParams, Compress, AccessClass) ->
       rootScope.tabName = 'conversation'
       scope.heading = '使用该功能与家长直接对话'
 
       AccessClass(scope.kindergarten.classes)
-
-      scope.navigateTo = (c) ->
-        location.path("kindergarten/#{stateParams.kindergarten}/conversation/class/#{c.class_id}/list")
 
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)
@@ -19,10 +16,10 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'ConversationsInClassCtrl',
-  [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'chatSessionService', 'childService',
+  [ '$scope', '$rootScope', '$stateParams', '$timeout',
+    '$state', 'chatSessionService', 'childService',
     'senderService', 'readRecordService',
-    (scope, rootScope, stateParams, location, Chat, Child, Sender, ReaderLog) ->
+    (scope, rootScope, stateParams, $timeout, $state, Chat, Child, Sender, ReaderLog) ->
       rootScope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
 
@@ -39,9 +36,16 @@ angular.module('kulebaoAdmin')
 
         rootScope.loading = false
 
-
       scope.goDetail = (child) ->
-        location.path "kindergarten/#{stateParams.kindergarten}/conversation/class/#{child.class_id}/child/#{child.child_id}"
+        rootScope.loading = true
+        $timeout ->
+          $state.go 'kindergarten.conversation.class.child', {kindergarten: stateParams.kindergarten, class_id: child.class_id, child_id: child.child_id}
+
+      scope.navigateTo = (c) ->
+        if c.class_id != scope.current_class
+          rootScope.loading = true
+          $timeout ->
+            $state.go 'kindergarten.conversation.class.list', {kindergarten: stateParams.kindergarten, class_id: c.class_id}
 
   ]
 .controller 'ConversationCtrl',

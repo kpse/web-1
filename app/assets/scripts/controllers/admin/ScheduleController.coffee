@@ -2,9 +2,9 @@
 
 angular.module('kulebaoAdmin')
 .controller('ScheduleCtrl', [ '$scope', '$rootScope', '$stateParams',
-                               '$location', '$http', 'scheduleService', '$timeout', 'classService',
+                               '$state', '$http', 'scheduleService', '$timeout', 'classService',
                                'accessClassService'
-  (scope, rootScope, stateParams, location, $http, Schedule, $timeout, Class, AccessClass) ->
+  (scope, rootScope, stateParams, $state, $http, Schedule, $timeout, Class, AccessClass) ->
     rootScope.tabName = 'schedule'
     scope.heading = '课程表'
     scope.current_class = parseInt stateParams.class_id
@@ -12,7 +12,10 @@ angular.module('kulebaoAdmin')
     AccessClass(scope.kindergarten.classes)
 
     scope.navigateTo = (c) ->
-      location.path("kindergarten/#{stateParams.kindergarten}/schedule/class/#{c.class_id}/list")
+      if c.class_id != scope.current_class
+        rootScope.loading = true
+        $timeout ->
+          $state.go 'kindergarten.schedule.class.list', kindergarten: stateParams.kindergarten, class_id: c.class_id
 
 ])
 .controller 'ClassScheduleCtrl',
@@ -29,6 +32,7 @@ angular.module('kulebaoAdmin')
           scope.schedule = new Schedule
             school_id: parseInt stateParams.kindergarten
             class_id: parseInt stateParams.class_id
+        rootScope.loading = false
 
         scope.$watch 'schedule', (oldv, newv) ->
           scope.schedule_changed = true if (newv isnt oldv)
@@ -40,10 +44,14 @@ angular.module('kulebaoAdmin')
         scope.schedule_changed = false if scope.isEditing
         console.log 'scope.schedule changed: ' + scope.schedule_changed
         if scope.schedule_changed
+          rootScope.loading = true
           scope.schedule.$save ->
             scope.schedule_changed = false
             Alert
               content: '课程保存成功'
               container: '.parents-class-view'
               type: 'success'
+            rootScope.loading = false
+
+      rootScope.loading = false
   ]

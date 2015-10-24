@@ -7,12 +7,13 @@ angular.module('kulebaoAdmin')
     rootScope.tabName = 'cookbook'
     scope.cookbook_changed = false
     scope.isEditing = false
-
+    rootScope.loading = true
     scope.cookbooks = Cookbook.bind(school_id: stateParams.kindergarten).query ->
       scope.cookbook = scope.cookbooks[0]
       unless scope.cookbook?
         scope.cookbook = new Cookbook
           school_id: parseInt stateParams.kindergarten
+      rootScope.loading = false
 
       scope.$watch 'cookbook', (oldv, newv) ->
         scope.cookbook_changed = true if newv isnt oldv
@@ -23,8 +24,10 @@ angular.module('kulebaoAdmin')
       scope.isEditing = !scope.isEditing
       console.log 'scope.cookbook changed: ' + scope.cookbook_changed
       if scope.cookbook_changed
-        scope.cookbook.$save()
-        scope.cookbook_changed = false
+        rootScope.loading = true
+        scope.cookbook.$save ->
+          scope.cookbook_changed = false
+          rootScope.loading = false
 
     date = new Date();
     d = date.getDate();
@@ -66,4 +69,5 @@ angular.module('kulebaoAdmin')
     scope.dayOnClick = (date, jsEvent, view) ->
       console.log date, jsEvent, view
 
+    rootScope.loading = false
 ]
