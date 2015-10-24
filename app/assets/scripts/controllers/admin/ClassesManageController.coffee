@@ -6,8 +6,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
     (scope, $rootScope, $stateParams, Modal, $q, SchoolEmployee, Class, Alert, ClassManager) ->
       $rootScope.tabName = 'classes'
 
-      scope.page =
-        loading : true
+      $rootScope.loading = true
 
       SchoolEmployee.query school_id: $stateParams.kindergarten, (employees) ->
         scope.employees = _.map employees, (e) ->
@@ -15,7 +14,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
           e
 
       scope.refresh = ->
-        scope.page.loading = true
+        $rootScope.loading = true
         scope.classes = Class.query school_id: $stateParams.kindergarten, ->
           all = _.map scope.classes, (c) ->
             $q (resolve, reject) ->
@@ -23,7 +22,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
                 c.managers = _.map manager, (m) -> m.name
                 resolve(c.managers)
           $q.all(all).then ->
-            scope.page.loading = false
+            $rootScope.loading = false
 
 
       scope.refresh()
@@ -49,7 +48,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
         _.find scope.employees, (e) -> e.name == m
 
       scope.save = (clazz) ->
-        scope.page.loading = true
+        $rootScope.loading = true
         managers = clazz.managers
         clazz.$save ->
           scope.$emit 'classUpdated'
@@ -67,7 +66,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
           c.name == clazz.name && c.class_id != clazz.class_id
 
       scope.delete = (clazz) ->
-        scope.page.loading = true
+        $rootScope.loading = true
         clazz.$delete ->
           scope.$emit 'classUpdated'
           scope.refresh()
