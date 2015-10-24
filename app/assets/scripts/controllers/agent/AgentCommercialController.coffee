@@ -109,10 +109,7 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         targetState = newAd.targetState
         newAd.$save ->
           $rootScope.loading = true
-          if scope.currentModal?
-            scope.currentModal.hide()
-          else
-            scope.$broadcast 'closeDialog'
+          scope.closeAllDialogs()
           if targetState?
             if $state.is targetState
               scope.refresh()
@@ -175,29 +172,27 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
       scope.approve = (ad) ->
         ad.$approve ->
           scope.refresh()
-          if scope.currentModal?
-            scope.currentModal.hide()
-          else
-            scope.$broadcast 'closeDialog'
+          scope.closeAllDialogs()
+
+      scope.closeAllDialogs = ->
+        if scope.currentModal?
+          scope.currentModal.hide()
+        scope.$broadcast 'closeDialog'
 
       scope.takeOnline = (ad) ->
         ad.$active ->
           scope.refresh()
-          if scope.currentModal?
-            scope.currentModal.hide()
-          else
-            scope.$broadcast 'closeDialog'
+          scope.closeAllDialogs()
 
       scope.putOffline = (ad) ->
         ad.$deactive ->
           scope.refresh()
-          if scope.currentModal?
-            scope.currentModal.hide()
-          else
-            scope.$broadcast 'closeDialog'
+          scope.closeAllDialogs()
 
       scope.rejectDialog = (ad) ->
         scope.badAd = angular.copy ad
+        scope.badAd.publishing =
+          reject_reason: ''
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/agent/reject_commercial.html'
@@ -208,35 +203,23 @@ angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
         ad.$save ->
           ad.$preview ->
             scope.refresh()
-            if scope.currentModal?
-              scope.currentModal.hide()
-            else
-              scope.$broadcast 'closeDialog'
+            scope.closeAllDialogs()
 
       scope.removeAd = (newAd) ->
         newAd.$delete ->
           scope.refresh()
-          if scope.currentModal?
-            scope.currentModal.hide()
-          else
-            scope.$broadcast 'closeDialog'
+          scope.closeAllDialogs()
 
       scope.reject = (ad) ->
         ad.publishing.publish_status = 3
         ad.$reject ->
           scope.refresh()
-          if scope.currentModal?
-            scope.currentModal.hide()
-          else
-            scope.$broadcast 'closeDialog'
+          scope.closeAllDialogs()
 
       scope.cancelRejection = (ad) ->
         delete scope.badAd
         scope.refresh()
-        if scope.currentModal?
-          scope.currentModal.hide()
-        else
-          scope.$broadcast 'closeDialog'
+        scope.closeAllDialogs()
 
       scope.hasPoint = (mapOptions) -> mapOptions.result?
 

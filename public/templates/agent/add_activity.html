@@ -156,7 +156,7 @@
                   ng-show="canBePreviewed(newAd) && adminUser.privilege_group == 'agent'"
                   ng-click="preview(newAd)">提交审批
           </button>
-          <button class="btn btn-danger" ng-show="canBeRejected(newAd)" ng-click="reject(newAd)">拒绝
+          <button class="btn btn-danger" ng-show="canBeRejected(newAd)" ng-click="rejectDialog(newAd)">拒绝
           </button>
           <button class="btn btn-success" ng-show="canBeApproved(newAd)" ng-click="approve(newAd)">批准
           </button>
