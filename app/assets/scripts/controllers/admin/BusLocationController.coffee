@@ -165,8 +165,8 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'BusManagementCtrl',
-  [ '$scope', '$rootScope', '$stateParams', '$modal', '$state', 'schoolBusService', 'schoolEmployeesService', 'busLocationService',
-    (scope, rootScope, stateParams, Modal, $state, Bus, Driver, Location) ->
+  [ '$scope', '$rootScope', '$stateParams', '$modal', '$state', 'schoolBusService', 'schoolEmployeesService', 'busLocationService', '$alert'
+    (scope, rootScope, stateParams, Modal, $state, Bus, Driver, Location, Alert) ->
       scope.mapOf = (bus) ->
         $state.go 'kindergarten.bus.management.map', kindergarten: stateParams.kindergarten, driver: bus.driver.id
 
@@ -206,8 +206,17 @@ angular.module('kulebaoAdmin')
 
       scope.saveBus = (bus) ->
         bus.$save ->
-          scope.currentModal.hide()
-          scope.refresh()
+            scope.currentModal.hide()
+            scope.refresh()
+          , (err) ->
+            Alert
+              title: '创建班车失败。'
+              content: err.data.error_msg
+              placement: "top"
+              type: "danger"
+              container: '.panel-body.bus-add-dialog'
+              duration: 5
+
 
       isADriver = (employee) -> _.any scope.allBuses, (f) -> f.driver? && f.driver.id == employee.id
       availableDriver = (employees) -> _.reject employees, (d) -> isADriver(d)
