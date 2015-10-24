@@ -10,16 +10,11 @@ angular.module('kulebaoAdmin')
 
       AccessClass(scope.kindergarten.classes)
 
-      scope.navigateTo = (c) ->
-        rootScope.loading = true
-        location.path("kindergarten/#{stateParams.kindergarten}/baby-status/class/#{c.class_id}/list")
-
   ]
 .controller 'AssessInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', 'assessService', 'childService',
     (scope, rootScope, stateParams, location, Assess, Child) ->
-      rootScope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true).query ->
@@ -32,13 +27,17 @@ angular.module('kulebaoAdmin')
         rootScope.loading = true
         location.path "kindergarten/#{stateParams.kindergarten}/baby-status/class/#{child.class_id}/child/#{child.child_id}"
 
+      scope.navigateTo = (c) ->
+        if c.class_id != scope.current_class
+          rootScope.loading = true
+          location.path("kindergarten/#{stateParams.kindergarten}/baby-status/class/#{c.class_id}/list")
+
+      rootScope.loading = false
   ]
 .controller 'AssessCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', '$http', 'assessService', 'childService', '$modal',
     (scope, rootScope, stateParams, location, $http, Assess, Child, Modal) ->
-
-      rootScope.loading = true
       scope.child = Child.bind(school_id: stateParams.kindergarten, child_id: stateParams.child).get ->
         scope.refreshAssess()
 
@@ -86,4 +85,6 @@ angular.module('kulebaoAdmin')
         assess.$delete ->
           scope.refreshAssess()
           scope.currentModal.hide()
+
+      rootScope.loading = false
   ]
