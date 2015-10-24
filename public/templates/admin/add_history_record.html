@@ -53,7 +53,7 @@
     <div class="panel-footer">
 
       <div class="btn-group">
-        <button class="btn btn-default" ng-click="$hide()">取消</button>
+        <button class="btn btn-default" ng-click="cancelEditing(message);$hide()">取消</button>
         <button class="btn btn-info" ng-disabled="messageForm.$invalid || uploading || (!message.content && message.medium.length==0)" ng-click="send(message) && $hide()">保存
         </button>
       </div>

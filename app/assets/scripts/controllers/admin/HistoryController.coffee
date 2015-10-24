@@ -96,6 +96,9 @@ angular.module('kulebaoAdmin')
           contentTemplate: 'templates/admin/view_history_record.html'
 
 
+      scope.cancelEditing = (message) ->
+        scope.message = scope.newHistoryRecord()
+
       scope.send = (msg) ->
         rootScope.loading = true
         msg.$save ->
