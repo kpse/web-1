@@ -165,7 +165,7 @@
                   ng-confirm-click="removeAd(newAd)">删除
           </button>
           <button class="btn btn-info" ng-disabled="commercialForm.$invalid || uploading || commercialForm.$pristine || !validActivity(newAd)"
-                  ng-hide="canBePreviewed(newAd)"
+                  ng-hide="canBePreviewed(newAd) && !adminUser.privilege_group == 'operator'"
                   ng-click="save(newAd)">保存
           </button>
         </div>
