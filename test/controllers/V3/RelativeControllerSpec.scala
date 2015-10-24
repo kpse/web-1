@@ -89,7 +89,7 @@ object RelativeControllerSpec extends Specification with TestSupport {
       val response2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/relative").withBody(requestBody)).get
 
       status(response2) must equalTo(OK)
-
+      Logger.info(s"reuse deleted phone number in creating contentAsString(response2) = ${contentAsString(response2)}")
       val newCreatedRelative: JsValue = Json.parse(contentAsString(response2))
       (newCreatedRelative \ "basic" \ "phone").as[String] must equalTo(phone)
     }
