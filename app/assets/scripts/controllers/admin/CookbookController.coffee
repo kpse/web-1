@@ -1,9 +1,9 @@
 'use strict'
 
 angular.module('kulebaoAdmin')
-.controller 'CookbookCtrl', [ '$scope', '$rootScope', '$stateParams',
+.controller 'CookbookCtrl', [ '$scope', '$rootScope', '$stateParams', '$timeout',
                               'cookbookService', 'uiCalendarConfig',
-  (scope, rootScope, stateParams, Cookbook, Config) ->
+  (scope, rootScope, stateParams, $timeout, Cookbook, Config) ->
     rootScope.tabName = 'cookbook'
     scope.cookbook_changed = false
     scope.isEditing = false
@@ -25,9 +25,10 @@ angular.module('kulebaoAdmin')
       console.log 'scope.cookbook changed: ' + scope.cookbook_changed
       if scope.cookbook_changed
         rootScope.loading = true
-        scope.cookbook.$save ->
-          scope.cookbook_changed = false
-          rootScope.loading = false
+        $timeout ->
+          scope.cookbook.$save ->
+            scope.cookbook_changed = false
+            rootScope.loading = false
 
     date = new Date();
     d = date.getDate();

@@ -28,12 +28,16 @@ object CookBook {
           ).executeUpdate
 
         val time = System.currentTimeMillis
-        val newId: Option[Long] = SQL("insert into cookbookinfo set school_id={school_id}, cookbook_id={cookbook_id}, extra_tip={extra_tip}," +
-          "timestamp={timestamp}, status=1, mon_breakfast={mon_breakfast}, mon_lunch={mon_lunch}, mon_dinner={mon_dinner}, mon_extra={mon_extra}, " +
-          "tue_breakfast={tue_breakfast}, tue_lunch={tue_lunch}, tue_dinner={tue_dinner}, tue_extra={tue_extra}, " +
-          "wed_breakfast={wed_breakfast}, wed_lunch={wed_lunch}, wed_dinner={wed_dinner}, wed_extra={wed_extra}, " +
-          "thu_breakfast={thu_breakfast}, thu_lunch={thu_lunch}, thu_dinner={thu_dinner}, thu_extra={thu_extra}, " +
-          "fri_breakfast={fri_breakfast}, fri_lunch={fri_lunch}, fri_dinner={fri_dinner}, fri_extra={fri_extra}")
+        val newId: Option[Long] = SQL("insert into cookbookinfo (school_id, cookbook_id, extra_tip, timestamp, " +
+          "mon_breakfast, mon_lunch, mon_dinner, mon_extra, tue_breakfast, tue_lunch, tue_dinner, tue_extra, " +
+          "wed_breakfast, wed_lunch, wed_dinner, wed_extra, thu_breakfast, thu_lunch, thu_dinner, thu_extra, " +
+          "fri_breakfast, fri_lunch, fri_dinner, fri_extra) values " +
+          "({school_id}, {cookbook_id}, {extra_tip}, {timestamp}, " +
+          "{mon_breakfast}, {mon_lunch}, {mon_dinner}, {mon_extra}, " +
+          "{tue_breakfast}, {tue_lunch}, {tue_dinner}, {tue_extra}, " +
+          "{wed_breakfast}, {wed_lunch}, {wed_dinner}, {wed_extra}, " +
+          "{thu_breakfast}, {thu_lunch}, {thu_dinner}, {thu_extra}, " +
+          "{fri_breakfast}, {fri_lunch}, {fri_dinner}, {fri_extra})")
           .on('school_id -> cookbook.school_id.toString,
             'cookbook_id -> cookbook.cookbook_id.getOrElse(23),
             'extra_tip -> "",

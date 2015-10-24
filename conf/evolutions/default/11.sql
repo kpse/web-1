@@ -33,7 +33,7 @@ CREATE TABLE cookbookinfo (
   status     INT default 1,
   timestamp BIGINT(20) NOT NULL DEFAULT 0,
   KEY (school_id),
-  UNIQUE (school_id, cookbook_id),
+  KEY (school_id, cookbook_id, status),
   PRIMARY KEY (uid)
 );
 
