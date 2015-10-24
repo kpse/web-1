@@ -14,14 +14,14 @@ case class SchoolBus(id: Option[Long], name: String, driver: Option[Employee], s
     implicit c =>
       id match {
         case Some(existingId) =>
-          SQL("select count(1) from schoolbus where school_id={kg} and name={name} and uid<>{id}")
+          SQL("select count(1) from schoolbus where school_id={kg} and name={name} and uid<>{id} and status=1")
             .on(
               'kg -> school_id.toString,
               'name -> name,
               'id -> existingId
             ).as(get[Long]("count(1)") single) > 0
         case None =>
-          SQL("select count(1) from schoolbus where school_id={kg} and name={name}")
+          SQL("select count(1) from schoolbus where school_id={kg} and name={name} and status=1")
             .on(
               'kg -> school_id.toString,
               'name -> name
