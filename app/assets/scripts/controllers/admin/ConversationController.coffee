@@ -116,6 +116,9 @@ angular.module('kulebaoAdmin')
           msg.$save ->
             scope.refresh()
 
+      scope.cancelEditing = (message) ->
+        scope.message = scope.newMessage()
+
       scope.messageEditing = ->
         scope.currentModal = Modal
           scope: scope
