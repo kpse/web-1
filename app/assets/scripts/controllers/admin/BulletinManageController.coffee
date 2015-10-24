@@ -1,26 +1,28 @@
 'use strict'
 
 angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
-  ['$scope', '$rootScope', '$location',
+  ['$scope', '$rootScope', '$state', '$timeout',
    '$stateParams', '$modal', 'imageCompressService',
-    (scope, $rootScope, location, stateParams, Modal, Compress) ->
+    (scope, $rootScope, $state, $timeout, stateParams, Modal, Compress) ->
       $rootScope.tabName = 'bulletin'
       scope.heading = '全园和班级的通知公告都可以在这里发布'
 
+      $rootScope.loading = true
       scope.current_class = parseInt(stateParams.class)
 
       scope.classesScope = angular.copy scope.kindergarten.classes
       scope.classesScope.unshift class_id: 0, name: '全校'
-      location.path "#{location.path()}/class/0/list" if (location.path().indexOf('/class/') < 0)
+      $state.go('kindergarten.bulletin.class.list', {kindergarten: stateParams.kindergarten, class: 0}) unless $state.is 'kindergarten.bulletin.class.list'
 
       scope.navigateTo = (c) ->
-        $rootScope.loading = true
-        location.path("kindergarten/#{stateParams.kindergarten}/bulletin/class/#{c.class_id}/list")
+        if c.class_id != scope.current_class
+          $rootScope.loading = true
+          $timeout ->
+            $state.go 'kindergarten.bulletin.class.list', {kindergarten: stateParams.kindergarten, class: c.class_id}
 
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)
 
-      $rootScope.loading = false
   ]
 
 .controller 'BulletinCtrl',
@@ -142,4 +144,6 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
       scope.printTags = (tags) ->
         if tags? then tags.join ', ' else ''
+
+      $rootScope.loading = false
   ]
