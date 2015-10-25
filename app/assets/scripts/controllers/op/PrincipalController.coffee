@@ -6,8 +6,9 @@ angular.module('kulebaoOp').controller 'OpPrincipalCtrl',
       scope.current_employee_role = scope.levels[0]
 
       scope.display = (role) ->
-        scope.current_employee_role = role
-        scope.refresh()
+        if role != scope.current_employee_role
+          scope.current_employee_role = role
+          scope.refresh()
 
 
 
