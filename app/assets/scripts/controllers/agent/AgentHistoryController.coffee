@@ -63,6 +63,7 @@ angular.module('kulebaoAgent')
       scope.allowToDelete = (month) ->
         month == scope.pastMonths[0] && scope.loggedUser.privilege_group == 'operator'
       scope.refresh = ->
+        $rootScope.loading = true
         scope.d3Data = []
         currentAgent = scope.currentAgent
         currentAgent.expireDisplayValue = $filter('date')(currentAgent.expire, 'yyyy-MM-dd')
@@ -78,6 +79,7 @@ angular.module('kulebaoAgent')
               s.stats.childRate = scope.calcChildRate s.stats.data
               s.stats = _.assign s.stats, s.stats.data
           scope.$emit 'stats_ready', currentAgent.schools
+          $rootScope.loading = false
 
       scope.refresh()
 

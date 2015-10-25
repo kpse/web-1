@@ -21,6 +21,7 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
       scope.calcRate = SchoolRate
 
       scope.refresh = ->
+        $rootScope.loading = true
         scope.d3Data = []
         currentAgent = scope.currentAgent
         currentAgent.expireDisplayValue = $filter('date')(currentAgent.expire, 'yyyy-MM-dd')
@@ -36,6 +37,7 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
               d.rate = scope.calcRate(d.data)
               d.childRate = scope.calcChildRate(d.data)
             kg.lastActiveData = _.last _.sortBy kg.activeData, 'month'
+          $rootScope.loading = false
 
           scope.$broadcast 'schools_ready', currentAgent.schools
 
@@ -60,4 +62,6 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
         scope.currentSchool = school
         scope.d3Data = school.activeData
 
+      scope.$on '$stateChangeStart', ->
+        $rootScope.loading = true
   ]
