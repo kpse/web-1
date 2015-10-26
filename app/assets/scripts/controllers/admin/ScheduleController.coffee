@@ -12,7 +12,7 @@ angular.module('kulebaoAdmin')
     AccessClass(scope.kindergarten.classes)
 
     scope.navigateTo = (c) ->
-      if c.class_id != scope.current_class
+      if c.class_id != scope.current_class || !$state.is 'kindergarten.schedule.class.list'
         rootScope.loading = true
         $timeout ->
           $state.go 'kindergarten.schedule.class.list', kindergarten: stateParams.kindergarten, class_id: c.class_id

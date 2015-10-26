@@ -42,7 +42,7 @@ angular.module('kulebaoAdmin')
           $state.go 'kindergarten.conversation.class.child', {kindergarten: stateParams.kindergarten, class_id: child.class_id, child_id: child.child_id}
 
       scope.navigateTo = (c) ->
-        if c.class_id != scope.current_class
+        if c.class_id != scope.current_class || !$state.is 'kindergarten.conversation.class.list'
           rootScope.loading = true
           $timeout ->
             $state.go 'kindergarten.conversation.class.list', {kindergarten: stateParams.kindergarten, class_id: c.class_id}
@@ -50,9 +50,9 @@ angular.module('kulebaoAdmin')
   ]
 .controller 'ConversationCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', '$http', 'chatSessionService', 'childService', '$modal',
+    '$state', '$http', 'chatSessionService', 'childService', '$modal',
     '$popover', '$tooltip', 'senderService', 'readRecordService',
-    (scope, rootScope, stateParams, location, $http, Message, Child, Modal, Popover, Tooltip, Sender, ReaderLog) ->
+    (scope, rootScope, stateParams, $state, $http, Message, Child, Modal, Popover, Tooltip, Sender, ReaderLog) ->
 
       rootScope.loading = true
       scope.noMore = false

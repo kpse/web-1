@@ -370,7 +370,7 @@ angular.module('kulebaoAdmin')
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.navigateTo = (c) ->
-        if scope.current_class != c.class_id
+        if scope.current_class != c.class_id || !$state.is 'kindergarten.relationship.type.class.list'
           rootScope.loading = true
           $timeout ->
             $state.go 'kindergarten.relationship.type.class.list', {kindergarten: stateParams.kindergarten, type: stateParams.type, class_id: c.class_id}

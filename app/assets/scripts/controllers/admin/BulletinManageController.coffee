@@ -15,7 +15,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
       $state.go('kindergarten.bulletin.class.list', {kindergarten: stateParams.kindergarten, class: 0}) unless $state.is 'kindergarten.bulletin.class.list'
 
       scope.navigateTo = (c) ->
-        if c.class_id != scope.current_class
+        if c.class_id != scope.current_class || !$state.is 'kindergarten.bulletin.class.list'
           $rootScope.loading = true
           $timeout ->
             $state.go 'kindergarten.bulletin.class.list', {kindergarten: stateParams.kindergarten, class: c.class_id}
