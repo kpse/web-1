@@ -161,8 +161,8 @@ object ChatSession {
             "            from sessionlog s," +
             "            (" +
             "              select session_id, MAX(s.update_at) last" +
-            "              from sessionlog s, childinfo c" +
-            "              where s.status= 1" +
+            "              from sessionlog s, childinfo c " +
+            "              where 1 = (select 1 from relationmap where child_id=c.child_id and status=1 limit 1) and s.status= 1 " +
             "              and s.school_id= {kg}" +
             "      and session_id= child_id" +
             "      and c.status= 1" +
@@ -176,7 +176,7 @@ object ChatSession {
         case None =>
           SQL("select s.* from sessionlog s," +
             "(select session_id, MAX(update_at) last from sessionlog where status=1 and school_id={kg} group by session_id) a, " +
-            "childinfo c where a.last=s.update_at and s.session_id = a.session_id and s.session_id = c.child_id and c.status=1")
+            "childinfo c where 1=(select 1 from relationmap where child_id=c.child_id and status=1 limit 1) and a.last=s.update_at and s.session_id = a.session_id and s.session_id = c.child_id and c.status=1")
             .on(
               'kg -> kg.toString
             ).as(simple() *)

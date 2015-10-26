@@ -150,10 +150,12 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       refreshCount = ->
         queue = [EmployeeSession.query(school_id: scope.kindergarten.school_id, reader: scope.adminUser.id).$promise,
           EmployeeRead.query(school_id: scope.kindergarten.school_id, reader: scope.adminUser.id).$promise]
-        $q.all(queue).then (q)->
-          result = _.countBy (_.sortBy (_.groupBy (q[0].concat q[1]), (e) -> e.topic), (s) -> if s.id? then 0 else 1), (p) -> !p[1]? || p[0].id > p[1].session_id
+        $q.all(queue).then (q) ->
+          sessionGroup = _.groupBy q[0], 'topic'
+          readRecordGroup = _.groupBy q[1], 'topic'
+          result = _.countBy q[0], (p) -> sessionGroup[p.topic] && ( !readRecordGroup[p.topic]? || p.id > _.max(readRecordGroup[p.topic], 'session_id').session_id  )
           scope.conversation.missedCount = result[true]
-          console.log(scope.conversation.missedCount)
+          console.log('unread sessions count: ' + scope.conversation.missedCount)
 
       scope.conversation =
         missedCount: 0
