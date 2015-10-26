@@ -1,13 +1,16 @@
 package models
 
 import models.CheatCode.validate
+import models.V5.InvitationCode
 import org.joda.time.DateTime
 import play.api.Logger
 import play.cache.Cache
 
 import scala.util.Random
 
-case class Verification(phone: String, code: String)
+case class Verification(phone: String, code: String) {
+  def toCodeVerification = InvitationCode(phone, code, System.currentTimeMillis)
+}
 
 object Verification {
   private val logger: Logger = Logger(classOf[Verification])

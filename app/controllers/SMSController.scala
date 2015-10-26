@@ -28,19 +28,17 @@ object SMSController extends Controller with Secured {
         case (code: String) =>
           Future.successful(BadRequest(Json.toJson(ErrorResponse("请求太频繁，目前限制为2分钟。(too frequently requests, current is 2 minutes)"))))
         case null =>
-          sendSMS(phone)
+          val provider: SMSProvider = SMSProvider.create
+          val smsReq = Verification.generate(phone)(provider)
+          Logger.info(smsReq.toString())
+          sendSMS(smsReq)(provider)
         case _ =>
           Future.successful(BadRequest(Json.toJson(ErrorResponse("短信发送出错。(other errors in sending SMS, contact admin please)", 3))))
       }
 
   }
 
-
-  def sendSMS(phone: String): Future[SimpleResult] = {
-
-    val provider: SMSProvider = SMSProvider.create
-    val generate = Verification.generate(phone)(provider)
-    Logger.info(generate.toString())
+  def sendSMS(generate: Map[String, Seq[String]])(implicit provider: SMSProvider): Future[SimpleResult] = {
     WS.url(provider.url()).withHeaders("Content-Type" -> "application/x-www-form-urlencoded;charset=UTF-8")
       .post(generate).map {
       response =>
@@ -49,7 +47,7 @@ object SMSController extends Controller with Secured {
           case true =>
             Ok(Json.toJson(new SuccessResponse))
           case false =>
-            Ok(Json.toJson(ErrorResponse("验证码发送失败。(sending error from mb345 side)", 4)))
+            Ok(Json.toJson(ErrorResponse("验证码发送失败。(sending error from sms server side)", 4)))
         }
     }
   }
