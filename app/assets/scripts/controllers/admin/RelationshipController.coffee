@@ -166,6 +166,7 @@ angular.module('kulebaoAdmin')
           type: "danger"
           container: '.modal-dialog .panel-body'
           duration: 3
+        rootScope.loading = false
 
       scope.saveParent = (parent) ->
         saveHook = parent.saveHook
@@ -281,6 +282,10 @@ angular.module('kulebaoAdmin')
         scope.cardNumberEditing = 0
         r.card = scope.oldRelationship.card
 
+      scope.cancelDialog = ->
+        scope.currentModal.hide()
+        rootScope.loading = false
+
       scope.updateCardNumber = (relationship) ->
         rootScope.loading = true
         relationship.$save ->
@@ -342,6 +347,7 @@ angular.module('kulebaoAdmin')
         scope.relationship.card = ''
         form.$setPristine()
         form.card.$setValidity "registered", true
+        rootScope.loading = false
   ]
 
 .controller 'connectedCtrl',

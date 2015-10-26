@@ -47,6 +47,7 @@ object RelationshipController extends Controller with Secured {
         logger.debug(request.body.toString())
         val body: JsValue = request.body
         val relationship: String = (body \ "relationship").as[String]
+        val cardInPayload: Option[String] = (body \ "card").asOpt[String]
         val phone: String = (body \ "parent" \ "phone").as[String]
         val childId: String = (body \ "child" \ "child_id").as[String]
         val uid: Option[Long] = (body \ "id").as[Option[Long]]
@@ -69,8 +70,8 @@ object RelationshipController extends Controller with Secured {
             BadRequest(loggedJson(ErrorResponse(s"创建关系失败，${card}号卡已经关联过家长。(Card is connected to parent before)", 5)))
           case exists if !exists && uid.isDefined && Relationship.cardExists(card, None) =>
             BadRequest(loggedJson(ErrorResponse(s"修改关系失败，${card}号卡已经关联过家长。(Card is connected to parent before)", 6)))
-          case error if card.isEmpty && existingCard.nonEmpty && !existingCard.equals(Some(card)) =>
-            BadRequest(loggedJson(ErrorResponse(s"家长($phone)和小孩($childId)已经创建过关系了。(Duplicated relationship)", 7)))
+          case error if cardInPayload != Some(card)  =>
+            BadRequest(loggedJson(ErrorResponse(s"请求的卡号${cardInPayload}和url中${card}的不匹配。(The card number in uri and payload is not matched)", 7)))
           case exists if !exists && uid.isDefined =>
             logger.debug("update existing 2")
             clearCurrentCache(kg)
