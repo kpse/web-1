@@ -84,7 +84,7 @@ object RelativeControllerSpec extends Specification with TestSupport {
 
       status(response) must equalTo(OK)
 
-      private val requestBody = Json.toJson(createRelative(phone))
+      private val requestBody = Json.toJson(createRelative(phone, None, Some("some_new_parent_id")))
 
       val response2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/relative").withBody(requestBody)).get
 
@@ -130,12 +130,12 @@ object RelativeControllerSpec extends Specification with TestSupport {
 
   }
 
-  def createRelative(phone: String, id: Option[Long] = None): JsValue = {
-    Json.toJson(Relative(id, createParent(phone, id), Some(createExt)))
+  def createRelative(phone: String, id: Option[Long] = None, parentId: Some[String] = Some("2_93740362_1023")): JsValue = {
+    Json.toJson(Relative(id, createParent(phone, id, parentId), Some(createExt)))
   }
 
-  def createParent(phone: String, id: Option[Long] = None): Parent = {
-    Parent(Some("2_93740362_1023"), 93740362, "name", phone, None, 1, "1999-01-02", Some(0), Some(0), Some(1), Some("com"), None, None, id)
+  def createParent(phone: String, id: Option[Long] = None, parentId: Some[String]): Parent = {
+    Parent(parentId, 93740362, "name", phone, None, 1, "1999-01-02", Some(0), Some(0), Some(1), Some("com"), None, None, id)
   }
 
   def createExt = {

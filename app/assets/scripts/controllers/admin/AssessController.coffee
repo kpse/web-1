@@ -12,9 +12,9 @@ angular.module('kulebaoAdmin')
 
   ]
 .controller 'AssessInClassCtrl',
-  [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'assessService', 'childService',
-    (scope, rootScope, stateParams, location, Assess, Child) ->
+  [ '$scope', '$rootScope', '$stateParams', '$timeout',
+    '$state', 'assessService', 'childService',
+    (scope, rootScope, stateParams, $timeout, $state, Assess, Child) ->
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true).query ->
@@ -25,12 +25,13 @@ angular.module('kulebaoAdmin')
 
       scope.goDetail = (child) ->
         rootScope.loading = true
-        location.path "kindergarten/#{stateParams.kindergarten}/baby-status/class/#{child.class_id}/child/#{child.child_id}"
+        $state.go 'kindergarten.assess.class.child', {kindergarten: stateParams.kindergarten, class_id: child.class_id, child: child.child_id}
 
       scope.navigateTo = (c) ->
-        if c.class_id != scope.current_class
+        if c.class_id != scope.current_class || !$state.is 'kindergarten.assess.class.list'
           rootScope.loading = true
-          location.path("kindergarten/#{stateParams.kindergarten}/baby-status/class/#{c.class_id}/list")
+          $timeout ->
+            $state.go 'kindergarten.assess.class.list', {kindergarten: stateParams.kindergarten, class_id: c.class_id}
 
       rootScope.loading = false
   ]
