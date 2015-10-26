@@ -44,16 +44,16 @@ angular.module('kulebaoOp').controller 'OpVideoMemberInClassCtrl',
             _.forEach all, (p) ->
               Parent.get school_id: stateParams.school_id, id: p.id, type: 'p', (data)->
                 p.detail = data
-                p.reltaionship = Relationship.query school_id: stateParams.school_id, parent: p.detail.phone if p.detail.phone?
+                p.relationship = Relationship.query school_id: stateParams.school_id, parent: p.detail.phone if p.detail.phone?
                 extendFilterFriendlyProperties(p)
             rootScope.loading = false
           scope.currentClass = _.find scope.kindergarten.classes, (c) -> c.class_id == parseInt scope.current_class
 
 
       scope.display = (p, classId) ->
-        connected = p.reltaionship? && p.reltaionship.$resolved && p.reltaionship.length > 0
+        connected = p.relationship? && p.relationship.$resolved && p.relationship.length > 0
         if classId?
-          connected && p.reltaionship[0].child.class_id == classId
+          connected && p.relationship[0].child.class_id == classId
         else
           connected
 

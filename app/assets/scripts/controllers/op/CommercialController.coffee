@@ -80,11 +80,11 @@ angular.module('kulebaoOp').controller 'OpAdPositionCtrl',
         _.forEach all, (p) ->
           Parent.get school_id: stateParams.school_id, id: p.id, type: 'p', (data)->
             p.detail = data
-            p.reltaionship = Relationship.query school_id: stateParams.school_id, parent: p.detail.phone
+            p.relationship = Relationship.query school_id: stateParams.school_id, parent: p.detail.phone
         rootScope.loading = false
 
       scope.display = (p) ->
-        p.reltaionship? && p.reltaionship.$resolved && p.reltaionship[0].child.class_id == parseInt stateParams.class_id
+        p.relationship? && p.relationship.$resolved && p.relationship[0].child.class_id == parseInt stateParams.class_id
 
   ]
 

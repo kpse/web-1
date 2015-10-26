@@ -16,18 +16,18 @@
     <table class="table table-hover table-condensed schools-list">
       <thead>
       <tr class="row">
+        <th class="col-xs-4">学生姓名</th>
         <th class="col-xs-2">家长姓名</th>
-        <th class="col-xs-4">手机</th>
-        <th class="col-xs-4">已开通账号</th>
-        <th class="col-xs-2">操作</th>
+        <th class="col-xs-3">手机</th>
+        <th class="col-xs-3">操作</th>
       </tr>
       </thead>
       <tbody>
       <tr ng-repeat="p in parentsInClass | filter: searchText " class="row">
+        <td class="col-xs-4">{{p.childName}}</td>
         <td class="col-xs-2">{{p.detail.name}}</td>
-        <td class="col-xs-4">{{p.detail.phone | phone}}</td>
-        <td class="col-xs-4">{{p.account}}</td>
-        <td class="col-xs-2">
+        <td class="col-xs-3">{{p.detail.phone | phone}}</td>
+        <td class="col-xs-3">
           <button ng-disabled="loading" class="btn btn-xs btn-danger" ng-confirm-click="deleteAccount(p.detail)"
                   ng-confirm-msg="将关闭{{p.detail.name}}的看宝宝账号，是否继续？">关闭
           </button>

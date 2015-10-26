@@ -19,7 +19,7 @@
   </thead>
   <tbody>
   <tr ng-repeat="p in parents | filter: searchText " class="row" ng-show="display(p)">
-    <td class="col-xs-4"><a ng-href="/admin#/kindergarten/{{kindergarten.school_id}}/relationship/type/connected/class/{{p.reltaionship[0].child.class_id}}/list">{{p.detail.name}}</a></td>
+    <td class="col-xs-4"><a ng-href="/admin#/kindergarten/{{kindergarten.school_id}}/relationship/type/connected/class/{{p.relationship[0].child.class_id}}/list">{{p.detail.name}}</a></td>
     <td class="col-xs-4">{{p.detail.phone | phone}}</td>
     <td class="col-xs-4">{{p.account}}</td>
   </tr>

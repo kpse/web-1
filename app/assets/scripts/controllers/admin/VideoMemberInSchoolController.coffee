@@ -6,6 +6,7 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
       rootScope.loading = true
       extendFilterFriendlyProperties = (p) ->
         p.phone = p.detail.phone
+        p.childName = (_.map p.relationship, 'child.name').join(',') if p.relationship.length > 0
         p.formattedPhone = $filter('phone')(p.detail.phone)
         p
 
@@ -26,10 +27,9 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
                 Parent.get school_id: $stateParams.kindergarten, id: p.id, type: 'p', (data)->
                     p.detail = data
                     if p.detail.phone?
-                      p.reltaionship = Relationship.query school_id: $stateParams.kindergarten, parent: p.detail.phone, ->
+                      p.relationship = Relationship.query school_id: $stateParams.kindergarten, parent: p.detail.phone, ->
                           resolve()
                         , -> resolve()
-                      extendFilterFriendlyProperties(p)
                     else
                       resolve()
                   , -> resolve()
@@ -44,6 +44,7 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
           scope.parents = _.flatten [parents, defaultAccounts]
           allLoading = _.map scope.parents, (p) -> p.promise
           $q.all(allLoading).then (q) ->
+            scope.parents = _.map scope.parents, extendFilterFriendlyProperties
             scope.refresh()
             rootScope.loading = false
 
@@ -51,11 +52,11 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
         scope.parentsInClass = _.filter scope.parents, (c) -> scope.display(c, clz)
 
       scope.display = (p, classId) ->
-        p.reltaionship? && p.reltaionship.$resolved && p.reltaionship.length > 0 && p.reltaionship[0].child.class_id == classId
+        p.relationship? && p.relationship.$resolved && p.relationship.length > 0 && p.relationship[0].child.class_id == classId
 
       scope.accountsInSchool = (parents, classId) ->
         _.map (_.filter parents, (f) -> !classId? || scope.display(f, classId)), (p) ->
-          'account': p.account,
+          'child': p.childName,
           'password': p.password,
           'name': p.detail.phone + p.detail.name
 
@@ -172,6 +173,7 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
         scope.currentImportingClass = clz
         scope.newParentsInClass = _.filter scope.importingData, (c) -> c.className == clz
 
+      rootScope.loading = false
   ]
 
 angular.module('kulebaoAdmin').controller 'VideoMemberImportCtrl',
