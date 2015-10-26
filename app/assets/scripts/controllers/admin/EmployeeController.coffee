@@ -30,6 +30,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
           workgroup: ''
           workduty: ''
           phone: ''
+          loginNameFollowing: true
 
       scope.addEmployee = ->
         scope.employee = scope.createEmployee()
@@ -106,6 +107,14 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
 
       scope.checkName = (employee, form) ->
         form.$setValidity 'unique', !_.any scope.employees, (e) -> e.name == employee.name
+
+      scope.loginNameFollowing = true
+      scope.nameChanging = ->
+        scope.employee.login_name = 't' + scope.employee.phone if scope.employee.loginNameFollowing && scope.employee.phone
+
+      scope.stopFollowing = ->
+        scope.employee.loginNameFollowing = false
+
   ]
 
 .controller 'EmployeesScoreCtrl',
