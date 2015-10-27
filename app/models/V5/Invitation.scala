@@ -9,16 +9,20 @@ import play.api.libs.json.Json
 
 case class NewParent(phone: String, name: String, relationship: String)
 
-case class Invitation(from: Parent, to: NewParent, code: Verification) {
+case class Invitation(from: Parent, to: NewParent, code: Option[Verification]) {
   def settle: List[Relationship] = DB.withTransaction {
     implicit c =>
       try {
-        Parent.create(from.school_id, from.copy(parent_id = None, name = to.name, phone = to.phone))
-        Relationship.index(from.school_id, Some(from.phone), None, None).foreach {
-          r =>
-            val childId: String = r.child.get.child_id.get
-            val fakeCardNumber: String = "f" + md5(s"${to.phone}_$childId").take(19)
-            Relationship.create(from.school_id, fakeCardNumber, to.relationship, to.phone, childId)
+        val created: Option[Parent] = Parent.create(from.school_id, from.copy(parent_id = None, name = to.name, phone = to.phone))
+        created foreach {
+          newParent =>
+            Relationship.index(from.school_id, Some(from.phone), None, None).foreach {
+              r =>
+                val childId: String = r.child.get.child_id.get
+                val fakeCardNumber: String = "f" + md5(s"${newParent.phone}_$childId").take(19)
+                Logger.info(s"childId= $childId $fakeCardNumber")
+                Relationship.create(from.school_id, fakeCardNumber, to.relationship, newParent.phone, childId)
+            }
         }
         c.commit()
         Relationship.index(from.school_id, Some(to.phone), None, None)

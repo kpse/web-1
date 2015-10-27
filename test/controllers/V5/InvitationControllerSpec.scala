@@ -132,7 +132,7 @@ class InvitationControllerSpec extends Specification with TestSupport {
   private val newRelationship: String = "妈妈"
 
   def theHost(phone: String = newPhone, code: Verification = correctCode): JsValue  = {
-    Json.toJson(Invitation(Parent.findById(93740362, "2_93740362_789").get, NewParent(phone, newName, newRelationship), code))
+    Json.toJson(Invitation(Parent.findById(93740362, "2_93740362_789").get, NewParent(phone, newName, newRelationship), Some(code)))
   }
 
   def noCodeRequest: JsValue  = {
@@ -144,7 +144,7 @@ class InvitationControllerSpec extends Specification with TestSupport {
   }
 
   def twoRelationshipsHost: JsValue  = {
-    Json.toJson(Invitation(Parent.findById(93740362, "2_93740362_792").get, NewParent(newPhone, newName, newRelationship), correctCode))
+    Json.toJson(Invitation(Parent.findById(93740362, "2_93740362_792").get, NewParent(newPhone, newName, newRelationship), Some(correctCode)))
   }
 
   val correctCode = Verification(newPhone, "123456")

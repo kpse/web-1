@@ -18,14 +18,19 @@ object InvitationController extends Controller with Secured {
       request =>
         Logger.info(request.body.toString())
         request.body.validate[Invitation].map {
-          case (invitation) if invitation.code.phone != invitation.to.phone || !InvitationCode.isMatched(invitation.code) =>
+          case (invitation) if invitation.code.isEmpty =>
+            InternalServerError(Json.toJson(ErrorResponse("验证码不正确。(wrong verification code)")))
+          case (invitation) if invitation.code.get.phone != invitation.to.phone =>
+            InternalServerError(Json.toJson(ErrorResponse("验证码不正确。(wrong verification code)")))
+          case (invitation) if !InvitationCode.isMatched(invitation.code.get) =>
             InternalServerError(Json.toJson(ErrorResponse("验证码不正确。(wrong verification code)")))
           case (invitation) if invitation.from.phone != u =>
+            Logger.info(s"u = $u")
             InternalServerError(Json.toJson(ErrorResponse("邀请人信息不正确。(wrong host information)", 10)))
           case (invitation) if Parent.phoneSearch(invitation.to.phone).exists(_.status == Some(1)) =>
             InternalServerError(Json.toJson(ErrorResponse("被邀请号码已存在。(invitee's phone number exists already)", 20)))
           case (invitation) =>
-            Cache.remove(invitation.code.phone.iKey)
+            Cache.remove(invitation.code.get.phone.iKey)
             val newCreation: List[Relationship] = invitation.copy(from = invitation.from.copy(school_id = schoolId)).settle
             RelationshipController.clearCurrentCache(schoolId)
             Logger.info("invitation creates : " + newCreation.toString)

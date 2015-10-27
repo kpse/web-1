@@ -187,7 +187,7 @@ object Relationship {
       val random: Random = new Random(System.currentTimeMillis)
       try {
         val id: Option[Long] = SQL("insert into relationmap (child_id, parent_id, card_num, relationship, reference_id) VALUES" +
-          " ({child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg}), {card}, {relationship}, {reference_id})")
+          " ({child_id}, (select parent_id from parentinfo where phone={phone} and school_id={kg} limit 1), {card}, {relationship}, {reference_id})")
           .on(
             'phone -> phone,
             'child_id -> childId,
@@ -274,7 +274,7 @@ object Relationship {
   def index(kg: Long, parent: Option[String], child: Option[String], classId: Option[Long]) = DB.withConnection {
     implicit c =>
       val query: String = generateQuery(parent, child, classId)
-      Logger.debug(query)
+      Logger.debug(s"Relationship index: $query")
       SQL(query)
         .on(
           'kg -> kg.toString,

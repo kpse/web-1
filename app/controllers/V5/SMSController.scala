@@ -2,9 +2,9 @@ package controllers.V5
 
 import controllers.SMSController.sendSMS
 import controllers.Secured
-import models.V5.{InvitationCode, InvitationPhoneKey}
+import models.V5.{Invitation, InvitationCode, InvitationPhoneKey}
 import models._
-import play.Logger
+import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Action, Controller}
 import play.cache.Cache
@@ -21,27 +21,34 @@ object SMSController extends Controller with Secured {
 
   def floodProtect(phone: String) = Cache.get(phone.iKey)
 
-  def send(phone: String, from: String) = Action.async {
-    implicit request =>
-      implicit val provider: SMSProvider = SMSProvider.create
-      floodProtect(phone) match {
-        case InvitationCode(_, _, time, _) if System.currentTimeMillis - time < 120*1000  =>
-          Future.successful(BadRequest(Json.toJson(ErrorResponse("请求太频繁，目前限制为2分钟。(too frequently requests, current is 2 minutes)"))))
-        case InvitationCode(p, c, t, parent) =>
-          Logger.info(s"resend : ${InvitationCode(p, c, t, parent)}")
-          sendSMS(InvitationCode(p, c, System.currentTimeMillis(), parent).toPayload())
-        case null =>
-          Parent.phoneSearch(from) match {
-            case Some(parent) if parent.status == Some(1) =>
-              val smsReq = InvitationCode.generate(phone, parent)
-              Logger.info(s"smsReq = $smsReq")
-              sendSMS(smsReq)
-            case _ =>
-              Future.successful(BadRequest(Json.toJson(ErrorResponse(s"未找到此手机号${phone}的注册信息。(unregistered phone number)", 6))))
-          }
+  private val logger: Logger = Logger(classOf[Verification])
 
-        case _ =>
-          Future.successful(BadRequest(Json.toJson(ErrorResponse("短信发送出错。(other errors in sending SMS, contact admin please)", 3))))
+  def send(phone: String) = Action.async(parse.json) {
+    implicit request =>
+      logger.info(request.body.toString())
+      implicit val provider: SMSProvider = SMSProvider.create
+      request.body.validate[Invitation].map {
+        case (invitation) =>
+          floodProtect(phone) match {
+            case InvitationCode(_, _, time, _) if System.currentTimeMillis - time < 120 * 1000 =>
+              Future.successful(BadRequest(Json.toJson(ErrorResponse("请求太频繁，目前限制为2分钟。(too frequently requests, current is 2 minutes)"))))
+            case InvitationCode(p, c, t, parent) =>
+              logger.info(s"resend invitation : ${InvitationCode(p, c, t, parent)}")
+              sendSMS(InvitationCode(p, c, System.currentTimeMillis(), parent).toPayload())
+            case null =>
+              Parent.phoneSearch(invitation.from.phone) match {
+                case Some(parent) if parent.status == Some(1) =>
+                  val smsReq = InvitationCode.generate(phone, parent)
+                  logger.info(s"smsReq = $smsReq")
+                  sendSMS(smsReq)
+                case _ =>
+                  Future.successful(BadRequest(Json.toJson(ErrorResponse(s"未找到此手机号${phone}的注册信息。(unregistered phone number)", 6))))
+              }
+            case _ =>
+              Future.successful(BadRequest(Json.toJson(ErrorResponse("短信发送出错。(other errors in sending SMS, contact admin please)", 3))))
+          }
+      }.recoverTotal {
+        e => Future.successful(BadRequest("Detected error:" + JsError.toFlatJson(e)))
       }
 
   }
@@ -50,7 +57,7 @@ object SMSController extends Controller with Secured {
     implicit request =>
       request.body.validate[Verification].map {
         case (v) =>
-          Logger.info(v.toString)
+          logger.info(v.toString)
           InvitationCode.isMatched(v) match {
             case true =>
               Cache.remove(phone.iKey)
