@@ -5,8 +5,10 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
       rootScope.tabName = 'video'
       rootScope.loading = true
       extendFilterFriendlyProperties = (p) ->
+        console.log 'p = '
+        console.log  p
         p.phone = p.detail.phone
-        p.childName = (_.map p.relationship, 'child.name').join(',') if p.relationship.length > 0
+        p.childName = (_.map p.relationship, 'child.name').join(',') if p.relationship? && p.relationship.length > 0
         p.formattedPhone = $filter('phone')(p.detail.phone)
         p
 
@@ -27,12 +29,12 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
                 Parent.get school_id: $stateParams.kindergarten, id: p.id, type: 'p', (data)->
                     p.detail = data
                     if p.detail.phone?
-                      p.relationship = Relationship.query school_id: $stateParams.kindergarten, parent: p.detail.phone, ->
-                          resolve()
-                        , -> resolve()
+                      p.relationship = Relationship.query school_id: $stateParams.kindergarten, parent: p.detail.phone, (r) ->
+                          resolve(r)
+                        , -> resolve([])
                     else
-                      resolve()
-                  , -> resolve()
+                      resolve([])
+                  , -> resolve([])
             p
 
           defaultAccounts = _.map defaultAccounts, (d) ->
@@ -44,6 +46,8 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
           scope.parents = _.flatten [parents, defaultAccounts]
           allLoading = _.map scope.parents, (p) -> p.promise
           $q.all(allLoading).then (q) ->
+            console.log q
+            console.log scope.parents
             scope.parents = _.map scope.parents, extendFilterFriendlyProperties
             scope.refresh()
             rootScope.loading = false
