@@ -47,7 +47,7 @@ object SMSController extends Controller with Secured {
           Logger.info(v.toString)
           InvitationCode.isMatched(v) match {
             case true =>
-              Cache.remove(phone)
+              Cache.remove(phone.iKey)
               Ok(Json.toJson(new SuccessResponse))
             case false =>
               Ok(Json.toJson(ErrorResponse("验证码校验失败。(incorrect code)", 5)))
