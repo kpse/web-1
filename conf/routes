@@ -671,7 +671,7 @@ GET           /api/v4/statistics/monthly/:schoolId                              
 
 POST          /api/v5/kindergarten/:schoolId/invitation                                        controllers.V5.InvitationController.create(schoolId: Long)
 GET           /api/v5/invitation_code/:phone                                                   controllers.V5.SMSController.send(phone: String)
-POST          /api/v5/invitation_code/:phone                                                   controllers.V5.SMSController.verify(phone: String)
+#POST          /api/v5/invitation_code/:phone                                                   controllers.V5.SMSController.verify(phone: String)
 
 POST          /api/v6/payment                                                                  controllers.V6.PaymentRecordController.create
 GET           /api/v6/payment                                                                  controllers.V6.PaymentRecordController.index(parentId: Option[String])
