@@ -5,8 +5,6 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
       rootScope.tabName = 'video'
       rootScope.loading = true
       extendFilterFriendlyProperties = (p) ->
-        console.log 'p = '
-        console.log  p
         p.phone = p.detail.phone
         p.childName = (_.map p.relationship, 'child.name').join(',') if p.relationship? && p.relationship.length > 0
         p.formattedPhone = $filter('phone')(p.detail.phone)
@@ -46,8 +44,6 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
           scope.parents = _.flatten [parents, defaultAccounts]
           allLoading = _.map scope.parents, (p) -> p.promise
           $q.all(allLoading).then (q) ->
-            console.log q
-            console.log scope.parents
             scope.parents = _.map scope.parents, extendFilterFriendlyProperties
             scope.refresh()
             rootScope.loading = false
@@ -58,11 +54,6 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
       scope.display = (p, classId) ->
         p.relationship? && p.relationship.$resolved && p.relationship.length > 0 && p.relationship[0].child.class_id == classId
 
-      scope.accountsInSchool = (parents, classId) ->
-        _.map (_.filter parents, (f) -> !classId? || scope.display(f, classId)), (p) ->
-          'child': p.childName,
-          'password': p.password,
-          'name': p.detail.phone + p.detail.name
 
       phoneFieldName = '家长手机号'
       nameFieldName = '家长姓名'
