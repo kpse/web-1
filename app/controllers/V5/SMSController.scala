@@ -21,7 +21,7 @@ object SMSController extends Controller with Secured {
 
   def floodProtect(phone: String) = Cache.get(phone.iKey)
 
-  def send(phone: String) = Action.async {
+  def send(phone: String, from: String) = Action.async {
     implicit request =>
       implicit val provider: SMSProvider = SMSProvider.create
       floodProtect(phone) match {
@@ -31,9 +31,9 @@ object SMSController extends Controller with Secured {
           Logger.info(s"resend : ${InvitationCode(p, c, t, parent)}")
           sendSMS(InvitationCode(p, c, System.currentTimeMillis(), parent).toPayload())
         case null =>
-          Parent.phoneSearch(phone) match {
+          Parent.phoneSearch(from) match {
             case Some(parent) if parent.status == Some(1) =>
-              val smsReq = InvitationCode.generate(parent)
+              val smsReq = InvitationCode.generate(phone, parent)
               Logger.info(s"smsReq = $smsReq")
               sendSMS(smsReq)
             case _ =>

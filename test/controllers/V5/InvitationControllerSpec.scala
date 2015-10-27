@@ -2,7 +2,7 @@ package controllers.V5
 
 import helper.TestSupport
 import models.{CheatCode, Verification, Parent}
-import models.V5.{NewParent, Invitation}
+import models.V5.{InvitationCode, InvitationPhoneKey, NewParent, Invitation}
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
@@ -150,8 +150,10 @@ class InvitationControllerSpec extends Specification with TestSupport {
   val correctCode = Verification(newPhone, "123456")
   val wrongCode = Verification("13408654680", "123456")
 
+  implicit def stringToInvitationPhoneKey(phone: String): InvitationPhoneKey = InvitationPhoneKey(phone)
+
   def setUpVerification(v: Verification = correctCode) = {
-    Cache.set(v.phone, v.code)
+    Cache.set(v.phone.iKey, InvitationCode(v.phone, v.code, System.currentTimeMillis, None))
   }
 
 }

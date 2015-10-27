@@ -36,17 +36,16 @@ object InvitationCode {
     verification.toCodeVerification.isMatch(Cache.getAs[InvitationCode](verification.phone.iKey)) || validate(verification.code)
   }
 
-  def newCodeFromPhoneNumber(parent: Parent) = {
+  def newCodeFromPhoneNumber(phone: String, parent: Parent) = {
     val random = new Random(System.currentTimeMillis)
     val code = "%06d".format(random.nextInt(999999))
-    logger.info(parent.phone + "'s code : " + code)
-    val invitationCode: InvitationCode = InvitationCode(parent.phone, code, System.currentTimeMillis, Some(parent))
-    Cache.set(parent.phone.iKey, invitationCode, 12 * 60)
+    logger.info(phone + "'s code : " + code)
+    val invitationCode: InvitationCode = InvitationCode(phone, code, System.currentTimeMillis, Some(parent))
+    Cache.set(phone.iKey, invitationCode, 12 * 60)
     invitationCode
   }
 
-  def generate(parent: Parent)(implicit provider: SMSProvider) = {
-    val code = newCodeFromPhoneNumber(parent)
-    code.toPayload()(provider)
+  def generate(phone: String, parent: Parent)(implicit provider: SMSProvider) = {
+    newCodeFromPhoneNumber(phone, parent).toPayload()(provider)
   }
 }
