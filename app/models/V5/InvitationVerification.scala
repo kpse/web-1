@@ -4,9 +4,12 @@ import models.CheatCode.validate
 import models.{Parent, SMSProvider, Verification}
 import play.api.Logger
 import play.api.cache.Cache
+import play.api.libs.json.Json
 
 import scala.util.Random
 import play.api.Play.current
+
+case class InvitationPhonePair(host: String, invitee: String)
 
 case class InvitationPhoneKey(phone: String) {
   val iKey = s"${phone}_invitation_code"
@@ -29,6 +32,9 @@ case class InvitationCode(phone: String, code: String, created_at: Long, parent:
 
 object InvitationCode {
   private val logger: Logger = Logger(classOf[InvitationCode])
+
+  implicit val readInvitationPhonePair = Json.reads[InvitationPhonePair]
+  implicit val writeInvitationPhonePair = Json.writes[InvitationPhonePair]
 
   implicit def stringToInvitationPhoneKey(phone: String): InvitationPhoneKey = InvitationPhoneKey(phone)
 
