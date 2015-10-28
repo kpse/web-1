@@ -555,7 +555,6 @@ angular.module('kulebaoAdmin')
           scope.errorItems = _.map duplicatedPhones, (display) -> "#{display[0].parent.phone} 同时被 #{ _.pluck(display, 'parent.name').join(',')} 持有。"
           scope.importingErrorMessage = '以下家长手机号重复但是姓名不一样，请修正后重新导入。'
           return backToImport()
-
         duplicatedNames = _(scope.relationships).groupBy((r) -> r.parent.name).filter((a) -> a.length > 1 && _.keys(_.groupBy a, 'parent.phone').length > 1).value()
         if duplicatedNames.length > 0
           console.log duplicatedNames

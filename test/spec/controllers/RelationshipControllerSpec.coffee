@@ -2,80 +2,129 @@ describe 'Controller: RelationshipController', ($alert) ->
 
   # load the controller's module
   beforeEach module 'kulebaoAdmin'
+  beforeEach module ($urlRouterProvider) ->
+    $urlRouterProvider.deferIntercept()
 
-  controller = {}
   $scope = {}
   $rootScope = {}
   $controller = {}
   $httpBackend = {}
   $stateParams = {}
+  $state = {}
 
   beforeEach inject (_$controller_, _$rootScope_, _$httpBackend_, _$stateParams_) ->
     $controller = _$controller_
     $rootScope = _$rootScope_
     $httpBackend = _$httpBackend_
     $stateParams = _$stateParams_
+    $state =
+      go : (data) -> console.log 'go : ' + data
 
-  it 'should extract relationships from excel data', () ->
     $scope = $rootScope.$new()
+    $scope.backend = true
     $scope.kindergarten =
       classes: [
         name: '二班'
+        class_id: 1000
       ]
     batchImportCtrl = $controller 'batchImportCtrl', {
       $scope: $scope
       $stateParams:
-        kindergarten: 93740362
+        kindergarten: '93740362'
+        type: 'batchImport'
+      $state: $state
     }
 
-    $scope.onSuccess(sheet1: ['家长A手机号': '12345678991', '家长A姓名': 'display name', '班级': '二班', '学生姓名': '二宝'])
+  it 'should extract relationships from excel data', () ->
+    $scope.onSuccess(sheet1: ['家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'])
 
-    $httpBackend.expectPOST('api/v1/phone_check/12345678991')
-    .respond phoneNumberIsFine
-    $httpBackend.expectDELETE('/kindergarten/93740362/class')
-    .respond
-      error_code: 0
-    $httpBackend.expectPOST('/kindergarten/93740362/class/1000')
-    .respond
-        name: '二班'
-        class_id: 1000
-        school_id: 93740362
-
+    $httpBackend.expectPOST('api/v1/phone_check/12345678991').respond phoneNumberIsFine
     $httpBackend.flush()
 
     expect($scope.relationships.length).toBe 1
     expect($scope.classesScope.length).toBe 1
+    expect($scope.importingErrorMessage).toBe ''
+    expect($scope.errorItems.length).toBe 0
 
-  phoneNumberIsFine = ->
+  it 'should accept parents with multiple children ', () ->
+
+    $scope.onSuccess(sheet1: [
+      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'}
+      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '三宝', '关系': '爸爸'}
+    ])
+
+    $httpBackend.expectPOST('api/v1/phone_check/12345678991').respond phoneNumberIsFine
+    $httpBackend.expectPOST('api/v1/phone_check/12345678991').respond phoneNumberIsFine
+    $httpBackend.flush()
+
+    expect($scope.relationships.length).toBe 2
+    expect($scope.classesScope.length).toBe 1
+    expect($scope.importingErrorMessage).toBe ''
+    expect($scope.errorItems.length).toBe 0
+
+  it 'should warning duplicated parents name from excel', () ->
+
+    $scope.onSuccess(sheet1: [
+      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'}
+      {'家长A手机号': '12345678992', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '三宝', '关系': '爸爸'}
+    ])
+
+    expect($scope.importingErrorMessage).toBe '以下家长姓名重复但是手机号不一样，请修正后重新导入。'
+    expect($scope.errorItems.length).toBe 1
+
+  it 'should warning duplicated children name from excel', () ->
+
+    $scope.onSuccess(sheet1: [
+      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'}
+      {'家长A手机号': '12345678992', '家长A姓名': 'display name2', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'}
+    ])
+
+    expect($scope.importingErrorMessage).toBe '以下小孩名字重复，请修正后重新导入。'
+    expect($scope.errorItems[0]).toBe '二宝 分别出现在第 1,2 行。'
+
+  it 'should warning empty parent phone from excel', () ->
+
+    $scope.onSuccess(sheet1: [
+      {'家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'},
+      {'家长A姓名': 'display name2', '所属班级': '二班', '宝宝姓名': 'sa宝', '关系': '爸爸'}
+    ])
+
+    expect($scope.importingErrorMessage).toBe '以下家长没有提供手机号，请修正后重新导入。'
+    expect($scope.errorItems.length).toBe 2
+
+  it 'should warning empty parent phone from excel', () ->
+
+    $scope.onSuccess(sheet1: [
+      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'}
+      {'家长A手机号': '12345678992', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': 'sa宝', '关系': '爸爸'}
+      {'家长A手机号': '12345678992', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': 'saa宝', '关系': '爸爸'}
+    ])
+
+    expect($scope.importingErrorMessage).toBe '以下家长姓名重复但是手机号不一样，请修正后重新导入。'
+    expect($scope.errorItems.length).toBe 1
+
+  it 'should warning non existing class name from excel', () ->
+
+    $scope.onSuccess(sheet1: [
+      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '九班', '宝宝姓名': '二宝', '关系': '爸爸'}
+    ])
+
+    expect($scope.importingErrorMessage).toBe '以下班级当前并不存在，请检查调整后重新输入。'
+    expect($scope.errorItems.length).toBe 1
+
+  it 'should warning existing phone number from excel', () ->
+
+    $scope.onSuccess(sheet1: ['家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'])
+
+    $httpBackend.expectPOST('api/v1/phone_check/12345678991').respond phoneNumberIsDuplicated
+    $httpBackend.flush()
+
+    expect($scope.importingErrorMessage).toBe '以下手机号码已经存在，请检查调整后重新输入。'
+    expect($scope.errorItems[0]).toBe '12345678991'
+
+
+
+  phoneNumberIsDuplicated =
+    error_code: 1
+  phoneNumberIsFine =
     error_code: 0
-  classOfId = (id) ->
-    "class_id": id
-    "class_name": "name"
-  chargeOfSchool = (schoolId) ->
-    "school_id": schoolId,
-    "total_phone_number": 5,
-    "expire_date": "2014-08-01",
-    "status": 1,
-    "used": 6,
-    "total_video_account": 10,
-    "video_user_name": "username",
-    "video_user_password": "password"
-
-  videoMemberOfId = (id) ->
-    "phone": "12345678998",
-    "account": "account",
-    "password": "password"
-    "id" : id
-  parentOfPhone = (phone) ->
-    "school_id": 1,
-    "phone": phone
-    "parent_id": "1_2_3"
-    "name": "display name"
-  relationshipOfPhone = (phone) ->
-    "school_id": 1,
-    "parent" : parentOfPhone phone
-    "child" :
-      "child_id": "2_3_1"
-      "class_id": 1
-      "class_name": '二班'
-      "name": '二宝'
