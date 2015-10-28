@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
   ['$scope', '$rootScope', '$state', '$timeout',
-   '$stateParams', '$modal', 'imageCompressService',
-    (scope, $rootScope, $state, $timeout, stateParams, Modal, Compress) ->
+   '$stateParams', '$modal', 'imageCompressService', 'eligibleCheckService',
+    (scope, $rootScope, $state, $timeout, stateParams, Modal, Compress, Eligible) ->
       $rootScope.tabName = 'bulletin'
       scope.heading = '全园和班级的通知公告都可以在这里发布'
 
@@ -12,6 +12,14 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
       scope.classesScope = angular.copy scope.kindergarten.classes
       scope.classesScope.unshift class_id: 0, name: '全校'
+      scope.eligibleClassesScope = []
+      scope.adminUser.ineligibleClasses = [0]
+      Eligible.query school_id: stateParams.kindergarten, id: scope.adminUser.uid, (data)->
+        scope.adminUser.ineligibleClasses = data
+        if data.length == 0
+          scope.eligibleClassesScope = scope.classesScope
+        else
+          scope.eligibleClassesScope = _.reject scope.kindergarten.classes, (c) -> _.any data, (d) -> d.class_id == c.class_id
       $state.go('kindergarten.bulletin.class.list', {kindergarten: stateParams.kindergarten, class: 0}) unless $state.is 'kindergarten.bulletin.class.list'
 
       scope.navigateTo = (c) ->
@@ -23,6 +31,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)
 
+      scope.schoolLevelReadOnly = -> scope.adminUser.ineligibleClasses.length > 0 && scope.current_class == 0
   ]
 
 .controller 'BulletinCtrl',
@@ -75,10 +84,16 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
         news.$delete ->
           scope.refresh()
 
+      firstAvailableClassId = ->
+        if scope.adminUser.ineligibleClasses.length > 0
+          _.first _.pluck scope.eligibleClassesScope, 'class_id'
+        else
+          scope.current_class
+
       scope.createNews = ->
         new AdminNews
           school_id: scope.kindergarten.school_id
-          class_id: scope.current_class
+          class_id: firstAvailableClassId()
           publisher_id: scope.adminUser.id
           published: false
           tags: []

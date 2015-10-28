@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('kulebao.services')
-.factory 'employeeService', ['$resource', 'session',
+.factory('employeeService', ['$resource', 'session',
     ($resource, Session) ->
       $resource '/employee/:phone',
         {
@@ -15,18 +15,16 @@ angular.module('kulebao.services')
             cache: true
         }
   ]
-
-angular.module('kulebao.services')
-.factory 'allEmployeesService', ['$resource',
+)
+.factory('allEmployeesService', ['$resource',
     ($resource) ->
       $resource '/employee/:phone',
         {
           phone: '@phone'
         }
   ]
-
-angular.module('kulebao.services')
-.factory 'schoolEmployeesService', ['$resource',
+)
+.factory('schoolEmployeesService', ['$resource',
     ($resource) ->
       $resource '/kindergarten/:school_id/employee/:phone',
         {
@@ -34,9 +32,8 @@ angular.module('kulebao.services')
           phone: '@phone'
         }
   ]
-
-angular.module('kulebao.services')
-.factory 'employeesManageClassService', ['$resource',
+)
+.factory('employeesManageClassService', ['$resource',
     ($resource) ->
       $resource '/kindergarten/:school_id/employee/:phone/class',
         {
@@ -44,3 +41,8 @@ angular.module('kulebao.services')
           phone: '@phone'
         }
   ]
+)
+.factory('eligibleCheckService', ['$resource', ($resource) ->
+    $resource '/api/v3/kindergarten/:school_id/employee/:id/ineligible_class'
+  ]
+)

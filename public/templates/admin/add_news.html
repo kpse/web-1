@@ -39,7 +39,7 @@
           <label for="news-pic" class="col-sm-4 control-label">上传</label>
 
           <div class="col-sm-8">
-            <kl-file-upload ng-model="news" user="adminUser.id"></kl-file-upload>
+            <kl-file-upload ng-model="news" user="adminUser.id" ng-disabled="loading || schoolLevelReadOnly()"></kl-file-upload>
           </div>
 
         </div>
@@ -47,8 +47,8 @@
           <label for="target" class="col-sm-4 control-label">通知范围</label>
 
           <div class="col-sm-8">
-            <select id="target" class="form-control class-select" ng-model="news.class_id"
-                    ng-options="value.class_id as value.name for (key, value) in classesScope"
+            <select id="target" class="form-control class-select" ng-model="news.class_id" ng-disabled="loading || schoolLevelReadOnly()"
+                    ng-options="value.class_id as value.name for (key, value) in eligibleClassesScope"
                     data-style="btn-primary" ng-disabled="news.published">
             </select>
           </div>
@@ -76,13 +76,13 @@
 
         <div class="btn-group">
           <button class="btn btn-default" ng-click="closeDialog(news)">{{ news.published ? '关闭' : '取消' }}</button>
-          <button class="btn btn-primary" ng-disabled="newsForm.$invalid || uploading" ng-hide="news.published"
+          <button class="btn btn-primary" ng-disabled="newsForm.$invalid || uploading || schoolLevelReadOnly()" ng-hide="news.published"
                   ng-click="publish(news)">发布
           </button>
-          <button class="btn btn-danger" ng-show="news.published || news.news_id" ng-confirm-msg="你确定要删除吗?"
+          <button class="btn btn-danger" ng-show="news.published || news.news_id" ng-disabled="loading || schoolLevelReadOnly()" ng-confirm-msg="你确定要删除吗?"
                   ng-confirm-click="remove(news)">删除
           </button>
-          <button class="btn btn-info" ng-disabled="newsForm.$invalid || uploading" ng-hide="news.published"
+          <button class="btn btn-info" ng-disabled="newsForm.$invalid || uploading || schoolLevelReadOnly()" ng-hide="news.published"
                   ng-click="save(news)">保存
           </button>
         </div>
