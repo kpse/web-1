@@ -39,7 +39,6 @@ angular.module('kulebaoAdmin')
           disableMemberEditingConfig? && scope.disableMemberEditing = disableMemberEditingConfig.value == 'true'
           scope.videoTrialAccount = ConfigExtract data['config'], 'videoTrialAccount'
           scope.types = scope.allTypes()
-          scope.types.pop() unless (scope.backend && scope.operatorOnly(scope.adminUser)) || !scope.backend
           scope.config =
             deletable : scope.adminUser.privilege_group == 'operator' || !scope.backend
 
@@ -313,6 +312,7 @@ angular.module('kulebaoAdmin')
         newChild = _.assign scope.createChild(), {class_id: fastCreating.class_id, name: fastCreating.child_name}
         newParent = _.assign scope.createParent(), {name: fastCreating.parent_name, phone: fastCreating.phone}
         newRelationship = scope.createRelationship(newChild, newParent)
+        newRelationship.relationship = fastCreating.relationship
         newChild.$save ->
             newParent.$save ->
                 newRelationship.$save ->
@@ -481,10 +481,9 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'batchImportCtrl',
-  [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'relationshipService',
+  [ '$scope', '$rootScope', '$stateParams', 'relationshipService',
     '$http', '$filter', '$q', 'classService', '$state', 'batchDataService', '$timeout', '$alert', 'phoneCheckInSchoolService',
-    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, SchoolClass, $state, BatchData, $timeout, Alert, PhoneCheck) ->
+    (scope, rootScope, stateParams, Relationship, $http, $filter, $q, SchoolClass, $state, BatchData, $timeout, Alert, PhoneCheck) ->
       scope.current_type = 'batchImport'
 
       parentRange = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
@@ -495,12 +494,23 @@ angular.module('kulebaoAdmin')
       extractGender = (input) ->
         if (input == '男') then 1 else 0
 
-      scope.onSuccess = (data) ->
-        pickUpTheFirst = _.compose _.first, _.values
-        scope.excel = pickUpTheFirst(data)
+      cleanUpErrors = ->
+        scope.errorClassNames = []
+        scope.importingErrorMessage = ''
+        scope.errorNumbers = []
+      resetData = ->
+        scope.newClassesScope = []
+        scope.relationships = []
         scope.fullRelationships = []
         scope.relationships = []
         scope.classesScope = []
+        cleanUpErrors()
+
+
+      scope.onSuccess = (data) ->
+        resetData()
+        pickUpTheFirst = _.compose _.first, _.values
+        scope.excel = pickUpTheFirst(data)
         scope.relationships = _.filter (_.flatten _.map scope.excel, (row) ->
           _.map allParents(), (p) ->
             new Relationship
@@ -540,20 +550,15 @@ angular.module('kulebaoAdmin')
             classQueue = _.map scope.classesScope, (c) -> SchoolClass.save(c).$promise
             allClass = $q.all classQueue
             allClass.then (q) ->
-              location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/1000/list")
+              $state.go 'kindergarten.relationship.type.preview.class.list', {kindergarten: stateParams.kindergarten, type: 'batchImport', class_id: 1000}
         else if nonExistingClasses[0].length > 0
           console.log nonExistingClasses[0]
           scope.errorClassNames = _.pluck(nonExistingClasses[0], 'name')
           scope.importingErrorMessage = '以下班级当前并不存在“' + _.pluck(nonExistingClasses[0], 'name').join('”，“') + '”，请检查调整后重新输入。'
-          Alert
-          title: '批量导入失败'
-          content: scope.importingErrorMessage
-          placement: "top-left"
-          type: "danger"
-          container: '.panel-body'
+          $state.go 'kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: 'batchImport'}
         else
           scope.classesScope = scope.kindergarten.classes
-          location.path("kindergarten/#{stateParams.kindergarten}/relationship/type/batchImport/preview/class/#{scope.kindergarten.classes[0].class_id}/list")
+          $state.go 'kindergarten.relationship.type.preview.class.list', {kindergarten: stateParams.kindergarten, type: 'batchImport', class_id: scope.kindergarten.classes[0].class_id}
 
 
       BatchParents = BatchData('parents', stateParams.kindergarten)
