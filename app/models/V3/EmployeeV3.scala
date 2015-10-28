@@ -5,8 +5,8 @@ import java.util.Date
 import anorm.SqlParser._
 import anorm._
 import models.helper.RangerHelper
-import models.{Employee, Parent}
 import models.helper.TimeHelper._
+import models.{Employee, School}
 import play.Logger
 import play.api.Play.current
 import play.api.db.DB
@@ -92,6 +92,15 @@ case class EmployeeExt(display_name: Option[String], social_id: Option[String], 
 }
 
 case class EmployeeV3(id: Option[Long], basic: Employee, ext: Option[EmployeeExt]) {
+  def ineligibleClasses: List[Map[String, Int]] = Employee.isSuperUser(basic.id.get, basic.school_id) match {
+    case false =>
+      val allClasses: List[Int] = School.allClasses(basic.school_id).map(_.class_id.get)
+      val managed: List[Int] = Employee.managedClass(basic.school_id, basic).map(_.class_id.get)
+      allClasses.diff(managed).map {class_id => Map("class_id" -> class_id)}
+    case true => List()
+  }
+
+
   def existsInOtherSchool(kg: Long) = DB.withTransaction {
     implicit c =>
       SQL("select count(1) from employeeinfo where school_id<>{kg} and (phone={phone} or employee_id={employee_id} or (login_name<>'' and login_name={login})) ")

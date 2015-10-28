@@ -1,9 +1,8 @@
 package controllers.V3
 
 import controllers.Secured
-import controllers.V3.RelativeController._
-import models.V3.{Relative, EmployeeV3}
-import models.{ErrorResponse, Employee, SuccessResponse}
+import models.V3.EmployeeV3
+import models.{ErrorResponse, SuccessResponse}
 import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
@@ -60,6 +59,15 @@ object EmployeeControllerV3 extends Controller with Secured {
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
     EmployeeV3.deleteById(kg, id)
     Ok(Json.toJson(new SuccessResponse()))
+  }
+  
+  def ineligibleClasses(kg: Long, id: Long) = IsLoggedIn { u => _ =>
+    EmployeeV3.show(kg, id) match {
+      case Some(employee) =>
+        Ok(Json.toJson( employee.ineligibleClasses))
+      case None =>
+        NotFound(Json.toJson(ErrorResponse("没有这个老师的信息。(no such employee)")))
+    }
   }
 }
 

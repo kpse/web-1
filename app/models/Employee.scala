@@ -237,7 +237,7 @@ object Employee {
         ).as(simple singleOpt)
   }
 
-  def managedClass(kg: Long, employee: Employee) = DB.withConnection {
+  def managedClass(kg: Long, employee: Employee) : List[SchoolClass] = DB.withConnection {
     implicit c =>
       val classes: List[String] = SQL("select subordinate from privilege where employee_id={id} and school_id={kg}")
         .on(
@@ -253,7 +253,7 @@ object Employee {
       } filter {
         case Some(SchoolClass(_, _, _, _, status, _)) => status.getOrElse(0) == 1
         case _ => false
-      }
+      } map (_.get)
   }
 
   def isSuperUser(id: String, kg: Long) = isPrincipal(id, kg) || isOperator(id)
