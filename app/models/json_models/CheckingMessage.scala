@@ -76,7 +76,7 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
         .on(
           'card_num -> card_no,
           'kg -> school_id.toString
-        ).as(simpleCheck *)
+        ).as(simpleCheck *).groupBy(_.channelid).mapValues(_.head).values.toList
   }
   def create = DB.withTransaction {
     implicit c =>
@@ -143,7 +143,7 @@ case class CheckChildInfo(school_id: Long, child_id: String, check_type: Int, ti
         .on(
           'child_id -> child_id,
           'kg -> school_id.toString
-        ).as(simpleChildCheck *)
+        ).as(simpleChildCheck *).groupBy(_.channelid).mapValues(_.head).values.toList
   }
 }
 

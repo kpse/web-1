@@ -30,6 +30,9 @@ INSERT INTO accountinfo (uid, accountid, password, pushid, active, pwd_change_ti
 (120, '22222222225', '991F52446AB4B4DC28BF4256B45F0CA8', '123', 1, 5, 3);
 
 
+update accountinfo set channelid=uid;
+update accountinfo set channelid=123 where accountid in ('13227882591', '13279491366');
+
 # --- !Downs
 
 DROP TABLE IF EXISTS accountinfo;
