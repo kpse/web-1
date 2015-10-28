@@ -30,7 +30,7 @@ describe 'Controller: RelationshipController', ($alert) ->
 
     $scope.onSuccess(sheet1: ['家长A手机号': '12345678991', '家长A姓名': 'display name', '班级': '二班', '学生姓名': '二宝'])
 
-    $httpBackend.expectPOST('api/v1/kindergarten/93740362/phone_check/12345678991')
+    $httpBackend.expectPOST('api/v1/phone_check/12345678991')
     .respond phoneNumberIsFine
     $httpBackend.expectDELETE('/kindergarten/93740362/class')
     .respond

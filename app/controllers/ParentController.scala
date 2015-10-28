@@ -189,7 +189,7 @@ object ParentController extends Controller with Secured {
         case Some(s) =>
           request.body.validate[EmployeePhoneCheck].map {
             case (employee) if employee.existsInSchool(kg) =>
-              Ok(Json.toJson(SuccessResponse(s"号码${employee.phone}已存在，且与id匹配。")))
+              Ok(Json.toJson(SuccessResponse(s"号码${employee.phone}已存在于学校${kg}，可以覆盖操作。")))
             case (employee) =>
               numberCheck(employee, Employee.phoneSearch(employee.phone))
           }.recoverTotal {
@@ -198,7 +198,7 @@ object ParentController extends Controller with Secured {
         case None =>
           request.body.validate[ParentPhoneCheck].map {
             case (parent) if parent.existsInSchool(kg) =>
-              Ok(Json.toJson(SuccessResponse(s"号码${parent.phone}已存在，且与id匹配。")))
+              Ok(Json.toJson(SuccessResponse(s"号码${parent.phone}已存在于学校${kg}，可以覆盖操作。")))
             case (parent) =>
               numberCheck(parent, Parent.phoneSearch(parent.phone))
           }.recoverTotal {

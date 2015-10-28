@@ -482,8 +482,8 @@ angular.module('kulebaoAdmin')
 
 .controller 'batchImportCtrl',
   [ '$scope', '$rootScope', '$stateParams', 'relationshipService',
-    '$http', '$filter', '$q', 'classService', '$state', 'batchDataService', '$timeout', '$alert', 'phoneCheckInSchoolService',
-    (scope, rootScope, stateParams, Relationship, $http, $filter, $q, SchoolClass, $state, BatchData, $timeout, Alert, PhoneCheck) ->
+    '$http', '$filter', '$q', 'classService', '$state', 'batchDataService', '$timeout', '$alert', 'phoneCheckService', 'phoneCheckInSchoolService',
+    (scope, rootScope, stateParams, Relationship, $http, $filter, $q, SchoolClass, $state, BatchData, $timeout, Alert, PhoneCheck, PhoneCheckInSchool) ->
       scope.current_type = 'batchImport'
 
       parentRange = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
@@ -495,9 +495,8 @@ angular.module('kulebaoAdmin')
         if (input == '男') then 1 else 0
 
       cleanUpErrors = ->
-        scope.errorClassNames = []
         scope.importingErrorMessage = ''
-        scope.errorNumbers = []
+        scope.errorItems = []
       resetData = ->
         scope.newClassesScope = []
         scope.relationships = []
@@ -505,13 +504,16 @@ angular.module('kulebaoAdmin')
         scope.relationships = []
         scope.classesScope = []
         cleanUpErrors()
+      backToImport = ->
+        rootScope.loading = false
+        $state.go 'kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: 'batchImport'}
 
 
       scope.onSuccess = (data) ->
         resetData()
         pickUpTheFirst = _.compose _.first, _.values
         scope.excel = pickUpTheFirst(data)
-        scope.relationships = _.filter (_.flatten _.map scope.excel, (row) ->
+        scope.relationships = _.filter (_.flatten _.map scope.excel, (row, index) ->
           _.map allParents(), (p) ->
             new Relationship
               parent:
@@ -526,40 +528,75 @@ angular.module('kulebaoAdmin')
                 gender: extractGender row['性别']
               relationship: row["#{p}亲属关系"]
               school_id: parseInt(stateParams.kindergarten)
+              index: index + 1
         ), (r) ->
           r.parent.name?
 
         rootScope.loading = true
         phones = _.map scope.relationships, (r) -> r.parent.phone
-        checkQueue = _.map phones, (p) -> PhoneCheck.check(phone: p, school_id: parseInt(stateParams.kindergarten)).$promise
-        $q.all(checkQueue).then (q) ->
-          codes = _.map q, (r) -> r.error_code
-          scope.errorNumbers = _.uniq _.map (_.filter _.zip(phones, codes), (a) -> a[1] != 0), (p) -> p[0]
-          rootScope.loading = false
 
-        scope.newClassesScope = _.map (_.uniq _.map scope.relationships, (r) ->
-            r.child.class_name)
-        , (c, i) ->
-          name: c, class_id: i + 1000, school_id: parseInt(stateParams.kindergarten)
+        noPhones = _.partition scope.relationships, (r) -> r.parent.phone? && r.parent.phone.length > 0
+        if noPhones[1].length > 0
+          console.log noPhones[1]
+          scope.errorItems = _.map (_.zip _.pluck(noPhones[1], 'parent.name'), _.pluck(noPhones[1], 'child.name')), (display) -> "#{display[1]} -> #{display[0]}"
+          scope.importingErrorMessage = '以下家长没有提供手机号，请修正后重新导入。'
+          return backToImport()
+
+        duplicatedChildName = _(scope.relationships).groupBy((r) -> r.child.name).filter((a) -> a.length > 1).value()
+        if duplicatedChildName.length > 0
+          console.log duplicatedChildName
+          scope.errorItems = _.map duplicatedChildName, (display) -> "#{display[0].child.name} 分别出现在第 #{ _.pluck(display, 'index').join(',')} 行。"
+          scope.importingErrorMessage = '以下小孩名字重复，请修正后重新导入。'
+          return backToImport()
+
+        duplicatedPhones = _(scope.relationships).groupBy((r) -> r.parent.phone).filter((a) -> a.length > 1 && _.keys(_.groupBy a, 'parent.name').length > 1).value()
+        if duplicatedPhones.length > 0
+          console.log duplicatedPhones
+          scope.errorItems = _.map duplicatedPhones, (display) -> "#{display[0].parent.phone} 同时被 #{ _.pluck(display, 'parent.name').join(',')} 持有。"
+          scope.importingErrorMessage = '以下家长手机号重复但是姓名不一样，请修正后重新导入。'
+          return backToImport()
+
+        duplicatedNames = _(scope.relationships).groupBy((r) -> r.parent.name).filter((a) -> a.length > 1 && _.keys(_.groupBy a, 'parent.phone').length > 1).value()
+        if duplicatedNames.length > 0
+          console.log duplicatedNames
+          scope.errorItems = _.map duplicatedNames, (display) -> "#{display[0].parent.name} 拥有号码 #{ _.pluck(display, 'parent.phone').join('\n,')} 。"
+          scope.importingErrorMessage = '以下家长姓名重复但是手机号不一样，请修正后重新导入。'
+          return backToImport()
+
+        scope.newClassesScope = _.map (_.uniq _.map scope.relationships, (r) -> r.child.class_name), (c, i) ->
+            name: c, class_id: i + 1000, school_id: parseInt(stateParams.kindergarten)
 
 
         nonExistingClasses = _.partition scope.newClassesScope, (c) -> _.findIndex(scope.kindergarten.classes, 'name', c.name) < 0
-        unless scope.backend
+        if nonExistingClasses[0].length > 0
+          console.log nonExistingClasses[0]
+          scope.errorItems = _.pluck(nonExistingClasses[0], 'name')
+          scope.importingErrorMessage = '以下班级当前并不存在，请检查调整后重新输入。'
+          return backToImport()
+
+        PhoneExistenceCheck = if scope.backend then PhoneCheck else PhoneCheckInSchool
+        checkQueue = _.map phones, (p) -> PhoneExistenceCheck.check(phone: p).$promise
+        $q.all(checkQueue).then (q) ->
+          codes = _.map q, (r) -> r.error_code
+          scope.errorItems = _.uniq _.map (_.filter _.zip(phones, codes), (a) -> a[1] != 0), (p) -> p[0]
+          scope.importingErrorMessage = '以下手机号码已经存在，请检查调整后重新输入。' if scope.errorItems.length > 0
+          backToImport() if scope.errorItems.length > 0
+          rootScope.loading = false
+
+        if scope.errorItems.length > 0 && scope.importingErrorMessage.length > 0
+          backToImport()
+        else if !scope.backend
           scope.classesScope = scope.newClassesScope
           SchoolClass.delete school_id: stateParams.kindergarten, ->
             classQueue = _.map scope.classesScope, (c) -> SchoolClass.save(c).$promise
             allClass = $q.all classQueue
             allClass.then (q) ->
               $state.go 'kindergarten.relationship.type.preview.class.list', {kindergarten: stateParams.kindergarten, type: 'batchImport', class_id: 1000}
-        else if nonExistingClasses[0].length > 0
-          console.log nonExistingClasses[0]
-          scope.errorClassNames = _.pluck(nonExistingClasses[0], 'name')
-          scope.importingErrorMessage = '以下班级当前并不存在“' + _.pluck(nonExistingClasses[0], 'name').join('”，“') + '”，请检查调整后重新输入。'
-          $state.go 'kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: 'batchImport'}
         else
           scope.classesScope = scope.kindergarten.classes
           $state.go 'kindergarten.relationship.type.preview.class.list', {kindergarten: stateParams.kindergarten, type: 'batchImport', class_id: scope.kindergarten.classes[0].class_id}
 
+        rootScope.loading = false
 
       BatchParents = BatchData('parents', stateParams.kindergarten)
       BatchChildren = BatchData('children', stateParams.kindergarten)
