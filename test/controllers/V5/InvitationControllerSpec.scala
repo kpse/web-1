@@ -6,6 +6,7 @@ import models.V5.{InvitationCode, InvitationPhoneKey, NewParent, Invitation}
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
+import play.Logger
 import play.api.libs.json.{JsArray, Json, JsValue}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -92,6 +93,18 @@ class InvitationControllerSpec extends Specification with TestSupport {
       contentType(error) must beSome.which(_ == "application/json")
     }
 
+    "accept deleted phone number as a new parent" in new WithApplication {
+      setUpVerification(correctCode.copy(phone = aDeletedPhone))
+      val success = route(loggedOneChildParent(POST, "/api/v5/kindergarten/93740362/invitation").withBody(theHost(aDeletedPhone, correctCode.copy(phone = aDeletedPhone)))).get
+
+      status(success) must equalTo(OK)
+      contentType(success) must beSome.which(_ == "application/json")
+
+      val response: JsArray = Json.parse(contentAsString(success)).as[JsArray]
+      response.value.size must equalTo(1)
+      (response(0) \ "child" \ "child_id").as[String] must equalTo("1_1391836223533")
+    }
+
     "reject while wrong code" in new WithApplication {
       setUpVerification(wrongCode)
       val error = route(loggedOneChildParent(POST, "/api/v5/kindergarten/93740362/invitation").withBody(theHost())).get
@@ -127,6 +140,7 @@ class InvitationControllerSpec extends Specification with TestSupport {
   }
   val newPhone: String = "13321147894"
   val aExistingPhone: String = "13408654681"
+  val aDeletedPhone: String = "22222222226"
   private val newName: String = "搜索"
 
   private val newRelationship: String = "妈妈"

@@ -1,5 +1,6 @@
 package models.V5
 
+import models.V3.Relative
 import models.helper.MD5Helper.md5
 import models.{Verification, Parent, Relationship}
 import play.Logger
@@ -13,8 +14,9 @@ case class Invitation(from: Parent, to: NewParent, code: Option[Verification]) {
   def settle: List[Relationship] = DB.withTransaction {
     implicit c =>
       try {
-        val created: Option[Parent] = Parent.create(from.school_id, from.copy(parent_id = None, name = to.name, phone = to.phone))
-        created foreach {
+        val newParent: Parent = from.copy(parent_id = None, name = to.name, phone = to.phone)
+        Relative.removeDirtyDataIfExists(newParent)
+        Parent.create(from.school_id, newParent) foreach {
           newParent =>
             Relationship.index(from.school_id, Some(from.phone), None, None).foreach {
               r =>
