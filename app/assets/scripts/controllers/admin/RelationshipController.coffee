@@ -531,7 +531,7 @@ angular.module('kulebaoAdmin')
               child:
                 class_name: row['所属班级']
                 name: row['宝宝姓名']
-                birthday: row['出生日期']
+                birthday: row['出生日期'] || '2010-01-01'
                 gender: extractGender row['性别']
               relationship: row["#{p}亲属关系"]
               school_id: parseInt(stateParams.kindergarten)
@@ -542,6 +542,13 @@ angular.module('kulebaoAdmin')
         rootScope.loading = true
         phones = _.map scope.relationships, (r) -> r.parent.phone
 
+        birthdayIssue = _.partition scope.relationships, (r) -> r.child.birthday? && r.child.birthday.match /\d{4}-\d{2}-\d{2}/
+        if birthdayIssue[1].length > 0
+          console.log birthdayIssue[1]
+          scope.errorItems = _.map (_.zip _.pluck(birthdayIssue[1], 'child.name'), _.pluck(birthdayIssue[1], 'child.birthday')), (display) -> "#{display[0]} -> '#{display[1]}'"
+          scope.importingErrorMessage = '以下学生生日格式不正确，请确保所有生日的格式都是2015-01-31。'
+          return backToImport()
+
         noPhones = _.partition scope.relationships, (r) -> r.parent.phone? && r.parent.phone.length > 0
         if noPhones[1].length > 0
           console.log noPhones[1]
@@ -549,10 +556,10 @@ angular.module('kulebaoAdmin')
           scope.importingErrorMessage = '以下家长没有提供手机号，请修正后重新导入。'
           return backToImport()
 
-        duplicatedChildName = _(scope.relationships).groupBy((r) -> r.child.name).filter((a) -> a.length > 1).value()
+        duplicatedChildName = _(scope.relationships).groupBy((r) -> r.child.name).filter((a) -> a.length > 1 && (_.uniq a, (item)->item.index).length > 1).value()
         if duplicatedChildName.length > 0
           console.log duplicatedChildName
-          scope.errorItems = _.map duplicatedChildName, (display) -> "#{display[0].child.name} 分别出现在第 #{ _.pluck(display, 'index').join(',')} 行。"
+          scope.errorItems = _.map duplicatedChildName, (display) -> "#{display[0].child.name} 分别出现在第 #{ _.uniq(_.pluck(display, 'index')).join(',')} 行。"
           scope.importingErrorMessage = '以下小孩名字重复，请修正后重新导入。'
           return backToImport()
 
@@ -571,7 +578,6 @@ angular.module('kulebaoAdmin')
 
         scope.newClassesScope = _.map (_.uniq _.map scope.relationships, (r) -> r.child.class_name), (c, i) ->
             name: c, class_id: i + 1000, school_id: parseInt(stateParams.kindergarten)
-
 
         nonExistingClasses = _.partition scope.newClassesScope, (c) -> _.findIndex(scope.kindergarten.classes, 'name', c.name) < 0
         if nonExistingClasses[0].length > 0
@@ -659,29 +665,39 @@ angular.module('kulebaoAdmin')
         rootScope.loading = true
         compactRelationships = compactRelationship(assignIds(scope.relationships))
         queue = [BatchParents.save(scope.parents).$promise,
-                 BatchChildren.save(scope.children).$promise,
-                 BatchRelationship.save(compactRelationships).$promise]
+                 BatchChildren.save(scope.children).$promise]
         allCreation = $q.all queue
         allCreation.then (q) ->
-          success = _.every q, (f) -> f.error_code == 0
-          if success
-            $timeout ->
-                $state.go('kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: 'connected'})
-              , 200
-            scope.$emit 'sessionRead'
-            $state.reload()
+          if (_.every q, (f) -> f.error_code == 0)
+            BatchRelationship.save compactRelationships, (q2) ->
+              if q2.error_code == 0
+                $timeout ->
+                    $state.go('kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: 'connected'})
+                  , 200
+                scope.$emit 'sessionRead'
+                $state.reload()
+              else
+                scope.importingErrorMessage = '批量导入关系失败，请检查调整后重新导入。'
+                Alert
+                  title: '批量导入失败'
+                  content: scope.importingErrorMessage
+                  placement: "top-left"
+                  type: "danger"
+                  container: '.panel-body'
+                scope.errorItems = q2.error_msg
+                rootScope.loading = false
+                backToImport()
           else
-            rootScope.loading = false
-            error = _.reduce (_.filter q, (f) -> f.error_code != 0),
-                (all, err) -> all += "\n#{err.error_msg}"
-              , ""
+            scope.importingErrorMessage = '批量创建家长和小孩失败，请检查调整后重新导入。'
             Alert
               title: '批量导入失败'
-              content: error
+              content: scope.importingErrorMessage
               placement: "top-left"
               type: "danger"
               container: '.panel-body'
-
+            scope.errorItems = _.pluck (_.filter q, (f) -> f.error_code != 0), 'error_msg'
+            rootScope.loading = false
+            backToImport()
 
       scope.navigateTo = (s) ->
         if stateParams.type != s.url

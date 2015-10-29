@@ -6,11 +6,11 @@
 <br/>
 <div kl-excel-parse ng-model="excel" on-success="onSuccess"></div>
 <div class="clearfix"></div>
-<div class="alert alert-danger" role="alert" ng-if="importingErrorMessage">
+<div class="alert alert-danger" role="alert" ng-show="importingErrorMessage">
   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
   <span>{{importingErrorMessage}}</span>
   <ul>
-    <li ng-repeat="item in errorItems track by $index">{{::item}}</li>
+    <li ng-repeat="item in errorItems track by $index">{{item}}</li>
   </ul>
 </div>
 <div class="import-preview-view" ui-view></div>

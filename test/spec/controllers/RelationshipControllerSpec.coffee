@@ -36,12 +36,13 @@ describe 'Controller: RelationshipController', ($alert) ->
     }
 
   it 'should extract relationships from excel data', () ->
-    $scope.onSuccess(sheet1: ['家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'])
+    $scope.onSuccess(sheet1: ['家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '家长A亲属关系': '干爹'])
 
     $httpBackend.expectPOST('api/v1/phone_check/12345678991').respond phoneNumberIsFine
     $httpBackend.flush()
 
     expect($scope.relationships.length).toBe 1
+    expect($scope.relationships[0].relationship).toBe '干爹'
     expect($scope.classesScope.length).toBe 1
     expect($scope.importingErrorMessage).toBe ''
     expect($scope.errorItems.length).toBe 0
@@ -49,8 +50,8 @@ describe 'Controller: RelationshipController', ($alert) ->
   it 'should accept parents with multiple children ', () ->
 
     $scope.onSuccess(sheet1: [
-      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'}
-      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '三宝', '关系': '爸爸'}
+      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '家长A亲属关系': '爸爸'}
+      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '三宝', '家长A亲属关系': '爸爸'}
     ])
 
     $httpBackend.expectPOST('api/v1/phone_check/12345678991').respond phoneNumberIsFine
@@ -65,8 +66,8 @@ describe 'Controller: RelationshipController', ($alert) ->
   it 'should warning duplicated parents name from excel', () ->
 
     $scope.onSuccess(sheet1: [
-      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'}
-      {'家长A手机号': '12345678992', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '三宝', '关系': '爸爸'}
+      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '家长A亲属关系': '爸爸'}
+      {'家长A手机号': '12345678992', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '三宝', '家长A亲属关系': '爸爸'}
     ])
 
     expect($scope.importingErrorMessage).toBe '以下家长姓名重复但是手机号不一样，请修正后重新导入。'
@@ -75,8 +76,8 @@ describe 'Controller: RelationshipController', ($alert) ->
   it 'should warning duplicated children name from excel', () ->
 
     $scope.onSuccess(sheet1: [
-      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'}
-      {'家长A手机号': '12345678992', '家长A姓名': 'display name2', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'}
+      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '家长A亲属关系': '爸爸'}
+      {'家长A手机号': '12345678992', '家长A姓名': 'display name2', '所属班级': '二班', '宝宝姓名': '二宝', '家长A亲属关系': '爸爸'}
     ])
 
     expect($scope.importingErrorMessage).toBe '以下小孩名字重复，请修正后重新导入。'
@@ -85,8 +86,8 @@ describe 'Controller: RelationshipController', ($alert) ->
   it 'should warning empty parent phone from excel', () ->
 
     $scope.onSuccess(sheet1: [
-      {'家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'},
-      {'家长A姓名': 'display name2', '所属班级': '二班', '宝宝姓名': 'sa宝', '关系': '爸爸'}
+      {'家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '家长A亲属关系': '爸爸'},
+      {'家长A姓名': 'display name2', '所属班级': '二班', '宝宝姓名': 'sa宝', '家长A亲属关系': '爸爸'}
     ])
 
     expect($scope.importingErrorMessage).toBe '以下家长没有提供手机号，请修正后重新导入。'
@@ -95,9 +96,9 @@ describe 'Controller: RelationshipController', ($alert) ->
   it 'should warning empty parent phone from excel', () ->
 
     $scope.onSuccess(sheet1: [
-      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'}
-      {'家长A手机号': '12345678992', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': 'sa宝', '关系': '爸爸'}
-      {'家长A手机号': '12345678992', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': 'saa宝', '关系': '爸爸'}
+      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '家长A亲属关系': '爸爸'}
+      {'家长A手机号': '12345678992', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': 'sa宝', '家长A亲属关系': '爸爸'}
+      {'家长A手机号': '12345678992', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': 'saa宝', '家长A亲属关系': '爸爸'}
     ])
 
     expect($scope.importingErrorMessage).toBe '以下家长姓名重复但是手机号不一样，请修正后重新导入。'
@@ -106,7 +107,7 @@ describe 'Controller: RelationshipController', ($alert) ->
   it 'should warning non existing class name from excel', () ->
 
     $scope.onSuccess(sheet1: [
-      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '九班', '宝宝姓名': '二宝', '关系': '爸爸'}
+      {'家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '九班', '宝宝姓名': '二宝', '家长A亲属关系': '爸爸'}
     ])
 
     expect($scope.importingErrorMessage).toBe '以下班级当前并不存在，请检查调整后重新输入。'
@@ -114,7 +115,7 @@ describe 'Controller: RelationshipController', ($alert) ->
 
   it 'should warning existing phone number from excel', () ->
 
-    $scope.onSuccess(sheet1: ['家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '关系': '爸爸'])
+    $scope.onSuccess(sheet1: ['家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '家长A亲属关系': '爸爸'])
 
     $httpBackend.expectPOST('api/v1/phone_check/12345678991').respond phoneNumberIsDuplicated
     $httpBackend.flush()
@@ -122,6 +123,26 @@ describe 'Controller: RelationshipController', ($alert) ->
     expect($scope.importingErrorMessage).toBe '以下手机号码已经存在，请检查调整后重新输入。'
     expect($scope.errorItems[0]).toBe '12345678991'
 
+  it 'should warning wrong birthday format from excel', () ->
+
+    $scope.onSuccess(sheet1: ['家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '家长A亲属关系': '爸爸', '出生日期': '11/11/2000'])
+
+    expect($scope.importingErrorMessage).toBe '以下学生生日格式不正确，请确保所有生日的格式都是2015-01-31。'
+    expect($scope.errorItems.length).toBe 1
+
+  it 'should accept multiple parents for single child from excel', () ->
+
+    $scope.onSuccess(sheet1: [
+      '家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '家长A亲属关系': '爸爸','家长B手机号': '12345678992', '家长B姓名': 'display name2', '家长B亲属关系': '妈妈'
+    ])
+
+    $httpBackend.expectPOST('api/v1/phone_check/12345678991').respond phoneNumberIsFine
+    $httpBackend.expectPOST('api/v1/phone_check/12345678992').respond phoneNumberIsFine
+    $httpBackend.flush()
+
+    expect($scope.relationships.length).toBe 2
+    expect($scope.relationships[0].relationship).toBe '爸爸'
+    expect($scope.relationships[1].relationship).toBe '妈妈'
 
 
   phoneNumberIsDuplicated =
