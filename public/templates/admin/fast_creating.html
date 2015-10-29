@@ -22,6 +22,31 @@
         </div>
       </div>
       <div class="form-group">
+        <label for="child-gender" class="col-sm-2 control-label">性别</label>
+
+        <div class="col-sm-8">
+          <div class="btn-group">
+            <button type="button" class="btn gender select-button" ng-model="fastCreation.gender" btn-radio="0">女
+            </button>
+            <button type="button" class="btn gender select-button" ng-model="fastCreation.gender" btn-radio="1">男
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="child-birthday" class="col-sm-2 control-label">生日</label>
+
+        <div class="col-sm-8">
+          <div class="control-group input-append">
+            <input type="text" class="form-control datepicker-input" ng-model="fastCreation.birthday"
+                   data-date-format="yyyy-MM-dd" data-date-type="string" data-max-date="today" data-autoclose="1"
+                   name="date2" bs-datepicker placeholder="学生生日">
+            <button type="button" class="btn datepicker-button" ng-disabled="true"><i
+              class="glyphicon glyphicon-calendar"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
         <label for="parent-name" class="col-sm-2 control-label">家长姓名</label>
 
         <div class="col-sm-8">

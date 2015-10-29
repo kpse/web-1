@@ -309,7 +309,12 @@ angular.module('kulebaoAdmin')
 
       scope.saveFastCreating = (fastCreating)->
         scope.saving = true
-        newChild = _.assign scope.createChild(), {class_id: fastCreating.class_id, name: fastCreating.child_name}
+        newChild = _.assign scope.createChild(), {
+          class_id: fastCreating.class_id
+          name: fastCreating.child_name
+          gender: fastCreating.gender
+          birthday: fastCreating.birthday
+        }
         newParent = _.assign scope.createParent(), {name: fastCreating.parent_name, phone: fastCreating.phone}
         newRelationship = scope.createRelationship(newChild, newParent)
         newRelationship.relationship = fastCreating.relationship
@@ -332,6 +337,8 @@ angular.module('kulebaoAdmin')
         parent_name : ''
         phone : ''
         relationship : ''
+        gender : 0
+        birthday : '2010-01-01'
 
       scope.cardDisplay = (card) ->
         if 'f' == _.first card
