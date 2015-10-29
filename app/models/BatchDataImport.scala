@@ -26,7 +26,7 @@ case class ImportedParent(id: String, school_id: Long, name: String, phone: Stri
   }
 
   def create = {
-    val parent = transform
+    val parent = transform.copy(status = Some(1))
     val create1: Option[Parent] = Parent.create(parent.school_id, parent)
     create1 match {
       case Some(x) =>
@@ -37,7 +37,7 @@ case class ImportedParent(id: String, school_id: Long, name: String, phone: Stri
   }
 
   def update = {
-    Parent.update(transform)
+    Parent.update(transform.copy(status = Some(1)))
     None
   }
 }
@@ -71,7 +71,7 @@ case class ImportedChild(id: String, name: String, nick: String, birthday: Optio
   }
 
   def update = {
-    Children.update(school_id.get, transform)
+    Children.update(school_id.get, transform.copy(status = Some(1)))
     None
   }
 }
