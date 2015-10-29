@@ -30,6 +30,8 @@ object SMSController extends Controller with Secured {
       request.body.validate[InvitationPhonePair].map {
         case (invitation) if invitation.invitee != phone =>
           Future.successful(BadRequest(Json.toJson(ErrorResponse("请将短信发送给被邀请人。(invitee phone number is not matched to uri)", 7))))
+        case (invitation) if Parent.phoneSearch(phone).exists(p => p.status == Some(1)) =>
+          Future.successful(BadRequest(Json.toJson(ErrorResponse("被邀请人已经在幼乐宝注册。(invitee phone number has already registered)", 8))))
         case (invitation) =>
           floodProtect(phone) match {
             case InvitationCode(_, _, time, _) if System.currentTimeMillis - time < 120 * 1000 =>
