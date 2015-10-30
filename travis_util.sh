@@ -4,7 +4,6 @@ set -e
 if [ ! -d "$HOME/play-${PLAY_VERSION}/play" ]; then
   wget http://downloads.typesafe.com/play/${PLAY_VERSION}/play-${PLAY_VERSION}.zip
   unzip -q play-${PLAY_VERSION}.zip
-  npm install
 else
   echo 'Using cached directory.';
 fi

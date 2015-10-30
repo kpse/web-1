@@ -19,6 +19,6 @@ class IntegrationSpec extends Specification {
       browser.goTo("http://localhost:" + port)
 
       browser.pageSource must contain("欢迎访问幼乐宝")
-    }
+    } tag "browser"
   }
 }
