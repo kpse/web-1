@@ -77,6 +77,13 @@ angular.module('kulebaoAdmin')
           scope.importingErrorMessage = '以下小孩名字重复，请修正后重新导入。'
           return backToImport()
 
+        emptyNameChildren = _.filter scope.relationships, (r) -> !r.child.name? || r.child.name.length == 0
+        if emptyNameChildren.length > 0
+          console.log emptyNameChildren
+          scope.errorItems = _.pluck(emptyNameChildren, 'parent.name')
+          scope.importingErrorMessage = '以下家长的孩子名字为空，请检查调整后重新输入。'
+          return backToImport()
+
         duplicatedPhones = _(scope.relationships).groupBy((r) -> r.parent.phone).filter((a) -> a.length > 1 && _.keys(_.groupBy a, 'parent.name').length > 1).value()
         if duplicatedPhones.length > 0
           console.log duplicatedPhones

@@ -137,6 +137,20 @@ describe 'Controller: RelationshipController', ($alert) ->
     expect($scope.importingErrorMessage).toBe '以下小孩没有分配班级，请检查调整后重新输入。'
     expect($scope.errorItems.length).toBe 1
 
+  it 'should warning for empty child name', () ->
+
+    $scope.onSuccess(sheet1: ['家长A手机号': '12345678991', '家长A姓名': 'display name', '宝宝姓名': '', '所属班级': '二班', '家长A亲属关系': '爸爸'])
+
+    expect($scope.importingErrorMessage).toBe '以下家长的孩子名字为空，请检查调整后重新输入。'
+    expect($scope.errorItems.length).toBe 1
+
+  it 'should warning for empty child name 2', () ->
+
+    $scope.onSuccess(sheet1: ['家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '家长A亲属关系': '爸爸'])
+
+    expect($scope.importingErrorMessage).toBe '以下家长的孩子名字为空，请检查调整后重新输入。'
+    expect($scope.errorItems.length).toBe 1
+
   it 'should accept multiple parents for single child from excel', () ->
 
     $scope.onSuccess(sheet1: [
