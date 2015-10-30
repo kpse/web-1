@@ -71,7 +71,7 @@ class ParentSpec extends Specification with TestSupport {
       val child = Children.create(kg, ChildInfo(None, "child", "nick", None, 0, None, 777666, None, None, None))
       private val card = "123321"
       Relationship.create(kg, card, "mama", newPhone, child.get.child_id.get)
-      private val convert = CheckingMessage.convert(CheckInfo(kg, card, 2, 0, "", 0))
+      private val convert = CheckInfo(kg, card, 2, 0, "", 0).toNotifications
 
       convert.nonEmpty must beTrue
     }

@@ -163,7 +163,7 @@ angular.module('kulebaoAdmin')
       scope.extractParents = (relationships, schoolId) ->
         _.map _.uniq(_.map(relationships, (r) -> r.parent), (p) -> p.name)
         , (p, i) ->
-          p.parent_id = "1_#{schoolId}_00#{i}"
+          p.parent_id = "1_#{schoolId}_#{i}#{p.phone}"
           p.id = p.parent_id
           p.school_id = schoolId
           p
@@ -174,7 +174,7 @@ angular.module('kulebaoAdmin')
         scope.children = scope.extractChildren scope.relationships, schoolId
         _.map relationships, (r, i) ->
           r.parent.id = parentByName(r.parent.name).id
-          r.child.id = childByName(r.child.name).id
+          r.child.id = childByName(r.child.name).id + r.parent.phone
           r.child.class_id = classOfName(r.child.class_name).class_id
           r.card = ''
           r.id = "#{schoolId}0#{r.parent.id}0#{r.child.id}#{i}f".slice(-10)

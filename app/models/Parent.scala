@@ -10,6 +10,7 @@ import anorm.~
 import java.util.Date
 import models.helper.TimeHelper.any2DateTime
 import models.helper.PasswordHelper.generateNewPassword
+import models.helper.MD5Helper.md5
 import play.api.libs.json.Json
 
 
@@ -305,6 +306,15 @@ object Parent {
       }
   }
 
+  def cleanUpPushAccounts(phones: List[String]) = DB.withConnection {
+    implicit c =>
+      SQL(s"delete from accountinfo where accountid in ('${phones.mkString("','")}')").execute()
+  }
+
+  def cleanUpPhones(phones: List[String]) = DB.withConnection {
+    implicit c =>
+      SQL(s"delete from parentinfo where status=0 and phone in ('${phones.mkString("','")}')").execute()
+  }
 
   def updatePushAccount(oldPhone: String, parent: Parent): Int = DB.withConnection {
     implicit c =>
@@ -416,8 +426,8 @@ object Parent {
   def create(kg: Long, parent: Parent) = DB.withTransaction {
     implicit c =>
       val timestamp = System.currentTimeMillis
-      val parentId = parent.parent_id.getOrElse("1_%d_%d".format(kg, timestamp % 100000))
-
+      val parentId = parent.parent_id.getOrElse(s"1_${kg}_${timestamp%1000}${parent.phone}")
+      Logger.info(s"parentId = $parentId")
       try {
         val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status, created_at) " +
           "VALUES ({name},{parent_id},{relationship},{phone},{gender},{company},{picurl},{birthday},{school_id},{status},{timestamp},{member},{created})")
@@ -470,7 +480,7 @@ object Parent {
     implicit c =>
       existsInPushAccount(parent) match {
         case false =>
-          Logger.info(s"inert PushAccount for ${parent.phone}")
+          Logger.info(s"insert PushAccount for ${parent.phone}")
           SQL("INSERT INTO accountinfo(accountid, password) " +
             "VALUES ({accountid},{password})")
             .on('accountid -> parent.phone,

@@ -53,7 +53,8 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
 
   def create = DB.withTransaction {
     implicit c =>
-      val employeeId = id.getOrElse("3_%d_%d".format(school_id, System.currentTimeMillis))
+      val timestamp: Long = System.currentTimeMillis
+      val employeeId = id.getOrElse(s"3_${school_id}_${timestamp}")
       try {
         val inserted: Option[Long] = SQL("insert into employeeinfo (name, phone, gender, workgroup, workduty, picurl, " +
           "birthday, school_id, login_name, login_password, update_at, employee_id, created_at) " +
@@ -71,8 +72,8 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
             'school_id -> school_id,
             'login_name -> login_name,
             'login_password -> generateNewPassword(phone),
-            'update_at -> System.currentTimeMillis,
-            'created -> System.currentTimeMillis
+            'update_at -> timestamp,
+            'created -> timestamp
           ).executeInsert()
         c.commit()
         inserted.flatMap {

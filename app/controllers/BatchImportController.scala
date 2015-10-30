@@ -22,6 +22,8 @@ object BatchImportController extends Controller with Secured {
     u => request =>
       request.body.validate[List[ImportedParent]].map {
         case (parents) =>
+          Parent.cleanUpPushAccounts(parents.map(_.phone))
+          Parent.cleanUpPhones(parents.map(_.phone))
           RelativeController.clearCurrentCache(kg)
           Ok(report(parents.map(_.importing)))
       }.recoverTotal {

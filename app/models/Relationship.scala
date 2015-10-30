@@ -194,7 +194,7 @@ object Relationship {
             'relationship -> relationship,
             'kg -> kg.toString,
             'card -> card,
-            'reference_id -> "%s_%s_%s".format(childId, phone, random.nextString(4))
+            'reference_id -> md5(s"${childId}_${phone}_${random.nextString(4)}").take(40)
           ).executeInsert()
         c.commit()
         findById(kg)(id.getOrElse(-1))
