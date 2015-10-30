@@ -14,11 +14,24 @@ import play.api.libs.json.Json
 
 case class ChildInfo(child_id: Option[String], name: String, nick: String, birthday: Option[String] = None,
                      gender: Int, portrait: Option[String], class_id: Int, class_name: Option[String],
-                     timestamp: Option[Long], school_id: Option[Long], address: Option[String] = None, status: Option[Int] = Some(1), created_at: Option[Long] = None, id: Option[Long]=None)
+                     timestamp: Option[Long], school_id: Option[Long], address: Option[String] = None, status: Option[Int] = Some(1), created_at: Option[Long] = None, id: Option[Long] = None)
+
+case class ChildNameCheck(school_id: Long, name: String) {
+  def exists = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from childinfo where school_id={kg} and status=1 and name={name}")
+        .on(
+          'kg -> school_id.toString,
+          'name -> name
+        ).as(get[Long]("count(1)") single) > 0
+  }
+}
 
 object Children {
   implicit val writeChildInfo = Json.writes[ChildInfo]
   implicit val readChildInfo = Json.reads[ChildInfo]
+  implicit val writeChildNameCheck = Json.writes[ChildNameCheck]
+  implicit val readChildNameCheck = Json.reads[ChildNameCheck]
   private val logger: Logger = Logger(classOf[ChildInfo])
 
   def removed(kg: Long) = DB.withConnection {
@@ -210,9 +223,9 @@ object Children {
 
   def classesScope(classIds: Option[String]): String = classIds match {
     case Some(ids) if ids.length > 0 =>
-       s" and c.class_id in (${ids}) "
+      s" and c.class_id in (${ids}) "
     case Some("") =>
-       " and 1=0 "
+      " and 1=0 "
     case _ => " "
   }
 

@@ -1,13 +1,11 @@
 package controllers
 
-import controllers.V3.{RelativeController, StudentController}
+import controllers.V3.StudentController
+import models.{ChildInfo, ErrorResponse, _}
+import models.Children.readChildNameCheck
+import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-import play.api.Logger
-import models._
-import scala.Some
-import models.ErrorResponse
-import models.ChildInfo
 
 object ChildController extends Controller with Secured {
 
@@ -114,4 +112,16 @@ object ChildController extends Controller with Secured {
     StudentController.clearCurrentCache(kg)
   }
 
+  def isGoodToUse(kg: Long) = IsLoggedIn(parse.json) {
+    u => request =>
+      request.body.validate[ChildNameCheck].map {
+        case (name) if name.exists =>
+          Ok(Json.toJson(ErrorResponse(s"${name.name}名字已存在。(name exists)")))
+        case _ =>
+          Ok(Json.toJson(new SuccessResponse))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+
+  }
 }

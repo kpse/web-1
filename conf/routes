@@ -226,6 +226,7 @@ POST          /api/v1/phone_check/:phone                                        
 POST          /api/v1/kindergarten/:kg/phone_check/:phone                                      controllers.ParentController.isGoodToUseInSchool(kg: Long, phone: String, employee: Option[String])
 POST          /api/v1/card_check                                                               controllers.RelationshipController.isGoodToUse
 POST          /api/v1/kindergarten/:kg/login_name_check                                        controllers.EmployeeController.isGoodToUse(kg: Long)
+POST          /api/v1/kindergarten/:kg/child_name_check                                        controllers.ChildController.isGoodToUse(kg: Long)
 
 POST          /api/v1/video_provider/:kg                                                       controllers.VideoProviderController.create(kg: Long)
 GET           /api/v1/video_provider/:kg                                                       controllers.VideoProviderController.show(kg: Long)
