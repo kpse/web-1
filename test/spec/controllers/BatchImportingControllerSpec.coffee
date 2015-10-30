@@ -39,6 +39,7 @@ describe 'Controller: RelationshipController', ($alert) ->
     $scope.onSuccess(sheet1: ['家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '家长A亲属关系': '干爹'])
 
     $httpBackend.expectPOST('api/v1/phone_check/12345678991').respond phoneNumberIsFine
+    $httpBackend.expectPOST('/api/v1/kindergarten/93740362/child_name_check?name=%E4%BA%8C%E5%AE%9D').respond nameIsFine
     $httpBackend.flush()
 
     expect($scope.relationships.length).toBe 1
@@ -56,6 +57,8 @@ describe 'Controller: RelationshipController', ($alert) ->
 
     $httpBackend.expectPOST('api/v1/phone_check/12345678991').respond phoneNumberIsFine
     $httpBackend.expectPOST('api/v1/phone_check/12345678991').respond phoneNumberIsFine
+    $httpBackend.expectPOST('/api/v1/kindergarten/93740362/child_name_check?name=%E4%BA%8C%E5%AE%9D').respond nameIsFine
+    $httpBackend.expectPOST('/api/v1/kindergarten/93740362/child_name_check?name=%E4%B8%89%E5%AE%9D').respond nameIsFine
     $httpBackend.flush()
 
     expect($scope.relationships.length).toBe 2
@@ -159,14 +162,48 @@ describe 'Controller: RelationshipController', ($alert) ->
 
     $httpBackend.expectPOST('api/v1/phone_check/12345678991').respond phoneNumberIsFine
     $httpBackend.expectPOST('api/v1/phone_check/12345678992').respond phoneNumberIsFine
+    $httpBackend.expectPOST('/api/v1/kindergarten/93740362/child_name_check?name=%E4%BA%8C%E5%AE%9D').respond nameIsFine
     $httpBackend.flush()
 
     expect($scope.relationships.length).toBe 2
     expect($scope.relationships[0].relationship).toBe '爸爸'
     expect($scope.relationships[1].relationship).toBe '妈妈'
 
+  it 'should warning child name is already existing', () ->
+
+    $scope.onSuccess(sheet1: [
+      '家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '家长A亲属关系': '爸爸','家长B手机号': '12345678992', '家长B姓名': 'display name2', '家长B亲属关系': '妈妈'
+    ])
+
+    $httpBackend.expectPOST('api/v1/phone_check/12345678991').respond phoneNumberIsFine
+    $httpBackend.expectPOST('api/v1/phone_check/12345678992').respond phoneNumberIsFine
+    $httpBackend.expectPOST('/api/v1/kindergarten/93740362/child_name_check?name=%E4%BA%8C%E5%AE%9D').respond nameIsDuplicated
+    $httpBackend.flush()
+
+    expect($scope.importingErrorMessage).toBe '以下学生名字在学校中已经存在，无法判断是否同一学生，建议重名学生使用快速创建功能，避免信息冲突。'
+    expect($scope.errorItems.length).toBe 1
+
+  it 'should accept all child name when no backend present', () ->
+
+    $scope.backend = false
+    $scope.onSuccess(sheet1: [
+      '家长A手机号': '12345678991', '家长A姓名': 'display name', '所属班级': '二班', '宝宝姓名': '二宝', '家长A亲属关系': '爸爸'
+    ])
+
+    $httpBackend.expectPOST('api/v1/kindergarten/93740362/phone_check/12345678991').respond phoneNumberIsFine
+    $httpBackend.expectDELETE('/kindergarten/93740362/class').respond error_code: 0
+    $httpBackend.expectPOST('/kindergarten/93740362/class/1000').respond error_code: 0
+    $httpBackend.flush()
+
+    expect($scope.relationships.length).toBe 1
+    expect($scope.relationships[0].relationship).toBe '爸爸'
+
 
   phoneNumberIsDuplicated =
     error_code: 1
   phoneNumberIsFine =
+    error_code: 0
+  nameIsDuplicated =
+    error_code: 1
+  nameIsFine =
     error_code: 0

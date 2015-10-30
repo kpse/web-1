@@ -3,8 +3,10 @@
 angular.module('kulebaoAdmin')
 .controller 'batchImportCtrl',
   [ '$scope', '$rootScope', '$stateParams', 'relationshipService',
-    '$http', '$filter', '$q', 'classService', '$state', 'batchDataService', '$timeout', '$alert', 'phoneCheckService', 'phoneCheckInSchoolService',
-    (scope, rootScope, stateParams, Relationship, $http, $filter, $q, SchoolClass, $state, BatchData, $timeout, Alert, PhoneCheck, PhoneCheckInSchool) ->
+    '$http', '$filter', '$q', 'classService', '$state', 'batchDataService', '$timeout', '$alert', 'phoneCheckService',
+    'phoneCheckInSchoolService', 'childNameCheckService',
+    (scope, rootScope, stateParams, Relationship, $http, $filter, $q, SchoolClass, $state, BatchData, $timeout, Alert,
+     PhoneCheck, PhoneCheckInSchool, ChildNameCheck) ->
       scope.current_type = 'batchImport'
 
       parentRange = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
@@ -54,7 +56,7 @@ angular.module('kulebaoAdmin')
           r.parent.name?
 
         rootScope.loading = true
-        phones = _.map scope.relationships, (r) -> r.parent.phone
+        phones = _.pluck scope.relationships, 'parent.phone'
 
         birthdayIssue = _.partition scope.relationships, (r) -> r.child.birthday? && r.child.birthday.match /\d{4}-\d{2}-\d{2}/
         if birthdayIssue[1].length > 0
@@ -115,13 +117,24 @@ angular.module('kulebaoAdmin')
           return backToImport()
 
         PhoneExistenceCheck = if scope.backend then PhoneCheck else PhoneCheckInSchool
-        checkQueue = _.map phones, (p) -> PhoneExistenceCheck.check(phone: p).$promise
+        checkQueue = _.map phones, (p) -> PhoneExistenceCheck.check(phone: p, school_id: stateParams.kindergarten).$promise
         $q.all(checkQueue).then (q) ->
           codes = _.map q, (r) -> r.error_code
           scope.errorItems = _.uniq _.map (_.filter _.zip(phones, codes), (a) -> a[1] != 0), (p) -> p[0]
-          scope.importingErrorMessage = '以下手机号码已经存在，请检查调整后重新输入。' if scope.errorItems.length > 0
-          backToImport() if scope.errorItems.length > 0
-          rootScope.loading = false
+          if scope.errorItems.length > 0
+            scope.importingErrorMessage = '以下手机号码已经存在，请检查调整后重新输入。'
+            backToImport()
+          else if scope.backend
+            childNames = _.uniq _.pluck scope.relationships, 'child.name'
+            checkQueue2 = _.map childNames, (n) -> ChildNameCheck.check(school_id: parseInt(stateParams.kindergarten), name: n).$promise
+            $q.all(checkQueue2).then (q) ->
+              codes = _.pluck q, 'error_code'
+              scope.errorItems = _.map (_.filter _.zip(childNames, codes), (a) -> a[1] != 0), (p) -> p[0]
+              rootScope.loading = false
+              if scope.errorItems.length > 0
+                scope.importingErrorMessage = '以下学生名字在学校中已经存在，无法判断是否同一学生，建议重名学生使用快速创建功能，避免信息冲突。'
+                return backToImport()
+
 
         if scope.errorItems.length > 0 && scope.importingErrorMessage.length > 0
           backToImport()
