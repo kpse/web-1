@@ -94,11 +94,12 @@ angular.module('kulebaoAdmin')
           fix_child: child?
           fix_parent: parent?
 
-      scope.newParent = (saveHook, askForConnecting = true) ->
+      scope.newParent = (saveHook, fastSaveHook, askForConnecting = true) ->
         rootScope.loading = true
         scope.parents = Parent.query school_id: stateParams.kindergarten, ->
           scope.parent = scope.createParent()
           scope.parent.saveHook = saveHook
+          scope.parent.fastSaveHook = fastSaveHook
           scope.connecting = askForConnecting
           scope.currentModal = Modal
             scope: scope
@@ -167,8 +168,7 @@ angular.module('kulebaoAdmin')
           duration: 3
         rootScope.loading = false
 
-      scope.saveParent = (parent) ->
-        saveHook = parent.saveHook
+      saveParentWithHook = (parent, saveHook) ->
         video_member_status = parent.video_member_status
         rootScope.loading = true
         parent.$save ->
@@ -181,6 +181,24 @@ angular.module('kulebaoAdmin')
             handleError('家长', res)
             rootScope.loading = false
 
+      scope.saveParent = (parent) ->
+        saveHook = parent.saveHook
+        saveParentWithHook(parent, saveHook)
+
+      scope.fastConnectToParent = (parent) ->
+        saveHook = parent.fastSaveHook
+        saveParentWithHook(parent, saveHook)
+
+      scope.createParentOnly = (child) ->
+        scope.$broadcast 'refreshing'
+        scope.currentModal.hide()
+        doNotAskConnectAgain = false
+        saveHook = (parent)->
+          scope.newRelationship child, parent
+        fastSaveHook = (parent)->
+          fastRelationship = scope.createRelationship(child, parent)
+          scope.saveRelationship fastRelationship
+        scope.newParent saveHook, fastSaveHook, doNotAskConnectAgain
 
       scope.updateVideoMember = (parent, save) ->
         if save
@@ -243,13 +261,6 @@ angular.module('kulebaoAdmin')
             scope.connectToChildOnly(parent)
           , (res) ->
             handleError('家长', res)
-
-      scope.createParentOnly = (child) ->
-        scope.$broadcast 'refreshing'
-        scope.currentModal.hide()
-        doNotAskConnectAgain = false
-        scope.newParent ((parent)->
-          scope.newRelationship child, parent), doNotAskConnectAgain
 
       scope.connectToExistingOnly = (child, parent) ->
         scope.$broadcast 'refreshing'

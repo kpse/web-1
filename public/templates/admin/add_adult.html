@@ -129,11 +129,13 @@
             <ul class="dropdown-menu parent-creating-menu" role="menu">
               <li><a ng-show="!newAdultForm.$dirty" ng-click="connectToChildOnly(parent)">关联到小孩</a></li>
               <li><a ng-show="newAdultForm.$dirty && connecting" ng-click="connectToChild(parent)">关联到小孩</a></li>
-              <li><a ng-show="newAdultForm.$dirty && connecting" ng-click="saveParent(parent)">仅保存</a></li>
+              <li><a ng-show="!newAdultForm.$dirty || connecting" ng-click="saveParent(parent)">仅保存</a></li>
               <li><a ng-show="newAdultForm.$dirty && !connecting" ng-if="backend" ng-click="saveParent(parent)">输入卡号</a>
               </li>
               <li><a ng-show="newAdultForm.$dirty && !connecting" ng-if="!backend"
                      ng-click="saveParent(parent)">确认关联</a></li>
+              <li><a ng-show="newAdultForm.$dirty && !connecting" ng-click="fastConnectToParent(parent)">快速关联</a></li>
+
             </ul>
             <a class="btn btn-default adding-button"
                ng-click="cancelDialog()">取消</a>
