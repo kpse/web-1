@@ -1,5 +1,6 @@
 package controllers.V3
 
+import controllers.ClassController._
 import controllers.Secured
 import controllers.helper.JsonLogger._
 import models.ErrorResponse
@@ -8,6 +9,11 @@ import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Controller, SimpleResult}
 
 object ClassController extends Controller with Secured {
+
+  def index(kg: Long) = IsPrincipal {
+    u => _ =>
+      Ok(Json.toJson(SchoolClassV3.index(kg)))
+  }
 
   def create(kg: Long) = IsPrincipal(parse.json) { u => request =>
     request.body.validate[SchoolClassV3].map {

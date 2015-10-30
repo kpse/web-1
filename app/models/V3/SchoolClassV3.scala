@@ -123,6 +123,12 @@ object SchoolClassV3 {
   implicit val readSchoolClassV3 = Json.reads[SchoolClassV3]
   implicit val writeSchoolClassV3 = Json.writes[SchoolClassV3]
 
+  def index(kg: Long) = DB.withConnection {
+    implicit c =>
+      SQL("select * from classinfo where school_id={kg} and status=1")
+        .on('kg -> kg.toString).as(simple *)
+  }
+
   def show(kg: Long, id: Long) = DB.withConnection {
     implicit c =>
       SQL("select * from classinfo where uid={uid} and status=1")

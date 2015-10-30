@@ -348,7 +348,7 @@ POST          /api/v3/kindergarten/:kg/employee                                 
 POST          /api/v3/kindergarten/:kg/employee/:id                                            controllers.V3.EmployeeControllerV3.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/employee/:id                                            controllers.V3.EmployeeControllerV3.delete(kg: Long, id: Long)
 
-GET           /api/v3/kindergarten/:kg/employee/:id/ineligible_class                             controllers.V3.EmployeeControllerV3.ineligibleClasses(kg: Long, id: Long)
+GET           /api/v3/kindergarten/:kg/employee/:id/ineligible_class                           controllers.V3.EmployeeControllerV3.ineligibleClasses(kg: Long, id: Long)
 
 GET           /api/v3/kindergarten/:kg/card                                                    controllers.V3.CardController.search(kg: Long, q: String)
 GET           /api/v3/kindergarten/:kg/card/:id                                                controllers.V3.CardController.show(kg: Long, id: Long)
@@ -555,6 +555,7 @@ POST          /api/v3/kindergarten/:kg/log_store                                
 POST          /api/v3/kindergarten/:kg/log_store/:id                                           controllers.V3.SchoolLogStoreController.update(kg: Long, id: Long)
 DELETE        /api/v3/kindergarten/:kg/log_store/:id                                           controllers.V3.SchoolLogStoreController.delete(kg: Long, id: Long)
 
+GET           /api/v3/kindergarten/:kg/class                                                   controllers.V3.ClassController.index(kg: Long)
 POST          /api/v3/kindergarten/:kg/class                                                   controllers.V3.ClassController.create(kg: Long)
 POST          /api/v3/kindergarten/:kg/class/:id                                               controllers.V3.ClassController.update(kg: Long, id: Long)
 
