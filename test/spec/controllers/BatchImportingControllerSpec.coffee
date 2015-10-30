@@ -130,6 +130,13 @@ describe 'Controller: RelationshipController', ($alert) ->
     expect($scope.importingErrorMessage).toBe '以下学生生日格式不正确，请确保所有生日的格式都是2015-01-31。'
     expect($scope.errorItems.length).toBe 1
 
+  it 'should warning for empty class name', () ->
+
+    $scope.onSuccess(sheet1: ['家长A手机号': '12345678991', '家长A姓名': 'display name', '宝宝姓名': '二宝', '家长A亲属关系': '爸爸'])
+
+    expect($scope.importingErrorMessage).toBe '以下小孩没有分配班级，请检查调整后重新输入。'
+    expect($scope.errorItems.length).toBe 1
+
   it 'should accept multiple parents for single child from excel', () ->
 
     $scope.onSuccess(sheet1: [
