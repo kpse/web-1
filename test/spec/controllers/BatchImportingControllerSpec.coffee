@@ -168,6 +168,7 @@ describe 'Controller: RelationshipController', ($alert) ->
     expect($scope.relationships.length).toBe 2
     expect($scope.relationships[0].relationship).toBe '爸爸'
     expect($scope.relationships[1].relationship).toBe '妈妈'
+    expect($scope.relationships[0].child.id).toBe $scope.relationships[1].child.id
 
   it 'should warning child name is already existing', () ->
 
