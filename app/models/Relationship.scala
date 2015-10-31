@@ -49,7 +49,7 @@ object Relationship {
             'relationship -> relationship,
             'card -> fakeCardNumber,
             'kg -> kg.toString,
-            'reference_id -> "%s_%s_%d".format(childId, phone, random.nextInt(10000))
+            'reference_id -> md5(s"${childId}_${phone}_${random.nextString(4)}").take(40)
           ).executeInsert()
         c.commit()
         findById(kg)(id.getOrElse(-1))
