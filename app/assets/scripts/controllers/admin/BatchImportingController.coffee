@@ -49,6 +49,7 @@ angular.module('kulebaoAdmin')
                 name: row['宝宝姓名']
                 birthday: row['出生日期'] || '2010-01-01'
                 gender: extractGender row['性别']
+                address: row["家庭住址"]
               relationship: row["#{p}亲属关系"]
               school_id: parseInt(stateParams.kindergarten)
               index: index + 1
