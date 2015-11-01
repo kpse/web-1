@@ -1,18 +1,20 @@
 'use strict'
 
+postUrl = "https://up.qbox.me"
+
 tokenService = ($http) ->
-  token: (file, remoteDir) ->
+  token: (file, remoteDir, bucketName) ->
     $http.post '/ws/safe_file_token' ,
-      name: 'kulebao-prod'
+      name: bucketName
       key: generateRemoteFileName remoteDir, removeInvalidChars(file.name)
 
 rawFileTokenService = ($http) ->
-  token: (file, remoteDir) ->
-    $http.get '/ws/fileToken?bucket=kulebao-prod&key=' + remoteDir + '/' + file.name
+  token: (file, remoteDir, bucketName) ->
+    $http.get "/ws/fileToken?bucket=#{bucketName}&key=#{remoteDir}/#{file.name}"
 
 
 qiniuService = (tokenService) ->
-  send: (file, remoteDir, token, successCallback, errorCallback) ->
+  send: (file, remoteDir, token, bucketUrl, successCallback, errorCallback) ->
     data = new FormData()
     xhr = new XMLHttpRequest()
     xhr.onloadend = (e) ->
@@ -24,7 +26,7 @@ qiniuService = (tokenService) ->
           console.log(response)
       else
         successCallback({
-          url: "https://dn-kulebao.qbox.me/" + generateRemoteFileName remoteDir, encodeURI removeInvalidChars response.name
+          url: bucketUrl + generateRemoteFileName remoteDir, encodeURI removeInvalidChars response.name
           size: response.size
         })
       angular.forEach angular.element("input[type='file']"), (elem)->
@@ -35,18 +37,18 @@ qiniuService = (tokenService) ->
     data.append "token", token
     key = generateRemoteFileName remoteDir, removeInvalidChars(file.name)
     data.append "key", key
-    xhr.open "POST", "https://up.qbox.me"
+    xhr.open "POST", postUrl
     xhr.send data
 
 qiniuRawFileService = (tokenService) ->
-  send: (file, remoteDir, token, successCallback) ->
+  send: (file, remoteDir, token, bucketUrl, successCallback) ->
     data = new FormData()
     xhr = new XMLHttpRequest()
 
     xhr.onloadend = (e) ->
       response = JSON.parse(e.currentTarget.response)
       successCallback({
-        url: "https://dn-kulebao.qbox.me/" + remoteDir  + '/' + response.name
+        url: bucketUrl + remoteDir  + '/' + response.name
         size: response.size
       })
       angular.forEach angular.element("input[type='file']"), (elem)->
@@ -57,7 +59,7 @@ qiniuRawFileService = (tokenService) ->
     data.append "file", file
     data.append "token", token
     data.append "key", remoteDir + '/' + file.name
-    xhr.open "POST", "https://up.qbox.me"
+    xhr.open "POST", postUrl
     xhr.send data
 
 generateRemoteDir = (user) -> if user? then user else ''
@@ -71,32 +73,31 @@ generateRemoteFileName = (remoteDir, fileName)->
     remoteDir + '/' + encodeURI fileName
 
 
-uploadService = (qiniuService, tokenService) ->
+uploadService = (qiniuService, tokenService, bucketInfoService) ->
   (file, user, onSuccess, onError) ->
     return (onError || angular.noop)(error: '没有指定文件。') if file is undefined
     remoteDir = generateRemoteDir user
-    tokenService.token(file, remoteDir).success (data)->
-      qiniuService.send file, remoteDir, data.token, (remoteFile) ->
-        (onSuccess || angular.noop)(remoteFile.url)
+    bucketInfoService.success (bucket) ->
+      tokenService.token(file, remoteDir, bucket.name).success (data)->
+        qiniuService.send file, remoteDir, data.token, bucket.urlPrefix, (remoteFile) ->
+          (onSuccess || angular.noop)(remoteFile.url)
 
 multipleUploadService = (uploadService) ->
   (files, user, onSuccess, onError) ->
     _.forEach files, (f) -> uploadService(f, user, onSuccess, onError)
 
 angular.module('kulebao.services')
-.factory 'tokenService', ['$http', tokenService]
-angular.module('kulebao.services')
-.factory 'rawFileTokenService', ['$http', rawFileTokenService]
-angular.module('kulebao.services')
-.factory 'qiniuService', ['tokenService', qiniuService]
-angular.module('kulebao.services')
-.factory 'qiniuRawFileService', ['rawFileTokenService', qiniuRawFileService]
-angular.module('kulebao.services')
-.factory 'uploadService', ['qiniuService', 'tokenService', uploadService]
-angular.module('kulebao.services')
-.factory 'multipleUploadService', ['uploadService', multipleUploadService]
-angular.module('kulebao.services')
-.factory 'appUploadService', ['qiniuRawFileService', 'rawFileTokenService', uploadService]
+.factory('bucketInfoService', ['$http', ($http) ->
+    $http.get '/ws/bucket_info/default', cache: true
+  ]
+)
+.factory('tokenService', ['$http', tokenService])
+.factory('rawFileTokenService', ['$http', rawFileTokenService])
+.factory('qiniuService', ['tokenService', qiniuService])
+.factory('qiniuRawFileService', ['rawFileTokenService', qiniuRawFileService])
+.factory('uploadService', ['qiniuService', 'tokenService', 'bucketInfoService', uploadService])
+.factory('appUploadService', ['qiniuRawFileService', 'rawFileTokenService', 'bucketInfoService', uploadService])
+.factory('multipleUploadService', ['uploadService', multipleUploadService])
 
 
 angular.module('kulebao.services').directive "fileupload", ->

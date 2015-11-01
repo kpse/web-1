@@ -14,6 +14,8 @@ object QiniuHelper {
     QiqiuAuth.create(ACCESS_KEY, SECRET_KEY)
   }
 
+  val defaultBucketUrl = Play.current.configuration.getString("oss.bucket.url").getOrElse("https://dn-kulebao.qbox.me/")
+  val defaultBucket = Play.current.configuration.getString("oss.bucket.name").getOrElse("kulebao-prod")
   def triggerPfop(b: Bucket) = {
     val auth: QiqiuAuth = createAuth
     val operator = new OperationManager(auth)
@@ -33,7 +35,7 @@ object QiniuHelper {
 
     // 针对指定空间的文件触发 pfop 操作
     try {
-      val id = operator.pfop(bucket, key, fops, params)
+      val id = operator.pfop(bucket.getOrElse(defaultBucket), key, fops, params)
       Logger.info(s"operator.pfop success: $id")
     }
     catch {

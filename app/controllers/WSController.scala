@@ -1,19 +1,20 @@
 package controllers
 
 import java.net.URLEncoder
+
 import com.qiniu.util.{Auth => QiqiuAuth, StringMap}
 import controllers.helper.QiniuHelper
-import models.{PfopNotification, Bucket, News, UpToken}
-import models.PfopNotification.readPfopNotificationItem
-import models.PfopNotification.readPfopNotification
 import models.Bucket.writesUpToken
+import models.PfopNotification.readPfopNotification
+import models.{Bucket, BucketInfo, News, PfopNotification, UpToken}
+import models.Bucket.writesBucketInfo
 import play.api.Logger
 import play.api.libs.json.{JsError, JsValue, Json}
 import play.api.libs.ws._
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 
 object WSController extends Controller {
@@ -83,13 +84,15 @@ object WSController extends Controller {
       }
   }
 
-  def generateToken(bucket: String, key: Option[String]) = Action {
+  val defaultBucket = QiniuHelper.defaultBucket
+
+  def generateToken(bucket: Option[String], key: Option[String]) = Action {
     val auth: QiqiuAuth = QiniuHelper.createAuth
-    val upToken = auth.uploadToken(bucket, key.orNull, 3600, new StringMap().putNotEmpty("returnBody", "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"))
+    val upToken = auth.uploadToken(bucket.getOrElse(defaultBucket), key.orNull, 3600, new StringMap().putNotEmpty("returnBody", "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"))
     Ok(Json.toJson(UpToken(upToken)))
   }
 
-  def generateEncodeToken(bucket: String, key: Option[String]) = key match {
+  def generateEncodeToken(bucket: Option[String], key: Option[String]) = key match {
     case Some(s) =>
       val encodedKey = URLEncoder.encode(s, "UTF-8")
       Logger.info("key = %s".format(encodedKey))
@@ -103,7 +106,9 @@ object WSController extends Controller {
       request.body.validate[Bucket].map {
         case (bucket) =>
           val auth: QiqiuAuth = QiniuHelper.createAuth
-          val upToken = auth.uploadToken(bucket.name, bucket.key, 3600, new StringMap().putNotEmpty("returnBody", "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"))
+          val bucketName: String = bucket.name.getOrElse(defaultBucket)
+          Logger.info(s"bucketName = $bucketName")
+          val upToken = auth.uploadToken(bucketName, bucket.key, 3600, new StringMap().putNotEmpty("returnBody", "{\"name\": $(fname), \"size\": $(fsize),\"hash\": $(etag)}"))
           Logger.info(s"scope = ${upToken}")
           Ok(Json.toJson(UpToken(upToken)))
       }.recoverTotal {
@@ -139,5 +144,11 @@ object WSController extends Controller {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
 
+  }
+
+  def defaultPostBucket() = Action {
+    val defaultBucket = QiniuHelper.defaultBucket
+    val defaultBucketUrl = QiniuHelper.defaultBucketUrl
+    Ok(Json.toJson(BucketInfo(defaultBucket, defaultBucketUrl)))
   }
 }
