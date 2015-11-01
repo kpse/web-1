@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
   ['$scope', '$rootScope', '$stateParams', '$modal', 'schoolEmployeesService',
-   'uploadService', '$alert', 'employeesManageClassService', 'StatsService', '$location', '$q'
-    (scope, $rootScope, $stateParams, Modal, SchoolEmployee, Upload, Alert, ClassManager, Stats, location, $q) ->
+   '$alert', 'employeesManageClassService', 'StatsService', '$location', '$q'
+    (scope, $rootScope, $stateParams, Modal, SchoolEmployee, Alert, ClassManager, Stats, location, $q) ->
       $rootScope.tabName = 'employee'
 
       scope.refresh = ->

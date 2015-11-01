@@ -50,8 +50,8 @@ angular.module('kulebaoAdmin')
 .controller 'HistoryCtrl',
   [ '$scope', '$rootScope', '$stateParams',
     '$location', '$http', 'historyService', 'childService', '$modal',
-    '$popover', '$tooltip', 'employeeService', 'uploadService', 'senderService', 'readRecordService', 'historyShareService',
-    (scope, rootScope, stateParams, location, $http, Message, Child, Modal, Popover, Tooltip, Employee, Upload, Sender, ReaderLog, Share) ->
+    '$popover', '$tooltip', 'employeeService', 'senderService', 'readRecordService', 'historyShareService',
+    (scope, rootScope, stateParams, location, $http, Message, Child, Modal, Popover, Tooltip, Employee, Sender, ReaderLog, Share) ->
       scope.adminUser = Employee.get()
 
       rootScope.loading = true
