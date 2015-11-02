@@ -33,7 +33,7 @@ object Charge {
       val countMember: Long = SQL("select count(1)" +
         "  from accountinfo a, parentinfo p" +
         " where school_id= {kg}" +
-        "   and accountid  = phone and member_status=1")
+        "   and accountid = phone and member_status=1")
         .on('kg -> kg.toString).as(get[Long]("count(1)") single)
       val countVideoMember: Long = SQL("select count(distinct phone) count" +
         "  from accountinfo a," +

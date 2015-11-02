@@ -46,7 +46,7 @@ class ParentSpec extends Specification with TestSupport {
       parent.map {
         p =>
           p.parent_id.nonEmpty must beTrue
-          p.member_status must beSome(0)
+          p.member_status must beSome(1)
           p.status must beSome(1)
       }
       val child = Children.create(kg, ChildInfo(None, "child", "nick", None, 0, None, 777666, None, None, None))
