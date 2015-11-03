@@ -323,22 +323,6 @@ class ParentControllerSpec extends Specification with TestSupport {
       (Json.parse(contentAsString(response)) \ "error_msg").as[String] must equalTo("手机号码‘22222222225’已经在别的学校注册，目前幼乐宝不支持同一家长在多家幼儿园注册，请联系幼乐宝技术支持4009984998")
     }
 
-    "report error when member count is exceed in create route" in new WithApplication {
-      private val requestHeader = createMember("13408654680", None)
-      val response = route(principalLoggedRequest(POST, "/kindergarten/93740362/parent").withJsonBody(requestHeader)).get
-
-      status(response) must equalTo(BAD_REQUEST)
-      (Json.parse(contentAsString(response)) \ "error_msg").as[String] must equalTo("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")
-    }
-
-    "report error when member count is exceed in update route" in new WithApplication {
-      private val requestHeader = createMember("13408654680", None)
-      val response = route(principalLoggedRequest(POST, "/kindergarten/93740362/parent/13408654680").withJsonBody(requestHeader)).get
-
-      status(response) must equalTo(BAD_REQUEST)
-      (Json.parse(contentAsString(response)) \ "error_msg").as[String] must equalTo("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")
-    }
-
     "report ok when parent has been already deleted in update route" in new WithApplication {
       private val requestHeader = createDeletedParent("16408654680", Some("new_id"))
       val response = route(principalLoggedRequest(POST, "/kindergarten/93740362/parent/16408654680").withJsonBody(requestHeader)).get

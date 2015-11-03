@@ -93,8 +93,6 @@ object ParentController extends Controller with Secured {
   def handleCreateOrUpdate(kg: Long, parent: Parent) = parent match {
     case (error) if kg != error.school_id =>
       BadRequest(Json.toJson(ErrorResponse("请求的学校不正确。")))
-    case (error) if error.isAMember && Charge.limitExceed(kg) =>
-      BadRequest(Json.toJson(ErrorResponse("已达到学校授权人数上限，无法再开通新号码，请联系幼乐宝技术支持4009984998")))
     case (error) if error.isAVideoMember && VideoMember.limitExceed(kg) =>
       BadRequest(Json.toJson(ErrorResponse("已达到学校视频授权人数上限，无法再开通新视频账号，请联系幼乐宝技术支持4009984998")))
     case (error) if Parent.existsInOtherSchool(kg, error) =>

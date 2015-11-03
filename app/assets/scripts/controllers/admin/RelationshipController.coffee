@@ -63,7 +63,7 @@ angular.module('kulebaoAdmin')
           birthday: '1980-1-1'
           gender: 1
           name: ''
-          member_status: 0
+          member_status: 1
           kindergarten: scope.kindergarten
           video_member_status: 0
 

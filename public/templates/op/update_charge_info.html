@@ -1,72 +1,78 @@
-<div class="panel-body">
-  <form class="form-horizontal row" role="form" name="chargeForm">
+<div class="panel panel-default">
+  <div class="panel-heading"><h3>更新收费信息</h3></div>
+  <div class="panel-body">
+    <form class="form-horizontal row" role="form" name="chargeForm">
 
-    <div class="form-group">
-      <label for="school-id" class="col-sm-2 control-label">学校编号</label>
+      <div class="form-group">
+        <label for="school-id" class="col-sm-2 control-label">学校编号</label>
 
-      <div class="col-sm-8">
-        <p id="school-id" class="form-control-static">{{kg.school_id}}</p>
+        <div class="col-sm-8">
+          <p id="school-id" class="form-control-static">{{kg.school_id}}</p>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label for="school-name" class="col-sm-2 control-label">学校名称</label>
+      <div class="form-group">
+        <label for="school-name" class="col-sm-2 control-label">学校名称</label>
 
-      <div class="col-sm-8">
-        <p id="school-name" class="form-control-static">{{kg.name}}</p>
+        <div class="col-sm-8">
+          <p id="school-name" class="form-control-static">{{kg.name}}</p>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label for="count" class="col-sm-2 control-label">收费手机数</label>
+      <div class="form-group" ng-if="false">
+        <label for="count" class="col-sm-2 control-label">收费手机数</label>
 
-      <div class="col-sm-8">
-        <input id="count" type="number" ng-model="charge.total_phone_number" name="count"
-               class="editing-field form-control" required/>
+        <div class="col-sm-8">
+          <input id="count" type="number" ng-model="charge.total_phone_number" name="count"
+                 class="editing-field form-control" required/>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label for="expire-date" class="col-sm-2 control-label">过期时间</label>
+      <div class="form-group">
+        <label for="expire-date" class="col-sm-2 control-label">过期时间</label>
 
-      <div class="col-sm-8">
-        <input id="expire-date" type="date" ng-model="charge.expire" name="expire"
-               class="editing-field form-control" required/>
+        <div class="col-sm-8">
+          <input id="expire-date" type="date" ng-model="charge.expire" name="expire"
+                 class="editing-field form-control" required/>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group" ng-hide="kg.videoProvider.token">
-      <label class="col-sm-2 control-label">开通视频</label>
+      <div class="form-group" ng-hide="kg.videoProvider.token">
+        <label class="col-sm-2 control-label">开通视频</label>
 
-      <div class="col-sm-8">
-        <a ng-click="enableVideo(kg.school_id) && chargeForm.$setDirty()" class="form-control-static">开通</a>
+        <div class="col-sm-8">
+          <a ng-click="enableVideo(kg.school_id) && chargeForm.$setDirty()" class="form-control-static">开通</a>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group" ng-show="kg.videoProvider.token">
-      <label class="col-sm-2 control-label">视频账号查询</label>
+      <div class="form-group" ng-show="kg.videoProvider.token">
+        <label class="col-sm-2 control-label">视频账号查询</label>
 
-      <div class="col-sm-8">
-        <p ng-show="kg.videoProvider.token" class="form-control-static">{{videoProviderURL(kg.videoProvider.token)}}</p>
+        <div class="col-sm-8">
+          <p ng-show="kg.videoProvider.token" class="form-control-static">
+            {{videoProviderURL(kg.videoProvider.token)}}</p>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group" ng-show="kg.videoProvider.token">
-      <label class="col-sm-2 control-label">视频账号上限</label>
+      <div class="form-group" ng-show="kg.videoProvider.token">
+        <label class="col-sm-2 control-label">视频账号上限</label>
 
-      <div class="col-sm-8">
-        <input id="video_account_total" type="number" ng-model="charge.total_video_account" name="videoAccount"
-               class="editing-field form-control" required/>
+        <div class="col-sm-8">
+          <input id="video_account_total" type="number" ng-model="charge.total_video_account" name="videoAccount"
+                 class="editing-field form-control" required/>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <a class="btn btn-warning pull-right adding-button"
-         ng-disabled="chargeForm.$invalid || chargeForm.$pristine"
-         ng-click="save(charge)">保存</a>
-      <a class="btn btn-default pull-right adding-button"
-         ng-click="$hide()">取消</a>
-    </div>
-  </form>
+      <div class="panel-footer">
+        <div class="form-group">
+          <a class="btn btn-warning pull-right adding-button"
+             ng-disabled="chargeForm.$invalid || chargeForm.$pristine"
+             ng-click="save(charge)">保存</a>
+          <a class="btn btn-default pull-right adding-button"
+             ng-click="$hide()">取消</a>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 

@@ -1,13 +1,11 @@
 package models
 
-import controllers.RelationshipController
-import controllers.V3.{StudentController, RelativeController}
-import play.api.Logger
-import play.api.db.DB
-import anorm._
 import anorm.SqlParser._
-import anorm.~
+import anorm.{~, _}
+import controllers.V3.{RelativeController, StudentController}
+import play.api.Logger
 import play.api.Play.current
+import play.api.db.DB
 import play.api.libs.json.Json
 
 case class School(school_id: Long, name: String)

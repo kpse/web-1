@@ -9,8 +9,7 @@
   <tr class="row">
     <th class="col-xs-3">#学校编号</th>
     <th class="col-xs-3">学校</th>
-    <th class="col-xs-1">开通手机数</th>
-    <th class="col-xs-1">开通视频</th>
+    <th class="col-xs-2">开通视频</th>
     <th class="col-xs-2">到期时间</th>
     <th class="col-xs-2">操作</th>
   </tr>
@@ -21,10 +20,10 @@
     <td class="col-xs-3"><a ng-href="/admin#/kindergarten/{{kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{kg.school_id}}</a>
     </td>
     <td class="col-xs-3">{{kg.name}}</td>
-    <td class="col-xs-1">{{kg.charge.total_phone_number}}</td>
-    <td class="col-xs-1">{{kg.videoProvider.token ? kg.charge.total_video_account : '未开通'}}</td>
+    <td class="col-xs-2">{{kg.videoProvider.token ? kg.charge.total_video_account : '未开通'}}</td>
     <td class="col-xs-3">{{kg.charge.expire | date: 'yyyy-MM-dd'}}</td>
-    <td class="col-xs-2">
+    <td class="col-xs-2"></td>
+    <td class="col-xs-2" ng-if="false">
       <button ng-show="kg.charge.status==1" class="btn btn-xs btn-danger" ng-confirm-msg="你确定要让{{kg.name}}的所有账号过期吗?"
               ng-confirm-click="disable(kg.charge)">立刻过期
       </button>
