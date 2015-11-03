@@ -25,7 +25,7 @@ case class InvitationCode(phone: String, code: String, created_at: Long, parent:
   }
 
   def formatMessage()(implicit provider: SMSProvider): String = {
-    s"验证码：${code}，${parent.get.name}请您加入幼乐宝，共同关注孩子的精彩瞬间。请将此验证码20分钟内转告给${parent.get.name}，欢迎搜索微信公众号“幼乐宝”。点击“软件下载”安装使用。"
+    s"验证码：${code}，请将此验证码20分钟内转告给${parent.get.name}。"
   }
 }
 
