@@ -20,7 +20,8 @@ object Bucket {
 
   def parse(url: String): Option[Bucket] = {
     val bucketsMap = Map("dn-cocobabys-test.qbox.me" -> "cocobabys-test", "dn-cocobabys.qbox.me" -> "cocobabys",
-      "dn-kulebao.qbox.me" -> "kulebao-prod", "dn-youlebao.qbox.me" -> "kulebao-prod", "suoqin-test.u.qiniudn.com" -> "suoqin-test")
+      "dn-kulebao.qbox.me" -> "kulebao-prod", "dn-youlebao.qbox.me" -> "kulebao-prod", "suoqin-test.u.qiniudn.com" -> "suoqin-test",
+    "dn-local-test.qbox.me" -> "localtest")
     val uri: URI = new URI(url)
     bucketsMap.get(uri.getHost) map {
       case name =>

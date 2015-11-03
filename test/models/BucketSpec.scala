@@ -35,5 +35,10 @@ class BucketSpec extends Specification with TestSupport {
       val result: Option[Bucket] = Bucket.parse("http://suoqin-test.u.qiniudn.com/3_93740362_9972/fireEffect.mp3")
       result must beSome(Bucket(Some("suoqin-test"), "3_93740362_9972/fireEffect.mp3"))
     }
+
+    "should recognise bucket localtest" in new WithApplication {
+      val result: Option[Bucket] = Bucket.parse("https://dn-local-test.qbox.me/3_93740362_9972/fireEffect.mp3")
+      result must beSome(Bucket(Some("localtest"), "3_93740362_9972/fireEffect.mp3"))
+    }
   }
 }
