@@ -42,8 +42,7 @@ angular.module('kulebaoAdmin')
           scope.config =
             deletable : scope.adminUser.privilege_group == 'operator' || !scope.backend
 
-          scope.fetchFullRelationshipsIfNeeded()
-          callback() if callback?
+          scope.fetchFullRelationshipsIfNeeded(callback)
 
       scope.fetchFullRelationshipsIfNeeded = (callback)->
         scope.fullRelationships = scope.fullRelationships || []
@@ -53,6 +52,7 @@ angular.module('kulebaoAdmin')
               d.school_id = parseInt(stateParams.kindergarten)
               d
             callback(scope.fullRelationships) if callback?
+            scope.$broadcast 'fullRelationships_ready', scope.fullRelationships
 
       scope.backend = true
       scope.refresh()
@@ -335,6 +335,8 @@ angular.module('kulebaoAdmin')
                 newRelationship.$save ->
                     scope.currentModal.hide()
                     scope.$broadcast 'refreshing'
+                    scope.fullRelationships = []
+                    scope.refresh()
                     scope.saving = false
                   , (res) ->
                     handleError('关系', res)
@@ -394,6 +396,13 @@ angular.module('kulebaoAdmin')
           $timeout ->
             $state.go 'kindergarten.relationship.type.class.list', {kindergarten: stateParams.kindergarten, type: stateParams.type, class_id: c.class_id}
 
+      scope.$on 'fullRelationships_ready', (e, data) ->
+        console.log scope.classesScope
+        groupedChildren = _.groupBy data, 'child.class_id'
+        _.each scope.classesScope, (c) ->
+          members = groupedChildren[c.class_id]
+          headCount = if members? then members.length else 0
+          c.highlightedCount = headCount + '人'
   ]
 
 .controller 'ConnectedRelationshipCtrl',
@@ -413,6 +422,7 @@ angular.module('kulebaoAdmin')
             _.assign extendFilterFriendlyProperties(r), school_id: parseInt stateParams.kindergarten
           rootScope.loading = false
         scope.fetchFullRelationshipsIfNeeded()
+
 
       scope.refreshRelationship()
 

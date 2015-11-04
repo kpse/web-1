@@ -21,9 +21,9 @@
   <tr ng-repeat="r in relationships | filter: searchText" class="row">
     <td class="col-xs-1" ng-if="config.deletable"><input type="checkbox" ng-model="r.checked" 
                                                          ng-change="singleSelection(r)"/></td>
-    <td class="col-xs-2" ng-hide="cardNumberEditing=={{::r.id}}" ng-if="backend"><a ng-disabled="loading"
+    <td class="col-xs-2" ng-hide="cardNumberEditing=={{r.id}}" ng-if="backend"><a ng-disabled="loading"
       ng-click="editing(r)" class="card-number" ng-class="{invalid: invalidCard(r)}">{{r.card | cardDisplay}}</a></td>
-    <td class="col-xs-2" ng-show="cardNumberEditing=={{::r.id}}" ng-if="backend">
+    <td class="col-xs-2" ng-show="cardNumberEditing=={{r.id}}" ng-if="backend">
       <form name="editCardForm">
         <input class="form-control" ui-mask="{{'99999-99999'}}" ng-model="r.card" kl-unique-card="r" name="card">
         <span class="error-field"
@@ -36,11 +36,11 @@
           <span class="glyphicon glyphicon-remove" ng-disabled="loading" ng-click="cancelEditing(r)"></span></button>
       </form>
     </td>
-    <td class="col-xs-1">{{::r.child.class_name}}</td>
-    <td class="col-xs-1"><a ng-disabled="loading" ng-click="editChild(r.child)">{{::r.child.name}}</a></td>
-    <td class="col-xs-1"><a ng-disabled="loading" ng-click="editParent(r.parent)">{{::r.parent.name}}</a></td>
-    <td class="col-xs-2">{{::r.parent.phone | phone}}</td>
-    <td class="col-xs-1">{{::r.relationship}}</td>
+    <td class="col-xs-1">{{r.child.class_name}}</td>
+    <td class="col-xs-1"><a ng-disabled="loading" ng-click="editChild(r.child)">{{r.child.name}}</a></td>
+    <td class="col-xs-1"><a ng-disabled="loading" ng-click="editParent(r.parent)">{{r.parent.name}}</a></td>
+    <td class="col-xs-2">{{r.parent.phone | phone}}</td>
+    <td class="col-xs-1">{{r.relationship}}</td>
 
 
     <td class="col-xs-4">
