@@ -108,7 +108,7 @@ angular.module('kulebaoAdmin',
     .state 'kindergarten.history.class',
       url: '/class/:class_id',
       templateUrl: 'templates/admin/classes.html',
-      controller: 'HistoryInClassCtrl'
+      controller: 'HistoryClassesSelectionCtrl'
     .state 'kindergarten.history.class.list',
       url: '/list',
       templateUrl: 'templates/admin/history_in_class.html',

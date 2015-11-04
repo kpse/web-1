@@ -12,11 +12,10 @@ angular.module('kulebaoAdmin')
 
   ]
 
-.controller 'HistoryInClassCtrl',
+.controller 'HistoryClassesSelectionCtrl',
   [ '$scope', '$rootScope', '$stateParams', '$timeout',
-    '$state', 'parentService', 'historyService', 'childService',
-    'senderService', 'readRecordService', 'employeeService',
-    (scope, rootScope, stateParams, $timeout, $state, Parent, Chat, Child, Sender, ReaderLog, Employee) ->
+    '$state', 'parentService', 'historyService', 'childService', 'senderService', 'readRecordService',
+    (scope, rootScope, stateParams, $timeout, $state, Parent, Chat, Child, Sender, ReaderLog) ->
       rootScope.loading = true
       scope.current_class = parseInt(stateParams.class_id)
 
@@ -33,18 +32,25 @@ angular.module('kulebaoAdmin')
 
         rootScope.loading = false
 
-
-      scope.goDetail = (child) ->
-        rootScope.loading = true
-        $timeout ->
-          $state.go 'kindergarten.history.class.child', {kindergarten: stateParams.kindergarten, class_id: child.class_id, child_id: child.child_id}
-
       scope.navigateTo = (c) ->
         if c.class_id != scope.current_class || !$state.is 'kindergarten.history.class.list'
           rootScope.loading = true
           $timeout ->
             $state.go 'kindergarten.history.class.list', {kindergarten: stateParams.kindergarten, class_id: c.class_id}
 
+  ]
+
+.controller 'HistoryInClassCtrl',
+  [ '$scope', '$rootScope', '$stateParams', '$timeout', '$state',
+    (scope, rootScope, stateParams, $timeout, $state) ->
+      rootScope.loading = true
+
+      scope.goDetail = (child) ->
+        rootScope.loading = true
+        $timeout ->
+          $state.go 'kindergarten.history.class.child', {kindergarten: stateParams.kindergarten, class_id: child.class_id, child_id: child.child_id}
+
+      rootScope.loading = false
   ]
 
 .controller 'HistoryCtrl',
