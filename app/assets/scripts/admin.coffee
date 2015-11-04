@@ -91,7 +91,7 @@ angular.module('kulebaoAdmin',
     .state 'kindergarten.conversation.class',
       url: '/class/:class_id',
       templateUrl: 'templates/admin/classes.html',
-      controller: 'ConversationsInClassCtrl'
+      controller: 'ConversationsClassSelectionCtrl'
     .state 'kindergarten.conversation.class.list',
       url: '/list',
       templateUrl: 'templates/admin/conversation_in_class.html',

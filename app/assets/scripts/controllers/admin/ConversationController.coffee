@@ -15,7 +15,7 @@ angular.module('kulebaoAdmin')
 
   ]
 
-.controller 'ConversationsInClassCtrl',
+.controller 'ConversationsClassSelectionCtrl',
   [ '$scope', '$rootScope', '$stateParams', '$timeout',
     '$state', 'chatSessionService', 'childService',
     'senderService', 'readRecordService',
@@ -24,29 +24,36 @@ angular.module('kulebaoAdmin')
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true).query ->
-        _.forEach scope.children, (child) ->
-          child.messages = Chat.bind(school_id: stateParams.kindergarten, topic: child.child_id, most: 1).query ->
-            child.lastMessage = child.messages[0]
-            child.lastMessage.isRead = true if child.lastMessage isnt undefined
-            if child.lastMessage isnt undefined
-              child.lastMessage.sender.info = Sender.bind(school_id: stateParams.kindergarten, id: child.lastMessage.sender.id, type: child.lastMessage.sender.type).get ->
-                child.lastMessage.sender.name = child.lastMessage.sender.info.name
-                child.lastMessage.sender.read_record = ReaderLog.bind(school_id: stateParams.kindergarten, topic: child.child_id, reader: scope.adminUser.id).get ->
-                  child.lastMessage.isRead = child.lastMessage.sender.read_record.session_id >= child.lastMessage.id
-
-        rootScope.loading = false
-
-      scope.goDetail = (child) ->
-        rootScope.loading = true
-        $timeout ->
-          $state.go 'kindergarten.conversation.class.child', {kindergarten: stateParams.kindergarten, class_id: child.class_id, child_id: child.child_id}
+        _.each scope.children, (child) ->
+          Chat.bind(school_id: stateParams.kindergarten, topic: child.child_id, most: 1).query (messages) ->
+            child.lastMessage = _.first messages
+            unless child.lastMessage?
+              child.lastMessage =
+                isRead: true
+            else
+              sender = child.lastMessage.sender
+              sender.info = Sender.bind(school_id: stateParams.kindergarten, id: sender.id, type: sender.type).get ->
+                sender.name = sender.info.name
+                sender.read_record = ReaderLog.bind(school_id: stateParams.kindergarten, topic: child.child_id, reader: scope.adminUser.id).get ->
+                  child.lastMessage.isRead = sender.read_record.session_id >= child.lastMessage.id
 
       scope.navigateTo = (c) ->
         if c.class_id != scope.current_class || !$state.is 'kindergarten.conversation.class.list'
           rootScope.loading = true
           $timeout ->
             $state.go 'kindergarten.conversation.class.list', {kindergarten: stateParams.kindergarten, class_id: c.class_id}
+  ]
+.controller 'ConversationsInClassCtrl',
+  [ '$scope', '$rootScope', '$stateParams', '$timeout', '$state',
+    (scope, rootScope, stateParams, $timeout, $state) ->
+      rootScope.loading = true
 
+      scope.goDetail = (child) ->
+        rootScope.loading = true
+        $timeout ->
+          $state.go 'kindergarten.conversation.class.child', {kindergarten: stateParams.kindergarten, class_id: child.class_id, child_id: child.child_id}
+
+      rootScope.loading = false
   ]
 .controller 'ConversationCtrl',
   [ '$scope', '$rootScope', '$stateParams',
