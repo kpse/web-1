@@ -53,6 +53,8 @@ angular.module('kulebaoAdmin')
               d
             callback(scope.fullRelationships) if callback?
             scope.$broadcast 'fullRelationships_ready', scope.fullRelationships
+        else
+          callback() if callback?
 
       scope.backend = true
       scope.refresh()
