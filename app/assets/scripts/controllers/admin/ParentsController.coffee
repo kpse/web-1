@@ -21,7 +21,7 @@ angular.module('kulebaoAdmin')
           scope.refreshParents()
 
       scope.checkAll = (check) ->
-        _.forEach scope.parents, (r) -> r.checked = check
+        scope.parents = _.map scope.parents, (r) -> r.checked = check;r
 
       scope.multipleDelete = ->
         checked = _.filter scope.parents, (r) -> r.checked? && r.checked == true

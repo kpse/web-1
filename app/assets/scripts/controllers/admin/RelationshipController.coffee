@@ -484,8 +484,9 @@ angular.module('kulebaoAdmin')
         scope.refreshRelationship()
 
       scope.checkAll = (check) ->
-        _.forEach scope.relationships, (r) ->
+        scope.relationships = _.map scope.relationships, (r) ->
           r.checked = check
+          r
 
       scope.multipleDelete = ->
         checked = _.filter scope.relationships, (r) ->
