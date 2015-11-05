@@ -85,7 +85,10 @@ angular.module('kulebaoAdmin')
         scope.managers = Manager.query school_id: stateParams.kindergarten, class_id: stateParams.class_id
         scope.heading = "#{scope.child.name}小朋友的到校和离校记录"
 
-      scope.allLogs = DailyLog.query school_id: stateParams.kindergarten, child_id: stateParams.child_id
+      scope.allLogs = DailyLog.query school_id: stateParams.kindergarten, child_id: stateParams.child_id, ->
+          rootScope.loading = false
+        , (err) ->
+          rootScope.loading = false
 
       scope.displayType = (type) ->
         switch type
