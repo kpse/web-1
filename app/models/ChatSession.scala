@@ -42,6 +42,19 @@ case class MediaContent(url: String, `type`: Option[String] = Some("image"))
 case class SessionInMonth(month: String, count: Long)
 
 object ChatSession {
+  def employeeSessionHistory(kg: Long, employeeId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String]) = DB.withConnection {
+    implicit c =>
+      SQL("select * from sessionlog where status=1 and school_id={kg} and sender={sender} and session_id not like 'h_%' " +
+        generateMonthQuery(month) + rangerQuery(from, to, most))
+        .on(
+          'kg -> kg.toString,
+          'sender -> employeeId,
+          'from -> from,
+          'to -> to,
+          'month -> month
+        ).as(simple() *)
+  }
+
   def employeeHistory(kg: Long, employeeId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String]) = DB.withConnection {
     implicit c =>
       SQL("select * from sessionlog where status=1 and school_id={kg} and sender={sender} and session_id like 'h_%' " +

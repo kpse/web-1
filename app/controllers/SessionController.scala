@@ -119,13 +119,13 @@ object SessionController extends Controller with Secured {
       }
   }
 
-  def statistics(kg: Long, topicId: String, year: String) =  IsAuthenticated {
+  def statistics(kg: Long, topicId: String, year: String) = IsAuthenticated {
     u =>
       _ =>
         Ok(Json.toJson(ChatSession.groupByMonth(kg, "h_%s".format(topicId), year)))
   }
 
-  def employeeList(kg: Long, employeeId: String) = IsLoggedIn {
+  def lastMessagesOfEmployee(kg: Long, employeeId: String) = IsLoggedIn {
     u => _ =>
       val accesses: List[UserAccess] = UserAccess.queryByUsername(u, kg)
       UserAccess.isSupervisor(accesses) match {
@@ -139,5 +139,10 @@ object SessionController extends Controller with Secured {
   def historyOfEmployee(kg: Long, employeeId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String]) = IsLoggedIn {
     u => _ =>
       Ok(Json.toJson(ChatSession.employeeHistory(kg, employeeId, from, to, most, month)))
+  }
+
+  def sessionHistoryOfEmployee(kg: Long, employeeId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String]) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(ChatSession.employeeSessionHistory(kg, employeeId, from, to, most, month)))
   }
 }

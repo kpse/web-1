@@ -323,7 +323,7 @@ GET           /api/v2/kindergarten/:kg/removed_classes                          
 
 #employee session read
 GET           /api/v2/kindergarten/:kg/employee/:employeeId/read_session                       controllers.ReaderController.employeeLastRead(kg: Long, employeeId: String)
-GET           /api/v2/kindergarten/:kg/employee/:employeeId/session                            controllers.SessionController.employeeList(kg: Long, employeeId: String)
+GET           /api/v2/kindergarten/:kg/employee/:employeeId/session                            controllers.SessionController.lastMessagesOfEmployee(kg: Long, employeeId: String)
 
 
 #schools pagination
@@ -571,6 +571,7 @@ POST          /api/v3/kindergarten/:kg/history/:topicId/record/:id/share        
 GET           /s/:token                                                                        controllers.ShareLinksController.page(token: String)
 
 GET           /api/v3/kindergarten/:kg/employee/:employeeId/history                            controllers.SessionController.historyOfEmployee(kg: Long, employeeId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String])
+GET           /api/v3/kindergarten/:kg/employee/:employeeId/session_history                    controllers.SessionController.sessionHistoryOfEmployee(kg: Long, employeeId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String])
 
 
 GET           /api/v3/kindergarten/:kg/relationship                                            controllers.V3.RelationshipV3Controller.search(kg: Long, card: String)
