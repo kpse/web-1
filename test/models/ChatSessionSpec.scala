@@ -64,13 +64,32 @@ class ChatSessionSpec extends Specification with TestSupport {
       index.size must equalTo(2)
     }
 
-    "treat empty classId the same as the whole school" in new WithApplication {
+    "report history by employee id" in new WithApplication {
 
-      private val index = ChatSession.lastMessageInClasses(93740362L, Some(""))
-      private val index2 = ChatSession.lastMessageInClasses(93740362L, Some("777999,777666,777888"))
+      private val index = ChatSession.employeeHistory(93740362L, "2_93740362_790", None, None, None, None)
 
-      index.size must greaterThan(0)
-      index.size must equalTo(index2.size)
+      index.size must equalTo(6)
+    }
+
+    "report history with most" in new WithApplication {
+
+      private val index = ChatSession.employeeHistory(93740362L, "2_93740362_790", None, None, Some(5), None)
+
+      index.size must equalTo(5)
+    }
+
+    "report session history by employee id" in new WithApplication {
+
+      private val index = ChatSession.employeeSessionHistory(93740362L, "2_93740362_790", None, None, None, None)
+
+      index.size must equalTo(25)
+    }
+
+    "report session history with most" in new WithApplication {
+
+      private val index = ChatSession.employeeSessionHistory(93740362L, "2_93740362_790", None, None, Some(10), None)
+
+      index.size must equalTo(10)
     }
 
 
