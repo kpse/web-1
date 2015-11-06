@@ -1,0 +1,9 @@
+engines:
+  # ... CONFIG CONTENT ...
+  coffeelint:
+    enabled: true
+    # ... CONFIG CONTENT ...
+    checks:
+      max_line_length:
+        enabled: false
+# ... CONFIG CONTENT ...
