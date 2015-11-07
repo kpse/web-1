@@ -142,6 +142,12 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
   }
 
   override def session(): Session = Session(Map("username" -> login_name, "phone" -> phone, "name" -> name, "id" -> id.getOrElse("")))
+
+  def managedNews(news: Option[News]): Boolean = Employee.isSuperUser(id.get, school_id) match {
+    case true => true
+    case false =>
+      news exists ((n) => {Employee.managedClass(school_id, this).exists(_.class_id == n.class_id)})
+  }
 }
 
 case class Principal(employee_id: String, school_id: Long, phone: String, timestamp: Long)

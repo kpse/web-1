@@ -24,6 +24,18 @@ class NewsControllerSpec extends Specification with TestSupport {
     FakeRequest(method, url).withSession("username" -> "login_name", "id" -> "3_93740362_1122")
   }
 
+  def principalRequest(method: String, url: String) = {
+    FakeRequest(method, url).withSession("username" -> "principal", "id" -> "3_93740362_1122")
+  }
+
+  def managerTeacherRequest(method: String, url: String) = {
+    FakeRequest(method, url).withSession("username" -> "manager", "id" -> "3_93740362_3344")
+  }
+
+  def nonManagerTeacherRequest(method: String, url: String) = {
+    FakeRequest(method, url).withSession("username" -> "nonManager", "id" -> "3_93740362_9977")
+  }
+
   "News" should {
     "check authentication first" in new WithApplication {
 
@@ -187,5 +199,66 @@ class NewsControllerSpec extends Specification with TestSupport {
         case _ => failure
       }
     }
+
+    "not be deleted by ineligible teacher if news is to public to the whole school" in new WithApplication {
+
+      val deletedResponse = route(nonManagerTeacherRequest(DELETE, "/kindergarten/93740362/admin/3_93740362_9977/news/1")).get
+      Logger.info(s"contentAsString(deletedResponse) = ${contentAsString(deletedResponse)}")
+      status(deletedResponse) must equalTo(FORBIDDEN)
+      contentType(deletedResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(deletedResponse))
+      (response \ "error_code").as[Int] must equalTo(42)
+
+    }
+
+    "not be deleted by ineligible teacher even news is published to class" in new WithApplication {
+
+      val deletedResponse = route(nonManagerTeacherRequest(DELETE, "/kindergarten/93740362/admin/3_93740362_9977/news/8")).get
+
+      status(deletedResponse) must equalTo(FORBIDDEN)
+      contentType(deletedResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(deletedResponse))
+      (response \ "error_code").as[Int] must equalTo(42)
+
+    }
+
+    "be deleted by principal" in new WithApplication {
+
+      val deletedResponse = route(principalRequest(DELETE, "/kindergarten/93740362/admin/3_93740362_1122/news/1")).get
+
+      status(deletedResponse) must equalTo(OK)
+      contentType(deletedResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(deletedResponse))
+      (response \ "error_code").as[Int] must equalTo(0)
+
+    }
+
+    "not be deleted by teacher if the news scope is the whole school" in new WithApplication {
+
+      val deletedResponse = route(managerTeacherRequest(DELETE, "/kindergarten/93740362/admin/3_93740362_3344/news/1")).get
+
+      status(deletedResponse) must equalTo(FORBIDDEN)
+      contentType(deletedResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(deletedResponse))
+      (response \ "error_code").as[Int] must equalTo(42)
+
+    }
+
+    "be deleted by eligible teacher" in new WithApplication {
+
+      val deletedResponse = route(managerTeacherRequest(DELETE, "/kindergarten/93740362/admin/3_93740362_3344/news/8")).get
+
+      status(deletedResponse) must equalTo(OK)
+      contentType(deletedResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(deletedResponse))
+      (response \ "error_code").as[Int] must equalTo(0)
+
+    }
+
   }
 }

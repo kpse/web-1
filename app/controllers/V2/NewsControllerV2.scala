@@ -76,7 +76,10 @@ object NewsControllerV2 extends Controller with Secured {
   def delete(kg: Long, employeeId: String, newsId: Long) = IsLoggedIn {
     u => _ =>
       Employee.canAccess(Some(employeeId), kg) match {
-        case false => Forbidden(Json.toJson(ErrorResponse("您无权删除学校公告。(no authority to delete)", 41)))
+        case false =>
+          Forbidden(Json.toJson(ErrorResponse(s"您无权查看学校公告。(cannot access school ${kg})", 41)))
+        case true if !Employee.findById(kg, employeeId).exists (_.managedNews(News.findById(kg, newsId))) =>
+          Forbidden(Json.toJson(ErrorResponse(s"您无权删除此公告。(cannot access news ${newsId})", 42)))
         case true =>
           NewsV2.delete(newsId)
           Ok(Json.toJson(new SuccessResponse))
