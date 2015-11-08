@@ -26,15 +26,13 @@ object SessionController extends Controller with Secured {
       Ok(Json.toJson(ChatSession.index(kg, topicId, from, to, most).sortBy(_.id)))
   }
 
-  def reviseTopic(topic: String, c: ChatSession): ChatSession = c.copy(topic = topic)
-
   def create(kg: Long, sessionId: String, retrieveRecentFrom: Option[Long]) = IsAuthenticated(parse.json) {
     u =>
       request =>
         Logger.info(request.body.toString())
         request.body.validate[ChatSession].map {
           case (message) =>
-            val created = ChatSession.create(kg, reviseTopic(sessionId, message), message.topic)
+            val created = ChatSession.create(kg, message.copy(topic = sessionId, timestamp = None), message.topic)
             retrieveRecentFrom match {
               case Some(from) =>
                 Ok(Json.toJson(ChatSession.index(kg, sessionId, Some(from), None, Some(25))))
@@ -79,10 +77,11 @@ object SessionController extends Controller with Secured {
         Logger.info(request.body.toString())
         request.body.validate[ChatSession].map {
           case (message) =>
+            val currentTime = System.currentTimeMillis()
             val messages = childIds.split(",").map {
               case sessionId =>
                 val revisedId = "h_%s".format(sessionId)
-                ChatSession.create(kg, reviseTopic(revisedId, message), sessionId)
+                ChatSession.create(kg, message.copy(topic = revisedId, timestamp = Some(currentTime)), sessionId)
             }
             Ok(Json.toJson(messages))
         }.recoverTotal {

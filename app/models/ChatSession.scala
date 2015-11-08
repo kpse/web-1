@@ -272,8 +272,7 @@ object ChatSession {
 
   def create(kg: Long, session: ChatSession, originId: String) = DB.withConnection {
     implicit c =>
-      val time = System.currentTimeMillis
-
+      val time = session.timestamp.getOrElse(System.currentTimeMillis)
       val medium = session.medium
       val stmt: String = "INSERT INTO sessionlog (school_id, session_id, content, media_url, media_type, sender, update_at, sender_type) VALUES" +
         "({kg}, {id}, {content}, {url}, {media_type}, {sender}, {update_at}, {sender_type})"
