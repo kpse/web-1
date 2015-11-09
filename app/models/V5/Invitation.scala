@@ -14,7 +14,7 @@ case class Invitation(from: Parent, to: NewParent, code: Option[Verification]) {
   def settle: List[Relationship] = DB.withTransaction {
     implicit c =>
       try {
-        val newParent: Parent = from.copy(parent_id = None, name = to.name, phone = to.phone)
+        val newParent: Parent = from.copy(parent_id = None, name = to.name, phone = to.phone, portrait = None)
         Relative.removeDirtyDataIfExists(newParent)
         Parent.create(from.school_id, newParent) foreach {
           newParent =>
