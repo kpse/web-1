@@ -62,7 +62,7 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
             'birthday -> birthday,
             'school_id -> school_id,
             'status -> 1,
-            'member -> 1,
+            'member -> member_status.getOrElse(1),
             'timestamp -> timestamp,
             'created -> timestamp).executeInsert()
         c.commit()
@@ -101,7 +101,7 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
             'picurl -> portrait.getOrElse(""),
             'birthday -> birthday,
             'parent_id -> parent_id,
-            'member -> 1,
+            'member -> member_status.getOrElse(1),
             'status -> status.getOrElse(1),
             'timestamp -> timestamp).executeUpdate()
         c.commit()
@@ -362,7 +362,7 @@ object Parent {
           'picurl -> parent.portrait.getOrElse(""),
           'birthday -> parent.nonEmptyBirthday,
           'parent_id -> parent.parent_id,
-          'member -> 1,
+          'member -> parent.member_status.getOrElse(1),
           'status -> parent.status.getOrElse(1),
           'timestamp -> timestamp).executeUpdate()
       info(parent.school_id, parent.parent_id.get)
@@ -381,7 +381,7 @@ object Parent {
           'picurl -> parent.portrait.getOrElse(""),
           'birthday -> parent.nonEmptyBirthday,
           'timestamp -> timestamp,
-          'member -> 1,
+          'member -> parent.member_status.getOrElse(1),
           'status -> parent.status.getOrElse(1),
           'kg -> kg.toString
         ).executeUpdate()
