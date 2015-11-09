@@ -110,7 +110,7 @@ angular.module('kulebaoAdmin')
           rootScope.loading = true
           $timeout ->
               scope.refresh()
-            , 500
+            , q.length * 50 + 200
 
       scope.multiplePrompt = ->
         checked = _.filter scope.nonMembersInClass, (nonMember) ->
@@ -122,7 +122,7 @@ angular.module('kulebaoAdmin')
           rootScope.loading = true
           $timeout ->
               scope.refresh()
-            , 500
+            , q.length * 50 + 200
 
       scope.hasSelection = (members) ->
         _.some members, (r) ->
