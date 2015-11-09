@@ -37,9 +37,10 @@ angular.module('kulebaoAdmin')
           c.class_id == scope.current_class
 
       generateDetail = (people) ->
-        _.forEach people, (m) ->
+        _.map people, (m) ->
           m.relationships = Relationship.bind(school_id: stateParams.kindergarten).query parent: m.phone, ->
             m.children = _.map m.relationships, (r) -> r.child.name
+          m
 
       scope.selection =
         allMemberCheck: false
@@ -55,10 +56,10 @@ angular.module('kulebaoAdmin')
       scope.refresh = ->
         rootScope.loading = true
         initData()
-        scope.members = Parent.members school_id: stateParams.kindergarten, class_id: stateParams.class_id, ->
-          generateDetail(scope.members)
-          scope.nonMembers = Parent.nonMembers school_id: stateParams.kindergarten, class_id: stateParams.class_id, ->
-            generateDetail(scope.nonMembers)
+        Parent.members school_id: stateParams.kindergarten, class_id: stateParams.class_id, (data) ->
+          scope.members = generateDetail(data)
+          Parent.nonMembers school_id: stateParams.kindergarten, class_id: stateParams.class_id, (nonMemberData) ->
+            scope.nonMembers = generateDetail(nonMemberData)
             scope.kindergarten.charge = Charge.query school_id: stateParams.kindergarten, ->
               scope.$emit 'update_charge'
               scope.membersInClass = _.uniq scope.members, (m) -> m.parent_id
@@ -71,40 +72,27 @@ angular.module('kulebaoAdmin')
       scope.exceed = -> false
 
       scope.promote = (parent) ->
-        if scope.exceed()
-          $q (resolve, reject) ->
-            $timeout ->
-                scope.noPromotion()
-                reject()
-              , 100
-        else
-          parent.member_status = 1
-          parent.$save(school_id: stateParams.kindergarten).$promise
+        parent.member_status = 1
+        parent.$save(school_id: stateParams.kindergarten).$promise
 
 
       scope.reject = (member) ->
         member.member_status = 0
         member.$save(school_id: stateParams.kindergarten).$promise
 
-      scope.noPromotion = ->
-        Alert
-          title: '无法开通'
-          content: '目前开通人数已经达到上限，请联系幼乐宝管理员开通更多授权。'
-          container: '.panel-body'
-
       scope.checkAllMembers = (check) ->
-        _.forEach scope.membersInClass, (r) ->
+        scope.membersInClass = _.map scope.membersInClass, (r) ->
           r.checked = check
+          r
 
       scope.checkAllNonMembers = (check) ->
-        _.forEach scope.nonMembersInClass, (r) ->
+        scope.nonMembersInClass = _.map scope.nonMembersInClass, (r) ->
           r.checked = check
+          r
 
       scope.multipleSuspend = ->
-        checked = _.filter scope.membersInClass, (member) ->
-          member.checked? && member.checked == true
-        queue = _.map checked, (member) ->
-          scope.reject member
+        queue = _(scope.membersInClass).filter((member) ->
+          member.checked? && member.checked == true).uniq((m) -> m.parent_id).map((member) -> scope.reject member).value()
         all = $q.all queue
         all.then (q) ->
           rootScope.loading = true
@@ -113,10 +101,8 @@ angular.module('kulebaoAdmin')
             , q.length * 50 + 200
 
       scope.multiplePrompt = ->
-        checked = _.filter scope.nonMembersInClass, (nonMember) ->
-          nonMember.checked? && nonMember.checked == true
-        queue = _.map checked, (parent) ->
-          scope.promote parent
+        queue = _(scope.nonMembersInClass).filter((nonMember) ->
+          nonMember.checked? && nonMember.checked == true).uniq((m) -> m.parent_id).map((parent) -> scope.promote parent).value()
         all = $q.all queue
         all.then (q) ->
           rootScope.loading = true
