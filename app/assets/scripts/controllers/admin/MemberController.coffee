@@ -73,12 +73,11 @@ angular.module('kulebaoAdmin')
 
       scope.promote = (parent) ->
         parent.member_status = 1
-        parent.$save(school_id: stateParams.kindergarten).$promise
-
+        Parent.save(_.assign(parent, school_id: parseInt stateParams.kindergarten)).$promise
 
       scope.reject = (member) ->
         member.member_status = 0
-        member.$save(school_id: stateParams.kindergarten).$promise
+        Parent.save(_.assign(member, school_id: parseInt stateParams.kindergarten)).$promise
 
       scope.checkAllMembers = (check) ->
         scope.membersInClass = _.map scope.membersInClass, (r) ->
@@ -92,23 +91,25 @@ angular.module('kulebaoAdmin')
 
       scope.multipleSuspend = ->
         queue = _(scope.membersInClass).filter((member) ->
-          member.checked? && member.checked == true).uniq((m) -> m.parent_id).map((member) -> scope.reject member).value()
+          member.checked? && member.checked == true).map((member) -> scope.reject(member)).value()
+        console.log 'multipleSuspend'
+        console.log queue
         all = $q.all queue
         all.then (q) ->
           rootScope.loading = true
           $timeout ->
-              scope.refresh()
-            , q.length * 50 + 200
+            scope.refresh()
 
       scope.multiplePrompt = ->
         queue = _(scope.nonMembersInClass).filter((nonMember) ->
-          nonMember.checked? && nonMember.checked == true).uniq((m) -> m.parent_id).map((parent) -> scope.promote parent).value()
+          nonMember.checked? && nonMember.checked == true).map((p) -> scope.promote(p)).value()
+        console.log 'multiplePrompt'
+        console.log queue
         all = $q.all queue
         all.then (q) ->
           rootScope.loading = true
           $timeout ->
-              scope.refresh()
-            , q.length * 50 + 200
+            scope.refresh()
 
       scope.hasSelection = (members) ->
         _.some members, (r) ->
