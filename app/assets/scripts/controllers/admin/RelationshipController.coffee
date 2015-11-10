@@ -325,7 +325,7 @@ angular.module('kulebaoAdmin')
         newChild = _.assign scope.createChild(), {
           class_id: fastCreating.class_id
           name: fastCreating.child_name
-          nick: fastCreating.child_name
+          nick: fastCreating.child_name.slice(0, 4)
           gender: fastCreating.gender
           birthday: fastCreating.birthday
         }
