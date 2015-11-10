@@ -7,17 +7,18 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
-
-case class MedicineRecord(id: Option[Long], student_id: Long, title: String, content: String, updated_at: Option[Long]) {
+case class MedicineRecordReminder(clock: Long)
+case class MedicineRecord(id: Option[Long], student_id: Long, title: String, content: String, updated_at: Option[Long], clocks: List[MedicineRecordReminder] = List()) {
   def create(kg: Long): Option[MedicineRecord] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into medicinerecord (school_id, student_id, title, content, updated_at) values (" +
-        "{school_id}, {student}, {title}, {content}, {time})")
+      val insert: Option[Long] = SQL("insert into medicinerecord (school_id, student_id, title, content, clocks, updated_at) values (" +
+        "{school_id}, {student}, {title}, {content}, {clocks}, {time})")
         .on(
           'school_id -> kg,
           'student -> student_id,
           'title -> title,
           'content -> content,
+          'clocks -> clocks.map(_.clock).mkString(","),
           'time -> System.currentTimeMillis
         ).executeInsert()
       insert flatMap (MedicineRecord.show(kg, _))
@@ -26,13 +27,14 @@ case class MedicineRecord(id: Option[Long], student_id: Long, title: String, con
   def update(kg: Long): Option[MedicineRecord] = DB.withConnection {
     implicit c =>
       SQL("update medicinerecord set school_id={school_id}, student_id={student}, title={title}, " +
-        "content={content}, updated_at={time} where school_id={school_id} and uid={id}")
+        "content={content}, clocks={clocks}, updated_at={time} where school_id={school_id} and uid={id}")
         .on(
           'id -> id,
           'school_id -> kg,
           'student -> student_id,
           'title -> title,
           'content -> content,
+          'clocks -> clocks.map(_.clock).mkString(","),
           'time -> System.currentTimeMillis
         ).executeUpdate()
       id flatMap (MedicineRecord.show(kg, _))
@@ -40,6 +42,8 @@ case class MedicineRecord(id: Option[Long], student_id: Long, title: String, con
 }
 
 object MedicineRecord {
+  implicit val readMedicineRecordReminder = Json.reads[MedicineRecordReminder]
+  implicit val writeMedicineRecordReminder = Json.writes[MedicineRecordReminder]
   implicit val readMedicineRecord = Json.reads[MedicineRecord]
   implicit val writeMedicineRecord = Json.writes[MedicineRecord]
 
@@ -76,9 +80,10 @@ object MedicineRecord {
       get[Long]("student_id") ~
       get[String]("title") ~
       get[String]("content") ~
+      get[Option[String]]("clocks") ~
       get[Option[Long]]("updated_at") map {
-      case id ~ student ~ title ~ content ~ time =>
-        MedicineRecord(Some(id), student, title, content, time)
+      case id ~ student ~ title ~ content ~ clocks ~ time =>
+        MedicineRecord(Some(id), student, title, content, time, clocks.getOrElse("").split(",").filter(_.nonEmpty).map( c => MedicineRecordReminder(c.toLong)).toList)
     }
   }
 

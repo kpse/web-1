@@ -11,10 +11,12 @@ CREATE TABLE medicinerecord (
   student_id int(11) NOT NULL,
   title varchar(50) NOT NULL DEFAULT '',
   content varchar(255) NOT NULL DEFAULT '',
+  clocks TEXT,
   updated_at bigint(20) NOT NULL DEFAULT 0,
   status INT(4) DEFAULT 1,
   PRIMARY KEY (uid),
-  KEY(school_id)
+  KEY(school_id),
+  KEY(school_id, student_id)
 );
 
 insert into medicinerecord (school_id, student_id, title, content, updated_at) values
