@@ -12,7 +12,8 @@ CREATE TABLE newsread (
 INSERT INTO newsread (school_id, parent_id, news_id) VALUES
 ('93740362', '2_93740362_123', 6),
 ('93740362', '2_93740362_456', 6),
-('93740362', '2_93740362_792', 6);
+('93740362', '2_93740362_792', 6),
+('93740362', '2_not_exist_one', 9);
 
 # --- !Downs
 

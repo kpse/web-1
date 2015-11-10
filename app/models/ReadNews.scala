@@ -14,7 +14,7 @@ object ReadNews {
       val readNews: Option[ReadNews] = SQL("select * from newsRead where school_id={kg} and news_id={id} and parent_id={p}")
         .on('kg -> kg.toString, 'id -> newsId, 'p -> parentId)
         .as(simple singleOpt)
-      readNews.map(r => Parent.findById(kg, r.parent_id))
+      readNews.map(r => Parent.findById(kg, r.parent_id)).filter( r => r.nonEmpty)
   }
 
   def allReaders(kg: Long, newsId: Long) = DB.withConnection {
@@ -22,7 +22,7 @@ object ReadNews {
       val readNews: List[ReadNews] = SQL("select * from newsRead where school_id={kg} and news_id={id}")
         .on('kg -> kg.toString, 'id -> newsId)
         .as(simple *)
-      readNews.map( r => Parent.findById(kg, r.parent_id))
+      readNews.map( r => Parent.findById(kg, r.parent_id)).filter( r => r.nonEmpty)
   }
 
   val simple = {
