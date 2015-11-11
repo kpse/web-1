@@ -13,6 +13,8 @@ angular.module('kulebaoAdmin')
       scope.compress = (url, width, height) ->
         Compress.compress(url, width, height)
 
+      scope.$on 'clearSearch', ->
+        scope.searchText = ''
   ]
 
 .controller 'ConversationsClassSelectionCtrl',
@@ -49,6 +51,7 @@ angular.module('kulebaoAdmin')
       rootScope.loading = true
 
       scope.goDetail = (child) ->
+        scope.$emit 'clearSearch'
         rootScope.loading = true
         $timeout ->
           $state.go 'kindergarten.conversation.class.child', {kindergarten: stateParams.kindergarten, class_id: child.class_id, child_id: child.child_id}

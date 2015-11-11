@@ -10,6 +10,9 @@ angular.module('kulebaoAdmin')
 
       AccessClass(scope.kindergarten.classes)
 
+      scope.$on 'clearSearch', ->
+        scope.searchText = ''
+
   ]
 .controller 'AssessInClassCtrl',
   [ '$scope', '$rootScope', '$stateParams', '$timeout',
@@ -24,6 +27,7 @@ angular.module('kulebaoAdmin')
         rootScope.loading = false
 
       scope.goDetail = (child) ->
+        scope.$emit 'clearSearch'
         rootScope.loading = true
         $state.go 'kindergarten.assess.class.child', {kindergarten: stateParams.kindergarten, class_id: child.class_id, child: child.child_id}
 

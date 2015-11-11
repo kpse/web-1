@@ -10,6 +10,8 @@ angular.module('kulebaoAdmin')
 
       AccessClass(scope.kindergarten.classes)
 
+      scope.$on 'clearSearch', ->
+        scope.searchText = ''
   ]
 
 .controller 'HistoryClassesSelectionCtrl',
@@ -46,6 +48,7 @@ angular.module('kulebaoAdmin')
       rootScope.loading = true
 
       scope.goDetail = (child) ->
+        scope.$emit 'clearSearch'
         rootScope.loading = true
         $timeout ->
           $state.go 'kindergarten.history.class.child', {kindergarten: stateParams.kindergarten, class_id: child.class_id, child_id: child.child_id}
