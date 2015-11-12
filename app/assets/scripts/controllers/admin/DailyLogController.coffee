@@ -28,6 +28,8 @@ angular.module('kulebaoAdmin')
       scope.compress = (url, width, height) ->
         return '' unless url?
         Compressor.compress(url, width, height)
+      scope.$on 'clear_search', ->
+        scope.searchText = ''
   ]
 
 .controller 'DailyLogInClassCtrl',
@@ -65,6 +67,7 @@ angular.module('kulebaoAdmin')
             rootScope.loading = false
 
       scope.detail = (child)->
+        scope.$emit 'clear_search'
         location.path "kindergarten/#{stateParams.kindergarten}/dailylog/class/#{child.class_id}/child/#{child.child_id}"
 
       scope.d3Data = []
@@ -77,9 +80,9 @@ angular.module('kulebaoAdmin')
   ]
 .controller 'ChildDailyLogCtrl',
   [ '$scope', '$rootScope', '$stateParams',
-    '$location', 'childService', 'singleDailyLogService', 'relationshipService',
+    'childService', 'singleDailyLogService', 'relationshipService',
     'classManagerService',
-    (scope, rootScope, stateParams, location, Child, DailyLog, Relationship, Manager) ->
+    (scope, rootScope, stateParams, Child, DailyLog, Relationship, Manager) ->
       scope.child = Child.get school_id: stateParams.kindergarten, child_id: stateParams.child_id, ->
         scope.relationships = Relationship.query school_id: stateParams.kindergarten, child: scope.child.child_id
         scope.managers = Manager.query school_id: stateParams.kindergarten, class_id: stateParams.class_id
