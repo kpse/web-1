@@ -4,7 +4,9 @@ import _root_.helper.TestSupport
 import org.specs2.mutable.Specification
 
 class EmployeeSpec extends Specification with TestSupport {
-
+  private val principalPhone: String = "13258249821"
+  private val teacherPhone: String = "13708089040"
+  private val noClassTeacherPhone: String = "13060003702"
   "Employee" should {
     "be able to login with username and password" in new WithApplication {
 
@@ -21,9 +23,59 @@ class EmployeeSpec extends Specification with TestSupport {
       private val user = Employee.authenticate("newcreated", "11223344556").get
       user.phone must equalTo("11223344556")
     }
+
+    "ignore empty news" in new WithApplication {
+
+      private val created: Employee = Employee.show(teacherPhone).get
+
+      private val underManagement: Boolean = created.managedNews(None)
+
+      underManagement must beFalse
+    }
+
+    "manage news as a principal" in new WithApplication {
+
+      private val created: Employee = Employee.show(principalPhone).get
+
+      private val underManagement: Boolean = created.managedNews(Some(News(None, 1, "", "", None, false, None, Some(123), None)))
+
+      underManagement must beTrue
+    }
+
+    "manage anything as a principal" in new WithApplication {
+
+      private val created: Employee = Employee.show(principalPhone).get
+
+      private val underManagement: Boolean = created.managedNews(None)
+
+      underManagement must beTrue
+    }
+
+    "not manage news without any subordinate classes" in new WithApplication {
+
+      private val created: Employee = Employee.show(noClassTeacherPhone).get
+
+      private val underManagement: Boolean = created.managedNews(Some(News(None, 1, "", "", None, false, None, Some(123), None)))
+
+      underManagement must beFalse
+    }
+
+    "manage news which class is out of subordinates classes" in new WithApplication {
+
+      private val created: Employee = Employee.show(teacherPhone).get
+
+      private val underManagement: Boolean = created.managedNews(Some(News(None, 1, "", "", None, false, None, Some(777888), None)))
+
+      underManagement must beTrue
+    }
   }
 
   def createEmployee(phone: String, loginName: String): Employee = {
     Employee(None, "", phone, 0, "", "", None, "1980-01-01", 123, loginName, None, None)
+  }
+
+  def createPrincipal(phone: String, loginName: String): Employee = {
+    val employee: Employee = createEmployee(phone, loginName)
+    employee.copy(privilege_group = Some("principal"))
   }
 }
