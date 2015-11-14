@@ -6,7 +6,7 @@ angular.module('kulebaoOp').controller 'OpAdsCtrl',
       scope.refresh = ->
         rootScope.loading = true
         scope.kindergartens = School.query (all)->
-          _.forEach all, (k) ->
+          _.each all, (k) ->
             k.ad = Ad.query school_id: k.school_id
           rootScope.loading = false
 
@@ -77,7 +77,7 @@ angular.module('kulebaoOp').controller 'OpAdPositionCtrl',
         scope.kindergarten.classes = Class.query school_id: stateParams.school_id
 
       scope.parents = VideoMember.query school_id: stateParams.school_id, (all)->
-        _.forEach all, (p) ->
+        _.each all, (p) ->
           Parent.get school_id: stateParams.school_id, id: p.id, type: 'p', (data)->
             p.detail = data
             p.relationship = Relationship.query school_id: stateParams.school_id, parent: p.detail.phone

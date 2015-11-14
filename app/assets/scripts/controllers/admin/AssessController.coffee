@@ -21,7 +21,7 @@ angular.module('kulebaoAdmin')
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true).query ->
-        _.forEach scope.children, (c) ->
+        _.each scope.children, (c) ->
           c.status = Assess.bind(school_id: stateParams.kindergarten, child_id: c.child_id, most: 1).query ->
             c.recentStatus = c.status[0]
         rootScope.loading = false

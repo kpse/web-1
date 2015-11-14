@@ -52,7 +52,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
         managers = clazz.managers
         clazz.$save ->
           scope.$emit 'classUpdated'
-          _.forEach managers, (m) ->
+          _.each managers, (m) ->
             cm = new ClassManager(getManager(m))
             cm.class_id = clazz.class_id
             cm.$save()

@@ -122,7 +122,7 @@ angular.module('kulebaoAdmin')
           rootScope.loading = true
           scope.relationship = scope.createRelationship(child, parent)
           scope.parents = Parent.query school_id: stateParams.kindergarten, ->
-            _.forEach scope.parents, (p) ->
+            _.each scope.parents, (p) ->
               p.validRelationships = possibleRelationship(p)
             scope.children = Child.query school_id: stateParams.kindergarten, ->
               scope.fullRelationships = []

@@ -14,7 +14,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
       scope.allLoggedOnce = 0
       scope.allLoggedEver = 0
       scope.kindergartens = School.query ->
-        _.forEach scope.kindergartens, (k) ->
+        _.each scope.kindergartens, (k) ->
           k.parents = Parent.query school_id: k.school_id, ->
             scope.allParents = scope.allParents.concat k.parents
           k.children = Child.query school_id: k.school_id, ->
@@ -70,7 +70,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
       scope.childrenInSchool = 0
       scope.kindergarten = School.get school_id: stateParams.school_id, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.school_id, ->
-          _.forEach scope.kindergarten.classes, (clazz) ->
+          _.each scope.kindergarten.classes, (clazz) ->
             clazz.dailyLogs = DailyLog.query school_id: stateParams.school_id, class_id: clazz.class_id, ->
               scope.childrenInSchool = scope.childrenInSchool + clazz.dailyLogs.length
 

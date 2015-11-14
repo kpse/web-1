@@ -48,7 +48,7 @@ angular.module('kulebaoAdmin')
           BusDriver.query school_id: stateParams.kindergarten, driver: scope.currentBus.driver.id, (data) ->
             scope.currentBus.plans = _.filter (_.map data, (plan) -> findChild(plan.child_id)), (p) -> p?
             scope.waitingChildren = scope.childrenWithoutPlan()
-            _.forEach scope.waitingChildren, (c) -> Plan.get c, (-> c.hasPlan = true), (-> c.hasPlan = false)
+            _.each scope.waitingChildren, (c) -> Plan.get c, (-> c.hasPlan = true), (-> c.hasPlan = false)
           rootScope.loading = false
 
       scope.inClass = (clazz, children) ->

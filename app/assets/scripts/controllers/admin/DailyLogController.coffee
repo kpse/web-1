@@ -9,7 +9,7 @@ angular.module('kulebaoAdmin')
 
       scope.refresh = ->
         scope.childrenInSchool = 0
-        _.forEach scope.kindergarten.classes, (clazz) ->
+        _.each scope.kindergarten.classes, (clazz) ->
           clazz.dailyLog = DailyLog.query school_id: stateParams.kindergarten, class_id: clazz.class_id, ->
             scope.childrenInSchool = scope.childrenInSchool + clazz.dailyLog.length
 
@@ -46,7 +46,7 @@ angular.module('kulebaoAdmin')
           c.class_id == scope.current_class
 
       mappingDetails = (children, logs) ->
-        _.forEach children, (c) ->
+        _.each children, (c) ->
           c.checkInStatus = '未到校'
           checkedIn = _.find logs, (l) ->
             l.child_id == c.child_id

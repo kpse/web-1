@@ -4,7 +4,7 @@ angular.module('kulebaoOp').controller 'OpVideoMemberCtrl',
       rootScope.tabName = 'video'
       rootScope.loading = true
       scope.kindergartens = School.query (all)->
-        _.forEach all, (k) ->
+        _.each all, (k) ->
           k.charge = Charge.query school_id: k.school_id
           k.videoMember = VideoMember.query school_id: k.school_id
         rootScope.loading = false
@@ -41,7 +41,7 @@ angular.module('kulebaoOp').controller 'OpVideoMemberInClassCtrl',
       scope.kindergarten = School.get school_id: stateParams.school_id, ->
         scope.kindergarten.classes = Class.query school_id: stateParams.school_id, ->
           scope.parents = VideoMember.query school_id: stateParams.school_id, (all)->
-            _.forEach all, (p) ->
+            _.each all, (p) ->
               Parent.get school_id: stateParams.school_id, id: p.id, type: 'p', (data)->
                 p.detail = data
                 p.relationship = Relationship.query school_id: stateParams.school_id, parent: p.detail.phone if p.detail.phone?

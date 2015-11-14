@@ -72,7 +72,7 @@ angular.module('kulebaoAdmin')
       scope.refresh = (most=25) ->
         rootScope.loading = true
         scope.conversations = Message.bind(school_id: stateParams.kindergarten, topic: scope.child.child_id, most: most).query ->
-          _.forEach scope.conversations, (c) ->
+          _.each scope.conversations, (c) ->
             c.sender.info = Sender.bind(school_id: stateParams.kindergarten, id: c.sender.id, type: c.sender.type).get ->
               c.sender.name = c.sender.info.name
           scope.message = scope.newMessage()

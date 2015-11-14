@@ -81,7 +81,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
         if group == 'teacher' then '普通老师' else '校长'
 
       scope.checkAll = (check) ->
-        _.forEach scope.employees, (r) ->
+        _.each scope.employees, (r) ->
           r.checked = check
 
       scope.multipleDelete = ->
@@ -126,15 +126,15 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
         $rootScope.loading = true
         scope.employees = SchoolEmployee.query school_id: $stateParams.kindergarten, ->
           scope.assessStats = Stats('assess').query school_id: $stateParams.kindergarten, ->
-            _.forEach scope.employees, (e) ->
+            _.each scope.employees, (e) ->
               e.assess = _.find scope.assessStats, (s) -> e.id == s.employee_id
               e.assess = count: 0 unless e.assess?
           scope.conversationStats = Stats('conversation').query school_id: $stateParams.kindergarten, ->
-            _.forEach scope.employees, (e) ->
+            _.each scope.employees, (e) ->
               e.conversation = _.find scope.conversationStats, (s) -> e.id == s.employee_id
               e.conversation = count: 0 unless e.conversation?
           scope.newsStats = Stats('news').query school_id: $stateParams.kindergarten, ->
-            _.forEach scope.employees, (e) ->
+            _.each scope.employees, (e) ->
               e.news = _.find scope.newsStats, (s) -> e.id == s.employee_id
               e.news = count: 0 unless e.news?
 

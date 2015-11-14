@@ -64,7 +64,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
               to: last + 1 || last
               most: scope.itemsPerPage, (all) ->
                 $rootScope.loading = false
-                _.forEach all, (one) -> one.publisher = Sender.bind(school_id: stateParams.kindergarten, id: one.publisher_id, type: 't').get() if one.publisher_id?
+                _.each all, (one) -> one.publisher = Sender.bind(school_id: stateParams.kindergarten, id: one.publisher_id, type: 't').get() if one.publisher_id?
 
       scope.refresh()
 

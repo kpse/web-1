@@ -84,7 +84,7 @@ uploadService = (qiniuService, tokenService, bucketInfoService) ->
 
 multipleUploadService = (uploadService) ->
   (files, user, onSuccess, onError) ->
-    _.forEach files, (f) -> uploadService(f, user, onSuccess, onError)
+    _.each files, (f) -> uploadService(f, user, onSuccess, onError)
 
 angular.module('kulebao.services')
 .factory('bucketInfoService', ['$http', ($http) ->

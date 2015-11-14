@@ -22,7 +22,7 @@ angular.module('kulebaoAdmin')
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.children = Child.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id, connected: true).query ->
-        _.forEach scope.children, (child) ->
+        _.each scope.children, (child) ->
           child.messages = Chat.bind(school_id: stateParams.kindergarten, topic: child.child_id, most: 1).query ->
             child.lastMessage = child.messages[0]
             child.lastMessage.isRead = true if child.lastMessage isnt undefined
@@ -70,7 +70,7 @@ angular.module('kulebaoAdmin')
       scope.refresh = ->
         rootScope.loading = true
         scope.conversations = Message.bind(school_id: stateParams.kindergarten, topic: scope.child.child_id).query ->
-          _.forEach scope.conversations, (c) ->
+          _.each scope.conversations, (c) ->
             c.sender.info = Sender.bind(school_id: stateParams.kindergarten, id: c.sender.id, type: c.sender.type).get ->
               c.sender.name = c.sender.info.name
           scope.message = scope.newHistoryRecord()

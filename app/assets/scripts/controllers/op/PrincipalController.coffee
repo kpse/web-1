@@ -22,7 +22,7 @@ angular.module('kulebaoOp').controller 'OpPrincipalCtrl',
       scope.refresh = ->
         rootScope.loading = true
         scope.employees = Employee.query ->
-          _.forEach scope.employees, (e) -> e.rank = displayRole(e)
+          _.each scope.employees, (e) -> e.rank = displayRole(e)
           rootScope.loading = false
 
       scope.display('校长')
