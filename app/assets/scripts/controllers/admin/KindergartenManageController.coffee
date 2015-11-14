@@ -119,7 +119,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
           scope.currentModal.hide()
 
       scope.isSuperUser = (user = scope.adminUser) ->
-        undefined isnt _.find ['principal', 'operator'], (u) ->
+        _.any ['principal', 'operator'], (u) ->
           user.privilege_group == u
 
       scope.operatorOnly = (user) ->

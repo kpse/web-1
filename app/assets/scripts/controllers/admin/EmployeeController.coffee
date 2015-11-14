@@ -69,7 +69,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
       scope.buttonLabel = '上传头像'
 
       scope.deletable = (user)->
-        undefined isnt _.find ['principal', 'operator'], (u) -> user.privilege_group == u
+        _.any ['principal', 'operator'], (u) -> user.privilege_group == u
 
       scope.goScore = ->
         location.path location.path().replace(/\/detail$/, '/score')

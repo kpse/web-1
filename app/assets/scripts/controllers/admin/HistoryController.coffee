@@ -170,7 +170,7 @@ angular.module('kulebaoAdmin')
         message.medium && message.medium.length > 8
 
       scope.deletable = (message) ->
-        (message.sender? && message.sender.id == scope.adminUser.id) || undefined isnt _.find ['principal', 'operator'], (u) -> scope.adminUser.privilege_group == u
+        (message.sender? && message.sender.id == scope.adminUser.id) || _.any ['principal', 'operator'], (u) -> scope.adminUser.privilege_group == u
 
       scope.deleteMedia = (media) ->
         _.pullAt scope.message.medium, _.findIndex scope.message.medium, 'url', media.url

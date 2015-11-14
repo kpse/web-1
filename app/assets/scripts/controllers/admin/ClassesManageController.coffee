@@ -62,7 +62,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
 
       scope.isDuplicated = (clazz) ->
         return false if clazz.name is undefined
-        undefined isnt _.find scope.classes, (c) ->
+        _.any scope.classes, (c) ->
           c.name == clazz.name && c.class_id != clazz.class_id
 
       scope.delete = (clazz) ->
