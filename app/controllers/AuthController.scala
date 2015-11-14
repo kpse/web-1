@@ -1,6 +1,7 @@
 package controllers
 
 import models.V4.KulebaoAgent
+import play.api.Play
 import play.api.mvc._
 import play.api.mvc.BodyParsers.parse
 import play.api.data._
@@ -24,6 +25,7 @@ object Auth extends Controller {
     ) verifying("无效的用户名或密码。", _ match {
       case (username, password, _, _) => Employee.authenticate(username, password).isDefined || KulebaoAgent.authenticate(username, password).isDefined
     }) verifying("验证码不正确。", _ match {
+      case anything if play.api.Play.mode(Play.application(play.api.Play.current)) == play.api.Mode.Test => true
       case (_, _, challenge, answer) => ReCaptcha.simpleCheck(challenge, answer)
     })
   )
