@@ -3,7 +3,7 @@ exports.config = {
   allScriptsTimeout: 11000,
 
   specs: [
-    'e2e/operator/*.coffee'
+    'e2e/teacher/*.coffee'
   ],
 
   capabilities: {

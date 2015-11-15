@@ -23,6 +23,7 @@ class ProtractorSpec extends Specification with NoTimeConversions {
         startProtractor(getProcessIO) === 0
         startProtractorPrincipal(getProcessIO) === 0
         startProtractorOperator(getProcessIO) === 0
+        startProtractorAgent(getProcessIO) === 0
       }
     } tag "browser"
   }
@@ -41,6 +42,12 @@ class ProtractorSpec extends Specification with NoTimeConversions {
 
   private def startProtractorOperator(processIO: ProcessIO): Int = {
     Process("protractor", Seq( """test/protractor_teacher.conf.js"""))
+      .run(processIO)
+      .exitValue()
+  }
+
+  private def startProtractorAgent(processIO: ProcessIO): Int = {
+    Process("protractor", Seq( """test/protractor_agent.conf.js"""))
       .run(processIO)
       .exitValue()
   }
