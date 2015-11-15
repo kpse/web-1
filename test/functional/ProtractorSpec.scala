@@ -21,12 +21,26 @@ class ProtractorSpec extends Specification with NoTimeConversions {
 
         Await.result(WS.url("http://localhost:9100").get, 2 second).status === 200
         startProtractor(getProcessIO) === 0
+        startProtractorPrincipal(getProcessIO) === 0
+        startProtractorOperator(getProcessIO) === 0
       }
     } tag "browser"
   }
 
   private def startProtractor(processIO: ProcessIO): Int = {
     Process("protractor", Seq( """test/protractor.conf.js"""))
+      .run(processIO)
+      .exitValue()
+  }
+
+  private def startProtractorPrincipal(processIO: ProcessIO): Int = {
+    Process("protractor", Seq("""test/protractor_principal.conf.js"""))
+      .run(processIO)
+      .exitValue()
+  }
+
+  private def startProtractorOperator(processIO: ProcessIO): Int = {
+    Process("protractor", Seq( """test/protractor_teacher.conf.js"""))
       .run(processIO)
       .exitValue()
   }

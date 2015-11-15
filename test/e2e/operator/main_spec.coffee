@@ -1,6 +1,6 @@
-describe 'Login page', ->
+describe 'Operator page', ->
 
-  it 'should display username and password inputs', ->
+  it 'should display main page after login', ->
     browser.get('/operation')
     expect(browser.getTitle()).toBe '幼乐宝|后台管理'
 
