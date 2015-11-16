@@ -6,7 +6,7 @@ angular.module('kulebaoApp',
    'kulebao.filters'])
 angular.module('kulebaoAdmin',
   ['kulebaoApp', 'ui.mask', 'ngAnimate', 'ngSanitize', 'mgcrea.ngStrap',
-   'mgcrea.ngStrap.helpers.dimensions', 'ui.bootstrap.tpls', 'ui.bootstrap.pagination',
+   'mgcrea.ngStrap.helpers.dimensions', 'ui.bootstrap.tpls', 'ui.bootstrap.pagination', 'ui.bootstrap.buttons',
    'ngCookies'])
 angular.module('kulebaoOp',
   ['kulebaoAdmin', 'emoji', 'ngCsv'])
