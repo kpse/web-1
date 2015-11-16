@@ -452,11 +452,10 @@ object Employee {
         ).as(simple *)
   }
 
-  def create(employee: Employee) = DB.withConnection {
+  def create(employee: Employee): Option[Employee] = DB.withConnection {
     implicit c =>
       EmployeeV3.removeDirtyDataIfExists(employee)
       employee.create
-      show(employee.phone)
   }
 
 

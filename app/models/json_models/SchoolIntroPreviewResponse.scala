@@ -44,11 +44,11 @@ object SchoolIntro {
       SQL("select count(1) from schoolinfo where school_id={id}").on('id -> kg).as(get[Long]("count(1)") single) > 0
   }
 
-  def create(school: CreatingSchool) = DB.withTransaction {
+  def create(school: CreatingSchool): Option[SchoolIntro] = DB.withTransaction {
     implicit c =>
       try {
         val time = System.currentTimeMillis
-        SQL("insert into schoolinfo (school_id, province, city, address, name, description, logo_url, phone, update_at, token, full_name, created_at) " +
+        val inserted: Option[Long] = SQL("insert into schoolinfo (school_id, province, city, address, name, description, logo_url, phone, update_at, token, full_name, created_at) " +
           " values ({school_id}, '', '', {address}, {name}, '', '', {phone}, {timestamp}, {token}, {full_name}, {created})")
           .on(
             'school_id -> school.school_id.toString,
@@ -68,26 +68,28 @@ object SchoolIntro {
           case _ =>
             Employee.create(employee)
         }
-        createdPrincipal map {
-          case (created) =>
+        createdPrincipal foreach {
+          case (created) if created.school_id == school.school_id =>
             created.promote
             created.updatePassword(school.principal.admin_password)
         }
-
-        SQL("insert into chargeinfo (school_id, total_phone_number, expire_date, update_at) " +
-          " values ({school_id}, {total}, {expire}, {time})")
-          .on(
-            'school_id -> school.school_id.toString,
-            'total -> school.charge.total_phone_number,
-            'expire -> DateTime.parse(school.charge.expire_date).toString("yyyy-MM-dd"),
-            'time -> time
-          ).executeInsert()
-        SQL("insert into classinfo (school_id, class_id, class_name) " +
-          " values ({school_id}, 321, '默认班级')")
-          .on(
-            'school_id -> school.school_id.toString
-          ).executeInsert()
+        inserted foreach {
+          SQL("insert into chargeinfo (school_id, total_phone_number, expire_date, update_at) " +
+            " values ({school_id}, {total}, {expire}, {time})")
+            .on(
+              'school_id -> school.school_id.toString,
+              'total -> school.charge.total_phone_number,
+              'expire -> DateTime.parse(school.charge.expire_date).toString("yyyy-MM-dd"),
+              'time -> time
+            ).executeInsert()
+          SQL("insert into classinfo (school_id, class_id, class_name) " +
+            " values ({school_id}, 321, '默认班级')")
+            .on(
+              'school_id -> school.school_id.toString
+            ).executeInsert()
+        }
         c.commit()
+        return detail(school.school_id)
       }
       catch {
         case t: Throwable =>
@@ -95,7 +97,7 @@ object SchoolIntro {
           c.rollback()
           throw new IllegalArgumentException(s"创建学校失败。\n${t.getMessage}", t)
       }
-      detail(school.school_id)
+
   }
 
   def index(q: Option[String] = None) = DB.withConnection {
