@@ -48,7 +48,7 @@ object SchoolIntro {
     implicit c =>
       try {
         val time = System.currentTimeMillis
-        val inserted: Option[Long] = SQL("insert into schoolinfo (school_id, province, city, address, name, description, logo_url, phone, update_at, token, full_name, created_at) " +
+        SQL("insert into schoolinfo (school_id, province, city, address, name, description, logo_url, phone, update_at, token, full_name, created_at) " +
           " values ({school_id}, '', '', {address}, {name}, '', '', {phone}, {timestamp}, {token}, {full_name}, {created})")
           .on(
             'school_id -> school.school_id.toString,
@@ -62,7 +62,7 @@ object SchoolIntro {
           ).executeInsert()
         val employee = Employee(None, "%s校长".format(school.name), school.principal.phone, 0,
           "", "", None, "1980-01-01", school.school_id, school.principal.admin_login, None, None, Some(1))
-        val createdPrincipal = school.phone match {
+        val createdPrincipal = school.principal.phone match {
           case (reCreation) if Employee.hasBeenDeleted(reCreation) =>
             Employee.reCreateByPhone(employee)
           case _ =>
@@ -73,7 +73,8 @@ object SchoolIntro {
             created.promote
             created.updatePassword(school.principal.admin_password)
         }
-        inserted foreach {
+        createdPrincipal foreach {
+          case (created) =>
           SQL("insert into chargeinfo (school_id, total_phone_number, expire_date, update_at) " +
             " values ({school_id}, {total}, {expire}, {time})")
             .on(
@@ -87,15 +88,16 @@ object SchoolIntro {
             .on(
               'school_id -> school.school_id.toString
             ).executeInsert()
+
         }
         c.commit()
-        return detail(school.school_id)
+        detail(school.school_id)
       }
       catch {
         case t: Throwable =>
           logger.warn("error %s".format(t.toString))
           c.rollback()
-          throw new IllegalArgumentException(s"创建学校失败。\n${t.getMessage}", t)
+          throw new IllegalArgumentException(s"创建学校失败。(error creating school)\n${t.getMessage}", t)
       }
 
   }

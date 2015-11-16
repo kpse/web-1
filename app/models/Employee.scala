@@ -83,10 +83,10 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
         }
       }
       catch {
-        case e: Throwable =>
-          Logger.warn(e.getLocalizedMessage)
+        case t: Throwable =>
+          Logger.warn(t.getLocalizedMessage)
           c.rollback()
-          None
+          throw new IllegalArgumentException(s"创建老师失败。(error creating employee)\n${t.getMessage}", t)
       }
 
   }
