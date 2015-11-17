@@ -26,7 +26,7 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
                     login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1), created_at: Option[Long] = None, uid: Option[Long] = None) extends LoginAccount {
-  def dbUpdate()(implicit connection: Connection) = {
+  def dbUpdateByPhone()(implicit connection: Connection) = {
     val time = System.currentTimeMillis
     val newEmployeeId = "3_%d_%d".format(school_id, time)
     SQL("update employeeinfo set employee_id={employee_id}, name={name}, gender={gender}, workgroup={workgroup}, " +
@@ -75,35 +75,39 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
       None
   }
 
+  def dbCreate()(implicit connection: Connection): Option[Long] = {
+    val timestamp: Long = System.currentTimeMillis
+    val employeeId = id.getOrElse(s"3_${school_id}_${timestamp}")
+    SQL("insert into employeeinfo (name, phone, gender, workgroup, workduty, picurl, " +
+      "birthday, school_id, login_name, login_password, update_at, employee_id, created_at) " +
+      "values ({name},{phone},{gender},{workgroup},{workduty},{portrait},{birthday},{school_id}," +
+      "{login_name},{login_password},{update_at}, {employee_id}, {created})")
+      .on(
+        'employee_id -> employeeId,
+        'name -> name,
+        'phone -> phone,
+        'gender -> gender,
+        'workgroup -> workgroup,
+        'workduty -> workduty,
+        'portrait -> portrait,
+        'birthday -> birthday.toString,
+        'school_id -> school_id,
+        'login_name -> login_name,
+        'login_password -> generateNewPassword(phone),
+        'update_at -> timestamp,
+        'created -> timestamp
+      ).executeInsert()
+  }
+
   def create = DB.withTransaction {
     implicit c =>
-      val timestamp: Long = System.currentTimeMillis
-      val employeeId = id.getOrElse(s"3_${school_id}_${timestamp}")
       try {
-        val inserted: Option[Long] = SQL("insert into employeeinfo (name, phone, gender, workgroup, workduty, picurl, " +
-          "birthday, school_id, login_name, login_password, update_at, employee_id, created_at) " +
-          "values ({name},{phone},{gender},{workgroup},{workduty},{portrait},{birthday},{school_id}," +
-          "{login_name},{login_password},{update_at}, {employee_id}, {created})")
-          .on(
-            'employee_id -> employeeId,
-            'name -> name,
-            'phone -> phone,
-            'gender -> gender,
-            'workgroup -> workgroup,
-            'workduty -> workduty,
-            'portrait -> portrait,
-            'birthday -> birthday.toString,
-            'school_id -> school_id,
-            'login_name -> login_name,
-            'login_password -> generateNewPassword(phone),
-            'update_at -> timestamp,
-            'created -> timestamp
-          ).executeInsert()
+        val inserted: Option[Long] = dbCreate()(c)
         c.commit()
         inserted.flatMap {
-          e =>
-            Logger.info("finding employee %d".format(e))
-            Employee.findById(school_id, employeeId)
+          eId =>
+            Logger.info("finding employee %d".format(eId))
+            Employee.dbFindByUId(eId)(c)
         }
       }
       catch {
@@ -137,8 +141,7 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
         ).as(get[Long]("count(1)") single) > 0
   }
 
-  def updatePassword(password: String) = DB.withConnection {
-    implicit c =>
+  def updatePassword(password: String)(implicit connection: Connection) = {
       SQL("update employeeinfo set login_password={password} where employee_id={id}")
         .on(
           'id -> id,
@@ -147,7 +150,10 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
   }
 
   def promote = DB.withConnection {
-    implicit c =>
+    implicit c => dbPromote()(c)
+  }
+
+  def dbPromote()(implicit connection: Connection) = {
       SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) " +
         "values ({school_id},{employee_id},{group},{subordinate},{promoter},{time})")
         .on(
@@ -210,12 +216,16 @@ object Employee {
 
   def reCreateByPhone(employee: Employee) = DB.withConnection {
     implicit c =>
-      employee.dbUpdate()(c)
+      employee.dbUpdateByPhone()(c)
       show(employee.phone)
   }
 
   def hasBeenDeleted(phone: String) = DB.withConnection {
     implicit c =>
+      dbHasBeenDeleted(phone)
+  }
+
+  def dbHasBeenDeleted(phone: String)(implicit connection: Connection) = {
       SQL("select count(1) from employeeinfo where phone={phone} and status=0")
         .on(
           'phone -> phone
@@ -229,6 +239,21 @@ object Employee {
           'id -> id,
           'kg -> kg.toString
         ).as(simple singleOpt)
+  }
+
+  def dbFindById(kg: Long, id: String)(implicit connection: Connection) = {
+    SQL("select * from employeeinfo where employee_id={id} and status=1 and school_id in ({kg}, '0')")
+      .on(
+        'id -> id,
+        'kg -> kg.toString
+      ).as(simple singleOpt)
+  }
+
+  def dbFindByUId(uid: Long)(implicit connection: Connection) = {
+    SQL("select * from employeeinfo where uid={uid} and status=1")
+      .on(
+        'uid -> uid
+      ).as(simple singleOpt)
   }
 
   def getPhoneByLoginName(loginName: String): String = DB.withConnection {
@@ -461,7 +486,8 @@ object Employee {
   def create(employee: Employee): Option[Employee] = DB.withConnection {
     implicit c =>
       EmployeeV3.removeDirtyDataIfExists(employee)
-      employee.create
+      val uid: Option[Long] = employee.dbCreate()(c)
+      uid flatMap (id => Employee.dbFindByUId(id)(c))
   }
 
 

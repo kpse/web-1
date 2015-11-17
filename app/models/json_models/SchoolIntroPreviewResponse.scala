@@ -55,15 +55,17 @@ object SchoolIntro {
         val employee = Employee(None, "%s校长".format(school.name), school.principal.phone, 0,
           "", "", None, "1980-01-01", school.school_id, school.principal.admin_login, None, None, Some(1))
         val createdPrincipal = school.principal.phone match {
-          case (reCreation) if Employee.hasBeenDeleted(reCreation) =>
-            Employee.reCreateByPhone(employee)
+          case (reCreation) if Employee.dbHasBeenDeleted(reCreation)(c) =>
+            employee.dbUpdateByPhone()(c)
+            Employee.dbFindById(school.school_id, employee.id.get)(c)
           case _ =>
-            Employee.create(employee)
+            val uid = employee.dbCreate()(c)
+            Employee.dbFindByUId(uid.get)(c)
         }
         createdPrincipal foreach {
           case (created) if created.school_id == school.school_id =>
-            created.promote
-            created.updatePassword(school.principal.admin_password)
+            created.dbPromote()(c)
+            created.updatePassword(school.principal.admin_password)(c)
             SQL("insert into chargeinfo (school_id, total_phone_number, expire_date, update_at) " +
               " values ({school_id}, {total}, {expire}, {time})")
               .on(
