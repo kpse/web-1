@@ -37,6 +37,7 @@ case class EmployeeCheckInfo(school_id: Long, employee_id: Long, card_no: String
 
 case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_type: Int, record_url: String, timestamp: Long, id: Option[Long] = None) {
   private val logger: Logger = Logger(classOf[CheckInfo])
+
   def toNotifications: List[CheckNotification] = DB.withConnection {
     implicit c =>
       def generateNotice(childName: String): IOSField = {
@@ -78,16 +79,17 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
           'kg -> school_id.toString
         ).as(simpleCheck *).groupBy(_.channelid).mapValues(_.head).values.toList
   }
-  def create = DB.withTransaction {
+
+  def create = DB.withConnection {
     implicit c =>
       save(toNotifications)
   }
 
-  def save(notifications: List[CheckNotification]): Option[Long] = DB.withTransaction {
+  def save(notifications: List[CheckNotification]): Option[Long] = DB.withConnection {
     implicit c =>
       logger.debug(s"messages in saving checking info: $notifications")
       notifications match {
-        case x::xs =>
+        case x :: xs =>
           SQL("insert into dailylog (child_id, record_url, check_at, card_no, notice_type, school_id, parent_name) " +
             "values ({child_id}, {url}, {check_at}, {card_no}, {notice_type}, {school_id}, {parent_name})")
             .on(
@@ -105,7 +107,10 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
 }
 
 case class CheckChildInfo(school_id: Long, child_id: String, check_type: Int, timestamp: Long) {
-  def create = toCheckInfo.create
+  def create = DB.withConnection {
+    implicit c =>
+      toCheckInfo.save(toNotifications)
+  }
 
   def toCheckInfo: CheckInfo =
     CheckInfo(school_id, "", 0, check_type, "", System.currentTimeMillis)
@@ -125,10 +130,10 @@ case class CheckChildInfo(school_id: Long, child_id: String, check_type: Int, ti
           get[String]("parent_name") ~
           get[String]("childinfo.name") ~
           get[Int]("device") map {
-          case child_id ~ pushid ~ channelid ~ name ~ childName ~ 3 =>
-            CheckNotification(timestamp, check_type, child_id, pushid, channelid, "", name, 3, None, Some(CheckingMessage.advertisementOf(school_id)))
-          case child_id ~ pushid ~ channelid ~ name ~ childName ~ 4 =>
-            CheckNotification(timestamp, check_type, child_id, pushid, channelid, "", name, 4,
+          case childId ~ pushid ~ channelid ~ name ~ childName ~ 3 =>
+            CheckNotification(timestamp, check_type, childId, pushid, channelid, "", name, 3, None, Some(CheckingMessage.advertisementOf(school_id)))
+          case childId ~ pushid ~ channelid ~ name ~ childName ~ 4 =>
+            CheckNotification(timestamp, check_type, childId, pushid, channelid, "", name, 4,
               Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)))
         }
 
@@ -153,6 +158,7 @@ case class IOSField(alert: String, sound: String = "", badge: Int = 1)
 
 object CheckingMessage {
   def convert(check: CheckInfo) = check.toNotifications
+
   def convertChildCheck(check: CheckChildInfo) = check.toNotifications
 
   implicit val checkChildInfoReads = Json.reads[CheckChildInfo]
