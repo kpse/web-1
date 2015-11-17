@@ -9,7 +9,7 @@ import play.api.libs.json.Json
 
 case class CardV3(id: Option[Long], number: String, origin: String) {
 
-  def exists = DB.withTransaction {
+  def exists = DB.withConnection {
     implicit c =>
       SQL("select count(1) from cardrecord where uid={id}")
         .on(
@@ -17,7 +17,7 @@ case class CardV3(id: Option[Long], number: String, origin: String) {
         ).as(get[Long]("count(1)") single) > 0
   }
 
-  def originExists = DB.withTransaction {
+  def originExists = DB.withConnection {
     implicit c =>
       SQL("select count(1) from cardrecord where origin={origin}")
         .on(
@@ -42,7 +42,7 @@ case class CardV3(id: Option[Long], number: String, origin: String) {
           'number -> number,
           'origin -> origin
         ).executeUpdate()
-      CardV3.show(kg, id.getOrElse(0))
+      id flatMap (CardV3.show(kg, _))
   }
 
   def create(kg: Long): Option[CardV3] = DB.withConnection {
@@ -54,7 +54,7 @@ case class CardV3(id: Option[Long], number: String, origin: String) {
           'number -> number,
           'origin -> origin
         ).executeInsert()
-      CardV3.show(kg, insert.getOrElse(0))
+      insert flatMap (CardV3.show(kg, _))
   }
 }
 

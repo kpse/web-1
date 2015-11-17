@@ -3,6 +3,7 @@ package controllers.V3
 import controllers.Secured
 import models.V3.CardV3
 import models.{ErrorResponse, SuccessResponse}
+import play.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
@@ -21,6 +22,7 @@ object CardController extends Controller with Secured {
   }
 
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
+    Logger.info(s"CardController create: ${request.body}")
     request.body.validate[CardV3].map {
       case (s) if s.originExists =>
         InternalServerError(Json.toJson(ErrorResponse("卡号重复(duplicated card number)", 2)))
