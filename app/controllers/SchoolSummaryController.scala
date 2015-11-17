@@ -56,9 +56,11 @@ object SchoolSummaryController extends Controller with Secured {
         request.body.validate[CreatingSchool].map {
           case (detail) if Employee.phoneExists(detail.principal.phone) =>
             BadRequest(Json.toJson(ErrorResponse(s"校长手机号${detail.principal.phone}已经存在。(phone number already exists)")))
-          case (detail) if SchoolIntro.idExists(detail.school_id) =>
+          case (detail) if detail.idExists =>
             BadRequest(Json.toJson(ErrorResponse("学校ID已经存在。")))
-          case (detail) if SchoolIntro.adminExists(detail.principal.admin_login) =>
+          case (detail) if detail.fullNameExists =>
+            BadRequest(Json.toJson(ErrorResponse("学校全名已经存在。")))
+          case (detail) if detail.adminExists =>
             BadRequest(Json.toJson(ErrorResponse("校长登录名已经存在。")))
           case (detail) =>
             Ok(Json.toJson(SchoolIntro.create(detail)))

@@ -1,5 +1,7 @@
 package models.json_models
 
+import java.sql.Connection
+
 import anorm.SqlParser._
 import anorm.{~, _}
 import models._
@@ -11,7 +13,21 @@ import play.api.libs.json.Json
 
 case class SchoolIntro(school_id: Long, phone: String, timestamp: Long, desc: String, school_logo_url: String, name: String, token: Option[String], address: Option[String], full_name: Option[String], properties: Option[List[ConfigItem]] = None, created_at: Option[Long] = None)
 
-case class CreatingSchool(school_id: Long, phone: String, name: String, token: String, principal: PrincipalOfSchool, charge: ChargeInfo, address: String, full_name: Option[String])
+case class CreatingSchool(school_id: Long, phone: String, name: String, token: String, principal: PrincipalOfSchool, charge: ChargeInfo, address: String, full_name: Option[String]) {
+  def fullNameExists = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from schoolinfo where full_name={name}").on('name -> full_name).as(get[Long]("count(1)") single) > 0
+  }
+  def idExists = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from schoolinfo where school_id={id}").on('id -> school_id).as(get[Long]("count(1)") single) > 0
+  }
+
+  def adminExists = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from employeeinfo where login_name={name}").on('name -> principal.admin_login).as(get[Long]("count(1)") single) > 0
+  }
+}
 
 case class PrincipalOfSchool(admin_login: String, admin_password: String, phone: String)
 
@@ -34,32 +50,11 @@ object SchoolIntro {
 
   private val logger: Logger = Logger(classOf[SchoolIntro])
 
-  def adminExists(adminLogin: String) = DB.withConnection {
-    implicit c =>
-      SQL("select count(1) from employeeinfo where login_name={name}").on('name -> adminLogin).as(get[Long]("count(1)") single) > 0
-  }
-
-  def idExists(kg: Long) = DB.withConnection {
-    implicit c =>
-      SQL("select count(1) from schoolinfo where school_id={id}").on('id -> kg).as(get[Long]("count(1)") single) > 0
-  }
-
   def create(school: CreatingSchool): Option[SchoolIntro] = DB.withTransaction {
     implicit c =>
       try {
         val time = System.currentTimeMillis
-        SQL("insert into schoolinfo (school_id, province, city, address, name, description, logo_url, phone, update_at, token, full_name, created_at) " +
-          " values ({school_id}, '', '', {address}, {name}, '', '', {phone}, {timestamp}, {token}, {full_name}, {created})")
-          .on(
-            'school_id -> school.school_id.toString,
-            'timestamp -> time,
-            'created -> time,
-            'name -> school.name,
-            'address -> school.address,
-            'phone -> school.phone,
-            'token -> school.token,
-            'full_name -> school.full_name
-          ).executeInsert()
+        dbCreate(school, time)
         val employee = Employee(None, "%s校长".format(school.name), school.principal.phone, 0,
           "", "", None, "1980-01-01", school.school_id, school.principal.admin_login, None, None, Some(1))
         val createdPrincipal = school.principal.phone match {
@@ -100,6 +95,21 @@ object SchoolIntro {
           throw new IllegalArgumentException(s"创建学校失败。(error creating school)\n${t.getMessage}", t)
       }
 
+  }
+
+  def dbCreate(school: CreatingSchool, time: Long)(implicit connection: Connection): Option[Long] = {
+    SQL("insert into schoolinfo (school_id, province, city, address, name, description, logo_url, phone, update_at, token, full_name, created_at) " +
+      " values ({school_id}, '', '', {address}, {name}, '', '', {phone}, {timestamp}, {token}, {full_name}, {created})")
+      .on(
+        'school_id -> school.school_id.toString,
+        'timestamp -> time,
+        'created -> time,
+        'name -> school.name,
+        'address -> school.address,
+        'phone -> school.phone,
+        'token -> school.token,
+        'full_name -> school.full_name
+      ).executeInsert()
   }
 
   def index(q: Option[String] = None) = DB.withConnection {
