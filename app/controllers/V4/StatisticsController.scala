@@ -17,7 +17,7 @@ object StatisticsController extends Controller with Secured {
     u => _ =>
       val month: String = SchoolMonthlyStatistics.pattern.print(lastMonth)
       val cacheKey: String = s"monthlyCountFor${schoolId}_In_$month"
-      val value: SchoolMonthlyStatistics = digFromCache[SchoolMonthlyStatistics](cacheKey, 3600 * 24 * 20, () => {
+      val value: SchoolMonthlyStatistics = digFromCache[SchoolMonthlyStatistics](cacheKey, 3600 * 24, () => {
         SchoolMonthlyStatistics.collectTheWholeMonth(schoolId, lastMonth)
       })
       Ok(Json.toJson(value))
