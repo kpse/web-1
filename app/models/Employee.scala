@@ -1,5 +1,6 @@
 package models
 
+import java.sql.Connection
 import java.util.Date
 
 import anorm.SqlParser._
@@ -25,6 +26,29 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
                     login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1), created_at: Option[Long] = None, uid: Option[Long] = None) extends LoginAccount {
+  def dbUpdate()(implicit connection: Connection) = {
+    val time = System.currentTimeMillis
+    val newEmployeeId = "3_%d_%d".format(school_id, time)
+    SQL("update employeeinfo set employee_id={employee_id}, name={name}, gender={gender}, workgroup={workgroup}, " +
+      " workduty={workduty}, picurl={picurl}, birthday={birthday}, school_id={school_id}, " +
+      " login_name={login_name}, update_at={update_at}, status={status} " +
+      " where phone={phone}")
+      .on(
+        'employee_id -> newEmployeeId,
+        'name -> name,
+        'phone -> phone,
+        'gender -> gender,
+        'workgroup -> workgroup,
+        'workduty -> workduty,
+        'picurl -> portrait,
+        'birthday -> birthday,
+        'school_id -> school_id,
+        'login_name -> login_name,
+        'status -> 1,
+        'update_at -> time
+      ).executeUpdate()
+  }
+
   def update = DB.withConnection {
     implicit c =>
       id map {
@@ -146,7 +170,9 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
   def managedNews(news: Option[News]): Boolean = Employee.isSuperUser(id.get, school_id) match {
     case true => true
     case false =>
-      news exists ((n) => {Employee.managedClass(school_id, this).exists(_.class_id == n.class_id)})
+      news exists ((n) => {
+        Employee.managedClass(school_id, this).exists(_.class_id == n.class_id)
+      })
   }
 }
 
@@ -184,27 +210,7 @@ object Employee {
 
   def reCreateByPhone(employee: Employee) = DB.withConnection {
     implicit c =>
-      val time = System.currentTimeMillis
-      val newEmployeeId = "3_%d_%d".format(employee.school_id, time)
-      SQL("update employeeinfo set employee_id={employee_id}, name={name}, gender={gender}, workgroup={workgroup}, " +
-        " workduty={workduty}, picurl={picurl}, birthday={birthday}, school_id={school_id}, " +
-        " login_name={login_name}, update_at={update_at}, status={status} " +
-        " where phone={phone}")
-        .on(
-          'employee_id -> newEmployeeId,
-          'name -> employee.name,
-          'phone -> employee.phone,
-          'gender -> employee.gender,
-          'workgroup -> employee.workgroup,
-          'workduty -> employee.workduty,
-          'picurl -> employee.portrait,
-          'birthday -> employee.birthday,
-          'school_id -> employee.school_id,
-          'login_name -> employee.login_name,
-          'status -> 1,
-          'update_at -> time
-        ).executeUpdate()
-
+      employee.dbUpdate()(c)
       show(employee.phone)
   }
 
@@ -244,7 +250,7 @@ object Employee {
         ).as(simple singleOpt)
   }
 
-  def managedClass(kg: Long, employee: Employee) : List[SchoolClass] = DB.withConnection {
+  def managedClass(kg: Long, employee: Employee): List[SchoolClass] = DB.withConnection {
     implicit c =>
       val classes: List[String] = SQL("select subordinate from privilege where employee_id={id} and school_id={kg}")
         .on(

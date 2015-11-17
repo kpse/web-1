@@ -57,11 +57,11 @@ object SchoolSummaryController extends Controller with Secured {
           case (detail) if Employee.phoneExists(detail.principal.phone) =>
             BadRequest(Json.toJson(ErrorResponse(s"校长手机号${detail.principal.phone}已经存在。(phone number already exists)")))
           case (detail) if detail.idExists =>
-            BadRequest(Json.toJson(ErrorResponse("学校ID已经存在。")))
+            BadRequest(Json.toJson(ErrorResponse("学校ID已经存在。(school id exists)")))
           case (detail) if detail.fullNameExists =>
-            BadRequest(Json.toJson(ErrorResponse("学校全名已经存在。")))
+            BadRequest(Json.toJson(ErrorResponse("学校全名已经存在。(full name conflicts)")))
           case (detail) if detail.adminExists =>
-            BadRequest(Json.toJson(ErrorResponse("校长登录名已经存在。")))
+            BadRequest(Json.toJson(ErrorResponse("校长登录名已经存在。(principal login name exists)")))
           case (detail) =>
             Ok(Json.toJson(SchoolIntro.create(detail)))
         }.recoverTotal {
@@ -71,7 +71,7 @@ object SchoolSummaryController extends Controller with Secured {
 
   def show(kg: Long) = IsLoggedIn {
     u => _ =>
-      SchoolIntro.detail(kg).fold(NotFound(""))({
+      SchoolIntro.detail(kg).fold(NotFound(s"没有指定ID${kg}的学校。(no such school)"))({
         case school =>
           Ok(Json.toJson(school))
       })

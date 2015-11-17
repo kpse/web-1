@@ -114,7 +114,7 @@ object School {
 
   def cleanSchoolClassesData(kg: Long) = DB.withTransaction {
     implicit c =>
-
+      clearCurrentCache(kg)
       try {
         SQL("delete from accountinfo where accountid in (select phone from parentinfo where school_id={kg})")
           .on('kg -> kg.toString).execute()
@@ -134,7 +134,6 @@ object School {
               .on('kg -> kg.toString).execute()
         }
         c.commit()
-        clearCurrentCache(kg)
       }
       catch {
         case t: Throwable =>

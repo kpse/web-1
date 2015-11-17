@@ -23,10 +23,7 @@ case class CreatingSchool(school_id: Long, phone: String, name: String, token: S
       SQL("select count(1) from schoolinfo where school_id={id}").on('id -> school_id).as(get[Long]("count(1)") single) > 0
   }
 
-  def adminExists = DB.withConnection {
-    implicit c =>
-      SQL("select count(1) from employeeinfo where login_name={name}").on('name -> principal.admin_login).as(get[Long]("count(1)") single) > 0
-  }
+  def adminExists = Employee.loginNameExists(principal.admin_login)
 }
 
 case class PrincipalOfSchool(admin_login: String, admin_password: String, phone: String)
@@ -67,23 +64,19 @@ object SchoolIntro {
           case (created) if created.school_id == school.school_id =>
             created.promote
             created.updatePassword(school.principal.admin_password)
-        }
-        createdPrincipal foreach {
-          case (created) =>
-          SQL("insert into chargeinfo (school_id, total_phone_number, expire_date, update_at) " +
-            " values ({school_id}, {total}, {expire}, {time})")
-            .on(
-              'school_id -> school.school_id.toString,
-              'total -> school.charge.total_phone_number,
-              'expire -> DateTime.parse(school.charge.expire_date).toString("yyyy-MM-dd"),
-              'time -> time
-            ).executeInsert()
-          SQL("insert into classinfo (school_id, class_id, class_name) " +
-            " values ({school_id}, 321, '默认班级')")
-            .on(
-              'school_id -> school.school_id.toString
-            ).executeInsert()
-
+            SQL("insert into chargeinfo (school_id, total_phone_number, expire_date, update_at) " +
+              " values ({school_id}, {total}, {expire}, {time})")
+              .on(
+                'school_id -> school.school_id.toString,
+                'total -> school.charge.total_phone_number,
+                'expire -> DateTime.parse(school.charge.expire_date).toString("yyyy-MM-dd"),
+                'time -> time
+              ).executeInsert()
+            SQL("insert into classinfo (school_id, class_id, class_name) " +
+              " values ({school_id}, 321, '默认班级')")
+              .on(
+                'school_id -> school.school_id.toString
+              ).executeInsert()
         }
         c.commit()
         detail(school.school_id)
@@ -169,11 +162,13 @@ object SchoolIntro {
         info.properties map {
           _.map(Charge.addConfig(info.school_id, _))
         }
+        c.commit()
       }
       catch {
         case t: Throwable =>
-          logger.warn("error %s".format(t.toString))
+          logger.warn("updateExists error %s".format(t.toString))
           c.rollback()
+          throw new IllegalArgumentException(s"更新学校失败。(error updating school)\n${t.getMessage}", t)
       }
 
   }
