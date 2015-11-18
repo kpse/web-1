@@ -81,8 +81,9 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
         if group == 'teacher' then '普通老师' else '校长'
 
       scope.checkAll = (check) ->
-        _.each scope.employees, (r) ->
+        scope.employees = _.map scope.employees, (r) ->
           r.checked = check
+          r
 
       scope.multipleDelete = ->
         checked = _.filter scope.employees, (r) ->
