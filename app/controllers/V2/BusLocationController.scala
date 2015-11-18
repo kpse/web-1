@@ -117,7 +117,6 @@ object BusLocationController extends Controller with Secured {
     u => request =>
       request.body.validate[List[CheckChildInfo]].map {
         case (checks) =>
-          val millis: Long = System.currentTimeMillis
           checks foreach {
             (check: CheckChildInfo) =>
               val millis: Long = System.currentTimeMillis
@@ -134,7 +133,6 @@ object BusLocationController extends Controller with Secured {
     u => request =>
       request.body.validate[List[CheckChildInfo]].map {
         case (checks) =>
-          val millis: Long = System.currentTimeMillis
           checks foreach {
             (check: CheckChildInfo) =>
               val millis: Long = System.currentTimeMillis
@@ -142,6 +140,42 @@ object BusLocationController extends Controller with Secured {
               pushToParents2(check.copy(check_type = 12, timestamp = millis))
           }
           Ok(Json.toJson(SuccessResponse(s"今天下午一共${checks.length}名学生离校上车(${checks.length} students get on the bus.)")))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
+
+  def offlineBatchImport(kg: Long, driverId: String) = IsLoggedIn(parse.json) {
+    u => request =>
+      request.body.validate[List[CheckInfo]].map {
+        case (checks) =>
+          val result: List[CheckInfo] = checks map {
+            case (check: CheckInfo) if check.notice_type == 10 =>
+              Relationship.getChildIdByCard(check.card_no) foreach { childId =>
+                BusLocation.checkIn(kg, driverId, childId, check.card_no, check.timestamp)
+                pushToParents(check.copy(notice_type = 10))
+              }
+              check
+            case (check: CheckInfo) if check.notice_type == 11 =>
+              Relationship.getChildIdByCard(check.card_no) foreach { childId =>
+                BusLocation.childrenOffBus(kg, driverId, childId, check.timestamp)
+                pushToParents2(CheckChildInfo(kg, childId, 11, check.timestamp))
+              }
+              check
+            case (check: CheckInfo) if check.notice_type == 12 =>
+              Relationship.getChildIdByCard(check.card_no) foreach { childId =>
+                BusLocation.childrenOnBus(kg, driverId, childId, check.card_no, check.timestamp)
+                pushToParents2(CheckChildInfo(kg, childId, 12, check.timestamp))
+              }
+              check
+            case (check: CheckInfo) if check.notice_type == 13 =>
+              Relationship.getChildIdByCard(check.card_no) foreach  { childId =>
+                BusLocation.checkOut(kg, driverId, childId, check.timestamp)
+                pushToParents(check.copy(notice_type = 13))
+              }
+              check
+          }
+          Ok(Json.toJson(SuccessResponse(s"批量处理${result.length}名学生的校车事件(${result.length} students school bus events handled.)")))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }

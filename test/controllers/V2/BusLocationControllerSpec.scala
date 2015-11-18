@@ -1,15 +1,15 @@
 package controllers.V2
 
 import _root_.helper.TestSupport
+import models.json_models.CheckingMessage._
 import models.json_models.{CheckChildInfo, CheckInfo}
 import models.{BusLocation, Parent, ParentPhoneCheck}
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import models.json_models.CheckingMessage._
 
 @RunWith(classOf[JUnitRunner])
 class BusLocationControllerSpec extends Specification with TestSupport {
@@ -119,6 +119,27 @@ class BusLocationControllerSpec extends Specification with TestSupport {
       status(checkResponse5) must equalTo(NOT_FOUND)
       (Json.parse(contentAsString(checkResponse5)) \ "error_code").as[Int] must equalTo(4)
 
+    }
+
+    "be fed by batch offline importing" in new WithApplication {
+      val driver: String = "someOne"
+      private val json6: JsValue = Json.toJson(List(CheckInfo(93740362, "0001234567", 0, 10, "", System.currentTimeMillis - 6 * 3600 * 1000),
+        CheckInfo(93740362, "0001234567", 0, 11, "", System.currentTimeMillis - 5 * 3600 * 1000),
+        CheckInfo(93740362, "0001234567", 0, 12, "", System.currentTimeMillis - 4 * 3600 * 1000),
+        CheckInfo(93740362, "0001234567", 0, 13, "", System.currentTimeMillis)))
+      val batchResponse = route(driverRequest(POST, s"/api/v2/kindergarten/93740362/bus_driver/${driver}/offline_bus_check").withBody(json6)).get
+
+      status(batchResponse) must equalTo(OK)
+      (Json.parse(contentAsString(batchResponse)) \ "error_code").as[Long] must equalTo(0)
+
+      val dailyResponse = route(parentRequest(GET, s"/kindergarten/93740362/child/1_1391836223533/dailylog?most=4")).get
+      private val dailyLogs: Seq[JsValue] = Json.parse(contentAsString(dailyResponse)).as[JsArray].value
+
+      dailyLogs.size must equalTo(4)
+      dailyLogs.map( d => (d \ "notice_type").as[Long]) must contain(10)
+      dailyLogs.map( d => (d \ "notice_type").as[Long]) must contain(11)
+      dailyLogs.map( d => (d \ "notice_type").as[Long]) must contain(12)
+      dailyLogs.map( d => (d \ "notice_type").as[Long]) must contain(13)
     }
 
   }

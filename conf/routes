@@ -271,6 +271,7 @@ POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/check_out           
 
 POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/batch_check_out                    controllers.V2.BusLocationController.batchCheckOut(kg: Long, driverId: String)
 POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/batch_check_in                     controllers.V2.BusLocationController.batchCheckIn(kg: Long, driverId: String)
+POST          /api/v2/kindergarten/:kg/bus_driver/:driverId/offline_bus_check                  controllers.V2.BusLocationController.offlineBatchImport(kg: Long, driverId: String)
 
 GET           /api/v2/kindergarten/:kg/bus_driver/:driverId/plans                              controllers.V2.ChildrenPlanController.index(kg: Long, driverId: String)
 GET           /api/v2/kindergarten/:kg/child/:childId/plan                                     controllers.V2.ChildrenPlanController.show(kg: Long, childId: String)

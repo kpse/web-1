@@ -35,7 +35,7 @@ class CheckInfoSpec extends Specification with TestSupport {
       private val notifications = info.toNotifications
 
       notifications.size must equalTo(2)
-      notifications.map(_.channelid) must contain("3")
+      notifications.map(_.channelid) must contain("0")
       notifications.map(_.channelid) must contain("7")
 
     }
@@ -71,7 +71,7 @@ class CheckInfoSpec extends Specification with TestSupport {
       private val notifications = info.toNotifications
 
       notifications.size must equalTo(2)
-      notifications.map(_.channelid) must contain("3")
+      notifications.map(_.channelid) must contain("0")
       notifications.map(_.channelid) must contain("7")
 
     }

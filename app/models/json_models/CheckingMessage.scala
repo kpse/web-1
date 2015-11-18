@@ -120,7 +120,7 @@ case class CheckChildInfo(school_id: Long, child_id: String, check_type: Int, ti
       def generateNotice(childName: String): IOSField = {
         IOSField("%s提醒您：您的孩子 %s 已于 %s %s。".format(CheckingMessage.advertisementOf(school_id), childName,
           new DateTime(timestamp).toString("HH:mm:ss"),
-          if (check_type == 11) "下车" else "上车"))
+          if (check_type == 11) "下车入园" else "离园上车"))
       }
 
       val simpleChildCheck = {
