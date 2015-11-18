@@ -8,6 +8,7 @@ import play.api.db.DB
 import play.api.libs.json.Json
 
 case class CardV3(id: Option[Long], number: String, origin: String) {
+  def wellFormatted = origin.matches("""\d{10}""")
 
   def exists = DB.withConnection {
     implicit c =>
