@@ -12,11 +12,11 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 import models.LoginAccount
-import models.V4.SchoolMonthlyStatistics.writeSchoolMonthlyStatistics
-import models.V4.SchoolMonthlyStatistics.readSchoolMonthlyStatistics
+import models.V4.SchoolOpertionReport.writeSchoolMonthlyStatistics
+import models.V4.SchoolOpertionReport.readSchoolMonthlyStatistics
 import play.api.mvc.Session
 
-case class AgentStatistics(id: Long, agent: Long, data: SchoolMonthlyStatistics)
+case class AgentStatistics(id: Long, agent: Long, data: SchoolOpertionReport)
 
 case class KulebaoAgent(id: Option[Long], name: Option[String], area: Option[String], phone: Option[String], logo: Option[String], contact_info: Option[String], memo: Option[String], city: Option[String],
                         login_name: Option[String], updated_at: Option[Long], created_at: Option[Long], expire: Option[Long], privilege_group: Option[String] = Some("agent")) extends LoginAccount {
@@ -221,7 +221,7 @@ object KulebaoAgent {
           case school =>
             historyDataExists(agent.id.get, school.school_id, lastMonth) match {
               case false =>
-                val monthData: SchoolMonthlyStatistics = SchoolMonthlyStatistics.collectTheWholeMonth(school.school_id, lastMonth)
+                val monthData: SchoolOpertionReport = SchoolOpertionReport.collectTheWholeMonth(school.school_id, lastMonth)
                 Logger.info(s"insert data ${monthData.logged_once}, ${monthData.logged_ever} for agent ${agent.id.get} ${pattern.print(lastMonth)} in ${monthData.school_id}")
                 collectData(AgentStatistics(monthData.id, agent.id.get, monthData))
               case true =>
@@ -259,7 +259,7 @@ object KulebaoAgent {
       get[Long]("child_count") ~
       get[Long]("created_at") map {
       case id ~ agent ~ school ~ month ~ once ~ ever ~ child ~ created =>
-        val data: SchoolMonthlyStatistics = SchoolMonthlyStatistics(id, school.toLong, month, once, ever, created, child)
+        val data: SchoolOpertionReport = SchoolOpertionReport(id, school.toLong, month, once, ever, created, child)
         AgentStatistics(id, agent, data)
     }
   }

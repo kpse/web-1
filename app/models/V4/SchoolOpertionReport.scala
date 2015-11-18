@@ -9,15 +9,15 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
-case class SchoolMonthlyStatistics(id: Long, school_id: Long, month: String, logged_once: Long, logged_ever: Long, created_at: Long, child_count: Long)
+case class SchoolOpertionReport(id: Long, school_id: Long, month: String, logged_once: Long, logged_ever: Long, created_at: Long, child_count: Long)
 
-object SchoolMonthlyStatistics {
-  implicit val writeSchoolMonthlyStatistics = Json.writes[SchoolMonthlyStatistics]
-  implicit val readSchoolMonthlyStatistics = Json.reads[SchoolMonthlyStatistics]
+object SchoolOpertionReport {
+  implicit val writeSchoolMonthlyStatistics = Json.writes[SchoolOpertionReport]
+  implicit val readSchoolMonthlyStatistics = Json.reads[SchoolOpertionReport]
 
   val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
 
-  def collectTheWholeMonth(school_id: Long, lastMonth: DateTime): SchoolMonthlyStatistics = DB.withConnection {
+  def collectTheWholeMonth(school_id: Long, lastMonth: DateTime): SchoolOpertionReport = DB.withConnection {
     implicit c =>
       val firstMilli = lastMonth.withDayOfMonth(1).withMillisOfDay(1).getMillis
       val lastMilli = lastMonth.plusMonths(1).withDayOfMonth(1).withMillisOfDay(1).getMillis
@@ -49,6 +49,6 @@ object SchoolMonthlyStatistics {
         .on(
           'kg -> school_id
         ).as(get[Long]("count") single)
-      SchoolMonthlyStatistics(0, school_id, pattern.print(lastMonth), loggedOnce, loggedEver, 0, childCount)
+      SchoolOpertionReport(0, school_id, pattern.print(lastMonth), loggedOnce, loggedEver, 0, childCount)
   }
 }

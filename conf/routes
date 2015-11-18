@@ -678,6 +678,7 @@ GET           /api/v4/agent/:agentId/kindergarten/:kg/active                    
 POST          /api/v4/agent_statistics                                                         controllers.V4.AgentController.monthlyStatistics
 
 GET           /api/v4/statistics/monthly/:schoolId                                             controllers.V4.StatisticsController.monthlyCounting(schoolId: Long)
+GET           /api/v4/statistics/daily/:schoolId                                               controllers.V4.StatisticsController.dailyCounting(schoolId: Long)
 
 POST          /api/v5/kindergarten/:schoolId/invitation                                        controllers.V5.InvitationController.create(schoolId: Long)
 POST          /api/v5/invitation_code/:phone                                                   controllers.V5.SMSController.send(phone: String)
