@@ -7,26 +7,35 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
       rootScope.tabName = 'reporting'
 
       Monthly = Statistics 'monthly'
+      Daily = Statistics 'daily'
 
-      rootScope.loading = true
-      scope.allChildren = []
-      scope.allParents = []
-      scope.allLoggedOnce = 0
-      scope.allLoggedEver = 0
-      scope.kindergartens = School.query ->
-        _.each scope.kindergartens, (k) ->
-          k.parents = Parent.query school_id: k.school_id, ->
-            scope.allParents = scope.allParents.concat k.parents
-          k.children = Child.query school_id: k.school_id, ->
-            scope.allChildren = scope.allChildren.concat k.children
-          k.charge = Charge.query school_id: k.school_id
-          k.monthly = Monthly.get school_id: k.school_id, ->
-            scope.allLoggedOnce = scope.allLoggedOnce + k.monthly.logged_once
-            scope.allLoggedEver = scope.allLoggedEver + k.monthly.logged_ever
-            k.monthlyRate = SchoolRate(k.monthly)
-            k.monthlyChildRate = ChildRate(k.monthly)
+      scope.refresh = (TimeEndPoint = Monthly)->
+        rootScope.loading = true
+        scope.allChildren = []
+        scope.allParents = []
+        scope.allLoggedOnce = 0
+        scope.allLoggedEver = 0
+        scope.kindergartens = School.query ->
+          _.each scope.kindergartens, (k) ->
+            k.parents = Parent.query school_id: k.school_id, ->
+              scope.allParents = scope.allParents.concat k.parents
+            k.children = Child.query school_id: k.school_id, ->
+              scope.allChildren = scope.allChildren.concat k.children
+            k.charge = Charge.query school_id: k.school_id
+            k.monthly = TimeEndPoint.get school_id: k.school_id, ->
+              scope.allLoggedOnce = scope.allLoggedOnce + k.monthly.logged_once
+              scope.allLoggedEver = scope.allLoggedEver + k.monthly.logged_ever
+              k.monthlyRate = SchoolRate(k.monthly)
+              k.monthlyChildRate = ChildRate(k.monthly)
 
-        rootScope.loading = false
+          rootScope.loading = false
+
+      scope.refresh()
+
+      scope.switchToRealTime = ->
+        scope.refresh(Daily)
+        scope.currentMonth = '实时'
+        scope.csvName = "real_time_report_#{yesterday(new Date())}.csv"
 
       scope.detail = (kg) ->
         location.path "main/school_report/#{kg.school_id}"
@@ -34,7 +43,10 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
       lastMonthOfNow = (time) ->
         time.setDate(1)
         time.setMonth(time.getMonth() - 1)
-        time.getFullYear() + ('0' + (time.getMonth() + 1)).slice(-2) + ""
+        time.getFullYear() + ('0' + (time.getMonth() + 1)).slice(-2) + ''
+      yesterday = (time) ->
+        time.setDate(time.getDate() - 1)
+        time.getFullYear() + ('0' + (time.getMonth() + 1)).slice(-2) + '' + time.getDate()
       scope.currentMonth = lastMonthOfNow(new Date())
 
       scope.forceToReCalculate = ->
