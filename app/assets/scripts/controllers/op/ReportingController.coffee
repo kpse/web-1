@@ -1,8 +1,8 @@
 angular.module('kulebaoOp').controller 'OpReportingCtrl',
-  ['$scope', '$rootScope', '$location', '$http', 'parentService', 'childService',
+  ['$scope', '$rootScope', '$location', '$http',
    'schoolEmployeesService', 'classService', 'schoolService', 'activeCountService', 'chargeService', 'StatsServiceV4',
    'monthlyChildRateService', 'monthlySchoolRateService',
-    (scope, rootScope, location, $http, Parent, Child, Employee, Class, School, ActiveCount, Charge, Statistics,
+    (scope, rootScope, location, $http, Employee, Class, School, ActiveCount, Charge, Statistics,
      ChildRate, SchoolRate) ->
       rootScope.tabName = 'reporting'
 
@@ -11,22 +11,22 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
 
       scope.refresh = (TimeEndPoint = Monthly)->
         rootScope.loading = true
-        scope.allChildren = []
-        scope.allParents = []
+        scope.allChildren = 0
+        scope.allParents = 0
         scope.allLoggedOnce = 0
         scope.allLoggedEver = 0
         scope.kindergartens = School.query ->
           _.each scope.kindergartens, (k) ->
-            k.parents = Parent.query school_id: k.school_id, ->
-              scope.allParents = scope.allParents.concat k.parents
-            k.children = Child.query school_id: k.school_id, ->
-              scope.allChildren = scope.allChildren.concat k.children
             k.charge = Charge.query school_id: k.school_id
             k.monthly = TimeEndPoint.get school_id: k.school_id, ->
-              scope.allLoggedOnce = scope.allLoggedOnce + k.monthly.logged_once
-              scope.allLoggedEver = scope.allLoggedEver + k.monthly.logged_ever
+              scope.allLoggedOnce += k.monthly.logged_once
+              scope.allLoggedEver += k.monthly.logged_ever
               k.monthlyRate = SchoolRate(k.monthly)
               k.monthlyChildRate = ChildRate(k.monthly)
+              k.parents = k.monthly.parent_count
+              k.children = k.monthly.child_count
+              scope.allParents += k.parents
+              scope.allChildren += k.children
 
           rootScope.loading = false
 
@@ -53,8 +53,8 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
       scope.export = ->
         _.map scope.kindergartens, (k) ->
           name: k.full_name
-          children: k.children.length
-          parents: k.parents.length
+          children: k.monthly.child_count
+          parents: k.monthly.parent_count
           user: k.monthly.logged_ever
           active: k.monthly.logged_once
           rate: k.monthlyRate
@@ -66,10 +66,10 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
   ]
 
 .controller 'OpSchoolReportingCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$http', 'parentService', 'childService',
+  ['$scope', '$rootScope', '$stateParams', '$http',
    'schoolEmployeesService', 'classService', 'schoolService', 'adminNewsPreview', 'StatsService', 'activeCountService',
    'monthlyChildRateService', 'monthlySchoolRateService', 'StatsServiceV4',
-    (scope, rootScope, stateParams, $http, Parent, Child, Employee, Class, School, News, Statistics, ActiveCount,
+    (scope, rootScope, stateParams, $http, Employee, Class, School, News, Statistics, ActiveCount,
      ChildRate, SchoolRate, StatisticsV4) ->
       rootScope.tabName = 'reporting'
       rootScope.loading = true
@@ -86,8 +86,8 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
             clazz.dailyLogs = DailyLog.query school_id: stateParams.school_id, class_id: clazz.class_id, ->
               scope.childrenInSchool = scope.childrenInSchool + clazz.dailyLogs.length
 
-          scope.parents = Parent.query school_id: stateParams.school_id
-          scope.children = Child.query school_id: stateParams.school_id, connected: true
+          scope.parents = scope.monthly.parent_count
+          scope.children = scope.monthly.child_count
           scope.employees = Employee.query school_id: stateParams.school_id
           scope.allNews = News.query school_id: stateParams.school_id, publisher_id: scope.adminUser.id
           scope.allChats = Chat.get school_id: stateParams.school_id
