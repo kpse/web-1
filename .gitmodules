@@ -1,3 +1,6 @@
 [submodule "kulebao_config"]
 	path = kulebao_config
 	url = git://bitbucket.org/kulebao/kulebao_config
+[submodule "lib/rong"]
+	path = lib/rong
+	url = git@github.com:kulebao/server-sdk-java.git
