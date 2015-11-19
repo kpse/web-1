@@ -45,13 +45,15 @@ object SchoolOperationReport {
           'begin -> firstMilli,
           'end -> lastMilli
         ).as(get[Long]("count") single)
-      val childCount: Long = SQL("SELECT count(distinct child_id) count FROM childinfo where school_id={kg} and status=1")
+      val childCount: Long = SQL("SELECT count(distinct child_id) count FROM childinfo where school_id={kg} and status=1 and created_at < {end}")
         .on(
-          'kg -> school_id
+          'kg -> school_id,
+          'end -> lastMilli
         ).as(get[Long]("count") single)
-      val parentCount: Long = SQL("SELECT count(distinct parent_id) count FROM parentinfo where school_id={kg} and status=1")
+      val parentCount: Long = SQL("SELECT count(distinct parent_id) count FROM parentinfo where school_id={kg} and status=1 and created_at < {end}")
         .on(
-          'kg -> school_id
+          'kg -> school_id,
+          'end -> lastMilli
         ).as(get[Long]("count") single)
       SchoolOperationReport(0, school_id, pattern.print(lastMonth), loggedOnce, loggedEver, System.currentTimeMillis, childCount, parentCount)
   }
