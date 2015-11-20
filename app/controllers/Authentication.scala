@@ -2,15 +2,16 @@ package controllers
 
 import controllers.helper.JsonLogger._
 import models.BindingV1.writeBindingHistory
-import models.V7.{IMToken, IMTokenRes}
+import models.V7.IMToken
 import models.helper.PasswordHelper
 import models.json_models.{BindingNumber, ChangePassword, CheckPhone, CheckPhoneResponse, MobileLogin, ResetPassword, _}
 import models.{AppUpgradeResponse, ErrorResponse, _}
 import play.Logger
 import play.api.libs.json._
 import play.api.mvc.{SimpleResult, _}
-import scala.concurrent.{ExecutionContext, Future}
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object Authentication extends Controller with Secured {
 
@@ -136,16 +137,20 @@ object Authentication extends Controller with Secured {
       }
   }
 
-  def employeeLogin() = Action(parse.json) {
+  def employeeLogin() = Action.async(parse.json) {
     request =>
       request.body.validate[MobileLogin].map {
         case (teacherLogin) =>
           loggedJson(teacherLogin)
-          Employee.authenticate(teacherLogin.account_name, teacherLogin.password).fold(Forbidden("无效的用户名或密码。").withNewSession)({
-            case (employee) => Ok(loggedJson(employee)).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
+          Employee.authenticate(teacherLogin.account_name, teacherLogin.password).fold(Future(Forbidden("无效的用户名或密码。").withNewSession))({
+            case (employee) =>
+              IMToken.retrieveIMToken(Some(employee.imUserInfo)).map {
+                imToken =>
+                  Ok(loggedJson(employee.copy(im_token = imToken.map(_.token)))).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
+              }
           })
       }.recoverTotal {
-        e => BadRequest("Detected error:" + loggedErrorJson(e))
+        e => Future(BadRequest("Detected error:" + loggedErrorJson(e)))
       }
   }
 
@@ -184,7 +189,7 @@ object Authentication extends Controller with Secured {
               val user: Option[Parent] = Parent.phoneSearch(result.account_name)
               IMToken.retrieveIMToken(user.map(_.imUserInfo)).map {
                 imToken =>
-                  Ok(loggedJson(success.copy(im_token = imToken.getOrElse(IMTokenRes(0, "", "")).token))).withSession("username" -> success.account_name, "token" -> success.access_token)
+                  Ok(loggedJson(success.copy(im_token = imToken.map(_.token)))).withSession("username" -> success.account_name, "token" -> success.access_token)
               }
             case _ =>
               Logger.info(s"versioncode in request : (${request.headers.get("versioncode")})")

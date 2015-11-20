@@ -19,7 +19,7 @@ case class BindingResponseV1(error_code: Int,
                              school_id: Long = 0,
                              school_name: String = "",
                              member_status: String = "",
-                             im_token: String = "")
+                             im_token: Option[String] = None)
 
 case class MemberStatus(status: Int) {
   def readable = status match {

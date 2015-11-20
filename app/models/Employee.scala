@@ -25,7 +25,8 @@ trait LoginAccount {
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
-                    login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1), created_at: Option[Long] = None, uid: Option[Long] = None) extends LoginAccount {
+                    login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1),
+                    created_at: Option[Long] = None, uid: Option[Long] = None, im_token: Option[String] = None) extends LoginAccount {
   def imUserId = s"t_${school_id}_${uid}_${login_name}"
   def imUserInfo = s"userId=${imUserId}&name=${name}&portraitUri=${portrait.getOrElse("")}"
 
