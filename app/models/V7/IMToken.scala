@@ -1,7 +1,8 @@
 package models.V7
 
-import io.rong.util.CodeUtil
+import java.security.MessageDigest
 import models.BindingResponseV1
+import org.apache.commons.codec.binary.Hex
 import play.Logger
 import play.api.Play
 import play.api.libs.json.Json
@@ -34,3 +35,24 @@ object IMToken {
   }
 
 }
+
+object CodeUtil {
+  def hexSHA1(value: String): String = {
+    try {
+      val md: MessageDigest = MessageDigest.getInstance("SHA-1")
+      md.update(value.getBytes("utf-8"))
+      val digest: Array[Byte] = md.digest
+      return byteToHexString(digest)
+    }
+    catch {
+      case ex: Exception => {
+        throw new RuntimeException(ex)
+      }
+    }
+  }
+
+  def byteToHexString(bytes: Array[Byte]): String = {
+    return String.valueOf(Hex.encodeHex(bytes))
+  }
+}
+
