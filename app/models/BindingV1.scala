@@ -13,14 +13,15 @@ import play.api.libs.json.Json
 
 
 case class BindingResponseV1(error_code: Int,
-                              access_token: String="",
-                              username: String="",
-                              account_name: String="",
-                              school_id: Long=0,
-                              school_name: String="",
-                              member_status: String="")
+                             access_token: String = "",
+                             username: String = "",
+                             account_name: String = "",
+                             school_id: Long = 0,
+                             school_name: String = "",
+                             member_status: String = "",
+                             im_token: String = "")
 
-case class MemberStatus(status: Int){
+case class MemberStatus(status: Int) {
   def readable = status match {
     case 0 => "free"
     case 1 => "paid"
@@ -34,6 +35,7 @@ case class BindingHistory(id: Option[Long], phone: String, access_token: String,
 object BindingV1 {
 
   implicit def convertToMemberStatus(status: Int) = MemberStatus(status)
+
   implicit val writeBindingHistory = Json.writes[BindingHistory]
 
   def response(updateTime: Long) = {
@@ -47,6 +49,7 @@ object BindingV1 {
         BindingResponseV1(0, updateTime.toString, parent, accountid, schoolId.toLong, schoolName, account_status.readable)
     }
   }
+
   def apply(request: BindingNumber) = DB.withConnection {
     implicit c =>
       val row = SQL("select a.*, p.name, p.school_id, s.name, member_status " +
@@ -80,11 +83,11 @@ object BindingV1 {
 
   val simpleHistory = {
     get[Long]("uid") ~
-    get[String]("phone") ~
-    get[String]("access_token") ~
-    get[String]("device_type") ~
-    get[String]("version_code") ~
-    get[Long]("updated_at") map {
+      get[String]("phone") ~
+      get[String]("access_token") ~
+      get[String]("device_type") ~
+      get[String]("version_code") ~
+      get[Long]("updated_at") map {
       case id ~ phone ~ token ~ device ~ version ~ time =>
         BindingHistory(Some(id), phone, token, device, version, time)
     }

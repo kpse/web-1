@@ -1,13 +1,16 @@
 package controllers
 
 import controllers.helper.JsonLogger._
-import models.{AppUpgradeResponse, ErrorResponse, _}
+import models.BindingV1.writeBindingHistory
+import models.V7.{IMToken, IMTokenRes}
 import models.helper.PasswordHelper
 import models.json_models.{BindingNumber, ChangePassword, CheckPhone, CheckPhoneResponse, MobileLogin, ResetPassword, _}
-import models.BindingV1.writeBindingHistory
-import play.api.Logger
+import models.{AppUpgradeResponse, ErrorResponse, _}
+import play.Logger
 import play.api.libs.json._
 import play.api.mvc.{SimpleResult, _}
+import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object Authentication extends Controller with Secured {
 
@@ -168,23 +171,27 @@ object Authentication extends Controller with Secured {
       }
   }
 
-  def bindNumberV1() = Action(parse.json) {
+  def bindNumberV1() = Action.async(parse.json) {
     request =>
       request.body.validate[BindingNumber].map {
         case (login) =>
           Logger.info(login.toString)
-
           login.record(request.headers.get("versioncode").getOrElse("unknown"))
           val result = BindingV1(login)
+
           result match {
             case success if success.error_code == 0 =>
-              Ok(loggedJson(success)).withSession("username" -> success.account_name, "token" -> success.access_token)
+              val user: Option[Parent] = Parent.phoneSearch(result.account_name)
+              IMToken.retrieveIMToken(result, user.map(u => s"userId=p${u.id}&name=${u.name}&portraitUri=${u.portrait.getOrElse("")}")).map {
+                imToken =>
+                  Ok(loggedJson(success.copy(im_token = imToken.getOrElse(IMTokenRes(0, "", "")).token))).withSession("username" -> success.account_name, "token" -> success.access_token)
+              }
             case _ =>
               Logger.info(s"versioncode in request : (${request.headers.get("versioncode")})")
-              Ok(loggedJson(result)).withNewSession
+              Future.successful(Ok(loggedJson(result)).withNewSession)
           }
       }.recoverTotal {
-        e => BadRequest("Detected error:" + loggedErrorJson(e))
+        e => Future.successful(BadRequest("Detected error:" + loggedErrorJson(e)))
       }
   }
 
