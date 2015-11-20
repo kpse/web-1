@@ -195,13 +195,14 @@ object KulebaoAgent {
   def collectData(agentData: AgentStatistics) = DB.withConnection {
     implicit c =>
       Logger.debug(s"lastMonth = ${pattern.print(lastMonth)}")
-      SQL(s"insert into agentstatistics (agent_id, school_id, month, child_count, logged_once, logged_ever, created_at) values " +
-        s"({agent}, {school_id}, {month}, {child}, {once}, {ever}, {time})")
+      SQL(s"insert into agentstatistics (agent_id, school_id, month, child_count, parent_count, logged_once, logged_ever, created_at) values " +
+        s"({agent}, {school_id}, {month}, {child}, {parent}, {once}, {ever}, {time})")
         .on(
           'agent -> agentData.agent,
           'school_id -> agentData.data.school_id,
           'month -> agentData.data.month,
           'child -> agentData.data.child_count,
+          'parent -> agentData.data.parent_count,
           'once -> agentData.data.logged_once,
           'ever -> agentData.data.logged_ever,
           'time -> System.currentTimeMillis()
