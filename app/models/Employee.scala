@@ -26,6 +26,9 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
                     login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1), created_at: Option[Long] = None, uid: Option[Long] = None) extends LoginAccount {
+  def imUserId = s"t_${school_id}_${uid}_${login_name}"
+  def imUserInfo = s"userId=${imUserId}&name=${name}&portraitUri=${portrait.getOrElse("")}"
+
   def dbUpdateByPhone()(implicit connection: Connection) = {
     val time = System.currentTimeMillis
     val newEmployeeId = "3_%d_%d".format(school_id, time)
@@ -262,6 +265,14 @@ object Employee {
         .on(
           'name -> loginName
         ).as(get[String]("phone") singleOpt).getOrElse("")
+  }
+
+  def findByLoginName(loginName: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from employeeinfo where login_name={name} and status=1")
+        .on(
+          'name -> loginName
+        ).as(simple singleOpt)
   }
 
   def matchPasswordRule(password: EmployeePassword) = isValid(password.new_password)

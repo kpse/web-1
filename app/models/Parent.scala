@@ -18,6 +18,9 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
                   gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int],
                   company: Option[String] = None, video_member_status: Option[Long] = None, created_at: Option[Long] = None,
                   id: Option[Long] = None) {
+  def imUserId = s"p_${school_id}_${id}_${phone}"
+  def imUserInfo = s"userId=${imUserId}&name=${name}&portraitUri=${portrait.getOrElse("")}"
+
   def nonEmptyBirthday: String = birthday match {
     case b if b.nonEmpty => b
     case _ => "1980-01-01"
