@@ -182,7 +182,7 @@ object Authentication extends Controller with Secured {
           result match {
             case success if success.error_code == 0 =>
               val user: Option[Parent] = Parent.phoneSearch(result.account_name)
-              IMToken.retrieveIMToken(result, user.map(u => s"userId=p${u.id}&name=${u.name}&portraitUri=${u.portrait.getOrElse("")}")).map {
+              IMToken.retrieveIMToken(user.map(u => s"userId=${result.account_name}&name=${u.name}&portraitUri=${u.portrait.getOrElse("")}")).map {
                 imToken =>
                   Ok(loggedJson(success.copy(im_token = imToken.getOrElse(IMTokenRes(0, "", "")).token))).withSession("username" -> success.account_name, "token" -> success.access_token)
               }

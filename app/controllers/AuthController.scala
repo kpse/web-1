@@ -11,6 +11,7 @@ import models._
 import views._
 import play.Logger
 import scala.Some
+import scala.concurrent.Future
 
 object Auth extends Controller {
 
@@ -194,6 +195,11 @@ trait Secured {
   def IsLoggedIn(f: => String => Request[AnyContent] => Result) = Security.Authenticated(checkSchool, forbidAccess) {
     user =>
       Action(request => f(user)(request))
+  }
+
+  def IsLoggedInAsync(f: => String => Request[AnyContent] => Future[SimpleResult]) = Security.Authenticated(checkSchool, forbidAccess) {
+    user =>
+      Action.async(request => f(user)(request))
   }
 
   def IsLoggedIn(b: BodyParser[play.api.libs.json.JsValue] = parse.json)

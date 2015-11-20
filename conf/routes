@@ -687,6 +687,8 @@ POST          /api/v5/invitation_code/:phone                                    
 POST          /api/v6/payment                                                                  controllers.V6.PaymentRecordController.create
 GET           /api/v6/payment                                                                  controllers.V6.PaymentRecordController.index(parentId: Option[String])
 
+GET           /api/v7/kindergarten/:kg/im_token/:id                                            controllers.V7.IMServiceController.token(kg: Long, id: Long)
+
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                         controllers.ChildController.index(kg: Long, parentId: String)
 GET           /kindergarten/:kg/parent/:parentId/child/:childId                                controllers.ChildController.show(kg: Long, parentId: String, childId: String)
