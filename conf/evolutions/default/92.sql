@@ -8,7 +8,7 @@
 CREATE TABLE im_token (
   uid int(11) NOT NULL AUTO_INCREMENT,
   school_id VARCHAR(20),
-  user_id VARCHAR(270),
+  user_id VARCHAR(100),
   token VARCHAR(270),
   updated_at bigint(20) NOT NULL DEFAULT 0,
   created_at bigint(20) NOT NULL DEFAULT 0,
