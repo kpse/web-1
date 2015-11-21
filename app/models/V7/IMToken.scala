@@ -2,17 +2,18 @@ package models.V7
 
 import java.security.MessageDigest
 
+import anorm.SqlParser._
+import anorm.{~, _}
 import models.IMAccount
 import org.apache.commons.codec.binary.Hex
-import play.Logger
 import play.api.Play
+import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
-import anorm.SqlParser._
-import anorm.{~, _}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import play.api.Play.current
 
 case class IMTokenReq(userId: String, name: String, portraitUri: String)
 
@@ -44,20 +45,21 @@ object IMToken {
   val key = Play.current.configuration.getString("im.ak").getOrElse("")
   val secret = Play.current.configuration.getString("im.sk").getOrElse("")
   val urlPrefix = "https://api.cn.ronghub.com/"
+  type IMWS = (Long, String) => Future[Option[IMTokenRes]]
 
-  def token(kg: Long, account: IMAccount)(implicit exec: scala.concurrent.ExecutionContextExecutor): Future[Option[IMTokenRes]] = {
+  def token(kg: Long, account: IMAccount)(implicit ws: IMWS=rongyunWS): Future[Option[IMTokenRes]] = {
     val dbEntity: Option[IMTokenRes] = show(kg, account.imUserId)
     dbEntity match {
       case Some(entity) =>
         Future {dbEntity}
       case None =>
-        retrieveIMToken(kg, Some(account.imUserInfo))
+        retrieveIMToken(kg, Some(account.imUserInfo))(ws)
     }
   }
 
   def show(kg: Long, userId: String) = DB.withConnection {
     implicit c =>
-      SQL("select * from im_token where school_id={kg} and user_id={id}").on('kg -> kg, 'id -> userId).as(simple singleOpt)
+      SQL("select * from im_token where school_id={kg} and user_id={id} limit 1").on('kg -> kg, 'id -> userId).as(simple singleOpt)
   }
 
   val simple = {
@@ -69,22 +71,27 @@ object IMToken {
 
   }
 
-  def retrieveIMToken(kg: Long, body: Option[String])(implicit exec: scala.concurrent.ExecutionContextExecutor): Future[Option[IMTokenRes]] = {
+  def retrieveIMToken(kg: Long, body: Option[String])(implicit ws: IMWS=rongyunWS): Future[Option[IMTokenRes]] = {
     body match {
       case Some(request) =>
-        val nonce: String = String.valueOf(Math.random * 10000000).take(7)
-        val timestamp: String = String.valueOf(System.currentTimeMillis)
-        val sign: String = hexSHA1(s"$secret$nonce$timestamp")
-        val url = s"${urlPrefix}user/getToken.json"
-        WS.url(url).withHeaders("RC-App-Key" -> key, "RC-Nonce" -> nonce, "RC-Timestamp" -> timestamp,
-          "RC-Signature" -> sign, "Content-Type" -> "application/x-www-form-urlencoded ").post(request).map {
-          response =>
-            Logger.info(s"response = ${response.json}")
-            val maybeToken: Option[IMTokenRes] = Json.fromJson[IMTokenRes](response.json).asOpt
-            maybeToken foreach(_.save(kg))
+        ws(kg, request).map {
+          maybeToken =>
+            maybeToken foreach (_.save(kg))
             maybeToken
         }
       case None => Future(None)
+    }
+  }
+
+  def rongyunWS(kg: Long, request: String): Future[Option[IMTokenRes]] = {
+    val nonce: String = String.valueOf(Math.random * 10000000).take(7)
+    val timestamp: String = String.valueOf(System.currentTimeMillis)
+    val sign: String = hexSHA1(s"$secret$nonce$timestamp")
+    val url = s"${urlPrefix}user/getToken.json"
+    WS.url(url).withHeaders("RC-App-Key" -> key, "RC-Nonce" -> nonce, "RC-Timestamp" -> timestamp,
+      "RC-Signature" -> sign, "Content-Type" -> "application/x-www-form-urlencoded ").post(request).map(_.json).map {
+      response =>
+        Json.fromJson[IMTokenRes](response).asOpt
     }
   }
 
