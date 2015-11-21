@@ -118,5 +118,44 @@ class AuthenticationSpec extends Specification with TestSupport {
       val response: JsValue = Json.parse(contentAsString(validateResponse))
       (response \ "check_phone_result").as[String] must equalTo("1101")
     }
+
+    "append the IM token in binding response" in new WithApplication {
+      val phone = "13333333333"
+      val user_id = "12334"
+      val channel_id = "000000"
+      private val json = Json.toJson(BindingNumber(phone, user_id, channel_id, None, "0"))
+
+      val bindingResponse = route(FakeRequest(POST, "/api/v1/binding").withJsonBody(json)).get
+
+      status(bindingResponse) must equalTo(OK)
+      contentType(bindingResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(bindingResponse))
+      (response \ "error_code").as[Int] must equalTo(0)
+      (response \ "im_token" \ "source").as[String] must equalTo("db")
+    }
+
+    "append the IM token in employee login response" in new WithApplication {
+      private val json = Json.toJson(MobileLogin("e0001", "secret"))
+
+      val bindingResponse = route(FakeRequest(POST, "/employee_login.do").withJsonBody(json)).get
+
+      status(bindingResponse) must equalTo(OK)
+      contentType(bindingResponse) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(bindingResponse))
+      (response \ "login_name").as[String] must equalTo("e0001")
+      (response \ "privilege_group").as[String] must equalTo("principal")
+      (response \ "im_token" \ "source").as[String] must equalTo("db")
+    }
+
+    "reject wrong employee password" in new WithApplication {
+      private val json = Json.toJson(MobileLogin("e0001", "wrong"))
+
+      val bindingResponse = route(FakeRequest(POST, "/employee_login.do").withJsonBody(json)).get
+
+      status(bindingResponse) must equalTo(FORBIDDEN)
+    }
+
   }
 }

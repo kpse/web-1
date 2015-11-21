@@ -4,6 +4,7 @@ import anorm.SqlParser._
 import anorm.{~, _}
 import models.MemberPhoneNumber.convertPhoneToMemberPhoneNumber
 import models.PushableNumber.convertPhoneToPushableNumber
+import models.V7.IMToken
 import models.json_models.BindingNumber
 import models.PushableNumber.updateTokenAfterBinding
 import play.api.Logger
@@ -19,7 +20,7 @@ case class BindingResponseV1(error_code: Int,
                              school_id: Long = 0,
                              school_name: String = "",
                              member_status: String = "",
-                             im_token: Option[String] = None)
+                             im_token: Option[IMToken] = None)
 
 case class MemberStatus(status: Int) {
   def readable = status match {

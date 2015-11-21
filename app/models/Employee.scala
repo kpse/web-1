@@ -6,6 +6,7 @@ import java.util.Date
 import anorm.SqlParser._
 import anorm.{~, _}
 import models.V3.EmployeeV3
+import models.V7.IMToken
 import models.helper.MD5Helper.md5
 import models.helper.PasswordHelper.generateNewPassword
 import models.helper.PasswordHelper.isValid
@@ -32,7 +33,7 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
                     login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1),
-                    created_at: Option[Long] = None, uid: Option[Long] = None, im_token: Option[String] = None) extends LoginAccount with IMAccount {
+                    created_at: Option[Long] = None, uid: Option[Long] = None, im_token: Option[IMToken] = None) extends LoginAccount with IMAccount {
   val imUserId = s"t_${school_id}_${uid}_${login_name}"
   val imUserInfo = s"userId=${imUserId}&name=${name}&portraitUri=${portrait.getOrElse("")}"
 
@@ -202,7 +203,8 @@ case class EmployeeResetPassword(id: String, school_id: Long, phone: String, log
 case class LoginNameCheck(id: Option[Long], login_name: String, employee_id: Option[String])
 
 object Employee {
-
+  import IMToken.readIMToken
+  import IMToken.writeIMToken
   implicit val writeEmployee = Json.writes[Employee]
   implicit val readEmployee = Json.reads[Employee]
   implicit val writeLoginNameCheck = Json.writes[LoginNameCheck]

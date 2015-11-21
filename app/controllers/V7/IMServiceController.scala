@@ -3,7 +3,7 @@ package controllers.V7
 import controllers.Secured
 import controllers.helper.JsonLogger._
 import models.V7.IMToken
-import models.V7.IMToken.writeIMTokenRes
+import models.V7.IMToken.writeIMToken
 import models.ErrorResponse.writeErrorResponse
 import models.{IMAccount, Employee, ErrorResponse, Parent}
 import play.Logger

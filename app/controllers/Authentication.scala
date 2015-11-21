@@ -9,12 +9,13 @@ import models.{AppUpgradeResponse, ErrorResponse, _}
 import play.Logger
 import play.api.libs.json._
 import play.api.mvc.{SimpleResult, _}
+import IMToken.readIMToken
+import IMToken.writeIMToken
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object Authentication extends Controller with Secured {
-
   implicit val r1 = Json.reads[ChangePassword]
   implicit val r2 = Json.reads[ResetPassword]
   implicit val r3 = Json.reads[BindingNumber]
@@ -146,7 +147,7 @@ object Authentication extends Controller with Secured {
             case (employee) =>
               IMToken.token(employee.school_id, employee).map {
                 imToken =>
-                  Ok(loggedJson(employee.copy(im_token = imToken.map(_.token)))).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
+                  Ok(loggedJson(employee.copy(im_token = imToken))).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
               }
           })
       }.recoverTotal {
@@ -190,7 +191,7 @@ object Authentication extends Controller with Secured {
                 case user =>
                   IMToken.token(user.school_id, user).map {
                     imToken =>
-                      Ok(loggedJson(success.copy(im_token = imToken.map(_.token)))).withSession("username" -> success.account_name, "token" -> success.access_token)
+                      Ok(loggedJson(success.copy(im_token = imToken))).withSession("username" -> success.account_name, "token" -> success.access_token)
                   }
               }
             case _ =>

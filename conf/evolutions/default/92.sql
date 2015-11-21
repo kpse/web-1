@@ -20,7 +20,8 @@ CREATE TABLE im_token (
 
 insert into im_token (school_id, user_id, token) VALUES
  ('93740362', 'p_93740362_Some(1)_13402815317', '8888'),
- ('93740362', 't_93740362_Some(1)_e0001', '9999');
+ ('93740362', 't_93740362_Some(1)_e0001', '9999'),
+ ('93740362', 'p_93740362_Some(5)_13333333333', '1024');
 # --- !Downs
 
 DROP TABLE IF EXISTS im_token;

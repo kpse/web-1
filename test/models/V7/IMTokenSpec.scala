@@ -18,7 +18,7 @@ class IMTokenSpec extends Specification with TestSupport {
       private val account: IMAccount = Parent.phoneSearch("14880498549").get
       private val result = IMToken.token(93740362, account)(successCall)
 
-      result must beSome(IMTokenRes(200, "123", "321")).await
+      result must beSome(IMToken("internet", "123", "321")).await
     }
 
     "provide token if it is existing in db" in new WithApplication {
@@ -26,7 +26,7 @@ class IMTokenSpec extends Specification with TestSupport {
       private val account: IMAccount = Parent.phoneSearch("13402815317").get
       private val result = IMToken.token(93740362, account)(failureCall)
 
-      result must beSome(IMTokenRes(0, "8888", "p_93740362_Some(1)_13402815317")).await
+      result must beSome(IMToken("db", "8888", "p_93740362_Some(1)_13402815317")).await
     }
 
     "provide token for employee if it is existing in db" in new WithApplication {
@@ -35,7 +35,7 @@ class IMTokenSpec extends Specification with TestSupport {
       private val account: IMAccount = existingEmployee
       private val result = IMToken.token(93740362, account)(failureCall)
 
-      result must beSome(IMTokenRes(0, "9999", "t_93740362_Some(1)_e0001")).await
+      result must beSome(IMToken("db", "9999", "t_93740362_Some(1)_e0001")).await
     }
 
     "report error if the network fails" in new WithApplication {

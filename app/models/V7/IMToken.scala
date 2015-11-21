@@ -17,6 +17,8 @@ import scala.concurrent.Future
 
 case class IMTokenReq(userId: String, name: String, portraitUri: String)
 
+case class IMToken(source: String, token: String, user_id: String)
+
 case class IMTokenRes(code: Int, token: String, userId: String) {
 
   def exists(kg: Long) = DB.withConnection {
@@ -39,16 +41,17 @@ case class IMTokenRes(code: Int, token: String, userId: String) {
 
 
 object IMToken {
-  implicit val writeIMToken = Json.writes[IMTokenReq]
+  implicit val writeIMTokenReq = Json.writes[IMTokenReq]
   implicit val readIMTokenRes = Json.reads[IMTokenRes]
-  implicit val writeIMTokenRes = Json.writes[IMTokenRes]
+  implicit val readIMToken = Json.reads[IMToken]
+  implicit val writeIMToken = Json.writes[IMToken]
   val key = Play.current.configuration.getString("im.ak").getOrElse("")
   val secret = Play.current.configuration.getString("im.sk").getOrElse("")
   val urlPrefix = "https://api.cn.ronghub.com/"
   type IMWS = (Long, String) => Future[Option[IMTokenRes]]
 
-  def token(kg: Long, account: IMAccount)(implicit ws: IMWS=rongyunWS): Future[Option[IMTokenRes]] = {
-    val dbEntity: Option[IMTokenRes] = show(kg, account.imUserId)
+  def token(kg: Long, account: IMAccount)(implicit ws: IMWS=rongyunWS): Future[Option[IMToken]] = {
+    val dbEntity: Option[IMToken] = show(kg, account.imUserId)
     dbEntity match {
       case Some(entity) =>
         Future {dbEntity}
@@ -66,18 +69,18 @@ object IMToken {
     get[String]("user_id") ~
     get[String]("token") map {
       case id ~ token =>
-        IMTokenRes(0, token, id)
+        IMToken("db", token, id)
     }
 
   }
 
-  def retrieveIMToken(kg: Long, body: Option[String])(implicit ws: IMWS=rongyunWS): Future[Option[IMTokenRes]] = {
+  def retrieveIMToken(kg: Long, body: Option[String])(implicit ws: IMWS=rongyunWS): Future[Option[IMToken]] = {
     body match {
       case Some(request) =>
         ws(kg, request).map {
           maybeToken =>
             maybeToken foreach (_.save(kg))
-            maybeToken
+            maybeToken.map(t => IMToken("internet", t.token, t.userId))
         }
       case None => Future(None)
     }
