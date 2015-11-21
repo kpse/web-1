@@ -144,7 +144,7 @@ object Authentication extends Controller with Secured {
           loggedJson(teacherLogin)
           Employee.authenticate(teacherLogin.account_name, teacherLogin.password).fold(Future(Forbidden("无效的用户名或密码。").withNewSession))({
             case (employee) =>
-              IMToken.retrieveIMToken(Some(employee.imUserInfo)).map {
+              IMToken.token(employee.school_id, employee).map {
                 imToken =>
                   Ok(loggedJson(employee.copy(im_token = imToken.map(_.token)))).withSession("username" -> employee.login_name, "phone" -> employee.phone, "name" -> employee.name, "id" -> employee.id.getOrElse(""))
               }
@@ -186,10 +186,12 @@ object Authentication extends Controller with Secured {
 
           result match {
             case success if success.error_code == 0 =>
-              val user: Option[Parent] = Parent.phoneSearch(result.account_name)
-              IMToken.retrieveIMToken(user.map(_.imUserInfo)).map {
-                imToken =>
-                  Ok(loggedJson(success.copy(im_token = imToken.map(_.token)))).withSession("username" -> success.account_name, "token" -> success.access_token)
+              Parent.phoneSearch(result.account_name).fold(Future(Ok(loggedJson(result)).withNewSession)) {
+                case user =>
+                  IMToken.token(user.school_id, user).map {
+                    imToken =>
+                      Ok(loggedJson(success.copy(im_token = imToken.map(_.token)))).withSession("username" -> success.account_name, "token" -> success.access_token)
+                  }
               }
             case _ =>
               Logger.info(s"versioncode in request : (${request.headers.get("versioncode")})")

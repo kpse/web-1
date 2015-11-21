@@ -22,13 +22,19 @@ trait LoginAccount {
   def session(): Session
 }
 
+trait IMAccount {
+  val imUserId: String
+
+  val imUserInfo: String
+}
+
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
                     login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1),
-                    created_at: Option[Long] = None, uid: Option[Long] = None, im_token: Option[String] = None) extends LoginAccount {
-  def imUserId = s"t_${school_id}_${uid}_${login_name}"
-  def imUserInfo = s"userId=${imUserId}&name=${name}&portraitUri=${portrait.getOrElse("")}"
+                    created_at: Option[Long] = None, uid: Option[Long] = None, im_token: Option[String] = None) extends LoginAccount with IMAccount {
+  val imUserId = s"t_${school_id}_${uid}_${login_name}"
+  val imUserInfo = s"userId=${imUserId}&name=${name}&portraitUri=${portrait.getOrElse("")}"
 
   def dbUpdateByPhone()(implicit connection: Connection) = {
     val time = System.currentTimeMillis

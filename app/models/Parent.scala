@@ -17,9 +17,9 @@ import play.api.libs.json.Json
 case class Parent(parent_id: Option[String], school_id: Long, name: String, phone: String, portrait: Option[String],
                   gender: Int, birthday: String, timestamp: Option[Long], member_status: Option[Int], status: Option[Int],
                   company: Option[String] = None, video_member_status: Option[Long] = None, created_at: Option[Long] = None,
-                  id: Option[Long] = None) {
-  def imUserId = s"p_${school_id}_${id}_${phone}"
-  def imUserInfo = s"userId=${imUserId}&name=${name}&portraitUri=${portrait.getOrElse("")}"
+                  id: Option[Long] = None) extends IMAccount {
+  val imUserId = s"p_${school_id}_${id}_${phone}"
+  val imUserInfo = s"userId=${imUserId}&name=${name}&portraitUri=${portrait.getOrElse("")}"
 
   def nonEmptyBirthday: String = birthday match {
     case b if b.nonEmpty => b
