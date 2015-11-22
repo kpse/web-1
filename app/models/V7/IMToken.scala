@@ -174,11 +174,16 @@ object IMToken {
     val timestamp: String = String.valueOf(System.currentTimeMillis)
     val sign: String = hexSHA1(s"$secret$nonce$timestamp")
     val url = s"${urlPrefix}user/getToken.json"
-    WS.url(url).withHeaders("RC-App-Key" -> key, "RC-Nonce" -> nonce, "RC-Timestamp" -> timestamp,
-      "RC-Signature" -> sign, "Content-Type" -> "application/x-www-form-urlencoded ").post(request).map(_.json).map {
-      response =>
-        Json.fromJson[T](response)(reads).asOpt
+    key match {
+      case rongyunAppKey if rongyunAppKey.nonEmpty =>
+        WS.url(url).withHeaders("RC-App-Key" -> rongyunAppKey, "RC-Nonce" -> nonce, "RC-Timestamp" -> timestamp,
+          "RC-Signature" -> sign, "Content-Type" -> "application/x-www-form-urlencoded ").post(request).map(_.json).map {
+          response =>
+            Json.fromJson[T](response)(reads).asOpt
+        }
+      case _ => Future.successful(None)
     }
+
   }
 
   def hexSHA1(value: String): String = {
