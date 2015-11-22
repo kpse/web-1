@@ -688,6 +688,7 @@ POST          /api/v6/payment                                                   
 GET           /api/v6/payment                                                                  controllers.V6.PaymentRecordController.index(parentId: Option[String])
 
 GET           /api/v7/kindergarten/:kg/im_token/:id                                            controllers.V7.IMServiceController.token(kg: Long, id: Long)
+GET           /api/v7/kindergarten/:kg/class_im_group/:id                                      controllers.V7.IMServiceController.classGroup(kg: Long, id: Long)
 
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                         controllers.ChildController.index(kg: Long, parentId: String)

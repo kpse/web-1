@@ -27,6 +27,8 @@ trait IMAccount {
   val imUserId: String
 
   val imUserInfo: String
+
+  def imClassInfo(clazz: SchoolClass): String = s"userId=${imUserId}&groupId=${clazz.school_id}_${clazz.class_id.get}&groupName=${clazz.name}"
 }
 
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,

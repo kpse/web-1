@@ -3,6 +3,7 @@ package models
 import anorm.SqlParser._
 import anorm.{~, _}
 import controllers.V3.{RelativeController, StudentController}
+import models.V7.IMToken
 import play.api.Logger
 import play.api.Play.current
 import play.api.db.DB
@@ -10,7 +11,14 @@ import play.api.libs.json.Json
 
 case class School(school_id: Long, name: String)
 
-case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, managers: Option[List[String]] = None, status: Option[Int] = None, updated_at: Option[Long] = None)
+case class SchoolClass(school_id: Long, class_id: Option[Int], name: String, managers: Option[List[String]] = None, status: Option[Int] = None, updated_at: Option[Long] = None) {
+  def imInfo = DB.withConnection {
+    implicit c =>
+      SQL("select * from im_class_group " +
+        " where school_id={kg} and class_id={class_id} and status=1")
+        .on('kg -> school_id, 'class_id -> class_id).as(IMToken.simpleClassGroup singleOpt)
+  }
+}
 
 case class ConfigItem(name: String, value: String) {
   def isExist(kg: Long) = DB.withConnection {
