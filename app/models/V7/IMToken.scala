@@ -4,13 +4,13 @@ import java.security.MessageDigest
 
 import anorm.SqlParser._
 import anorm.{~, _}
-import models.IMAccount
+import models._
 import org.apache.commons.codec.binary.Hex
 import play.api.Play
 import play.api.Play.current
 import play.api.db.DB
-import play.api.libs.json.{Reads, Writes, Json}
-import play.api.libs.ws.{Response, WS}
+import play.api.libs.json.{Json, Reads}
+import play.api.libs.ws.WS
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -18,6 +18,7 @@ import scala.concurrent.Future
 case class IMTokenReq(userId: String, name: String, portraitUri: String)
 
 case class IMToken(source: String, token: String, user_id: String)
+
 case class IMClassGroup(source: String, school_id: Long, class_id: Int, group_id: String, group_name: String) {
   def exists(kg: Long) = DB.withConnection {
     implicit c =>
@@ -38,11 +39,12 @@ case class IMClassGroup(source: String, school_id: Long, class_id: Int, group_id
 }
 
 
-
 trait IMResponseTrait {
   val code: Int
 }
+
 case class IMBasicRes(code: Int) extends IMResponseTrait
+
 case class IMTokenRes(code: Int, token: String, userId: String) extends IMResponseTrait {
 
   def exists(kg: Long) = DB.withConnection {
@@ -75,11 +77,13 @@ object IMToken {
   val urlPrefix = "https://api.cn.ronghub.com/"
   type IMWS[T <: IMResponseTrait] = (Long, String, Reads[T]) => Future[Option[T]]
 
-  def token(kg: Long, account: IMAccount)(implicit ws: IMWS[IMTokenRes]=rongyunWS[IMTokenRes]): Future[Option[IMToken]] = {
+  def token(kg: Long, account: IMAccount)(implicit ws: IMWS[IMTokenRes] = rongyunWS[IMTokenRes]): Future[Option[IMToken]] = {
     val dbEntity: Option[IMToken] = show(kg, account.imUserId)
     dbEntity match {
       case Some(entity) =>
-        Future {dbEntity}
+        Future {
+          dbEntity
+        }
       case None =>
         retrieveIMToken(kg, Some(account.imUserInfo))(ws)
     }
@@ -92,7 +96,7 @@ object IMToken {
 
   val simple = {
     get[String]("user_id") ~
-    get[String]("token") map {
+      get[String]("token") map {
       case id ~ token =>
         IMToken("db", token, id)
     }
@@ -100,19 +104,19 @@ object IMToken {
 
   val simpleClassGroup = {
     get[String]("school_id") ~
-    get[Int]("class_id") ~
-    get[String]("group_id") ~
-    get[String]("group_name") map {
+      get[Int]("class_id") ~
+      get[String]("group_id") ~
+      get[String]("group_name") map {
       case kg ~ classId ~ id ~ name =>
         IMClassGroup("db", kg.toLong, classId, id, name)
     }
   }
 
-  def retrieveIMToken(kg: Long, body: Option[String])(implicit ws: IMWS[IMTokenRes]=rongyunWS[IMTokenRes]): Future[Option[IMToken]] = {
+  def retrieveIMToken(kg: Long, body: Option[String])(implicit ws: IMWS[IMTokenRes] = rongyunWS[IMTokenRes]): Future[Option[IMToken]] = {
     body match {
       case Some(request) =>
         ws(kg, request, readIMTokenRes).map {
-         maybeToken =>
+          maybeToken =>
             maybeToken foreach (_.save(kg))
             maybeToken.map(t => IMToken("internet", t.token, t.userId))
         }
@@ -120,14 +124,46 @@ object IMToken {
     }
   }
 
-  def createClassGroup(kg: Long, body: Option[String])(implicit ws: IMWS[IMBasicRes]=rongyunWS[IMBasicRes]): Future[Option[IMClassGroup]] = {
+  def classGroup(kg: Long, username: String, id: Long, imAccount: Option[IMAccount])(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[Option[IMClassGroup]] = {
+    eligibleClasses(kg, username, imAccount).find(_.class_id == Some(id)) match {
+      case Some(clazz) =>
+        clazz.imInfo match {
+          case Some(info) =>
+            Future.successful(Some(info))
+          case _ =>
+            IMToken.createClassGroup(kg, Some(imAccount.get.imClassInfo(clazz))).map {
+              case Some(classGroup) =>
+                val updated: IMClassGroup = classGroup.copy(school_id = kg, class_id = id.toInt, group_id = s"${clazz.school_id}_${clazz.class_id.get}", group_name = clazz.name)
+                updated.save(kg)
+                Some(updated)
+              case None => None
+            }
+        }
+      case None =>
+        Future.successful(None)
+    }
+  }
+
+  def createClassGroup(kg: Long, body: Option[String])(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[Option[IMClassGroup]] = {
     body match {
       case Some(request) =>
         ws(kg, request, readsIMBasicRes).map {
           case Some(res) if res.code == 200 =>
             Some(IMClassGroup("internet", 0, 0, "", ""))
+          case _ => None
         }
       case None => Future(None)
+    }
+  }
+
+  def eligibleClasses(kg: Long, username: String, imAccount: Option[IMAccount]): List[SchoolClass] = {
+    imAccount match {
+      case Some(Employee(_, _, _, _, _, _, _, _, _, loginName, _, _, _, _, _, _)) =>
+        UserAccess.filter(UserAccess.queryByUsername(loginName, kg))(School.allClasses(kg))
+      case Some(Parent(_, _, _, phone, _, _, _, _, _, _, _, _, _, _)) =>
+        val classes: List[Int] = Relationship.index(kg, Some(phone), None, None).map(_.child.get.class_id)
+        School.allClasses(kg).filter(c => classes.contains(c.class_id.get))
+      case _ => List()
     }
   }
 
