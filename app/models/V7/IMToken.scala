@@ -37,9 +37,9 @@ case class IMClassGroup(source: String, school_id: Long, class_id: Int, group_id
   }
 }
 
-case class IMClassGroupRes(code: Int)
+case class IMBasicRes(code: Int)
 
-case class IMTokenRes(code: Int, token: String, userId: String) {
+case class IMTokenRes(override val code: Int, token: String, userId: String) extends IMBasicRes(code = code) {
 
   def exists(kg: Long) = DB.withConnection {
     implicit c =>
@@ -66,14 +66,13 @@ object IMToken {
   implicit val readIMToken = Json.reads[IMToken]
   implicit val writeIMToken = Json.writes[IMToken]
   implicit val writeIMClassGroup = Json.writes[IMClassGroup]
-  implicit val readsIMClassGroupRes = Json.reads[IMClassGroupRes]
+  implicit val readsIMClassGroupRes = Json.reads[IMBasicRes]
   val key = Play.current.configuration.getString("im.ak").getOrElse("")
   val secret = Play.current.configuration.getString("im.sk").getOrElse("")
   val urlPrefix = "https://api.cn.ronghub.com/"
-  type IMWS = (Long, String) => Future[Option[IMTokenRes]]
-  type IMClassGroupWS = (Long, String) => Future[Option[IMClassGroupRes]]
+  type IMWS[T] = (Long, String) => Future[Option[T]]
 
-  def token(kg: Long, account: IMAccount)(implicit ws: IMWS=rongyunWS): Future[Option[IMToken]] = {
+  def token(kg: Long, account: IMAccount)(implicit ws: IMWS[IMTokenRes]=rongyunWS[IMTokenRes]): Future[Option[IMToken]] = {
     val dbEntity: Option[IMToken] = show(kg, account.imUserId)
     dbEntity match {
       case Some(entity) =>
@@ -106,11 +105,11 @@ object IMToken {
     }
   }
 
-  def retrieveIMToken(kg: Long, body: Option[String])(implicit ws: IMWS=rongyunWS): Future[Option[IMToken]] = {
+  def retrieveIMToken(kg: Long, body: Option[String])(implicit ws: IMWS[IMTokenRes]=rongyunWS[IMTokenRes]): Future[Option[IMToken]] = {
     body match {
       case Some(request) =>
         ws(kg, request).map {
-          maybeToken =>
+         maybeToken =>
             maybeToken foreach (_.save(kg))
             maybeToken.map(t => IMToken("internet", t.token, t.userId))
         }
@@ -118,7 +117,7 @@ object IMToken {
     }
   }
 
-  def createClassGroup(kg: Long, body: Option[String])(implicit ws: IMClassGroupWS=rongyunGroupWS): Future[Option[IMClassGroup]] = {
+  def createClassGroup(kg: Long, body: Option[String])(implicit ws: IMWS[IMBasicRes]=rongyunWS[IMBasicRes]): Future[Option[IMClassGroup]] = {
     body match {
       case Some(request) =>
         ws(kg, request).map {
@@ -129,27 +128,16 @@ object IMToken {
     }
   }
 
-  def rongyunWS(kg: Long, request: String): Future[Option[IMTokenRes]] = {
-    rongyunBasicWS(request).map(_.json).map {
-      response =>
-        Json.fromJson[IMTokenRes](response).asOpt
-    }
-  }
-
-  def rongyunGroupWS(kg: Long, request: String): Future[Option[IMClassGroupRes]] = {
-    rongyunBasicWS(request).map(_.json).map {
-      response =>
-        Json.fromJson[IMClassGroupRes](response).asOpt
-    }
-  }
-
-  def rongyunBasicWS(request: String): Future[Response] = {
+  def rongyunWS[T](kg: Long, request: String): Future[Option[T]] = {
     val nonce: String = String.valueOf(Math.random * 10000000).take(7)
     val timestamp: String = String.valueOf(System.currentTimeMillis)
     val sign: String = hexSHA1(s"$secret$nonce$timestamp")
     val url = s"${urlPrefix}user/getToken.json"
     WS.url(url).withHeaders("RC-App-Key" -> key, "RC-Nonce" -> nonce, "RC-Timestamp" -> timestamp,
-      "RC-Signature" -> sign, "Content-Type" -> "application/x-www-form-urlencoded ").post(request)
+      "RC-Signature" -> sign, "Content-Type" -> "application/x-www-form-urlencoded ").post(request).map(_.json).map {
+      response =>
+        Json.fromJson[T](response).asOpt
+    }
   }
 
   def hexSHA1(value: String): String = {
