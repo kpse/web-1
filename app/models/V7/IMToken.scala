@@ -52,15 +52,15 @@ case class IMTokenRes(code: Int, token: String, userId: String) extends IMRespon
       SQL("select count(1) from im_token where school_id={kg} and user_id={id} and status=1").on('kg -> kg, 'id -> userId).as(get[Long]("count(1)") single) > 0
   }
 
-  def save(kg: Long) = DB.withConnection {
+  def save(kg: Long, originId: Long, originType: String) = DB.withConnection {
     implicit c =>
       exists(kg) match {
         case true =>
           SQL("update im_token set token={token}, updated_at={time} where school_id={kg} and user_id={id}")
             .on('kg -> kg, 'id -> userId, 'token -> token, 'time -> System.currentTimeMillis).executeUpdate()
         case false =>
-          SQL("insert into im_token (school_id, user_id, token, updated_at, created_at) VALUES ({kg}, {id}, {token}, {time}, {time})")
-            .on('kg -> kg, 'id -> userId, 'token -> token, 'time -> System.currentTimeMillis).executeInsert()
+          SQL("insert into im_token (school_id, user_id, token, origin_id, origin_type, updated_at, created_at) VALUES ({kg}, {id}, {token}, {origin}, {originalType}, {time}, {time})")
+            .on('kg -> kg, 'id -> userId, 'token -> token, 'origin -> originId, 'originalType -> originType, 'time -> System.currentTimeMillis).executeInsert()
       }
   }
 }
@@ -85,7 +85,7 @@ object IMToken {
           dbEntity
         }
       case None =>
-        retrieveIMToken(kg, Some(account.imUserInfo))(ws)
+        retrieveIMToken(kg, account)(ws)
     }
   }
 
@@ -112,16 +112,18 @@ object IMToken {
     }
   }
 
-  def retrieveIMToken(kg: Long, body: Option[String])(implicit ws: IMWS[IMTokenRes] = rongyunWS[IMTokenRes]): Future[Option[IMToken]] = {
-    body match {
-      case Some(request) =>
-        ws(kg, request, readIMTokenRes).map {
-          maybeToken =>
-            maybeToken foreach (_.save(kg))
-            maybeToken.map(t => IMToken("internet", t.token, t.userId))
+  def retrieveIMToken(kg: Long, account: IMAccount)(implicit ws: IMWS[IMTokenRes] = rongyunWS[IMTokenRes]): Future[Option[IMToken]] = {
+    ws(kg, account.imUserInfo, readIMTokenRes).map {
+      maybeToken =>
+        account match {
+          case Employee(_, _, _, _, _, _, _, _, _, _, _, _, _, _, uid, _) =>
+            maybeToken foreach (_.save(kg, uid.get, "t"))
+          case Parent(_, _, _, _, _, _, _, _, _, _, _, _, _, id) =>
+            maybeToken foreach (_.save(kg, id.get, "p"))
         }
-      case None => Future(None)
+        maybeToken.map(t => IMToken("internet", t.token, t.userId))
     }
+
   }
 
   def classGroup(kg: Long, username: String, id: Long, imAccount: Option[IMAccount])(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[Option[IMClassGroup]] = {

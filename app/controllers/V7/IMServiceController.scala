@@ -19,9 +19,9 @@ object IMServiceController extends Controller with Secured {
       Logger.info(s"username = $username")
       val imAccount: Option[IMAccount] = createRequestByUser(username, kg, id)
       Logger.info(s"imAccount = $imAccount")
-      imAccount.fold(Future(InternalServerError(Json.toJson(ErrorResponse("网络故障,不能与IM提供商建立连接.(error in creating connection with IM provider)"))))) {
+      imAccount.fold(Future(InternalServerError(Json.toJson(ErrorResponse("提供的信息不准确, 您无权查看该用户的聊天token.(error in querying user information)"))))) {
         case account =>
-          IMToken.retrieveIMToken(kg, Some(account.imUserInfo)).map {
+          IMToken.retrieveIMToken(kg, account).map {
             case Some(imToken) =>
               Ok(loggedJson(imToken))
             case None =>
