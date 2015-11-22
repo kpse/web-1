@@ -1,6 +1,7 @@
 package functional
 
 import _root_.helper.TestSupport
+import models.V7.IMToken
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
@@ -43,7 +44,8 @@ class DataImportingSpec extends Specification with TestSupport {
   implicit val read1 = Json.reads[SchoolClass]
   implicit val read2 = Json.reads[Parent]
   implicit val read3 = Json.reads[Relationship]
-  implicit val read4 = Json.reads[Employee]
+  implicit val read4 = Json.reads[IMToken]
+  implicit val read5 = Json.reads[Employee]
 
 
   "Application" should {
