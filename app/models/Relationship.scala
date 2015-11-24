@@ -309,8 +309,9 @@ object Relationship {
 
   def cardInSchool(kg: Long, card: String): List[Relationship] = DB.withConnection {
     implicit c =>
-      val query: String = "select * from relationmap r, childinfo c, parentinfo p, classinfo cl where r.child_id=c.child_id and p.parent_id=r.parent_id" +
-        " and p.school_id={kg} and p.status=1 and r.status=1 and p.school_id=c.school_id and c.status=1 and cl.school_id=c.school_id and cl.class_id=c.class_id and cl.status=1 and card_num={card} limit 1"
+      val query: String = "select * from relationmap r, childinfo c, parentinfo p, classinfo cl where r.child_id=c.child_id " +
+        " and p.parent_id=r.parent_id and p.school_id={kg} and p.status=1 and r.status=1 and p.school_id=c.school_id " +
+        "and c.status=1 and cl.school_id=c.school_id and cl.class_id=c.class_id and cl.status=1 and card_num={card} limit 1"
       Logger.debug(s"Relationship cardInSchool: $query")
       SQL(query)
         .on(

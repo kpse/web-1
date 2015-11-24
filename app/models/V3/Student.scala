@@ -202,7 +202,7 @@ object Student {
 
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
     implicit c =>
-      val children: List[Student] = SQL(s"select * from childinfo c, classinfo c2 where c.class_id=c2.class_id and c.school_id=c2.school_id and c.school_id={kg} and c.status=1 ${generateSpan(from, to, most)}")
+      val children: List[Student] = SQL(s"select * from childinfo c, classinfo c2 where c.class_id=c2.class_id and c.school_id=c2.school_id and c.school_id={kg} and c.status=1 and c2.status=1 ${generateSpan(from, to, most)}")
         .on(
           'kg -> kg.toString,
           'from -> from,
@@ -213,7 +213,8 @@ object Student {
 
   def show(kg: Long, id: Long) = DB.withConnection {
     implicit c =>
-      val child: Option[Student] = SQL(s"select * from childinfo c, classinfo c2 where c.class_id=c2.class_id and c.school_id=c2.school_id and c.school_id={kg} and c.status=1 and c.uid={id}")
+      val child: Option[Student] = SQL(s"select * from childinfo c, classinfo c2 where c.class_id=c2.class_id and " +
+        s"c.school_id=c2.school_id and c.school_id={kg} and c.status=1 and c2.status=1 and c.uid={id}")
         .on(
           'kg -> kg.toString,
           'id -> id

@@ -37,7 +37,7 @@ object Children {
   def removed(kg: Long) = DB.withConnection {
     implicit c =>
       SQL("select c.*, c2.class_name from childinfo c, classinfo c2 where " +
-        "c.status=0 and c.class_id=c2.class_id and c.school_id=c2.school_id")
+        "c.status=0 and c2.status=1 and c.class_id=c2.class_id and c.school_id=c2.school_id")
         .on('kg -> kg.toString)
         .as(childInformation *)
   }
@@ -45,7 +45,7 @@ object Children {
   def idSearch(id: String): Option[ChildInfo] = DB.withConnection {
     implicit c =>
       SQL("select c.*, c2.class_name from childinfo c, classinfo c2 " +
-        "where c.class_id=c2.class_id and c.status=1 and c.child_id={id} and c.school_id=c2.school_id ")
+        "where c.class_id=c2.class_id and c.status=1 and c2.status=1 and c.child_id={id} and c.school_id=c2.school_id ")
         .on('id -> id)
         .as(childInformation singleOpt)
   }
@@ -194,14 +194,14 @@ object Children {
   def info(kg: Long, childId: String): Option[ChildInfo] = DB.withConnection {
     implicit c =>
       SQL("select cd.*, ci.class_name from childinfo cd, classinfo ci where ci.class_id=cd.class_id " +
-        "and ci.school_id={kg} and ci.school_id=cd.school_id and cd.child_id={child_id}")
+        "and ci.school_id={kg} and ci.school_id=cd.school_id and cd.child_id={child_id} and ci.status=1")
         .on('child_id -> childId, 'kg -> kg.toString).as(childInformation singleOpt)
   }
 
   def findAllInClass(kg: Long, classIds: Option[String], connected: Option[Boolean]) = DB.withConnection {
     implicit c =>
       val sql = "select c.*, c2.class_name from childinfo c, classinfo c2 " +
-        "where c.class_id=c2.class_id and c.status=1 and c.school_id={kg} and c.school_id=c2.school_id "
+        "where c.class_id=c2.class_id and c.status=1 and c2.status=1 and c.school_id={kg} and c.school_id=c2.school_id "
       val l: String = generateSQL(sql, classIds, connected)
       logger.debug(l)
       SQL(l)
@@ -236,7 +236,7 @@ object Children {
   def findAll(school: Long, phone: String): List[ChildInfo] = DB.withConnection {
     implicit c =>
       SQL("select c.*, c2.class_name from childinfo c, relationmap r, parentinfo p, classinfo c2 " +
-        " where c.class_id=c2.class_id and p.status=1 and c.status=1 and r.child_id = c.child_id " +
+        " where c.class_id=c2.class_id and p.status=1 and c.status=1 and c2.status=1 and r.child_id=c.child_id " +
         " and p.parent_id = r.parent_id and c.school_id=c2.school_id and p.phone={phone} " +
         "and c.school_id={kg} and r.status=1")
         .on('phone -> phone, 'kg -> school.toString).as(childInformation *)
@@ -245,7 +245,7 @@ object Children {
   def show(schoolId: Long, phone: String, child: String): Option[ChildInfo] = DB.withConnection {
     implicit c =>
       SQL("select c.*, c2.class_name from childinfo c, classinfo c2 where c.school_id=c2.school_id " +
-        "and c.class_id=c2.class_id and c.child_id={child_id} and c.school_id={kg} and c.status=1")
+        "and c.class_id=c2.class_id and c.child_id={child_id} and c.school_id={kg} and c.status=1 and c2.status=1")
         .on('child_id -> child, 'kg -> schoolId.toString).as(childInformation singleOpt)
   }
 
