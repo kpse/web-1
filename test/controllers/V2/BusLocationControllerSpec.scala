@@ -7,6 +7,7 @@ import models.{BusLocation, Parent, ParentPhoneCheck}
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
+import play.Logger
 import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -115,7 +116,7 @@ class BusLocationControllerSpec extends Specification with TestSupport {
       (Json.parse(contentAsString(backOnTheBus)) \ "error_code").as[Int] must equalTo(0)
 
       val checkResponse5 = route(parentRequest(GET, s"/api/v2/kindergarten/93740362/last_bus_location/$childId")).get
-
+      Logger.info(s"contentAsString(checkResponse5) = ${contentAsString(checkResponse5)}")
       status(checkResponse5) must equalTo(NOT_FOUND)
       (Json.parse(contentAsString(checkResponse5)) \ "error_code").as[Int] must equalTo(4)
 
