@@ -15,6 +15,7 @@ GET           /operation                                                        
 GET           /agent                                                                           controllers.Application.agent
 GET           /download_log                                                                    controllers.Application.downloadLog
 GET           /track_logging                                                                   controllers.Application.continuousLogging
+GET           /redirect_entry                                                                  controllers.Application.appOpening(user: String, timestamp: Long, goto: String, token: String)
 
 GET           /captcha                                                                         controllers.ReCaptchaController.captchaView
 
@@ -35,6 +36,7 @@ DELETE        /kindergarten/:kg                                                 
 GET           /kindergarten/:kg/preview                                                        controllers.SchoolSummaryController.preview(kg: Long, q: Option[String])
 GET           /kindergarten                                                                    controllers.SchoolSummaryController.index(q: Option[String])
 POST          /kindergarten                                                                    controllers.SchoolSummaryController.create
+GET           /kindergarten/:kg/app_token_test                                                 controllers.Application.myToken(kg: Long, user: String, goto: String, timestamp: Option[Long])
 
 GET           /kindergarten/:kg/class                                                          controllers.ClassController.index(kg: Long)
 POST          /kindergarten/:kg/class                                                          controllers.ClassController.create(kg: Long)

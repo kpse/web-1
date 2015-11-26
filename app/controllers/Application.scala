@@ -1,5 +1,8 @@
 package controllers
 
+import models.{ErrorResponse, Employee}
+import org.joda.time.DateTime
+import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.libs.iteratee._
 import scala.concurrent.ExecutionContext
@@ -12,6 +15,7 @@ import play.api.mvc.ResponseHeader
 import play.api.mvc.SimpleResult
 import play.cache.Cache
 import java.util.concurrent.Callable
+import models.Employee.writeCrossAppToken
 
 object Application extends Controller with Secured {
 
@@ -73,6 +77,27 @@ object Application extends Controller with Secured {
     username =>
       _ =>
         Ok(views.html.agent())
+  }
+
+  def appOpening(user: String, timestamp: Long, goto: String, token: String) = Action {
+    implicit request =>
+      Employee.findByLoginName(user) match {
+        case Some(employee) if new DateTime(timestamp).plusMinutes(3).isAfter(DateTime.now)
+          && employee.crossAppToken(timestamp, goto).exists(_.token == token) =>
+          Ok(views.html.admin(goto)).withSession(employee.session())
+        case _ =>
+          Ok(views.html.index()).withNewSession
+      }
+  }
+
+  def myToken(kg: Long, user: String, goto: String, timestamp: Option[Long]) = IsLoggedIn {
+    u => request =>
+      Employee.findByLoginName(user) match {
+        case Some(employee) =>
+          Ok(Json.toJson(employee.crossAppToken(timestamp.getOrElse(System.currentTimeMillis), goto)))
+        case _ =>
+          InternalServerError(Json.toJson(ErrorResponse("用户不存在.(User is not existing)")))
+      }
   }
 }
 

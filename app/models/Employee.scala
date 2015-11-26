@@ -11,6 +11,7 @@ import models.helper.MD5Helper.md5
 import models.helper.PasswordHelper.generateNewPassword
 import models.helper.PasswordHelper.isValid
 import models.helper.TimeHelper.any2DateTime
+import models.json_models.SchoolIntro
 import play.Logger
 import play.api.Play.current
 import play.api.db.DB
@@ -31,11 +32,30 @@ trait IMAccount {
   def imClassInfo(clazz: SchoolClass): String = s"userId=${imUserId}&groupId=${clazz.school_id}_${clazz.class_id.get}&groupName=${clazz.name}"
 }
 
+case class CrossAppToken(user: String, timestamp: Long, goto: String, token: String)
+
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
                     birthday: String, school_id: Long,
                     login_name: String, timestamp: Option[Long], privilege_group: Option[String], status: Option[Int] = Some(1),
                     created_at: Option[Long] = None, uid: Option[Long] = None, im_token: Option[IMToken] = None) extends LoginAccount with IMAccount {
+  def crossAppToken(jumpTimestamp: Long, goto: String) = {
+    Logger.info(s"crossAppToken = $jumpTimestamp $goto")
+    for {
+      schoolToken <- SchoolIntro.detail(school_id).flatMap(_.token)
+      employeeId <- id
+      password <- encodedPassword
+    } yield CrossAppToken(login_name, jumpTimestamp, goto, md5(s"${id}_${schoolToken}_${jumpTimestamp}_${goto}_${password}"))
+  }
+
+  def encodedPassword = DB.withConnection {
+    implicit c =>
+      SQL("select login_password from employeeinfo where login_name={login} and status=1")
+        .on(
+          'login -> login_name
+        ).as(get[String]("login_password") singleOpt)
+  }
+
   val imUserId = s"t_${school_id}_${uid}_${login_name}"
   val imUserInfo = s"userId=${imUserId}&name=${name}&portraitUri=${portrait.getOrElse("")}"
 
@@ -155,11 +175,11 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
   }
 
   def updatePassword(password: String)(implicit connection: Connection) = {
-      SQL("update employeeinfo set login_password={password} where employee_id={id}")
-        .on(
-          'id -> id,
-          'password -> md5(password)
-        ).executeUpdate()
+    SQL("update employeeinfo set login_password={password} where employee_id={id}")
+      .on(
+        'id -> id,
+        'password -> md5(password)
+      ).executeUpdate()
   }
 
   def promote = DB.withConnection {
@@ -167,16 +187,16 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
   }
 
   def dbPromote()(implicit connection: Connection) = {
-      SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) " +
-        "values ({school_id},{employee_id},{group},{subordinate},{promoter},{time})")
-        .on(
-          'school_id -> school_id,
-          'employee_id -> id,
-          'group -> "principal",
-          'subordinate -> "",
-          'promoter -> "operator",
-          'time -> System.currentTimeMillis
-        ).executeInsert()
+    SQL("insert into privilege (school_id, employee_id, `group`, subordinate, promoter, update_at) " +
+      "values ({school_id},{employee_id},{group},{subordinate},{promoter},{time})")
+      .on(
+        'school_id -> school_id,
+        'employee_id -> id,
+        'group -> "principal",
+        'subordinate -> "",
+        'promoter -> "operator",
+        'time -> System.currentTimeMillis
+      ).executeInsert()
   }
 
   override def url(): String = privilege_group match {
@@ -205,12 +225,15 @@ case class EmployeeResetPassword(id: String, school_id: Long, phone: String, log
 case class LoginNameCheck(id: Option[Long], login_name: String, employee_id: Option[String])
 
 object Employee {
+
   import IMToken.readIMToken
   import IMToken.writeIMToken
+
   implicit val writeEmployee = Json.writes[Employee]
   implicit val readEmployee = Json.reads[Employee]
   implicit val writeLoginNameCheck = Json.writes[LoginNameCheck]
   implicit val readLoginNameCheck = Json.reads[LoginNameCheck]
+  implicit val writeCrossAppToken = Json.writes[CrossAppToken]
 
   def removed(kg: Long) = DB.withConnection {
     implicit c =>
@@ -240,10 +263,10 @@ object Employee {
   }
 
   def dbHasBeenDeleted(phone: String)(implicit connection: Connection) = {
-      SQL("select count(1) from employeeinfo where phone={phone} and status=0")
-        .on(
-          'phone -> phone
-        ).as(get[Long]("count(1)") single) > 0
+    SQL("select count(1) from employeeinfo where phone={phone} and status=0")
+      .on(
+        'phone -> phone
+      ).as(get[Long]("count(1)") single) > 0
   }
 
   def findById(kg: Long, id: String) = DB.withConnection {

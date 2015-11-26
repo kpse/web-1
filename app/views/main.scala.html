@@ -62,5 +62,14 @@
 
         ga('create', 'UA-47058869-1', 'cocobabys.com');
     </script>
+    <script type="text/javascript">
+    $(function(){
+      var uri = $(".goto-uri").val();
+      if (uri.length > 0) {
+        window.location = '/admin#' + uri;
+        $(".goto-uri").val('');
+      }
+    });
+    </script>
   </body>
 </html>
