@@ -8,6 +8,7 @@ import models.{Children, ChildInfo}
 import models.Children._
 import models.helper.TimeHelper.any2DateTime
 import models.helper.TimeHelper.parseShortDate
+import org.joda.time.DateTime
 import play.Logger
 import play.api.db.DB
 import play.api.libs.json.Json
@@ -88,7 +89,21 @@ case class StudentExt(display_name: Option[String], former_name: Option[String],
   }
 }
 
-case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt]) {
+case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt], check_status: Option[String] = Some("out")) {
+  def checkStatus: Student = DB.withConnection {
+    implicit c =>
+      val inSchool: Boolean = SQL(s"select count(1) from dailylog where child_id={child_id} and check_at > {begin} and check_at < {end}")
+        .on(
+          'child_id -> basic.child_id,
+          'begin -> DateTime.now.withHourOfDay(0).getMillis,
+          'end -> DateTime.now.plusDays(1).withHourOfDay(0).getMillis
+        ).as(get[Long]("count(1)") single) % 2 == 0
+      inSchool match {
+        case true => copy(check_status = Some("in"))
+        case false => this
+      }
+  }
+
   def update: Option[Student] = DB.withTransaction {
     implicit c =>
       try {
@@ -219,7 +234,7 @@ object Student {
           'kg -> kg.toString,
           'id -> id
         ).as(simple singleOpt)
-      child map (c => c.copy(ext = extend(c.id.get)))
+      child map (c => c.copy(ext = extend(c.id.get))) map(_.checkStatus)
   }
 
   def extend(id: Long) = DB.withConnection {
