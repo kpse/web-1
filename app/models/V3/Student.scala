@@ -92,7 +92,8 @@ case class StudentExt(display_name: Option[String], former_name: Option[String],
 case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt], check_status: Option[String] = Some("out")) {
   def checkStatus: Student = DB.withConnection {
     implicit c =>
-      val evenSwiping: Boolean = SQL(s"select count(1) from dailylog where child_id={child_id} and check_at > {begin} and check_at < {end}")
+      val evenSwiping: Boolean = SQL(s"select count(1) from dailylog " +
+        s"where child_id={child_id} and check_at > {begin} and check_at < {end} and notice_type in (0, 1, 11, 12)")
         .on(
           'child_id -> basic.child_id,
           'begin -> DateTime.now.withHourOfDay(0).getMillis,

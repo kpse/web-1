@@ -86,6 +86,32 @@ object StudentControllerSpec extends Specification with TestSupport {
       val response: JsValue = Json.parse(contentAsString(res))
       (response \ "check_status").as[Option[String]] must beSome("out")
     }
+
+    "ignore bus on boarding check" in new WithApplication {
+      private val busOnBoarding: Option[Long] = CheckInfo(93740362, "0001234567", 0, 10, "", DateTime.now.withHourOfDay(7).getMillis).create
+      busOnBoarding.get must be greaterThan 1
+
+      val res = route(loggedRequest(GET, "/api/v3/kindergarten/93740362/student/1")).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(res))
+      (response \ "check_status").as[Option[String]] must beSome("out")
+    }
+
+    "ignore bus leaving check" in new WithApplication {
+      private val busOnBoarding: Option[Long] = CheckInfo(93740362, "0001234567", 0, 13, "", DateTime.now.withHourOfDay(7).getMillis).create
+      busOnBoarding.get must be greaterThan 1
+
+      val res = route(loggedRequest(GET, "/api/v3/kindergarten/93740362/student/1")).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(res))
+      (response \ "check_status").as[Option[String]] must beSome("out")
+    }
   }
 }
 
