@@ -32,7 +32,7 @@ trait IMAccount {
   def imClassInfo(clazz: SchoolClass): String = s"userId=${imUserId}&groupId=${clazz.school_id}_${clazz.class_id.get}&groupName=${clazz.name}"
 }
 
-case class CrossAppToken(user: String, timestamp: Long, goto: String, token: String)
+case class CrossAppToken(user: String, timestamp: Long, goto: String, token: String, origin: String, url: String)
 
 case class Employee(id: Option[String], name: String, phone: String, gender: Int,
                     workgroup: String, workduty: String, portrait: Option[String],
@@ -45,7 +45,10 @@ case class Employee(id: Option[String], name: String, phone: String, gender: Int
       schoolToken <- SchoolIntro.detail(school_id).flatMap(_.token)
       employeeId <- id
       password <- encodedPassword
-    } yield CrossAppToken(login_name, jumpTimestamp, goto, md5(s"${id}_${schoolToken}_${jumpTimestamp}_${goto}_${password}"))
+    } yield {
+      val tokenString: String = s"${employeeId}_${schoolToken}_${jumpTimestamp}_${goto}_${password}"
+      CrossAppToken(login_name, jumpTimestamp, goto, md5(tokenString), tokenString, s"/redirect_entry?user=${login_name}&token=${md5(tokenString)}&timestamp=${jumpTimestamp}&goto=${goto}")
+    }
   }
 
   def encodedPassword = DB.withConnection {
