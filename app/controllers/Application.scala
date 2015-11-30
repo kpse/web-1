@@ -1,21 +1,20 @@
 package controllers
 
-import models.{ErrorResponse, Employee}
-import org.joda.time.DateTime
-import play.api.libs.json.Json
-import play.api.mvc._
-import play.api.libs.iteratee._
-import scala.concurrent.ExecutionContext
-import ExecutionContext.Implicits.global
-import play.{Logger, Play}
-import java.io.{InputStream, File}
-import models.helper.Tail
-import play.api.libs.EventSource
-import play.api.mvc.ResponseHeader
-import play.api.mvc.SimpleResult
-import play.cache.Cache
+import java.io.{File, InputStream}
 import java.util.concurrent.Callable
+
 import models.Employee.writeCrossAppToken
+import models.helper.Tail
+import models.{Employee, ErrorResponse}
+import org.joda.time.DateTime
+import play.Play
+import play.api.libs.EventSource
+import play.api.libs.iteratee._
+import play.api.libs.json.Json
+import play.api.mvc.{ResponseHeader, SimpleResult, _}
+import play.cache.Cache
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object Application extends Controller with Secured {
 
@@ -90,7 +89,7 @@ object Application extends Controller with Secured {
       }
   }
 
-  def myToken(kg: Long, user: String, goto: String, timestamp: Option[Long]) = IsLoggedIn {
+  def testTokenGenerate(kg: Long, user: String, goto: String, timestamp: Option[Long]) = IsAuthenticated {
     u => request =>
       Employee.findByLoginName(user) match {
         case Some(employee) =>
