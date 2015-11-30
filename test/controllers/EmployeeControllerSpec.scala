@@ -6,7 +6,7 @@ import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
 import models.Employee.writeLoginNameCheck
-import play.api.libs.json.{JsArray, JsValue, Json}
+import play.api.libs.json.{JsResult, JsArray, JsValue, Json}
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, WithServer}
 
@@ -176,6 +176,24 @@ class EmployeeControllerSpec extends Specification with TestSupport {
     status(response3) must equalTo(OK)
     val UpdatedLoginName: JsValue = Json.parse(contentAsString(response3))
     (UpdatedLoginName \ "login_name").as[String] must equalTo("e0011")
+  }
+
+  "be able to assign deleted phone to existing employee" in new WithApplication {
+    val deletedResponse = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/13060003702")).get
+
+    status(deletedResponse) must equalTo(OK)
+
+    val existingUser = route(principalLoggedRequest(GET, "/kindergarten/93740362/employee/13258249821")).get
+    private val wantToChangePhoneNumber: Employee = Json.fromJson[Employee](Json.parse(contentAsString(existingUser))).get
+    val changingRepsonse = route(principalLoggedRequest(POST, "/kindergarten/93740362/employee/13258249821").withBody(Json.toJson(wantToChangePhoneNumber.copy(phone = "13060003702")))).get
+
+    status(changingRepsonse) must equalTo(OK)
+
+    val changed = route(principalLoggedRequest(GET, "/kindergarten/93740362/employee/13060003702")).get
+
+    status(changed) must equalTo(OK)
+    val UpdatedLoginName: JsValue = Json.parse(contentAsString(changed))
+    (UpdatedLoginName \ "phone").as[String] must equalTo("13060003702")
   }
 
   "reuse deleted login name in updating" in new WithApplication {
