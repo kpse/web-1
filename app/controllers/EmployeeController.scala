@@ -93,7 +93,7 @@ object EmployeeController extends Controller with Secured {
           case (me) if userId.equals(me.id) =>
             Logger.info("employee %s changes himself/herself".format(request.session.get("username")))
             Ok(loggedJson(Employee.update(me))).withSession(request.session + ("phone" -> me.phone) + ("username" -> me.login_name) + ("name" -> me.name))
-          case (reCreation) if Employee.hasBeenDeleted(reCreation.phone) =>
+          case (reCreation) if reCreation.uid.isEmpty && Employee.hasBeenDeleted(reCreation.phone) =>
             Ok(loggedJson(Employee.reCreateByPhone(reCreation)))
           case (other) if !(userId.equals(other.id) || Employee.isSuperUser(userId.getOrElse(""), kg)) =>
             Unauthorized(loggedJson(ErrorResponse("您无权修改其他老师的信息。(not authorized to change other teacher's information)", 41)))
