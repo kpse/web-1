@@ -66,7 +66,9 @@ case class IMTokenRes(code: Int, token: String, userId: String) extends IMRespon
 }
 
 case class IMBanUser(id: String, minute: Option[Int]) {
-  def request(kg: Long, classId: Int): String = s"userId=$id&groupId=${kg}_$classId&minute=${minute.getOrElse(99999)}"
+  def undo(kg: Long, classId: Int): String = s"userId=$id&groupId=${kg}_$classId"
+
+  def execute(kg: Long, classId: Int): String = s"userId=$id&groupId=${kg}_$classId&minute=${minute.getOrElse(99999)}"
 }
 
 object IMToken {
@@ -177,15 +179,21 @@ object IMToken {
 
   //  def bannedUserList(kg: Long, username: String, class_id: Int, imAccount: Option[IMAccount]) = ???
 
-  def ban(kg: Long, classId: Int, imAccount: Option[IMAccount], all: List[IMBanUser])(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[List[IMBasicRes]] = {
+  def banUser(kg: Long, classId: Int, imAccount: Option[IMAccount], all: List[IMBanUser])(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[List[IMBasicRes]] = {
     val results = all map {
       case user =>
-        ws(kg, "/group/user/gag/add.json", user.request(kg, classId), readsIMBasicRes).map {
+        ws(kg, "/group/user/gag/add.json", user.execute(kg, classId), readsIMBasicRes).map {
           case Some(res) if res.code == 200 => IMBasicRes(res.code)
           case _ => IMBasicRes(0)
         }
     }
     Future.sequence(results).map(_.filter(_.code > 0))
+  }
+
+  def allowUser(kg: Long, classId: Int, imAccount: Option[IMAccount], user: IMBanUser)(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[Option[IMBasicRes]] = {
+        ws(kg, "/group/user/gag/rollback.json", user.undo(kg, classId), readsIMBasicRes).map {
+          case Some(res) if res.code == 200 => Some(IMBasicRes(res.code))
+        }
   }
 
   def rongyunWS[T <: IMResponseTrait](kg: Long, uri: String, request: String, reads: Reads[T]): Future[Option[T]] = {

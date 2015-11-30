@@ -11,10 +11,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IMTokenSpec extends Specification with TestSupport {
 
-  def successCall(kg: Long, request: String, reads: Reads[IMTokenRes]): Future[Option[IMTokenRes]] = Future.successful(Some(IMTokenRes(200, "123", "321")))
-  def failureCall(kg: Long, request: String, reads: Reads[IMTokenRes]): Future[Option[IMTokenRes]] = Future{None}
-  def successClassGroupCall(kg: Long, request: String, reads: Reads[IMBasicRes]): Future[Option[IMBasicRes]] = Future.successful(Some(IMBasicRes(200)))
-  def failureClassGroupCall(kg: Long, request: String, reads: Reads[IMBasicRes]): Future[Option[IMBasicRes]] = Future{None}
+  def successCall(kg: Long, uri: String, request: String, reads: Reads[IMTokenRes]): Future[Option[IMTokenRes]] = Future.successful(Some(IMTokenRes(200, "123", "321")))
+  def failureCall(kg: Long, uri: String, request: String, reads: Reads[IMTokenRes]): Future[Option[IMTokenRes]] = Future{None}
+  def successClassGroupCall(kg: Long, uri: String, request: String, reads: Reads[IMBasicRes]): Future[Option[IMBasicRes]] = Future.successful(Some(IMBasicRes(200)))
+  def failureClassGroupCall(kg: Long, uri: String, request: String, reads: Reads[IMBasicRes]): Future[Option[IMBasicRes]] = Future{None}
 
   "IMToken" should {
     "retrieve token from IM provider if it is not existing in db" in new WithApplication {

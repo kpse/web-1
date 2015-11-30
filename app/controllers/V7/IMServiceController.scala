@@ -69,11 +69,11 @@ object IMServiceController extends Controller with Secured {
 
       request.body.validate[List[IMBanUser]].map {
         case all =>
-          IMToken.ban(kg, class_id, imAccount, all).map {
+          IMToken.banUser(kg, class_id, imAccount, all).map {
             case res if res.size == all.size =>
               Ok(Json.toJson(new SuccessResponse))
             case res =>
-              InternalServerError(Json.toJson(ErrorResponse(s"禁言用户出错.(error in creating class IM group, ${res})")))
+              InternalServerError(Json.toJson(ErrorResponse(s"禁言用户出错.(error in banning users in class, $res)")))
           }
       }.recoverTotal {
         e => Future.successful(BadRequest("Detected error:" + JsError.toFlatJson(e)))
@@ -81,19 +81,19 @@ object IMServiceController extends Controller with Secured {
 
 
   }
-//
-//  def allowUser(kg: Long, class_id: Int, id: Long) = IsLoggedInAsync { username =>
-//    request =>
-//      Logger.info(s"username = $username")
-//      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
-//      Logger.info(s"imAccount = $imAccount")
-//      IMToken.classGroup(kg, username, id, imAccount).map {
-//        case Some(imToken) =>
-//          Ok(loggedJson(imToken))
-//        case None =>
-//          InternalServerError(Json.toJson(ErrorResponse("取消用户禁言出错.(error in creating class IM group)")))
-//      }
-//  }
+
+  def allowUser(kg: Long, class_id: Int, id: String) = IsLoggedInAsync { username =>
+    request =>
+      Logger.info(s"username = $username")
+      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
+      Logger.info(s"imAccount = $imAccount")
+      IMToken.allowUser(kg, class_id, imAccount, IMBanUser(id, None)).map {
+        case Some(res) =>
+          Ok(Json.toJson(new SuccessResponse))
+        case None =>
+          InternalServerError(Json.toJson(ErrorResponse(s"取消禁言用户出错.(error in un-banning user ${id} in class)")))
+      }
+  }
 //
 //  def bannedUserList(kg: Long, class_id: Int) = IsLoggedInAsync { username =>
 //    request =>
