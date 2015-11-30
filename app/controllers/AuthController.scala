@@ -2,6 +2,7 @@ package controllers
 
 import models.V4.KulebaoAgent
 import play.api.Play
+import play.api.libs.json.JsValue
 import play.api.mvc._
 import play.api.mvc.BodyParsers.parse
 import play.api.data._
@@ -200,6 +201,11 @@ trait Secured {
   def IsLoggedInAsync(f: => String => Request[AnyContent] => Future[SimpleResult]) = Security.Authenticated(checkSchool, forbidAccess) {
     user =>
       Action.async(request => f(user)(request))
+  }
+
+  def IsLoggedInAsync(b: BodyParser[play.api.libs.json.JsValue] = parse.json)(f: => String => Request[JsValue] => Future[SimpleResult]) = Security.Authenticated(checkSchool, forbidAccess) {
+    user =>
+      Action.async(b)(request => f(user)(request))
   }
 
   def IsLoggedIn(b: BodyParser[play.api.libs.json.JsValue] = parse.json)

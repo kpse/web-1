@@ -3,11 +3,12 @@ package controllers.V7
 import controllers.Secured
 import controllers.helper.JsonLogger._
 import models.ErrorResponse.writeErrorResponse
-import models.V7.IMToken.{writeIMToken, writeIMBasicRes}
-import models.V7.{IMClassGroup, IMToken}
+import models.V7.IMToken.{writeIMBasicRes, writeIMToken}
+import models.V7.{IMBanUser, IMToken}
+import models.V7.IMToken.readsIMBanUser
 import models._
 import play.Logger
-import play.api.libs.json.Json
+import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -58,7 +59,52 @@ object IMServiceController extends Controller with Secured {
         case None =>
           InternalServerError(Json.toJson(ErrorResponse("创建班级聊天群出错.(error in creating class IM group)")))
       }
+  }
+
+  def banUser(kg: Long, class_id: Int) = IsLoggedInAsync(parse.json) { username =>
+    request =>
+      Logger.info(s"username = $username")
+      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
+      Logger.info(s"imAccount = $imAccount")
+
+      request.body.validate[List[IMBanUser]].map {
+        case all =>
+          IMToken.ban(kg, class_id, imAccount, all).map {
+            case res if res.size == all.size =>
+              Ok(Json.toJson(new SuccessResponse))
+            case res =>
+              InternalServerError(Json.toJson(ErrorResponse(s"禁言用户出错.(error in creating class IM group, ${res})")))
+          }
+      }.recoverTotal {
+        e => Future.successful(BadRequest("Detected error:" + JsError.toFlatJson(e)))
+      }
 
 
   }
+//
+//  def allowUser(kg: Long, class_id: Int, id: Long) = IsLoggedInAsync { username =>
+//    request =>
+//      Logger.info(s"username = $username")
+//      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
+//      Logger.info(s"imAccount = $imAccount")
+//      IMToken.classGroup(kg, username, id, imAccount).map {
+//        case Some(imToken) =>
+//          Ok(loggedJson(imToken))
+//        case None =>
+//          InternalServerError(Json.toJson(ErrorResponse("取消用户禁言出错.(error in creating class IM group)")))
+//      }
+//  }
+//
+//  def bannedUserList(kg: Long, class_id: Int) = IsLoggedInAsync { username =>
+//    request =>
+//      Logger.info(s"username = $username")
+//      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
+//      Logger.info(s"imAccount = $imAccount")
+//      IMToken.bannedUserList(kg, username, class_id, imAccount).map {
+//        case Some(imToken) =>
+//          Ok(loggedJson(imToken))
+//        case None =>
+//          InternalServerError(Json.toJson(ErrorResponse("查看班级聊天群禁言名单出错.(error in querying class IM group banned users)")))
+//      }
+//  }
 }

@@ -692,6 +692,10 @@ GET           /api/v6/payment                                                   
 GET           /api/v7/kindergarten/:kg/im_token/:id                                            controllers.V7.IMServiceController.token(kg: Long, id: Long)
 GET           /api/v7/kindergarten/:kg/class_im_group/:id                                      controllers.V7.IMServiceController.classGroup(kg: Long, id: Long)
 
+POST          /api/v7/kindergarten/:kg/class_im_group/:class_id/ban                            controllers.V7.IMServiceController.banUser(kg: Long, class_id: Int)
+#DELETE        /api/v7/kindergarten/:kg/class_im_group/:class_id/ban/:id                        controllers.V7.IMServiceController.allowUser(kg: Long, class_id: Int, id: Long)
+#GET           /api/v7/kindergarten/:kg/class_im_group/:class_id/ban                            controllers.V7.IMServiceController.bannedUserList(kg: Long, class_id: Int)
+
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                         controllers.ChildController.index(kg: Long, parentId: String)
 GET           /kindergarten/:kg/parent/:parentId/child/:childId                                controllers.ChildController.show(kg: Long, parentId: String, childId: String)
