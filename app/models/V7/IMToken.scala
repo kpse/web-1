@@ -65,6 +65,12 @@ case class IMTokenRes(code: Int, token: String, userId: String) extends IMRespon
   }
 }
 
+case class IMBanUserUnit(userId: String, time: String)
+
+case class IMBanUserRes(code: Int, users: List[IMBanUserUnit]) extends IMResponseTrait
+
+case class IMBanUserFromServer(id: String, time: String)
+
 case class IMBanUser(id: String, minute: Option[Int]) {
   def undo(kg: Long, classId: Int): String = s"userId=$id&groupId=${kg}_$classId"
 
@@ -79,6 +85,9 @@ object IMToken {
   implicit val writeIMBasicRes = Json.writes[IMClassGroup]
   implicit val readsIMBasicRes = Json.reads[IMBasicRes]
   implicit val readsIMBanUser = Json.reads[IMBanUser]
+  implicit val readIMBanUserUnit = Json.reads[IMBanUserUnit]
+  implicit val readIMBanUserRes = Json.reads[IMBanUserRes]
+  implicit val writeIMBanUserFromServer = Json.writes[IMBanUserFromServer]
 
   val key = Play.current.configuration.getString("im.ak").getOrElse("")
   val secret = Play.current.configuration.getString("im.sk").getOrElse("")
@@ -177,7 +186,12 @@ object IMToken {
     }
   }
 
-  //  def bannedUserList(kg: Long, username: String, class_id: Int, imAccount: Option[IMAccount]) = ???
+  def bannedUserList(kg: Long, classId: Int, imAccount: Option[IMAccount])(implicit ws: IMWS[IMBanUserRes] = rongyunWS[IMBanUserRes]): Future[List[IMBanUserFromServer]] =  {
+    ws(kg, "/group/user/gag/list.json", s"groupId=${kg}_${classId}", readIMBanUserRes).map {
+      case Some(res) if res.code == 200 => res.users.map(u => IMBanUserFromServer(u.userId, u.time))
+      case _ => List()
+    }
+  }
 
   def banUser(kg: Long, classId: Int, imAccount: Option[IMAccount], all: List[IMBanUser])(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[List[IMBasicRes]] = {
     val results = all map {
@@ -191,9 +205,9 @@ object IMToken {
   }
 
   def allowUser(kg: Long, classId: Int, imAccount: Option[IMAccount], user: IMBanUser)(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[Option[IMBasicRes]] = {
-        ws(kg, "/group/user/gag/rollback.json", user.undo(kg, classId), readsIMBasicRes).map {
-          case Some(res) if res.code == 200 => Some(IMBasicRes(res.code))
-        }
+    ws(kg, "/group/user/gag/rollback.json", user.undo(kg, classId), readsIMBasicRes).map {
+      case Some(res) if res.code == 200 => Some(IMBasicRes(res.code))
+    }
   }
 
   def rongyunWS[T <: IMResponseTrait](kg: Long, uri: String, request: String, reads: Reads[T]): Future[Option[T]] = {

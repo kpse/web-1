@@ -6,6 +6,7 @@ import models.ErrorResponse.writeErrorResponse
 import models.V7.IMToken.{writeIMBasicRes, writeIMToken}
 import models.V7.{IMBanUser, IMToken}
 import models.V7.IMToken.readsIMBanUser
+import models.V7.IMToken.writeIMBanUserFromServer
 import models._
 import play.Logger
 import play.api.libs.json.{JsError, Json}
@@ -94,17 +95,15 @@ object IMServiceController extends Controller with Secured {
           InternalServerError(Json.toJson(ErrorResponse(s"取消禁言用户出错.(error in un-banning user ${id} in class)")))
       }
   }
-//
-//  def bannedUserList(kg: Long, class_id: Int) = IsLoggedInAsync { username =>
-//    request =>
-//      Logger.info(s"username = $username")
-//      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
-//      Logger.info(s"imAccount = $imAccount")
-//      IMToken.bannedUserList(kg, username, class_id, imAccount).map {
-//        case Some(imToken) =>
-//          Ok(loggedJson(imToken))
-//        case None =>
-//          InternalServerError(Json.toJson(ErrorResponse("查看班级聊天群禁言名单出错.(error in querying class IM group banned users)")))
-//      }
-//  }
+
+  def bannedUserList(kg: Long, class_id: Int) = IsLoggedInAsync { username =>
+    request =>
+      Logger.info(s"username = $username")
+      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
+      Logger.info(s"imAccount = $imAccount")
+      IMToken.bannedUserList(kg, class_id, imAccount).map {
+        case users =>
+          Ok(loggedJson(users))
+      }
+  }
 }
