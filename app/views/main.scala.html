@@ -65,7 +65,7 @@
     <script type="text/javascript">
     $(function(){
       var uri = $(".goto-uri").val();
-      if (uri.length > 0) {
+      if (uri && uri.length > 0) {
         window.location = '/admin#' + uri;
         $(".goto-uri").val('');
       }
