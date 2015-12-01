@@ -126,7 +126,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
 
       scope.delete = (kg)->
-        SchoolManagement.delete kg, ->
+        SchoolManagement.delete school_id: kg.school_id, ->
           scope.refresh()
 
 
