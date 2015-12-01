@@ -1,8 +1,8 @@
 angular.module('kulebaoOp').controller 'OpReportingCtrl',
-  ['$scope', '$rootScope', '$location', '$http',
+  ['$scope', '$rootScope', '$q', '$location', '$http',
    'schoolEmployeesService', 'classService', 'schoolService', 'activeCountService', 'chargeService', 'StatsServiceV4',
    'monthlyChildRateService', 'monthlySchoolRateService',
-    (scope, rootScope, location, $http, Employee, Class, School, ActiveCount, Charge, Statistics,
+    (scope, rootScope, $q, location, $http, Employee, Class, School, ActiveCount, Charge, Statistics,
      ChildRate, SchoolRate) ->
       rootScope.tabName = 'reporting'
 
@@ -15,20 +15,22 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
         scope.allParents = 0
         scope.allLoggedOnce = 0
         scope.allLoggedEver = 0
-        scope.kindergartens = School.query ->
-          _.each scope.kindergartens, (k) ->
+        scope.kindergartens = School.query (data) ->
+          scope.kindergartens = _.map data, (k) ->
             k.charge = Charge.query school_id: k.school_id
             k.monthly = TimeEndPoint.get school_id: k.school_id, ->
-              scope.allLoggedOnce += k.monthly.logged_once
-              scope.allLoggedEver += k.monthly.logged_ever
               k.monthlyRate = SchoolRate(k.monthly)
               k.monthlyChildRate = ChildRate(k.monthly)
               k.parents = k.monthly.parent_count
               k.children = k.monthly.child_count
-              scope.allParents += k.parents
-              scope.allChildren += k.children
-
-          rootScope.loading = false
+            k
+          queue = _.map scope.kindergartens, (k) -> k.monthly.$promise
+          $q.all(queue).then (q) ->
+            scope.allLoggedOnce = _.sum scope.kindergartens, 'monthly.logged_once'
+            scope.allLoggedEver = _.sum scope.kindergartens, 'monthly.logged_ever'
+            scope.allParents  = _.sum scope.kindergartens, 'parents'
+            scope.allChildren  = _.sum scope.kindergartens, 'children'
+            rootScope.loading = false
 
       scope.refresh()
 
