@@ -52,6 +52,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
       scope.forceToReCalculate = ->
       scope.export = ->
         _.map scope.kindergartens, (k) ->
+          id: k.school_id
           name: k.full_name
           children: k.monthly.child_count
           parents: k.monthly.parent_count
@@ -60,7 +61,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
           rate: k.monthlyRate
           childRate: k.monthlyChildRate
 
-      scope.exportHeader = -> ['学校全称', '学生总数', '家长总数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
+      scope.exportHeader = -> ['学校ID', '学校全称', '学生总数', '家长总数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
       scope.csvName = "monthly_report_#{scope.currentMonth}.csv"
 
   ]
