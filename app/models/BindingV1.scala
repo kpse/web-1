@@ -57,7 +57,7 @@ object BindingV1 {
         "from accountinfo a, parentinfo p, schoolinfo s, chargeinfo c " +
         "where s.school_id=p.school_id and a.accountid = p.phone and c.school_id=p.school_id " +
         "and c.status=1 and p.status=1 and member_status in (0, 1) " +
-        "and accountid={accountid} and pwd_change_time={token}")
+        "and accountid={accountid} and pwd_change_time={token} limit 1")
         .on(
           'accountid -> request.phonenum,
           'token -> request.access_token.toLong
