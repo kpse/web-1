@@ -55,8 +55,14 @@ object IMServiceController extends Controller with Secured {
       val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
       Logger.info(s"imAccount = $imAccount")
       IMToken.classGroup(kg, username, id, imAccount).map {
-        case Some(imToken) =>
-          Ok(loggedJson(imToken))
+        case Some(classGroup) =>
+          imAccount.foreach {
+            case Parent(_, _, _, phone, _, _, _, _, _, _, _, _, _, _) =>
+              val relationships: List[Relationship] = Relationship.index(kg, Some(phone), None, Some(id))
+              classGroup.welcomeToGroup(relationships)
+            case _ => Logger.info("教师不发欢迎信息.(no welcome message for employees)")
+          }
+          Ok(loggedJson(classGroup))
         case None =>
           InternalServerError(Json.toJson(ErrorResponse("创建班级聊天群出错.(error in creating class IM group)")))
       }

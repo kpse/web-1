@@ -4,8 +4,10 @@ import java.security.MessageDigest
 
 import anorm.SqlParser._
 import anorm.{~, _}
+import models.V7.IMToken.IMWS
 import models._
 import org.apache.commons.codec.binary.Hex
+import play.Logger
 import play.api.Play
 import play.api.Play.current
 import play.api.db.DB
@@ -20,6 +22,17 @@ case class IMTokenReq(userId: String, name: String, portraitUri: String)
 case class IMToken(source: String, token: String, user_id: String)
 
 case class IMClassGroup(source: String, school_id: Long, class_id: Int, group_id: String, group_name: String) {
+  val IMSystemAdmin = "im_system_admin"
+
+  def welcomeToGroup(relationships: List[Relationship])(implicit ws: IMWS[IMBasicRes] = IMToken.rongyunWS[IMBasicRes]) = {
+    relationships.take(1).foreach {
+      case r =>
+        val welcomeMessage = s"欢迎${r.child.get.name}${r.relationship}加入${group_name}。"
+        Logger.info(s"sending ${welcomeMessage} to Rongyun.(welcome message for parents)")
+        ws(school_id, "/message/group/publish.json", s"fromUserId=${IMSystemAdmin}&toGroupId=${group_id}&objectName=RC:TxtMsg&content=%7B%22content%22%3A%22${welcomeMessage}%22%2C%7D", IMToken.readsIMBasicRes)
+    }
+  }
+
   def exists(kg: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from im_class_group where school_id={kg} and class_id={id} and status=1").on('kg -> kg, 'id -> class_id).as(get[Long]("count(1)") single) > 0
@@ -186,7 +199,7 @@ object IMToken {
     }
   }
 
-  def bannedUserList(kg: Long, classId: Int, imAccount: Option[IMAccount])(implicit ws: IMWS[IMBanUserRes] = rongyunWS[IMBanUserRes]): Future[List[IMBanUserFromServer]] =  {
+  def bannedUserList(kg: Long, classId: Int, imAccount: Option[IMAccount])(implicit ws: IMWS[IMBanUserRes] = rongyunWS[IMBanUserRes]): Future[List[IMBanUserFromServer]] = {
     ws(kg, "/group/user/gag/list.json", s"groupId=${kg}_${classId}", readIMBanUserRes).map {
       case Some(res) if res.code == 200 => res.users.map(u => IMBanUserFromServer(u.userId, u.time))
       case _ => List()
