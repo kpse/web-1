@@ -52,7 +52,12 @@ object StudentController extends Controller with Secured {
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
       case (s) =>
         clearCurrentCache(kg)
-        Ok(Json.toJson(s.create))
+        s.create match {
+          case Some(created) =>
+            Ok(Json.toJson(created))
+          case None =>
+            InternalServerError(Json.toJson(ErrorResponse("创建小孩失败。(Error in creating child)", 3)))
+        }
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -65,7 +70,12 @@ object StudentController extends Controller with Secured {
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
       case (s) =>
         clearCurrentCache(kg)
-        Ok(Json.toJson(s.update))
+        s.update match {
+          case Some(created) =>
+            Ok(Json.toJson(created))
+          case None =>
+            InternalServerError(Json.toJson(ErrorResponse("更新小孩信息失败。(Error in updating child)", 4)))
+        }
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
