@@ -5,6 +5,7 @@ import models.V3.EmployeeCard
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
+import play.Logger
 import play.api.libs.json.{Json, JsValue}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -103,8 +104,7 @@ object EmployeeCardControllerSpec extends Specification with TestSupport {
       (response \ "card").as[String] must equalTo("0001112221")
     }
 
-    "reuse deleted employee" in new WithApplication {
-      //('93740362', 1, '0001112221', 1393395313123),
+    "reuse deleted employee in creating" in new WithApplication {
       val res = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/employee_card/1")).get
 
       status(res) must equalTo(OK)
@@ -115,6 +115,79 @@ object EmployeeCardControllerSpec extends Specification with TestSupport {
       contentType(res2) must beSome.which(_ == "application/json")
       val response: JsValue = Json.parse(contentAsString(res2))
       (response \ "card").as[String] must equalTo("0001112231")
+      (response \ "id").as[Long] must equalTo(1)
+    }
+
+    "reuse deleted employee in updating" in new WithApplication {
+      val res = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/employee_card/1")).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+      val json = Json.toJson(EmployeeCard(Some(2), 93740362, 1, "0001112231", None))
+      val res2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/employee_card/2").withBody(json)).get
+      Logger.info(s"contentAsString(res2) = ${contentAsString(res2)}")
+      status(res2) must equalTo(OK)
+      contentType(res2) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res2))
+      (response \ "card").as[String] must equalTo("0001112231")
+      (response \ "id").as[Long] must equalTo(2)
+    }
+
+    "not reuse card in updating while employee id is still active" in new WithApplication {
+      //('93740362', 1, '0001112221', 1393395313123),
+      val res = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/employee_card/1")).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+      val json = Json.toJson(EmployeeCard(Some(2), 93740362, 3, "0001112231", None))
+      val res2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/employee_card/2").withBody(json)).get
+
+      status(res2) must equalTo(INTERNAL_SERVER_ERROR)
+      contentType(res2) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res2))
+      (response \ "error_code").as[Long] must equalTo(5)
+    }
+
+    "not reuse card in creating while employee id is still active" in new WithApplication {
+      val res = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/employee_card/1")).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+      val json = Json.toJson(EmployeeCard(None, 93740362, 3, "0001112231", None))
+      val res2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/employee_card").withBody(json)).get
+      status(res2) must equalTo(INTERNAL_SERVER_ERROR)
+      contentType(res2) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res2))
+      (response \ "error_code").as[Long] must equalTo(5)
+    }
+
+    "not reuse card in updating while card is still active" in new WithApplication {
+      //(6, '93740562', 6, '0001112226', 1393395313123);
+      val res = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/employee_card/1")).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+      val json = Json.toJson(EmployeeCard(Some(2), 93740362, 10, "0001112226", None))
+      val res2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/employee_card/2").withBody(json)).get
+
+      status(res2) must equalTo(INTERNAL_SERVER_ERROR)
+      contentType(res2) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res2))
+      (response \ "error_code").as[Long] must equalTo(4)
+    }
+
+    "not reuse card in creating while card is still active" in new WithApplication {
+      //(6, '93740562', 6, '0001112226', 1393395313123);
+      val res = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/employee_card/1")).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome.which(_ == "application/json")
+      val json = Json.toJson(EmployeeCard(None, 93740362, 10, "0001112226", None))
+      val res2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/employee_card").withBody(json)).get
+      status(res2) must equalTo(INTERNAL_SERVER_ERROR)
+      contentType(res2) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res2))
+      (response \ "error_code").as[Long] must equalTo(4)
     }
   }
 }

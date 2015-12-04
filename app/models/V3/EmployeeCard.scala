@@ -3,23 +3,33 @@ package models.V3
 import anorm.SqlParser._
 import anorm._
 import models.helper.RangerHelper
+import play.Logger
 import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
 
 case class EmployeeCard(id: Option[Long], school_id: Long, employee_id: Long, card: String, updated_at: Option[Long]) {
 
-  def reuseDeleted(kg: Long) = DB.withConnection {
+  def reuseDeleted(kg: Long) = DB.withTransaction {
     implicit c =>
-      SQL("update employeecard set status=1, employee_id={employee}, updated_at={time} where school_id={school_id} and card={card} and status=0")
-        .on(
-          'id -> id,
-          'school_id -> kg,
-          'employee -> employee_id,
-          'card -> card,
-          'time -> System.currentTimeMillis
-        ).executeUpdate()
-      EmployeeCard.searchByCard(kg, card)
+      try {
+        clearDeletedEmployee()(c)
+        SQL("update employeecard set status=1, employee_id={employee}, updated_at={time} where school_id={school_id} and card={card} and status=0")
+          .on(
+            'id -> id,
+            'school_id -> kg,
+            'employee -> employee_id,
+            'card -> card,
+            'time -> System.currentTimeMillis
+          ).executeUpdate()
+        c.commit()
+        EmployeeCard.searchByCard(kg, card)
+      } catch {
+        case t: Throwable =>
+          Logger.info(s"error in reusing deleted card ${t.getLocalizedMessage}")
+          c.rollback()
+          None
+      }
   }
 
   def changeOwner(kg: Long) = DB.withConnection {
@@ -35,17 +45,26 @@ case class EmployeeCard(id: Option[Long], school_id: Long, employee_id: Long, ca
       EmployeeCard.searchByCard(kg, card)
   }
 
-  def update(kg: Long): Option[EmployeeCard] = DB.withConnection {
+  def update(kg: Long): Option[EmployeeCard] = DB.withTransaction {
     implicit c =>
-      SQL("update employeecard set card={card}, employee_id={employee}, updated_at={time} where school_id={school_id} and uid={id}")
-        .on(
-          'id -> id,
-          'school_id -> school_id,
-          'employee -> employee_id,
-          'card -> card,
-          'time -> System.currentTimeMillis
-        ).executeUpdate()
-      id flatMap (EmployeeCard.show(kg, _))
+      try {
+        clearDeletedEmployee()(c)
+        SQL("update employeecard set card={card}, employee_id={employee}, updated_at={time} where school_id={school_id} and uid={id}")
+          .on(
+            'id -> id,
+            'school_id -> school_id,
+            'employee -> employee_id,
+            'card -> card,
+            'time -> System.currentTimeMillis
+          ).executeUpdate()
+        c.commit()
+        id flatMap (EmployeeCard.show(kg, _))
+      } catch {
+        case t: Throwable =>
+          Logger.info(s"error in updating employee card ${t.getLocalizedMessage}")
+          c.rollback()
+          None
+      }
   }
 
   def create(kg: Long): Option[EmployeeCard] = DB.withConnection {
@@ -63,10 +82,20 @@ case class EmployeeCard(id: Option[Long], school_id: Long, employee_id: Long, ca
 
   def cardExists = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from employeecard where status=1 and card={card}")
-        .on(
-          'card -> card
-        ).as(get[Long]("count(1)") single) > 0
+      id match {
+        case Some(i) =>
+          SQL("select count(1) from employeecard where status=1 and card={card} and uid<>{id}")
+            .on(
+              'card -> card,
+              'id -> i
+            ).as(get[Long]("count(1)") single) > 0
+        case None =>
+          SQL("select count(1) from employeecard where status=1 and card={card}")
+            .on(
+              'card -> card
+            ).as(get[Long]("count(1)") single) > 0
+      }
+
   }
 
   def cardDeleted = DB.withConnection {
@@ -83,6 +112,29 @@ case class EmployeeCard(id: Option[Long], school_id: Long, employee_id: Long, ca
         .on(
           'employee -> employee_id
         ).as(get[Long]("count(1)") single) > 0
+  }
+
+  def employeeExists = DB.withConnection {
+    implicit c =>
+      id match {
+        case Some(i) =>
+          SQL("select count(1) from employeecard where employee_id={employee} and status=1 and uid<>{id}")
+            .on(
+              'employee -> employee_id,
+              'id -> i
+            ).as(get[Long]("count(1)") single) > 0
+        case None =>
+          SQL("select count(1) from employeecard where employee_id={employee} and status=1")
+            .on(
+              'employee -> employee_id
+            ).as(get[Long]("count(1)") single) > 0
+      }
+
+  }
+
+  def clearDeletedEmployee()(implicit connection: java.sql.Connection) = {
+    SQL(s"delete from employeecard where employee_id={employee_id} and status=0")
+      .on('employee_id -> employee_id).execute()(connection)
   }
 }
 
