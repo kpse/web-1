@@ -28,8 +28,9 @@ case class IMClassGroup(source: String, school_id: Long, class_id: Int, group_id
     relationships.take(1).foreach {
       case r =>
         val welcomeMessage = s"欢迎${r.child.get.name}${r.relationship}加入${group_name}。"
-        Logger.info(s"sending ${welcomeMessage} to Rongyun.(welcome message for parents)")
-        ws(school_id, "/message/group/publish.json", s"fromUserId=${IMSystemAdmin}&toGroupId=${group_id}&objectName=RC:TxtMsg&content=%7B%22content%22%3A%22${welcomeMessage}%22%2C%7D", IMToken.readsIMBasicRes)
+        val payload: String = s"""fromUserId=${IMSystemAdmin}&toGroupId=${group_id}&objectName=RC:TxtMsg&content={\"content\":\"$welcomeMessage\"}"""
+        Logger.info(s"sending Rongyun with full payload: $payload")
+        ws(school_id, "/message/group/publish.json", payload, IMToken.readsIMBasicRes)
     }
   }
 
