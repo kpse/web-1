@@ -32,17 +32,26 @@ case class EmployeeCard(id: Option[Long], school_id: Long, employee_id: Long, ca
       }
   }
 
-  def changeOwner(kg: Long) = DB.withConnection {
+  def changeOwner(kg: Long) = DB.withTransaction {
     implicit c =>
-      SQL("update employeecard set status=1, updated_at={time}, card={card} where school_id={school_id} and employee_id={employee} and status=0")
-        .on(
-          'id -> id,
-          'school_id -> kg,
-          'employee -> employee_id,
-          'card -> card,
-          'time -> System.currentTimeMillis
-        ).executeUpdate()
-      EmployeeCard.searchByCard(kg, card)
+      try {
+        clearDeletedCard()(c)
+        SQL("update employeecard set status=1, updated_at={time}, card={card} where school_id={school_id} and employee_id={employee} and status=0")
+          .on(
+            'id -> id,
+            'school_id -> kg,
+            'employee -> employee_id,
+            'card -> card,
+            'time -> System.currentTimeMillis
+          ).executeUpdate()
+        c.commit()
+        EmployeeCard.searchByCard(kg, card)
+      } catch {
+        case t: Throwable =>
+          Logger.info(s"error in changing card owner ${t.getLocalizedMessage}")
+          c.rollback()
+          None
+      }
   }
 
   def update(kg: Long): Option[EmployeeCard] = DB.withTransaction {

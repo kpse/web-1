@@ -5,7 +5,6 @@ import models.V3.EmployeeCard
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
-import play.Logger
 import play.api.libs.json.{Json, JsValue}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -125,7 +124,6 @@ object EmployeeCardControllerSpec extends Specification with TestSupport {
       contentType(res) must beSome.which(_ == "application/json")
       val json = Json.toJson(EmployeeCard(Some(2), 93740362, 1, "0001112231", None))
       val res2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/employee_card/2").withBody(json)).get
-      Logger.info(s"contentAsString(res2) = ${contentAsString(res2)}")
       status(res2) must equalTo(OK)
       contentType(res2) must beSome.which(_ == "application/json")
       val response: JsValue = Json.parse(contentAsString(res2))
@@ -190,18 +188,35 @@ object EmployeeCardControllerSpec extends Specification with TestSupport {
       (response \ "error_code").as[Long] must equalTo(4)
     }
 
-    "reuse card right after it is deleted" in new WithApplication {
+    "nothing change when updating with same information" in new WithApplication {
       //('93740362', 1, '0001112221', 1393395313123),
-      val res = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/employee_card/1")).get
-
-      status(res) must equalTo(OK)
-      contentType(res) must beSome.which(_ == "application/json")
-      val json = Json.toJson(EmployeeCard(None, 93740362, 1, "0001112221", None))
-      val res2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/employee_card").withBody(json)).get
+      val json = Json.toJson(EmployeeCard(Some(1), 93740362, 1, "0001112221", None))
+      val res2 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/employee_card/1").withBody(json)).get
       status(res2) must equalTo(OK)
       contentType(res2) must beSome.which(_ == "application/json")
       val response: JsValue = Json.parse(contentAsString(res2))
       (response \ "id").as[Long] must equalTo(1)
+      (response \ "card").as[String] must equalTo("0001112221")
+      (response \ "employee_id").as[Long] must equalTo(1)
+    }
+
+    "remove duplicated card before new creation" in new WithApplication {
+      //('93740362', 1, '0001112221', 1393395313123),
+      val res1 = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/employee_card/1")).get
+      status(res1) must equalTo(OK)
+      contentType(res1) must beSome.which(_ == "application/json")
+      //(2, '93740362', 2, '0001112222', 1393395313123),
+      val res2 = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/employee_card/2")).get
+      status(res2) must equalTo(OK)
+      contentType(res2) must beSome.which(_ == "application/json")
+
+      val json = Json.toJson(EmployeeCard(None, 93740362, 1, "0001112222", None))
+      val res3 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/employee_card").withBody(json)).get
+      status(res3) must equalTo(OK)
+      contentType(res3) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res3))
+      (response \ "card").as[String] must equalTo("0001112222")
+      (response \ "employee_id").as[Long] must equalTo(1)
     }
   }
 }
