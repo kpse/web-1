@@ -49,6 +49,7 @@ case class EmployeeCard(id: Option[Long], school_id: Long, employee_id: Long, ca
     implicit c =>
       try {
         clearDeletedEmployee()(c)
+        clearDeletedCard()(c)
         SQL("update employeecard set card={card}, employee_id={employee}, updated_at={time} where school_id={school_id} and uid={id}")
           .on(
             'id -> id,
@@ -139,6 +140,17 @@ case class EmployeeCard(id: Option[Long], school_id: Long, employee_id: Long, ca
           .on('employee_id -> employee_id, 'id -> i).execute()(connection)
       case None =>
         SQL(s"delete from employeecard where employee_id={employee_id} and status=0 and card<>{card}")
+          .on('employee_id -> employee_id, 'card -> card).execute()(connection)
+    }
+  }
+
+  def clearDeletedCard()(implicit connection: java.sql.Connection) = {
+    id match {
+      case Some(i) =>
+        SQL(s"delete from employeecard where card={card} and status=0 and uid<>{id}")
+          .on('card -> card, 'id -> i).execute()(connection)
+      case None =>
+        SQL(s"delete from employeecard where card={card} and status=0 and employee_id<>{employee_id}")
           .on('employee_id -> employee_id, 'card -> card).execute()(connection)
     }
   }
