@@ -133,8 +133,14 @@ case class EmployeeCard(id: Option[Long], school_id: Long, employee_id: Long, ca
   }
 
   def clearDeletedEmployee()(implicit connection: java.sql.Connection) = {
-    SQL(s"delete from employeecard where employee_id={employee_id} and status=0")
-      .on('employee_id -> employee_id).execute()(connection)
+    id match {
+      case Some(i) =>
+        SQL(s"delete from employeecard where employee_id={employee_id} and status=0 and uid<>{id}")
+          .on('employee_id -> employee_id, 'id -> i).execute()(connection)
+      case None =>
+        SQL(s"delete from employeecard where employee_id={employee_id} and status=0 and card<>{card}")
+          .on('employee_id -> employee_id, 'card -> card).execute()(connection)
+    }
   }
 }
 
