@@ -99,7 +99,7 @@ case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt], 
           'begin -> DateTime.now.withHourOfDay(0).getMillis,
           'end -> DateTime.now.plusDays(1).withHourOfDay(0).getMillis
         ).as(get[Long]("count(1)") single) % 2 == 0
-      Logger.info(s"Student id = ${id} evenSwiping = ${evenSwiping}")
+      Logger.debug(s"Student id = ${id} evenSwiping = ${evenSwiping}")
       evenSwiping match {
         case false => copy(check_status = Some("in"))
         case true => this
