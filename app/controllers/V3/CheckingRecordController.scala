@@ -27,11 +27,17 @@ object CheckingRecordController extends Controller with Secured {
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     request.body.validate[CheckingRecordV3].map {
       case (s) if s.check_info.school_id != kg =>
-        BadRequest(Json.toJson(ErrorResponse("学校不匹配(school_id is not matched)", 2)))
+        BadRequest(Json.toJson(ErrorResponse("学校不匹配(School_id is not matched)", 2)))
       case (s) if !Relationship.cardExists(s.check_info.card_no, None) =>
-        BadRequest(Json.toJson(ErrorResponse("卡号不存在(card number does not exist)", 3)))
+        BadRequest(Json.toJson(ErrorResponse("卡号不存在(Card number does not exist)", 3)))
       case (s) =>
-        Ok(Json.toJson(s.create))
+        s.create match {
+          case Some(created) =>
+            Ok(Json.toJson(created))
+          case None =>
+            InternalServerError(Json.toJson(ErrorResponse("创建刷卡记录失败.(Error in creating checking record v3)", 4)))
+        }
+
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }

@@ -16,21 +16,21 @@ case class CheckingRecordV3(id: Option[Long], check_info: CheckInfo, create_user
   def create: Option[CheckingRecordV3] = DB.withTransaction {
     implicit c =>
       try {
-        val createdId: Option[Long] = check_info.create
-        createdId foreach {
-          id =>
-            SQL("insert into checkingrecord (school_id, base_id, create_user, memo) values " +
-              "({school_id}, {base_id}, {create_user}, {memo})")
-              .on(
-                'school_id -> check_info.school_id,
-                'base_id -> id,
-                'create_user -> create_user,
-                'memo -> memo
-              ).executeInsert()
-        }
+        val created: Option[CheckingRecordV3] = check_info.createWithCallback({ (id: Long) =>
+          val newId: Option[Long] = SQL("insert into checkingrecord (school_id, base_id, create_user, memo) values " +
+            "({school_id}, {base_id}, {create_user}, {memo})")
+            .on(
+              'school_id -> check_info.school_id,
+              'base_id -> id,
+              'create_user -> create_user,
+              'memo -> memo
+            ).executeInsert()
+          Some(copy(id = newId))
+        })(c)
+
         c.commit()
-        Logger.info(createdId.toString)
-        Some(copy(id = createdId))
+        created foreach (c => Logger.info(s"CheckingRecordV3 created $created"))
+        created
       }
       catch {
         case t: Throwable =>
@@ -43,7 +43,7 @@ case class CheckingRecordV3(id: Option[Long], check_info: CheckInfo, create_user
   def createErrorRecord: Option[CheckingRecordV3] = DB.withTransaction {
     implicit c =>
       try {
-        val createdId: Option[Long] = check_info.create
+        val createdId: Option[Long] = check_info.save(check_info.toNotifications)
         createdId foreach {
           id =>
             SQL("insert into checkingrecord (school_id, base_id, create_user, memo, error_status) values " +

@@ -1,15 +1,18 @@
 package models.V3
 
+import java.sql.Connection
 import java.util.Date
 
 import anorm.SqlParser._
 import anorm._
+import models.json_models.CheckNotification
 import models.{Children, ChildInfo}
 import models.Children._
 import models.helper.TimeHelper.any2DateTime
 import models.helper.TimeHelper.parseShortDate
 import org.joda.time.DateTime
 import play.Logger
+import play.api.cache.Cache
 import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.Play.current
@@ -90,6 +93,20 @@ case class StudentExt(display_name: Option[String], former_name: Option[String],
 }
 
 case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt], check_status: Option[String] = Some("out")) {
+  def checkCachedStatus: Student = {
+    val cacheKey: Option[String] = for {kg <- basic.school_id
+                                        id <- basic.child_id} yield s"dailylog_${kg}_${id}"
+
+    val maybeCheckNotifications: Option[List[CheckNotification]] = Cache.getAs[List[CheckNotification]](cacheKey.getOrElse("wrong_key"))
+    Logger.debug(s"maybeCheckNotifications = ${cacheKey} $maybeCheckNotifications")
+    maybeCheckNotifications match {
+      case Some(notifications) if notifications.count(List(0, 1, 11, 12) contains _.notice_type) % 2 != 0 =>
+        copy(check_status = Some("in"))
+      case _ =>
+        copy(check_status = Some("out"))
+    }
+  }
+
   def checkStatus: Student = DB.withConnection {
     implicit c =>
       val evenSwiping: Boolean = SQL(s"select count(1) from dailylog " +
@@ -230,13 +247,22 @@ object Student {
 
   def show(kg: Long, id: Long) = DB.withConnection {
     implicit c =>
-      val child: Option[Student] = SQL(s"select * from childinfo c, classinfo c2 where c.class_id=c2.class_id and " +
-        s"c.school_id=c2.school_id and c.school_id={kg} and c.status=1 and c2.status=1 and c.uid={id}")
-        .on(
-          'kg -> kg.toString,
-          'id -> id
-        ).as(simple singleOpt)
-      child map (c => c.copy(ext = extend(c.id.get))) map(_.checkStatus)
+      showWithoutCheckStatus(kg, id) map (_.checkStatus)
+  }
+
+  def showWithoutCheckStatus(kg: Long, id: Long)(implicit connection: Connection) = {
+    val child: Option[Student] = SQL(s"select * from childinfo c, classinfo c2 where c.class_id=c2.class_id and " +
+      s"c.school_id=c2.school_id and c.school_id={kg} and c.status=1 and c2.status=1 and c.uid={id}")
+      .on(
+        'kg -> kg.toString,
+        'id -> id
+      ).as(simple singleOpt)
+    child map (c => c.copy(ext = extend(c.id.get)))
+  }
+
+  def showWithCachedStatus(kg: Long, id: Long) = DB.withConnection {
+    implicit c =>
+      showWithoutCheckStatus(kg, id) map (_.checkCachedStatus)
   }
 
   def extend(id: Long) = DB.withConnection {

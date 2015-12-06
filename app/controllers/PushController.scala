@@ -109,8 +109,7 @@ object PushController extends Controller {
       Logger.info("checking : " + request.body)
       request.body.validate[CheckInfo].map {
         case (check) =>
-          check.create
-          val messages = check.toNotifications
+          val messages = check.create
           Logger.info("messages : " + messages)
           messages map {
             m =>

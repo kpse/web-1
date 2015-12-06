@@ -37,8 +37,8 @@ object StudentControllerSpec extends Specification with TestSupport {
     }
 
     "report check status in multiple retrieval" in new WithApplication {
-      private val created: Option[Long] = CheckInfo(93740362, "0001234567", 0, 0, "", DateTime.now.withHourOfDay(7).getMillis).create
-      created.get must be greaterThan 1
+      private val created: Long = CheckInfo(93740362, "0001234567", 0, 0, "", DateTime.now.withHourOfDay(7).getMillis).create.size
+      created must be greaterThan 1
       val res = route(loggedRequest(GET, "/api/v3/kindergarten/93740362/student")).get
 
       status(res) must equalTo(OK)
@@ -60,8 +60,8 @@ object StudentControllerSpec extends Specification with TestSupport {
     }
 
     "update check status according to checking times in current day" in new WithApplication {
-      private val created: Option[Long] = CheckInfo(93740362, "0001234567", 0, 0, "", DateTime.now.withHourOfDay(7).getMillis).create
-      created.get must be greaterThan 1
+      private val created: Long = CheckInfo(93740362, "0001234567", 0, 0, "", DateTime.now.withHourOfDay(7).getMillis).create.size
+      created must be greaterThan 1
 
       val res = route(loggedRequest(GET, "/api/v3/kindergarten/93740362/student/1")).get
 
@@ -73,10 +73,10 @@ object StudentControllerSpec extends Specification with TestSupport {
     }
 
     "check twice means leaving school" in new WithApplication {
-      private val first: Option[Long] = CheckInfo(93740362, "0001234567", 0, 0, "", DateTime.now.withHourOfDay(7).getMillis).create
-      first.get must be greaterThan 1
-      private val second: Option[Long] = CheckInfo(93740362, "0001234567", 0, 0, "", DateTime.now.withHourOfDay(7).getMillis).create
-      second.get must be greaterThan first.get
+      private val first: Long = CheckInfo(93740362, "0001234567", 0, 0, "", DateTime.now.withHourOfDay(7).getMillis).create.size
+      first must be greaterThan 1
+      private val second: Long = CheckInfo(93740362, "0001234567", 0, 0, "", DateTime.now.withHourOfDay(7).getMillis).create.size
+      second must be greaterThan first
 
       val res = route(loggedRequest(GET, "/api/v3/kindergarten/93740362/student/1")).get
 
@@ -88,8 +88,8 @@ object StudentControllerSpec extends Specification with TestSupport {
     }
 
     "ignore bus on boarding check" in new WithApplication {
-      private val busOnBoarding: Option[Long] = CheckInfo(93740362, "0001234567", 0, 10, "", DateTime.now.withHourOfDay(7).getMillis).create
-      busOnBoarding.get must be greaterThan 1
+      private val busOnBoarding: Long = CheckInfo(93740362, "0001234567", 0, 10, "", DateTime.now.withHourOfDay(7).getMillis).create.size
+      busOnBoarding must be greaterThan 1
 
       val res = route(loggedRequest(GET, "/api/v3/kindergarten/93740362/student/1")).get
 
@@ -101,8 +101,8 @@ object StudentControllerSpec extends Specification with TestSupport {
     }
 
     "ignore bus leaving check" in new WithApplication {
-      private val busOnBoarding: Option[Long] = CheckInfo(93740362, "0001234567", 0, 13, "", DateTime.now.withHourOfDay(7).getMillis).create
-      busOnBoarding.get must be greaterThan 1
+      private val busOnBoarding: Long = CheckInfo(93740362, "0001234567", 0, 13, "", DateTime.now.withHourOfDay(7).getMillis).create.size
+      busOnBoarding must be greaterThan 1
 
       val res = route(loggedRequest(GET, "/api/v3/kindergarten/93740362/student/1")).get
 
