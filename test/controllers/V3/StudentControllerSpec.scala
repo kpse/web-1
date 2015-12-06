@@ -76,7 +76,7 @@ object StudentControllerSpec extends Specification with TestSupport {
       private val first: Long = CheckInfo(93740362, "0001234567", 0, 0, "", DateTime.now.withHourOfDay(7).getMillis).create.size
       first must be greaterThan 1
       private val second: Long = CheckInfo(93740362, "0001234567", 0, 0, "", DateTime.now.withHourOfDay(7).getMillis).create.size
-      second must be greaterThan first
+      second must equalTo(first)
 
       val res = route(loggedRequest(GET, "/api/v3/kindergarten/93740362/student/1")).get
 
