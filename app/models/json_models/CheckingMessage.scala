@@ -171,10 +171,10 @@ case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String
   def saveToCache(kg: Long) = {
     val cacheKey: String = s"dailylog_${kg}_$child_id"
     val maybeCheckNotifications: Option[List[CheckNotification]] = Cache.getAs[List[CheckNotification]](cacheKey)
-    logger.info(s"CheckNotification = ${maybeCheckNotifications}")
+    logger.debug(s"CheckNotification save to cache : ${maybeCheckNotifications}")
     maybeCheckNotifications match {
       case Some(notifications) =>
-        Cache.set(cacheKey, notifications ::: List(this))
+        Cache.set(cacheKey, notifications.dropWhile(_.timestamp <= DateTime.now().withTimeAtStartOfDay().getMillis) ::: List(this))
       case None =>
         logger.info(s"Cache.set $cacheKey = ${this}")
         Cache.set(cacheKey, List(this))

@@ -100,7 +100,7 @@ case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt], 
     val maybeCheckNotifications: Option[List[CheckNotification]] = Cache.getAs[List[CheckNotification]](cacheKey.getOrElse("wrong_key"))
     Logger.debug(s"maybeCheckNotifications = ${cacheKey} $maybeCheckNotifications")
     maybeCheckNotifications match {
-      case Some(notifications) if notifications.count(List(0, 1, 11, 12) contains _.notice_type) % 2 != 0 =>
+      case Some(notifications) if notifications.dropWhile(_.timestamp <= DateTime.now().withTimeAtStartOfDay().getMillis).count(List(0, 1, 11, 12) contains _.notice_type) % 2 != 0 =>
         copy(check_status = Some("in"))
       case _ =>
         copy(check_status = Some("out"))
