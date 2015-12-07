@@ -29,7 +29,7 @@ object StudentController extends Controller with Secured {
     Logger.info(s"StudentController entering index = ${cacheKey}")
 
     val students: List[Student] = digFromCache[List[Student]](cacheKey, 600, () => {
-      Student.index(kg, from, to, most)
+      Student.index(kg, from, to, most, None)
     })
     Ok(Json.toJson(students.map(_.checkCachedStatus)))
   }

@@ -227,16 +227,18 @@ object Student {
   implicit val writeStudent = Json.writes[Student]
   implicit val readStudent = Json.reads[Student]
 
-  def generateSpan(from: Option[Long], to: Option[Long], most: Option[Int]): String = {
+  def generateSpan(from: Option[Long], to: Option[Long], most: Option[Int], classIds: Option[String]): String = {
     var result = ""
     from foreach { _ => result = " and c.uid > {from} " }
     to foreach { _ => result = s"$result and c.uid < {to} " }
+    classIds foreach { _ => result = s"$result and c2.class_id in (${classIds.getOrElse(0)}) " }
     s"$result order by c.uid DESC limit ${most.getOrElse(25)}"
   }
 
-  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int], classIds: Option[String]) = DB.withConnection {
     implicit c =>
-      val children: List[Student] = SQL(s"select * from childinfo c, classinfo c2 where c.class_id=c2.class_id and c.school_id=c2.school_id and c.school_id={kg} and c.status=1 and c2.status=1 ${generateSpan(from, to, most)}")
+      val children: List[Student] = SQL(s"select * from childinfo c, classinfo c2 where c.class_id=c2.class_id and " +
+        s"c.school_id=c2.school_id and c.school_id={kg} and c.status=1 and c2.status=1 ${generateSpan(from, to, most, classIds)}")
         .on(
           'kg -> kg.toString,
           'from -> from,

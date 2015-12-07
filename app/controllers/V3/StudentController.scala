@@ -25,12 +25,12 @@ object StudentController extends Controller with Secured {
     case _ => clearAllCache(s"Student_$kg")
   }
 
-  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int]) = IsLoggedIn { u => _ =>
-    val cacheKey: String = s"Student_${kg}_${from}_${to}_${most}"
+  def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int], classIds: Option[String]) = IsLoggedIn { u => _ =>
+    val cacheKey: String = s"Student_${kg}_${from}_${to}_${most}_$classIds"
     Logger.info(s"StudentController entering index = ${cacheKey}")
 
     val students: List[Student] = digFromCache[List[Student]](cacheKey, 600, () => {
-      Student.index(kg, from, to, most)
+      Student.index(kg, from, to, most, classIds)
     })
     Ok(Json.toJson(students.map(_.checkStatus)))
   }
