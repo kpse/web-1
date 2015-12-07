@@ -96,7 +96,7 @@ case class EmployeeV3(id: Option[Long], basic: Employee, ext: Option[EmployeeExt
     case false =>
       val allClasses: List[Int] = School.allClasses(basic.school_id).map(_.class_id.get)
       val managed: List[Int] = Employee.managedClass(basic.school_id, basic).map(_.class_id.get)
-      allClasses.diff(managed).map {class_id => Map("class_id" -> class_id)}
+      allClasses.diff(managed).map { class_id => Map("class_id" -> class_id) }
     case true => List()
   }
 
@@ -193,13 +193,26 @@ object EmployeeV3 {
         ).as(simpleExt singleOpt)
   }
 
-  def deleteById(kg: Long, id: Long) = DB.withConnection {
+  def deleteById(kg: Long, id: Long) = DB.withTransaction {
     implicit c =>
-      SQL(s"update employeeinfo set status=0 where uid={id} and school_id={kg} and status=1")
-        .on(
-          'kg -> kg.toString,
-          'id -> id
-        ).executeUpdate()
+      try {
+        SQL(s"update employeecard set status=0 where employee_id={id} and school_id={kg} and status=1")
+          .on(
+            'kg -> kg.toString,
+            'id -> id
+          ).executeUpdate()
+        SQL(s"update employeeinfo set status=0 where uid={id} and school_id={kg} and status=1")
+          .on(
+            'kg -> kg.toString,
+            'id -> id
+          ).executeUpdate()
+        c.commit()
+      } catch {
+        case t: Throwable =>
+          Logger.warn(s"delete employee v3 failed: ${t.getLocalizedMessage}")
+          c.rollback()
+      }
+
   }
 
   def removeDirtyDataIfExists(r: Employee) = DB.withConnection {

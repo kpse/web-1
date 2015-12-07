@@ -33,6 +33,13 @@ class EmployeeV3Spec extends Specification with TestSupport {
       operator.ineligibleClasses must beEmpty
     }
 
+    "be removed with its card" in new WithApplication {
+
+      EmployeeV3.deleteById(93740362, 1)
+
+      EmployeeCard.show(93740362, 1) must beNone
+    }
+
   }
 
 }
