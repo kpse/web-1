@@ -390,7 +390,7 @@ object Parent {
           'status -> parent.status.getOrElse(1),
           'kg -> kg.toString
         ).executeUpdate()
-      findByPhone(parent.school_id)(parent.phone)
+      show(kg, parent.phone)
   }
 
   def findByPhone(kg: Long)(phone: String) = DB.withConnection {

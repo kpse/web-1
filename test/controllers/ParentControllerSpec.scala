@@ -338,6 +338,17 @@ class ParentControllerSpec extends Specification with TestSupport {
       status(response) must equalTo(OK)
       (Json.parse(contentAsString(response)) \ "error_msg").as[String] must equalTo("忽略已删除数据。")
     }
+
+    "accept recreation" in new WithApplication {
+      val response1 = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/parent/13402815317")).get
+      status(response1) must equalTo(OK)
+
+      private val requestHeader = createParent("13402815317", None)
+      val response = route(principalLoggedRequest(POST, "/kindergarten/93740362/parent").withJsonBody(requestHeader)).get
+
+      status(response) must equalTo(OK)
+      (Json.parse(contentAsString(response)) \ "phone").as[String] must equalTo("13402815317")
+    }
   }
 
   def createParent(phone: String, id: Option[String] = Some("2_93740362_789")): JsValue = {
