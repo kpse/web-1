@@ -169,16 +169,23 @@ case class CheckChildInfo(school_id: Long, child_id: String, check_type: Int, ti
 case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String, pushid: String, channelid: String, record_url: String, parent_name: String, device: Int, aps: Option[IOSField], ad: Option[String] = None) {
   private val logger: Logger = Logger(classOf[CheckNotification])
   def saveToCache(kg: Long) = {
-    val cacheKey: String = s"dailylog_${kg}_$child_id"
-    val maybeCheckNotifications: Option[List[CheckNotification]] = Cache.getAs[List[CheckNotification]](cacheKey)
-    logger.debug(s"CheckNotification save to cache : ${maybeCheckNotifications}")
-    maybeCheckNotifications match {
-      case Some(notifications) =>
-        Cache.set(cacheKey, notifications.dropWhile(_.timestamp <= DateTime.now().withTimeAtStartOfDay().getMillis) ::: List(this))
-      case None =>
-        logger.info(s"Cache.set $cacheKey = ${this}")
-        Cache.set(cacheKey, List(this))
+    notice_type match {
+      case 0|1|11|12 =>
+        val cacheKey: String = s"dailylog_${kg}_$child_id"
+        val maybeCheckNotifications: Option[List[Long]] = Cache.getAs[List[Long]](cacheKey)
+        logger.debug(s"CheckNotification save to cache : ${maybeCheckNotifications}")
+        maybeCheckNotifications match {
+          case Some(notifications) =>
+            logger.info(s"already checked $maybeCheckNotifications , $cacheKey = ${this}")
+            Cache.set(cacheKey, notifications.dropWhile(_ <= DateTime.now().withTimeAtStartOfDay().getMillis) ::: List(timestamp))
+          case None =>
+            logger.info(s"first check today $cacheKey = ${this}")
+            Cache.set(cacheKey, List(timestamp))
+        }
+      case _ =>
+        logger.debug(s"do not cache notice_type 12, 13 : ${this}")
     }
+
   }
 }
 
