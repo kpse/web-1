@@ -19,7 +19,7 @@ angular.module("kulebao.directives").directive "klUniqueCard",
             return unless relationship?
             c.$setValidity 'unique', true
             c.$setValidity 'registered', true
-            CardCheck.check relationship, (valid) ->
+            CardCheck.check card: relationship.card, school_id: relationship.school_id, id: relationship.id, (valid) ->
                 if valid.error_code == 0
                   c.$setValidity 'unique', true
                   c.$setValidity 'registered', true

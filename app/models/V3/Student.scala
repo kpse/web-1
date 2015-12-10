@@ -5,17 +5,16 @@ import java.util.Date
 
 import anorm.SqlParser._
 import anorm._
-import models.json_models.CheckNotification
-import models.{Children, ChildInfo}
-import models.Children._
-import models.helper.TimeHelper.any2DateTime
-import models.helper.TimeHelper.parseShortDate
+import models.helper.TimeHelper.{any2DateTime, parseShortDate}
+import models.{ChildInfo, Children}
+import models.Children.writeChildInfo
+import models.Children.readChildInfo
 import org.joda.time.DateTime
 import play.Logger
+import play.api.Play.current
 import play.api.cache.Cache
 import play.api.db.DB
 import play.api.libs.json.Json
-import play.api.Play.current
 
 case class StudentExt(display_name: Option[String], former_name: Option[String], student_id: Option[String], social_id: Option[String], residence_place: Option[String],
                       residence_type: Option[String], nationality: Option[String], original_place: Option[String], ethnos: Option[String],
