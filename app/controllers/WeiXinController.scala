@@ -113,7 +113,7 @@ object WeiXinController extends Controller with Secured {
       case "V1001_GOOD" =>
         newMessage(PCData(to.text), PCData(from.text), PCData("谢谢你的支持，我们会继续努力的。"))
       case _ =>
-        newMessage(PCData(to.text), PCData(from.text), PCData("用户您好，我们是库乐宝产品团队。欢迎使用我们的产品幼乐宝，使用过程中有任何问题，欢迎在这里留言或拨打免费电话4009-984-998。我们的产品地址是 https://cocobabys.com"))
+        newMessage(PCData(to.text), PCData(from.text), PCData("用户您好，我们是库乐宝产品团队。欢迎使用我们的产品幼乐宝，使用过程中有任何问题，欢迎在这里留言或拨打免费电话400-008-0300。我们的产品地址是 https://cocobabys.com"))
     }
   }
 
