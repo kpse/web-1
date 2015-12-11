@@ -8,7 +8,7 @@ import play.api.libs.json.Json
 import play.api.Play.current
 
 case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], ip: Option[String], port:Option[Int],
-                    machine_type: Option[Int], updated_at: Option[Long], channel_1_camera: Option[Long] = None,
+                    machine_type: Option[Int], updated_at: Option[Long], memo: Option[String], channel_1_camera: Option[Long] = None,
                     channel_2_camera: Option[Long] = None) {
   def exists(id: Long) = DB.withTransaction {
     implicit c =>
@@ -28,7 +28,8 @@ case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], 
 
   def update(kg: Long): Option[Hardware] = DB.withConnection {
     implicit c =>
-      SQL("update hardware set name={name}, sn={sn}, ip={ip}, port={port}, machine_type={machine_type}, channel_1_camera={camera1}, channel_2_camera={camera2}, updated_at={time} where school_id={school_id} and uid={id}")
+      SQL("update hardware set name={name}, sn={sn}, ip={ip}, port={port}, machine_type={machine_type}, memo={memo}, " +
+        "channel_1_camera={camera1}, channel_2_camera={camera2}, updated_at={time} where school_id={school_id} and uid={id}")
         .on(
           'id -> id,
           'school_id -> kg,
@@ -37,6 +38,7 @@ case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], 
           'ip -> ip,
           'port -> port,
           'machine_type -> machine_type,
+          'memo -> memo,
           'camera1 -> channel_1_camera,
           'camera2 -> channel_2_camera,
           'time -> System.currentTimeMillis
@@ -46,8 +48,8 @@ case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], 
 
   def create(kg: Long): Option[Hardware] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into hardware (school_id, name, sn, ip, port, machine_type, channel_1_camera, channel_2_camera, updated_at) values (" +
-        "{school_id}, {name}, {sn}, {ip}, {port}, {machine_type}, {camera1}, {camera2}, {time})")
+      val insert: Option[Long] = SQL("insert into hardware (school_id, name, sn, ip, port, machine_type, memo, channel_1_camera, channel_2_camera, updated_at) values (" +
+        "{school_id}, {name}, {sn}, {ip}, {port}, {machine_type}, {memo}, {camera1}, {camera2}, {time})")
         .on(
           'school_id -> kg,
           'name -> name,
@@ -55,6 +57,7 @@ case class Hardware(id: Option[Long], name: Option[String], sn: Option[String], 
           'ip -> ip,
           'port -> port,
           'machine_type -> machine_type,
+          'memo -> memo,
           'camera1 -> channel_1_camera,
           'camera2 -> channel_2_camera,
           'time -> System.currentTimeMillis
@@ -102,11 +105,12 @@ object Hardware {
       get[Option[String]]("ip") ~
       get[Option[Int]]("port") ~
       get[Option[Int]]("machine_type") ~
+      get[Option[String]]("memo") ~
       get[Option[Long]]("channel_1_camera") ~
       get[Option[Long]]("channel_2_camera") ~
       get[Option[Long]]("updated_at") map {
-      case id ~ name ~ sn ~ ip ~ port ~ typ ~ c1 ~ c2 ~ time =>
-        Hardware(Some(id), name, sn, ip, port, typ, time, c1, c2)
+      case id ~ name ~ sn ~ ip ~ port ~ typ ~ memo ~ c1 ~ c2 ~ time =>
+        Hardware(Some(id), name, sn, ip, port, typ, time, memo, c1, c2)
     }
   }
 }

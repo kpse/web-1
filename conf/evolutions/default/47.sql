@@ -10,6 +10,7 @@ CREATE TABLE hardware (
   machine_type   INT,
   channel_1_camera   INT(11),
   channel_2_camera   INT(11),
+  memo   VARCHAR(100),
   updated_at BIGINT,
   status INT(4) DEFAULT 1,
   PRIMARY KEY (uid)
