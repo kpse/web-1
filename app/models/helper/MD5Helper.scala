@@ -10,4 +10,6 @@ object MD5Helper {
   def sha1(s: String) = {
     DigestUtils.sha1Hex(s).toLowerCase
   }
+
+  def urlEncode(s: String): String = java.net.URLEncoder.encode(s, "UTF-8")
 }

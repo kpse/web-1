@@ -30,7 +30,7 @@ object Verification {
     code
   }
 
-  def generate(phone: String)(implicit provider: SMSProvider) = {
+  def generate(phone: String)(implicit provider: SMSProvider): String = {
     val userName = provider.username()
     val secretKey = provider.password()
     val code = generatePair(phone)

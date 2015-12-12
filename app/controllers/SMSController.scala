@@ -1,13 +1,15 @@
 package controllers
 
-import play.api.Play
-import play.api.mvc.{SimpleResult, Action, Controller}
 import models._
-import play.api.libs.ws.WS
+import org.joda.time.DateTime
 import play.Logger
 import play.api.libs.json.{JsError, Json}
+import play.api.libs.ws.WS
+import play.api.mvc.{Action, Controller, SimpleResult}
 import play.cache.Cache
-import scala.concurrent.{Future, Promise}
+import models.helper.MD5Helper.{md5, urlEncode}
+
+import scala.concurrent.Future
 
 object SMSController extends Controller with Secured {
   implicit val context = scala.concurrent.ExecutionContext.Implicits.global
@@ -29,8 +31,8 @@ object SMSController extends Controller with Secured {
           Future.successful(BadRequest(Json.toJson(ErrorResponse("请求太频繁，目前限制为2分钟。(too frequently requests, current is 2 minutes)"))))
         case null =>
           val provider: SMSProvider = SMSProvider.create
-          val smsReq = Verification.generate(phone)(provider)
-          Logger.info(smsReq.toString())
+          val smsReq: String = Verification.generate(phone)(provider)
+          Logger.info(s"smsReq = $smsReq")
           sendSMS(smsReq)(provider)
         case _ =>
           Future.successful(BadRequest(Json.toJson(ErrorResponse("短信发送出错。(other errors in sending SMS, contact admin please)", 3))))
@@ -38,7 +40,7 @@ object SMSController extends Controller with Secured {
 
   }
 
-  def sendSMS(generate: Map[String, Seq[String]])(implicit provider: SMSProvider): Future[SimpleResult] = {
+  def sendSMS(generate: String)(implicit provider: SMSProvider): Future[SimpleResult] = {
     WS.url(provider.url()).withHeaders("Content-Type" -> "application/x-www-form-urlencoded;charset=UTF-8")
       .post(generate).map {
       response =>
