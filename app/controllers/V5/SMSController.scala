@@ -26,7 +26,7 @@ object SMSController extends Controller with Secured {
   def send(phone: String) = Action.async(parse.json) {
     implicit request =>
       logger.info(request.body.toString())
-      implicit val provider: SMSProvider = SMSProvider.create
+      implicit val provider: SMSProvider = new HuyiSMS
       request.body.validate[InvitationPhonePair].map {
         case (invitation) if invitation.invitee != phone =>
           Future.successful(BadRequest(Json.toJson(ErrorResponse("请将短信发送给被邀请人。(invitee phone number is not matched to uri)", 7))))
