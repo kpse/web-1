@@ -10,6 +10,8 @@ CREATE TABLE warehousestockingdetail (
   stocking_id    INT(11),
   goods_id  INT(11),
   goods_name  VARCHAR(50),
+  employee_id  INT(11),
+  employee_name  VARCHAR(50),
   origin_id INT(11),
   origin_name VARCHAR(50),
   price VARCHAR(50),

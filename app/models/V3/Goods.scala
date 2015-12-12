@@ -185,7 +185,7 @@ case class Stocking(id: Option[Long], `type`: Option[Int], invoice_type: Option[
   }
 }
 
-case class StockingDetail(id: Option[Long], stocking_id: Option[Long], goods_id: Option[Long], goods_name: Option[String],
+case class StockingDetail(id: Option[Long], stocking_id: Option[Long], goods_id: Option[Long], goods_name: Option[String], employee_id: Option[Long], employee_name: Option[String],
                           origin_id: Option[Long], origin_name: Option[String], price: Option[String], quality: Option[Int], unit: Option[String], memo: Option[String], subtotal: Option[String]) {
   def exists(id: Long) = DB.withConnection {
     implicit c =>
@@ -206,7 +206,7 @@ case class StockingDetail(id: Option[Long], stocking_id: Option[Long], goods_id:
   def update(kg: Long, warehouseId: Long, base: Long) = DB.withConnection {
     implicit c =>
       SQL("update warehousestockingdetail set school_id={school_id}, warehouse_id={warehouse_id}, stocking_id={stocking_id}, goods_id={goods_id}, " +
-        "goods_name={goods_name}, origin_id={origin_id}, origin_name={origin_name}, price={price}, quality={quality}, " +
+        "goods_name={goods_name}, origin_id={origin_id}, origin_name={origin_name}, employee_id={employee_id}, employee_name={employee_name}, price={price}, quality={quality}, " +
         "unit={unit}, memo={memo}, subtotal={subtotal}, updated_at={time} where school_id={school_id} and uid={id}")
         .on(
           'id -> id,
@@ -217,6 +217,8 @@ case class StockingDetail(id: Option[Long], stocking_id: Option[Long], goods_id:
           'goods_name -> goods_name,
           'origin_id -> origin_id,
           'origin_name -> origin_name,
+          'employee_id -> employee_id,
+          'employee_name -> employee_name,
           'price -> price,
           'quality -> quality,
           'unit -> unit,
@@ -228,8 +230,10 @@ case class StockingDetail(id: Option[Long], stocking_id: Option[Long], goods_id:
 
   def create(kg: Long, warehouseId: Long, base: Long) = DB.withConnection {
     implicit c =>
-      SQL("insert into warehousestockingdetail (school_id, warehouse_id, stocking_id, origin_id, origin_name, goods_id, goods_name, price, unit, quality, subtotal, updated_at) values (" +
-        "{school_id}, {warehouse_id}, {stocking_id}, {origin_id}, {origin_name}, {goods_id}, {goods_name}, {price}, {unit}, {quality}, {subtotal}, {time})")
+      SQL("insert into warehousestockingdetail (school_id, warehouse_id, stocking_id, origin_id, origin_name, goods_id, " +
+        "goods_name, employee_id, employee_name, price, unit, quality, subtotal, updated_at) values (" +
+        "{school_id}, {warehouse_id}, {stocking_id}, {origin_id}, {origin_name}, {goods_id}, {goods_name}, {employee_id}, " +
+        "{employee_name}, {price}, {unit}, {quality}, {subtotal}, {time})")
         .on(
           'school_id -> kg,
           'stocking_id -> base,
@@ -238,6 +242,8 @@ case class StockingDetail(id: Option[Long], stocking_id: Option[Long], goods_id:
           'goods_name -> goods_name,
           'origin_id -> origin_id,
           'origin_name -> origin_name,
+          'employee_id -> employee_id,
+          'employee_name -> employee_name,
           'price -> price,
           'quality -> quality,
           'unit -> unit,
@@ -432,13 +438,15 @@ object Stocking {
       get[Option[String]]("goods_name") ~
       get[Option[Long]]("origin_id") ~
       get[Option[String]]("origin_name") ~
+      get[Option[Long]]("employee_id") ~
+      get[Option[String]]("employee_name") ~
       get[Option[String]]("price") ~
       get[Option[Int]]("quality") ~
       get[Option[String]]("unit") ~
       get[Option[String]]("memo") ~
       get[Option[String]]("subtotal") map {
-      case id ~ stocking ~ goodsId ~ name ~ origin ~ originName ~ price ~ quality ~ unit ~ memo ~ subtotal =>
-        StockingDetail(Some(id), stocking, goodsId, name, origin, originName, price, quality, unit, memo, subtotal)
+      case id ~ stocking ~ goodsId ~ name ~ origin ~ originName ~  employeeId ~ employeeName ~ price ~ quality ~ unit ~ memo ~ subtotal =>
+        StockingDetail(Some(id), stocking, goodsId, name, employeeId, employeeName, origin, originName, price, quality, unit, memo, subtotal)
     }
   }
 }
