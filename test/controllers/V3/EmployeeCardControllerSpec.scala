@@ -218,5 +218,23 @@ object EmployeeCardControllerSpec extends Specification with TestSupport {
       (response \ "card").as[String] must equalTo("0001112222")
       (response \ "employee_id").as[Long] must equalTo(1)
     }
+
+    "reject updating with parental card" in new WithApplication {
+      val json = Json.toJson(EmployeeCard(Some(1), 93740362, 100, "0001234567", None))
+      val res3 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/employee_card/1").withBody(json)).get
+      status(res3) must equalTo(INTERNAL_SERVER_ERROR)
+      contentType(res3) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res3))
+      (response \ "error_code").as[Long] must equalTo(8)
+    }
+
+    "reject creating with parental card" in new WithApplication {
+      val json = Json.toJson(EmployeeCard(None, 93740362, 100, "0001234567", None))
+      val res3 = route(loggedRequest(POST, "/api/v3/kindergarten/93740362/employee_card").withBody(json)).get
+      status(res3) must equalTo(INTERNAL_SERVER_ERROR)
+      contentType(res3) must beSome.which(_ == "application/json")
+      val response: JsValue = Json.parse(contentAsString(res3))
+      (response \ "error_code").as[Long] must equalTo(8)
+    }
   }
 }

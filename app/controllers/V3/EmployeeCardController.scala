@@ -25,7 +25,7 @@ object EmployeeCardController extends Controller with Secured {
   def create(kg: Long) = IsLoggedIn(parse.json) { u => request =>
     Logger.info(s"employee card create: ${request.body}")
     request.body.validate[EmployeeCard].map {
-      withId orElse noConflicts orElse reuseDeletedResource(kg) orElse toCreate(kg)
+      withId orElse notParentCard orElse noConflicts orElse reuseDeletedResource(kg) orElse toCreate(kg)
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -34,7 +34,7 @@ object EmployeeCardController extends Controller with Secured {
   def update(kg: Long, id: Long) = IsLoggedIn(parse.json) { u => request =>
     Logger.info(s"employee update: ${request.body}")
     request.body.validate[EmployeeCard].map {
-      idMatched(id) orElse noConflicts orElse toUpdate(kg)
+      idMatched(id) orElse notParentCard orElse noConflicts orElse toUpdate(kg)
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -66,6 +66,11 @@ object EmployeeCardController extends Controller with Secured {
       InternalServerError(Json.toJson(ErrorResponse("卡号重复.(Duplicated card number)", 4)))
     case (s) if s.employeeExists =>
       InternalServerError(Json.toJson(ErrorResponse("该教师已有卡片.(Duplicated employee id)", 5)))
+  }
+
+  val notParentCard: PartialFunction[EmployeeCard, SimpleResult] = {
+    case (s) if Relationship.cardExists(s.card, None) =>
+      InternalServerError(Json.toJson(ErrorResponse("此卡号已经绑定给家长.(Card has been occupied by a parent)", 8)))
   }
 
   val withId: PartialFunction[EmployeeCard, SimpleResult] = {
