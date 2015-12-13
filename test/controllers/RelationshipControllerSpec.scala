@@ -34,7 +34,7 @@ class RelationshipControllerSpec extends Specification with TestSupport {
     }
 
     "be updated with same information" in new WithApplication {
-      private val jsBody = createAExistingRelationship("0001234567", "13408654680", "1_1391836223533", 1)
+      private val jsBody = createAnExistingRelationship("0001234567", "13408654680", "1_1391836223533", 1)
       val res = route(loggedRequest(POST, "/kindergarten/93740362/relationship/0001234567").withBody(jsBody)).get
 
       status(res) must equalTo(OK)
@@ -121,7 +121,7 @@ class RelationshipControllerSpec extends Specification with TestSupport {
 
     "allow relationship with card and corresponding id" in new WithApplication {
 
-      private val jsBody = createAExistingRelationship("0001234567", "13408654680", "1_1391836223533", 1)
+      private val jsBody = createAnExistingRelationship("0001234567", "13408654680", "1_1391836223533", 1)
       val res = route(loggedRequest(POST, "/api/v1/card_check").withBody(jsBody)).get
 
       status(res) must equalTo(OK)
@@ -146,7 +146,7 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       val parentPhone: String = "13408654680"
       val child_id: String = "1_93740362_9982"
 
-      private val jsBody = createANewRelationship(cardNumber, parentPhone, child_id)
+      private val jsBody = createAnNewRelationship(cardNumber, parentPhone, child_id)
       val res = route(loggedRequest(POST, "/kindergarten/93740362/relationship/" + cardNumber).withBody(jsBody)).get
 
       status(res) must equalTo(OK)
@@ -160,7 +160,7 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       val res2 = route(loggedRequest(DELETE, "/kindergarten/93740362/relationship/" + cardNumber)).get
       status(res2) must equalTo(OK)
 
-      private val newRelationship = createANewRelationship(cardNumber, parentPhone, "1_93740362_778")
+      private val newRelationship = createAnNewRelationship(cardNumber, parentPhone, "1_93740362_778")
       val res3 = route(loggedRequest(POST, "/kindergarten/93740362/relationship/" + cardNumber).withBody(newRelationship)).get
 
       status(res3) must equalTo(OK)
@@ -187,10 +187,40 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       val parentPhone: String = "13408654680"
       val child_id: String = "1_1391836223533"
 
-      private val jsBody = createAExistingRelationship(cardNumber, parentPhone, child_id, 10)
+      private val jsBody = createAnExistingRelationship(cardNumber, parentPhone, child_id, 10)
       val res = route(loggedRequest(POST, "/kindergarten/93740362/relationship").withBody(jsBody)).get
 
       status(res) must equalTo(BAD_REQUEST)
+      contentType(res) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(res))
+      (response \ "error_code").as[Int] must equalTo(3)
+    }
+
+    "reject employee card updating attempt" in new WithApplication {
+      val cardNumber: String = "0001112221"
+      val parentPhone: String = "13408654681"
+      val child_id: String = "1_1391836223533"
+
+      private val jsBody = createAnNewRelationship(cardNumber, parentPhone, child_id)
+      val res = route(loggedRequest(POST, "/kindergarten/93740362/relationship/" + "0001112221").withBody(jsBody)).get
+
+      status(res) must equalTo(BAD_REQUEST)
+      contentType(res) must beSome.which(_ == "application/json")
+
+      val response: JsValue = Json.parse(contentAsString(res))
+      (response \ "error_code").as[Int] must equalTo(7)
+    }
+
+    "reject employee card checking" in new WithApplication {
+      val cardNumber: String = "0001112221"
+      val parentPhone: String = "13408654681"
+      val child_id: String = "1_1391836223533"
+
+      private val jsBody = createAnNewRelationship(cardNumber, parentPhone, child_id)
+      val res = route(loggedRequest(POST, "/api/v1/card_check").withBody(jsBody)).get
+
+      status(res) must equalTo(OK)
       contentType(res) must beSome.which(_ == "application/json")
 
       val response: JsValue = Json.parse(contentAsString(res))
@@ -202,14 +232,14 @@ class RelationshipControllerSpec extends Specification with TestSupport {
   implicit val write2 = Json.writes[ChildInfo]
   implicit val write3 = Json.writes[Relationship]
 
-  def createAExistingRelationship(card: String, phone: String, childId: String, id: Long): JsValue = {
+  def createAnExistingRelationship(card: String, phone: String, childId: String, id: Long): JsValue = {
     Json.toJson(Relationship(
       Some(Parent(None, 0, "", phone, None, 0, "", None, None, None, None)),
       Some(ChildInfo(Some(childId), "", "", None, 0, None, 0, None, None, None)),
       card, "妈妈", Some(id)))
   }
 
-  def createANewRelationship(card: String, phone: String, childId: String): JsValue = {
+  def createAnNewRelationship(card: String, phone: String, childId: String): JsValue = {
     Json.toJson(Relationship(
       Some(Parent(None, 0, "", phone, None, 0, "", None, None, None, None)),
       Some(ChildInfo(Some(childId), "", "", None, 0, None, 0, None, None, None)),
@@ -226,7 +256,7 @@ class RelationshipControllerSpec extends Specification with TestSupport {
   }
 
   def invalidCard: JsValue = {
-    createANewRelationship("3331234567", "13408654681", "1_93740362_456")
+    createAnNewRelationship("3331234567", "13408654681", "1_93740362_456")
   }
 
   def deletedCard: JsValue = {

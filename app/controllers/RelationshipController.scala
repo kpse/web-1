@@ -2,7 +2,7 @@ package controllers
 
 import controllers.helper.CacheHelper._
 import controllers.helper.JsonLogger._
-import models.V3.CardV3
+import models.V3.{EmployeeCard, CardV3}
 import models._
 import play.api.Logger
 import play.api.libs.json.{JsError, JsValue, Json}
@@ -61,6 +61,8 @@ object RelationshipController extends Controller with Secured {
             BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。(Duplicated relationship)", 3)))
           case c if !CardV3.valid(card) =>
             Ok(Json.toJson(new ErrorResponse(s"卡号${card}未授权，请联系库贝人员。(Invalid card number)", 4)))
+          case exists if EmployeeCard.cardExists(card, None) =>
+            BadRequest(loggedJson(ErrorResponse(s"${card}号卡已经绑定过教师。(Card belongs to an employee)", 7)))
           case exists if exists && uid.isDefined =>
             logger.debug("update existing 1, reusing existing card")
             clearCurrentCache(kg)
@@ -122,6 +124,8 @@ object RelationshipController extends Controller with Secured {
   def isGoodToUse = IsAuthenticated(parse.json) {
     u => request =>
       request.body.validate[Relationship].map {
+        case exists if EmployeeCard.cardExists(exists.card, None) =>
+          Ok(Json.toJson(new ErrorResponse(s"卡号${exists.card}已被教师使用，不允许覆盖。(Current card is connected by employee)", 3)))
         case (relationship) if Relationship.deleted(relationship.card) =>
           Ok(Json.toJson(new SuccessResponse("已删除卡片，可重用。(Reuse deleted card)")))
         case (relationship) =>
