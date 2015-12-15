@@ -49,11 +49,6 @@ angular.module('kulebaoAgent',
       templateUrl: 'templates/agent/activities.html'
       controller: 'AgentActivitiesCtrl'
 
-    .state 'main.statistics',
-      url: '/statistics'
-      templateUrl: 'templates/agent/statistics.html'
-      controller: 'AgentStatisticsCtrl'
-
     .state 'main.history',
       url: '/history'
       templateUrl: 'templates/agent/history.html'

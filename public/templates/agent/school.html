@@ -24,8 +24,8 @@
   <tr ng-repeat="kg in currentAgent.schools | filter: searchText | orderBy: 'school_id'" class="row" >
     <td class="col-xs-1"><div kl-school-column="{{::kg.school_id}}" user="loggedUser"></div></td>
     <td class="col-xs-3">{{::kg.name}}</td>
-    <td class="col-xs-1">{{kg.stats.all}}</td>
     <td class="col-xs-1">{{kg.stats.children}}</td>
+    <td class="col-xs-1">{{kg.stats.all}}</td>
     <td class="col-xs-2">
       <span>{{kg.lastActiveData.rate || 'N/A'}}</span>
       <a ng-click="checkUserActive(kg)">查看</a>
