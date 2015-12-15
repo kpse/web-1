@@ -39,12 +39,15 @@ angular.module("kulebao.directives").directive "klBaiduMap", ->
             scope.klBaiduMap.result = result
             scope.upperForm.$setDirty() if scope.upperForm?
 
-    scope.render = (model) ->
+    createMap = (s) ->
       map = new BMap.Map attrs.id
-      return unless map.Q
       map.addControl(new BMap.ScaleControl())
       map.addControl(new BMap.NavigationControl())
       map.addControl(new BMap.MapTypeControl())
+      s.map = map
+      s.map
+    scope.render = (model) ->
+      map = if scope.map? then scope.map else createMap(scope)
       if model.city?
         map.setCurrentCity(model.city);
         # 创建地址解析器实例
