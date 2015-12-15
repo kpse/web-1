@@ -116,19 +116,17 @@ class ParentSpec extends Specification with TestSupport {
       private val result = LoginCheck(MobileLogin("11223344556", "23344556"))
       result.error_code must equalTo(0)
 
-      private val chengedPassword: String = "chengedPassword"
-      private val changed: ChangePasswordResponse = ChangePasswordResponse.handle(ChangePassword("11223344556", "23344556", chengedPassword))
+      private val changedPassword: String = "changedPassword"
+      private val changed: ChangePasswordResponse = ChangePasswordResponse.handle(ChangePassword("11223344556", "23344556", changedPassword))
 
       changed.error_code must equalTo(0)
 
       private val updated: Parent = Parent.update(created.copy(phone = "99887766554")).get
 
       updated.phone must equalTo("99887766554")
-      private val result2 = LoginCheck(MobileLogin("99887766554", chengedPassword))
+      private val result2 = LoginCheck(MobileLogin("99887766554", changedPassword))
       result2.error_code must equalTo(0)
     }
-
-
   }
 
   def createParent(phone: String) = Parent(None, kg, "name", phone, None, 0, "1980-01-01", None, None, None)
