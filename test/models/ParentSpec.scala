@@ -2,7 +2,7 @@ package models
 
 import _root_.helper.TestSupport
 import org.specs2.mutable.Specification
-import models.json_models.{MobileLogin, LoginCheck, CheckInfo, CheckingMessage}
+import models.json_models._
 
 class ParentSpec extends Specification with TestSupport {
   val kg: Long = 93740362
@@ -95,6 +95,37 @@ class ParentSpec extends Specification with TestSupport {
 
       private val result = LoginCheck(MobileLogin("11223344556", "23344556"))
       result.error_code must equalTo(0)
+    }
+
+    "update default password if it is not changed" in new WithApplication {
+      private val created: Parent = Parent.create(kg, createParent("11223344556").copy(birthday = "")).get
+
+      private val result = LoginCheck(MobileLogin("11223344556", "23344556"))
+      result.error_code must equalTo(0)
+
+      private val updated: Parent = Parent.update(created.copy(phone = "99887766554")).get
+
+      updated.phone must equalTo("99887766554")
+      private val result2 = LoginCheck(MobileLogin("99887766554", "87766554"))
+      result2.error_code must equalTo(0)
+    }
+
+    "do not update password if user changed it from default" in new WithApplication {
+      private val created: Parent = Parent.create(kg, createParent("11223344556").copy(birthday = "")).get
+
+      private val result = LoginCheck(MobileLogin("11223344556", "23344556"))
+      result.error_code must equalTo(0)
+
+      private val chengedPassword: String = "chengedPassword"
+      private val changed: ChangePasswordResponse = ChangePasswordResponse.handle(ChangePassword("11223344556", "23344556", chengedPassword))
+
+      changed.error_code must equalTo(0)
+
+      private val updated: Parent = Parent.update(created.copy(phone = "99887766554")).get
+
+      updated.phone must equalTo("99887766554")
+      private val result2 = LoginCheck(MobileLogin("99887766554", chengedPassword))
+      result2.error_code must equalTo(0)
     }
 
 

@@ -1,5 +1,7 @@
 package models
 
+import java.sql.Connection
+
 import anorm.SqlParser._
 import anorm._
 import controllers.RelationshipController
@@ -91,7 +93,7 @@ case class Parent(parent_id: Option[String], school_id: Long, name: String, phon
     implicit c =>
       try {
         sanitizePhoneNumber.executeUpdate()
-        Parent.fixUpPushAccount(this)
+        Parent.fixUpPushAccount(this)(c)
         SQL("update parentinfo set name={name}, " +
           "phone={phone}, gender={gender}, company={company}, " +
           "picurl={picurl}, birthday={birthday}, " +
@@ -285,26 +287,15 @@ object Parent {
         ).as(get[Long]("count") single) > 0
   }
 
-  def updateConversationRecord(oldPhone: String, parent: Parent) = DB.withConnection {
-    implicit c =>
-      SQL("update conversation set phone={phone} where phone={old_phone}")
-        .on('old_phone -> oldPhone,
-          'phone -> parent.phone).executeUpdate()
-  }
-
-  def updateRelatedPhone(parent: Parent) = DB.withConnection {
-    implicit c =>
-      val oldPhone = oldPhoneNumber(parent)
-      oldPhone match {
-        case conflicting if !conflicting.equals(parent.phone) && isConflicting(parent) =>
-          throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
-        case conflicting if !conflicting.equals(parent.phone) && isConflictingInConversation(parent) =>
-          throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
-        case old if !old.equals(parent.phone) =>
-          updatePushAccount(old, parent)
-          updateConversationRecord(old, parent)
-        case _ =>
-      }
+  def updateRelatedPhone(parent: Parent)(implicit c: Connection) = {
+    val oldPhone = oldPhoneNumber(parent)(c)
+    oldPhone match {
+      case conflicting if !conflicting.equals(parent.phone) && isConflicting(parent)(c) =>
+        throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
+      case old if old != parent.phone =>
+        updatePushAccount(old, parent)(c)
+      case _ =>
+    }
   }
 
   def cleanUpPushAccounts(phones: List[String]) = DB.withConnection {
@@ -317,44 +308,41 @@ object Parent {
       SQL(s"delete from parentinfo where status=0 and phone in ('${phones.mkString("','")}')").execute()
   }
 
-  def updatePushAccount(oldPhone: String, parent: Parent): Int = DB.withConnection {
-    implicit c =>
-      SQL("update accountinfo set accountid={phone}, " +
-        " active=0, pwd_change_time=0 where accountid={old_phone}")
-        .on('old_phone -> oldPhone,
-          'phone -> parent.phone).executeUpdate()
+  def updatePushAccount(oldPhone: String, parent: Parent)(implicit connection: Connection): Int = {
+    SQL("update accountinfo set accountid={phone}, " +
+      " active=0, pwd_change_time=0 where accountid={old_phone}")
+      .on(
+        'old_phone -> oldPhone,
+        'phone -> parent.phone
+      ).executeUpdate()
+    SQL("update accountinfo set password={newPassword} where accountid={phone} and password={unChangedPassword}")
+      .on(
+        'unChangedPassword -> md5(oldPhone.drop(3)),
+        'newPassword -> md5(parent.phone.drop(3)),
+        'phone -> parent.phone
+      ).executeUpdate()
   }
 
-  def oldPhoneNumber(parent: Parent) = DB.withConnection {
-    implicit c =>
-      SQL("select phone from parentinfo where parent_id={parent_id}")
-        .on('parent_id -> parent.parent_id).as(get[String]("phone") single)
+  def oldPhoneNumber(parent: Parent)(implicit connection: Connection) = {
+    SQL("select phone from parentinfo where parent_id={parent_id}")
+      .on('parent_id -> parent.parent_id).as(get[String]("phone") single)
   }
 
-  def isConflicting(parent: Parent) = DB.withConnection {
-    implicit c =>
-      SQL("select count(1) from accountinfo a, parentinfo p where a.accountid=p.phone and p.status = 1 and accountid={phone}")
-        .on('phone -> parent.phone).as(get[Long]("count(1)") single) > 0
+  def isConflicting(parent: Parent)(implicit connection: Connection) = {
+    SQL("select count(1) from accountinfo a, parentinfo p where a.accountid=p.phone and p.status = 1 and accountid={phone}")
+      .on('phone -> parent.phone).as(get[Long]("count(1)") single) > 0
   }
 
-  def existsInPushAccount(parent: Parent) = DB.withConnection {
-    implicit c =>
-      SQL("select count(1) from accountinfo where accountid={phone}")
-        .on('phone -> parent.phone).as(get[Long]("count(1)") single) > 0
+  def existsInPushAccount(parent: Parent)(implicit connection: Connection) = {
+    SQL("select count(1) from accountinfo where accountid={phone}")
+      .on('phone -> parent.phone).as(get[Long]("count(1)") single) > 0
   }
-
-  def isConflictingInConversation(parent: Parent) = DB.withConnection {
-    implicit c =>
-      SQL("select count(1) from conversation a, parentinfo p where a.phone=p.phone and p.status = 1 and p.phone={phone}")
-        .on('phone -> parent.phone).as(get[Long]("count(1)") single) > 0
-  }
-
 
   def update(parent: Parent) = DB.withConnection {
     implicit c =>
       val timestamp = System.currentTimeMillis
       updateRelatedPhone(parent)
-      fixUpPushAccount(parent)
+      fixUpPushAccount(parent)(c)
       SQL("update parentinfo set name={name}, " +
         "phone={phone}, gender={gender}, company={company}, " +
         "picurl={picurl}, birthday={birthday}, " +
@@ -427,7 +415,7 @@ object Parent {
   def create(kg: Long, parent: Parent) = DB.withTransaction {
     implicit c =>
       val timestamp = System.currentTimeMillis
-      val parentId = parent.parent_id.getOrElse(s"1_${kg}_${timestamp%1000}${parent.phone}")
+      val parentId = parent.parent_id.getOrElse(s"1_${kg}_${timestamp % 1000}${parent.phone}")
       Logger.info(s"parentId = $parentId")
       try {
         val createdId: Option[Long] = SQL("INSERT INTO parentinfo(name, parent_id, relationship, phone, gender, company, picurl, birthday, school_id, status, update_at, member_status, created_at) " +
@@ -447,7 +435,7 @@ object Parent {
             'timestamp -> timestamp,
             'created -> timestamp).executeInsert()
         Logger.info(s"created parent uid=$createdId, parent_id=$parentId, phone=${parent.phone}")
-        val accountinfoUid = createPushAccount(parent)
+        val accountinfoUid = createPushAccount(parent)(c)
         Logger.info("created accountinfo %s".format(accountinfoUid))
         c.commit()
         createdId.flatMap {
@@ -463,31 +451,28 @@ object Parent {
   }
 
 
-  def createPushAccount(parent: Parent): Option[Long] = DB.withConnection {
-    implicit c =>
-      Logger.info(s"createPushAccount for ${parent.parent_id} ${parent.phone}")
-      val existingHandler: (Parent) => Option[Long] = (p: Parent) => throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
-      manipulatePushAccount(parent)(existingHandler)
+  def createPushAccount(parent: Parent)(implicit connection: Connection): Option[Long] = {
+    Logger.info(s"createPushAccount for ${parent.parent_id} ${parent.phone}")
+    val existingHandler: (Parent) => Option[Long] = (p: Parent) => throw new IllegalAccessError("Phone number %s is existing in accountinfo".format(parent.phone))
+    manipulatePushAccount(parent)(existingHandler)(connection)
   }
 
-  def fixUpPushAccount(parent: Parent): Option[Long] = DB.withConnection {
-    implicit c =>
-      Logger.info(s"fixUpPushAccount for ${parent.parent_id} ${parent.phone}")
-      val existingHandler: (Parent) => Option[Long] = (p: Parent) => None
-      manipulatePushAccount(parent)(existingHandler)
+  def fixUpPushAccount(parent: Parent)(implicit connection: Connection): Option[Long] = {
+    Logger.info(s"fixUpPushAccount for ${parent.parent_id} ${parent.phone}")
+    val existingHandler: (Parent) => Option[Long] = (p: Parent) => None
+    manipulatePushAccount(parent)(existingHandler)(connection)
   }
 
-  def manipulatePushAccount(parent: Parent)(existingHandler: (Parent) => Option[Long]) = DB.withConnection {
-    implicit c =>
-      existsInPushAccount(parent) match {
-        case false =>
-          Logger.info(s"insert PushAccount for ${parent.phone}")
-          SQL("INSERT INTO accountinfo(accountid, password) " +
-            "VALUES ({accountid},{password})")
-            .on('accountid -> parent.phone,
-              'password -> generateNewPassword(parent.phone.drop(3))).executeInsert()
-        case true => existingHandler(parent)
-      }
+  def manipulatePushAccount(parent: Parent)(existingHandler: (Parent) => Option[Long])(implicit connection: Connection) = {
+    existsInPushAccount(parent)(connection) match {
+      case false =>
+        Logger.info(s"insert PushAccount for ${parent.phone}")
+        SQL("INSERT INTO accountinfo(accountid, password) " +
+          "VALUES ({accountid},{password})")
+          .on('accountid -> parent.phone,
+            'password -> generateNewPassword(parent.phone.drop(3))).executeInsert()(connection)
+      case true => existingHandler(parent)
+    }
   }
 
 
