@@ -125,7 +125,7 @@ angular.module('kulebaoAdmin')
             _.each scope.parents, (p) ->
               p.validRelationships = possibleRelationship(p)
             scope.children = Child.query school_id: stateParams.kindergarten, ->
-              scope.fullRelationships = []
+              scope.$emit 'clean_full_relationships'
               scope.fetchFullRelationshipsIfNeeded ->
                 scope.currentModal = Modal
                   scope: scope
@@ -337,7 +337,7 @@ angular.module('kulebaoAdmin')
                 newRelationship.$save ->
                     scope.currentModal.hide()
                     scope.$broadcast 'refreshing'
-                    scope.fullRelationships = []
+                    scope.$emit 'clean_full_relationships'
                     scope.refresh()
                     scope.saving = false
                   , (res) ->
@@ -372,6 +372,8 @@ angular.module('kulebaoAdmin')
         form.$setPristine()
         form.card.$setValidity "registered", true
         rootScope.loading = false
+      scope.$on 'clean_full_relationships', ->
+        scope.fullRelationships = []
   ]
 
 .controller 'connectedCtrl',
@@ -399,12 +401,13 @@ angular.module('kulebaoAdmin')
             $state.go 'kindergarten.relationship.type.class.list', {kindergarten: stateParams.kindergarten, type: stateParams.type, class_id: c.class_id}
 
       scope.$on 'fullRelationships_ready', (e, data) ->
-        console.log scope.classesScope
+        console.log 'head counting: ' + scope.classesScope
         groupedChildren = _.groupBy data, 'child.class_id'
         _.each scope.classesScope, (c) ->
           members = groupedChildren[c.class_id]
           headCount = if members? then members.length else 0
-          c.highlightedCount = headCount + '人'
+          $timeout ->
+            c.highlightedCount = headCount + '人'
   ]
 
 .controller 'ConnectedRelationshipCtrl',
@@ -475,12 +478,12 @@ angular.module('kulebaoAdmin')
 
       scope.delete = (card) ->
         Relationship.delete school_id: stateParams.kindergarten, card: card, ->
-          scope.fullRelationships = []
+          scope.$emit 'clean_full_relationships'
           scope.refreshRelationship()
           scope.$emit 'sessionRead'
 
       scope.$on 'refreshing', ->
-        scope.fullRelationships = []
+        scope.$emit 'clean_full_relationships'
         scope.refreshRelationship()
 
       scope.checkAll = (check) ->
@@ -495,7 +498,7 @@ angular.module('kulebaoAdmin')
           Relationship.delete(school_id: stateParams.kindergarten, card: r.card).$promise
         all = $q.all queue
         all.then (q) ->
-          scope.fullRelationships = []
+          scope.$emit 'clean_full_relationships'
           scope.refreshRelationship()
           scope.$emit 'sessionRead'
 
