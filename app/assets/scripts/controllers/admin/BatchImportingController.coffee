@@ -24,7 +24,6 @@ angular.module('kulebaoAdmin')
         scope.newClassesScope = []
         scope.relationships = []
         scope.fullRelationships = []
-        scope.relationships = []
         scope.classesScope = []
         cleanUpErrors()
       backToImport = ->
@@ -203,11 +202,15 @@ angular.module('kulebaoAdmin')
             id: r.child.id
           relationship: r.relationship
 
+      savingQueue = ->
+        parentPromiseList = _.map (_.chunk scope.parents, 100), (l) -> BatchParents.save(l).$promise
+        childPromiseList = _.map (_.chunk scope.children, 100), (l) -> BatchChildren.save(l).$promise
+        parentPromiseList.concat childPromiseList
+
       scope.applyAllChange = ->
         rootScope.loading = true
         compactRelationships = compactRelationship(assignIds(scope.relationships))
-        queue = [BatchParents.save(scope.parents).$promise,
-                 BatchChildren.save(scope.children).$promise]
+        queue = savingQueue()
         allCreation = $q.all queue
         allCreation.then (q) ->
           if (_.every q, (f) -> f.error_code == 0)
