@@ -401,7 +401,7 @@ angular.module('kulebaoAdmin')
             $state.go 'kindergarten.relationship.type.class.list', {kindergarten: stateParams.kindergarten, type: stateParams.type, class_id: c.class_id}
 
       scope.$on 'fullRelationships_ready', (e, data) ->
-        console.log 'head counting: ' + scope.classesScope
+#        console.log 'head counting: ' + JSON.stringify(scope.classesScope)
         groupedChildren = _.groupBy data, 'child.class_id'
         _.each scope.classesScope, (c) ->
           members = groupedChildren[c.class_id]
