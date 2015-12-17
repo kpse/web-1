@@ -81,6 +81,8 @@ object CardV3 {
         ).as(get[Long]("count(1)") single) > 0
   }
 
+  def fakeCard(card: String): Boolean = card.toLowerCase.charAt(0) == 'f'
+
   def show(kg: Long, id: Long) = DB.withConnection {
     implicit c =>
       SQL(s"select * from cardrecord c where c.school_id={kg} and uid={id} and status=1")

@@ -59,7 +59,7 @@ object RelationshipController extends Controller with Secured {
             BadRequest(loggedJson(ErrorResponse("本校记录中找不到该小孩信息。(Child info is not found in current school)", 2)))
           case exists if exists && uid.isEmpty && existingCard.nonEmpty && !existingCard.equals(Some(card)) =>
             BadRequest(loggedJson(ErrorResponse("此对家长和小孩已经创建过关系了。(Duplicated relationship)", 3)))
-          case c if !CardV3.valid(card) =>
+          case c if !(CardV3.fakeCard(card) || CardV3.valid(card)) =>
             Ok(Json.toJson(new ErrorResponse(s"卡号${card}未授权，请联系库贝人员。(Invalid card number)", 4)))
           case exists if EmployeeCard.cardExists(card, None) =>
             BadRequest(loggedJson(ErrorResponse(s"${card}号卡已经绑定过教师。(Card belongs to an employee)", 7)))

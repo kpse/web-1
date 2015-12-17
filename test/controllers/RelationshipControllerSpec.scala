@@ -226,17 +226,42 @@ class RelationshipControllerSpec extends Specification with TestSupport {
       val response: JsValue = Json.parse(contentAsString(res))
       (response \ "error_code").as[Int] must equalTo(3)
     }
+
+    "allow fake card to update relationship" in new WithApplication {
+      val parentPhone: String = "13402815317"
+      private val childId: String = "1_93740362_778"
+      private val newRelationship = createAnNewRelationship("", parentPhone, childId)
+      val res = route(loggedRequest(POST, "/kindergarten/93740362/relationship").withBody(newRelationship)).get
+
+      status(res) must equalTo(OK)
+      contentType(res) must beSome("application/json")
+
+      val newCard: JsValue = Json.parse(contentAsString(res))
+      private val fakeCardNumber: String = (newCard \ "card").as[String]
+      fakeCardNumber must startingWith("f")
+      private val newCreated: Long = (newCard \ "id").as[Long]
+
+      private val newRelationshipName: String = "新关系"
+      private val updateRelationship = createAnExistingRelationship(fakeCardNumber, parentPhone, childId, newCreated, newRelationshipName)
+      val res2 = route(loggedRequest(POST, "/kindergarten/93740362/relationship/" + fakeCardNumber).withBody(updateRelationship)).get
+
+      status(res2) must equalTo(OK)
+      contentType(res2) must beSome("application/json")
+
+      val updatedCard: JsValue = Json.parse(contentAsString(res2))
+      (updatedCard \ "relationship").as[String] must equalTo(newRelationshipName)
+    }
   }
 
   implicit val write1 = Json.writes[Parent]
   implicit val write2 = Json.writes[ChildInfo]
   implicit val write3 = Json.writes[Relationship]
 
-  def createAnExistingRelationship(card: String, phone: String, childId: String, id: Long): JsValue = {
+  def createAnExistingRelationship(card: String, phone: String, childId: String, id: Long, relationship: String = "妈妈"): JsValue = {
     Json.toJson(Relationship(
       Some(Parent(None, 0, "", phone, None, 0, "", None, None, None, None)),
       Some(ChildInfo(Some(childId), "", "", None, 0, None, 0, None, None, None)),
-      card, "妈妈", Some(id)))
+      card, relationship, Some(id)))
   }
 
   def createAnNewRelationship(card: String, phone: String, childId: String): JsValue = {
