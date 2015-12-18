@@ -88,5 +88,37 @@ object EmployeeV3ControllerSpec extends Specification with TestSupport {
 
     }
 
+    "check login name conflict before creating" in new WithApplication {
+      val employeeBody = Json.parse("{\"basic\":{\"name\":\"李毅老师\",\"phone\":\"13402815318\"," +
+        "\"gender\":0,\"workgroup\":\"教师组\",\"workduty\":\"教师\",\"portrait\":\"\",\"birthday\":\"1986-06-04\",\"school_id\":9999," +
+        "\"login_name\":\"e0001\",\"timestamp\":0,\"privilege_group\":\"teacher\",\"status\":1,\"created_at\":0}, " +
+        "\"ext\": {\"display_name\": \"display_name\"}}")
+      val res2 = route(principalLoggedRequest(POST, "/api/v3/kindergarten/93740362/employee").withBody(employeeBody)).get
+
+      status(res2) must equalTo(BAD_REQUEST)
+      val response2: JsValue = Json.parse(contentAsString(res2))
+
+      (response2 \ "error_code").as[Long] must equalTo(10)
+
+    }
+
+    "ignore deleted login name conflict before creating" in new WithApplication {
+      val res = route(principalLoggedRequest(DELETE, "/api/v3/kindergarten/93740362/employee/1")).get
+
+      status(res) must equalTo(OK)
+
+      val employeeBody = Json.parse("{\"basic\":{\"name\":\"李毅老师\",\"phone\":\"13402815318\"," +
+        "\"gender\":0,\"workgroup\":\"教师组\",\"workduty\":\"教师\",\"portrait\":\"\",\"birthday\":\"1986-06-04\",\"school_id\":9999," +
+        "\"login_name\":\"e0001\",\"timestamp\":0,\"privilege_group\":\"teacher\",\"status\":1,\"created_at\":0}, " +
+        "\"ext\": {\"display_name\": \"display_name\"}}")
+      val res2 = route(principalLoggedRequest(POST, "/api/v3/kindergarten/93740362/employee").withBody(employeeBody)).get
+
+      status(res2) must equalTo(OK)
+      val response2: JsValue = Json.parse(contentAsString(res2))
+
+      (response2 \ "basic" \ "phone").as[String] must equalTo("13402815318")
+
+    }
+
   }
 }

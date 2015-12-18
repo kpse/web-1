@@ -1,8 +1,10 @@
 package controllers.V3
 
+import controllers.EmployeeController._
 import controllers.Secured
+import controllers.helper.JsonLogger._
 import models.V3.EmployeeV3
-import models.{ErrorResponse, SuccessResponse}
+import models.{Employee, ErrorResponse, SuccessResponse}
 import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
@@ -28,6 +30,8 @@ object EmployeeControllerV3 extends Controller with Secured {
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
       case (s) if s.basic.uid.nonEmpty || s.id.nonEmpty =>
         BadRequest(Json.toJson(ErrorResponse("有id的情况请用update接口。(use update when you have ID value)", 4)))
+      case (employee) if Employee.loginNameExists(employee.basic.login_name) =>
+        BadRequest(loggedJson(ErrorResponse(employee.basic.login_name + "已占用，建议用学校拼音缩写加数字来组织登录名。", 10)))
       case (s) if s.existsInOtherSchool(kg) =>
         InternalServerError(Json.toJson(ErrorResponse("该号码，员工id，登录名三者至少有一样出现在另一个学校未删除老师的信息里。(the given employee critical info belongs to another school)", 6)))
       case (s) =>
