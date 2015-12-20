@@ -5,7 +5,11 @@
 Run ./build p for committing please
 Run ./build d for deploying to stage
 Run ./build a for both above
+Run ./build js for js dependencies resolving
+
+
 Run ./build prod for deploying the production
+
 
 Wiki page:
 
