@@ -4,6 +4,7 @@ import java.sql.Connection
 
 import anorm.SqlParser._
 import anorm.{~, _}
+import models.V3.EmployeeV3
 import models._
 import org.joda.time.DateTime
 import play.api.Logger
@@ -54,15 +55,9 @@ object SchoolIntro {
         dbCreate(school, time)
         val employee = Employee(None, "%s校长".format(school.name), school.principal.phone, 0,
           "", "", None, "1980-01-01", school.school_id, school.principal.admin_login, None, None, Some(1))
-        val createdPrincipal = school.principal.phone match {
-          case (reCreation) if Employee.dbHasBeenDeleted(reCreation)(c) =>
-            employee.dbUpdateByPhone()(c)
-            Employee.dbFindById(school.school_id, employee.id.get)(c)
-          case _ =>
-            val uid = employee.dbCreate()(c)
-            Employee.dbFindByUId(uid.get)(c)
-        }
-        createdPrincipal foreach {
+        EmployeeV3.removeDirtyDataIfExistsInConnection(employee)(c)
+        val uid = employee.dbCreate()(c)
+        Employee.dbFindByUId(uid.get)(c) foreach {
           case (created) if created.school_id == school.school_id =>
             created.dbPromote()(c)
             created.updatePassword(school.principal.admin_password)(c)

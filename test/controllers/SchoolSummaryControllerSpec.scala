@@ -2,12 +2,12 @@ package controllers
 
 import _root_.helper.TestSupport
 import models.ChargeInfo
-import models.json_models.{CreatingSchool, PrincipalOfSchool}
 import models.json_models.SchoolIntro._
+import models.json_models.{CreatingSchool, PrincipalOfSchool}
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
-import play.api.libs.json.{JsArray, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
@@ -96,6 +96,28 @@ class SchoolSummaryControllerSpec extends Specification with TestSupport {
         val notFoundResponse = route(requestWithSession(GET, "/kindergarten/93740362/employee/13060003722")).get
 
         status(notFoundResponse) must equalTo(UNAUTHORIZED)
+      }
+
+      "be created with deleted login name" in new WithApplication {
+
+        val deleteResponse = route(requestByOperator(DELETE, "/kindergarten/93740362/employee/13708089040")).get
+
+        status(deleteResponse) must equalTo(OK)
+
+        private val principalPhone: String = "23708089040"
+        private val firstSchool: CreatingSchool = CreatingSchool(123, "010-88881111", "名称", "token",
+          PrincipalOfSchool("e0002", "pass", principalPhone),
+          ChargeInfo(123, 100, "2016-01-01", 1, 99), "address", Some("全名"))
+
+        val createResponse = route(requestByOperator(POST, "/kindergarten").withBody(Json.toJson(firstSchool))).get
+        status(createResponse) must equalTo(OK)
+
+        val principalResponse = route(requestWithSession(GET, "/kindergarten/93740362/employee/23708089040")).get
+        status(principalResponse) must equalTo(OK)
+
+        val res: JsValue = Json.parse(contentAsString(principalResponse))
+        (res \ "login_name").as[String] must equalTo("e0002")
+        (res \ "phone").as[String] must equalTo("23708089040")
       }
 
     }

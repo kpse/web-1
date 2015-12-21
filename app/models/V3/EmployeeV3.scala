@@ -1,5 +1,6 @@
 package models.V3
 
+import java.sql.Connection
 import java.util.Date
 
 import anorm.SqlParser._
@@ -217,6 +218,10 @@ object EmployeeV3 {
 
   def removeDirtyDataIfExists(r: Employee) = DB.withConnection {
     implicit c =>
+      removeDirtyDataIfExistsInConnection(r)(c)
+  }
+
+  def removeDirtyDataIfExistsInConnection(r: Employee)(implicit c : Connection) = {
       val deletableCondition: String = " where status=0 and (phone={phone} or employee_id={id} or login_name={login}) "
       val execute1: Boolean = SQL(s"delete from employeeext where base_id in (select uid from employeeinfo $deletableCondition)")
         .on(

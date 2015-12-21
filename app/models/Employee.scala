@@ -483,7 +483,7 @@ object Employee {
 
   def update(employee: Employee) = DB.withConnection {
     implicit c =>
-      EmployeeV3.removeDirtyDataIfExists(employee)
+      EmployeeV3.removeDirtyDataIfExistsInConnection(employee)(c)
       employee.update
       show(employee.phone)
   }
@@ -533,7 +533,7 @@ object Employee {
 
   def create(employee: Employee): Option[Employee] = DB.withConnection {
     implicit c =>
-      EmployeeV3.removeDirtyDataIfExists(employee)
+      EmployeeV3.removeDirtyDataIfExistsInConnection(employee)(c)
       val uid: Option[Long] = employee.dbCreate()(c)
       uid flatMap (id => Employee.dbFindByUId(id)(c))
   }

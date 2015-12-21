@@ -46,10 +46,10 @@ object EmployeeController extends Controller with Secured {
         request.body.validate[Employee].map {
           case (employee) if Employee.phoneExists(employee.phone) =>
             BadRequest(loggedJson(ErrorResponse("老师的电话重复，请检查输入。", 3)))
-          case (reCreation) if Employee.hasBeenDeleted(reCreation.phone) =>
-            Ok(loggedJson(Employee.reCreateByPhone(reCreation)))
           case (employee) if Employee.loginNameExists(employee.login_name) =>
             BadRequest(loggedJson(ErrorResponse(employee.login_name + "已占用，建议用学校拼音缩写加数字来组织登录名。", 4)))
+          case (reCreation) if Employee.hasBeenDeleted(reCreation.phone) =>
+            Ok(loggedJson(Employee.reCreateByPhone(reCreation)))
           case (employee) =>
             val created: Option[Employee] = Employee.create(employee)
             created match {
