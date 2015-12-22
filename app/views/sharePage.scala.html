@@ -22,7 +22,7 @@
       <div class="header">
         <div class="row logo-back">
           <div class="logo col-lg-offset-2 col-lg-2">
-            <a href="http://www.cocobabys.com"><img class="" src="@routes.VersionedAssets.at("images/share-logo.png")" alt="幼乐宝"/></a>
+            <a href="http://www.cobabys.com"><img class="" src="@routes.VersionedAssets.at("images/share-logo.png")" alt="幼乐宝"/></a>
           </div>
         </div>
       </div>
@@ -33,16 +33,12 @@
         *@
         <div class="share-content content">@page.content</div>
         <div class="share-signature">
-          <div class="share-content from left">来自@page.school.map(_.name).getOrElse("幼乐宝")</div>
+          <div class="share-content from left">@page.school.map(_.name).getOrElse("幼乐宝")</div>
           <div class="share-content right">
             <span class="shared-at">@(new Date(page.timestamp).format("yyyy-MM-dd"))</span>
-            <a href="http://www.cocobabys.com" class="product-name">幼乐宝</a>
+            <a href="http://www.cobabys.com" class="product-name">幼乐宝</a>
           </div></div>
         <div class="clearfix"></div>
-        <div class="blue-strap">
-          <img class="bell-logo" src="@routes.VersionedAssets.at("images/bell.png")" alt="bell"/>
-          <a href="#footer"><p class="promotion">扫描下方二维码关注微信公众号</p></a>
-        </div>
         <ul class="share-images">
         @for(p <- page.medium) {
           @if(p.`type` == Some("video")) {
@@ -73,15 +69,14 @@
         </ul>
       </div>
       <div class="clearfix"></div>
-      <div class="footer row" id="footer">
-        <img class="img-responsive col-xs-6 left" src="@routes.VersionedAssets.at("images/share-footer-left.png")" alt="contact"/>
-        <img class="img-responsive col-xs-6 right" src="@routes.VersionedAssets.at("images/share-footer-right.png")" alt="qr-code"/>
+      <div class="footer" id="footer">
+        <img class="img-responsive" src="@routes.VersionedAssets.at("images/share-footer.gif")" alt="qr-code"/>
+        <div class="contact-us">
+          <div class="upper info" ><span class="left">电话：028-61905012&nbsp;&nbsp;&nbsp;&nbsp;全国服务热线：400-008-0300</span>
+          <div class="lower info"><p>www.cobabys.com</p></div>
+        </div>
       </div>
-      <div class="contact-us"><p>联系我们：</p>
-        <p>电话：028-61905012</p>
-        <p>全国服务热线：400-008-0300</p>
-        <p>公司官方网站：www.cobabys.com</p>
-      </div>
+
     </div>
 
     <script src="@routes.VersionedAssets.at("vendor/jquery/jquery.min.js")" type="text/javascript"></script>
