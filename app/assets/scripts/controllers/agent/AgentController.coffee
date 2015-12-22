@@ -60,7 +60,7 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
 
       scope.checkUserActive = (school) ->
         scope.currentSchool = school
-        scope.d3Data = school.activeData
+        scope.d3Data = _.map school.activeData, (a) -> a.month = a.data.month;a
 
       scope.$on '$stateChangeStart', ->
         $rootScope.loading = true
