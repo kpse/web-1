@@ -60,8 +60,8 @@ angular.module('kulebaoAgent')
       scope.currentAgent = CurrentAgent
       scope.currentMonth = $stateParams.month
       scope.currentMonthDisplay = scope.monthDisplay scope.currentMonth
-      scope.allowToDelete = (month) ->
-        month == scope.pastMonths[0] && scope.loggedUser.privilege_group == 'operator'
+      scope.allowToDelete = (month, stats) ->
+        stats && month == scope.pastMonths[0] && scope.loggedUser.privilege_group == 'operator'
       scope.refresh = ->
         $rootScope.loading = true
         scope.d3Data = []
