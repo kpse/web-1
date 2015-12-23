@@ -164,13 +164,7 @@ object IMToken {
           case Some(info) =>
             Future.successful(Some(info))
           case _ =>
-            IMToken.createClassGroup(kg, Some(imAccount.get.imClassInfo(clazz))).map {
-              case Some(classGroup) =>
-                val updated: IMClassGroup = classGroup.copy(school_id = kg, class_id = id.toInt, group_id = s"${clazz.school_id}_${clazz.class_id.get}", group_name = clazz.name)
-                updated.save(kg)
-                Some(updated)
-              case None => None
-            }
+            createClassGroup(kg, imAccount, clazz)(ws)
         }
       case None =>
         Future.successful(None)
@@ -182,21 +176,15 @@ object IMToken {
       case Some(clazz) =>
         clazz.imInfo match {
           case Some(info) =>
-            IMToken.joinClassGroup(kg, Some(imAccount.get.imClassInfo(clazz))).map {
+            joinClassGroup(kg, Some(imAccount.get.imClassInfo(clazz))).map {
               case Some(classGroup) =>
                 Some(info)
               case None => None
             }
           case _ =>
-            IMToken.createClassGroup(kg, Some(imAccount.get.imClassInfo(clazz))).map {
-              case Some(classGroup) =>
-                val updated: IMClassGroup = classGroup.copy(school_id = kg, class_id = id.toInt, group_id = s"${clazz.school_id}_${clazz.class_id.get}", group_name = clazz.name)
-                updated.save(kg)
-                Some(updated)
-              case None => None
-            }.flatMap {
+            createClassGroup(kg, imAccount, clazz)(ws).flatMap {
               case (newCreatedGroup) =>
-                IMToken.joinClassGroup(kg, Some(imAccount.get.imClassInfo(clazz))).map {
+                joinClassGroup(kg, Some(imAccount.get.imClassInfo(clazz))).map {
                   case Some(res) =>
                     newCreatedGroup
                   case None => None
@@ -208,12 +196,35 @@ object IMToken {
     }
   }
 
+  def createClassGroup(kg: Long, imAccount: Option[IMAccount], clazz: SchoolClass)(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[Option[IMClassGroup]] = {
+
+    def innerCreate(kg: Long, body: Option[String]): Future[Option[IMClassGroup]] = {
+      body match {
+        case Some(request) =>
+          ws(kg, "/group/create.json", request, readsIMBasicRes).map {
+            case Some(res) if res.code == 200 =>
+              Some(IMClassGroup("internet", 0, 0, "", ""))
+            case _ => None
+          }
+        case None => Future(None)
+      }
+    }
+
+    innerCreate(kg, Some(imAccount.get.imClassInfo(clazz))).map {
+      case Some(classGroup) =>
+        val updated: IMClassGroup = classGroup.copy(school_id = kg, class_id = clazz.class_id.getOrElse(0), group_id = s"${clazz.school_id}_${clazz.class_id.get}", group_name = clazz.name)
+        updated.save(kg)
+        Some(updated)
+      case None => None
+    }
+  }
+
   def leaveGroup(kg: Long, username: String, id: Long, imAccount: Option[IMAccount])(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[Option[IMClassGroup]] = {
     eligibleClasses(kg, username, imAccount).find(_.class_id == Some(id)) match {
       case Some(clazz) =>
         clazz.imInfo match {
           case Some(info) =>
-            IMToken.leaveClassGroup(kg, Some(imAccount.get.imClassInfo(clazz))).map {
+            leaveClassGroup(kg, Some(imAccount.get.imClassInfo(clazz))).map {
               case Some(classGroup) =>
                 Some(info)
               case None => None
@@ -226,34 +237,18 @@ object IMToken {
     }
   }
 
-  def createClassGroup(kg: Long, body: Option[String])(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[Option[IMClassGroup]] = {
-    body match {
-      case Some(request) =>
-        ws(kg, "/group/create.json", request, readsIMBasicRes).map {
-          case Some(res) if res.code == 200 =>
-            Some(IMClassGroup("internet", 0, 0, "", ""))
-          case _ => None
-        }
-      case None => Future(None)
-    }
-  }
-
   def joinClassGroup(kg: Long, body: Option[String])(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[Option[IMBasicRes]] = {
-    body match {
-      case Some(request) =>
-        ws(kg, "/group/join.json", request, readsIMBasicRes).map {
-          case Some(res) if res.code == 200 =>
-            Some(IMBasicRes(res.code))
-          case _ => None
-        }
-      case None => Future(None)
-    }
+    rongyunServiceCall(kg, "/group/join.json", body)(ws)
   }
 
   def leaveClassGroup(kg: Long, body: Option[String])(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[Option[IMBasicRes]] = {
+    rongyunServiceCall(kg, "/group/quit.json", body)(ws)
+  }
+
+  def rongyunServiceCall(kg: Long, method: String, body: Option[String])(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[Option[IMBasicRes]] = {
     body match {
       case Some(request) =>
-        ws(kg, "/group/quit.json", request, readsIMBasicRes).map {
+        ws(kg, method, request, readsIMBasicRes).map {
           case Some(res) if res.code == 200 =>
             Some(IMBasicRes(res.code))
           case _ => None
