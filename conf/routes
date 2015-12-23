@@ -695,7 +695,9 @@ POST          /api/v6/payment                                                   
 GET           /api/v6/payment                                                                  controllers.V6.PaymentRecordController.index(parentId: Option[String])
 
 GET           /api/v7/kindergarten/:kg/im_token/:id                                            controllers.V7.IMServiceController.token(kg: Long, id: Long)
-GET           /api/v7/kindergarten/:kg/class_im_group/:id                                      controllers.V7.IMServiceController.classGroup(kg: Long, id: Long)
+GET           /api/v7/kindergarten/:kg/class_im_group/:classId                                 controllers.V7.IMServiceController.classGroup(kg: Long, classId: Long)
+POST          /api/v7/kindergarten/:kg/class_im_group/:classId/user                            controllers.V7.IMServiceController.joinGroup(kg: Long, classId: Long)
+DELETE        /api/v7/kindergarten/:kg/class_im_group/:classId/user/:userId                    controllers.V7.IMServiceController.leaveGroup(kg: Long, classId: Long, userId: String)
 
 POST          /api/v7/kindergarten/:kg/class_im_group/:class_id/ban                            controllers.V7.IMServiceController.banUser(kg: Long, class_id: Int)
 DELETE        /api/v7/kindergarten/:kg/class_im_group/:class_id/ban/:id                        controllers.V7.IMServiceController.allowUser(kg: Long, class_id: Int, id: String)

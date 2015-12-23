@@ -49,16 +49,16 @@ object IMServiceController extends Controller with Secured {
     Employee.findByLoginName(loginName).filter(_.school_id == kg).filter(_.uid == Some(id))
   }
 
-  def classGroup(kg: Long, id: Long) = IsLoggedInAsync { username =>
+  def classGroup(kg: Long, classId: Long) = IsLoggedInAsync { username =>
     request =>
       Logger.info(s"username = $username")
       val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
       Logger.info(s"imAccount = $imAccount")
-      IMToken.classGroup(kg, username, id, imAccount).map {
+      IMToken.classGroup(kg, username, classId, imAccount).map {
         case Some(classGroup) =>
           imAccount.foreach {
             case Parent(_, _, _, phone, _, _, _, _, _, _, _, _, _, _) =>
-              val relationships: List[Relationship] = Relationship.index(kg, Some(phone), None, Some(id))
+              val relationships: List[Relationship] = Relationship.index(kg, Some(phone), None, Some(classId))
               classGroup.welcomeToGroup(relationships)
             case _ => Logger.info("教师不发欢迎信息.(no welcome message for employees)")
           }
@@ -66,6 +66,44 @@ object IMServiceController extends Controller with Secured {
         case None =>
           InternalServerError(Json.toJson(ErrorResponse("创建班级聊天群出错.(error in creating class IM group)")))
       }
+  }
+
+  def joinGroup(kg: Long, classId: Long) = IsLoggedInAsync(parse.json) { username =>
+    request =>
+      Logger.info(s"joinGroup username = $username")
+      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
+      Logger.info(s"imAccount = ${imAccount}")
+      IMToken.joinGroup(kg, username, classId, imAccount).map {
+        case Some(classGroup) =>
+          imAccount.foreach {
+            case Parent(_, _, _, phone, _, _, _, _, _, _, _, _, _, _) =>
+              val relationships: List[Relationship] = Relationship.index(kg, Some(phone), None, Some(classId))
+              classGroup.welcomeToGroup(relationships)
+            case _ => Logger.info("教师不发欢迎信息.(no welcome message for employees)")
+          }
+          Ok(loggedJson(classGroup))
+        case None =>
+          InternalServerError(Json.toJson(ErrorResponse("加入班级聊天群出错.(error in joining class IM group)", 11)))
+      }
+  }
+
+  def leaveGroup(kg: Long, classId: Long, userId: String) = IsLoggedInAsync { username =>
+    request =>
+      Logger.info(s"leaveGroup username = $username")
+      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
+      Logger.info(s"imAccount = $imAccount")
+      imAccount match {
+        case Some(account) if "me" == userId =>
+          IMToken.leaveGroup(kg, username, classId, imAccount).map {
+            case Some(classGroup) =>
+              Ok(loggedJson(classGroup))
+            case None =>
+              InternalServerError(Json.toJson(ErrorResponse("离开班级聊天群出错.(error in leaving class IM group)", 21)))
+          }
+        case _ =>
+          Future.successful(InternalServerError(Json.toJson(ErrorResponse(s"没有这个用户${userId}.(no such IM user)", 22))))
+      }
+
   }
 
   def banUser(kg: Long, class_id: Int) = IsLoggedInAsync(parse.json) { username =>
