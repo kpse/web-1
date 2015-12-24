@@ -5,6 +5,7 @@ import controllers.Secured
 import controllers.helper.JsonLogger._
 import models.ErrorResponse
 import models.V3.SchoolClassV3
+import play.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Controller, SimpleResult}
 
@@ -38,6 +39,8 @@ object ClassController extends Controller with Secured {
 
   def updateClass(kg: Long): PartialFunction[SchoolClassV3, SimpleResult] = {
     case (classInfo) =>
+      Logger.info(s"clearCurrentCache in V3 updating ${classInfo}")
+      clearCurrentCache(kg)
       Ok(Json.toJson(classInfo.copy(school_id = kg).update))
   }
 
@@ -56,7 +59,7 @@ object ClassController extends Controller with Secured {
       Ok(loggedJson(ErrorResponse("已有ID不相同的同名班级,请确认信息正确性。(class id and name is conflicting)", 2)))
   }
 
-
-
-
+  def clearCurrentCache(kg: Long) = {
+    StudentController.clearCurrentCache(kg)
+  }
 }

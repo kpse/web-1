@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.V3.StudentController
 import controllers.helper.JsonLogger._
 import play.api.mvc.{SimpleResult, Action, Controller}
 import play.api.libs.json.{JsError, Json}
@@ -61,6 +62,8 @@ object ClassController extends Controller with Secured {
 
   val createOrUpdate: PartialFunction[SchoolClass, SimpleResult] = {
     case (classInfo) =>
+      Logger.info(s"clearCurrentCache in updating ${classInfo}")
+      clearCurrentCache(classInfo.school_id)
       Ok(loggedJson(School.updateOrCreate(classInfo)))
   }
 
@@ -104,5 +107,9 @@ object ClassController extends Controller with Secured {
     u => _ =>
       School.cleanSchoolClassesData(kg)
       Ok(Json.toJson(new SuccessResponse))
+  }
+
+  def clearCurrentCache(kg: Long) = {
+    StudentController.clearCurrentCache(kg)
   }
 }
