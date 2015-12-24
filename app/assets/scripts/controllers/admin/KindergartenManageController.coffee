@@ -129,6 +129,7 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         Classes.query school_id: $stateParams.kindergarten, (data) ->
           scope.kindergarten.classes = data
           scope.classesScope = data
+        scope.$broadcast 'clean_full_relationships'
 
       scope.feedback = ->
         scope.message = new Feedback

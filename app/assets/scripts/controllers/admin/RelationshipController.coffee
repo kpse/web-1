@@ -46,15 +46,16 @@ angular.module('kulebaoAdmin')
 
       scope.fetchFullRelationshipsIfNeeded = (callback)->
         scope.fullRelationships = scope.fullRelationships || []
-        if scope.fullRelationships.length == 0
-          Relationship.bind(school_id: stateParams.kindergarten).query (data) ->
+        scope.fetching = scope.fetching || {$resolved : true}
+        if scope.fullRelationships.length == 0 && scope.fetching.$resolved
+          scope.fetching = Relationship.bind(school_id: stateParams.kindergarten).query (data) ->
             scope.fullRelationships = _.map data , (d) ->
               d.school_id = parseInt(stateParams.kindergarten)
               d
             callback(scope.fullRelationships) if callback?
             scope.$broadcast 'fullRelationships_ready', scope.fullRelationships
         else
-          callback() if callback?
+          callback(scope.fullRelationships) if callback?
 
       scope.backend = true
       scope.refresh()
@@ -422,12 +423,10 @@ angular.module('kulebaoAdmin')
 
       scope.refreshRelationship = ->
         rootScope.loading = true
-        Relationship.bind(school_id: stateParams.kindergarten, class_id: stateParams.class_id).query (data) ->
-          scope.relationships = _.map data, (r) ->
-            _.assign extendFilterFriendlyProperties(r), school_id: parseInt stateParams.kindergarten
+        scope.fetchFullRelationshipsIfNeeded (all) ->
+          scope.relationships = _(all).filter((r) -> r.child.class_id == parseInt stateParams.class_id).map((r) ->
+            _.assign extendFilterFriendlyProperties(r), school_id: parseInt stateParams.kindergarten).value()
           rootScope.loading = false
-        scope.fetchFullRelationshipsIfNeeded()
-
 
       scope.refreshRelationship()
 
