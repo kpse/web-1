@@ -67,9 +67,9 @@ angular.module('kulebaoAdmin')
       scope.child = Child.bind(school_id: stateParams.kindergarten, child_id: stateParams.child_id).get ->
         scope.refresh()
 
-      scope.refresh = ->
+      scope.refresh = (most = 25)->
         rootScope.loading = true
-        scope.conversations = Message.bind(school_id: stateParams.kindergarten, topic: scope.child.child_id).query ->
+        scope.conversations = Message.bind(school_id: stateParams.kindergarten, topic: scope.child.child_id, most: most).query ->
           _.each scope.conversations, (c) ->
             c.sender.info = Sender.bind(school_id: stateParams.kindergarten, id: c.sender.id, type: c.sender.type).get ->
               c.sender.name = c.sender.info.name
@@ -81,6 +81,7 @@ angular.module('kulebaoAdmin')
               reader: scope.adminUser.id
               session_id: scope.conversations[scope.conversations.length - 1].id
             r.$save()
+          scope.noMore = scope.conversations.length < most
           rootScope.loading = false
 
       scope.newHistoryRecord = ->
@@ -177,4 +178,6 @@ angular.module('kulebaoAdmin')
         scope.disableUploading = scope.dynamicDisable(scope.message)
         scope.buttonLabel = scope.dynamicLabel(scope.message)
 
+      scope.loadMore = (current) ->
+        scope.refresh(current.length + 25)
   ]
