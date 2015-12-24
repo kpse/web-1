@@ -82,5 +82,53 @@ class IMTokenSpec extends Specification with TestSupport {
       result must beNone.await
     }
 
+    "join group if the class group exists" in new WithApplication {
+
+      private val account: IMAccount = Parent.phoneSearch("13408654680").get
+      private val result = IMToken.joinGroup(93740362, "13408654680", 777888, Some(account))(successClassGroupCall)
+
+      result must beSome(IMClassGroup("db", 93740362, 777888, "93740362_777888", "苹果班")).await
+    }
+
+    "join group if the class group does not exists" in new WithApplication {
+
+      private val account: IMAccount = Employee.phoneSearch("13060003722").get
+      private val result = IMToken.joinGroup(93740362, "admin", 777666, Some(account))(successClassGroupCall)
+
+      result must beSome(IMClassGroup("internet", 93740362, 777666, "93740362_777666", "梨儿班")).await
+    }
+
+    "not to join class group if the class is out of this user's scope" in new WithApplication {
+
+      private val account: IMAccount = Employee.phoneSearch("13060003702").get
+      private val result = IMToken.joinGroup(93740362, "e0003", 777666, Some(account))(successClassGroupCall)
+
+      result must beNone.await
+    }
+
+    "leave group without any check" in new WithApplication {
+
+      private val account: IMAccount = Parent.phoneSearch("14880498549").get
+      private val result = IMToken.leaveGroup(93740362, "14880498549", 777888, Some(account))(successClassGroupCall)
+
+      result must beSome(IMClassGroup("db", 93740362, 777888, "93740362_777888", "苹果班")).await
+    }
+
+    "report error join group if the network fails" in new WithApplication {
+
+      private val account: IMAccount = Parent.phoneSearch("14880498549").get
+      private val result = IMToken.joinGroup(93740362, "e0001", 777999, Some(account))(failureClassGroupCall)
+
+      result must beNone.await
+    }
+
+    "report error leave creating group if the network fails" in new WithApplication {
+
+      private val account: IMAccount = Parent.phoneSearch("14880498549").get
+      private val result = IMToken.leaveGroup(93740362, "e0001", 777999, Some(account))(failureClassGroupCall)
+
+      result must beNone.await
+    }
+
   }
 }

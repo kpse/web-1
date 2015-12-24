@@ -220,19 +220,23 @@ object IMToken {
   }
 
   def leaveGroup(kg: Long, username: String, id: Long, imAccount: Option[IMAccount])(implicit ws: IMWS[IMBasicRes] = rongyunWS[IMBasicRes]): Future[Option[IMClassGroup]] = {
-    eligibleClasses(kg, username, imAccount).find(_.class_id == Some(id)) match {
+    School.findClass(kg, Some(id.toInt)) match {
       case Some(clazz) =>
         clazz.imInfo match {
           case Some(info) =>
             leaveClassGroup(kg, Some(imAccount.get.imClassInfo(clazz))).map {
-              case Some(classGroup) =>
+              case Some(res) =>
                 Some(info)
-              case None => None
+              case None =>
+                Logger.debug(s"leaveClassGroup service call return None")
+                None
             }
           case None =>
+            Logger.debug(s"leaveClassGroup no such class group")
             Future.successful(None)
         }
       case None =>
+        Logger.debug(s"leaveClassGroup no such class")
         Future.successful(None)
     }
   }
