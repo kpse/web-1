@@ -53,7 +53,7 @@ angular.module('kulebaoAdmin').controller 'EmployeesListCtrl',
             title: '老师信息保存失败'
             content: res.data.error_msg
             placement: "top-left"
-            container: '.modal-body.panel-body'
+            container: '.modal-body .panel-body'
 
       scope.delete = (employee) ->
         employee.$delete ->
