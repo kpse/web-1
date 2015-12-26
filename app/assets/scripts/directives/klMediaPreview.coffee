@@ -11,6 +11,7 @@ angular.module("kulebao.directives").directive "klMediaPreview",
         width: "@"
         clickable: "@"
         form: "="
+        allMedium: "=?"
 
       link: (scope, element) ->
         scope.$watch 'media.url', ( (n, o) ->
@@ -34,8 +35,10 @@ angular.module("kulebao.directives").directive "klMediaPreview",
 
         scope.refresh = ->
           return unless scope.media?
+          scope.allMedium = scope.allMedium || [scope.media]
           scope.url = scope.compress scope.media.url, scope.width, scope.height
           scope.type = scope.media.type
+          scope.allImages = _.filter scope.allMedium, (m) -> scope.isImage(m.url)
 
         scope.deleteThisImage = (media) ->
           scope.deleteCallback(media) if scope.deleteCallback?

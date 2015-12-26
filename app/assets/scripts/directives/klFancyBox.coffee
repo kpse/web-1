@@ -1,11 +1,14 @@
 'use strict'
 
-angular.module('kulebao.directives').directive 'klFancyBox', ($compile, $http) ->
+angular.module('kulebao.directives').directive 'klFancyBox', ->
   return (
     restrict: 'A'
     controller: ($scope) ->
-      $scope.openFancybox = (url) ->
+      $scope.openFancybox = (url, all) ->
         originalUrl = url.replace(/\?.*$/, '')
-        $.fancybox.open [{title: '', href: originalUrl}]
+        allImages = _.map all, (c) -> {title: '', href: c.url.replace(/\?.*$/, '')}
+        leftPart = _.dropWhile allImages, (c) -> c.href != originalUrl
+        rightPart = _.takeWhile allImages, (c) -> c.href != originalUrl
+        $.fancybox.open leftPart.concat rightPart
 
   )
