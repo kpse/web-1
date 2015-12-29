@@ -56,9 +56,9 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
 .controller 'OpShowPhoneCtrl',
   ['$scope', '$rootScope', '$stateParams', '$location', '$alert', '$state', 'phoneManageService', 'schoolService',
    'videoMemberService', 'parentPasswordService', 'pushAccountService', 'parentService', 'bindingHistoryService',
-   'allEmployeesService', 'schoolConfigService', 'schoolConfigExtractService',
+   'allEmployeesService', 'schoolConfigService', 'schoolConfigExtractService', 'relationshipService'
     (scope, rootScope, stateParams, location, Alert, $state, Phone, School, VideoMember, ParentPassword, PushAccount,
-     Parent, Binding, Employee, SchoolConfig, ConfigExtract) ->
+     Parent, Binding, Employee, SchoolConfig, ConfigExtract, Relationships) ->
       scope.teacher = Employee.get phone: stateParams.phone, ->
         scope.hasTeacherInfo = true
       scope.parent = Phone.get phone: stateParams.phone, ->
@@ -69,6 +69,11 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
         scope.parent.bindings = Binding.get scope.parent
         SchoolConfig.get school_id: scope.parent.school_id, (data)->
           scope.videoTrialAccount = ConfigExtract data['config'], 'videoTrialAccount'
+        scope.parent.relationships = Relationships.query school_id: scope.parent.school_id, parent: scope.parent.phone, ->
+          scope.parent.children = _.pluck scope.parent.relationships, 'child'
+
+      scope.linkToClass = (child) ->
+        if child? then "/admin#/kindergarten/#{child.school_id}/relationship/type/connected/class/#{child.class_id}/list" else '#'
 
       scope.delete = (parent) ->
         Phone.delete parent, ->
@@ -151,11 +156,13 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
   ]
 
 .controller 'OpShowCardCtrl',
-  ['$scope', '$rootScope', '$stateParams', '$location', '$state', '$alert', 'relationshipSearchService', 'schoolService',
-    (scope, rootScope, stateParams, location, $state, Alert, RelationshipManager, School) ->
+  ['$scope', '$rootScope', '$stateParams', '$location', '$state', '$alert', 'relationshipSearchService', 'schoolService', 'relationshipService',
+    (scope, rootScope, stateParams, location, $state, Alert, RelationshipManager, School, Relationship) ->
 
       scope.relationship = RelationshipManager.get card: stateParams.card, ->
           scope.school = School.get school_id: scope.relationship.parent.school_id
+          Relationship.query school_id: scope.relationship.parent.school_id, parent: scope.relationship.parent.phone, (data) ->
+            scope.relationship.parent.children = _.pluck data, 'child'
         , (res) ->
           $state.go 'main.phone_management'
 

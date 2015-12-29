@@ -51,17 +51,26 @@
           <p class="form-control-static">试用账号：{{videoTrialAccount}}</p>
         </div>
         <div class="col-sm-8" ng-hide="videoTrialAccount.length > 0">
-          <p class="form-control-static" ng-show="parent.videoMember.account && !parent.pickingAccount">{{parent.videoMember.account}}</p>
-          <p class="form-control-static" ng-hide="parent.videoMember.account || parent.pickingAccount">未开通，点击<a ng-click="parent.pickingAccount = true">分配</a>账号</p>
-          <input kl-existing-video-account ng-show="parent.pickingAccount" class="form-control" name="account" ng-minlength="24"
-                                               maxlength="24" placeholder="粘贴账号" ng-model="parent.videoMember.account" parent="parent" required/>
-          <span class="error-field" ng-show="editAdultForm.account.$dirty && editAdultForm.account.$error.notExisting"><i class="glyphicon glyphicon-info-sign"></i>这个账号不存在，只能重用已有的账号</span>
-          <span class="error-field" ng-show="editAdultForm.account.$dirty && editAdultForm.account.$error.required"><i class="glyphicon glyphicon-info-sign"></i>账号不能为空</span>
-          <span class="error-field" ng-show="editAdultForm.account.$dirty && editAdultForm.account.$error.minLength"><i class="glyphicon glyphicon-info-sign"></i>账号必须32位长</span>
-        <div>
-          <a class="btn btn-success adding-button" ng-show="parent.pickingAccount" ng-disabled="editAdultForm.account.$invalid" ng-click="saveAccount(parent)">保存</a>
-          <a class="btn btn-warning" ng-show="parent.pickingAccount" ng-click="parent.pickingAccount = false;editAdultForm.$setPristine();parent.videoMember.account=''">取消</a>
-        </div>
+          <p class="form-control-static" ng-show="parent.videoMember.account && !parent.pickingAccount">
+            {{parent.videoMember.account}}</p>
+          <p class="form-control-static" ng-hide="parent.videoMember.account || parent.pickingAccount">未开通，点击<a
+            ng-click="parent.pickingAccount = true">分配</a>账号</p>
+          <input kl-existing-video-account ng-show="parent.pickingAccount" class="form-control" name="account"
+                 ng-minlength="24"
+                 maxlength="24" placeholder="粘贴账号" ng-model="parent.videoMember.account" parent="parent" required/>
+          <span class="error-field"
+                ng-show="editAdultForm.account.$dirty && editAdultForm.account.$error.notExisting"><i
+            class="glyphicon glyphicon-info-sign"></i>这个账号不存在，只能重用已有的账号</span>
+          <span class="error-field" ng-show="editAdultForm.account.$dirty && editAdultForm.account.$error.required"><i
+            class="glyphicon glyphicon-info-sign"></i>账号不能为空</span>
+          <span class="error-field" ng-show="editAdultForm.account.$dirty && editAdultForm.account.$error.minLength"><i
+            class="glyphicon glyphicon-info-sign"></i>账号必须32位长</span>
+          <div>
+            <a class="btn btn-success adding-button" ng-show="parent.pickingAccount"
+               ng-disabled="editAdultForm.account.$invalid" ng-click="saveAccount(parent)">保存</a>
+            <a class="btn btn-warning" ng-show="parent.pickingAccount"
+               ng-click="parent.pickingAccount = false;editAdultForm.$setPristine();parent.videoMember.account=''">取消</a>
+          </div>
         </div>
       </div>
 
@@ -92,7 +101,8 @@
         <label for="parent-school" class="col-sm-2 control-label">所在学校</label>
 
         <div class="col-sm-8">
-          <p class="form-control-static"><a href="/admin#/kindergarten/{{school.school_id}}/relationship/type/connected">{{school.name}}</a></p>
+          <p class="form-control-static"><a
+            href="/admin#/kindergarten/{{school.school_id}}/relationship/type/connected">{{school.name}}</a></p>
         </div>
       </div>
     </div>
@@ -122,9 +132,10 @@
         <label for="parent-status" class="col-sm-2 control-label">状态</label>
 
         <div class="col-sm-4">
-          <p class="form-control-static parent-status" ng-class="{removed: parent.status==0}">{{parent.status == 0 ? '已删除' : '正常'}}</p>
+          <p class="form-control-static parent-status" ng-class="{removed: parent.status==0}">{{parent.status == 0 ?
+            '已删除' : '正常'}}</p>
         </div>
-        <label for="parent-app-version" class="col-sm-2 control-label" ng-show="parent.bindings" >已安装版本号</label>
+        <label for="parent-app-version" class="col-sm-2 control-label" ng-show="parent.bindings">已安装版本号</label>
 
         <div class="col-sm-4">
           <p class="form-control-static parent-app-version">{{parent.bindings.version_code}}</p>
@@ -132,12 +143,31 @@
         <label for="parent-last-binding" class="col-sm-2 control-label" ng-show="parent.bindings">最后一次bind</label>
 
         <div class="col-sm-4">
-          <p class="form-control-static parent-last-binding">{{parent.bindings.updated_at | date:'yyyy年MM月dd日 HH:mm' }}</p>
+          <p class="form-control-static parent-last-binding">{{parent.bindings.updated_at | date:'yyyy年MM月dd日 HH:mm'
+            }}</p>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-sm-6">
+          <h3>关系学生</h3>
+          <table class="table table-condensed table-striped">
+            <thead>
+            <tr>
+              <th>姓名</th>
+              <th>班级</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="child in parent.children">
+              <td>{{child.name}}</td>
+              <td><a ng-href="{{linkToClass(child)}}">{{child.class_name}}</a></td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
 
-    <div class="col-sm-4">
+    <div class="col-sm-5">
       <div class="form-group">
         <div class="btn-group pull-right">
           <a class="btn btn-default adding-button"
