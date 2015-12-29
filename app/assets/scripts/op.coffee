@@ -9,7 +9,7 @@ angular.module('kulebaoAdmin',
    'mgcrea.ngStrap.helpers.dimensions', 'ui.bootstrap.tpls', 'ui.bootstrap.pagination', 'ui.bootstrap.buttons',
    'ngCookies'])
 angular.module('kulebaoOp',
-  ['kulebaoAdmin', 'emoji', 'ngCsv'])
+  ['kulebaoAdmin', 'emoji', 'ngCsv', 'selectAddress'])
 .config(['$stateProvider', '$urlRouterProvider', '$compileProvider',
   ($stateProvider, $urlRouterProvider, $compileProvider) ->
     $stateProvider

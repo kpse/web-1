@@ -151,6 +151,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         school.charge.school_id = school.school_id
 
       scope.addSchool = ->
+        scope.p = '四川'
+        scope.c = '成都'
+        scope.a = ''
+        scope.d = ''
         scope.school = scope.newSchool()
         scope.currentModal = Modal
           scope: scope
