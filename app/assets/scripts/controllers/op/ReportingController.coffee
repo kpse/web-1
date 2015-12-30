@@ -15,22 +15,22 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
         scope.allParents = 0
         scope.allLoggedOnce = 0
         scope.allLoggedEver = 0
-        scope.kindergartens = School.query (data) ->
-          scope.kindergartens = _.map data, (k) ->
-            k.charge = Charge.query school_id: k.school_id
-            k.monthly = TimeEndPoint.get school_id: k.school_id, ->
-              k.monthlyRate = SchoolRate(k.monthly)
-              k.monthlyChildRate = ChildRate(k.monthly)
-              k.parents = k.monthly.parent_count
-              k.children = k.monthly.child_count
+        queue = [School.query().$promise, TimeEndPoint.query().$promise]
+        $q.all(queue).then (q) ->
+          scope.kindergartens = q[0]
+          allStatsData = _.groupBy q[1], 'school_id'
+          scope.kindergartens = _.map scope.kindergartens, (k) ->
+            k.monthly = _.first allStatsData[k.school_id]
+            k.monthlyRate = SchoolRate(k.monthly)
+            k.monthlyChildRate = ChildRate(k.monthly)
+            k.parents = k.monthly.parent_count
+            k.children = k.monthly.child_count
             k
-          queue = _.map scope.kindergartens, (k) -> k.monthly.$promise
-          $q.all(queue).then (q) ->
-            scope.allLoggedOnce = _.sum scope.kindergartens, 'monthly.logged_once'
-            scope.allLoggedEver = _.sum scope.kindergartens, 'monthly.logged_ever'
-            scope.allParents  = _.sum scope.kindergartens, 'parents'
-            scope.allChildren  = _.sum scope.kindergartens, 'children'
-            rootScope.loading = false
+          scope.allLoggedOnce = _.sum scope.kindergartens, 'monthly.logged_once'
+          scope.allLoggedEver = _.sum scope.kindergartens, 'monthly.logged_ever'
+          scope.allParents  = _.sum scope.kindergartens, 'parents'
+          scope.allChildren  = _.sum scope.kindergartens, 'children'
+          rootScope.loading = false
 
       scope.refresh()
 

@@ -107,6 +107,11 @@ object SchoolIntro {
       SQL(s"select * from schoolinfo where 1=1 ${generateQ(q)} order by school_id").as(sample *)
   }
 
+  def allIds = DB.withConnection {
+    implicit c =>
+      SQL(s"select school_id from schoolinfo").as(get[String]("school_id") *).map(_.toLong)
+  }
+
   def pagination(q: Option[String], from: Option[Long], to: Option[Long], most: Option[Int]) = DB.withConnection {
     implicit c =>
       SQL(s"select * from schoolinfo where 1=1 ${from map (_ => " and school_id > {from} ") getOrElse ""}  ${to map (_ => " and school_id < {to} ") getOrElse ""} ${generateQ(q)} order by school_id limit {most}")
