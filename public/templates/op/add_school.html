@@ -147,7 +147,7 @@
            ng-disabled="newSchoolForm.$invalid || school.admin_password != school.admin_password_confirm"
            ng-click="saveSchool(school)">保存</a>
         <a class="btn btn-default adding-button col-sm-1"
-           ng-click="$hide()">取消</a>
+           ng-click="$hide();clearSchool()">取消</a>
           </div>
       </div>
     </form>

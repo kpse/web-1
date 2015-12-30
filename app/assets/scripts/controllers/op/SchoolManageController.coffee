@@ -151,14 +151,16 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         school.charge.school_id = school.school_id
 
       scope.addSchool = ->
-        scope.p = '四川'
-        scope.c = '成都'
-        scope.a = ''
-        scope.d = ''
+        scope.p = ''
+        scope.c = null
+        scope.a = null
+        scope.d = null
         scope.school = scope.newSchool()
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/op/add_school.html'
+      scope.clearSchool = ->
+        delete scope.school
 
       handleError = (res) ->
         Alert
@@ -176,8 +178,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         AdminCreating.save school, ->
             scope.refresh()
             scope.currentModal.hide()
+            delete scope.school
           , (res) ->
             handleError res
+            delete scope.school
 
       scope.save = (object) ->
         if object.group?

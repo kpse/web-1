@@ -22,6 +22,7 @@
         ngModel: '='
       },
       link: function(scope, element, attrs) {
+        scope.ngModel = ''
         var popup;
         popup = {
           element: null,
