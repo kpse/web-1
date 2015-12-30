@@ -40,6 +40,19 @@ class EmployeeV3Spec extends Specification with TestSupport {
       EmployeeCard.show(93740362, 1) must beNone
     }
 
+    "overwrite employee with same phone number in other school" in new WithApplication {
+
+      private val employee = EmployeeV3.show(93740362, 1).get
+      EmployeeV3.deleteById(93740362, 1)
+      employee.copy(basic = employee.basic.copy(id = None, login_name = "newLoginName")).existsInOtherSchool(93740262) must beFalse
+    }
+
+    "not be overwritten with same phone number in other school" in new WithApplication {
+
+      private val employee = EmployeeV3.show(93740362, 1).get
+      employee.copy(basic = employee.basic.copy(id = None, login_name = "newLoginName")).existsInOtherSchool(93740262) must beTrue
+    }
+
   }
 
 }

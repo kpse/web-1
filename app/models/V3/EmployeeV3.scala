@@ -104,7 +104,7 @@ case class EmployeeV3(id: Option[Long], basic: Employee, ext: Option[EmployeeExt
 
   def existsInOtherSchool(kg: Long) = DB.withTransaction {
     implicit c =>
-      SQL("select count(1) from employeeinfo where school_id<>{kg} and (phone={phone} or employee_id={employee_id} or (login_name<>'' and login_name={login})) ")
+      SQL("select count(1) from employeeinfo where status=1 and school_id<>{kg} and (phone={phone} or employee_id={employee_id} or (login_name<>'' and login_name={login})) ")
         .on(
           'kg -> kg.toString,
           'phone -> basic.phone,
