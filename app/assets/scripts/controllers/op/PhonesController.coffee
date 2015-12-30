@@ -51,6 +51,9 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
 
       scope.cancel = ->
         location.path '/main/phone_management'
+
+      scope.linkToClass = (child) ->
+        if child? then "/admin#/kindergarten/#{child.school_id}/relationship/type/connected/class/#{child.class_id}/list" else '#'
   ]
 
 .controller 'OpShowPhoneCtrl',
@@ -71,9 +74,6 @@ angular.module('kulebaoOp').controller 'OpPhoneManagementCtrl',
           scope.videoTrialAccount = ConfigExtract data['config'], 'videoTrialAccount'
         scope.parent.relationships = Relationships.query school_id: scope.parent.school_id, parent: scope.parent.phone, ->
           scope.parent.children = _.pluck scope.parent.relationships, 'child'
-
-      scope.linkToClass = (child) ->
-        if child? then "/admin#/kindergarten/#{child.school_id}/relationship/type/connected/class/#{child.class_id}/list" else '#'
 
       scope.delete = (parent) ->
         Phone.delete parent, ->
