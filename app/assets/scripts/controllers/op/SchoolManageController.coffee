@@ -178,10 +178,9 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         AdminCreating.save school, ->
             scope.refresh()
             scope.currentModal.hide()
-            delete scope.school
+            scope.clearSchool()
           , (res) ->
             handleError res
-            delete scope.school
 
       scope.save = (object) ->
         if object.group?
