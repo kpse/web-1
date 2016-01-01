@@ -14,7 +14,8 @@
   <tr class="row">
     <th class="col-xs-1">#ID</th>
     <th class="col-xs-2">学校全称</th>
-    <th class="col-xs-3">地区</th>
+    <th class="col-xs-2">地区</th>
+    <th class="col-xs-1">开园时间</th>
     <th class="col-xs-1">学生总数</th>
     <th class="col-xs-1">家长总数</th>
     <th class="col-xs-1">总用户数</th>
@@ -27,19 +28,21 @@
   <tr class="row">
     <td class="col-xs-1">0</td>
     <td class="col-xs-2">合计：</td>
-    <td class="col-xs-3">N/A</td>
+    <td class="col-xs-2"></td>
+    <td class="col-xs-1"></td>
     <td class="col-xs-1">{{allChildren}}</td>
     <td class="col-xs-1">{{allParents}}</td>
     <td class="col-xs-1">{{allLoggedEver}}</td>
     <td class="col-xs-1">{{allLoggedOnce}}</td>
-    <td class="col-xs-1">N/A</td>
-    <td class="col-xs-1">N/A</td>
+    <td class="col-xs-1"></td>
+    <td class="col-xs-1"></td>
   </tr>
 
   <tr ng-repeat="kg in kindergartens | filter: searchText | orderBy:['-monthly.logged_ever', '-monthlyRate', '-monthlyChildRate']" class="row" ng-class="{editable: detail}" ng-click="detail(kg)">
     <td class="col-xs-1"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{kg.school_id}}</a></td>
     <td class="col-xs-2"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome" ng-click="$event.stopPropagation()">{{kg.full_name}}</a></td>
-    <td class="col-xs-3">{{kg.address}}</td>
+    <td class="col-xs-2">{{kg.address}}</td>
+    <td class="col-xs-1">{{kg.created_at | date:'yy-MM-dd'}}</td>
     <td class="col-xs-1">{{kg.children}}</td>
     <td class="col-xs-1">{{kg.parents}}</td>
     <td class="col-xs-1">{{kg.monthly.logged_ever}}</td>
