@@ -215,14 +215,15 @@ object KulebaoAgent {
         .on('agent -> agent, 'kg -> kg, 'month -> pattern.print(month)).as(get[Long]("count(1)") single) > 0
   }
 
-  def monthlyStatistics() = {
+  def monthlyStatistics = {
     index(None, None, None).foreach {
       case agent =>
         AgentSchool.index(agent.id.get, None, None, None).foreach {
           case school =>
             historyDataExists(agent.id.get, school.school_id, lastMonth) match {
               case false =>
-                val monthData: SchoolOperationReport = SchoolOperationReport.collectTheWholeMonth(school.school_id, lastMonth)
+                val month = SchoolOperationReport.timePeriodOfMonth(lastMonth)
+                val monthData: SchoolOperationReport = SchoolOperationReport.collectInGivenTimePeriod(school.school_id, month._1, month._2)
                 Logger.info(s"insert data ${monthData.logged_once}, ${monthData.logged_ever} for agent ${agent.id.get} ${pattern.print(lastMonth)} in ${monthData.school_id}")
                 collectData(AgentStatistics(monthData.id, agent.id.get, monthData))
               case true =>
@@ -261,7 +262,7 @@ object KulebaoAgent {
       get[Long]("parent_count") ~
       get[Long]("created_at") map {
       case id ~ agent ~ school ~ month ~ once ~ ever ~ child ~ parent ~ created =>
-        val data: SchoolOperationReport = SchoolOperationReport(id, school.toLong, month, once, ever, created, child, parent)
+        val data: SchoolOperationReport = SchoolOperationReport(id, school.toLong, month, month + "01", once, ever, created, child, parent)
         AgentStatistics(id, agent, data)
     }
   }

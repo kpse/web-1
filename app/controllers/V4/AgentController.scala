@@ -119,7 +119,7 @@ object AgentController extends Controller with Secured {
   }
 
   def monthlyStatistics() = IsOperator { u => _ =>
-    KulebaoAgent.monthlyStatistics()
+    KulebaoAgent.monthlyStatistics
     Ok(Json.toJson(new SuccessResponse))
   }
 
