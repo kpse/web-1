@@ -8,18 +8,20 @@ import play.api.db.DB
 import play.api.libs.json.Json
 
 case class AgentReport(threshold: Long, current: Long)
+
 case class AgentSummaryInSchool(agent_id: Long, contractor: AgentReport, activity: AgentReport, school_id: Long)
 
-case class AgentSchool(id: Option[Long], school_id: Long, name: String) {
+case class AgentSchool(id: Option[Long], school_id: Long, name: String, address: Option[String] = None, created_at: Option[Long] = None) {
   def update(base: Long): Option[AgentSchool] = DB.withConnection {
     implicit c =>
-      SQL("update agentschool set agent_id={base}, school_id={school_id}, name={name}, " +
+      SQL("update agentschool set agent_id={base}, school_id={school_id}, name={name}, address={address}, " +
         "updated_at={time} where uid={id}")
         .on(
           'id -> id,
           'base -> base,
           'school_id -> school_id,
           'name -> name,
+          'address -> address,
           'time -> System.currentTimeMillis
         ).executeUpdate()
       id flatMap (AgentSchool.show(_, base))
@@ -27,12 +29,13 @@ case class AgentSchool(id: Option[Long], school_id: Long, name: String) {
 
   def create(base: Long): Option[AgentSchool] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into agentschool (agent_id, school_id, name, updated_at) values (" +
-        "{base}, {school_id}, {name}, {time})")
+      val insert: Option[Long] = SQL("insert into agentschool (agent_id, school_id, name, address, updated_at, created_at) values (" +
+        "{base}, {school_id}, {name}, {address}, {time}, {time})")
         .on(
           'base -> base,
           'school_id -> school_id,
           'name -> name,
+          'address -> address,
           'time -> System.currentTimeMillis
         ).executeInsert()
       insert flatMap (AgentSchool.show(_, base))
@@ -114,9 +117,11 @@ object AgentSchool {
   val simple = {
     get[Long]("uid") ~
       get[String]("school_id") ~
+      get[Option[String]]("address") ~
+      get[Option[Long]]("created_at") ~
       get[String]("name") map {
-      case id ~ school ~ name =>
-        AgentSchool(Some(id), school.toLong, name)
+      case id ~ school ~ address ~ time ~ name =>
+        AgentSchool(Some(id), school.toLong, name, address, time)
     }
   }
 

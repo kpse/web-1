@@ -1,27 +1,31 @@
 <h4>{{currentMonthDisplay}}数据回顾</h4>
 
-<table class="table table-hover table-condensed schools-list">
+<table class="table table-hover table-condensed table-striped schools-list">
   <thead>
   <tr class="row">
-    <th class="col-xs-2">编号</th>
-    <th class="col-xs-2">学校全名</th>
+    <th class="col-xs-1">#ID</th>
+    <th class="col-xs-2">学校名称</th>
+    <th class="col-xs-2">地区</th>
+    <th class="col-xs-1">开园时间</th>
     <th class="col-xs-1">学生数</th>
     <th class="col-xs-1">总用户数</th>
     <th class="col-xs-1">当月用户数</th>
-    <th class="col-xs-2">当月激活率</th>
-    <th class="col-xs-2">当月活跃度</th>
-    <th class="col-xs-1">操作</th>
+    <th class="col-xs-1">当月激活率</th>
+    <th class="col-xs-1">当月活跃度</th>
+    <th class="col-xs-2">操作</th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="kg in currentAgent.schools | filter: searchText | orderBy: 'school_id'" class="row" >
-    <td class="col-xs-2"><div kl-school-column="{{::kg.school_id}}" user="loggedUser"></div></td>
+    <td class="col-xs-1"><div kl-school-column="{{::kg.school_id}}" user="loggedUser"></div></td>
     <td class="col-xs-2">{{::kg.name}}</td>
+    <td class="col-xs-2">{{::kg.address}}</td>
+    <td class="col-xs-1">{{kg.created_at | date:'yy-MM-dd'}}</td>
     <td class="col-xs-1">{{kg.stats.child_count || 0}}</td>
     <td class="col-xs-1">{{kg.stats.logged_ever || 0}}</td>
     <td class="col-xs-1">{{kg.stats.logged_once || 0}}</td>
-    <td class="col-xs-2">{{kg.stats.childRate || 0}}</td>
-    <td class="col-xs-2">{{kg.stats.rate || 0}}</td>
+    <td class="col-xs-1">{{kg.stats.childRate || 0}}</td>
+    <td class="col-xs-1">{{kg.stats.rate || 0}}</td>
     <td class="col-xs-1"><button class="btn btn-danger btn-xs" ng-show="allowToDelete(currentMonth, kg.stats)" ng-disabled="loading"
                                  ng-confirm-msg="此操作会删除 {{kg.name}} {{currentMonth}}的统计数据，且删除之后不能回复，你确定要继续吗?"
                                  ng-confirm-click="deleteStats(kg.stats)">删除</button>

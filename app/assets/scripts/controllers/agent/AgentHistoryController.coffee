@@ -54,8 +54,8 @@ angular.module('kulebaoAgent')
 
 .controller 'AgentSchoolHistoryCtrl',
   ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter', '$q', 'loggedUser', 'currentAgent',
-   'agentSchoolService', 'agentStatsService', 'agentSchoolDataService',
-    (scope, $rootScope, $stateParams, $state, $location, $filter, $q, User, CurrentAgent, AgentSchool, Stats, SchoolData) ->
+   'agentStatsService',
+    (scope, $rootScope, $stateParams, $state, $location, $filter, $q, User, CurrentAgent, Stats) ->
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
       scope.currentMonth = $stateParams.month

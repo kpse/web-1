@@ -1,8 +1,8 @@
 angular.module('kulebaoAgent').controller 'AgentCommercialCtrl',
   ['$scope', '$rootScope', '$stateParams', '$q', '$state', '$modal', '$filter', 'currentAgent', 'loggedUser',
    'agentContractorService',
-   'agentContractorInSchoolService', 'agentSchoolService', 'imageCompressService', 'agentRawActivityService',
-    (scope, $rootScope, stateParams, $q, $state, Modal, $filter, Agent, User, Contractor, AdInSchool, Schools, Compress, Activity) ->
+   'agentContractorInSchoolService', 'imageCompressService', 'agentRawActivityService',
+    (scope, $rootScope, stateParams, $q, $state, Modal, $filter, Agent, User, Contractor, AdInSchool, Compress, Activity) ->
       scope.adminUser = User
       scope.currentAgent = Agent
 

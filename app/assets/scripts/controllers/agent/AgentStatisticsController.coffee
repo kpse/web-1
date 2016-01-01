@@ -1,7 +1,7 @@
 angular.module('kulebaoAgent').controller 'AgentStatisticsCtrl',
   ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter', '$q', 'loggedUser', 'currentAgent',
-   'agentSchoolService', 'agentStatsService', 'agentSchoolDataService'
-    (scope, $rootScope, $stateParams, $state, $location, $filter, $q, User, CurrentAgent, AgentSchool, Stats, SchoolData) ->
+   'agentStatsService', 'agentSchoolDataService'
+    (scope, $rootScope, $stateParams, $state, $location, $filter, $q, User, CurrentAgent, Stats, SchoolData) ->
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
 
