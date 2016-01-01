@@ -89,16 +89,16 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
             clazz.dailyLogs = DailyLog.query school_id: stateParams.school_id, class_id: clazz.class_id, ->
               scope.childrenInSchool = scope.childrenInSchool + clazz.dailyLogs.length
 
-          scope.parents = scope.monthly.parent_count
-          scope.children = scope.monthly.child_count
           scope.employees = Employee.query school_id: stateParams.school_id
           scope.allNews = News.query school_id: stateParams.school_id, publisher_id: scope.adminUser.id
           scope.allChats = Chat.get school_id: stateParams.school_id
           scope.allHistoryRecords = History.get school_id: stateParams.school_id
           scope.active = ActiveCount.get school_id: stateParams.school_id
-          scope.monthly = Monthly.get school_id: stateParams.school_id
-          scope.monthlyRate = SchoolRate(scope.monthly)
-          scope.monthlyChildRate = ChildRate(scope.monthly)
+          scope.monthly = Monthly.get school_id: stateParams.school_id, ->
+            scope.parents = scope.monthly.parent_count
+            scope.children = scope.monthly.child_count
+            scope.monthlyRate = SchoolRate(scope.monthly)
+            scope.monthlyChildRate = ChildRate(scope.monthly)
           rootScope.loading = false
 
   ]
