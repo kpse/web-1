@@ -1,7 +1,5 @@
 package models.V4
 
-import java.time.Period
-
 import anorm.SqlParser._
 import anorm._
 import controllers.helper.CacheHelper._
