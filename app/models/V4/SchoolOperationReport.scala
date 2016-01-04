@@ -120,26 +120,24 @@ object SchoolOperationReport {
 
   def monthlyStatistics = {
     val lastMonth = DateTime.now().minusMonths(1)
-    val reports = SchoolIntro.allIds map (monthlyCountingLogic(_, lastMonth))
-    reports foreach (_.copy(day = "").save(lastMonth))
+    SchoolIntro.allIds map (monthlyCountingLogic(_, lastMonth))
   }
 
   def dailyStatistics = {
     val today = DateTime.now()
-    val reports = SchoolIntro.allIds map (tillTodayCountingLogic(_, today))
-    reports foreach (_.copy(month = "").save(today))
+    SchoolIntro.allIds map (tillTodayCountingLogic(_, today))
   }
 
   def lastMonthHistoryData(kg: Long, month: DateTime) = DB.withConnection {
     implicit c =>
       SQL(s"select * from school_statistics where school_id={kg} and month={month} order by uid DESC limit 1")
-        .on('kg -> kg, 'month -> pattern.print(month)).as(simpleStatistics singleOpt)
+        .on('kg -> kg.toString, 'month -> pattern.print(month)).as(simpleStatistics singleOpt)
   }
 
   def specificDayData(kg: Long, day: DateTime) = DB.withConnection {
     implicit c =>
       SQL(s"select * from school_statistics where school_id={kg} and day={day} order by uid DESC limit 1")
-        .on('kg -> kg, 'day -> dayPattern.print(day)).as(simpleStatistics singleOpt)
+        .on('kg -> kg.toString, 'day -> dayPattern.print(day)).as(simpleStatistics singleOpt)
   }
 
 
