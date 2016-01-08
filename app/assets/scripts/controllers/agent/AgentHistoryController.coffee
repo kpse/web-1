@@ -113,7 +113,7 @@ angular.module('kulebaoAgent')
             s.weeklyGroup = _.groupBy s.weeklyStats, 'week_start'
           scope.$emit 'weekly_stats_ready', currentAgent.schools
 
-          scope.pastWeeks = _.keys(_.groupBy(q[0], 'week_start'))
+          scope.pastWeeks = (_.sortBy _.keys(_.groupBy(q[0], 'week_start')), 'week_start').reverse()
           scope.currentWeek = _.first scope.pastWeeks
           scope.export = ->
             _(scope.currentAgent.schools).map (s) ->
