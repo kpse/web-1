@@ -29,7 +29,7 @@ case class SchoolOperationReport(id: Long, school_id: Long, month: String, day: 
         ).executeInsert()
   }
 
-  def toWeekly(weekStart: String) = SchoolWeeklyReport(id, school_id, weekStart, logged_once, logged_ever, created_at, child_count, parent_count)
+  def toWeekly(weekStart: String, weekEnd: String) = SchoolWeeklyReport(id, school_id, weekStart, weekEnd, logged_once, logged_ever, created_at, child_count, parent_count)
 
 }
 
