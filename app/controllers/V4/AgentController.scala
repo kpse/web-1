@@ -107,6 +107,10 @@ object AgentController extends Controller with Secured {
     Ok(Json.toJson(KulebaoAgent.stats(agentId)))
   }
 
+  def weeklyStats(agentId: Long) = IsAgentLoggedIn { u => _ =>
+    Ok(Json.toJson(KulebaoAgent.weeklyStats(agentId)))
+  }
+
   def summarise(kg: Long) = IsLoggedIn {
     u => _ =>
       AgentSchool.hasAgent(kg) match {

@@ -1,11 +1,8 @@
 package jobs
 
 import akka.actor.Actor
-import models.School
-import models.V4.{SchoolOperationReport, AgentSchool, AgentStatistics, KulebaoAgent}
-import models.json_models.SchoolIntro
+import models.V4._
 import org.joda.time.DateTime
-import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import play.api.Logger
 
 case object Tick
@@ -27,6 +24,12 @@ class CronJob extends Actor {
       log.info(s"Got tick at the first hours of the day ${DateTime.now().hourOfDay().get()}")
 
       SchoolOperationReport.dailyStatistics
+    }
+
+    case Tick if DateTime.now().dayOfWeek().get() == 1 && DateTime.now().hourOfDay().get() < 4 => {
+      log.info(s"Got tick at the first dat of the week ${DateTime.now().weekOfWeekyear().get()}")
+
+      SchoolWeeklyReport.weeklyStatistics
     }
     case Tick =>
       log.info("Got a normal tick")

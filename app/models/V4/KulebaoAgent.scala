@@ -183,6 +183,11 @@ object KulebaoAgent {
         ).as(simpleStatistics *)
   }
 
+  def weeklyStats(agentId: Long) = DB.withConnection {
+    implicit c =>
+      SchoolWeeklyReport.weeklyStats(agentId)
+  }
+
   def deleteStats(agentId: Long, id: Long) = DB.withConnection {
     implicit c =>
       SQL(s"delete from agentstatistics where agent_id={agent} and uid={id}")

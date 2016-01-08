@@ -1,7 +1,7 @@
 package controllers.V4
 
 import controllers.Secured
-import controllers.helper.CacheHelper._
+import models.V4.SchoolWeeklyReport._
 import models.V4.SchoolOperationReport
 import models.V4.SchoolOperationReport._
 import models.json_models.SchoolIntro
@@ -32,6 +32,12 @@ object StatisticsController extends Controller with Secured {
   def allSchoolsDailyCounting(today: DateTime = DateTime.now().withHourOfDay(1)) = IsOperator {
     u => _ =>
       val allData = SchoolIntro.allIds map (tillTodayCountingLogic(_, today))
+      Ok(Json.toJson(allData))
+  }
+
+  def allSchoolsWeeklyCounting(today: DateTime = DateTime.now().minusWeeks(1).withDayOfWeek(1)) = IsOperator {
+    u => _ =>
+      val allData = SchoolIntro.allIds map (weeklyCountingLogic(_, today))
       Ok(Json.toJson(allData))
   }
 

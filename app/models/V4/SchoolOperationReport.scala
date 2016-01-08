@@ -28,6 +28,9 @@ case class SchoolOperationReport(id: Long, school_id: Long, month: String, day: 
           'time -> System.currentTimeMillis()
         ).executeInsert()
   }
+
+  def toWeekly(weekStart: String) = SchoolWeeklyReport(id, school_id, weekStart, logged_once, logged_ever, created_at, child_count, parent_count)
+
 }
 
 object SchoolOperationReport {
@@ -102,6 +105,7 @@ object SchoolOperationReport {
     })
     value
   }
+
 
   def tillTodayCountingLogic(schoolId: Long, today: DateTime): SchoolOperationReport = {
     val day: String = dayPattern.print(today)
