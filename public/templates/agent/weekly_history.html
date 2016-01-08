@@ -12,7 +12,7 @@
 
   <div class="row">
     <select class="form-control month-select col-xs-2" ng-model="currentWeek"
-            ng-options="week for week in pastWeeks" id="week-select"
+            ng-options="display(week) for week in pastWeeks" id="week-select"
             data-style="btn-primary"></select>
     <button type="submit" class="btn btn-success col-xs-offset-1 col-xs-2" ng-disabled="loading || !export"
             ng-csv="export()" csv-header="exportHeader()" add-bom="U+FEFF"

@@ -114,7 +114,14 @@ angular.module('kulebaoAgent')
           scope.$emit 'weekly_stats_ready', currentAgent.schools
 
           scope.pastWeeks = (_.sortBy _.keys(_.groupBy(q[0], 'week_start')), 'week_start').reverse()
+          scope.pastWeekends = (_.sortBy _.keys(_.groupBy(q[0], 'week_end')), 'week_end').reverse()
+
+          scope.display = (week) ->
+            weekMap = (_.zipObject scope.pastWeeks, scope.pastWeekends)
+            console.log(weekMap)
+            week + '~' + weekMap[week]
           scope.currentWeek = _.first scope.pastWeeks
+          scope.currentWeekDisplay = scope.display(scope.currentWeek)
           scope.export = ->
             _(scope.currentAgent.schools).map (s) ->
               id: s.school_id
@@ -134,7 +141,7 @@ angular.module('kulebaoAgent')
             .value()
           scope.exportHeader = ->
             ['编号', '学校名称', '学生数', '总用户数', '当周用户数', '当周激活率', '当周活跃度']
-          scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.currentWeek}.csv"
+          scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.display(scope.currentWeek)}.csv"
           $rootScope.loading = false
 
       scope.refresh()
@@ -159,7 +166,6 @@ angular.module('kulebaoAgent')
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
       scope.currentWeek = $stateParams.week
-      scope.currentWeekDisplay = scope.currentWeek
       scope.waitForSchoolsWeeklyReportReady().then ->
         console.log(scope.currentAgent.schools)
         $rootScope.loading = false
