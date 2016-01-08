@@ -53,10 +53,18 @@ angular.module('kulebaoAgent',
       url: '/history'
       templateUrl: 'templates/agent/history.html'
       controller: 'AgentHistoryCtrl'
+    .state 'main.weekly_history',
+      url: '/weekly_history'
+      templateUrl: 'templates/agent/weekly_history.html'
+      controller: 'AgentWeeklyHistoryCtrl'
     .state 'main.history.month',
       url: '/month/:month'
       templateUrl: 'templates/agent/school_in_month.html'
       controller: 'AgentSchoolHistoryCtrl'
+    .state 'main.weekly_history.week',
+      url: '/week/:week'
+      templateUrl: 'templates/agent/school_in_week.html'
+      controller: 'AgentSchoolWeeklyHistoryCtrl'
 
     .state 'error',
       url: '/error'

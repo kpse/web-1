@@ -49,8 +49,10 @@ angular.module('kulebaoAgent')
         OperatorStats.save ->
           $state.reload()
           $rootScope.loading = false
-  ]
 
+      scope.goWeekly = ->
+        $state.go 'main.weekly_history'
+  ]
 
 .controller 'AgentSchoolHistoryCtrl',
   ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter', '$q', 'loggedUser', 'currentAgent',
@@ -86,4 +88,79 @@ angular.module('kulebaoAgent')
       scope.deleteStats = (stats) ->
         Stats.delete id: stats.id, agent_id: scope.currentAgent.id, ->
           scope.refresh()
+  ]
+
+.controller 'AgentWeeklyHistoryCtrl',
+  ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter', '$q', 'loggedUser', 'currentAgent',
+    'agentWeekStatsService',
+    (scope, $rootScope, $stateParams, $state, $location, $filter, $q, User, CurrentAgent, Stats) ->
+      scope.loggedUser = User
+      scope.currentAgent = CurrentAgent
+
+      scope.refresh = ->
+        $rootScope.loading = true
+        currentAgent = scope.currentAgent
+
+        queue = [Stats.query(agent_id: currentAgent.id).$promise,
+          scope.waitForSchoolsReady()]
+        $q.all(queue).then (q) ->
+          groups = _.groupBy(q[0], (d) -> d.school_id )
+          _.each currentAgent.schools, (s) ->
+            s.weeklyStats = _.map groups[s.school_id], (w) ->
+              w.rate = scope.calcRate w
+              w.childRate = scope.calcChildRate w
+              w
+            s.weeklyGroup = _.groupBy s.weeklyStats, 'week_start'
+          scope.$emit 'weekly_stats_ready', currentAgent.schools
+
+          scope.pastWeeks = _.keys(_.groupBy(q[0], 'week_start'))
+          scope.currentWeek = _.first scope.pastWeeks
+          scope.export = ->
+            _(scope.currentAgent.schools).map (s) ->
+              id: s.school_id
+              name: s.name
+              data: scope.currentWeekDataOf(s.weeklyGroup)
+            .filter (s) ->
+              s.data?
+            .sortBy('school_id')
+            .map (s) ->
+              id: s.id
+              name: s.name
+              childrenCount: s.data.child_count
+              parentsCount: s.data.logged_ever
+              parentsLastMonth: s.data.logged_once
+              childRate: s.data.childRate
+              rate: s.data.rate
+            .value()
+          scope.exportHeader = ->
+            ['编号', '学校名称', '学生数', '总用户数', '当周用户数', '当周激活率', '当周活跃度']
+          scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.currentWeek}.csv"
+          $rootScope.loading = false
+
+      scope.refresh()
+      scope.currentWeekDataOf = (week) ->
+        if week?
+          _.first week[scope.currentWeek]
+        else
+          NaN
+
+      scope.$watch 'currentWeek', (n, o) ->
+        $state.go 'main.weekly_history.week', week: n if n isnt o
+
+      $state.go 'main.weekly_history.week', month: scope.currentWeek
+
+      scope.goMonthly = ->
+        $state.go 'main.history'
+  ]
+
+.controller 'AgentSchoolWeeklyHistoryCtrl',
+  ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter', '$q', '$timeout', 'loggedUser', 'currentAgent',
+    (scope, $rootScope, $stateParams, $state, $location, $filter, $q, $timeout, User, CurrentAgent) ->
+      scope.loggedUser = User
+      scope.currentAgent = CurrentAgent
+      scope.currentWeek = $stateParams.week
+      scope.currentWeekDisplay = scope.currentWeek
+      scope.waitForSchoolsWeeklyReportReady().then ->
+        console.log(scope.currentAgent.schools)
+        $rootScope.loading = false
   ]

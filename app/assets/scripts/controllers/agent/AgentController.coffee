@@ -16,6 +16,11 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
           scope.$on 'schools_ready', -> resolve()
           resolve() if scope.currentAgent && scope.currentAgent.schools?
 
+      scope.waitForSchoolsWeeklyReportReady = ->
+        $q (resolve, reject) ->
+          scope.$on 'weekly_stats_ready', -> resolve()
+          resolve() if scope.currentAgent && scope.currentAgent.schools?
+
       scope.calcChildRate = ChildRate
 
       scope.calcRate = SchoolRate

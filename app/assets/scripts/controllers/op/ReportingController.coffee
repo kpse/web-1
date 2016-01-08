@@ -36,7 +36,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
 
       scope.switchToRealTime = ->
         scope.refresh(Daily)
-        scope.currentMonth = '实时'
+        scope.currentWeek = '实时'
         scope.csvName = "real_time_report_#{yesterday(new Date())}.csv"
 
       scope.detail = (kg) ->
@@ -49,7 +49,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
       yesterday = (time) ->
         time.setDate(time.getDate() - 1)
         time.getFullYear() + ('0' + (time.getMonth() + 1)).slice(-2) + '' + time.getDate()
-      scope.currentMonth = lastMonthOfNow(new Date())
+      scope.currentWeek = lastMonthOfNow(new Date())
 
       scope.forceToReCalculate = ->
       scope.export = ->
@@ -64,7 +64,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
           childRate: k.monthlyChildRate
 
       scope.exportHeader = -> ['学校ID', '学校全称', '学生总数', '家长总数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
-      scope.csvName = "monthly_report_#{scope.currentMonth}.csv"
+      scope.csvName = "monthly_report_#{scope.currentWeek}.csv"
 
   ]
 

@@ -144,6 +144,18 @@ angular.module('kulebao.services')
         id: "@id"
       }
   ]
+).factory('agentWeekStatsService', ['$resource',
+  ($resource) ->
+    $resource '/api/v4/agent/:agent_id/weekly_statistics',
+      {
+        agent_id: "@agent_id"
+      },
+      {
+        query:
+          cache: true
+          isArray: true
+      }
+  ]
 ).factory('agentSchoolDataService', ['$resource',
   ($resource) ->
     $resource '/api/v4/agent/:agent_id/kindergarten/:school_id/active',
