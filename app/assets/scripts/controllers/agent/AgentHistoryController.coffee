@@ -118,7 +118,6 @@ angular.module('kulebaoAgent')
 
           scope.display = (week) ->
             weekMap = (_.zipObject scope.pastWeeks, scope.pastWeekends)
-            console.log(weekMap)
             week + '~' + weekMap[week]
           scope.currentWeek = _.first scope.pastWeeks
           scope.currentWeekDisplay = scope.display(scope.currentWeek)
@@ -167,6 +166,5 @@ angular.module('kulebaoAgent')
       scope.currentAgent = CurrentAgent
       scope.currentWeek = $stateParams.week
       scope.waitForSchoolsWeeklyReportReady().then ->
-        console.log(scope.currentAgent.schools)
         $rootScope.loading = false
   ]
