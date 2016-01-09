@@ -31,6 +31,12 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
               s.contractorIds = group[s.school_id]
             if scope.selectedSchools? && contractorId?
               scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.contractor_id == contractorId
+
+            scope.distributedIn = (contractor) ->
+              _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.contractor_id == contractor.id
+            scope.parentsInSchools = (ad) ->
+              _.sum (_.filter scope.distributedIn(ad), (f) -> f.lastActiveData?), (s) -> s.lastActiveData.data.logged_ever
+
             $rootScope.loading = false
         scope.resetSelection() if scope.selection?
 
@@ -59,9 +65,6 @@ angular.module('kulebaoAgent').controller 'AgentContractorsCtrl',
       scope.allowEditing = (user, ad) ->
         scope.canBeApproved(ad) || scope.canBeRejected(ad) || scope.canBePreviewed(ad) ||
           scope.canBeTakenOnline(ad) || scope.canBeTakenOffline(ad)
-
-      scope.distributedIn = (contractor) ->
-        _.filter scope.schools, (s) -> _.any s.contractorIds, (c) -> c.contractor_id == contractor.id
 
       scope.distribute = (contractor) ->
         scope.currentContractor = angular.copy contractor

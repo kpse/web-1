@@ -40,8 +40,14 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
               s.activityIds = group[s.school_id]
             if scope.selectedSchools? && activityId?
               scope.selectedSchools = _.filter scope.schools, (s) -> _.any s.activityIds, (c) -> c.activity_id == activityId
-          $rootScope.loading = false
-        scope.resetSelection() if scope.selection?
+
+            scope.distributedIn = (activity) ->
+              _.filter scope.schools, (s) -> _.any s.activityIds, (c) -> c.activity_id == activity.id
+            scope.parentsInSchools = (ad) ->
+              _.sum (_.filter scope.distributedIn(ad), (f) -> f.lastActiveData?), (s) -> s.lastActiveData.data.logged_ever
+
+            $rootScope.loading = false
+          scope.resetSelection() if scope.selection?
 
       scope.refresh()
 
@@ -86,9 +92,6 @@ angular.module('kulebaoAgent').controller 'AgentActivitiesCtrl',
         newAd.$save ->
           scope.currentModal.hide()
           scope.refresh()
-
-      scope.distributedIn = (activity) ->
-        _.filter scope.schools, (s) -> _.any s.activityIds, (c) -> c.activity_id == activity.id
 
       scope.distribute = (activity) ->
         scope.currentActivity = angular.copy activity
