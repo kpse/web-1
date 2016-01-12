@@ -2,6 +2,7 @@ package models.V4
 
 import helper.TestSupport
 import models.json_models.SchoolIntro
+import org.joda.time.DateTime
 import org.specs2.mutable.Specification
 
 class SchoolOperationReportSpec extends Specification with TestSupport {
@@ -23,6 +24,20 @@ class SchoolOperationReportSpec extends Specification with TestSupport {
 
       result.size must equalTo(allSchools.size)
       allSchools must contain(result.head.school_id)
+    }
+
+    "check if monthly stats data exists" in new WithApplication {
+
+      private val result = SchoolOperationReport.lastMonthHistoryData(93740362, DateTime.parse("2015-07-01"))
+      result must not beNone
+
+    }
+
+    "check if monthly stats data does not exist" in new WithApplication {
+
+      private val result = SchoolOperationReport.lastMonthHistoryData(93740362, DateTime.parse("2016-07-01"))
+      result must beNone
+
     }
   }
 }
