@@ -39,5 +39,20 @@ class SchoolOperationReportSpec extends Specification with TestSupport {
       result must beNone
 
     }
+
+    "do statistics with school monthly" in new WithApplication {
+
+      private val result = SchoolOperationReport.monthlyCountingLogic(93740362, DateTime.parse("2016-01-07"))
+      result.school_id must equalTo(93740362)
+      result.month must equalTo("201601")
+
+    }
+
+    "do statistics with school daily" in new WithApplication {
+
+      private val result = SchoolOperationReport.tillTodayCountingLogic(93740362, DateTime.parse("2016-01-07"))
+      result.school_id must equalTo(93740362)
+      result.day must equalTo("20160107")
+    }
   }
 }
