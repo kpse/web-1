@@ -6,8 +6,11 @@ import play.api.db.DB
 import anorm.~
 import play.api.Play.current
 import models.helper.RangerHelper.rangerQuery
+import play.api.libs.json.Json
 
-case class News(news_id: Option[Long], school_id: Long, title: String, content: String, timestamp: Option[Long], published: Boolean, notice_type: Option[Int], class_id: Option[Int], image: Option[String], publisher_id: Option[String] = None, feedback_required: Option[Boolean] = Some(false), tags: List[String] = List())
+case class News(news_id: Option[Long], school_id: Long, title: String, content: String, timestamp: Option[Long], published: Boolean, notice_type: Option[Int], class_id: Option[Int], image: Option[String], publisher_id: Option[String] = None, feedback_required: Option[Boolean] = Some(false), tags: List[String] = List()) {
+  def toPreview: Option[NewsPreview] = news_id.map(NewsPreview)
+}
 
 case class NewsPreview(id: Long)
 

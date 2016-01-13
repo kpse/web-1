@@ -2,7 +2,7 @@ package models.V2
 
 import anorm.SqlParser._
 import anorm._
-import models.News
+import models.{NewsPreview, News}
 import play.api.Logger
 import play.api.db.DB
 import anorm.~
@@ -10,7 +10,10 @@ import play.api.Play.current
 import play.api.libs.json.Json
 
 object NewsV2 {
+  implicit val writeNewsPreview = Json.writes[NewsPreview]
+
   private val logger: Logger = Logger(classOf[News])
+
   def allIncludeNonPublished(kg: Long, classIds: Option[String], restricted: Boolean, from: Option[Long], to: Option[Long], most: Option[Int]) =
     News.allIncludeNonPublished(kg, classIds, restricted, from, to, most) map tags
 
@@ -119,4 +122,13 @@ object NewsV2 {
 
   def allSortedWithTag(kg: Long, classIds: Option[String], from: Option[Long], to: Option[Long], most: Option[Int]): List[News] =
     News.allSorted(kg, classIds, from, to, most) map tags
+
+  def selectedNews(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int], classId: Option[String], tag: Option[Boolean]): List[News] = {
+    tag match {
+      case Some(true) =>
+        allSortedWithTag(kg, classId, from, to, most)
+      case _ =>
+        News.allSorted(kg, classId, from, to, most)
+    }
+  }
 }

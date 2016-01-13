@@ -14,13 +14,14 @@ object NewsControllerV2 extends Controller with Secured {
 
   def index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int], classId: Option[String], tag: Option[Boolean]) = IsLoggedIn {
     u => _ =>
-      tag match {
-        case Some(true) =>
-          Ok(Json.toJson(NewsV2.allSortedWithTag(kg, classId, from, to, most)))
-        case _ =>
-          Ok(Json.toJson(News.allSorted(kg, classId, from, to, most)))
-      }
+      Ok(Json.toJson(selectedNews(kg, from, to, most, classId, tag)))
   }
+
+  def preview(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int], classId: Option[String], tag: Option[Boolean]) = IsLoggedIn {
+    u => _ =>
+      Ok(Json.toJson(selectedNews(kg, from, to, most, classId, tag).flatMap(_.toPreview)))
+  }
+
 
   def show(kg: Long, newsId: Long, tag: Option[Boolean]) = IsLoggedIn {
     u => _ =>

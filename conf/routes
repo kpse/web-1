@@ -311,6 +311,7 @@ GET           /api/v2/kindergarten/:kg/news/:newsId/reader                      
 POST          /api/v2/kindergarten/:kg/news/:newsId/reader                                     controllers.NewsController.read(kg: Long, newsId: Long)
 #news v2
 GET           /api/v2/kindergarten/:kg/news                                                    controllers.V2.NewsControllerV2.index(kg: Long, from: Option[Long], to: Option[Long], most:Option[Int], class_id: Option[String], tag: Option[Boolean])
+GET           /api/v2/kindergarten/:kg/news_preview                                            controllers.V2.NewsControllerV2.preview(kg: Long, from: Option[Long], to: Option[Long], most:Option[Int], class_id: Option[String], tag: Option[Boolean])
 GET           /api/v2/kindergarten/:kg/news/:newsId                                            controllers.V2.NewsControllerV2.show(kg: Long, newsId: Long, tag: Option[Boolean])
 
 DELETE        /api/v2/kindergarten/:kg/admin/:adminId/news/:newsId                             controllers.V2.NewsControllerV2.delete(kg: Long, adminId: String, newsId: Long)
