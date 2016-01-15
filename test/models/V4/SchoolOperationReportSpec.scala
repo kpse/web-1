@@ -40,6 +40,20 @@ class SchoolOperationReportSpec extends Specification with TestSupport {
 
     }
 
+    "check if daily stats data exists" in new WithApplication {
+
+      private val result = SchoolOperationReport.specificDayData(93740362, DateTime.parse("2015-07-01"))
+      result must not beNone
+
+    }
+
+    "check if daily stats data does not exist" in new WithApplication {
+
+      private val result = SchoolOperationReport.specificDayData(93740362, DateTime.parse("2016-07-01"))
+      result must beNone
+
+    }
+
     "do statistics with school monthly" in new WithApplication {
 
       private val result = SchoolOperationReport.monthlyCountingLogic(93740362, DateTime.parse("2016-01-07"))
