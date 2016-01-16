@@ -68,5 +68,10 @@ class SchoolOperationReportSpec extends Specification with TestSupport {
       result.school_id must equalTo(93740362)
       result.day must equalTo("20160107")
     }
+
+    "be converted to weekly report" in {
+      val weekly = SchoolOperationReport(1, 2, "month", "day", 3, 4, 5, 6, 7).toWeekly("start", "end")
+      weekly must equalTo(SchoolWeeklyReport(1, 2, "start", "end", 3, 4, 5, 6, 7))
+    }
   }
 }
