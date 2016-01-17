@@ -4,6 +4,7 @@ import play.api.mvc.{Action, Controller}
 import play.api.libs.json.{JsError, Json}
 import models.Assignment
 
+@deprecated(since = "2016-01-17")
 object AssignmentController extends Controller with Secured {
 
   implicit val write = Json.writes[Assignment]

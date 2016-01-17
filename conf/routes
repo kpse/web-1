@@ -99,10 +99,6 @@ POST          /kindergarten/:kg/relationship/:card                              
 POST          /kindergarten/:kg/relationship                                                   controllers.RelationshipController.create(kg: Long)
 DELETE        /kindergarten/:kg/relationship/:card                                             controllers.RelationshipController.delete(kg: Long, card: String)
 
-GET           /kindergarten/:kg/assignment                                                     controllers.AssignmentController.index(kg: Long, class_id: Option[String], from: Option[Long], to: Option[Long], most: Option[Int])
-POST          /kindergarten/:kg/assignment                                                     controllers.AssignmentController.create(kg: Long)
-POST          /kindergarten/:kg/assignment/:assignmentId                                       controllers.AssignmentController.update(kg: Long, assignmentId: Long)
-
 GET           /kindergarten/:kg/history/:topicId/record                                        controllers.SessionController.history(kg: Long, topicId: String, from: Option[Long], to: Option[Long], most: Option[Int], month: Option[String])
 DELETE        /kindergarten/:kg/history/:topicId/record/:id                                    controllers.SessionController.deleteHistory(kg: Long, topicId: String, id: Long)
 POST          /kindergarten/:kg/history/:topicId/record/:id                                    controllers.SessionController.updateHistory(kg: Long, topicId: String, id: Long)
@@ -187,12 +183,10 @@ DELETE        /cheatCode                                                        
 GET           /api/v1/statistics/session/:schoolId                                             controllers.StatisticsController.countSession(schoolId: Long)
 GET           /api/v1/statistics/history/:schoolId                                             controllers.StatisticsController.countGrowingHistory(schoolId: Long)
 GET           /api/v1/statistics/dailylog/:schoolId                                            controllers.StatisticsController.countDailyLogHistory(schoolId: Long)
-GET           /api/v1/statistics/assignment/:schoolId                                          controllers.StatisticsController.countAssignmentHistory(schoolId: Long, employee_id: Option[String])
 GET           /api/v1/statistics/assess/:schoolId                                              controllers.StatisticsController.countAssessHistory(schoolId: Long, employee_id: Option[String])
 GET           /api/v1/statistics/conversation/:schoolId                                        controllers.StatisticsController.countConversationHistory(schoolId: Long, employee_id: Option[String])
 GET           /api/v1/statistics/news/:schoolId                                                controllers.StatisticsController.countNewsHistory(schoolId: Long, employee_id: Option[String])
 
-GET           /api/v1/statistics/assignment                                                    controllers.StatisticsController.countAllAssignment
 GET           /api/v1/statistics/assess                                                        controllers.StatisticsController.countAllAssess
 GET           /api/v1/statistics/conversation                                                  controllers.StatisticsController.countAllConversation
 GET           /api/v1/statistics/news                                                          controllers.StatisticsController.countAllNews
@@ -717,3 +711,10 @@ POST          /kindergarten/:kg/conversation/:phone                             
 
 GET           /ws/swipe                                                                        controllers.WSController.call
 POST          /ws/swipe                                                                        controllers.WSController.sendMessage
+
+GET           /kindergarten/:kg/assignment                                                     controllers.AssignmentController.index(kg: Long, class_id: Option[String], from: Option[Long], to: Option[Long], most: Option[Int])
+POST          /kindergarten/:kg/assignment                                                     controllers.AssignmentController.create(kg: Long)
+POST          /kindergarten/:kg/assignment/:assignmentId                                       controllers.AssignmentController.update(kg: Long, assignmentId: Long)
+
+GET           /api/v1/statistics/assignment/:schoolId                                          controllers.StatisticsController.countAssignmentHistory(schoolId: Long, employee_id: Option[String])
+GET           /api/v1/statistics/assignment                                                    controllers.StatisticsController.countAllAssignment

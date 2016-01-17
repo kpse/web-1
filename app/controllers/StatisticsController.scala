@@ -39,14 +39,6 @@ object StatisticsController extends Controller with Secured {
       Ok(Json.toJson(value))
   }
 
-  def countAssignmentHistory(schoolId: Long, employeeId: Option[String]) = IsAuthenticated {
-    u => _ =>
-      val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]](s"assignmentCountIn$schoolId-employee$employeeId", 3600 * 24) {
-        ScoreItem.countHistory("assignment")(schoolId, employeeId)
-      }
-      Ok(Json.toJson(value))
-  }
-
   def countAssessHistory(schoolId: Long, employeeId: Option[String]) = IsAuthenticated {
     u => _ =>
       val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]](s"assessCountIn$schoolId-employee$employeeId", 3600 * 24) {
@@ -71,14 +63,6 @@ object StatisticsController extends Controller with Secured {
       Ok(Json.toJson(value))
   }
 
-  def countAllAssignment() = IsOperator {
-    u => _ =>
-      val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]]("assignmentCount", 3600 * 24) {
-        ScoreItem.countAllHistory("assignment")
-      }
-      Ok(Json.toJson(value))
-  }
-
   def countAllAssess() = IsOperator {
     u => _ =>
       val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]]("assessCount", 3600 * 24) {
@@ -99,6 +83,24 @@ object StatisticsController extends Controller with Secured {
     u => _ =>
       val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]]("newsCount", 3600 * 24) {
         ScoreItem.countAllHistory("news")
+      }
+      Ok(Json.toJson(value))
+  }
+
+  @deprecated(since = "2016-01-17")
+  def countAllAssignment() = IsOperator {
+    u => _ =>
+      val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]]("assignmentCount", 3600 * 24) {
+        ScoreItem.countAllHistory("assignment")
+      }
+      Ok(Json.toJson(value))
+  }
+
+  @deprecated(since = "2016-01-17")
+  def countAssignmentHistory(schoolId: Long, employeeId: Option[String]) = IsAuthenticated {
+    u => _ =>
+      val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]](s"assignmentCountIn$schoolId-employee$employeeId", 3600 * 24) {
+        ScoreItem.countHistory("assignment")(schoolId, employeeId)
       }
       Ok(Json.toJson(value))
   }
