@@ -1,9 +1,10 @@
-<div kl-fancy-box ng-click="openFancybox(url, allImages)" ng-show="isImage(media.url)"><img class="message-image" ng-src="{{url}}"
-     alt="{{type}}" /></div>
+<div kl-fancy-box ng-click="openFancybox(url, allImages)" ng-show="isImage(media.url)"><img class="message-image"
+                                                                                            ng-src="{{url}}"
+                                                                                            alt="{{type}}"/></div>
 <a ng-show="isAudio(media.url)" ng-href="{{url}}">
   <img class="message-audio" src="/assets/images/audio-file-icon.png"
        alt="{{type}}"/></a>
-<a ng-show="isVideo(media.url)" ng-href="{{url}}">
-  <img class="message-audio" src="/assets/images/video-file-icon.png"
-       alt="{{type}}"/></a>
+<div kl-fancy-box ng-click="openVideoFancybox(url)" ng-show="isVideo(media.url)">
+  <img class="message-video" src="/assets/images/video-file-icon.png"
+       alt="{{type}}"/></div>
 <span class="delete-image glyphicon glyphicon-remove" ng-show="deleteCallback" ng-click="deleteThisImage(media)"></span>

@@ -10,7 +10,7 @@ class ChatSessionSpec extends Specification with TestSupport {
 
       private val index = ChatSession.index(93740362L, "1_93740362_9982", None, None, Some(100))
 
-      index.size must equalTo(39)
+      index.size must equalTo(40)
       index.head.topic must equalTo("1_93740362_9982")
       index.head.timestamp must greaterThan(index(2).timestamp)
 
@@ -20,7 +20,7 @@ class ChatSessionSpec extends Specification with TestSupport {
 
       private val index = ChatSession.index(93740362L, "1_93740362_9982", Some(1), None, Some(100))
 
-      index.size must equalTo(39)
+      index.size must equalTo(40)
       index.head.topic must equalTo("1_93740362_9982")
       index.head.id must greaterThan(index(1).id)
 
@@ -54,14 +54,14 @@ class ChatSessionSpec extends Specification with TestSupport {
 
       private val index = ChatSession.lastMessageInClasses(93740362L, Some("777999"))
 
-      index.size must equalTo(1)
+      index.size must equalTo(2)
     }
 
     "collect conversation from multiple classes" in new WithApplication {
 
       private val index = ChatSession.lastMessageInClasses(93740362L, Some("777999,777666"))
 
-      index.size must equalTo(2)
+      index.size must equalTo(3)
     }
 
     "report history by employee id" in new WithApplication {

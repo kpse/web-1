@@ -75,6 +75,7 @@ INSERT INTO sessionlog (school_id, session_id, content, media_url, sender, updat
 VALUES
 ('93740362', 'h_1_93740362_9982', '小孩历史测试一条声音', 'https://dn-kulebao.qbox.me/3_93740362_9972%252FfireEffect.mp3', '2_93740362_790', 1401190155960, 'p', 'audio'),
 ('93740362', 'h_1_93740362_9982', '小孩历史测试视频1', 'http://7d9m4e.com1.z0.glb.clouddn.com/2001/3_2001_1402583751548/exp_medium/1430558130848.mp4', '2_93740362_790', 1401190155960, 'p', 'video'),
+('93740362', '1_93740362_9982', '小孩互动测试视频1', 'http://7d9m4e.com1.z0.glb.clouddn.com/2001/3_2001_1402583751548/exp_medium/1430558130848.mp4', '2_93740362_790', 1401190155960, 'p', 'video'),
 ('93740362', '1_93740362_9982', '小孩互动测试一条声音', 'https://dn-kulebao.qbox.me/3_93740362_9972%252FfireEffect.mp3', '2_93740362_790', 1401190155960, 'p', 'audio');
 
 
