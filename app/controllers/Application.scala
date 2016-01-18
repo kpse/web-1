@@ -44,12 +44,6 @@ object Application extends Controller with Secured {
       serveFile(file, ResponseHeader(200, Map(CONTENT_LENGTH -> file.length.toString)))
   }
 
-  def downloadLog = OperatorPage {
-    u => _ =>
-      val file: File = new java.io.File("%s/logs/application.log".format(Play.application.path))
-      serveFile(file, ResponseHeader(200, Map(CONTENT_DISPOSITION -> "attachment; filename=\"application.txt\"", CONTENT_TYPE -> "application/force-download")))
-  }
-
   def serveFile(file: java.io.File, header: ResponseHeader): SimpleResult = {
     val fileContent: Enumerator[Array[Byte]] = Enumerator.fromFile(file)
     SimpleResult(
@@ -62,6 +56,7 @@ object Application extends Controller with Secured {
     def call: R = f()
   }
 
+  @deprecated("no more usage", "2016-01-18")
   def continuousLogging = OperatorPage {
     u => _ =>
       Cache.get("logging") match {
@@ -98,8 +93,16 @@ object Application extends Controller with Secured {
           InternalServerError(Json.toJson(ErrorResponse("用户不存在.(User is not existing)")))
       }
   }
+
+  @deprecated("no more usage", "2016-01-18")
+  def downloadLog = OperatorPage {
+    u => _ =>
+      val file: File = new java.io.File("%s/logs/application.log".format(Play.application.path))
+      serveFile(file, ResponseHeader(200, Map(CONTENT_DISPOSITION -> "attachment; filename=\"application.txt\"", CONTENT_TYPE -> "application/force-download")))
+  }
 }
 
+@deprecated("no more usage", "2016-01-18")
 object LogTracker {
   def enumerator: Enumerator[String] = {
     val follow: InputStream = createStream

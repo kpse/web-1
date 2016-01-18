@@ -87,7 +87,7 @@ object StatisticsController extends Controller with Secured {
       Ok(Json.toJson(value))
   }
 
-  @deprecated(since = "2016-01-17")
+  @deprecated("no more usage", "2016-01-17")
   def countAllAssignment() = IsOperator {
     u => _ =>
       val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]]("assignmentCount", 3600 * 24) {
@@ -96,7 +96,7 @@ object StatisticsController extends Controller with Secured {
       Ok(Json.toJson(value))
   }
 
-  @deprecated(since = "2016-01-17")
+  @deprecated("no more usage", "2016-01-17")
   def countAssignmentHistory(schoolId: Long, employeeId: Option[String]) = IsAuthenticated {
     u => _ =>
       val value: List[ScoreItem] = Cache.getOrElse[List[ScoreItem]](s"assignmentCountIn$schoolId-employee$employeeId", 3600 * 24) {
