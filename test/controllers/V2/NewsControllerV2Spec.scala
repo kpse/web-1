@@ -100,6 +100,19 @@ class NewsControllerV2Spec extends Specification with TestSupport {
 
     }
 
+    "accept parameter to in preview" in new WithApplication {
+
+      val newsResponse = route(loggedRequest(GET, "/api/v2/kindergarten/93740362/news_preview?to=5")).get
+
+      status(newsResponse) must equalTo(OK)
+      contentType(newsResponse) must beSome.which(_ == "application/json")
+
+      val response: Seq[JsValue] = Json.parse(contentAsString(newsResponse)).as[JsArray].value
+      response.length must greaterThan(1)
+      (response.head \ "id").as[Long] must equalTo(4L)
+
+    }
+
     "accept parameter most" in new WithApplication {
 
       val newsResponse = route(loggedRequest(GET, "/api/v2/kindergarten/93740362/news?most=2")).get
