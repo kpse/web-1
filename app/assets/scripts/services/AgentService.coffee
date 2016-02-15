@@ -180,12 +180,13 @@ angular.module('kulebao.services')
   ($resource) ->
     $resource '/api/v4/agent_statistics',{}
   ]
-).service 'monthlyChildRateService', ->
+).service 'totalActiveRateService', ->
   (data) ->
-    result = if data.child_count == 0 then 0 else (data.logged_ever / data.child_count * 1.5 * 100 ).toFixed 2
+    console.log data
+    result = if data.child_count == 0 then 0 else (data.logged_ever / (data.child_count * 1.5) * 100 ).toFixed 2
     if result > 100 then 100 else result
 
-.service 'monthlySchoolRateService', ->
+.service 'monthlyActiveRateService', ->
   (data) ->
     if !data? || !data.logged_ever? || data.logged_ever == 0
       0

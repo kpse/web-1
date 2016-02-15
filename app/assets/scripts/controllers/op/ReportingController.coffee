@@ -1,7 +1,7 @@
 angular.module('kulebaoOp').controller 'OpReportingCtrl',
   ['$scope', '$rootScope', '$q', '$location', '$http',
    'schoolEmployeesService', 'classService', 'schoolService', 'activeCountService', 'chargeService', 'StatsServiceV4',
-   'monthlyChildRateService', 'monthlySchoolRateService',
+   'monthlyActiveRateService', 'totalActiveRateService',
     (scope, rootScope, $q, location, $http, Employee, Class, School, ActiveCount, Charge, Statistics,
      ChildRate, SchoolRate) ->
       rootScope.tabName = 'reporting'
@@ -71,7 +71,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
 .controller 'OpSchoolReportingCtrl',
   ['$scope', '$rootScope', '$stateParams', '$http',
    'schoolEmployeesService', 'classService', 'schoolService', 'adminNewsPreview', 'StatsService', 'activeCountService',
-   'monthlyChildRateService', 'monthlySchoolRateService', 'StatsServiceV4',
+   'monthlyActiveRateService', 'totalActiveRateService', 'StatsServiceV4',
     (scope, rootScope, stateParams, $http, Employee, Class, School, News, Statistics, ActiveCount,
      ChildRate, SchoolRate, StatisticsV4) ->
       rootScope.tabName = 'reporting'

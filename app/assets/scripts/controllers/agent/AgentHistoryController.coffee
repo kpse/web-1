@@ -77,8 +77,8 @@ angular.module('kulebaoAgent')
           _.each currentAgent.schools, (s) ->
             s.stats = _.find scope.lastActiveData, (f) -> f.data.school_id == s.school_id
             if s.stats?
-              s.stats.rate = scope.calcRate s.stats.data
-              s.stats.childRate = scope.calcChildRate s.stats.data
+              s.stats.rate = scope.calcTotalActiveRate s.stats.data
+              s.stats.childRate = scope.calcMonthlyActiveRate s.stats.data
               s.stats = _.assign s.stats, s.stats.data
           scope.$emit 'stats_ready', currentAgent.schools
           $rootScope.loading = false
@@ -107,8 +107,8 @@ angular.module('kulebaoAgent')
           groups = _.groupBy(q[0], (d) -> d.school_id )
           _.each currentAgent.schools, (s) ->
             s.weeklyStats = _.map groups[s.school_id], (w) ->
-              w.rate = scope.calcRate w
-              w.childRate = scope.calcChildRate w
+              w.rate = scope.calcTotalActiveRate w
+              w.childRate = scope.calcMonthlyActiveRate w
               w
             s.weeklyGroup = _.groupBy s.weeklyStats, 'week_start'
           scope.$emit 'weekly_stats_ready', currentAgent.schools

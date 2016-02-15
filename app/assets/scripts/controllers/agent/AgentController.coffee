@@ -1,7 +1,7 @@
 angular.module('kulebaoAgent').controller 'AgentCtrl',
   ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter', '$modal', '$q', 'loggedUser', 'currentAgent',
-   'agentSchoolService', 'agentPasswordService', 'agentStatsService', 'fullResponseService', 'monthlyChildRateService', 'monthlySchoolRateService',
-    (scope, $rootScope, $stateParams, $state, $location, $filter, Modal, $q, User, CurrentAgent, AgentSchool, Password, Stats, FullRes, ChildRate, SchoolRate) ->
+   'agentSchoolService', 'agentPasswordService', 'agentStatsService', 'fullResponseService', 'monthlyActiveRateService', 'totalActiveRateService',
+    (scope, $rootScope, $stateParams, $state, $location, $filter, Modal, $q, User, CurrentAgent, AgentSchool, Password, Stats, FullRes, MonthlyActive, TotalActive) ->
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
 
@@ -21,9 +21,9 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
           scope.$on 'weekly_stats_ready', -> resolve()
           resolve() if scope.currentAgent && scope.currentAgent.schools?
 
-      scope.calcChildRate = ChildRate
+      scope.calcMonthlyActiveRate = MonthlyActive
 
-      scope.calcRate = SchoolRate
+      scope.calcTotalActiveRate = TotalActive
 
       scope.refresh = ->
         $rootScope.loading = true
@@ -39,8 +39,8 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
             kg.checked = false
             kg.activeData = _.uniq groups[kg.school_id], (u) -> u.data.month
             _.each kg.activeData, (d) ->
-              d.rate = scope.calcRate(d.data)
-              d.childRate = scope.calcChildRate(d.data)
+              d.rate = scope.calcTotalActiveRate(d.data)
+              d.childRate = scope.calcMonthlyActiveRate(d.data)
             kg.lastActiveData = _.last _.sortBy kg.activeData, 'month'
           $rootScope.loading = false
 
