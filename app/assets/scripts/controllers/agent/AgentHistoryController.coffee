@@ -37,8 +37,8 @@ angular.module('kulebaoAgent')
             childrenCount: s.monthlyData.child_count
             parentsCount: s.monthlyData.logged_ever
             parentsLastMonth: s.monthlyData.logged_once
-            childRate: s.data.childRate
-            rate: s.data.rate
+            childRate: s.data.monthlyActive
+            rate: s.data.totalActive
           .value()
         scope.exportHeader = ->
           ['编号', '学校名称', '学生数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
@@ -77,8 +77,8 @@ angular.module('kulebaoAgent')
           _.each currentAgent.schools, (s) ->
             s.stats = _.find scope.lastActiveData, (f) -> f.data.school_id == s.school_id
             if s.stats?
-              s.stats.rate = scope.calcTotalActiveRate s.stats.data
-              s.stats.childRate = scope.calcMonthlyActiveRate s.stats.data
+              s.stats.totalActive = scope.calcTotalActiveRate s.stats.data
+              s.stats.monthlyActive = scope.calcMonthlyActiveRate s.stats.data
               s.stats = _.assign s.stats, s.stats.data
           scope.$emit 'stats_ready', currentAgent.schools
           $rootScope.loading = false
@@ -107,8 +107,8 @@ angular.module('kulebaoAgent')
           groups = _.groupBy(q[0], (d) -> d.school_id )
           _.each currentAgent.schools, (s) ->
             s.weeklyStats = _.map groups[s.school_id], (w) ->
-              w.rate = scope.calcTotalActiveRate w
-              w.childRate = scope.calcMonthlyActiveRate w
+              w.totalActive = scope.calcTotalActiveRate w
+              w.weeklyActive = scope.calcMonthlyActiveRate w
               w
             s.weeklyGroup = _.groupBy s.weeklyStats, 'week_start'
           scope.$emit 'weekly_stats_ready', currentAgent.schools
@@ -135,8 +135,8 @@ angular.module('kulebaoAgent')
               childrenCount: s.data.child_count
               parentsCount: s.data.logged_ever
               parentsLastMonth: s.data.logged_once
-              childRate: s.data.childRate
-              rate: s.data.rate
+              rate: s.data.totalActive
+              childRate: s.data.weeklyActive
             .value()
           scope.exportHeader = ->
             ['编号', '学校名称', '学生数', '总用户数', '当周用户数', '当周激活率', '当周活跃度']

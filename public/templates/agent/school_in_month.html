@@ -24,8 +24,8 @@
     <td class="col-xs-1">{{kg.stats.child_count || 0}}</td>
     <td class="col-xs-1">{{kg.stats.logged_ever || 0}}</td>
     <td class="col-xs-1">{{kg.stats.logged_once || 0}}</td>
-    <td class="col-xs-1">{{kg.stats.childRate || 0}}</td>
-    <td class="col-xs-1">{{kg.stats.rate || 0}}</td>
+    <td class="col-xs-1">{{kg.stats.totalActive || 0}}</td>
+    <td class="col-xs-1">{{kg.stats.monthlyActive || 0}}</td>
     <td class="col-xs-1"><button class="btn btn-danger btn-xs" ng-show="allowToDelete(currentMonth, kg.stats)" ng-disabled="loading"
                                  ng-confirm-msg="此操作会删除 {{kg.name}} {{currentMonth}}的统计数据，且删除之后不能回复，你确定要继续吗?"
                                  ng-confirm-click="deleteStats(kg.stats)">删除</button>

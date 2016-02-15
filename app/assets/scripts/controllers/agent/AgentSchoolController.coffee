@@ -19,7 +19,7 @@ angular.module('kulebaoAgent').controller 'AgentSchoolCtrl',
       scope.export = (kg) ->
         data = _.find scope.currentAgent.schools, (k) -> k.school_id == kg.school_id
         sorted = _.sortBy data.activeData, 'month'
-        _.map sorted, (s) -> month: s.data.month, childrenCount: s.data.child_count, parentsCount: s.data.logged_ever, rate: s.rate
+        _.map sorted, (s) -> month: s.data.month, childrenCount: s.data.child_count, parentsCount: s.data.logged_ever, rate: s.monthlyActive
       scope.exportHeader = ->
         ['月份', '学生数', '家长数', '月活跃度']
   ]

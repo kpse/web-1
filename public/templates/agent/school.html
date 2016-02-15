@@ -29,10 +29,10 @@
     <td class="col-xs-1">{{kg.stats.all}}</td>
     <td class="col-xs-1">{{kg.lastActiveData.data.logged_ever}}</td>
     <td class="col-xs-2">
-      <span>{{kg.lastActiveData.rate || 'N/A'}}</span>
+      <span>{{kg.lastActiveData.monthlyActive || 'N/A'}}</span>
       <a ng-click="checkUserActive(kg)">查看</a>
     </td>
-    <td class="col-xs-2">{{kg.lastActiveData.childRate}}</td>
+    <td class="col-xs-2">{{kg.lastActiveData.totalActive}}</td>
     <td class="col-xs-1">
       <button type="submit" class="btn btn-xs btn-success" ng-disabled="loading" ng-csv="export(kg)" add-bom="U+FEFF"
               csv-header="exportHeader()" filename="{{kg.csvName}}" ng-click="$event.stopPropagation()">导出历史记录</button>

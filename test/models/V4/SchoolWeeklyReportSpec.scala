@@ -19,7 +19,7 @@ class SchoolWeeklyReportSpec extends Specification with TestSupport {
 
     "check if stats exists" in new WithApplication {
 
-      private val result = SchoolWeeklyReport.weeklyHistoryData(93740362, DateTime.parse("2016-01-07"))
+      private val result = SchoolWeeklyReport.weeklyHistoryData(93740362, DateTime.parse("2016-02-08"))
       result must not beNone
 
     }

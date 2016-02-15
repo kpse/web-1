@@ -39,8 +39,8 @@ angular.module('kulebaoAgent').controller 'AgentCtrl',
             kg.checked = false
             kg.activeData = _.uniq groups[kg.school_id], (u) -> u.data.month
             _.each kg.activeData, (d) ->
-              d.rate = scope.calcTotalActiveRate(d.data)
-              d.childRate = scope.calcMonthlyActiveRate(d.data)
+              d.totalActive = scope.calcTotalActiveRate(d.data)
+              d.monthlyActive = scope.calcMonthlyActiveRate(d.data)
             kg.lastActiveData = _.last _.sortBy kg.activeData, 'month'
           $rootScope.loading = false
 

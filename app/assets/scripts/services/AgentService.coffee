@@ -182,7 +182,6 @@ angular.module('kulebao.services')
   ]
 ).service 'totalActiveRateService', ->
   (data) ->
-    console.log data
     result = if data.child_count == 0 then 0 else (data.logged_ever / (data.child_count * 1.5) * 100 ).toFixed 2
     if result > 100 then 100 else result
 
