@@ -151,6 +151,7 @@ angular.module('kulebaoAgent')
           NaN
 
       scope.$watch 'currentWeek', (n, o) ->
+        scope.currentWeekDisplay = scope.display(scope.currentWeek) if scope.currentWeek?
         $state.go 'main.weekly_history.week', week: n if n isnt o
 
       $state.go 'main.weekly_history.week', month: scope.currentWeek
