@@ -100,11 +100,13 @@ angular.module('kulebaoAgent')
       scope.refresh = ->
         $rootScope.loading = true
         currentAgent = scope.currentAgent
+        scope.allWeeklyData = []
 
         queue = [Stats.query(agent_id: currentAgent.id).$promise,
           scope.waitForSchoolsReady()]
         $q.all(queue).then (q) ->
-          groups = _.groupBy(q[0], (d) -> d.school_id )
+          scope.allWeeklyData = q[0]
+          groups = _.groupBy(scope.allWeeklyData, (d) -> d.school_id )
           _.each currentAgent.schools, (s) ->
             s.weeklyStats = _.map groups[s.school_id], (w) ->
               w.totalActive = scope.calcTotalActiveRate w
@@ -112,6 +114,7 @@ angular.module('kulebaoAgent')
               w
             s.weeklyGroup = _.groupBy s.weeklyStats, 'week_start'
           scope.$emit 'weekly_stats_ready', currentAgent.schools
+
 
           scope.pastWeeks = (_.sortBy _.keys(_.groupBy(q[0], 'week_start')), 'week_start').reverse()
           scope.pastWeekends = (_.sortBy _.keys(_.groupBy(q[0], 'week_end')), 'week_end').reverse()

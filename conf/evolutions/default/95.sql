@@ -24,6 +24,8 @@ INSERT INTO school_weekly_statistics (school_id, week_start, week_end, parent_co
 ('93740362', '20140201', '20160107', 123, 345, 90, 100, 1393395313123),
 ('93740362', '20140301', '20160107', 123, 345, 91, 100, 1393395313123);
 
+
+-- delete from school_weekly_statistics;
 # --- !Downs
 
 DROP TABLE IF EXISTS school_weekly_statistics;

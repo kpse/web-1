@@ -7,7 +7,8 @@
     <a>按周统计</a>
   </li>
 </ul>
-<div class="well schools-search-panel">
+<div ng-show="allWeeklyData.length == 0"><h2>无周历史数据</h2><h3>如果不是最近新增学校,请联系库贝管理员.</h3></div>
+<div ng-show="allWeeklyData.length > 0"><div class="well schools-search-panel">
   <label for="week-select">按周查看</label>
 
   <div class="row">
@@ -23,4 +24,4 @@
 </div>
 
 <div class="agent-school-view" ui-view></div>
-
+</div>
