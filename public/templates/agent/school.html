@@ -30,7 +30,7 @@
     <td class="col-xs-1">{{kg.lastActiveData.data.logged_ever}}</td>
     <td class="col-xs-2">
       <span>{{kg.lastActiveData.monthlyActive || 'N/A'}}</span>
-      <a ng-click="checkUserActive(kg)">查看</a>
+      <a ng-click="checkUserActive(kg)" ng-show="kg.lastActiveData.monthlyActive">查看</a>
     </td>
     <td class="col-xs-2">{{kg.lastActiveData.totalActive}}</td>
     <td class="col-xs-1">
