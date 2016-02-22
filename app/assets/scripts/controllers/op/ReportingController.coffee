@@ -1,9 +1,7 @@
 angular.module('kulebaoOp').controller 'OpReportingCtrl',
-  ['$scope', '$rootScope', '$q', '$location', '$http',
+  ['$scope', '$rootScope', '$q', '$location', '$http', '$filter',
    'schoolEmployeesService', 'classService', 'schoolService', 'activeCountService', 'chargeService', 'StatsServiceV4',
-   'monthlyActiveRateService', 'totalActiveRateService',
-    (scope, rootScope, $q, location, $http, Employee, Class, School, ActiveCount, Charge, Statistics,
-     ChildRate, SchoolRate) ->
+    (scope, rootScope, $q, location, $http, $filter, Employee, Class, School, ActiveCount, Charge, Statistics) ->
       rootScope.tabName = 'reporting'
 
       Monthly = Statistics 'monthly'
@@ -21,8 +19,6 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
           allStatsData = _.groupBy q[1], 'school_id'
           scope.kindergartens = _.map scope.kindergartens, (k) ->
             k.monthly = _.first allStatsData[k.school_id]
-            k.monthlyRate = SchoolRate(k.monthly)
-            k.monthlyChildRate = ChildRate(k.monthly)
             k.parents = k.monthly.parent_count
             k.children = k.monthly.child_count
             k
@@ -55,15 +51,15 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
       scope.export = ->
         _.map scope.kindergartens, (k) ->
           id: k.school_id
+          created_at: $filter('date')(k.created_at, 'yyyy-MM-dd')
           name: k.full_name
+          address: k.address
           children: k.monthly.child_count
           parents: k.monthly.parent_count
           user: k.monthly.logged_ever
           active: k.monthly.logged_once
-          rate: k.monthlyRate
-          childRate: k.monthlyChildRate
 
-      scope.exportHeader = -> ['学校ID', '学校全称', '学生总数', '家长总数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
+      scope.exportHeader = -> ['学校ID', '开园时间', '学校全称', '地区', '学生总数', '家长总数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
       scope.csvName = "monthly_report_#{scope.currentWeek}.csv"
 
   ]
@@ -97,8 +93,6 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
           scope.monthly = Monthly.get school_id: stateParams.school_id, ->
             scope.parents = scope.monthly.parent_count
             scope.children = scope.monthly.child_count
-            scope.monthlyRate = SchoolRate(scope.monthly)
-            scope.monthlyChildRate = ChildRate(scope.monthly)
           rootScope.loading = false
 
   ]
