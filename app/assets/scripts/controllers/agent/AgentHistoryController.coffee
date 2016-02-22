@@ -26,6 +26,8 @@ angular.module('kulebaoAgent')
           _(scope.currentAgent.schools).map (s) ->
             id: s.school_id
             name: s.name
+            created_at: $filter('date')(s.created_at, 'yyyy-MM-dd')
+            address: s.address
             data: (_.find s.activeData, (d) -> d.data.month == currentMonth)
           .filter (s) ->
             s.data?
@@ -33,15 +35,15 @@ angular.module('kulebaoAgent')
           .map (s) ->
             s.monthlyData = s.data.data
             id: s.id
+            created_at: s.created_at
             name: s.name
+            address: s.address
             childrenCount: s.monthlyData.child_count
             parentsCount: s.monthlyData.logged_ever
             parentsLastMonth: s.monthlyData.logged_once
-            childRate: s.data.monthlyActive
-            rate: s.data.totalActive
           .value()
         scope.exportHeader = ->
-          ['编号', '学校名称', '学生数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
+          ['编号', '开园时间', '学校全称', '地址', '学生数', '总用户数', '当月用户数']
         scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.currentMonth}.csv"
 
       scope.forceToReCalculate = ->
@@ -128,21 +130,23 @@ angular.module('kulebaoAgent')
             _(scope.currentAgent.schools).map (s) ->
               id: s.school_id
               name: s.name
+              created_at: $filter('date')(s.created_at, 'yyyy-MM-dd')
+              address: s.address
               data: scope.currentWeekDataOf(s.weeklyGroup)
             .filter (s) ->
               s.data?
             .sortBy('school_id')
             .map (s) ->
               id: s.id
+              created_at: s.created_at
               name: s.name
+              address: s.address
               childrenCount: s.data.child_count
               parentsCount: s.data.logged_ever
               parentsLastMonth: s.data.logged_once
-              rate: s.data.totalActive
-              childRate: s.data.weeklyActive
             .value()
           scope.exportHeader = ->
-            ['编号', '学校名称', '学生数', '总用户数', '当周用户数', '当周激活率', '当周活跃度']
+            ['编号', '开园时间', '学校全称', '地址', '学生数', '总用户数', '当周用户数']
           scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.display(scope.currentWeek)}.csv"
           $rootScope.loading = false
 
