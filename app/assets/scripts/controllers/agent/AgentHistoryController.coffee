@@ -39,11 +39,12 @@ angular.module('kulebaoAgent')
             name: s.name
             address: s.address
             childrenCount: s.monthlyData.child_count
-            parentsCount: s.monthlyData.logged_ever
+            parentsCount: s.monthlyData.parent_count
+            parentsEverLogged: s.monthlyData.logged_ever
             parentsLastMonth: s.monthlyData.logged_once
           .value()
         scope.exportHeader = ->
-          ['编号', '开园时间', '学校全称', '地址', '学生数', '总用户数', '当月用户数']
+          ['编号', '开园时间', '学校全称', '地址', '学生数', '家长总数', '总用户数', '当月用户数']
         scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.currentMonth}.csv"
 
       scope.forceToReCalculate = ->
@@ -142,11 +143,12 @@ angular.module('kulebaoAgent')
               name: s.name
               address: s.address
               childrenCount: s.data.child_count
-              parentsCount: s.data.logged_ever
+              parentsCount: s.data.parent_count
+              parentsEverLogged: s.data.logged_ever
               parentsLastMonth: s.data.logged_once
             .value()
           scope.exportHeader = ->
-            ['编号', '开园时间', '学校全称', '地址', '学生数', '总用户数', '当周用户数']
+            ['编号', '开园时间', '学校全称', '地址', '学生数', '家长总数', '总用户数', '当周用户数']
           scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.display(scope.currentWeek)}.csv"
           $rootScope.loading = false
 
