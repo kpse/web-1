@@ -87,7 +87,8 @@
           <label for="address" class="col-sm-2 control-label">学校地址</label>
 
           <div class="col-sm-8">
-            <p id="address" class="form-control-static">{{school.address}}</p>
+            <input id="address" type="text" ng-model="school.address" name="address"
+                   class="editing-field form-control" required/>
           </div>
         </div>
 
