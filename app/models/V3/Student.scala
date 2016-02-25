@@ -7,8 +7,6 @@ import anorm.SqlParser._
 import anorm._
 import models.helper.TimeHelper.{any2DateTime, parseShortDate}
 import models.{ChildInfo, Children}
-import models.Children.writeChildInfo
-import models.Children.readChildInfo
 import org.joda.time.DateTime
 import play.Logger
 import play.api.Play.current
@@ -19,7 +17,8 @@ import play.api.libs.json.Json
 case class StudentExt(display_name: Option[String], former_name: Option[String], student_id: Option[String], social_id: Option[String], residence_place: Option[String],
                       residence_type: Option[String], nationality: Option[String], original_place: Option[String], ethnos: Option[String],
                       student_type: Option[Int], in_date: Option[String], interest: Option[String], bed_number: Option[String], memo: Option[String],
-                      bus_status: Option[Int], medical_history: Option[String], base_id: Option[Long] = None, id: Option[Long] = None) {
+                      bus_status: Option[Int], medical_history: Option[String], base_id: Option[Long] = None,
+                      id: Option[Long] = None, graduated_at: Option[Long] = None, graduated_status: Option[Int] = Some(0)) {
   def extExists(id: Long) = DB.withTransaction {
     implicit c =>
       SQL("select count(1) from studentext where base_id={base_id}")
@@ -40,7 +39,7 @@ case class StudentExt(display_name: Option[String], former_name: Option[String],
       SQL("update studentext set display_name={display}, former_name={former_name}, student_id={student_id}, social_id={social_id}, " +
         "residence_place={residence_place}, residence_type={residence_type}, nationality={nationality}, " +
         "original_place={original_place}, ethnos={ethnos}, student_type={student_type}, in_date={in_date}, interest={interest}, " +
-        "bed_number={bed_number}, memo={memo}, bus_status={bus_status}, medical_history={medical_history} " +
+        "bed_number={bed_number}, memo={memo}, bus_status={bus_status}, medical_history={medical_history}, graduated_at={graduated_at}, graduated_status={graduated_status} " +
         " where base_id={base_id}")
         .on(
           'base_id -> id,
@@ -55,6 +54,8 @@ case class StudentExt(display_name: Option[String], former_name: Option[String],
           'ethnos -> ethnos,
           'student_type -> student_type,
           'in_date -> parseShortDate(in_date.getOrElse("1970-01-01")).toDate.getTime,
+          'graduated_at -> graduated_at,
+          'graduated_status -> graduated_status,
           'interest -> interest,
           'bed_number -> bed_number,
           'memo -> memo,
@@ -66,9 +67,9 @@ case class StudentExt(display_name: Option[String], former_name: Option[String],
   def create(id: Long) = DB.withTransaction {
     implicit c =>
       SQL("insert into studentext (base_id, display_name, former_name, student_id, social_id, residence_place, residence_type, nationality, " +
-        "original_place, ethnos, student_type, in_date, interest, bed_number, memo, bus_status, medical_history) values (" +
+        "original_place, ethnos, student_type, in_date, interest, bed_number, memo, bus_status, medical_history, graduated_at, graduated_status) values (" +
         "{base_id}, {display}, {former_name}, {student_id}, {social_id}, {residence_place}, {residence_type}, {nationality}, " +
-        "{original_place}, {ethnos}, {student_type}, {in_date}, {interest}, {bed_number}, {memo}, {bus_status}, {medical_history})")
+        "{original_place}, {ethnos}, {student_type}, {in_date}, {interest}, {bed_number}, {memo}, {bus_status}, {medical_history}, {graduated_at}, {graduated_status})")
         .on(
           'base_id -> id,
           'display -> display_name,
@@ -82,6 +83,8 @@ case class StudentExt(display_name: Option[String], former_name: Option[String],
           'ethnos -> ethnos,
           'student_type -> student_type,
           'in_date -> parseShortDate(in_date.getOrElse("1970-01-01")).toDate.getTime,
+          'graduated_at -> graduated_at,
+          'graduated_status -> graduated_status,
           'interest -> interest,
           'bed_number -> bed_number,
           'memo -> memo,
@@ -221,6 +224,8 @@ case class Student(id: Option[Long], basic: ChildInfo, ext: Option[StudentExt], 
 }
 
 object Student {
+  import Children.writeChildInfo
+  import Children.readChildInfo
   implicit val writeStudentExt = Json.writes[StudentExt]
   implicit val readStudentExt = Json.reads[StudentExt]
   implicit val writeStudent = Json.writes[Student]
@@ -320,15 +325,18 @@ object Student {
       get[Option[String]]("ethnos") ~
       get[Option[Int]]("student_type") ~
       get[Option[Long]]("in_date") ~
+      get[Option[Long]]("graduated_at") ~
+      get[Option[Int]]("graduated_status") ~
       get[Option[String]]("interest") ~
       get[Option[String]]("bed_number") ~
       get[Option[String]]("memo") ~
       get[Option[Int]]("bus_status") ~
       get[Option[String]]("medical_history") map {
       case id ~ bId ~ display ~ former ~ studentId ~ socialId ~ resiPlace ~ resiType ~ nationality ~ originalPlace ~ ethnos ~ studentType
-        ~ inDate ~ interest ~ bed ~ memo ~ bus ~ medical =>
+        ~ inDate ~ outDate ~ graduated ~ interest ~ bed ~ memo ~ bus ~ medical =>
         StudentExt(display, former, studentId, socialId, resiPlace, resiType, nationality,
-          originalPlace, ethnos, studentType, Some(inDate.getOrElse(0).toDateOnly), interest, bed, memo, bus, medical, Some(id), Some(bId))
+          originalPlace, ethnos, studentType, Some(inDate.getOrElse(0).toDateOnly), interest, bed, memo, bus, medical,
+          Some(id), Some(bId), outDate, graduated)
     }
   }
 

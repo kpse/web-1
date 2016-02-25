@@ -18,6 +18,8 @@ CREATE TABLE studentext (
   ethnos VARCHAR(20),
   student_type INT,
   in_date BIGINT,
+  graduated_at BIGINT,
+  graduated_status INT DEFAULT 0,    -- 0 normal ， 1 graduated， 2 quit abnormally
   interest VARCHAR(512),
   bed_number VARCHAR(20),
   memo TEXT,
