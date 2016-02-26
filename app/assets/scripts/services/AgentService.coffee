@@ -191,3 +191,14 @@ angular.module('kulebao.services')
       0
     else
       (data.logged_once/data.logged_ever * 100).toFixed 2
+
+.service 'agentLocationService', ->
+    provinceOf: (address) ->
+      m = address.match(/(.+?省)/)
+      (m && m[0]) || ''
+    cityOf: (address) ->
+      m = address.match(/省(.+?市)/)
+      (m && m[1]) || ''
+    countyOf: (address) ->
+      m = address.match(/市(.+?(县|区))/)
+      (m && m[1]) || ''

@@ -1,8 +1,8 @@
 angular.module('kulebaoAgent')
 .controller 'AgentHistoryCtrl',
   ['$scope', '$rootScope', '$stateParams', '$state', '$location', '$filter', '$q', 'loggedUser', 'currentAgent',
-   'agentStatsOperatorService'
-    (scope, $rootScope, $stateParams, $state, $location, $filter, $q, User, CurrentAgent, OperatorStats) ->
+   'agentStatsOperatorService', 'agentLocationService',
+    (scope, $rootScope, $stateParams, $state, $location, $filter, $q, User, CurrentAgent, OperatorStats, Location) ->
       scope.loggedUser = User
       scope.currentAgent = CurrentAgent
 
@@ -37,14 +37,16 @@ angular.module('kulebaoAgent')
             id: s.id
             created_at: s.created_at
             name: s.name
-            address: s.address
+            address: Location.provinceOf s.address
+            address2: Location.cityOf s.address
+            address3: Location.countyOf s.address
             childrenCount: s.monthlyData.child_count
             parentsCount: s.monthlyData.parent_count
             parentsEverLogged: s.monthlyData.logged_ever
             parentsLastMonth: s.monthlyData.logged_once
           .value()
         scope.exportHeader = ->
-          ['学校ID', '开园时间', '学校全称', '地址', '学生数', '家长总数', '总用户数', '当月用户数']
+          ['学校ID', '开园时间', '学校全称', '省', '市', '区(县)', '学生数', '家长总数', '总用户数', '当月用户数']
         scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.currentMonth}.csv"
 
         _.each scope.currentAgent.schools, (s) ->
