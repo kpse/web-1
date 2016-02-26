@@ -48,12 +48,12 @@ angular.module('kulebaoAgent')
         scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.currentMonth}.csv"
 
         _.each scope.currentAgent.schools, (s) ->
-          s.csvName = "#{s.school_id}_#{s.name}活跃度.csv"
+          s.csvName = "#{s.school_id}_#{s.name}历史数据汇总.csv"
         scope.singleExport = (kg) ->
           data = _.find scope.currentAgent.schools, (k) -> k.school_id == kg.school_id
           sorted = _.sortBy data.activeData, 'month'
           _.map sorted, (s) ->
-            id: data.id
+            id: data.school_id
             name: data.name
             month: s.data.month
             childrenCount: s.data.child_count
