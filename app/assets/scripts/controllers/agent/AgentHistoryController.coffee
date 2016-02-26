@@ -47,6 +47,23 @@ angular.module('kulebaoAgent')
           ['学校ID', '开园时间', '学校全称', '地址', '学生数', '家长总数', '总用户数', '当月用户数']
         scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.currentMonth}.csv"
 
+        _.each scope.currentAgent.schools, (s) ->
+          s.csvName = "#{s.school_id}_#{s.name}活跃度.csv"
+        scope.singleExport = (kg) ->
+          data = _.find scope.currentAgent.schools, (k) -> k.school_id == kg.school_id
+          sorted = _.sortBy data.activeData, 'month'
+          _.map sorted, (s) ->
+            id: data.id
+            name: data.name
+            month: s.data.month
+            childrenCount: s.data.child_count
+            parentsCount: s.data.parent_count
+            parentsEverCount: s.data.logged_ever
+            parentsOnceLogged: s.data.logged_once
+        scope.singleExportHeader = ->
+          ['学校ID', '学校全称', '月份', '学生数', '家长总数', '总用户数', '当月用户数']
+
+
       scope.forceToReCalculate = ->
         $rootScope.loading = true
         OperatorStats.save ->

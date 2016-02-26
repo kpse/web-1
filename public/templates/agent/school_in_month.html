@@ -24,7 +24,10 @@
     <td class="col-xs-1">{{kg.stats.parent_count || 0}}</td>
     <td class="col-xs-1">{{kg.stats.logged_ever || 0}}</td>
     <td class="col-xs-1">{{kg.stats.logged_once || 0}}</td>
-    <td class="col-xs-1"><button class="btn btn-danger btn-xs" ng-show="allowToDelete(currentMonth, kg.stats)" ng-disabled="loading"
+    <td class="col-xs-1">
+      <button type="submit" class="btn btn-xs btn-success" ng-disabled="loading" ng-csv="singleExport(kg)" add-bom="U+FEFF"
+              csv-header="singleExportHeader()" filename="{{kg.csvName}}" ng-click="$event.stopPropagation()">导出历史记录</button>
+      <button class="btn btn-danger btn-xs" ng-show="allowToDelete(currentMonth, kg.stats)" ng-disabled="loading"
                                  ng-confirm-msg="此操作会删除 {{kg.name}} {{currentMonth}}的统计数据，且删除之后不能回复，你确定要继续吗?"
                                  ng-confirm-click="deleteStats(kg.stats)">删除</button>
     </td>
