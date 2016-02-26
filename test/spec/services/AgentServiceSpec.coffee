@@ -16,6 +16,7 @@ describe 'Service: AgentService', () ->
     expect(agentService.provinceOf '双流县四川省').toBe ''
     expect(agentService.provinceOf '蘑菇岛').toBe ''
     expect(agentService.provinceOf '').toBe ''
+    expect(agentService.provinceOf undefined ).toBe ''
 
   it 'should analyse city', () ->
     expect(agentService.cityOf '四川省').toBe ''
@@ -25,6 +26,7 @@ describe 'Service: AgentService', () ->
     expect(agentService.cityOf '').toBe ''
     expect(agentService.cityOf '四川省成都市双流县').toBe '成都市'
     expect(agentService.cityOf '四川省双流县成都市').toBe ''
+    expect(agentService.cityOf undefined).toBe ''
 
   it 'should analyse county', () ->
     expect(agentService.countyOf '四川省').toBe ''
@@ -36,3 +38,4 @@ describe 'Service: AgentService', () ->
     expect(agentService.countyOf '四川省双流县成都市').toBe ''
     expect(agentService.countyOf '黑龙江省美国市澳大利亚区').toBe '澳大利亚区'
     expect(agentService.countyOf '黑龙江省澳大利亚区美国市').toBe ''
+    expect(agentService.countyOf undefined).toBe ''

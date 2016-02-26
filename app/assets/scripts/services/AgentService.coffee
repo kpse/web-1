@@ -194,11 +194,14 @@ angular.module('kulebao.services')
 
 .service 'agentLocationService', ->
     provinceOf: (address) ->
+      return '' unless address?
       m = address.match(/^([^市省县区]+?省)/)
       (m && m[0]) || ''
     cityOf: (address) ->
+      return '' unless address?
       m = address.match(/[^市省县区]+?省([^市省县区]+?市)/)
       (m && m[1]) || ''
     countyOf: (address) ->
+      return '' unless address?
       m = address.match(/市(.+?(县|区))/)
       (m && m[1]) || ''
