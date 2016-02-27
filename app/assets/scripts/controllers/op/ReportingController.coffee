@@ -1,8 +1,9 @@
 angular.module('kulebaoOp').controller 'OpReportingCtrl',
   ['$scope', '$rootScope', '$q', '$location', '$http', '$filter',
    'schoolEmployeesService', 'classService', 'schoolService', 'activeCountService', 'chargeService', 'StatsServiceV4',
-    'agentLocationService',
-    (scope, rootScope, $q, location, $http, $filter, Employee, Class, School, ActiveCount, Charge, Statistics, Location) ->
+    'agentLocationService', 'agentManagementService', 'agentSchoolService', 'fullResponseService',
+    (scope, rootScope, $q, location, $http, $filter, Employee, Class, School, ActiveCount, Charge, Statistics, Location,
+    Agent, AgentSchool, FullResponse) ->
       rootScope.tabName = 'reporting'
 
       Monthly = Statistics 'monthly'
@@ -14,10 +15,18 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
         scope.allParents = 0
         scope.allLoggedOnce = 0
         scope.allLoggedEver = 0
-        queue = [School.query().$promise, TimeEndPoint.query().$promise]
+        queue = [School.query().$promise, TimeEndPoint.query().$promise, Agent.query().$promise]
         $q.all(queue).then (q) ->
           scope.kindergartens = q[0]
           allStatsData = _.groupBy q[1], 'school_id'
+          scope.agents = q[2]
+          _.each scope.agents, (a, i) ->
+            FullResponse(AgentSchool, agent_id: a.id, most:25).then (d2) ->
+              a.schoolIds = d2
+              _.each scope.kindergartens, (k) ->
+                k.agent = a if _.pluck(a.schoolIds, 'school_id').indexOf(k.school_id) >= 0
+
+
           scope.kindergartens = _.map scope.kindergartens, (k) ->
             k.monthly = _.first allStatsData[k.school_id]
             k.parents = k.monthly.parent_count
@@ -57,7 +66,7 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
           address: Location.provinceOf k.address
           address2: Location.cityOf k.address
           address3: Location.countyOf k.address
-          agent: '代理商A'
+          agent: if k.agent? then k.agent.name else ''
           children: k.monthly.child_count
           parents: k.monthly.parent_count
           user: k.monthly.logged_ever
