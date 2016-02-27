@@ -20,6 +20,7 @@
     <th class="col-xs-1">家长总数</th>
     <th class="col-xs-1">总用户数</th>
     <th class="col-xs-1">当月用户数</th>
+    <th class="col-xs-1">操作</th>
   </tr>
   </thead>
   <tbody>
@@ -32,6 +33,7 @@
     <td class="col-xs-1">{{allParents}}</td>
     <td class="col-xs-1">{{allLoggedEver}}</td>
     <td class="col-xs-1">{{allLoggedOnce}}</td>
+    <td class="col-xs-1"></td>
   </tr>
 
   <tr ng-repeat="kg in kindergartens | filter: searchText | orderBy:['-monthly.logged_ever', '-monthlyRate', '-monthlyChildRate']" class="row" ng-class="{editable: detail}" ng-click="detail(kg)">
@@ -43,6 +45,7 @@
     <td class="col-xs-1">{{kg.parents}}</td>
     <td class="col-xs-1">{{kg.monthly.logged_ever}}</td>
     <td class="col-xs-1">{{kg.monthly.logged_once}}</td>
+    <td class="col-xs-1">导出</td>
   </tr>
   </tbody>
 </table>

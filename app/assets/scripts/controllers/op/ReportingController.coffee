@@ -1,7 +1,8 @@
 angular.module('kulebaoOp').controller 'OpReportingCtrl',
   ['$scope', '$rootScope', '$q', '$location', '$http', '$filter',
    'schoolEmployeesService', 'classService', 'schoolService', 'activeCountService', 'chargeService', 'StatsServiceV4',
-    (scope, rootScope, $q, location, $http, $filter, Employee, Class, School, ActiveCount, Charge, Statistics) ->
+    'agentLocationService',
+    (scope, rootScope, $q, location, $http, $filter, Employee, Class, School, ActiveCount, Charge, Statistics, Location) ->
       rootScope.tabName = 'reporting'
 
       Monthly = Statistics 'monthly'
@@ -53,13 +54,16 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
           id: k.school_id
           created_at: $filter('date')(k.created_at, 'yyyy-MM-dd')
           name: k.full_name
-          address: k.address
+          address: Location.provinceOf k.address
+          address2: Location.cityOf k.address
+          address3: Location.countyOf k.address
+          agent: '代理商A'
           children: k.monthly.child_count
           parents: k.monthly.parent_count
           user: k.monthly.logged_ever
           active: k.monthly.logged_once
 
-      scope.exportHeader = -> ['学校ID', '开园时间', '学校全称', '地区', '学生总数', '家长总数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
+      scope.exportHeader = -> ['学校ID', '开园时间', '学校全称', '省', '市', '区(县)', '所属代理商', '学生总数', '家长总数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
       scope.csvName = "monthly_report_#{scope.currentWeek}.csv"
 
   ]
