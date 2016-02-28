@@ -145,6 +145,21 @@ object SchoolOperationReport {
   }
 
 
+  def schoolStats(schoolId: Long) = DB.withConnection {
+    implicit c =>
+      val lastMonth: DateTime = DateTime.now().minusMonths(1)
+      val from = pattern.print(DateTime.now().minusMonths(12))
+      Logger.debug(s"from = ${from}")
+      Logger.debug(s"to = ${pattern.print(lastMonth)}")
+      SQL(s"select * from school_statistics where month >= {from} and month <= {to} and school_id={kg}")
+        .on(
+          'kg -> schoolId.toString,
+          'from -> from,
+          'to -> pattern.print(lastMonth)
+        ).as(simpleStatistics *)
+  }
+
+
   val simpleStatistics = {
     get[Long]("uid") ~
       get[String]("school_id") ~

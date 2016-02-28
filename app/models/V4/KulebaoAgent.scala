@@ -1,19 +1,17 @@
 package models.V4
 
-import models.helper.MD5Helper._
-import models.helper.PasswordHelper._
 import anorm.SqlParser._
 import anorm._
+import models.LoginAccount
+import models.helper.MD5Helper._
+import models.helper.PasswordHelper._
 import models.helper.RangerHelper
 import org.joda.time.DateTime
-import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
+import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import play.Logger
+import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
-import play.api.Play.current
-import models.LoginAccount
-import models.V4.SchoolOperationReport.writeSchoolOperationReport
-import models.V4.SchoolOperationReport.readSchoolOperationReport
 import play.api.mvc.Session
 
 case class AgentStatistics(id: Long, agent: Long, data: SchoolOperationReport)

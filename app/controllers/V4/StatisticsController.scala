@@ -41,4 +41,10 @@ object StatisticsController extends Controller with Secured {
       Ok(Json.toJson(allData))
   }
 
+  def allMonths(schoolId: Long) = IsOperator {
+    u => _ =>
+      val allData = SchoolOperationReport.schoolStats(schoolId)
+      Ok(Json.toJson(allData))
+  }
+
 }

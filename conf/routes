@@ -681,6 +681,7 @@ GET           /api/v4/statistics/daily/:schoolId                                
 GET           /api/v4/statistics/monthly                                                       controllers.V4.StatisticsController.allSchoolsMonthlyCounting()
 GET           /api/v4/statistics/daily                                                         controllers.V4.StatisticsController.allSchoolsDailyCounting()
 GET           /api/v4/statistics/weekly                                                        controllers.V4.StatisticsController.allSchoolsWeeklyCounting()
+GET           /api/v4/kindergarten/:kg/statistics                                              controllers.V4.StatisticsController.allMonths(kg: Long)
 
 #v4 cached rerouces
 GET           /api/v4/kindergarten/:kg/student                                                 controllers.V4.StudentController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
