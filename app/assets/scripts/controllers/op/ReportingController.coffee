@@ -1,9 +1,9 @@
 angular.module('kulebaoOp').controller 'OpReportingCtrl',
   ['$scope', '$rootScope', '$q', '$location', '$http', '$filter',
    'schoolEmployeesService', 'classService', 'schoolService', 'activeCountService', 'chargeService', 'StatsServiceV4',
-    'agentLocationService', 'agentManagementService', 'agentSchoolService', 'fullResponseService',
+    'agentLocationService', 'agentManagementService', 'agentSchoolService', 'fullResponseService', 'schoolStatsService',
     (scope, rootScope, $q, location, $http, $filter, Employee, Class, School, ActiveCount, Charge, Statistics, Location,
-    Agent, AgentSchool, FullResponse) ->
+    Agent, AgentSchool, FullResponse, SchoolHistory) ->
       rootScope.tabName = 'reporting'
 
       Monthly = Statistics 'monthly'
@@ -74,6 +74,28 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
 
       scope.exportHeader = -> ['学校ID', '开园时间', '学校全称', '省', '市', '区(县)', '所属代理商', '学生总数', '家长总数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
       scope.csvName = "monthly_report_#{scope.currentWeek}.csv"
+
+      scope.singleExport = (kg) ->
+        p = SchoolHistory.query(school_id: kg.school_id).$promise
+        $q (resolve, reject) ->
+          p.then (allMonths) ->
+            resolve(_.map allMonths, (m) ->
+              id: kg.school_id
+              name: kg.full_name
+              address: Location.provinceOf kg.address
+              address2: Location.cityOf kg.address
+              address3: Location.countyOf kg.address
+              agent: if kg.agent? then kg.agent.name else ''
+              month: m.month
+              children: m.child_count
+              parents: m.parent_count
+              user: m.logged_ever
+              active: m.logged_once
+            )
+
+
+      scope.singleExportHeader = -> ['学校ID', '学校全称', '省', '市', '区(县)', '所属代理商', '月份', '学生总数', '家长总数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
+      scope.singleExportCSVName = (kg) -> "#{kg.school_id}_#{kg.full_name}_历史数据汇总.csv"
 
   ]
 

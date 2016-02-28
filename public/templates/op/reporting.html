@@ -63,7 +63,12 @@
     <td class="col-xs-1">{{kg.parents}}</td>
     <td class="col-xs-1">{{kg.monthly.logged_ever}}</td>
     <td class="col-xs-1">{{kg.monthly.logged_once}}</td>
-    <td class="col-xs-1">导出</td>
+    <td class="col-xs-1">
+      <button type="submit" class="btn btn-success" ng-disabled="loading || !export"
+              ng-csv="singleExport(kg)" csv-header="singleExportHeader(kg)" add-bom="U+FEFF"
+              filename="{{singleExportCSVName(kg)}}" ng-click="$event.stopPropagation()">历史数据
+      </button>
+    </td>
   </tr>
   </tbody>
 </table>

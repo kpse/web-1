@@ -29,6 +29,12 @@ angular.module('kulebao.services')
           cache: true
         }
       }
+]).factory('schoolStatsService', ['$resource',
+  ($resource) ->
+    $resource '/api/v4/kindergarten/:school_id/statistics',
+      {
+        school_id: "@school_id"
+      }
 ])
 
 
