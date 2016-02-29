@@ -213,7 +213,6 @@ angular.module('kulebaoAdmin')
         rootScope.loading = true
         relationship.$save ->
             scope.$broadcast 'refreshing'
-            scope.$emit 'sessionRead'
             scope.currentModal.hide()
             rootScope.loading = false
           , (res) ->
@@ -479,7 +478,6 @@ angular.module('kulebaoAdmin')
         Relationship.delete school_id: stateParams.kindergarten, card: card, ->
           scope.$emit 'clean_full_relationships'
           scope.refreshRelationship()
-          scope.$emit 'sessionRead'
 
       scope.$on 'refreshing', ->
         scope.$emit 'clean_full_relationships'
@@ -499,7 +497,6 @@ angular.module('kulebaoAdmin')
         all.then (q) ->
           scope.$emit 'clean_full_relationships'
           scope.refreshRelationship()
-          scope.$emit 'sessionRead'
 
       scope.hasSelection = (relationships) ->
         _.some relationships, (r) ->

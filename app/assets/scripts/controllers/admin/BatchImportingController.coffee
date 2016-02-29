@@ -217,9 +217,8 @@ angular.module('kulebaoAdmin')
             BatchRelationship.save compactRelationships, (q2) ->
               if q2.error_code == 0
                 $timeout ->
-                  $state.go('kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: 'connected'})
-                , 200
-                scope.$emit 'sessionRead'
+                    $state.go('kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: 'connected'})
+                  , 200
                 $state.reload()
               else
                 scope.importingErrorMessage = '批量导入关系失败，请检查调整后重新导入。'

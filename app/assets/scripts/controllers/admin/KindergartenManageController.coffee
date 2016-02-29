@@ -149,19 +149,9 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
         Compress.compress(url, width, height)
 
       refreshCount = ->
-        queue = [EmployeeSession.query(school_id: scope.kindergarten.school_id, reader: scope.adminUser.id).$promise,
-          EmployeeRead.query(school_id: scope.kindergarten.school_id, reader: scope.adminUser.id).$promise]
-        $q.all(queue).then (q) ->
-          sessionGroup = _.groupBy q[0], 'topic'
-          readRecordGroup = _.groupBy q[1], 'topic'
-          result = _.countBy q[0], (p) -> sessionGroup[p.topic] && ( !readRecordGroup[p.topic]? || p.id > _.max(readRecordGroup[p.topic], 'session_id').session_id  )
-          scope.conversation.missedCount = result[true]
-          console.log('unread sessions count: ' + scope.conversation.missedCount)
+        scope.conversation.missedCount = 0
 
       scope.conversation =
         missedCount: 0
 
-      refreshCount()
-      scope.$on 'sessionRead', ->
-        refreshCount()
   ]

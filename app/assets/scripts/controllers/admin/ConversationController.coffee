@@ -82,8 +82,7 @@ angular.module('kulebaoAdmin')
               topic: scope.child.child_id
               reader: scope.adminUser.id
               session_id: scope.conversations[scope.conversations.length - 1].id
-            r.$save ->
-              scope.$emit 'sessionRead'
+            r.$save()
           scope.noMore = scope.conversations.length < most
           rootScope.loading = false
 
