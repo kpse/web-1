@@ -38,4 +38,5 @@ describe 'Service: AgentService', () ->
     expect(agentService.countyOf '四川省双流县成都市').toBe ''
     expect(agentService.countyOf '黑龙江省美国市澳大利亚区').toBe '澳大利亚区'
     expect(agentService.countyOf '黑龙江省澳大利亚区美国市').toBe ''
+    expect(agentService.countyOf '黑龙江省美国市亚利桑那市').toBe '亚利桑那市'
     expect(agentService.countyOf undefined).toBe ''
