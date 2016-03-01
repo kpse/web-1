@@ -180,6 +180,7 @@ angular.module('kulebaoAgent')
 
       scope.$watch 'currentWeek', (n, o) ->
         scope.currentWeekDisplay = scope.display(scope.currentWeek) if scope.currentWeek?
+        scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.display(scope.currentWeek)}.csv"
         $state.go 'main.weekly_history.week', week: n if n isnt o
 
       $state.go 'main.weekly_history.week', month: scope.currentWeek
