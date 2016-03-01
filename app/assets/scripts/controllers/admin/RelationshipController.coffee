@@ -42,6 +42,8 @@ angular.module('kulebaoAdmin')
           scope.config =
             deletable : scope.adminUser.privilege_group == 'operator' || !scope.backend
 
+          scope.types.pop() unless scope.backend or scope.adminUser.privilege_group == 'operator'
+
           scope.fetchFullRelationshipsIfNeeded(callback)
 
       scope.fetchFullRelationshipsIfNeeded = (callback)->
