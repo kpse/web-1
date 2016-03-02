@@ -58,6 +58,11 @@ angular.module('kulebaoAdmin')
         rootScope.loading = true
         phones = _.pluck scope.relationships, 'parent.phone'
 
+        if phones.length == 0
+          scope.errorItems = []
+          scope.importingErrorMessage = '数据格式不正确,请确认表格包含以下列名: 宝宝姓名,所属班级,性别,出生日期,家庭住址,家长A姓名,家长A性别,家长A亲属关系,家长A手机号'
+          return backToImport()
+
         birthdayIssue = _.partition scope.relationships, (r) -> r.child.birthday? && r.child.birthday.match /\d{4}-\d{2}-\d{2}/
         if birthdayIssue[1].length > 0
           console.log birthdayIssue[1]
