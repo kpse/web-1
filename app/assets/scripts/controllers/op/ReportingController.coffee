@@ -49,11 +49,13 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
       scope.refresh()
 
       scope.$watch 'currentMonth', (n, o) ->
-        scope.refresh(Monthly)
+        scope.refresh(Monthly) if scope.currentMonth isnt '实时'
+        scope.csvName = "monthly_report_#{n}.csv"
 
       scope.switchToRealTime = ->
         scope.refresh(Daily)
         scope.currentWeek = '实时'
+        scope.currentMonth = '实时'
         scope.csvName = "real_time_report_#{yesterday(new Date())}.csv"
 
       scope.detail = (kg) ->
