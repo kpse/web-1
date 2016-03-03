@@ -1,21 +1,21 @@
 <h2>学校月度报告汇总</h2>
 <div class="well schools-search-panel">
   <div class="row">
-    <div class="col-xs-4">
-      <div class="form-group row">
-        <label for="search-text" class="control-label col-xs-3 search-label">检索：</label>
-        <div class="col-xs-9">
-          <input id="search-text" ng-model="searchText" class="form-control"/>
-        </div>
-      </div>
+    <div class="col-xs-3">
+      <label for="search-text" class="">检索：</label>
+      <input id="search-text" ng-model="searchText" class="form-control"/>
     </div>
-
-
-    <button type="submit" class="btn btn-success col-xs-offset-1 col-xs-2" ng-disabled="loading || !export"
+    <div class="col-xs-3">
+      <label for="month-select">选择查看月份</label>
+      <select class="form-control month-select" ng-model="currentMonth"
+              ng-options="month for month in pastMonths" id="month-select"
+              data-style="btn-primary"></select>
+    </div>
+    <button type="submit" class="btn btn-success col-xs-2 align-with-input" ng-disabled="loading || !export"
             ng-csv="export()" csv-header="exportHeader()" add-bom="U+FEFF"
             filename="{{csvName}}">导出{{currentMonth}}数据
     </button>
-    <button class="btn btn-warning col-xs-offset-1 col-xs-2" ng-click="switchToRealTime()">统计到昨天</button>
+    <button class="btn btn-warning col-xs-offset-1 col-xs-2 align-with-input" ng-click="switchToRealTime()">统计到昨天</button>
 
   </div>
 </div>

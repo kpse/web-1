@@ -6,16 +6,24 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
     Agent, AgentSchool, FullResponse, SchoolHistory) ->
       rootScope.tabName = 'reporting'
 
+      scope.pastMonths = [1..12].map (d) ->
+        a = new Date()
+        a.setDate(1)
+        a.setMonth(a.getMonth() - d)
+        a.getFullYear() + ('0' + (a.getMonth() + 1)).slice(-2) + ""
+
+      scope.currentMonth = _.first scope.pastMonths
+
       Monthly = Statistics 'monthly'
       Daily = Statistics 'daily'
 
-      scope.refresh = (TimeEndPoint = Monthly)->
+      scope.refresh = (TimeEndPoint = Monthly, month = scope.currentMonth)->
         rootScope.loading = true
         scope.allChildren = 0
         scope.allParents = 0
         scope.allLoggedOnce = 0
         scope.allLoggedEver = 0
-        queue = [School.query().$promise, TimeEndPoint.query().$promise, Agent.query().$promise]
+        queue = [School.query().$promise, TimeEndPoint.query(month: month).$promise, Agent.query().$promise]
         $q.all(queue).then (q) ->
           scope.kindergartens = q[0]
           allStatsData = _.groupBy q[1], 'school_id'
@@ -39,6 +47,9 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
           rootScope.loading = false
 
       scope.refresh()
+
+      scope.$watch 'currentMonth', (n, o) ->
+        scope.refresh(Monthly)
 
       scope.switchToRealTime = ->
         scope.refresh(Daily)
