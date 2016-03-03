@@ -678,7 +678,7 @@ POST          /api/v4/agent_statistics                                          
 
 GET           /api/v4/statistics/monthly/:schoolId                                             controllers.V4.StatisticsController.monthlyCounting(schoolId: Long)
 GET           /api/v4/statistics/daily/:schoolId                                               controllers.V4.StatisticsController.dailyCounting(schoolId: Long)
-GET           /api/v4/statistics/monthly                                                       controllers.V4.StatisticsController.allSchoolsMonthlyCounting()
+GET           /api/v4/statistics/monthly                                                       controllers.V4.StatisticsController.allSchoolsMonthlyCounting(month: Option[String])
 GET           /api/v4/statistics/daily                                                         controllers.V4.StatisticsController.allSchoolsDailyCounting()
 GET           /api/v4/statistics/weekly                                                        controllers.V4.StatisticsController.allSchoolsWeeklyCounting()
 GET           /api/v4/kindergarten/:kg/statistics                                              controllers.V4.StatisticsController.allMonths(kg: Long)

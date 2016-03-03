@@ -6,6 +6,7 @@ import models.V4.SchoolOperationReport
 import models.V4.SchoolOperationReport._
 import models.json_models.SchoolIntro
 import org.joda.time.DateTime
+import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 
@@ -23,9 +24,16 @@ object StatisticsController extends Controller with Secured {
       Ok(Json.toJson(value))
   }
 
-  def allSchoolsMonthlyCounting(lastMonth: DateTime = DateTime.now().minusMonths(1)) = IsOperator {
+  val pattern: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMM")
+
+  def allSchoolsMonthlyCounting(lastMonth: Option[String]) = IsOperator {
     u => _ =>
-      val allData = SchoolIntro.allIds map (monthlyCountingLogic(_, lastMonth))
+      val specificMonth: DateTime = lastMonth match {
+        case Some(day) => pattern.parseDateTime(day)
+        case None => DateTime.now().minusMonths(1)
+      }
+
+      val allData = SchoolIntro.allIds map (monthlyCountingLogic(_, specificMonth))
       Ok(Json.toJson(allData))
   }
 
