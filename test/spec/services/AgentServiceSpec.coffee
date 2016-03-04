@@ -17,6 +17,9 @@ describe 'Service: AgentService', () ->
     expect(agentService.provinceOf '蘑菇岛').toBe ''
     expect(agentService.provinceOf '').toBe ''
     expect(agentService.provinceOf undefined ).toBe ''
+    expect(agentService.provinceOf '新疆维吾尔自治区' ).toBe '新疆维吾尔自治区'
+    expect(agentService.provinceOf '香港特别行政区' ).toBe '香港特别行政区'
+    expect(agentService.provinceOf '澳门特别行政区' ).toBe '澳门特别行政区'
 
   it 'should analyse city', () ->
     expect(agentService.cityOf '四川省').toBe ''
