@@ -11,7 +11,7 @@ case class AgentReport(threshold: Long, current: Long)
 
 case class AgentSummaryInSchool(agent_id: Long, contractor: AgentReport, activity: AgentReport, school_id: Long)
 
-case class AgentSchool(id: Option[Long], school_id: Long, name: String, address: Option[String] = None, created_at: Option[Long] = None) {
+case class AgentSchool(id: Option[Long], school_id: Long, name: String, address: Option[String] = None, created_at: Option[Long] = None, school_created_at: Option[Long] = None) {
   def update(base: Long): Option[AgentSchool] = DB.withConnection {
     implicit c =>
       SQL("update agentschool set agent_id={base}, school_id={school_id}, name={name}, address={address}, " +
@@ -119,9 +119,10 @@ object AgentSchool {
       get[String]("school_id") ~
       get[Option[String]]("address") ~
       get[Option[Long]]("created_at") ~
+      get[Option[Long]]("school_created_at") ~
       get[String]("name") map {
-      case id ~ school ~ address ~ time ~ name =>
-        AgentSchool(Some(id), school.toLong, name, address, time)
+      case id ~ school ~ address ~ time ~ school_created_at ~ name =>
+        AgentSchool(Some(id), school.toLong, name, address, time, school_created_at)
     }
   }
 

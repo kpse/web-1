@@ -17,7 +17,7 @@
   <tbody>
   <tr ng-repeat="kg in currentAgent.schools | filter: searchText | orderBy: 'school_id'" class="row" >
     <td class="col-xs-1"><div kl-school-column="{{::kg.school_id}}" user="loggedUser"></div></td>
-    <td class="col-xs-2">{{kg.created_at | date:'yy-MM-dd'}}</td>
+    <td class="col-xs-2">{{kg.school_created_at | date:'yy-MM-dd'}}</td>
     <td class="col-xs-2">{{::kg.name}}</td>
     <td class="col-xs-2">{{::kg.address}}</td>
     <td class="col-xs-1">{{kg.stats.child_count || 0}}</td>

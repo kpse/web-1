@@ -26,7 +26,7 @@ angular.module('kulebaoAgent')
           _(scope.currentAgent.schools).map (s) ->
             id: s.school_id
             name: s.name
-            created_at: $filter('date')(s.created_at, 'yyyy-MM-dd')
+            created_at: $filter('date')(s.school_created_at, 'yyyy-MM-dd')
             address: s.address
             data: (_.find s.activeData, (d) -> d.data.month == currentMonth)
           .filter (s) ->
@@ -150,7 +150,7 @@ angular.module('kulebaoAgent')
             _(scope.currentAgent.schools).map (s) ->
               id: s.school_id
               name: s.name
-              created_at: $filter('date')(s.created_at, 'yyyy-MM-dd')
+              created_at: $filter('date')(s.school_created_at, 'yyyy-MM-dd')
               address: s.address
               data: scope.currentWeekDataOf(s.weeklyGroup)
             .filter (s) ->
@@ -168,7 +168,7 @@ angular.module('kulebaoAgent')
             .value()
           scope.exportHeader = ->
             ['学校ID', '开园时间', '学校全称', '地址', '学生数', '家长总数', '总用户数', '当周用户数']
-          scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.display(scope.currentWeek)}.csv"
+          scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.currentWeekDisplay}.csv"
           $rootScope.loading = false
 
       scope.refresh()
@@ -180,7 +180,7 @@ angular.module('kulebaoAgent')
 
       scope.$watch 'currentWeek', (n, o) ->
         scope.currentWeekDisplay = scope.display(scope.currentWeek) if scope.currentWeek?
-        scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.display(scope.currentWeek)}.csv"
+        scope.csvName = "#{scope.currentAgent.id}_#{scope.currentAgent.name}_#{scope.currentWeekDisplay}.csv"
         $state.go 'main.weekly_history.week', week: n if n isnt o
 
       $state.go 'main.weekly_history.week', month: scope.currentWeek
