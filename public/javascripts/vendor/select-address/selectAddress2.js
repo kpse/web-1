@@ -137,13 +137,23 @@
               return scope.dists = [];
             }
           });
+          scope.provinceOf = function (name) {
+            if (_.indexOf(['重庆', '北京', '天津', '上海'], name) >= 0) return name + '市';
+            if (_.indexOf(['内蒙古', '宁夏', '西藏', '新疆'], name) >= 0) return name + '自治区';
+            if (_.indexOf(['香港', '澳门'], name) >= 0) return name + '特别行政区';
+            return name + '省';
+          };
+          scope.cityOf = function (name) {
+            if (_.indexOf(['市', '县', '区'], name.substring(name.length - 1)) >= 0) return name;
+            return name + '市';
+          };
           return scope.$watch(function() {
             scope.ngModel = '';
             if (scope.p) {
-              scope.ngModel += scope.p;
+              scope.ngModel += scope.provinceOf(scope.p);
             }
             if (scope.c) {
-              scope.ngModel += " " + scope.c;
+              scope.ngModel += " " + scope.cityOf(scope.c);
             }
             if (scope.a) {
               scope.ngModel += " " + scope.a;
