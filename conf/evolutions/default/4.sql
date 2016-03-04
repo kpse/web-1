@@ -79,6 +79,8 @@ INSERT INTO schoolinfo (uid, school_id, province, city, full_name, description, 
    (29, '93766662', '陕西省', '西安', '最后一个3', '\n苦逼幼儿园，成立时间超过100年，其特点有：\n1.价格超贵\n2.硬件超好\n3.教师超屌\n4.绝不打折\n5.入园超难\n6.......\n.......\n.......\n.......\n.......\n\n',
    'http://www.houstonisd.org/cms/lib2/TX01001591/Centricity/Domain/16137/crestgif.gif', '13581855476', 1387649057933, '125', '未激活', '广东省东莞市三江县');
 
+update  schoolinfo set created_at=1387649057933 + uid * 100000000 where uid < 10;
+
 # --- !Downs
 
 DROP TABLE IF EXISTS schoolinfo;

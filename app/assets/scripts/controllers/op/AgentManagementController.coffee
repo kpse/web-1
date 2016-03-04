@@ -117,7 +117,14 @@ angular.module('kulebaoOp').controller 'OpAgentManagementCtrl',
         currentAgent.schoolIds.push school_id: kg.school_id
         currentAgent.schools.push _.find scope.kindergartens, (k) -> k.school_id == kg.school_id
         scope.unSelectedSchools = _.reject scope.unSelectedSchools , (k) -> k.school_id == kg.school_id
-        AgentSchool.save(agent_id: currentAgent.id, school_id: kg.school_id, name: kg.full_name, address: kg.address, created_at: Date.now()).$promise
+        AgentSchool.save(
+            agent_id: currentAgent.id
+            school_id: kg.school_id
+            name: kg.full_name
+            address: kg.address
+            school_created_at: kg.created_at
+            created_at: Date.now()
+        ).$promise
 
 
       scope.checkAll = (check) ->

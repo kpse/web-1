@@ -15,13 +15,14 @@ case class AgentSchool(id: Option[Long], school_id: Long, name: String, address:
   def update(base: Long): Option[AgentSchool] = DB.withConnection {
     implicit c =>
       SQL("update agentschool set agent_id={base}, school_id={school_id}, name={name}, address={address}, " +
-        "updated_at={time} where uid={id}")
+        "school_created_at={school_created}, updated_at={time} where uid={id}")
         .on(
           'id -> id,
           'base -> base,
           'school_id -> school_id,
           'name -> name,
           'address -> address,
+          'school_created -> school_created_at,
           'time -> System.currentTimeMillis
         ).executeUpdate()
       id flatMap (AgentSchool.show(_, base))
@@ -29,13 +30,14 @@ case class AgentSchool(id: Option[Long], school_id: Long, name: String, address:
 
   def create(base: Long): Option[AgentSchool] = DB.withConnection {
     implicit c =>
-      val insert: Option[Long] = SQL("insert into agentschool (agent_id, school_id, name, address, updated_at, created_at) values (" +
-        "{base}, {school_id}, {name}, {address}, {time}, {time})")
+      val insert: Option[Long] = SQL("insert into agentschool (agent_id, school_id, name, address, updated_at, created_at, school_created_at) values (" +
+        "{base}, {school_id}, {name}, {address}, {time}, {time}, {school_created})")
         .on(
           'base -> base,
           'school_id -> school_id,
           'name -> name,
           'address -> address,
+          'school_created -> school_created_at,
           'time -> System.currentTimeMillis
         ).executeInsert()
       insert flatMap (AgentSchool.show(_, base))
