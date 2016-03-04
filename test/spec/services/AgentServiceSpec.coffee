@@ -30,6 +30,7 @@ describe 'Service: AgentService', () ->
     expect(agentService.cityOf '四川省成都市双流县').toBe '成都市'
     expect(agentService.cityOf '四川省双流县成都市').toBe ''
     expect(agentService.cityOf undefined).toBe ''
+    expect(agentService.cityOf '宁夏自治区银川市灵武市').toBe '银川市'
 
   it 'should analyse county', () ->
     expect(agentService.countyOf '四川省').toBe ''
