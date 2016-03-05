@@ -19,7 +19,7 @@
     "angular-emoji-filter": "*",
     "js-xls": "~0.7",
     "js-xlsx": "~0.7",
-    "ng-csv": "*",
+    "ng-csv": "~0.3.6",
     "ng-stats": "*",
     "angular-ui-calendar": "~0.8.1",
     "angular-dragdrop": "*",
