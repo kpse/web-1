@@ -46,11 +46,11 @@ object AppPackageController extends Controller with Secured {
   def download = Action {
     Ok(views.html.download("幼乐宝|客户端下载",
       "https://itunes.apple.com/us/app/you-le-baoios/id854211863?ls=1&mt=8",
-      "/app_package?redirect=true"))
+      "http://a.app.qq.com/o/simple.jsp?pkgname=com.cocobabys"))
   }
 
   def downloadTeacherClient = Action {
-    Ok(views.html.download("幼教宝|客户端下载", "https://itunes.apple.com/us/app/you-jiao-bao/id917314512?ls=1&mt=8", "/api/v1/teacher_app_package?redirect=true"))
+    Ok(views.html.download("幼教宝|客户端下载", "https://itunes.apple.com/us/app/you-jiao-bao/id917314512?ls=1&mt=8", "http://a.app.qq.com/o/simple.jsp?pkgname=com.cocobaby.teacher"))
   }
 
 
