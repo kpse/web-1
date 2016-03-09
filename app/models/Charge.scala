@@ -84,8 +84,8 @@ object Charge {
             'expire -> charge.expire_date,
             'status -> charge.status
           ).executeUpdate
-        charge.video_user_name map { value => addConfig(kg, ConfigItem("video_user_name", value))}
-        charge.video_user_password map { value => addConfig(kg, ConfigItem("video_user_password", value))}
+        charge.video_user_name map { value => SchoolConfig.addConfig(kg, ConfigItem("video_user_name", value))}
+        charge.video_user_password map { value => SchoolConfig.addConfig(kg, ConfigItem("video_user_password", value))}
         c.commit()
         0
       }
@@ -147,14 +147,4 @@ object Charge {
     }
   }
 
-  def addConfig(kg: Long, config: ConfigItem) = DB.withConnection {
-    implicit c =>
-      config.isExist(kg) match {
-        case true =>
-          config.update(kg)
-        case false =>
-          config.create(kg)
-      }
-
-  }
 }

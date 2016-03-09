@@ -162,7 +162,7 @@ object SchoolIntro {
             'full_name -> info.full_name,
             'timestamp -> timestamp).executeUpdate()
         info.properties map {
-          _.map(Charge.addConfig(info.school_id, _))
+          _.map(SchoolConfig.addConfig(info.school_id, _))
         }
         c.commit()
       }
@@ -202,7 +202,7 @@ object SchoolIntro {
       get[Option[String]]("token") ~
       get[Option[String]]("address") map {
       case id ~ phone ~ created ~ timestamp ~ desc ~ logoUrl ~ name ~ fullName ~ token ~ address =>
-        val config: SchoolConfig = School.config(id.toLong)
+        val config: SchoolConfig = SchoolConfig.config(id.toLong)
         SchoolIntro(id.toLong, phone, timestamp, desc, logoUrl, name, token, address, Some(fullName), Some(config.config), Some(created))
     }
 

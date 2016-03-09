@@ -1,12 +1,11 @@
 package controllers
 
-import play.api.Logger
-import play.api.mvc._
-import play.api.libs.json.{JsError, Json}
-import models.json_models._
-import models.json_models.SchoolIntro._
 import models._
-import models.School._
+import models.json_models.SchoolIntro._
+import models.json_models._
+import play.api.Logger
+import play.api.libs.json.{JsError, Json}
+import play.api.mvc._
 
 object SchoolSummaryController extends Controller with Secured {
   implicit val writes1 = Json.writes[SchoolIntroPreviewResponse]
@@ -85,7 +84,7 @@ object SchoolSummaryController extends Controller with Secured {
 
   def config(kg: Long) = IsAuthenticated {
     u => request =>
-      Ok(Json.toJson(School.config(kg)))
+      Ok(Json.toJson(SchoolConfig.config(kg)))
   }
 
   def addConfig(kg: Long) = IsOperator(parse.json) {
@@ -93,7 +92,7 @@ object SchoolSummaryController extends Controller with Secured {
       logger.debug(request.body.toString())
       request.body.validate[SchoolConfig].map {
         case (current) if current.config.nonEmpty =>
-          current.config.map(Charge.addConfig(kg, _))
+          current.config.map(SchoolConfig.addConfig(kg, _))
           Ok(Json.toJson(new SuccessResponse))
         case _ => Ok(Json.toJson(ErrorResponse("no config added.")))
       }.recoverTotal {
