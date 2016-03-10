@@ -14,7 +14,7 @@ object IMSchoolServiceController extends Controller with Secured {
       val option: Option[ConfigItem] = SchoolConfig.config(kg).config.find(_.name == configKey)
       option match {
         case Some(o) =>
-          Ok(Json.toJson(o))
+          Ok(Json.toJson(List(o)))
         case None =>
           Ok(Json.toJson(ErrorResponse("后台配置查询错误。(No such configuration)")))
       }

@@ -69,4 +69,14 @@ angular.module('kulebao.services')
     config = _.find data, (item) -> item.name == name
     if config? then config.value else defaultValue
 
+angular.module('kulebao.services')
+.factory 'schoolChatGroupService', ['$resource', ($resource) ->
+  $resource '/api/v7/kindergarten/:school_id/school_im_group', {
+    school_id: '@school_id'
+  }, {
+    'status':    {method:'GET', isArray: true}
+  }
+]
+
+
 

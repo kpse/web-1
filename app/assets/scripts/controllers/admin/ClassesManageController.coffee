@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
   ['$scope', '$rootScope', '$stateParams', '$modal', '$q', 'schoolEmployeesService',
-   'classService', '$alert', 'classManagerService',
-    (scope, $rootScope, $stateParams, Modal, $q, SchoolEmployee, Class, Alert, ClassManager) ->
+   'classService', '$alert', 'classManagerService', 'schoolChatGroupService',
+    (scope, $rootScope, $stateParams, Modal, $q, SchoolEmployee, Class, Alert, ClassManager, Chat) ->
       $rootScope.tabName = 'classes'
 
       $rootScope.loading = true
@@ -21,8 +21,13 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
               manager = ClassManager.query c, ->
                 c.managers = _.map manager, (m) -> m.name
                 resolve(c.managers)
-          $q.all(all).then ->
+          all.push Chat.status(school_id: $stateParams.kindergarten).$promise
+          $q.all(all).then (q)->
             $rootScope.loading = false
+            chatGroupStatus = _.first _.last q
+            scope.chatEnabled = chatGroupStatus.value != 'false'
+
+
 
 
       scope.refresh()
@@ -86,6 +91,10 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
           e.id == employeeId
         employee.name if employee?
 
-      scope.enableChatGroup = -> scope.chatEnabled = true
-      scope.disableChatGroup = -> scope.chatEnabled = false
+      scope.enableChatGroup = ->
+        scope.chatEnabled = true
+        Chat.save(school_id: $stateParams.kindergarten, name: 'schoolGroupChat', value: 'true')
+      scope.disableChatGroup = ->
+        scope.chatEnabled = false
+        Chat.save(school_id: $stateParams.kindergarten, name: 'schoolGroupChat', value: 'false')
   ]
