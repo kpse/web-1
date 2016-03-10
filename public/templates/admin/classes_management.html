@@ -9,6 +9,12 @@
     <button type="submit" class="btn btn-primary adding-for-individual" ng-disabled="loading"
             ng-click="addClass()">创建新班级
     </button>
+    <button type="submit" class="btn btn-warning adding-config" ng-hide="chatEnabled" ng-disabled="loading"
+            ng-click="enableChatGroup()">开启班级群聊
+    </button>
+    <button type="submit" class="btn btn-danger adding-config" ng-show="chatEnabled" ng-disabled="loading"
+            ng-click="disableChatGroup()">关闭班级群聊
+    </button>
   </form>
   <div kl-loading="loading" />
   <table class="table table-hover table-condensed classes-list" ng-hide="loading">

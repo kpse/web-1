@@ -85,4 +85,7 @@ angular.module('kulebaoAdmin').controller 'ClassesManagementCtrl',
         employee = _.find scope.employees, (e) ->
           e.id == employeeId
         employee.name if employee?
+
+      scope.enableChatGroup = -> scope.chatEnabled = true
+      scope.disableChatGroup = -> scope.chatEnabled = false
   ]
