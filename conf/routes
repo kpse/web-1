@@ -699,7 +699,6 @@ GET           /api/v7/kindergarten/:kg/class_im_group/:classId                  
 POST          /api/v7/kindergarten/:kg/class_im_group/:classId/user                            controllers.V7.IMServiceController.joinGroup(kg: Long, classId: Long)
 DELETE        /api/v7/kindergarten/:kg/class_im_group/:classId/user/:userId                    controllers.V7.IMServiceController.leaveGroup(kg: Long, classId: Long, userId: String)
 
-GET           /api/v7/kindergarten/:kg/school_im_group                                         controllers.V7.IMSchoolServiceController.status(kg: Long)
 POST          /api/v7/kindergarten/:kg/school_im_group                                         controllers.V7.IMSchoolServiceController.turnOn(kg: Long)
 DELETE        /api/v7/kindergarten/:kg/school_im_group                                         controllers.V7.IMSchoolServiceController.turnOff(kg: Long)
 
