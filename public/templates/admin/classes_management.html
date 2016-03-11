@@ -9,8 +9,8 @@
     <button type="submit" class="btn btn-primary adding-for-individual" ng-disabled="loading"
             ng-click="addClass()">创建新班级
     </button>
-    <button type="submit" class="btn btn-warning config-button" ng-hide="chatEnabled" ng-disabled="loading"
-            ng-click="enableChatGroup()">开启班级群聊
+    <button type="submit" class="btn btn-warning config-button" ng-confirm-msg="你确定要开启全校的班级圈功能吗?" ng-hide="chatEnabled" ng-disabled="loading"
+            ng-confirm-click="enableChatGroup()">开启班级群聊
     </button>
     <button class="btn btn-danger config-button" ng-confirm-msg="你确定要关闭全校的班级圈功能吗?" ng-show="chatEnabled"  ng-disabled="loading"
             ng-confirm-click="disableChatGroup()">关闭班级群聊
