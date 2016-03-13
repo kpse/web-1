@@ -81,8 +81,8 @@ object VideoMember {
 
   def delete(kg: Long, id: String) = DB.withConnection {
     implicit c =>
-      SQL("update videomembers set status=0 where school_id={kg} and parent_id={id} and status=1")
-        .on('kg -> kg.toString, 'id -> id).executeUpdate()
+      SQL("update videomembers set status=0, update_at={time} where school_id={kg} and parent_id={id} and status=1")
+        .on('kg -> kg.toString, 'id -> id, 'time -> System.currentTimeMillis).executeUpdate()
   }
 
   def trialAccount(kg: Long, id: String): Option[VideoMember] = {

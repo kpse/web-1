@@ -170,8 +170,9 @@ object Parent {
 
   def permanentRemove(phone: String) = DB.withConnection {
     implicit c =>
-      SQL("delete from relationmap where parent_id in (select parent_id from parentinfo where phone={phone})").on('phone -> phone).execute()
-      SQL("delete from newsread where parent_id in (select parent_id from parentinfo where phone={phone})").on('phone -> phone).execute()
+      SQL("delete from relationmap where parent_id in (select parent_id from parentinfo where phone={phone} limit 1)").on('phone -> phone).execute()
+      SQL("delete from newsread where parent_id in (select parent_id from parentinfo where phone={phone} limit 1)").on('phone -> phone).execute()
+      SQL("delete from videomembers where parent_id in (select parent_id from parentinfo where phone={phone} limit 1)").on('phone -> phone).execute()
       SQL("delete from parentinfo where phone={phone}").on('phone -> phone).execute()
       SQL("delete from accountinfo where accountid={phone}").on('phone -> phone).execute()
       RelationshipController.clearCurrentCache(0)

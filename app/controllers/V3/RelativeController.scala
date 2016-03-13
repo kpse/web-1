@@ -101,6 +101,7 @@ object RelativeController extends Controller with Secured {
       case Some(x) =>
         Relative.deleteById(kg, id)
         x.basic.parent_id foreach Relationship.deleteCardByParentId
+        x.basic.parent_id foreach (VideoMember.delete(kg, _))
         clearCurrentCache(kg)
         Ok(Json.toJson(new SuccessResponse()))
       case None =>
