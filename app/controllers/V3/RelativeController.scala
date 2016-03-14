@@ -66,9 +66,9 @@ object RelativeController extends Controller with Secured {
     request.body.validate[Relative].map {
       case (s) if s.ext.isEmpty =>
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
-      case (s) if s.id != s.basic.id  =>
+      case (s) if s.id != s.basic.id =>
         BadRequest(Json.toJson(ErrorResponse("内外id不一致。(ids should be consistent)", 3)))
-      case (s) if s.id.isEmpty  =>
+      case (s) if s.id.isEmpty =>
         BadRequest(Json.toJson(ErrorResponse("没有id无法更新。(no id for update)", 5)))
       case (error) if kg != error.basic.school_id =>
         BadRequest(Json.toJson(ErrorResponse("请求的学校不正确。")))
@@ -100,8 +100,11 @@ object RelativeController extends Controller with Secured {
     Relative.show(kg, id) match {
       case Some(x) =>
         Relative.deleteById(kg, id)
-        x.basic.parent_id foreach Relationship.deleteCardByParentId
-        x.basic.parent_id foreach (VideoMember.delete(kg, _))
+        x.basic.parent_id foreach {
+          pid =>
+            Relationship.deleteCardByParentId(pid)
+            VideoMember.delete(kg, pid)
+        }
         clearCurrentCache(kg)
         Ok(Json.toJson(new SuccessResponse()))
       case None =>

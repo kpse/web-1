@@ -128,6 +128,26 @@ object RelativeControllerSpec extends Specification with TestSupport {
 
     }
 
+    "remove video member while deleting" in new WithApplication {
+      val firstPhone = route(loggedRequest(GET, "/api/v3/kindergarten/93740362/relative/1")).get
+      val firstRelative: JsValue = Json.parse(contentAsString(firstPhone))
+
+      private val pid: String = (firstRelative  \ "basic" \ "parent_id").as[String]
+
+      val VideoMemberexists = route(loggedRequest(GET, s"/api/v1/kindergarten/93740362/video_member/${pid}")).get
+
+      status(VideoMemberexists) must equalTo(OK)
+
+      val response = route(loggedRequest(DELETE, "/api/v3/kindergarten/93740362/relative/1")).get
+
+      status(response) must equalTo(OK)
+
+      val VideoMemberDoesNotexist = route(loggedRequest(GET, s"/api/v1/kindergarten/93740362/video_member/${pid}")).get
+
+      status(VideoMemberDoesNotexist) must equalTo(NOT_FOUND)
+
+    }
+
   }
 
   def createRelative(phone: String, id: Option[Long] = None, parentId: Some[String] = Some("2_93740362_1023")): JsValue = {
