@@ -127,6 +127,22 @@ class ParentSpec extends Specification with TestSupport {
       private val result2 = LoginCheck(MobileLogin("99887766554", changedPassword))
       result2.error_code must equalTo(0)
     }
+
+    "permanent remove all data" in new WithApplication {
+      VideoMember.show(93740362, "2_93740362_123") must not beNone
+
+      Parent.permanentRemove("13402815317")
+
+      VideoMember.show(93740362, "2_93740362_123") must beNone
+    }
+
+    "permanent remove all data by parent id" in new WithApplication {
+      VideoMember.show(93740362, "2_93740362_123") must not beNone
+
+      Parent.permanentRemoveById("2_93740362_123")
+
+      VideoMember.show(93740362, "2_93740362_123") must beNone
+    }
   }
 
   def createParent(phone: String) = Parent(None, kg, "name", phone, None, 0, "1980-01-01", None, None, None)
