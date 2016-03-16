@@ -14,7 +14,8 @@ case class AvailableSlots(school_id: Long, count: Long)
 
 case class RawVideoMember(account: String)
 
-case class VideoMember(id: String, account: Option[String], password: Option[String], school_id: Option[Long]) {
+case class VideoMember(id: String, account: Option[String], password: Option[String], school_id: Option[Long],
+                       expire_at: Option[Long] = None, memo: Option[String] = None) {
   def updateDefault(kg: Long) = DB.withConnection {
     implicit c =>
       SQL("update videomemberdefault set status=0").executeUpdate()
@@ -29,15 +30,26 @@ case class VideoMember(id: String, account: Option[String], password: Option[Str
 
   def update = DB.withConnection {
     implicit c =>
-      SQL("update videomembers set account={account}, status=1 where parent_id={id}")
-        .on('account -> generateAccount(account), 'id -> id).executeUpdate()
+      SQL("update videomembers set account={account}, memo={memo}, expire_at={expire_at}, status=1 where parent_id={id}")
+        .on(
+          'account -> generateAccount(account),
+          'memo -> memo,
+          'expire_at -> expire_at,
+          'id -> id
+        ).executeUpdate()
   }
 
   def create = DB.withConnection {
     implicit c =>
-      SQL("insert into videomembers (parent_id, school_id, account) " +
-        "values ({id}, {kg}, {account})")
-        .on('kg -> school_id, 'account -> generateAccount(account), 'id -> id).executeInsert()
+      SQL("insert into videomembers (parent_id, school_id, account, memo, expire_at) " +
+        "values ({id}, {kg}, {account}, {memo}, {expire_at})")
+        .on(
+          'kg -> school_id,
+          'account -> generateAccount(account),
+          'id -> id,
+          'memo -> memo,
+          'expire_at -> expire_at
+        ).executeInsert()
   }
 
   def isExisting = DB.withConnection {
@@ -97,10 +109,12 @@ object VideoMember {
   val simple = {
     get[String]("school_id") ~
       get[String]("parent_id") ~
+      get[Option[Long]]("expire_at") ~
+      get[Option[String]]("memo") ~
       get[String]("account") map {
-      case kg ~ id ~ account =>
+      case kg ~ id ~ exp ~ memo ~ account =>
         //        VideoMember(id, Some(account), passwordOfVideo, Some(kg.toLong))
-        fakeAccountAccordingSchool(kg.toLong, id, account)
+        fakeAccountAccordingSchool(kg.toLong, id, account, exp, memo)
 
     }
   }
@@ -114,10 +128,10 @@ object VideoMember {
     }
   }
 
-  def fakeAccountAccordingSchool(kg: Long, id: String, account: String) = kg match {
-    case 2046 => VideoMember(id, Some("cocbaby"), Some("13880498549"), Some(kg))
+  def fakeAccountAccordingSchool(kg: Long, id: String, account: String, expireAt: Option[Long], memo: Option[String]) = kg match {
+    case 2046 => VideoMember(id, Some("cocbaby"), Some("13880498549"), Some(kg), expireAt, memo)
     case 2001 => default(2001)
-    case _ => VideoMember(id, Some(account), passwordOfVideo, Some(kg))
+    case _ => VideoMember(id, Some(account), passwordOfVideo, Some(kg), expireAt, memo)
   }
 
   def availableCounting(kg: Long) = {
