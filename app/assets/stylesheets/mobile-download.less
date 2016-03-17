@@ -11,15 +11,13 @@ body {
   width: 100%;
   height: 100%;
   .static-container {
-
     width: 100%;
     min-height: 100%;
     position: relative;
     .header {
       width: 100%;
       .logo {
-        position: absolute;
-        top: 65px;
+        display: none;
       }
     }
     .prompting {
@@ -29,59 +27,65 @@ body {
       width: 100%;
       margin-top: 108px;
     }
+
+    .hero-banner {
+      background: url(/assets/images/download-banner.jpg) no-repeat left center;
+      background-size: 100%;
+      width: 100%;
+      height: 100%;
+    }
     .login-entry {
       display: none;
     }
-    .title {
-      font-size: 16px;
-      line-height: 40px;
-      background-color: #d3d3d3;
-      height: 40px;
-      vertical-align: middle;
+    //.title {
+    //  font-size: 16px;
+    //  line-height: 40px;
+    //  background-color: #d3d3d3;
+    //  height: 40px;
+    //  vertical-align: middle;
+    //}
+    .download-logo {
+      width: 100px;
+      height: 30px;
+      background: url(/assets/images/download-logo.png) no-repeat;
+      background-size: 100%;
     }
-    .app-download {
-      margin-top: 10px;
-      margin-left: -40px;
-      li {
-        list-style: none;
-        border-bottom: 1px solid;
-        margin-bottom: 20px;
-        height: 58px;
-        a {
-          display: block;
-          height: 45px;
-          line-height: 45px;
-          padding-left: 60px;
-          vertical-align: middle;
-          span {
-            font-size: 22px;
-            color: #000;
-            line-height: 45px;
-            vertical-align: middle;
-            &:hover {
-              text-decoration: underline;
-            }
-          }
-          .download {
-            margin-right: 50px;
-            color: #228b22;
-          }
-        }
-        &.app-download-android a {
-          background: url(/assets/images/fn-icon-android.jpg) no-repeat left center;
-        }
-        &.app-download-iphone {
-          a {
-            background: url(/assets/images/fn-icon-iphone.jpg) no-repeat left center;
-          }
-        }
+    .page-title {
+      line-height: 25px;
+      text-align: center;
+      font-size: 10px;
+      margin: -25px auto 0;
+    }
+    .slogan {
+      line-height: 40px;
+      font-size: 24px;
+      color: white;
+      &.title {
+        margin-top: 87%;
+        text-align: left;
+        margin-left: 7%;
       }
-
+      &.desc {
+        margin-top: -10px;
+        text-align: right;
+        margin-right: 7%;
+      }
+    }
+    .app-download-button {
+      display: block;
+      width: 220px;
+      height: 30px;
+      background: url(/assets/images/download-button.png) no-repeat;
+      background-size: 100% 30px;
+      font-size: 21px;
+      text-align: center;
+      margin: 20px auto 10%;
+      color: white;
     }
 
     .service-phone {
       margin: 0;
-      height: 142px;
+      height: 182px;
       .service-phone-number.service-phone-content {
         display: inline-block;
         width: 100%;
@@ -111,6 +115,7 @@ body {
       padding: 0;
       width: 100%;
       text-align: center;
+      font-size: 10px;
       p {
         margin: 0 auto;
         display: block;
