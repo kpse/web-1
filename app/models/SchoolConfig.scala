@@ -53,6 +53,7 @@ object SchoolConfig {
       ConfigItem("enableFinancialManagement", "true"),
       ConfigItem("enableWarehouseManagement", "true"),
       ConfigItem("enableDietManagement", "true"),
+      ConfigItem("displayVideoMemberDetail", "false"),
       ConfigItem("schoolGroupChat", "true")) filterNot { c => configItems.exists(c.name == _.name) }
     items ::: configItems
   }

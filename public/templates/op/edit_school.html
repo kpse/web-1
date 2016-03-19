@@ -150,6 +150,14 @@
             <input type="radio" ng-model="school.config.disableMemberEditing" value="false"> 可以编辑 <br/>
           </div>
         </div>
+        <div class="form-group">
+          <label for="video-member-control" class="col-sm-4 control-label">显示视频子账号</label>
+
+          <div class="col-sm-4 form-control-static">
+            <input type="radio" ng-model="school.config.displayVideoMemberDetail" value="true"> 显示
+            <input type="radio" ng-model="school.config.displayVideoMemberDetail" value="false"> 隐藏 <br/>
+          </div>
+        </div>
         <div class="clearfix"></div>
 
         <a class="btn btn-default pull-right" ng-click="BSOptionDialog()">客户端功能限制 &gt;&gt;</a>
