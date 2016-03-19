@@ -18,6 +18,7 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
     $httpBackend = _$httpBackend_
     $stateParams = _$stateParams_
 
+    $rootScope.operatorOnly = -> false
     $httpBackend.expectGET('/kindergarten/93740362/class')
     .respond [
       classOfId 1
@@ -30,6 +31,10 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
     .respond [
       videoMemberOfId "1_2_3"
     ]
+
+    $httpBackend.expectGET('/api/v2/school_config/93740362')
+    .respond {config: []}
+
     $httpBackend.expectGET('/kindergarten/93740362/sender/1_2_3?type=p')
     .respond parentOfPhone "12345678998"
 

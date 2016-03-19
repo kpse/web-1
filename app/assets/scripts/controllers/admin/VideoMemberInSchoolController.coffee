@@ -1,7 +1,8 @@
 angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
   ['$scope', '$rootScope', '$state', '$stateParams', '$q', '$filter', 'chargeService', 'videoMemberService',
-   'senderService', 'relationshipService', 'classService', 'parentService', '$modal',
-    (scope, rootScope, $state, $stateParams, $q, $filter, Charge, VideoMember, Parent, Relationship, Class, ParentSearch, Modal) ->
+   'senderService', 'relationshipService', 'classService', 'parentService', '$modal', 'schoolConfigService', 'schoolConfigExtractService',
+    (scope, rootScope, $state, $stateParams, $q, $filter, Charge, VideoMember, Parent, Relationship, Class, ParentSearch,
+      Modal, SchoolConfig, Extractor) ->
       rootScope.tabName = 'video'
       rootScope.loading = true
       extendFilterFriendlyProperties = (p) ->
@@ -16,10 +17,12 @@ angular.module('kulebaoAdmin').controller 'VideoMemberManagementCtrl',
         scope.current_class = parseInt $state.params.class if $state.params.class?
         scope.current_class = scope.kindergarten.classes[0].class_id unless scope.current_class?
         queue = [Charge.query(school_id: $stateParams.kindergarten).$promise
-                 VideoMember.query(school_id: $stateParams.kindergarten).$promise]
+                 VideoMember.query(school_id: $stateParams.kindergarten).$promise
+                  SchoolConfig.get(school_id: $stateParams.kindergarten).$promise]
         all = $q.all(queue)
         all.then (q) ->
           scope.charge = q[0]
+          scope.displayVideoDetail = (Extractor q[2]['config'], 'displayVideoMemberDetail', 'false') == 'true' || scope.operatorOnly(scope.adminUser)
           [defaultAccounts, parents] = _.partition q[1], (a) -> a.id == 'default'
           parents = _.map parents, (p) ->
             p.promise =

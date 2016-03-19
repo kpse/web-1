@@ -7,7 +7,7 @@
   </div>
 
   <h4>已开通开宝宝的家长列表</h4>
-  <div class="importing" ng-if="!operatorOnly(adminUser)">
+  <div class="importing" ng-if="!displayVideoDetail">
     <ul class="nav nav-tabs">
       <li ng-repeat="c in kindergarten.classes" ng-class="{active: c.class_id == current_class}">
         <a ng-click="navigateTo(c)">{{c.name}}</a>
@@ -37,7 +37,7 @@
     </table>
   </div>
 
-  <div class="importing" ng-if="operatorOnly(adminUser)">
+  <div class="importing" ng-if="displayVideoDetail">
     <ul class="nav nav-tabs">
       <li ng-repeat="c in kindergarten.classes" ng-class="{active: c.class_id == current_class}">
         <a ng-click="navigateTo(c)">{{c.name}}</a>
