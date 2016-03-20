@@ -19,29 +19,7 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
     $stateParams = _$stateParams_
 
     $rootScope.operatorOnly = -> false
-    $httpBackend.expectGET('/kindergarten/93740362/class')
-    .respond [
-      classOfId 1
-    ]
-    $httpBackend.expectGET('/kindergarten/93740362/charge')
-    .respond [
-      chargeOfSchool 93740362
-    ]
-    $httpBackend.expectGET('/api/v1/kindergarten/93740362/video_member')
-    .respond [
-      videoMemberOfId "1_2_3"
-    ]
 
-    $httpBackend.expectGET('/api/v2/school_config/93740362')
-    .respond {config: []}
-
-    $httpBackend.expectGET('/kindergarten/93740362/sender/1_2_3?type=p')
-    .respond parentOfPhone "12345678998"
-
-    $httpBackend.expectGET('/kindergarten/93740362/relationship?parent=12345678998')
-    .respond [
-      relationshipOfPhone "12345678998"
-    ]
 
 
   it 'should attach a list of parents to the scope', () ->
@@ -52,6 +30,7 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
       $stateParams:
         kindergarten: 93740362
     }
+    prepareForRefresh()
     $httpBackend.flush()
 
     $scope.onSuccess(sheet1: ['家长手机号': '12345678991', '家长姓名': 'display name', '班级': '二班', '学生姓名': '二宝'])
@@ -79,6 +58,7 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
       $stateParams:
         kindergarten: 93740362
     }
+    prepareForRefresh()
     $httpBackend.flush()
 
     spyOn(window, 'alert');
@@ -95,6 +75,7 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
       $stateParams:
         kindergarten: 93740362
     }
+    prepareForRefresh()
     $httpBackend.flush()
 
     $scope.onSuccess(sheet2: ['错误字段':'1'], sheet1: ['家长手机号': '12345678991', '家长姓名': 'display name', '班级': '二班', '学生姓名': '二宝'])
@@ -122,6 +103,7 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
       $stateParams:
         kindergarten: 93740362
     }
+    prepareForRefresh()
     $httpBackend.flush()
 
     $scope.onSuccess(sheet2: [], sheet1: ['家长手机号': '12345678991', '家长姓名': 'display name', '班级': '二班', '学生姓名': '二宝'])
@@ -140,6 +122,45 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
     $httpBackend.flush()
 
     expect($scope.importingData.length).toBe 1
+
+  it 'should consider the display video detail flag from school config', () ->
+    $scope = $rootScope.$new()
+
+    videoMemberController = $controller 'VideoMemberManagementCtrl', {
+      $scope: $scope
+      $stateParams:
+        kindergarten: 93740362
+    }
+    prepareForRefresh([{name: 'displayVideoMemberDetail', value: 'true'}])
+    $httpBackend.flush()
+
+    expect($scope.displayVideoDetail).toBe true
+
+  it 'should set the display video detail flag to false by default', () ->
+    $scope = $rootScope.$new()
+
+    videoMemberController = $controller 'VideoMemberManagementCtrl', {
+      $scope: $scope
+      $stateParams:
+        kindergarten: 93740362
+    }
+    prepareForRefresh()
+    $httpBackend.flush()
+
+    expect($scope.displayVideoDetail).toBe false
+
+  it 'should set the display video detail flag to false if school config is other than true', () ->
+    $scope = $rootScope.$new()
+
+    videoMemberController = $controller 'VideoMemberManagementCtrl', {
+      $scope: $scope
+      $stateParams:
+        kindergarten: 93740362
+    }
+    prepareForRefresh([{name: 'displayVideoMemberDetail', value: 'not true'}])
+    $httpBackend.flush()
+
+    expect($scope.displayVideoDetail).toBe false
 
   classOfId = (id) ->
     "class_id": id
@@ -172,3 +193,28 @@ describe 'Controller: VideoMemberManagementCtrl', ($alert) ->
       "class_id": 1
       "class_name": '二班'
       "name": '二宝'
+
+  prepareForRefresh = (schoolConfig = []) ->
+    $httpBackend.expectGET('/kindergarten/93740362/class')
+    .respond [
+      classOfId 1
+    ]
+    $httpBackend.expectGET('/kindergarten/93740362/charge')
+    .respond [
+      chargeOfSchool 93740362
+    ]
+    $httpBackend.expectGET('/api/v1/kindergarten/93740362/video_member')
+    .respond [
+      videoMemberOfId "1_2_3"
+    ]
+
+    $httpBackend.expectGET('/api/v2/school_config/93740362')
+    .respond {config: schoolConfig}
+
+    $httpBackend.expectGET('/kindergarten/93740362/sender/1_2_3?type=p')
+    .respond parentOfPhone "12345678998"
+
+    $httpBackend.expectGET('/kindergarten/93740362/relationship?parent=12345678998')
+    .respond [
+      relationshipOfPhone "12345678998"
+    ]
