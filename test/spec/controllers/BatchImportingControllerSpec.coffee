@@ -19,6 +19,7 @@ describe 'Controller: RelationshipController', ($alert) ->
     $stateParams = _$stateParams_
     $state =
       go : (data) -> console.log 'go : ' + data
+      reload : () -> console.log 'reload state'
 
     $scope = $rootScope.$new()
     $scope.backend = true
@@ -192,12 +193,22 @@ describe 'Controller: RelationshipController', ($alert) ->
     ])
 
     $httpBackend.expectPOST('api/v1/kindergarten/93740362/phone_check/12345678991').respond phoneNumberIsFine
-    $httpBackend.expectDELETE('/kindergarten/93740362/class').respond error_code: 0
-    $httpBackend.expectPOST('/kindergarten/93740362/class/1000').respond error_code: 0
+
     $httpBackend.flush()
 
     expect($scope.relationships.length).toBe 1
     expect($scope.relationships[0].relationship).toBe '爸爸'
+    
+    $scope.applyAllChange()
+
+    $httpBackend.expectDELETE('/kindergarten/93740362/class').respond error_code: 0
+    $httpBackend.expectPOST('/kindergarten/93740362/class/1000').respond error_code: 0
+    $httpBackend.expectPOST('/api/v1/batch_import/93740362/parents').respond error_code: 0
+    $httpBackend.expectPOST('/api/v1/batch_import/93740362/children').respond error_code: 0
+    $httpBackend.expectPOST('/api/v1/batch_import/93740362/relationships').respond error_code: 0
+    $httpBackend.flush()
+
+    expect($scope.relationships.length).toBe 1
 
 
   phoneNumberIsDuplicated =

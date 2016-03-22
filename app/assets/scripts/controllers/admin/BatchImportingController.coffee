@@ -108,7 +108,7 @@ angular.module('kulebaoAdmin')
           name: c, class_id: i + 1000, school_id: parseInt(stateParams.kindergarten)
 
         nonExistingClasses = _.partition scope.newClassesScope, (c) -> _.findIndex(scope.kindergarten.classes, 'name', c.name) < 0
-        if nonExistingClasses[0].length > 0
+        if nonExistingClasses[0].length > 0 && scope.backend
           console.log nonExistingClasses[0]
           scope.errorItems = _.pluck(nonExistingClasses[0], 'name')
           scope.importingErrorMessage = '以下班级当前并不存在，请检查调整后重新输入。'
@@ -145,11 +145,7 @@ angular.module('kulebaoAdmin')
           backToImport()
         else if !scope.backend
           scope.classesScope = scope.newClassesScope
-          SchoolClass.delete school_id: stateParams.kindergarten, ->
-            classQueue = _.map scope.classesScope, (c) -> SchoolClass.save(c).$promise
-            allClass = $q.all classQueue
-            allClass.then (q) ->
-              $state.go 'kindergarten.relationship.type.preview.class.list', {kindergarten: stateParams.kindergarten, type: 'batchImport', class_id: 1000}
+          $state.go 'kindergarten.relationship.type.preview.class.list', {kindergarten: stateParams.kindergarten, type: 'batchImport', class_id: 1000}
         else
           scope.classesScope = scope.kindergarten.classes
           $state.go 'kindergarten.relationship.type.preview.class.list', {kindergarten: stateParams.kindergarten, type: 'batchImport', class_id: scope.kindergarten.classes[0].class_id}
@@ -212,41 +208,51 @@ angular.module('kulebaoAdmin')
         childPromiseList = _.map (_.chunk scope.children, 100), (l) -> BatchChildren.save(l).$promise
         parentPromiseList.concat childPromiseList
 
+      removeOldDataWhileNoBackend = ->
+        $q (resolve, reject) ->
+          return resolve() if scope.backend
+          SchoolClass.delete school_id: stateParams.kindergarten, ->
+            classQueue = _.map scope.newClassesScope, (c) -> SchoolClass.save(c).$promise
+            allClass = $q.all classQueue
+            allClass.then -> resolve()
+
+
       scope.applyAllChange = ->
-        rootScope.loading = true
-        compactRelationships = compactRelationship(assignIds(scope.relationships))
-        queue = savingQueue()
-        allCreation = $q.all queue
-        allCreation.then (q) ->
-          if (_.every q, (f) -> f.error_code == 0)
-            BatchRelationship.save compactRelationships, (q2) ->
-              if q2.error_code == 0
-                $timeout ->
-                    $state.go('kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: 'connected'})
-                  , 200
-                $state.reload()
-              else
-                scope.importingErrorMessage = '批量导入关系失败，请检查调整后重新导入。'
-                Alert
-                  title: '批量导入失败'
-                  content: scope.importingErrorMessage
-                  placement: "top-left"
-                  type: "danger"
-                  container: '.panel-body'
-                scope.errorItems = q2.error_msg
-                rootScope.loading = false
-                backToImport()
-          else
-            scope.importingErrorMessage = '批量创建家长和小孩失败，请检查调整后重新导入。'
-            Alert
-              title: '批量导入失败'
-              content: scope.importingErrorMessage
-              placement: "top-left"
-              type: "danger"
-              container: '.panel-body'
-            scope.errorItems = _.pluck (_.filter q, (f) -> f.error_code != 0), 'error_msg'
-            rootScope.loading = false
-            backToImport()
+        removeOldDataWhileNoBackend().then ->
+          rootScope.loading = true
+          compactRelationships = compactRelationship(assignIds(scope.relationships))
+          queue = savingQueue()
+          allCreation = $q.all queue
+          allCreation.then (q) ->
+            if (_.every q, (f) -> f.error_code == 0)
+              BatchRelationship.save compactRelationships, (q2) ->
+                if q2.error_code == 0
+                  $timeout ->
+                      $state.go('kindergarten.relationship.type', {kindergarten: stateParams.kindergarten, type: 'connected'})
+                    , 200
+                  $state.reload()
+                else
+                  scope.importingErrorMessage = '批量导入关系失败，请检查调整后重新导入。'
+                  Alert
+                    title: '批量导入失败'
+                    content: scope.importingErrorMessage
+                    placement: "top-left"
+                    type: "danger"
+                    container: '.panel-body'
+                  scope.errorItems = q2.error_msg
+                  rootScope.loading = false
+                  backToImport()
+            else
+              scope.importingErrorMessage = '批量创建家长和小孩失败，请检查调整后重新导入。'
+              Alert
+                title: '批量导入失败'
+                content: scope.importingErrorMessage
+                placement: "top-left"
+                type: "danger"
+                container: '.panel-body'
+              scope.errorItems = _.pluck (_.filter q, (f) -> f.error_code != 0), 'error_msg'
+              rootScope.loading = false
+              backToImport()
 
       scope.navigateTo = (s) ->
         if stateParams.type != s.url
