@@ -144,7 +144,7 @@
             return name + '省';
           };
           scope.cityOf = function (name) {
-            if (_.indexOf(['市', '县', '区'], name.substring(name.length - 1)) >= 0) return name;
+            if (_.some(['市$', '县$', '区$', '自治州$'], function(suffix) {return name.match(suffix) !== null})) return name;
             return name + '市';
           };
           return scope.$watch(function() {
