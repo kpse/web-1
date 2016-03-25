@@ -50,3 +50,9 @@ describe 'Service: AgentService', () ->
     expect(agentService.cityOf '重庆市开县蘑菇路120号').toBe '重庆市'
     expect(agentService.countyOf '重庆市开县蘑菇路120号').toBe '开县'
 
+  it 'should analyse autonomous prefectures', () ->
+    expect(agentService.cityOf '宁夏自治区阿坝自治州科尔沁市').toBe '阿坝自治州'
+    expect(agentService.cityOf '四川省随便一个自治州眉山市').toBe '随便一个自治州'
+    expect(agentService.cityOf '四川省随便一个自治州某个县').toBe '随便一个自治州'
+    expect(agentService.countyOf '四川省随便一个自治州某个县').toBe '某个县'
+
