@@ -109,7 +109,8 @@ angular.module('kulebaoOp').controller 'OpReportingCtrl',
 
       scope.singleExportHeader = -> ['学校ID', '学校全称', '省', '市', '区(县)', '所属代理商', '月份', '学生总数', '家长总数', '总用户数', '当月用户数', '当月激活率', '当月活跃度']
       scope.singleExportCSVName = (kg) -> "#{kg.school_id}_#{kg.full_name}_历史数据汇总.csv"
-
+      scope.contentSearch = (value, index, array) ->
+        (scope.searchText == undefined || scope.searchText.length == 0) || (_.some([value.school_id + '', value.full_name], (v) -> _.contains(v, scope.searchText)))
   ]
 
 .controller 'OpSchoolReportingCtrl',

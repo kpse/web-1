@@ -50,7 +50,7 @@
   </tr>
 
   <tr
-    ng-repeat="kg in kindergartens | filter: searchText | orderBy:['-monthly.logged_ever', '-monthlyRate', '-monthlyChildRate']"
+    ng-repeat="kg in kindergartens | filter: contentSearch | orderBy:['-monthly.logged_ever', '-monthlyRate', '-monthlyChildRate']"
     class="row" ng-class="{editable: detail}" ng-click="detail(kg)">
     <td class="col-xs-1"><a ng-href="/admin#/kindergarten/{{::kg.school_id}}/welcome"
                             ng-click="$event.stopPropagation()">{{kg.school_id}}</a></td>
