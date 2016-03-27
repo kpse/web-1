@@ -48,6 +48,28 @@ describe 'OpReportingCtrl', ->
 
       expect(result).toBe false
 
+    it 'should display item while name condition is matched', ->
+      $scope = $rootScope.$new()
+      rootScope = $rootScope.$new()
+      $scope.searchText = 'part of name'
+
+      controller = $controller('OpReportingCtrl', $scope: $scope, $rootScope: rootScope)
+
+      result = $scope.contentSearch({school_id: 123, full_name: 'part of name in full name'})
+
+      expect(result).toBe true
+
+    it 'should despite all other fields', ->
+      $scope = $rootScope.$new()
+      rootScope = $rootScope.$new()
+      $scope.searchText = 'matched other'
+
+      controller = $controller('OpReportingCtrl', $scope: $scope, $rootScope: rootScope)
+
+      result = $scope.contentSearch({school_id: 123, full_name: 'fullname', other: 'matched other'})
+
+      expect(result).toBe false
+
 
 
 
