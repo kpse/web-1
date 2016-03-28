@@ -44,6 +44,7 @@ describe 'Service: AgentService', () ->
     expect(agentService.countyOf '黑龙江省澳大利亚区美国市').toBe ''
     expect(agentService.countyOf '黑龙江省美国市亚利桑那市').toBe '亚利桑那市'
     expect(agentService.countyOf undefined).toBe ''
+    expect(agentService.countyOf '青海省梅西自治州德令哈市').toBe '德令哈市'
 
   it 'should analyse special cities', () ->
     expect(agentService.provinceOf '重庆市开县蘑菇路120号').toBe ''

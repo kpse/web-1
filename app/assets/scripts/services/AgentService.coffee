@@ -207,6 +207,6 @@ angular.module('kulebao.services')
       (m && m[1]) || ''
     countyOf: (address) ->
       return '' unless address?
-      m = address.match(/自治州(.+?县)/)
+      m = address.match(/自治州(.+?(县|区|市))/)
       m = address.match(/市(.+?(县|区|市))/) unless m?
       (m && m[1]) || ''
