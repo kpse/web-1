@@ -10,6 +10,7 @@ GET           /forgotten                                                        
 
 # Home page
 GET           /                                                                                controllers.Application.index
+GET           /newhome                                                                         controllers.Application.newHome
 GET           /admin                                                                           controllers.Application.admin
 GET           /operation                                                                       controllers.Application.operation
 GET           /agent                                                                           controllers.Application.agent

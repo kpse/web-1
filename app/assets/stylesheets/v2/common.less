@@ -1,0 +1,25 @@
+/*
+  Allow angular.js to be loaded in body, hiding cloaked elements until
+  templates compile.  The !important is important given that there may be
+  other selectors that are more specific or come later and might alter display.
+ */
+
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}
+.help-block.error,
+.error-field {
+  color: red;
+}
+
+.footer {
+  background-color: #e4e4e4;
+  height: 200px;
+  .company-info {
+    background-color: #0a0a0a;
+    color: white;
+    bottom: 0;
+    margin-top: 170px;
+  }
+
+}

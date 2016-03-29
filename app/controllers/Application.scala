@@ -22,6 +22,10 @@ object Application extends Controller with Secured {
     Ok(views.html.index())
   }
 
+  def newHome = Action {
+    Ok(views.html.newHome())
+  }
+
   def admin = IsAuthenticated {
     username =>
       _ =>
