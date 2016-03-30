@@ -39,12 +39,18 @@
               <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
-                <li class="nav-item @("active".when(tab == "home"))"><a href="@routes.HomePageController.newHome">首页 <span class="sr-only">(current)</span></a></li>
-                <li class="nav-item @("active".when(tab == "software"))"><a href="@routes.HomePageController.software">软件服务</a></li>
-                <li class="nav-item @("active".when(tab == "hardware"))"><a href="@routes.HomePageController.hardware">智能硬件</a></li>
-                <li class="nav-item @("active".when(tab == "becomeUser"))"><a href="@routes.HomePageController.becomeUser">使用幼乐宝</a></li>
-                <li class="nav-item @("active".when(tab == "becomeAgent"))"><a href="@routes.HomePageController.becomeAgent">加盟代理</a></li>
-                <li class="nav-item @("active".when(tab == "aboutUs"))"><a href="@routes.HomePageController.aboutUs">关于我们</a></li>
+                <li class="nav-item @("active".when(tab == "home"))"><a href="@routes.HomePageController.newHome">
+                  首页 <span class="sr-only">(current)</span></a></li>
+                <li class="nav-item @("active".when(tab == "software"))"><a href="@routes.HomePageController.software">
+                  软件服务</a></li>
+                <li class="nav-item @("active".when(tab == "hardware"))"><a href="@routes.HomePageController.hardware">
+                  智能硬件</a></li>
+                <li class="nav-item @("active".when(tab == "becomeUser"))"><a href="@routes.HomePageController.becomeUser">
+                  使用幼乐宝</a></li>
+                <li class="nav-item @("active".when(tab == "becomeAgent"))"><a href="@routes.HomePageController.becomeAgent">
+                  加盟代理</a></li>
+                <li class="nav-item @("active".when(tab == "aboutUs"))"><a href="@routes.HomePageController.aboutUs">
+                  关于我们</a></li>
               </ul>
 
               <ul class="nav navbar-nav navbar-right">
@@ -62,20 +68,43 @@
       <div class="clearfix"></div>
       <div class="footer">
         <div class="row">
-          <div class="col-lg-4">两张二维码</div>
-          <div class="col-lg-4">一些链接</div>
+          <div class="col-lg-4 row">
+            <div class="col-lg-offset-3 col-lg-4"><img class="qr-code" src="@routes.VersionedAssets.at("images/v2/qr_wechat.png")">
+              <p class="qr-code-name">微信公众号</p>
+            </div>
+            <div class="col-lg-4"><img class="qr-code" src="@routes.VersionedAssets.at("images/v2/qr_app.png")">
+              <p class="qr-code-name">幼乐宝家长端</p>
+            </div>
+          </div>
+          <div class="col-lg-4 row">
+            <div class="col-lg-offset-3 col-lg-4">
+              <li><a href="#">关于幼乐宝</a></li>
+              <li><a href="#">公司简介</a></li>
+              <li><a href="#">联系我们</a></li>
+              <li><a href="#">公司动态</a></li>
+              <li><a href="#">招贤纳士</a></li></div>
+            <div class="col-lg-4">
+              <li><a href="#">产品服务</a></li>
+              <li><a href="#">软件下载</a></li>
+              <li><a href="#">硬件产品</a></li>
+              <li><a href="#">软件产品</a></li>
+              <li><a href="#">幼儿园入口</a></li></div>
+          </div>
           <div class="col-lg-4 service-phone ui-grid-container">
             <p>
-              <span class="service-phone-content service-phone-title">客服电话：</span>
-              <span class="service-phone-content service-phone-number">400-008-0300（全国免费电话）</span>
-              <span class="service-phone-content service-phone-number">028-69190987(公司电话)</span>
+              <p class="service-phone-content service-phone-title">幼乐宝热线</p>
+              <p class="service-phone-content service-phone-number">400-008-0300</p>
+              <p class="service-phone-content service-phone-number">028-61905012</p>
+              <p class="service-phone-content service-phone-number">028-86274527</p>
             </p>
           </div>
         </div>
         <div class="company-info">
-        <p><span>成都库贝信息技术有限公司 </span>
-        <span>成都市高新区天府大道中段1388号美年广场D座4楼</span>
-        <span>备案号：蜀ICP备15014933号-1</span></p>
+          <p><span>成都库贝信息技术有限公司</span>
+            <span>&nbsp;&nbsp;</span>
+            <span>成都市高新区天府大道中段1388号美年广场D座4楼</span>
+            <span>&nbsp;&nbsp;</span>
+            <span>备案号：蜀ICP备15014933号-1</span></p>
         </div>
       </div>
     </div>
@@ -84,14 +113,21 @@
 
     @scripts
     <script>
-      ( function ( i, s, o, g, r, a, m ) { i[ 'GoogleAnalyticsObject' ] = r ; i[ r ] = i[ r ] || function ( ) {
-      ( i[ r ].q = i[ r ].q ||[ ] ).push ( arguments ) }, i[ r ].l = 1 * new Date ( ) ; a = s.createElement ( o ),
-      m = s.getElementsByTagName ( o )[ 0 ] ; a.async = 1 ; a.src = g ; m.parentNode.insertBefore ( a, m )
-      } ) ( window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga' ) ;
+      (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+            ( i[r].q = i[r].q || [] ).push(arguments)
+          }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+          m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-      ga ( 'create', 'UA-47058869-1', 'cocobabys.com' ) ;
-      ga ( 'send', 'pageview' ) ;
+      ga('create', 'UA-47058869-1', 'cocobabys.com');
+      ga('send', 'pageview');
 
-      </script>
+    </script>
   </body>
 </html>
