@@ -1,4 +1,4 @@
-@(title: String)(scripts: Html)(styling: Html)(content: Html)
+@(tab: String)(title: String)(scripts: Html)(styling: Html)(content: Html)
 
 @import controllers.VersionedAssets._
 
@@ -12,7 +12,7 @@
     <meta name="description" content="幼乐宝服务：家园直通车，家园互动的美好桥梁。接送信息，家园互动，在园评价尽在掌握，更多功能，请扫描二维码下载客户端体验。">
     <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("vendor/css/jquery-ui/jquery-ui.min.css")">
     <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("vendor/css/bootstrap/bootstrap.min.css")">
-    <link rel="stylesheet" media="screen and (min-width: 1081px)" href="@routes.VersionedAssets.at("stylesheets/v2/common.css")">
+    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/v2/common.css")">
     <link rel="shortcut icon" type="image/png" href="@routes.VersionedAssets.at("images/favicon.png")">
     @styling
   </head>
@@ -33,18 +33,18 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="#"><img class="hero" src="@routes.VersionedAssets.at("images/v2/logo.png")"></a>
+              <a class="navbar-brand" href="@routes.HomePageController.newHome"><img class="hero" src="@routes.VersionedAssets.at("images/v2/logo.png")"></a>
             </div>
 
               <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="#">首页 <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">软件服务</a></li>
-                <li><a href="#">智能硬件</a></li>
-                <li><a href="#">使用幼乐宝</a></li>
-                <li><a href="#">加盟代理</a></li>
-                <li><a href="#">关于我们</a></li>
+                <li class="nav-item @("active".when(tab == "home"))"><a href="@routes.HomePageController.newHome">首页 <span class="sr-only">(current)</span></a></li>
+                <li class="nav-item @("active".when(tab == "software"))"><a href="@routes.HomePageController.software">软件服务</a></li>
+                <li class="nav-item @("active".when(tab == "hardware"))"><a href="@routes.HomePageController.hardware">智能硬件</a></li>
+                <li class="nav-item @("active".when(tab == "becomeUser"))"><a href="@routes.HomePageController.becomeUser">使用幼乐宝</a></li>
+                <li class="nav-item @("active".when(tab == "becomeAgent"))"><a href="@routes.HomePageController.becomeAgent">加盟代理</a></li>
+                <li class="nav-item @("active".when(tab == "aboutUs"))"><a href="@routes.HomePageController.aboutUs">关于我们</a></li>
               </ul>
 
               <ul class="nav navbar-nav navbar-right">
