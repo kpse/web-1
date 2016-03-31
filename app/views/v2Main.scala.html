@@ -27,12 +27,6 @@
           <div class="container-fluid">
               <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
               <a class="navbar-brand" href="@routes.HomePageController.newHome"><img class="hero" src="@routes.VersionedAssets.at("images/v2/logo.png")"></a>
             </div>
 
@@ -54,7 +48,7 @@
               </ul>
 
               <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">幼儿园登陆</a></li>
+                <li class="nav-item login-link-item"><a class="login-link" href="@routes.Auth.login">幼儿园登陆</a></li>
 
               </ul>
             </div><!-- /.navbar-collapse -->
@@ -76,7 +70,7 @@
               <p class="qr-code-name">幼乐宝家长端</p>
             </div>
           </div>
-          <div class="col-lg-4 row">
+          <div class="col-lg-4 row links">
             <div class="col-lg-offset-3 col-lg-4">
               <li><a href="#">关于幼乐宝</a></li>
               <li><a href="#">公司简介</a></li>

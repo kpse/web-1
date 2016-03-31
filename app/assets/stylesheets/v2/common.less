@@ -7,6 +7,7 @@
 [ng\:cloak], [ng-cloak], .ng-cloak {
   display: none !important;
 }
+
 .help-block.error,
 .error-field {
   color: red;
@@ -16,14 +17,56 @@ body {
   font-family: '微软雅黑', serif;
 }
 
+.navbar-default {
+  border: none;
+  background-color: white;
+}
+
+.hero {
+  margin-top: -10px;
+}
+
+.navbar-nav, .navbar-right {
+  .nav-item {
+    font-size: 18px;
+    a {
+      line-height: 40px;
+      width: 150px;
+      height: 80px;
+      text-align: center;
+    }
+    &:hover {
+      background-color: #199cd8;
+      a:hover {
+        color: white;
+      }
+    }
+
+  }
+  .login-link-item {
+    .login-link {
+      color: #199cd8;
+    }
+    &:hover {
+      text-decoration: underline;
+      background-color: white;
+      .login-link:hover {
+        color: #199cd8;
+      }
+    }
+  }
+
+}
+
 .footer {
   background-color: #e4e4e4;
-  height: 225px;
+  height: 200px;
   .company-info {
     background-color: #0a0a0a;
     color: white;
     bottom: 0;
     text-align: center;
+    font-size: 12px;
   }
 
   .qr-code {
@@ -31,6 +74,11 @@ body {
   }
   .qr-code-name {
     text-align: center;
+  }
+
+  .links {
+    list-style: none;
+    line-height: normal;
   }
 
   .service-phone-content {
