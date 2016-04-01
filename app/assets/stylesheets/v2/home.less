@@ -1,3 +1,77 @@
+.hoverBkImage(@x) {
+  background-image: e(%("url(../../images/v2/%s_mouseOver.png)", @x));
+}
+
+.bkImage(@x) {
+  background-image: e(%("url(../../images/v2/%s.png)", @x));
+}
+
 .slidesjs-pagination {
   display: none;
+}
+
+.features {
+  width: 1190px;
+  margin: 0 auto;
+}
+.feature {
+  height: 300px;
+  width: 20%;
+  margin: 20px 0;
+  .feature-image {
+    height: 136px;
+    width: 136px;
+    margin: 0 auto;
+  }
+
+  .feature-button {
+    margin: 20px auto 0;
+    width: 146px;
+    height: 50px;
+    .bkImage('button');
+    text-align: center;
+    color: #169ADA;
+    font-size: 18px;
+    line-height: 50px;
+
+  }
+  .feature-image.app {
+    .bkImage('app')
+  }
+  .feature-image.monitor {
+    .bkImage('monitor')
+  }
+  .feature-image.server {
+    .bkImage('server')
+  }
+  .feature-image.card {
+    .bkImage('card')
+  }
+  .feature-image.bus {
+    .bkImage('bus')
+  }
+
+  &:hover {
+    .feature-button {
+      .hoverBkImage('button');
+      color: white;
+    }
+    .feature-image.app {
+      .hoverBkImage('app')
+    }
+    .feature-image.monitor {
+      .hoverBkImage('monitor')
+    }
+    .feature-image.server {
+      .hoverBkImage('server')
+    }
+    .feature-image.card {
+      .hoverBkImage('card')
+    }
+    .feature-image.bus {
+      .hoverBkImage('bus')
+    }
+  }
+
+
 }
