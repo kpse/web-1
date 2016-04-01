@@ -18,7 +18,7 @@
 .feature {
   height: 300px;
   width: 20%;
-  margin: 20px 0;
+  margin: 20px 0 0;
   .feature-image {
     height: 136px;
     width: 136px;
@@ -34,13 +34,12 @@
     color: #169ADA;
     font-size: 18px;
     line-height: 50px;
-
   }
   .feature-desc {
     text-align: center;
     font-size: 14px;
     width: 146px;
-    margin: 20px auto;
+    margin: 20px auto 0;
   }
   .feature-image.app {
     .bkImage('app')
@@ -83,4 +82,31 @@
     }
   }
 
+}
+
+.solution-background {
+  width: 1190px;
+  height: 500px;
+  margin: 0 auto 10px;
+  background-image: url(../../images/v2/solution.png);
+  .inner-space {
+    padding-top: 145px;
+    padding-left: 341px;
+    width: 910px;
+    .solution {
+      margin: 10px;
+      width: 169px;
+      height: 90px;
+      border: 1px solid black;
+      font-size: 13px;
+      padding: 10px;
+      span {
+        padding-left: 10px;
+      }
+      p {
+        font-size: 12px;
+        margin-top: 5px;
+      }
+    }
+  }
 }
