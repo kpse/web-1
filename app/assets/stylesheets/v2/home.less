@@ -6,6 +6,10 @@
   background-image: e(%("url(../../images/v2/%s.png)", @x));
 }
 
+.littleFeatureImage(@x) {
+  background-image: e(%("url(../../images/v2/sub-feature-%s.png)", @x));
+}
+
 .slidesjs-pagination {
   display: none;
 }
@@ -138,8 +142,60 @@
     text-align: center;
     color: white;
     font-size: 14px;
+    font-weight: 700;
     line-height: 40px;
     margin: 0 auto;
+  }
+  .big-monitor {
+    background-image: url(../../images/v2/big-monitor.png);
+    width: 355px;
+    height: 301px;
+    float: left;
+    margin-left: 100px;
+  }
+  .big-monitor-desc {
+    width: 655px;
+    margin-left: 500px;
+    margin-top: 66px;
+    line-height: 28px;
+  }
+  .little-monitor-features {
+    width: 940px;
+    margin-left: 500px;
+    .little-feature {
+      padding: 0;
+      width: 105px;
+      text-align: center;
+      p {
+        width: 98px;
+      }
+      .image {
+        margin: 10px auto;
+        width: 50px;
+        height: 50px;
+        background-size: 50px 50px;
+        &.play {
+          .littleFeatureImage('play')
+        }
+        &.food {
+          .littleFeatureImage('food')
+        }
+        &.music {
+          .littleFeatureImage('music')
+        }
+        &.bulletin {
+          .littleFeatureImage('bulletin')
+        }
+        &.video {
+          background-size: 50px 52px;
+          .littleFeatureImage('video')
+        }
+        &.card {
+          .littleFeatureImage('card')
+        }
+      }
+
+    }
   }
 }
 
