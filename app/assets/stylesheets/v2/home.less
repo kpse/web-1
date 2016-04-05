@@ -17,9 +17,12 @@
 .page-hero {
   margin: 0 auto;
   overflow: hidden;
+  width: 1440px;
   &.software {
-    width: 1440px;
     height: 350px;
+  }
+  &.app {
+    height: 560px;
   }
 }
 
@@ -403,4 +406,25 @@
     }
   }
 }
+
+.methods {
+  .image {
+    width: 235px;
+    height: 430px;
+    background-size: 235px 430px;
+    background: url(../../images/v2/download-instructions.png) no-repeat;
+    &.first-step-image {
+      background-position: 0 0;
+    }
+    &.second-step-image {
+      background-position: -307px 0;
+    }
+    &.last-step-image {
+      background-position: -615px 0;
+    }
+  }
+
+}
+
+
 

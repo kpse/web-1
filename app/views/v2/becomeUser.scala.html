@@ -1,5 +1,6 @@
 @scripts = {
-  <script src="@routes.VersionedAssets.at("javascripts/vendor/jquery.slides.min.js")" type="text/javascript"></script>
+  <script src="@routes.VersionedAssets.at("javascripts/vendor/jquery.slides.min.js")" type="text/javascript"
+  xmlns="http://www.w3.org/1999/html"></script>
   <script src="@routes.VersionedAssets.at("scripts/jslides.js")" type="text/javascript"></script>
 }
 @styling = {
@@ -10,9 +11,80 @@
 @v2Main("becomeUser")("幼乐宝|欢迎访问幼乐宝|家园互动|家园直通车|")(scripts)(styling) {
 
 
-
-
-  <h1>使用幼乐宝</h1>
+  <div class="page-hero app">
+    <img class="hero" src="@routes.VersionedAssets.at("images/v2/app_hero.png")">
+  </div>
+  <div class="install">
+    <p class="title">下载安装幼乐宝（推荐方法）</p>
+    <p>微信关注公众号“幼乐宝”，公众号内点击幼乐宝下载安装。在下载安装使用幼乐宝过程中有任何困难，请联系客服电话：400-008-0300或通过企业QQ：4000080300咨询解决。</p>
+  </div>
+  <div class="methods">
+    <div class="first-step">
+      <p class="title">第一步</p>
+      <p class="desc">关注“幼乐宝”公众号。在公众号中点击“产品简介”，选择“幼乐宝下载”。</p>
+      <div class="image first-step-image"></div>
+    </div>
+    <div class="second-step">
+      <p class="title">第二步</p>
+      <p class="desc">点击右上角，选择“在浏览器中打开”。</p>
+      <div class="image second-step-image"></div>
+    </div>
+    <div class="last-step">
+      <p class="title">第三步</p>
+      <p class="desc">根据手机的的操作系统，使用苹果的用户选择“iPhone版”免费下载，使用安卓的用户选择“Android版”免费下载。</p>
+      <div class="image last-step-image"></div>
+    </div>
+    <div class="qr-code-bar">
+      <div class="weixin"></div>
+      <div class="app"></div>
+      <div class="teacher-app"></div>
+      <div class="other-methods">
+        <p>扫描左边二维码下载<br>
+          打开微信里的扫一扫功能，<br>
+          扫描左图的二维码下载安装。</p>
+      </div>
+      <div class="app-store">
+        <p>苹果手机在App Store中搜索“幼乐宝”或“幼教宝”，下载安装。<br>
+          三星、小米、华为、联想等安卓手机在360手机助手、豌豆荚、应用宝、小米商城等应用市场搜索“幼乐宝”，下载安装。</p>
+      </div>
+    </div>
+    <div class="download-links">
+      <div class="pc"></div>
+      <div class="app"></div>
+      <div class="teacher-app"></div>
+    </div>
+    <div class="trial-form">
+      <h1>幼儿园免费试用</h1>
+      <h4>留下您的联系方式，我们马上为您送上服务哦~~~</h4>
+      <form>
+        <div class="form-group">
+          <label for="name">幼儿园名称</label>
+          <input id="name" type="text"/>
+        </div>
+        <div class="form-group">
+          <label for="city">所在城市</label>
+          <input id="city" type="text"/>
+        </div>
+        <div class="form-group">
+          <label for="size">园所规模</label>
+          <input id="size" type="text"/>
+        </div>
+        <div class="form-group">
+          <label for="contact-name">联系人姓名</label>
+          <input id="contact-name" type="text"/>
+        </div>
+        <div class="form-group">
+          <label for="contact-number">联系人电话</label>
+          <input id="contact-number" type="text"/>
+        </div>
+        <div class="form-group">
+          <label for="contact-level">身份</label>
+          <input id="contact-level" type="text"/>
+        </div>
+        <input type="submit" value="提交申请"/>
+      </form>
+    </div>
+  </div>
   <div class="clearfix"></div>
 
 }
