@@ -265,7 +265,7 @@
     width: 216px;
     height: 495px;
     float: left;
-    margin-left: 40px;
+    margin-left: 130px;
   }
   .gate-a-photo {
     background-image: url(../../images/v2/gate-a.png);
@@ -273,7 +273,7 @@
     width: 357px;
     height: 262px;
     float: right;
-    margin-right: 40px;
+    margin-right: 207px;
   }
 
   .bus-machine {
@@ -282,7 +282,7 @@
     width: 216px;
     height: 278px;
     float: right;
-    margin-right: 40px;
+    margin-right: 207px;
   }
   .class-machine {
     background-image: url(../../images/v2/class-machine.png);
@@ -290,7 +290,7 @@
     width: 307px;
     height: 194px;
     float: left;
-    margin-left: 40px;
+    margin-left: 130px;
   }
 
   .private-camera {
@@ -299,18 +299,57 @@
     width: 181px;
     height: 225px;
     float: left;
-    margin-left: 40px;
+    margin-left: 130px;
   }
-  .little-features-gate-g {
-    width: 1200px;
-    margin-left: 100px;
-    margin-top: 100px;
+  .little-features {
+    margin-top: 50px;
+    &.little-features-gate-g {
+      width: 1200px;
+      margin-left: 100px;
+      margin-top: 100px;
+    }
+    &.little-features-gate-a {
+      .row-1 {
+        width: 800px;
+        margin-top: 100px;
+        margin-left: 100px;
+      }
+      .row-2 {
+        width: 1200px;
+        margin-top: 50px;
+        margin-left: 100px;
+      }
+    }
+    &.little-features-bus {
+      margin-left: 100px;
+      width: 800px;
+      .little-feature {
+        width: 150px;
+        p {
+          margin-top: 40px;
+          width: 150px;
+        }
+      }
+    }
+    &.little-features-private-camera {
+      margin-left: 290px;
+      width: 1200px;
+      .little-feature {
+        margin-left: 30px;
+        width: 150px;
+        p {
+          width: 150px;
+        }
+      }
+    }
   }
+
+
   .little-feature {
     padding: 0;
     width: 180px;
     text-align: center;
-    margin-left: 30px;
+    margin-left: 50px;
     p {
       width: 180px;
     }
