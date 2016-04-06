@@ -9,7 +9,7 @@ GET           /logout                                                           
 GET           /forgotten                                                                       controllers.Application.forgotten
 
 # Home page
-GET           /                                                                                controllers.Application.index
+GET           /                                                                                controllers.HomePageController.newHome
 GET           /newhome                                                                         controllers.HomePageController.newHome
 GET           /software                                                                        controllers.HomePageController.software
 GET           /hardware                                                                        controllers.HomePageController.hardware
