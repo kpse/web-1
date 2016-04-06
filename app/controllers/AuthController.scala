@@ -1,17 +1,16 @@
 package controllers
 
 import models.V4.KulebaoAgent
-import play.api.Play
-import play.api.libs.json.JsValue
-import play.api.mvc._
-import play.api.mvc.BodyParsers.parse
-import play.api.data._
-import play.api.data.Forms._
-
 import models._
-import views._
 import play.Logger
-import scala.Some
+import play.api.Play
+import play.api.data.Forms._
+import play.api.data._
+import play.api.libs.json.JsValue
+import play.api.mvc.BodyParsers.parse
+import play.api.mvc._
+import views._
+
 import scala.concurrent.Future
 
 object Auth extends Controller {
@@ -39,6 +38,20 @@ object Auth extends Controller {
     implicit request =>
       Logger.info(request.session.data.toString())
       request.session.get("id").fold(Ok(html.login(loginForm)))({
+        case op if Employee.isOperator(op) =>
+          Redirect("/operation")
+        case agent if KulebaoAgent.isAgent(agent, s"/main/$agent/school") =>
+          Redirect(s"/agent#/main/${agent.toLong}/school")
+        case admin =>
+          Redirect("/admin")
+      })
+
+  }
+
+  def newLogin = Action {
+    implicit request =>
+      Logger.info(request.session.data.toString())
+      request.session.get("id").fold(Ok(html.v2.login(loginForm)))({
         case op if Employee.isOperator(op) =>
           Redirect("/operation")
         case agent if KulebaoAgent.isAgent(agent, s"/main/$agent/school") =>

@@ -1,0 +1,65 @@
+@(form: Form[(String, String, String, String)])(implicit flash: Flash)
+@styling = {
+  <link rel="shortcut icon" type="image/png" href="@routes.VersionedAssets.at("images/favicon.png")">
+  <link rel="stylesheet" type="text/css" media="screen" href="@routes.VersionedAssets.at("stylesheets/v2/login.css")">
+}
+@scripts = {
+  <script src="@routes.VersionedAssets.at("javascripts/vendor/jquery.slides.min.js")" type="text/javascript"></script>
+  <script src="@routes.VersionedAssets.at("scripts/jslides.js")" type="text/javascript"></script>
+}
+@v2Main("login")("幼乐宝|欢迎访问幼乐宝|家园互动|家园直通车|")(scripts)(styling) {
+  <div id="center-container">
+    <div id="login-slides" class="page-hero">
+      <li><img class="hero" src="@routes.VersionedAssets.at("images/v2/login-slides-1.png")"></li>
+      <li><img class="hero" src="@routes.VersionedAssets.at("images/v2/login-slides-2.png")"></li>
+    </div>
+    <div class="login-container">
+      <div class="main-login">
+        <h3>幼乐宝后台管理系统</h3>
+        @views.html.helper.form(routes.Auth.authenticate, 'class -> "login-form form-inline", 'autocomplete -> "off") {
+
+
+          @form.globalError.map { error =>
+            <p class="error">
+              @error.message
+            </p>
+          }
+
+          @flash.get("success").map { message =>
+            <p class="success">
+              @message
+            </p>
+          }
+
+          <div class="form-group">
+            <label class="sr-only" for="username">请输入账号</label>
+            <div class="input-group">
+              <div class="input-group-addon username"></div>
+              <input id="username" type="text" name="username" class="form-control login-input" placeholder="用户名" value="@form("username").value">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="sr-only" for="username">请输入账号</label>
+            <div class="input-group">
+              <div class="input-group-addon password"></div>
+              <input id="password" type="password" name="password" class="form-control login-input" placeholder="密码">
+            </div>
+          </div>
+          <div class="form-group">@views.html.simpleCaptcha()</div>
+          <div class="clearfix"></div>
+          <div class="forgotten-link-container">
+            <a id="forgotten-link" class="forgotten-link" href="@routes.Application.forgotten">
+              忘记密码?</a>
+          </div>
+
+          <div class="button-container">
+            <button type="submit" id="login-button" class="login-button">登  陆
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+
+}
