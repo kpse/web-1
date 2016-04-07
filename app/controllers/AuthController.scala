@@ -80,7 +80,7 @@ object Auth extends Controller {
    * Logout and clean the session.
    */
   def logout = Action {
-    Redirect(routes.Auth.login()).withNewSession.flashing(
+    Redirect(routes.Auth.newLogin).withNewSession.flashing(
       "success" -> "你已经成功退出登陆。"
     )
   }
