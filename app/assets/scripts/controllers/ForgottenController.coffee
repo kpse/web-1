@@ -64,7 +64,7 @@ angular.module('kulebaoApp')
       user.token = rootScope.resetToken
       ResetPassword.save user, ->
           delete rootScope.resetToken
-          $window.location.href = '/login'
+          $window.location.href = '/newlogin'
         , (res) ->
           handleValidateError(res.data)
 
