@@ -68,7 +68,7 @@ object Auth extends Controller {
   def authenticate = Action {
     implicit request =>
       loginForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(html.login(formWithErrors)),
+        formWithErrors => BadRequest(html.v2.login(formWithErrors)),
         user => {
           val login: LoginAccount = Employee.authenticate(user._1, user._2).getOrElse(KulebaoAgent.authenticate(user._1, user._2).get)
           Redirect(login.url()).withSession(login.session())
@@ -155,7 +155,7 @@ trait Secured {
    * Redirect to login if the user in not authorized.
    */
   private def redirectToLogin(request: RequestHeader) = {
-    request.headers.get("source").fold(Results.Redirect(routes.Auth.login()))({
+    request.headers.get("source").fold(Results.Redirect(routes.Auth.newLogin()))({
       case _ => forbidAccess(request)
     })
 
