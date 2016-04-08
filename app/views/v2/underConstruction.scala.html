@@ -1,0 +1,14 @@
+@scripts = {
+  <script src="@routes.VersionedAssets.at("javascripts/vendor/jquery.slides.min.js")" type="text/javascript"></script>
+  <script src="@routes.VersionedAssets.at("scripts/jslides.js")" type="text/javascript"></script>
+}
+@styling = {
+  <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/jquery.jslides.css")">
+  <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/v2/home.css")">
+}
+
+@v2Main("aboutUs")("幼乐宝|欢迎访问幼乐宝|家园互动|家园直通车|")(scripts)(styling) {
+  <div class="under-construction"><a href="@routes.HomePageController.newHome"><img class="hero" src="@routes.VersionedAssets.at("images/v2/under-construction.jpg")"></a></div>
+  <div class="clearfix"></div>
+
+}

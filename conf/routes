@@ -17,6 +17,7 @@ GET           /hardware                                                         
 GET           /becomeAUser                                                                     controllers.HomePageController.becomeUser
 GET           /becomeAnAgent                                                                   controllers.HomePageController.becomeAgent
 GET           /aboutUs                                                                         controllers.HomePageController.aboutUs
+GET           /constructing                                                                    controllers.HomePageController.underConstruction
 GET           /admin                                                                           controllers.Application.admin
 GET           /operation                                                                       controllers.Application.operation
 GET           /agent                                                                           controllers.Application.agent
