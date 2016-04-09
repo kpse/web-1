@@ -18,8 +18,8 @@ object HomePageController extends Controller with Secured {
   }
 
   def becomeUser = Action {
-//    Ok(views.html.v2.becomeUser())
-    Redirect("/constructing")
+    Ok(views.html.v2.becomeUser())
+//    Redirect("/constructing")
   }
 
   def becomeAgent = Action {
