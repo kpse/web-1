@@ -529,6 +529,71 @@
 
 }
 
+.download-links {
+  width: 1190px;
+  margin: 10px auto;
+  .download-banner {
+    width: 386px;
+    height: 220px;
+    background-size: 1190px 220px;
+    &.pc {
+      background: url(../../images/v2/download-banners.png) no-repeat 0 0;
+    }
+    &.app {
+      background: url(../../images/v2/download-banners.png) no-repeat -400px 0;
+    }
+    &.teacher-app {
+      background: url(../../images/v2/download-banners.png) no-repeat -800px 0;
+    }
+  }
+  .link-panel {
+    h3 {
+      margin-top: 0;
+      margin-bottom: 0;
+      border: 1px solid #e3e3e3;
+      width: 386px;
+      text-align: center;
+      line-height: 50px;
+    }
+    .desc {
+      margin-top: 0;
+      border: 1px solid #e3e3e3;
+      border-top: none;
+      width: 386px;
+      height: 220px;
+      margin-bottom: 0;
+      ul {
+        height: 112px;
+        line-height: 28px;
+        padding-top: 15px;
+      }
+      .download-button {
+        text-align: center;
+        width: 181px;
+        height: 47px;
+        margin: 25px auto 10px;
+        span {
+          display: none;
+        }
+        background: url(../../images/v2/pc-download-button.png) no-repeat;
+        &.ios {
+          background: url(../../images/v2/apple-download-button.png) no-repeat;
+          float: right;
+          margin-right: 10px;
+        }
+        &.android {
+          background: url(../../images/v2/android-download-button.png) no-repeat;
+          float: left;
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+}
+
+.trial-form {
+  display: none;
+}
 
 .under-construction {
   width: 900px;
