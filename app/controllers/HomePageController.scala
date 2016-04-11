@@ -9,8 +9,7 @@ object HomePageController extends Controller with Secured {
   }
 
   def software = Action {
-//    Ok(views.html.v2.software())
-    Redirect("/constructing")
+    Ok(views.html.v2.software())
   }
 
   def hardware = Action {

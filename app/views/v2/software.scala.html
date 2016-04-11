@@ -1,11 +1,11 @@
-@scripts = {
-  <script src="@routes.VersionedAssets.at("javascripts/vendor/jquery.slides.min.js")" type="text/javascript"></script>
-  <script src="@routes.VersionedAssets.at("scripts/jslides.js")" type="text/javascript"></script>
-}
-@styling = {
-  <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/jquery.jslides.css")">
-  <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/v2/home.css")">
-}
+  @scripts = {
+    <script src="@routes.VersionedAssets.at("javascripts/vendor/jquery.slides.min.js")" type="text/javascript"></script>
+    <script src="@routes.VersionedAssets.at("scripts/jslides.js")" type="text/javascript"></script>
+  }
+    @styling = {
+    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/jquery.jslides.css")">
+    <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/v2/home.css")">
+  }
 
 @v2Main("software")("幼乐宝|欢迎访问幼乐宝|家园互动|家园直通车|")(scripts)(styling) {
 
@@ -15,14 +15,89 @@
   </div>
   <div class="software-feature">
     <div class="feature-title">幼儿园管理云</div>
-    <p>库贝幼儿园管理云是目前学前教育信息化内功能最全最强大、操作最简单的幼儿园园务管理系统。</p>
-    <p>包含档案管理、安全管理、营养配餐、财务管理、仓储管理、健康管理等各项园务管理功能，可极大地减轻幼儿园的管理工作，让幼儿园的接送管理更加安全快捷。</p>
-    <p>系统基于互联网技术设计，操作简单，园内无需部署数据库系统，阿里云存储免费终身使用，数据云端保存，无惧幼儿园电脑重装，自动升级，功能持续增加。</p>
-    <div class="graphic-desc"></div>
+    <div class="feature-desc"><p>库贝幼儿园管理云是目前学前教育信息化内功能最全最强大、操作最简单的幼儿园园务管理系统。</p>
+      <p>包含档案管理、安全管理、营养配餐、财务管理、仓储管理、健康管理等各项园务管理功能，可极大地减轻幼儿园的管理工作，让幼儿园的接送管理更加安全快捷。</p>
+      <p>系统基于互联网技术设计，操作简单，园内无需部署数据库系统，阿里云存储免费终身使用，数据云端保存，无惧幼儿园电脑重装，自动升级，功能持续增加。</p></div>
+    <div class="graphic-desc pc-screen-frame">
+      <div class="features row">
+        <div class="feature file col-lg-3"><span>档案管理</span></div>
+        <div class="feature security col-lg-3"><span>安全管理</span></div>
+        <div class="feature reception col-lg-3"><span>前台管理</span></div>
+        <div class="feature health col-lg-3"><span>健康档案</span></div>
+        <div class="feature finance col-lg-3"><span>财务管理</span></div>
+        <div class="feature warehouse col-lg-3"><span>仓储管理</span></div>
+        <div class="feature food col-lg-3"><span>营养膳食</span></div>
+        <div class="feature communication col-lg-3"><span>家校沟通</span></div>
+      </div>
+      <div class="feature-in-frame">
+        <div class="current-feature"></div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
   </div>
   <div class="software-feature gray">
     <div class="feature-title">幼乐宝（教师、家长）</div>
-    <p>家长和老师使用的家园互动手机APP，实时查看幼儿在园情况，准确了解孩子每日生活，详细记录孩子成长瞬间，随时随地无缝沟通。</p>
+    <div class="feature-desc">
+      <p>家长和老师使用的家园互动手机APP，实时查看幼儿在园情况，准确了解孩子每日生活，详细记录孩子成长瞬间，随时随地无缝沟通。</p>
+    </div>
+    <div class="graphic-desc phone-screen-frame">
+      <div class="features row">
+        <div class="feature history col-lg-3">
+          <h4 class="title">成长尽力</h4>
+          <p class="desc">五彩斑斓的成长记录，家长、老师一起参与记录幼儿成长点滴，以“照片/小视频+评语”的形式，全面展示孩子成长旅程，填写快捷方便，减轻老师负担。</p>
+          <div class="cover"></div>
+        </div>
+        <div class="feature video col-lg-3">
+          <h4 class="title">看宝宝</h4>
+          <p class="desc">在家想孩子了？想实时了解孩子在幼儿园的表现？看宝宝，让您开开心心看着孩子在幼儿园成长的每一天，每一个瞬间！</p>
+          <div class="cover"></div>
+        </div>
+        <div class="feature push col-lg-3">
+          <h4 class="title">接送消息</h4>
+          <p class="desc">大屏接送机有家长刷卡区，并装有自动拍照摄像系统，家长必须刷卡验证后方可进出幼儿园或接走幼儿，杜绝不法分子混进校园危害师生安全。可实现接送卡自主设置及绑定，家长和老师可随时查询幼儿出入幼儿园时间和状态，系统自动记录并发送幼儿接送状态至家长手机，方便家长查看实时刷卡照片。</p>
+          <div class="cover"></div>
+        </div>
+        <div class="feature conversation col-lg-3">
+          <h4 class="title">家园互动</h4>
+          <p class="desc">有什么事情需要及时告知家长的，有什么问题需要向园长反馈的，拿起您的手机，直接和他们沟通吧！</p>
+          <div class="cover"></div>
+        </div>
+        <div class="feature schedule col-lg-3">
+          <h4 class="title">课程表</h4>
+          <p class="desc">准确记录幼儿本周学习内容，让家长见证幼儿知识积累和能力成长的过程。</p>
+          <div class="cover"></div>
+        </div>
+        <div class="feature food col-lg-3">
+          <h4 class="title">每周食谱</h4>
+          <p class="desc">查看幼儿每天的健康饮食情况，分析每日、每周摄入的营养成分，制定营养搭配计划。 </p>
+          <div class="cover"></div>
+        </div>
+        <div class="feature bus col-lg-3">
+          <h4 class="title">校车接送</h4>
+          <p class="desc">配合校车机，家长可实时查看校车所在位置，幼儿到园下车和离园上车均有消息推送至家长手机，幼儿到园下车老师必须进行逐个点到，避免将幼儿遗忘在校车里出现风险。家长通过校车接送幼儿需在设备上刷卡，监护人通过手机APP 可以随时查询幼儿乘坐校车状态。</p>
+          <div class="cover"></div>
+        </div>
+        <div class="feature bulletin col-lg-3">
+          <h4 class="title">校园公告</h4>
+          <p class="desc">全面取代纸张和短信，家长查看班级最新通知、公告，了解相关政策和制度。信息既可一对一发布又可覆盖全园、全班家长；不仅园内通知，还有班级活动、假日问候、安全、防寒保暖等等，让家园之间的沟通零距离。</p>
+          <div class="cover"></div>
+        </div>
+        <div class="feature performance col-lg-3">
+          <h4 class="title">在园表现</h4>
+          <p class="desc">宝宝在幼儿园表现得好不好？吃饭有没有很乖？和小朋友们处得好不好？有没有积极参加游戏？通过多种类的记录方式永存宝宝在园的每一个精彩瞬间并随时展示给家长，共同见证幼儿的每一次成长。</p>
+          <div class="cover"></div>
+        </div>
+      </div>
+      <div class="feature-in-frame">
+        <div class="current-feature"></div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="summary">
+        <h4 class="title">校园公告</h4>
+        <p class="desc">全面取代纸张和短信，家长查看班级最新通知、公告，了解相关政策和制度。信息既可一对一发布又可覆盖全园、全班家长；不仅园内通知，还有班级活动、假日问候、安全、防寒保暖等等，让家园之间的沟通零距离。</p>
+      </div>
+      <div class="clearfix"></div>
+    </div>
   </div>
   <div class="software-feature">
     <div class="feature-title">大屏幕展示软件</div>
