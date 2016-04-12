@@ -161,13 +161,17 @@
   .feature-title {
     width: 140px;
     height: 40px;
-    background-image: url(../../images/v2/feature-title.png);
+    background: url(../../images/v2/feature-title.png) no-repeat;
     text-align: center;
     color: white;
     font-size: 14px;
     font-weight: 700;
     line-height: 40px;
     margin: 0 auto;
+    &.longer {
+      width: 165px;
+      background: url(../../images/v2/longer-feature-title.png) no-repeat;
+    }
   }
   .feature-desc {
     margin-left: 140px;
@@ -736,12 +740,17 @@
     margin-top: -120px;
     overflow: hidden;
     .current-feature {
-      background: url(../../images/v2/app-frame-bulletin.png) no-repeat -20px -70px;
       width: 236px;
       height: 417px;
       margin-left: 26px;
       margin-top: 68px;
-      background-size: 277px 559px;
+      overflow: hidden;
+      .feature-phone-screen {
+        background: url(../../images/v2/app-frame-bulletin.png) no-repeat -20px -70px;
+        width: 236px;;
+        height: 417px;
+        background-size: 277px 559px;
+      }
     }
   }
   .summary {

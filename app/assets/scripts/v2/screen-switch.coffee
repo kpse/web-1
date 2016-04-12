@@ -7,10 +7,13 @@ $ ->
     $('.feature-pc-screen').animate({'margin-left': "-=410"}, 200);
 
   $('.phone-screen-frame .feature').mouseover ->
-
     images =  ['history', 'video', 'push', 'conversation', 'schedule', 'food', 'bus', 'bulletin', 'performance']
     index = parseInt $(this).attr('data')
     imageUrl = 'url(../images/v2/app-frame-' + images[index] + '.png)'
-    console.log 'hover' + imageUrl
+
+    $('.feature-phone-screen').css('margin-left', '277px')
     $('.feature-phone-screen').css('background-image', imageUrl)
     $('.feature-phone-screen').css('background-size', '277px 559px')
+    $('.feature-phone-screen').animate({'margin-left': "0"}, 200);
+    $('.summary').html $(this).html()
+
