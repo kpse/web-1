@@ -775,7 +775,6 @@
   margin: 20px auto;
 }
 
-
 .future-vision {
   width: 80%;
   margin: 10px auto;
@@ -829,4 +828,72 @@
       }
     }
   }
+}
+
+.company {
+  width: 90%;
+  margin: 20px auto;
+  .advantages {
+    width: 470px;
+    font-size: 12px;
+    font-weight: 400;
+    margin-left: 100px;
+    .advantage {
+      margin: 0;
+      padding: 0;
+      height: 150px;
+      & > div {
+        padding-left: 5px;
+      }
+      .advantage-image {
+        width: 78px;
+        height: 78px;
+        &.power {
+          background: url(../../images/v2/all-advantages.png) no-repeat -27px -79px;
+        }
+        &.training {
+          background: url(../../images/v2/all-advantages.png) no-repeat -221px -79px;
+        }
+        &.client-service {
+          background: url(../../images/v2/all-advantages.png) no-repeat -27px -231px;
+        }
+        &.marketing {
+          background: url(../../images/v2/all-advantages.png) no-repeat -221px -231px;
+        }
+      }
+      .title {
+        font-size: 14px;
+      }
+      .desc {
+        width: 96px;
+      }
+      &.power * {
+        color: #F0830F;
+      }
+      &.client-service * {
+        color: #2AADD1;
+      }
+      &.training * {
+        color: #006666;
+      }
+      &.marketing * {
+        color: #2C4455;
+      }
+    }
+
+  }
+  .summary {
+    .summary-title {
+      font-weight: 700;
+      font-size: 20px;
+      margin-left: 40px;
+      color: #333333;
+      margin-top: 50px;
+    }
+    li {
+      line-height: 28px;
+      font-weight: 400;
+    }
+  }
+
 }
