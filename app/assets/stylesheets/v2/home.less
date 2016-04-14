@@ -15,14 +15,16 @@
 }
 
 #slides {
-  width: 1440px;
-  height: 580px;
+  width: 1190px;
+  .hero {
+    width: 1190px;
+  }
 }
 
 .page-hero {
   margin: 0 auto;
   overflow: hidden;
-  width: 1440px;
+  width: 1190px;
   &.software {
     height: 350px;
   }
@@ -157,7 +159,7 @@
 }
 
 .software-feature {
-  width: 1440px;
+  width: 1190px;
   margin: 20px auto 0;
   padding: 20px;
   color: #666;
@@ -190,7 +192,7 @@
     width: 355px;
     height: 301px;
     float: left;
-    margin-left: 100px;
+    margin-left: 5%;
   }
   .class-screen {
     width: 355px;
@@ -202,13 +204,13 @@
   }
   .big-monitor-desc {
     width: 655px;
-    margin-left: 500px;
+    margin-left: 35%;
     margin-top: 66px;
     line-height: 28px;
   }
   .little-monitor-features {
     width: 940px;
-    margin-left: 470px;
+    margin-left: 35%;
     .little-feature {
       padding: 0;
       width: 105px;
@@ -247,13 +249,13 @@
   }
   .classes-desc {
     width: 560px;
-    margin-left: 180px;
+    margin-left: 6%;
     margin-top: 66px;
     line-height: 28px;
   }
   .little-classes-features {
     width: 720px;
-    margin-left: 150px;
+    margin-left: 5%;
     .little-feature {
       padding: 0;
       width: 130px;
@@ -286,7 +288,7 @@
 }
 
 .hardware-feature {
-  width: 1440px;
+  width: 1190px;
   margin: 20px auto 0;
   padding: 20px;
   &.gray {
@@ -304,7 +306,7 @@
     width: 216px;
     height: 495px;
     float: left;
-    margin-left: 130px;
+    margin-left: 5%;
   }
   .gate-a-photo {
     background-image: url(../../images/v2/gate-a.png);
@@ -312,7 +314,7 @@
     width: 357px;
     height: 262px;
     float: right;
-    margin-right: 207px;
+    margin-right: 5%;
   }
 
   .bus-machine {
@@ -321,7 +323,7 @@
     width: 216px;
     height: 278px;
     float: right;
-    margin-right: 207px;
+    margin-right: 5%;
   }
   .class-machine {
     background-image: url(../../images/v2/class-machine.png);
@@ -329,7 +331,7 @@
     width: 307px;
     height: 194px;
     float: left;
-    margin-left: 130px;
+    margin-left: 5%;
   }
 
   .private-camera {
@@ -338,25 +340,25 @@
     width: 181px;
     height: 225px;
     float: left;
-    margin-left: 130px;
+    margin-left: 5%;
   }
   .little-features {
     margin-top: 50px;
     &.little-features-gate-g {
-      width: 1200px;
-      margin-left: 100px;
+      width: 1100px;
+      margin-left: 5%;
       margin-top: 100px;
     }
     &.little-features-gate-a {
       .row-1 {
         width: 800px;
         margin-top: 100px;
-        margin-left: 100px;
+        margin-left: 5%;
       }
       .row-2 {
-        width: 1200px;
+        width: 1100px;
         margin-top: 50px;
-        margin-left: 100px;
+        margin-left: 5%;
       }
     }
     &.little-features-bus {
@@ -372,9 +374,9 @@
     }
     &.little-features-private-camera {
       margin-left: 290px;
-      width: 1200px;
+      width: 1100px;
       .little-feature {
-        margin-left: 30px;
+        margin-left: 1%;
         width: 150px;
         p {
           width: 150px;
@@ -387,7 +389,7 @@
     padding: 0;
     width: 180px;
     text-align: center;
-    margin-left: 50px;
+    margin-left: 1%;
     p {
       width: 180px;
     }
@@ -463,7 +465,7 @@
 
 .software-hero-title {
   margin-top: -335px;
-  margin-left: 200px;
+  margin-left: 10%;
   color: white;
   .title {
     font-size: 48px;
@@ -514,14 +516,15 @@
 }
 
 .qr-code-bar {
-  width: 1440px;
+  width: 1190px;
   background-color: #f2f2f2;
   margin: 10px auto;
-  padding: 10px;
   .qr-code {
     width: 200px;
+    padding-left: 10px;
+    padding-top: 10px;
     &.weixin {
-      margin-left: 100px;
+      margin-left: 0;
     }
     img {
       width: 170px;
@@ -534,14 +537,16 @@
   }
   .other-methods {
     line-height: 28px;
-    width: 216px;
+    width: 182px;
     font-weight: 400;
     margin-top: 40px;
+    padding: 0;
     h4 {
       font-size: 20px;
     }
     &.app-store {
-      width: 443px;
+      width: 389px;
+      padding: 0;
     }
   }
 
@@ -565,6 +570,14 @@
     }
   }
   .link-panel {
+    padding-left: 10px;
+    padding-right: 0;
+    &.pc {
+      padding-left: 0;
+    }
+    &.app {
+      padding-left: 5px;
+    }
     h3 {
       margin-top: 0;
       margin-bottom: 0;
@@ -633,7 +646,7 @@
 .pc-screen-frame {
   .features {
     width: 530px;
-    margin-left: 150px;
+    margin-left: 8%;
     float: left;
     .feature {
       margin-left: 30px;
@@ -675,7 +688,7 @@
     background: url(../../images/v2/pc-screen-frame.png) no-repeat;
     float: right;
     background-size: 501px 320px;
-    margin-right: 130px;
+    margin-right: 2%;
     overflow: hidden;
     .current-feature {
       margin-left: 46px;
@@ -691,10 +704,9 @@
 }
 
 .phone-screen-frame {
-
   .features {
     width: 650px;
-    margin-left: 150px;
+    margin-left: 8%;
     float: left;
     .feature {
       .cover {
@@ -743,7 +755,7 @@
     background: url(../../images/v2/phone-screen-frame.png) no-repeat;
     float: right;
     background-size: 291px 580px;
-    margin-right: 190px;
+    margin-right: 5%;
     margin-top: -120px;
     overflow: hidden;
     .current-feature {
@@ -761,7 +773,7 @@
     }
   }
   .summary {
-    margin-left: 183px;
+    margin-left: 12%;
     margin-top: -155px;
     width: 610px;
     .title {
@@ -831,7 +843,8 @@
 }
 
 .company {
-  width: 68%;
+  width: 70%;
+  min-width: 1205px;
   margin: 20px auto;
   .advantages {
     float: left;
