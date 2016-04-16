@@ -25,8 +25,7 @@ object HomePageController extends Controller with Secured {
   }
 
   def aboutUs = Action {
-//    Ok(views.html.v2.aboutUs())
-    Redirect("/constructing")
+    Ok(views.html.v2.aboutUs())
   }
 
   def underConstruction = Action {
