@@ -18,6 +18,8 @@ GET           /becomeAUser                                                      
 GET           /becomeAnAgent                                                                   controllers.HomePageController.becomeAgent
 GET           /aboutUs                                                                         controllers.HomePageController.aboutUs
 GET           /constructing                                                                    controllers.HomePageController.underConstruction
+GET           /newsList                                                                        controllers.HomePageController.newsList
+GET           /singleNews/:id                                                                  controllers.HomePageController.singleNews(id: Long)
 GET           /admin                                                                           controllers.Application.admin
 GET           /operation                                                                       controllers.Application.operation
 GET           /agent                                                                           controllers.Application.agent

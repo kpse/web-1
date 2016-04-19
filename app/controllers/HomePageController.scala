@@ -28,6 +28,14 @@ object HomePageController extends Controller with Secured {
     Ok(views.html.v2.aboutUs())
   }
 
+  def newsList = Action {
+    Ok(views.html.v2.newsList())
+  }
+
+  def singleNews(id: Long) = Action {
+    Ok(views.html.v2.singleNews(id.toString))
+  }
+
   def underConstruction = Action {
     Ok(views.html.v2.underConstruction())
   }

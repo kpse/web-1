@@ -1,0 +1,53 @@
+@scripts = {
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=FeQbDkv37HUZvIGqnm6TXF5B"></script>
+  <script src="@routes.VersionedAssets.at("scripts/v2/location.js")" type="text/javascript"></script>
+}
+@styling = {
+  <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/jquery.jslides.css")">
+  <link rel="stylesheet" media="screen" href="@routes.VersionedAssets.at("stylesheets/v2/home.css")">
+}
+
+@v2Main("newsList")("幼乐宝|欢迎访问幼乐宝|家园互动|家园直通车|")(scripts)(styling) {
+  <div class="page-hero about-us">
+    <img class="hero" src="@routes.VersionedAssets.at("images/v2/about-us-banner.png")">
+  </div>
+  <div class="news-list-section section">
+    <ul>
+      <li class="news"><a href="@routes.HomePageController.singleNews(1)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心1</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
+      <li class="news"><a href="@routes.HomePageController.singleNews(2)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心2</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
+      <li class="news"><a href="@routes.HomePageController.singleNews(3)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心3</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
+      <li class="news"><a href="@routes.HomePageController.singleNews(4)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心4</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
+      <li class="news"><a href="@routes.HomePageController.singleNews(5)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心5</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
+      <li class="news"><a href="@routes.HomePageController.singleNews(6)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心6</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
+      <li class="news"><a href="@routes.HomePageController.singleNews(7)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心7</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
+      <li class="news"><a href="@routes.HomePageController.singleNews(8)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心8</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
+      <li class="news"><a href="@routes.HomePageController.singleNews(9)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心9</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
+      <li class="news"><a href="@routes.HomePageController.singleNews(10)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心10</div><div class="fill"><div class="published-at">2015-02-20</div><div class="dots"></div></div></div></a></li>
+    </ul>
+    <nav>
+      <ul class="pagination">
+        <li class="disabled">
+          <span>
+            <span aria-hidden="true">&laquo;</span>
+          </span>
+        </li>
+        <li class="active">
+          <span>1 <span class="sr-only">(current)</span></span>
+        </li>
+        <li>
+          <span>2</span>
+        </li>
+        <li>
+          <span>3</span>
+        </li>
+        <li class="disabled">
+          <span>
+            <span aria-hidden="true">&raquo;</span>
+          </span>
+        </li>
+      </ul>
+    </nav>
+    </div>
+  <div class="clearfix"></div>
+
+}
