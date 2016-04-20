@@ -7,43 +7,42 @@
 }
 
 @v2Main("singleNews")("幼乐宝|欢迎访问幼乐宝|家园互动|家园直通车|")(scripts)(styling) {
-  <div class="page-hero about-us">
-    <img class="hero" src="@routes.VersionedAssets.at("images/v2/about-us-banner.png")">
-  </div>
   <div class="single-news-section row"><div class="news-contents col-md-3">
-    <img class="thumbnail news-logo" src="@routes.VersionedAssets.at("images/v2/news-image.png")">
+    <img class="news-logo" src="@routes.VersionedAssets.at("images/v2/news-image.png")">
     <h5 class="english-title">News information</h5>
-    <h2 class="chinese-title">新闻动态</h2>
-    <a class="more-news" href="@routes.HomePageController.newsList">更多新闻&nbsp;&nbsp;&gt;&gt;</a>
+    <h4 class="chinese-title">新闻动态</h4>
     <div class="news-list">
       <ul>
-        <li class="news"><a href="@routes.HomePageController.singleNews(2)">幼儿教育笔记：唤起孩子们的同情心</a></li>
-        <li class="news"><a href="@routes.HomePageController.singleNews(3)">幼儿教育笔记：唤起孩子333们的同情心</a></li>
-        <li class="news"><a href="@routes.HomePageController.singleNews(4)">幼儿教育笔记：唤起孩子们的222同情心</a></li>
-        <li class="news"><a href="@routes.HomePageController.singleNews(5)">中班教育笔记：握握手，还是好朋友</a></li>
-        <li class="news"><a href="@routes.HomePageController.singleNews(6)">中班教育笔记：握握222手，还是好朋友</a></li>
+        <li class="news"><a class="news-link" href="@routes.HomePageController.singleNews(2)">幼儿教育笔记：唤起孩子们的同情心</a></li>
+        <li class="news"><a class="news-link" href="@routes.HomePageController.singleNews(3)">幼儿教育笔记：唤起孩子333们的同情心</a></li>
+        <li class="news"><a class="news-link" href="@routes.HomePageController.singleNews(4)">幼儿教育笔记：唤起孩子们的222同情心</a></li>
+        <li class="news"><a class="news-link" href="@routes.HomePageController.singleNews(5)">中班教育笔记：握握手，还是好朋友</a></li>
+        <li class="news"><a class="news-link" href="@routes.HomePageController.singleNews(6)">中班教育笔记：握握222手，还是好朋友</a></li>
       </ul>
     </div>
+    <a class="more-news" href="@routes.HomePageController.newsList">更多新闻&nbsp;&nbsp;&gt;&gt;</a>
   </div>
     <div class="news-detail col-md-9">
       <h3 class="title">@content</h3>
-      <nav>
-        <ul class="pager">
-          <li><a href="@routes.HomePageController.singleNews(2)">上一篇</a></li>
-          <li><a href="@routes.HomePageController.singleNews(3)">下一篇</a></li>
-        </ul>
-      </nav>
+      <div class="credit">
+        <a class="prev-link" href="@routes.HomePageController.singleNews(2)">上一篇</a>
+      <a class="next-link" href="@routes.HomePageController.singleNews(3)">下一篇</a>
       <div class="author">作者:来自于某某网   发布时间:2015年12月12日</div>
-      <p>
-        下午的自由活动时间到了，有的孩子在玩跳绳。有的孩子在拍球。有的孩子在看植物园里的花，草。有的孩子在看饲养角里的小鸡，突然振鹏大喊：“王老师，了不得了，坤坤把小鸡捏死了”。我和孩子们都跑过来了，我看到坤坤很高兴。很了不起的样子。
+      </div>
+      <div class="content">
+        <p>
+          <span>&nbsp; &nbsp; &nbsp;&nbsp; </span>下午的自由活动时间到了，有的孩子在玩跳绳。有的孩子在拍球。有的孩子在看植物园里的花，草。有的孩子在看饲养角里的小鸡，突然振鹏大喊：“王老师，了不得了，坤坤把小鸡捏死了”。我和孩子们都跑过来了，我看到坤坤很高兴。很了不起的样子。</p>
         　　
-        　　看到坤坤这样的表情，我没有直接批评他，而是对孩子们说：“孩子们，今天早上的时候我们刚刚给小鸡喂了米。喝了水，它在高高兴兴的玩，不一会儿小鸡却死了”孩子们看到我难受的样子，都纷纷指责坤坤“都是坤坤的事，让老师这么伤心”“坤坤太坏了，把小鸡捏死了……”刚才还很高兴地坤坤现在变得不安起来了。借此机会，我对孩子们讲虽然小鸡不会说话，但是它和我们一样是有生命的，我们要保护他们，你们明白了吗？紧接着我让孩子们和我一起把小鸡埋掉了。这时候，坤坤说：“老师，对不起我做错了，以后我不做这样的事情了”。
+        　　<p><span>&nbsp; &nbsp; &nbsp;&nbsp; </span>
+        看到坤坤这样的表情，我没有直接批评他，而是对孩子们说：“孩子们，今天早上的时候我们刚刚给小鸡喂了米。喝了水，它在高高兴兴的玩，不一会儿小鸡却死了”孩子们看到我难受的样子，都纷纷指责坤坤“都是坤坤的事，让老师这么伤心”“坤坤太坏了，把小鸡捏死了……”刚才还很高兴地坤坤现在变得不安起来了。借此机会，我对孩子们讲虽然小鸡不会说话，但是它和我们一样是有生命的，我们要保护他们，你们明白了吗？紧接着我让孩子们和我一起把小鸡埋掉了。这时候，坤坤说：“老师，对不起我做错了，以后我不做这样的事情了”。</p>
         　　
-        　　中午放学的时间到了，我和坤坤的妈妈说了这件事情，坤坤妈妈说这个孩子太坏了，在家我不知打过他多少次，他太调皮了，我拿他真是没办法，在家里坤坤做错了是，我就狠狠的打……听了坤坤妈妈的话，我觉得很不好受，我向坤坤妈妈说了几点教育孩子的方法，首先孩子做了错事，我们不能打骂，这样是起反作用的，你打了他之后，他就用破坏性的行为来发泄心中的不快，我们要从正面的教育孩子，说服孩子。听了我说得话，坤坤的妈妈表示以后要改变教育的方式。
+        　　<p><span>&nbsp; &nbsp; &nbsp;&nbsp; </span>
+        中午放学的时间到了，我和坤坤的妈妈说了这件事情，坤坤妈妈说这个孩子太坏了，在家我不知打过他多少次，他太调皮了，我拿他真是没办法，在家里坤坤做错了是，我就狠狠的打……听了坤坤妈妈的话，我觉得很不好受，我向坤坤妈妈说了几点教育孩子的方法，首先孩子做了错事，我们不能打骂，这样是起反作用的，你打了他之后，他就用破坏性的行为来发泄心中的不快，我们要从正面的教育孩子，说服孩子。听了我说得话，坤坤的妈妈表示以后要改变教育的方式。</p>
         　　
-        　　这件事过去一段时间了，我也随时关注着坤坤的行动，在班上我开展培养同情心的活动，慢慢地坤坤再也没有捏死过小动物。
+        　　<p><span>&nbsp; &nbsp; &nbsp;&nbsp; </span>这件事过去一段时间了，我也随时关注着坤坤的行动，在班上我开展培养同情心的活动，慢慢地坤坤再也没有捏死过小动物。</p>
         　　
-        　　老师们，以后我们遇到棘手的问题要机智的去处理，用真情去打动孩子的心作好家园工作，和家长一起来教育好孩子，唤起孩子的同情心，让孩子们学会关心。爱护小动物。</p>
+        　　<p><span>&nbsp; &nbsp; &nbsp;&nbsp; </span>老师们，以后我们遇到棘手的问题要机智的去处理，用真情去打动孩子的心作好家园工作，和家长一起来教育好孩子，唤起孩子的同情心，让孩子们学会关心。爱护小动物。</p>
+      </div>
     </div></div>
   <div class="clearfix"></div>
 
