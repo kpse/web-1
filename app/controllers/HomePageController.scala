@@ -1,5 +1,6 @@
 package controllers
 
+import models.V8.KulebaoNews
 import play.api.mvc._
 
 object HomePageController extends Controller with Secured {
@@ -33,7 +34,12 @@ object HomePageController extends Controller with Secured {
   }
 
   def singleNews(id: Long) = Action {
-    Ok(views.html.v2.singleNews(id.toString))
+    KulebaoNews.findById(id) match {
+      case Some(news) =>
+        Ok(views.html.v2.singleNews(news))
+      case None =>
+        Ok(views.html.v2.notFound())
+    }
   }
 
   def underConstruction = Action {
