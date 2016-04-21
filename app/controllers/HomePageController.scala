@@ -30,13 +30,13 @@ object HomePageController extends Controller with Secured {
   }
 
   def newsList = Action {
-    Ok(views.html.v2.newsList())
+    Ok(views.html.v2.newsList(KulebaoNews.top10News))
   }
 
   def singleNews(id: Long) = Action {
     KulebaoNews.findById(id) match {
       case Some(news) =>
-        Ok(views.html.v2.singleNews(news))
+        Ok(views.html.v2.singleNews(news, KulebaoNews.top5News, KulebaoNews.prevId(news), KulebaoNews.nextId(news)))
       case None =>
         Ok(views.html.v2.notFound())
     }

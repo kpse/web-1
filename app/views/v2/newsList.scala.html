@@ -1,3 +1,4 @@
+@(top10News: List[models.V8.KulebaoNews])
 @scripts = {
 }
 @styling = {
@@ -11,16 +12,17 @@
   </div>
   <div class="news-list-section section">
     <ul>
-      <li class="news"><a href="@routes.HomePageController.singleNews(1)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心1</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
-      <li class="news"><a href="@routes.HomePageController.singleNews(2)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心2</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
-      <li class="news"><a href="@routes.HomePageController.singleNews(3)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心3</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
-      <li class="news"><a href="@routes.HomePageController.singleNews(4)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心4</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
-      <li class="news"><a href="@routes.HomePageController.singleNews(5)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心5</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
-      <li class="news"><a href="@routes.HomePageController.singleNews(6)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心6</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
-      <li class="news"><a href="@routes.HomePageController.singleNews(7)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心7</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
-      <li class="news"><a href="@routes.HomePageController.singleNews(8)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心8</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
-      <li class="news"><a href="@routes.HomePageController.singleNews(9)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心9</div><div class="fill"><div class="published-at">2016-02-20</div><div class="dots"></div></div></div></a></li>
-      <li class="news"><a href="@routes.HomePageController.singleNews(10)"><div class="inner"><div class="title">幼儿教育笔记：唤起孩子们的同情心10</div><div class="fill"><div class="published-at">2015-02-20</div><div class="dots"></div></div></div></a></li>
+      @for(n <- top10News) {
+        <li class="news">
+          <a href="@routes.HomePageController.singleNews(n.id.getOrElse(0))">
+          <div class="inner"><div class="title">@n.title</div>
+            <div class="fill"><div class="published-at">@n.displayTime</div>
+              <div class="dots"></div>
+            </div>
+          </div>
+        </a>
+        </li>
+      }
     </ul>
     <nav>
       <ul class="pagination">
@@ -31,12 +33,6 @@
         </li>
         <li class="active">
           <span>1 <span class="sr-only">(current)</span></span>
-        </li>
-        <li>
-          <span>2</span>
-        </li>
-        <li>
-          <span>3</span>
         </li>
         <li class="disabled">
           <span>

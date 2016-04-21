@@ -1,4 +1,4 @@
-@(news: models.V8.KulebaoNews)
+@(news: models.V8.KulebaoNews, top5News: List[models.V8.KulebaoNews], prev: Long, next: Long)
 @scripts = {
 }
 @styling = {
@@ -13,11 +13,9 @@
     <h4 class="chinese-title">新闻动态</h4>
     <div class="news-list">
       <ul>
-        <li class="news"><a class="news-link" href="@routes.HomePageController.singleNews(2)">幼儿教育笔记：唤起孩子们的同情心</a></li>
-        <li class="news"><a class="news-link" href="@routes.HomePageController.singleNews(3)">幼儿教育笔记：唤起孩子333们的同情心</a></li>
-        <li class="news"><a class="news-link" href="@routes.HomePageController.singleNews(4)">幼儿教育笔记：唤起孩子们的222同情心</a></li>
-        <li class="news"><a class="news-link" href="@routes.HomePageController.singleNews(5)">中班教育笔记：握握手，还是好朋友</a></li>
-        <li class="news"><a class="news-link" href="@routes.HomePageController.singleNews(6)">中班教育笔记：握握222手，还是好朋友</a></li>
+        @for(n <- top5News) {
+          <li class="news"><a class="news-link" href="@routes.HomePageController.singleNews(n.id.getOrElse(0))">@n.title</a></li>
+        }
       </ul>
     </div>
     <a class="more-news" href="@routes.HomePageController.newsList">更多新闻&nbsp;&nbsp;&gt;&gt;</a>
@@ -25,12 +23,20 @@
     <div class="news-detail col-md-9">
       <h3 class="title">@news.title</h3>
       <div class="credit">
-        <a class="prev-link" href="@routes.HomePageController.singleNews(2)">上一篇</a>
-        <a class="next-link" href="@routes.HomePageController.singleNews(3)">下一篇</a>
+        @if(prev == 0) {
+          <a class="prev-link no" href="#">没有了</a>
+        } else {
+          <a class="prev-link" href="@routes.HomePageController.singleNews(prev)">上一篇</a>
+        }
+        @if(next == 0) {
+          <a class="next-link no" href="#">没有了</a>
+        } else {
+          <a class="next-link" href="@routes.HomePageController.singleNews(next)">下一篇</a>
+        }
         <div class="author">作者:@news.author   发布时间:@news.displayTime</div>
       </div>
       <div class="content">
-        @Html(news.content)
+        @Html(news.revisedStyleContent)
       </div>
     </div>
   </div>
