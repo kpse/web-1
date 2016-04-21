@@ -26,7 +26,7 @@ object HomePageController extends Controller with Secured {
   }
 
   def aboutUs = Action {
-    Ok(views.html.v2.aboutUs())
+    Ok(views.html.v2.aboutUs(KulebaoNews.top10News))
   }
 
   def newsList = Action {
