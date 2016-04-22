@@ -212,6 +212,7 @@ DELETE        /api/v1/device/:deviceId                                          
 POST          /api/v1/device                                                                   controllers.MacAddressController.create
 POST          /api/v1/device/:device                                                           controllers.MacAddressController.update(device: String)
 
+GET           /api/v1/pc_package                                                               controllers.AppPackageController.lastPCPackage(redirect: Option[String])
 GET           /api/v1/teacher_app_package                                                      controllers.AppPackageController.lastTeacherApp(redirect: Option[String])
 DELETE        /api/v1/teacher_app_package/:packageId                                           controllers.AppPackageController.delete(packageId: Long)
 POST          /api/v1/batch_import/parents                                                     controllers.BatchImportController.parents

@@ -40,7 +40,6 @@ object AppPackageController extends Controller with Secured {
 
   def last(redirect: Option[String]) = Action {
     packageFor(redirect)
-
   }
 
   def download = Action {
@@ -58,10 +57,14 @@ object AppPackageController extends Controller with Secured {
     packageFor(redirect, Some("teacher"))
   }
 
+  def lastPCPackage(redirect: Option[String]) = Action {
+    packageFor(redirect, Some("pc"))
+  }
+
   def packageFor(redirect: Option[String], userType: Some[String] = Some("parent")): SimpleResult = {
-    redirect.fold(BadRequest(""))({
+    redirect.fold(BadRequest(Json.toJson(ErrorResponse("Error redirect option", 112))))({
       case "true" =>
-        AppPackage.latest(userType).fold(BadRequest(""))({
+        AppPackage.latest(userType).fold(BadRequest(Json.toJson(ErrorResponse("No such package at all", 113))))({
           case pkg if pkg.url.startsWith("http") =>
             Redirect(pkg.url)
         })
