@@ -56,7 +56,7 @@
   </form>
 </div>
 <h2>上传新版本</h2>
-<form role="form" class="upload-form form-horizontal" name="newAppform">
+<form role="form" class="upload-form form-horizontal" name="newAppform" ng-hide="isPCPackage()">
   <div class="form-group">
     <label for="store-version-code" class="col-sm-4 control-label">版本序号</label>
 
@@ -103,6 +103,49 @@
   <div class="form-group button-group">
     <div class="col-sm-offset-3 col-sm-4">
       <button type="submit" class="btn btn-default" ng-disabled="newAppform.$invalid || uploading" ng-click="doUpload(uploadfile)">更新</button>
+    </div>
+    <div class="col-sm-4">
+      <button class="btn btn-info" ng-click="cleanFields()" ng-disabled="uploading">取消</button>
+    </div>
+  </div>
+</form>
+
+<form role="form" class="form-horizontal" name="newPCClientForm" ng-show="isPCPackage()">
+  <div class="form-group">
+    <label for="store-version-code" class="col-sm-4 control-label">版本序号</label>
+
+    <div class="col-sm-8">
+      <input id="store-version-code" class="form-control" type="number" ng-model="app.version_code" ng-bk-focus required min="{{lastApp.version_code + 1}}"/>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="summary" class="col-sm-4 control-label">概要</label>
+
+    <div class="col-sm-8">
+      <textarea id="summary" class="form-control version-summary" ng-model="app.summary" placeholder="版本介绍。。。" required/>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="store-version" class="col-sm-4 control-label">升级包版本</label>
+
+    <div class="col-sm-8">
+      <input id="store-version" class="form-control" ng-model="app.version_name" placeholder="{{lastApp.version_name}}-snapshot" required/>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-4 control-label" for="store-url">升级包路径</label>
+
+    <div class="col-sm-8">
+      <input id="pc-qiniu-url" class="form-control" ng-model="app.url" placeholder="七牛url" required/>
+    </div>
+  </div>
+
+  <div class="form-group button-group">
+    <div class="col-sm-offset-3 col-sm-4">
+      <button type="submit" class="btn btn-default" ng-disabled="newPCClientForm.$invalid || uploading" ng-click="savePackage()">更新</button>
     </div>
     <div class="col-sm-4">
       <button class="btn btn-info" ng-click="cleanFields()" ng-disabled="uploading">取消</button>

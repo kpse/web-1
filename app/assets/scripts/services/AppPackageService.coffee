@@ -20,6 +20,15 @@ angular.module('kulebao.services')
       latest:
         method: 'GET', params: redirect: false
     }
+]
 
-
+angular.module('kulebao.services')
+.factory 'pcPackageService', ['$resource',
+  ($resource) ->
+    $resource '/api/v1/pc_package/:id', {
+      id: '@id'
+    }, {
+      latest:
+        method: 'GET', params: redirect: false
+    }
 ]

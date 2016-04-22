@@ -1,22 +1,30 @@
 angular.module('kulebaoOp').controller 'OpAppCtrl',
   ['$scope', '$rootScope', '$stateParams', 'appPackageService',
-   '$location', 'teacherAppPackageService',
-    (scope, $rootScope, $stateParams, AppPackage, location, TeacherAppPackage) ->
+   '$location', 'teacherAppPackageService', 'pcPackageService',
+    (scope, $rootScope, $stateParams, AppPackage, location, TeacherAppPackage, PCPackage) ->
       $rootScope.tabName = 'app'
 
       isTeacherPackage = ->
         $stateParams.type == 'teacher'
 
+      scope.isPCPackage = ->
+        $stateParams.type == 'pc'
+
       scope.createPkg = ->
         app = new AppPackage
         app.package_type = 'teacher' if isTeacherPackage()
+        app.package_type = 'pc' if scope.isPCPackage()
         app
 
-      scope.PackageService = if isTeacherPackage() then TeacherAppPackage else AppPackage
+      scope.PackageService = switch $stateParams.type
+        when "teacher" then TeacherAppPackage
+        when "pc" then PCPackage
+        else AppPackage
 
       scope.sources = [
         {name: '安卓家长', type: 'parent'}
         {name: '安卓教师', type: 'teacher'}
+        {name: 'PC端', type: 'pc'}
       ]
 
 
@@ -49,6 +57,14 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
                 scope.app.version_code = scope.lastApp.version_code + 1
                 scope.uploading = false
 
+      scope.savePackage = ->
+        scope.app.file_size = 0
+        scope.app.$save ->
+          scope.lastApp = scope.PackageService.latest ->
+            scope.app = scope.createPkg()
+            scope.app.version_code = scope.lastApp.version_code + 1
+            scope.uploading = false
+        
 
       scope.cleanFields = ->
         scope.app = createPkg()
