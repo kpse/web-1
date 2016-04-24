@@ -7,14 +7,17 @@ CREATE TABLE parentext (
   social_id VARCHAR(20),
   nationality VARCHAR(20),
   fixed_line VARCHAR(20),
+  sms_push INT(4) DEFAULT 0,
   memo TEXT,
   PRIMARY KEY (uid),
   UNIQUE (base_id)
 );
 
 INSERT INTO parentext (base_id, display_name, social_id, nationality, fixed_line, memo) VALUES
-(1, '老犁头', '510122196812310275', '中国', '028-88887777', '备注就是懒得很');
+(1, '老犁头', '510122196812310275', '中国', '028-88887777', '备注就是懒得很'),
+(9, '不会智能手机', '510122196812310275', '中国', '028-88887777', '备注就是懒得很');
 
+update parentext set sms_push = 1 where base_id = 9;
 
 
 # --- !Downs

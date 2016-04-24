@@ -6,6 +6,7 @@ import com.baidu.yun.push.client.BaiduPushClient
 import com.baidu.yun.push.constants.BaiduPushConstants
 import com.baidu.yun.push.exception.{PushClientException, PushServerException}
 import com.baidu.yun.push.model.{PushMsgToSingleDeviceRequest, PushMsgToSingleDeviceResponse, PushResponse}
+import models.V3.Relative
 import models._
 import models.json_models.{CheckInfo, CheckNotification, EmployeeCheckInfo, IOSField}
 import play.Logger
@@ -102,9 +103,9 @@ object PushController extends Controller {
       Logger.info("PushController: No channel id available.")
   }
 
-  def individualSmsEnabled(card_no: String): Boolean = false
+  def individualSmsEnabled(schoolId: Long, phone: Option[String]): Boolean = phone.isDefined && Relative.findByPhone(schoolId, phone.get).exists(_.ext.exists(_.sms_push == Some(true)))
 
-  def smsPushEnabled(check: CheckInfo) = SchoolConfig.schoolSmsEnabled(check.school_id) && individualSmsEnabled(check.card_no)
+  def smsPushEnabled(check: CheckInfo, message: CheckNotification) = SchoolConfig.schoolSmsEnabled(check.school_id) && individualSmsEnabled(check.school_id, message.phone)
 
 
   def sendSmsInstead(check: CheckInfo, message: CheckNotification) = {
@@ -134,7 +135,7 @@ object PushController extends Controller {
           val messages = check.create
           Logger.info("messages : " + messages)
           messages map {
-            case m if smsPushEnabled(check) =>
+            case m if smsPushEnabled(check, m) =>
               sendSmsInstead(check, m)
             case m =>
               createSwipeMessage(m)

@@ -12,7 +12,7 @@ import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
 
-case class ParentExt(display_name: Option[String], social_id: Option[String], nationality: Option[String], fixed_line: Option[String], memo: Option[String]) {
+case class ParentExt(display_name: Option[String], social_id: Option[String], nationality: Option[String], fixed_line: Option[String], memo: Option[String], sms_push: Option[Boolean] = Some(false)) {
   def extExists(id: Long) = DB.withTransaction {
     implicit c =>
       SQL("select count(1) from parentext where base_id={base_id}")
@@ -31,7 +31,7 @@ case class ParentExt(display_name: Option[String], social_id: Option[String], na
   def update(id: Long) = DB.withTransaction {
     implicit c =>
       SQL("update parentext set display_name={display}, social_id={social_id}, " +
-        "nationality={nationality}, fixed_line={fixed_line}, memo={memo} " +
+        "nationality={nationality}, fixed_line={fixed_line}, memo={memo}, sms_push={sms_push} " +
         " where base_id={base_id}")
         .on(
           'base_id -> id,
@@ -39,20 +39,22 @@ case class ParentExt(display_name: Option[String], social_id: Option[String], na
           'social_id -> social_id,
           'nationality -> nationality,
           'fixed_line -> fixed_line,
+          'sms_push -> sms_push,
           'memo -> memo
         ).executeUpdate()
   }
 
   def create(id: Long) = DB.withTransaction {
     implicit c =>
-      SQL("insert into parentext (base_id, display_name, social_id, nationality, fixed_line, memo) values (" +
-        "{base_id}, {display}, {social_id}, {nationality}, {fixed_line}, {memo})")
+      SQL("insert into parentext (base_id, display_name, social_id, nationality, fixed_line, memo, sms_push) values (" +
+        "{base_id}, {display}, {social_id}, {nationality}, {fixed_line}, {memo}, {sms_push})")
         .on(
           'base_id -> id,
           'display -> display_name,
           'social_id -> social_id,
           'nationality -> nationality,
           'fixed_line -> fixed_line,
+          'sms_push -> sms_push,
           'memo -> memo
         ).executeInsert()
   }
@@ -168,6 +170,16 @@ object Relative {
       Logger.info(s"relative removeDirtyDataIfExists $r $execute $execute1 $execute2")
   }
 
+  def findByPhone(kg: Long, phone: String) = DB.withConnection {
+    implicit c =>
+      val relative: Option[Relative] = SQL(s"select * from parentinfo where status=1 and phone={phone}")
+        .on(
+          'kg -> kg.toString,
+          'phone -> phone
+        ).as(simple singleOpt)
+      relative map (c => c.copy(ext = extend(c.id.get)))
+  }
+
   val simple = {
     get[Long]("uid") ~
       get[String]("parent_id") ~
@@ -193,9 +205,10 @@ object Relative {
       get[Option[String]]("social_id") ~
       get[Option[String]]("nationality") ~
       get[Option[String]]("fixed_line") ~
+      get[Option[Int]]("sms_push") ~
       get[Option[String]]("memo") map {
-      case display ~ socialId ~ nationality ~ fixedLine ~ memo =>
-        ParentExt(display, socialId, nationality, fixedLine, memo)
+      case display ~ socialId ~ nationality ~ fixedLine ~ sms ~ memo =>
+        ParentExt(display, socialId, nationality, fixedLine, memo, Some(sms.getOrElse(0) != 0 ))
     }
   }
 
