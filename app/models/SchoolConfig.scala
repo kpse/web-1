@@ -49,12 +49,16 @@ object SchoolConfig {
   }
 
   def appendDefaultValue(configItems: List[ConfigItem]): List[ConfigItem] = {
-    val items: List[ConfigItem] = List(ConfigItem("enableHealthRecordManagement", "true"),
+    val items: List[ConfigItem] = List(
+      ConfigItem("enableHealthRecordManagement", "true"),
       ConfigItem("enableFinancialManagement", "true"),
       ConfigItem("enableWarehouseManagement", "true"),
       ConfigItem("enableDietManagement", "true"),
       ConfigItem("displayVideoMemberDetail", "false"),
-      ConfigItem("schoolGroupChat", "true")) filterNot { c => configItems.exists(c.name == _.name) }
+      ConfigItem("schoolGroupChat", "true"),
+      ConfigItem("smsPushAccount", ""),
+      ConfigItem("smsPushPassword", "")
+    ) filterNot { c => configItems.exists(c.name == _.name) }
     items ::: configItems
   }
 
