@@ -4,16 +4,14 @@ import com.baidu.yun.core.log.{YunLogEvent, YunLogHandler}
 import com.baidu.yun.push.auth.PushKeyPair
 import com.baidu.yun.push.client.BaiduPushClient
 import com.baidu.yun.push.constants.BaiduPushConstants
-import com.baidu.yun.push.exception.{PushServerException, PushClientException}
-import com.baidu.yun.push.model.{PushResponse, PushMsgToSingleDeviceResponse, PushMsgToSingleDeviceRequest}
+import com.baidu.yun.push.exception.{PushClientException, PushServerException}
+import com.baidu.yun.push.model.{PushMsgToSingleDeviceRequest, PushMsgToSingleDeviceResponse, PushResponse}
 import models._
-import models.json_models.{EmployeeCheckInfo, CheckInfo, CheckNotification, IOSField}
+import models.json_models.{CheckInfo, CheckNotification, EmployeeCheckInfo, IOSField}
 import play.Logger
 import play.api.Play
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
-
-import scala.Predef._
 
 object PushController extends Controller {
   implicit val write = Json.writes[IOSField]
@@ -104,6 +102,23 @@ object PushController extends Controller {
       Logger.info("PushController: No channel id available.")
   }
 
+  def individualSmsEnabled(card_no: String): Boolean = true
+
+  def smsPushEnabled(check: CheckInfo) = SchoolConfig.schoolSmsEnabled(check.school_id) && individualSmsEnabled(check.card_no)
+
+
+  def sendSmsInstead(check: CheckInfo, message: CheckNotification) = {
+    val provider: SMSProvider = new Mb365SMS {
+      override def username() = "xxx"
+      override def password() = "ppp"
+      override def template(): String = s"${message.aps.get.alert}【幼乐宝】"
+    }
+    val smsReq: String = Verification.generate("xxx")(provider)
+    Logger.info(s"smsReq = $smsReq")
+    SMSController.sendSMS(smsReq)(provider)
+  }
+
+
   def forwardSwipe(kg: Long) = Action(parse.json) {
     request =>
       Logger.info("checking : " + request.body)
@@ -112,7 +127,9 @@ object PushController extends Controller {
           val messages = check.create
           Logger.info("messages : " + messages)
           messages map {
-            m =>
+            case m if smsPushEnabled(check) =>
+              sendSmsInstead(check, m)
+            case m =>
               createSwipeMessage(m)
           }
           Ok(Json.toJson(new SuccessResponse))

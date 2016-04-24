@@ -37,6 +37,9 @@ object SchoolConfig {
   implicit val schoolConfigWriter = Json.writes[SchoolConfig]
   implicit val schoolConfigReader = Json.reads[SchoolConfig]
 
+  def schoolSmsEnabled(schoolId: Long) = config(schoolId).config.find(_.name.equalsIgnoreCase("smsPushAccount")).exists(_.value.nonEmpty) &&
+    config(schoolId).config.find(_.name.equalsIgnoreCase("smsPushPassword")).exists(_.value.nonEmpty)
+
   def addConfig(kg: Long, config: ConfigItem) = DB.withConnection {
     implicit c =>
       config.isExist(kg) match {
