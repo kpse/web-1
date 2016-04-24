@@ -37,8 +37,11 @@ object SchoolConfig {
   implicit val schoolConfigWriter = Json.writes[SchoolConfig]
   implicit val schoolConfigReader = Json.reads[SchoolConfig]
 
-  def schoolSmsEnabled(schoolId: Long) = config(schoolId).config.find(_.name.equalsIgnoreCase("smsPushAccount")).exists(_.value.nonEmpty) &&
-    config(schoolId).config.find(_.name.equalsIgnoreCase("smsPushPassword")).exists(_.value.nonEmpty)
+  def schoolSmsEnabled(schoolId: Long) = schoolSmsAccount(schoolId).exists(_.nonEmpty) && schoolSmsPassword(schoolId).exists (_.nonEmpty)
+
+  def schoolSmsAccount(schoolId: Long): Option[String] = config(schoolId).config.find(_.name.equalsIgnoreCase("smsPushAccount")) map (_.value)
+
+  def schoolSmsPassword(schoolId: Long): Option[String] = config(schoolId).config.find(_.name.equalsIgnoreCase("smsPushPassword")) map (_.value)
 
   def addConfig(kg: Long, config: ConfigItem) = DB.withConnection {
     implicit c =>

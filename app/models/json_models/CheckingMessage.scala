@@ -60,12 +60,13 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
         get[String]("channelid") ~
         get[String]("parent_name") ~
         get[String]("childinfo.name") ~
+        get[String]("accountid") ~
         get[Int]("device") map {
-        case child_id ~ pushid ~ channelid ~ name ~ childName ~ 3 =>
-          CheckNotification(timestamp, notice_type, child_id, pushid, channelid, record_url, name, 3, None, Some(CheckingMessage.advertisementOf(school_id)))
-        case child_id ~ pushid ~ channelid ~ name ~ childName ~ 4 =>
+        case child_id ~ pushid ~ channelid ~ name ~ childName ~ phone ~ 3 =>
+          CheckNotification(timestamp, notice_type, child_id, pushid, channelid, record_url, name, 3, Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)), Some(phone))
+        case child_id ~ pushid ~ channelid ~ name ~ childName ~ phone ~ 4 =>
           CheckNotification(timestamp, notice_type, child_id, pushid, channelid, record_url, name, 4,
-            Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)))
+            Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)), Some(phone))
       }
 
     }
@@ -73,7 +74,7 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
       """
         | select a.pushid, c.child_id, c.name, a.channelid,
         |  (select p.name from parentinfo p, relationmap r where p.parent_id = r.parent_id and r.card_num={card_num} limit 1) as parent_name,
-        |  a.device from accountinfo a, childinfo c, parentinfo p, relationmap r
+        |  a.device, a.accountid from accountinfo a, childinfo c, parentinfo p, relationmap r
         | where p.parent_id = r.parent_id and r.child_id = c.child_id and p.school_id={kg} and
         | p.phone = a.accountid and c.child_id = (select child_id from relationmap r where r.card_num={card_num} limit 1)
       """.stripMargin)
@@ -143,19 +144,20 @@ case class CheckChildInfo(school_id: Long, child_id: String, check_type: Int, ti
           get[String]("channelid") ~
           get[String]("parent_name") ~
           get[String]("childinfo.name") ~
+          get[String]("accountid") ~
           get[Int]("device") map {
-          case childId ~ pushid ~ channelid ~ name ~ childName ~ 3 =>
-            CheckNotification(timestamp, check_type, childId, pushid, channelid, "", name, 3, None, Some(CheckingMessage.advertisementOf(school_id)))
-          case childId ~ pushid ~ channelid ~ name ~ childName ~ 4 =>
+          case childId ~ pushid ~ channelid ~ name ~ childName ~ phone ~ 3 =>
+            CheckNotification(timestamp, check_type, childId, pushid, channelid, "", name, 3, None, Some(CheckingMessage.advertisementOf(school_id)), Some(phone))
+          case childId ~ pushid ~ channelid ~ name ~ childName ~ phone ~ 4 =>
             CheckNotification(timestamp, check_type, childId, pushid, channelid, "", name, 4,
-              Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)))
+              Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)), Some(phone))
         }
 
       }
       SQL(
         """
           |select a.pushid, c.child_id, c.name, a.channelid, '' as parent_name,
-          |  a.device from accountinfo a, childinfo c, parentinfo p, relationmap r
+          |  a.device, a.accountid from accountinfo a, childinfo c, parentinfo p, relationmap r
           |where p.parent_id = r.parent_id and r.child_id = c.child_id and
           |p.phone = a.accountid and c.child_id={child_id} and p.school_id={kg}
         """.stripMargin)
@@ -166,7 +168,8 @@ case class CheckChildInfo(school_id: Long, child_id: String, check_type: Int, ti
   }
 }
 
-case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String, pushid: String, channelid: String, record_url: String, parent_name: String, device: Int, aps: Option[IOSField], ad: Option[String] = None) {
+case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String, pushid: String, channelid: String,
+                             record_url: String, parent_name: String, device: Int, aps: Option[IOSField], ad: Option[String] = None, phone: Option[String] = None) {
   private val logger: Logger = Logger(classOf[CheckNotification])
   def saveToCache(kg: Long) = {
     notice_type match {

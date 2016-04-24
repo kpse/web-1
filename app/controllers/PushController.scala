@@ -102,20 +102,27 @@ object PushController extends Controller {
       Logger.info("PushController: No channel id available.")
   }
 
-  def individualSmsEnabled(card_no: String): Boolean = true
+  def individualSmsEnabled(card_no: String): Boolean = false
 
   def smsPushEnabled(check: CheckInfo) = SchoolConfig.schoolSmsEnabled(check.school_id) && individualSmsEnabled(check.card_no)
 
 
   def sendSmsInstead(check: CheckInfo, message: CheckNotification) = {
     val provider: SMSProvider = new Mb365SMS {
-      override def username() = "xxx"
-      override def password() = "ppp"
+      override def url() = "http://mb345.com:999/ws/LinkWS.asmx/Send2"
+
+      override def username() = SchoolConfig.schoolSmsAccount(check.school_id) getOrElse ""
+
+      override def password() = SchoolConfig.schoolSmsPassword(check.school_id) getOrElse ""
+
       override def template(): String = s"${message.aps.get.alert}【幼乐宝】"
     }
-    val smsReq: String = Verification.generate("xxx")(provider)
-    Logger.info(s"smsReq = $smsReq")
-    SMSController.sendSMS(smsReq)(provider)
+    message.phone map {
+      p =>
+        val smsReq: String = Verification.generate(p)(provider)
+        Logger.info(s"smsReq = $smsReq")
+        SMSController.sendSMS(smsReq)(provider)
+    }
   }
 
 
