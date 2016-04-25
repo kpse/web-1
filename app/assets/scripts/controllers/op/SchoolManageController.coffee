@@ -29,6 +29,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         enableDietManagement: 'true'
         displayVideoMemberDetail: 'false'
 
+
       fillSchoolConfig = (kg) ->
         SchoolConfig.get school_id: kg.school_id, (data)->
           kg.config =
@@ -43,6 +44,8 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             enableWarehouseManagement: extractConfig data['config'], 'enableWarehouseManagement', scope.defaultConfig['enableWarehouseManagement']
             enableDietManagement: extractConfig data['config'], 'enableDietManagement', scope.defaultConfig['enableDietManagement']
             displayVideoMemberDetail: extractConfig data['config'], 'displayVideoMemberDetail', scope.defaultConfig['displayVideoMemberDetail']
+            smsPushAccount: extractConfig data['config'], 'smsPushAccount', ''
+            smsPushPassword: extractConfig data['config'], 'smsPushPassword', ''
           kg.configArray = scope.generateConfigArray(kg.config)
 
       scope.refresh = (q = scope.currentQuery, page = scope.currentPage) ->
@@ -227,6 +230,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           when 'enableWarehouseManagement' then 'glyphicon glyphicon-list-alt'
           when 'enableDietManagement' then 'glyphicon glyphicon-grain'
           when 'displayVideoMemberDetail' then 'glyphicon glyphicon-tasks'
+          when 'smsPushAccount' then 'glyphicon glyphicon-envelope'
 
       scope.titleOf = (config) ->
           switch config.name
@@ -240,6 +244,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             when 'enableWarehouseManagement' then '仓库管理已禁用'
             when 'enableDietManagement' then '营养膳食已禁用'
             when 'displayVideoMemberDetail' then '自行管理视频账号'
+            when 'smsPushAccount' then '刷卡短信推送'
 
       scope.advancedEdting = 0
       scope.advanced = ->
