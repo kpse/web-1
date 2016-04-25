@@ -59,7 +59,7 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
 
       scope.savePackage = ->
         scope.app.file_size = 0
-        scope.app.url = encodeURIComponent scope.app.url
+        scope.app.url = (encodeURIComponent scope.app.url).replace(/%2F/g, '/').replace(/%3A/, ':')
         scope.app.$save ->
           scope.lastApp = scope.PackageService.latest ->
             scope.app = scope.createPkg()
