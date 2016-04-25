@@ -1,7 +1,7 @@
 package controllers
 
 import _root_.helper.TestSupport
-import models.ChargeInfo
+import models.{ChargeInfo, ConfigItem, SchoolConfig}
 import models.json_models.SchoolIntro._
 import models.json_models.{CreatingSchool, PrincipalOfSchool}
 import org.junit.runner.RunWith
@@ -118,6 +118,99 @@ class SchoolSummaryControllerSpec extends Specification with TestSupport {
         val res: JsValue = Json.parse(contentAsString(principalResponse))
         (res \ "login_name").as[String] must equalTo("e0002")
         (res \ "phone").as[String] must equalTo("23708089040")
+      }
+
+      "add school config" in new WithApplication {
+
+        val config = SchoolConfig(93740362, List(ConfigItem("key", "value")), List())
+        val created = route(requestByOperator(POST, "/api/v2/school_config/93740362").withBody(Json.toJson(config))).get
+
+        status(created) must equalTo(OK)
+
+        val principalResponse = route(requestWithSession(GET, "/api/v2/school_config/93740362")).get
+        status(principalResponse) must equalTo(OK)
+
+        val res: JsValue = Json.parse(contentAsString(principalResponse))
+        (res \ "config" ).as[List[ConfigItem]] must contain(ConfigItem("key", "value"))
+        (res \ "school_customized" ).as[List[ConfigItem]] must beEmpty
+      }
+
+      "add school private config" in new WithApplication {
+
+        val config = SchoolConfig(93740362, List(), List(ConfigItem("key", "value")))
+        val created = route(requestByOperator(POST, "/api/v2/school_config/93740362").withBody(Json.toJson(config))).get
+
+        status(created) must equalTo(OK)
+
+        val principalResponse = route(requestWithSession(GET, "/api/v2/school_config/93740362")).get
+        status(principalResponse) must equalTo(OK)
+
+        val res: JsValue = Json.parse(contentAsString(principalResponse))
+        (res \ "school_customized" ).as[List[ConfigItem]] must contain(ConfigItem("key", "value", SchoolConfig.SCHOOL_INDIVIDUAL_SETTING))
+      }
+
+      "override private config by global" in new WithApplication {
+        val privateItem = ConfigItem("key", "privateItem")
+        val globalItem = ConfigItem("key", "globalItem")
+
+        //add private first
+        val config1 = SchoolConfig(93740362, List(), List(privateItem))
+        val created1 = route(requestByOperator(POST, "/api/v2/school_config/93740362").withBody(Json.toJson(config1))).get
+
+        status(created1) must equalTo(OK)
+
+        //then add global
+        val config2 = SchoolConfig(93740362, List(globalItem), List())
+        val created2 = route(requestByOperator(POST, "/api/v2/school_config/93740362").withBody(Json.toJson(config2))).get
+
+        status(created2) must equalTo(OK)
+
+        val principalResponse = route(requestWithSession(GET, "/api/v2/school_config/93740362")).get
+        status(principalResponse) must equalTo(OK)
+
+        val res: JsValue = Json.parse(contentAsString(principalResponse))
+        (res \ "config" ).as[List[ConfigItem]] must contain(ConfigItem("key", "globalItem"))
+        (res \ "school_customized" ).as[List[ConfigItem]] must beEmpty
+
+      }
+
+      "not allow to override global config by principals" in new WithApplication {
+        val privateItem = ConfigItem("key", "privateItem")
+        val globalItem = ConfigItem("key", "globalItem")
+
+        //add global first
+        val config2 = SchoolConfig(93740362, List(globalItem), List())
+        val created2 = route(requestByOperator(POST, "/api/v2/school_config/93740362").withBody(Json.toJson(config2))).get
+
+        status(created2) must equalTo(OK)
+
+        //then try to update private item by principals
+        val config1 = SchoolConfig(93740362, List(), List(privateItem))
+        val created1 = route(requestWithSession(POST, "/api/v2/kindergarten/93740362/config").withBody(Json.toJson(config1))).get
+
+        status(created1) must equalTo(OK)
+
+        val principalResponse = route(requestWithSession(GET, "/api/v2/school_config/93740362")).get
+        status(principalResponse) must equalTo(OK)
+
+        val res: JsValue = Json.parse(contentAsString(principalResponse))
+        (res \ "config" ).as[List[ConfigItem]] must contain(ConfigItem("key", "globalItem"))
+        (res \ "school_customized" ).as[List[ConfigItem]] must beEmpty
+
+      }
+
+      "add school private config by principals" in new WithApplication {
+
+        val config = SchoolConfig(93740362, List(), List(ConfigItem("key", "value")))
+        val created = route(requestWithSession(POST, "/api/v2/kindergarten/93740362/config").withBody(Json.toJson(config))).get
+
+        status(created) must equalTo(OK)
+
+        val principalResponse = route(requestWithSession(GET, "/api/v2/school_config/93740362")).get
+        status(principalResponse) must equalTo(OK)
+
+        val res: JsValue = Json.parse(contentAsString(principalResponse))
+        (res \ "school_customized" ).as[List[ConfigItem]] must contain(ConfigItem("key", "value", SchoolConfig.SCHOOL_INDIVIDUAL_SETTING))
       }
 
     }

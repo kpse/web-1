@@ -298,6 +298,7 @@ POST          /api/v2/kindergarten/:kg/check_history                            
 #School config
 GET           /api/v2/school_config/:kg                                                        controllers.SchoolSummaryController.config(kg: Long)
 POST          /api/v2/school_config/:kg                                                        controllers.SchoolSummaryController.addConfig(kg: Long)
+POST          /api/v2/kindergarten/:kg/config                                                   controllers.SchoolSummaryController.addPrivateConfig(kg: Long)
 
 GET           /api/v2/relationship/:card                                                       controllers.RelationshipController.search(card: String)
 DELETE        /api/v2/relationship/:card                                                       controllers.RelationshipController.permanentRemove(card: String)

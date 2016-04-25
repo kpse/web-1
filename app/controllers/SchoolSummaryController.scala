@@ -89,10 +89,27 @@ object SchoolSummaryController extends Controller with Secured {
 
   def addConfig(kg: Long) = IsOperator(parse.json) {
     u => request =>
-      logger.debug(request.body.toString())
+      logger.debug(s"addConfig + ${request.body.toString()}")
       request.body.validate[SchoolConfig].map {
-        case (current) if current.config.nonEmpty =>
-          current.config.map(SchoolConfig.addConfig(kg, _))
+        case (current) if current.config.nonEmpty || current.school_customized.nonEmpty =>
+          (current.config.map(_.copy(category = SchoolConfig.SUPER_ADMIN_SETTING)) :::
+            current.school_customized.map(_.copy(category = SchoolConfig.SCHOOL_INDIVIDUAL_SETTING))).map(SchoolConfig.addConfig(kg, _))
+          Ok(Json.toJson(new SuccessResponse))
+        case _ => Ok(Json.toJson(ErrorResponse("no config added.")))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
+
+  def addPrivateConfig(kg: Long) = IsPrincipal(parse.json) {
+    u => request =>
+      logger.debug(s"addPrivateConfig + ${request.body.toString()}")
+      request.body.validate[SchoolConfig].map {
+        case (current) if current.school_customized.nonEmpty =>
+          current.school_customized
+            .filterNot(c => SchoolConfig.config(kg).config.exists(_.name.equalsIgnoreCase(c.name)))
+            .map(_.copy(category = SchoolConfig.SCHOOL_INDIVIDUAL_SETTING))
+            .map(SchoolConfig.addConfig(kg, _))
           Ok(Json.toJson(new SuccessResponse))
         case _ => Ok(Json.toJson(ErrorResponse("no config added.")))
       }.recoverTotal {

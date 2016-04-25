@@ -5,6 +5,7 @@ CREATE TABLE schoolconfig (
   school_id VARCHAR(20) NOT NULL,
   name VARCHAR(40) NOT NULL default '',
   value TEXT,
+  category VARCHAR(20) DEFAULT 'global',
   update_at BIGINT      NOT NULL DEFAULT 0,
   PRIMARY KEY (uid),
   INDEX (school_id)
