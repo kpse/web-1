@@ -6,7 +6,7 @@ import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.Json
 
-case class ConfigItem(name: String, value: String, category: String = SchoolConfig.SUPER_ADMIN_SETTING) {
+case class ConfigItem(name: String, value: String, category: Option[String] = SchoolConfig.SUPER_ADMIN_SETTING) {
   def isExist(kg: Long) = DB.withConnection {
     implicit c =>
       SQL("select count(1) from schoolconfig " +
@@ -37,8 +37,8 @@ object SchoolConfig {
   implicit val schoolConfigWriter = Json.writes[SchoolConfig]
   implicit val schoolConfigReader = Json.reads[SchoolConfig]
 
-  val SUPER_ADMIN_SETTING = "global"
-  val SCHOOL_INDIVIDUAL_SETTING = "individual"
+  val SUPER_ADMIN_SETTING = Some("global")
+  val SCHOOL_INDIVIDUAL_SETTING = Some("individual")
 
   def addConfig(kg: Long, config: ConfigItem) = DB.withConnection {
     implicit c =>
@@ -71,13 +71,13 @@ object SchoolConfig {
         " where school_id = {kg}")
         .on('kg -> kg.toString)
         .as(simpleItem *)
-      val partitions: (List[ConfigItem], List[ConfigItem]) = appendDefaultValue(configItems).partition(_.category.equalsIgnoreCase(SchoolConfig.SUPER_ADMIN_SETTING))
+      val partitions: (List[ConfigItem], List[ConfigItem]) = appendDefaultValue(configItems).partition(_.category == SchoolConfig.SUPER_ADMIN_SETTING)
       SchoolConfig(kg, partitions._1, partitions._2)
   }
 
   val simpleItem = {
     get[String]("name") ~
-      get[String]("category") ~
+      get[Option[String]]("category") ~
       get[String]("value") map {
       case name ~ category ~ value =>
         ConfigItem(name, value, category)

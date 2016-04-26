@@ -1,9 +1,9 @@
 package controllers
 
 import _root_.helper.TestSupport
-import models.{ChargeInfo, ConfigItem, SchoolConfig}
 import models.json_models.SchoolIntro._
-import models.json_models.{CreatingSchool, PrincipalOfSchool}
+import models.json_models.{CreatingSchool, PrincipalOfSchool, SchoolIntro}
+import models.{ChargeInfo, ConfigItem, SchoolConfig}
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
@@ -78,6 +78,21 @@ class SchoolSummaryControllerSpec extends Specification with TestSupport {
         val r2: JsValue = Json.parse(contentAsString(detailResponse2))
         (r2 \ "school_id").as[Long] must equalTo(93740362)
 
+      }
+
+      "be updated by operator" in new WithApplication {
+
+        private val json: JsValue = Json.toJson(SchoolIntro(93740362, "100", 0, "desc", "", "new name", None, Some("new address"), Some("full name"), Some(List(ConfigItem("a", "b")))))
+        val updated = route(requestByOperator(POST, "/kindergarten/93740362").withBody(json)).get
+
+        status(updated) must equalTo(OK)
+
+        val detailResponse2 = route(requestByOperator(GET, "/kindergarten/93740362/detail")).get
+
+        status(detailResponse2) must equalTo(OK)
+        val r2: JsValue = Json.parse(contentAsString(detailResponse2))
+        (r2 \ "school_id").as[Long] must equalTo(93740362)
+        (r2 \ "school_info" \ "properties").as[List[ConfigItem]] must contain(ConfigItem("a", "b", Some("global")))
       }
 
       "not be deleted by teacher" in new WithApplication {
