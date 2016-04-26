@@ -108,6 +108,7 @@ object PushController extends Controller {
   private def schoolSmsEnabled(schoolId: Long) = {
     SchoolConfig.valueOfKey(schoolId, "smsPushAccount").exists(_.nonEmpty) &&
       SchoolConfig.valueOfKey(schoolId, "smsPushPassword").exists(_.nonEmpty) &&
+      SchoolConfig.valueOfKey(schoolId, "smsPushSignature").exists(_.nonEmpty) &&
       SchoolConfig.valueOfKey(schoolId, "switch_sms_on_card_wiped").exists(_.equalsIgnoreCase("1"))
   }
   def smsPushEnabled(check: CheckInfo, message: CheckNotification) = schoolSmsEnabled(check.school_id) && individualSmsEnabled(check.school_id, message.phone)
@@ -121,7 +122,8 @@ object PushController extends Controller {
 
       override def password() = SchoolConfig.valueOfKey(check.school_id, "smsPushPassword") getOrElse ""
 
-      override def template(): String = s"${message.aps.get.alert}【幼乐宝】"
+
+      override def template(): String = s"${message.smsPushContent.getOrElse(message.aps.get.alert)}【${SchoolConfig.valueOfKey(check.school_id, "smsPushSignature").getOrElse("幼乐宝")}】"
     }
     message.phone map {
       p =>
@@ -130,7 +132,6 @@ object PushController extends Controller {
         SMSController.sendSMS(smsReq)(provider)
     }
   }
-
 
   def forwardSwipe(kg: Long) = Action(parse.json) {
     request =>

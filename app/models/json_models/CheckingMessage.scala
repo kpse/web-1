@@ -53,7 +53,9 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
           case 13 => "下车"
         }))
     }
-
+    def formatSmsPushContent(parentName: String, childName: String, checkAt: Long, checkingParentName: String, checkType: Int) = {
+      s"${parentName}家长，你好，你的宝宝${childName}已于${CheckingMessage.checkingTimeDisplay(new DateTime(checkAt))}由${checkingParentName}刷卡${CheckingMessage.checkingDisplayValue(checkType)}。"
+    }
     val simpleCheck = {
       get[String]("child_id") ~
         get[String]("pushid") ~
@@ -61,12 +63,14 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
         get[String]("parent_name") ~
         get[String]("childinfo.name") ~
         get[String]("accountid") ~
+        get[String]("parentinfo.name") ~
         get[Int]("device") map {
-        case child_id ~ pushid ~ channelid ~ name ~ childName ~ phone ~ 3 =>
-          CheckNotification(timestamp, notice_type, child_id, pushid, channelid, record_url, name, 3, Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)), Some(phone))
-        case child_id ~ pushid ~ channelid ~ name ~ childName ~ phone ~ 4 =>
+        case child_id ~ pushid ~ channelid ~ name ~ childName ~ phone ~ receiver ~ 3 =>
+          CheckNotification(timestamp, notice_type, child_id, pushid, channelid, record_url, name, 3,
+            Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)), Some(phone), Some(formatSmsPushContent(receiver, childName, timestamp, name, notice_type)))
+        case child_id ~ pushid ~ channelid ~ name ~ childName ~ phone ~ receiver ~ 4 =>
           CheckNotification(timestamp, notice_type, child_id, pushid, channelid, record_url, name, 4,
-            Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)), Some(phone))
+            Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)), Some(phone), Some(formatSmsPushContent(receiver, childName, timestamp, name, notice_type)))
       }
 
     }
@@ -74,7 +78,7 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
       """
         | select a.pushid, c.child_id, c.name, a.channelid,
         |  (select p.name from parentinfo p, relationmap r where p.parent_id = r.parent_id and r.card_num={card_num} limit 1) as parent_name,
-        |  a.device, a.accountid from accountinfo a, childinfo c, parentinfo p, relationmap r
+        |  a.device, a.accountid, p.name from accountinfo a, childinfo c, parentinfo p, relationmap r
         | where p.parent_id = r.parent_id and r.child_id = c.child_id and p.school_id={kg} and
         | p.phone = a.accountid and c.child_id = (select child_id from relationmap r where r.card_num={card_num} limit 1)
       """.stripMargin)
@@ -132,48 +136,54 @@ case class CheckChildInfo(school_id: Long, child_id: String, check_type: Int, ti
     CheckInfo(school_id, "", 0, check_type, "", System.currentTimeMillis)
 
   def toNotifications(implicit connection: Connection) = {
-      def generateNotice(childName: String): IOSField = {
-        IOSField("%s提醒您：您的孩子 %s 已于 %s %s。".format(CheckingMessage.advertisementOf(school_id), childName,
-          new DateTime(timestamp).toString("HH:mm:ss"),
-          if (check_type == 11) "下车入园" else "离园上车"))
+    def generateNotice(childName: String): IOSField = {
+      IOSField("%s提醒您：您的孩子 %s 已于 %s %s。".format(CheckingMessage.advertisementOf(school_id), childName,
+        new DateTime(timestamp).toString("HH:mm:ss"),
+        if (check_type == 11) "下车入园" else "离园上车"))
+    }
+
+    def formatSmsPushContent(parentName: String, childName: String, checkAt: Long, checkType: Int) = {
+      s"${parentName}家长，你好，你的宝宝${childName}已于${CheckingMessage.checkingTimeDisplay(DateTime.now())}${CheckingMessage.checkingDisplayValue(checkType)}。"
+    }
+
+    val simpleChildCheck = {
+      get[String]("child_id") ~
+        get[String]("pushid") ~
+        get[String]("channelid") ~
+        get[String]("parent_name") ~
+        get[String]("childinfo.name") ~
+        get[String]("accountid") ~
+        get[String]("parentinfo.name") ~
+        get[Int]("device") map {
+        case childId ~ pushid ~ channelid ~ name ~ childName ~ phone ~ receiver ~ 3 =>
+          CheckNotification(timestamp, check_type, childId, pushid, channelid, "", name, 3, None, Some(CheckingMessage.advertisementOf(school_id)), Some(phone), Some(formatSmsPushContent(receiver, childName, timestamp, check_type)))
+        case childId ~ pushid ~ channelid ~ name ~ childName ~ phone ~ receiver ~ 4 =>
+          CheckNotification(timestamp, check_type, childId, pushid, channelid, "", name, 4,
+            Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)), Some(phone), Some(formatSmsPushContent(receiver, childName, timestamp, check_type)))
       }
 
-      val simpleChildCheck = {
-        get[String]("child_id") ~
-          get[String]("pushid") ~
-          get[String]("channelid") ~
-          get[String]("parent_name") ~
-          get[String]("childinfo.name") ~
-          get[String]("accountid") ~
-          get[Int]("device") map {
-          case childId ~ pushid ~ channelid ~ name ~ childName ~ phone ~ 3 =>
-            CheckNotification(timestamp, check_type, childId, pushid, channelid, "", name, 3, None, Some(CheckingMessage.advertisementOf(school_id)), Some(phone))
-          case childId ~ pushid ~ channelid ~ name ~ childName ~ phone ~ 4 =>
-            CheckNotification(timestamp, check_type, childId, pushid, channelid, "", name, 4,
-              Some(generateNotice(childName)), Some(CheckingMessage.advertisementOf(school_id)), Some(phone))
-        }
-
-      }
-      SQL(
-        """
-          |select a.pushid, c.child_id, c.name, a.channelid, '' as parent_name,
-          |  a.device, a.accountid from accountinfo a, childinfo c, parentinfo p, relationmap r
-          |where p.parent_id = r.parent_id and r.child_id = c.child_id and
-          |p.phone = a.accountid and c.child_id={child_id} and p.school_id={kg}
-        """.stripMargin)
-        .on(
-          'child_id -> child_id,
-          'kg -> school_id.toString
-        ).as(simpleChildCheck *).groupBy(_.channelid).mapValues(_.head).values.toList
+    }
+    SQL(
+      """
+        |select a.pushid, c.child_id, c.name, a.channelid, '' as parent_name,
+        |  a.device, a.accountid, p.name from accountinfo a, childinfo c, parentinfo p, relationmap r
+        |where p.parent_id = r.parent_id and r.child_id = c.child_id and
+        |p.phone = a.accountid and c.child_id={child_id} and p.school_id={kg}
+      """.stripMargin)
+      .on(
+        'child_id -> child_id,
+        'kg -> school_id.toString
+      ).as(simpleChildCheck *).groupBy(_.channelid).mapValues(_.head).values.toList
   }
 }
 
 case class CheckNotification(timestamp: Long, notice_type: Int, child_id: String, pushid: String, channelid: String,
-                             record_url: String, parent_name: String, device: Int, aps: Option[IOSField], ad: Option[String] = None, phone: Option[String] = None) {
+                             record_url: String, parent_name: String, device: Int, aps: Option[IOSField], ad: Option[String] = None, phone: Option[String] = None, smsPushContent: Option[String] = None) {
   private val logger: Logger = Logger(classOf[CheckNotification])
+
   def saveToCache(kg: Long) = {
     notice_type match {
-      case 0|1|11|12 =>
+      case 0 | 1 | 11 | 12 =>
         val cacheKey: String = s"dailylog_${kg}_$child_id"
         val maybeCheckNotifications: Option[List[Long]] = Cache.getAs[List[Long]](cacheKey)
         logger.debug(s"CheckNotification save to cache : ${maybeCheckNotifications}")
@@ -209,6 +219,17 @@ object CheckingMessage {
   def advertisementOf(schoolId: Long): String = Advertisement.index(schoolId) match {
     case x :: xs => x.name
     case _ => "幼乐宝"
+  }
+
+  def checkingTimeDisplay(time: DateTime) = time.toString("yyyy-MM-dd HH:mm:ss")
+
+  def checkingDisplayValue(checkType: Int) = checkType match {
+    case 1 => "入园"
+    case 0 => "离园"
+    case 10 => "上车"
+    case 11 => "离开校车"
+    case 12 => "坐上校车"
+    case 13 => "下车"
   }
 }
 
