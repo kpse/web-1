@@ -40,12 +40,6 @@ object SchoolConfig {
   val SUPER_ADMIN_SETTING = "global"
   val SCHOOL_INDIVIDUAL_SETTING = "individual"
 
-  def schoolSmsEnabled(schoolId: Long) = schoolSmsAccount(schoolId).exists(_.nonEmpty) && schoolSmsPassword(schoolId).exists (_.nonEmpty)
-
-  def schoolSmsAccount(schoolId: Long): Option[String] = config(schoolId).config.find(_.name.equalsIgnoreCase("smsPushAccount")) map (_.value)
-
-  def schoolSmsPassword(schoolId: Long): Option[String] = config(schoolId).config.find(_.name.equalsIgnoreCase("smsPushPassword")) map (_.value)
-
   def addConfig(kg: Long, config: ConfigItem) = DB.withConnection {
     implicit c =>
       config.isExist(kg) match {
@@ -83,10 +77,14 @@ object SchoolConfig {
 
   val simpleItem = {
     get[String]("name") ~
-    get[String]("category") ~
+      get[String]("category") ~
       get[String]("value") map {
       case name ~ category ~ value =>
         ConfigItem(name, value, category)
     }
+  }
+
+  def valueOfKey(schoolId: Long, keyName: String): Option[String] = {
+    config(schoolId).config.find(_.name.equalsIgnoreCase(keyName)) map (_.value)
   }
 }

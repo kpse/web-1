@@ -103,18 +103,23 @@ object PushController extends Controller {
       Logger.info("PushController: No channel id available.")
   }
 
-  def individualSmsEnabled(schoolId: Long, phone: Option[String]): Boolean = phone.isDefined && Relative.findByPhone(schoolId, phone.get).exists(_.ext.exists(_.sms_push == Some(true)))
+  private def individualSmsEnabled(schoolId: Long, phone: Option[String]): Boolean = phone.isDefined && Relative.findByPhone(schoolId, phone.get).exists(_.ext.exists(_.sms_push == Some(true)))
 
-  def smsPushEnabled(check: CheckInfo, message: CheckNotification) = SchoolConfig.schoolSmsEnabled(check.school_id) && individualSmsEnabled(check.school_id, message.phone)
+  private def schoolSmsEnabled(schoolId: Long) = {
+    SchoolConfig.valueOfKey(schoolId, "smsPushAccount").exists(_.nonEmpty) &&
+      SchoolConfig.valueOfKey(schoolId, "smsPushPassword").exists(_.nonEmpty) &&
+      SchoolConfig.valueOfKey(schoolId, "switch_sms_on_card_wiped").exists(_.equalsIgnoreCase("1"))
+  }
+  def smsPushEnabled(check: CheckInfo, message: CheckNotification) = schoolSmsEnabled(check.school_id) && individualSmsEnabled(check.school_id, message.phone)
 
 
   def sendSmsInstead(check: CheckInfo, message: CheckNotification) = {
     val provider: SMSProvider = new Mb365SMS {
       override def url() = "http://mb345.com:999/ws/LinkWS.asmx/Send2"
 
-      override def username() = SchoolConfig.schoolSmsAccount(check.school_id) getOrElse ""
+      override def username() = SchoolConfig.valueOfKey(check.school_id, "smsPushAccount") getOrElse ""
 
-      override def password() = SchoolConfig.schoolSmsPassword(check.school_id) getOrElse ""
+      override def password() = SchoolConfig.valueOfKey(check.school_id, "smsPushPassword") getOrElse ""
 
       override def template(): String = s"${message.aps.get.alert}【幼乐宝】"
     }
