@@ -71,7 +71,7 @@ object SchoolConfig {
         " where school_id = {kg}")
         .on('kg -> kg.toString)
         .as(simpleItem *)
-      val partitions: (List[ConfigItem], List[ConfigItem]) = appendDefaultValue(configItems).partition(_.category == SchoolConfig.SUPER_ADMIN_SETTING)
+      val partitions: (List[ConfigItem], List[ConfigItem]) = appendDefaultValue(configItems).partition(_.category != SchoolConfig.SCHOOL_INDIVIDUAL_SETTING)
       SchoolConfig(kg, partitions._1, partitions._2)
   }
 
@@ -79,6 +79,8 @@ object SchoolConfig {
     get[String]("name") ~
       get[Option[String]]("category") ~
       get[String]("value") map {
+      case name ~ None ~ value =>
+        ConfigItem(name, value, SUPER_ADMIN_SETTING)
       case name ~ category ~ value =>
         ConfigItem(name, value, category)
     }
