@@ -16,6 +16,7 @@ angular.module("kulebao.directives").directive "klFileUpload",
           form: "=?"
           suffix: "@?"
           images: "=?multiple"
+          limitation: "@?"
 
         link: (scope, element, attrs) ->
           scope.label = scope.label || '上传'
@@ -27,10 +28,11 @@ angular.module("kulebao.directives").directive "klFileUpload",
           scope.fileControl = element[0].firstChild
           scope.suffixError = false
           scope.limitationError = false
+          scope.limitation = scope.limitation || 9
           scope.images = scope.images || []
           scope.fileControl.onchange = (e) ->
             targetFiles = e.target.files
-            if (targetFiles.length + scope.images.length) > 9
+            if (targetFiles.length + scope.images.length) > scope.limitation
               scope.$apply ->
                 scope.limitationError = true
             else if !scope.validateFiles(targetFiles)
