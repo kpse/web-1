@@ -87,6 +87,7 @@ object SchoolConfig {
   }
 
   def valueOfKey(schoolId: Long, keyName: String): Option[String] = {
-    config(schoolId).config.find(_.name.equalsIgnoreCase(keyName)) map (_.value)
+    val schoolConfig: SchoolConfig = config(schoolId)
+    (schoolConfig.config ::: schoolConfig.school_customized).find(_.name.equalsIgnoreCase(keyName)) map (_.value)
   }
 }
