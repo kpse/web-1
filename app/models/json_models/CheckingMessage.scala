@@ -247,7 +247,7 @@ object CheckingMessage {
 
   def sendSmsInstead(schoolId: Long, message: CheckNotification) = {
     val provider: SMSProvider = new Mb365SMS {
-      override def url() = "http://mb345.com:999/ws/LinkWS.asmx/Send2"
+      override def url() = "http://mb345.com:999/ws/LinkWS.asmx/BatchSend2"
 
       override def username() = SchoolConfig.valueOfKey(schoolId, "smsPushAccount") getOrElse ""
 
