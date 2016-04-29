@@ -4,8 +4,9 @@ import java.sql.Connection
 
 import anorm.SqlParser._
 import anorm.{~, _}
-import models.Advertisement
-import models.V3.CheckingRecordV3
+import controllers.SMSController
+import models._
+import models.V3.{CheckingRecordV3, Relative}
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.Play.current
@@ -230,6 +231,37 @@ object CheckingMessage {
     case 11 => "离开校车"
     case 12 => "坐上校车"
     case 13 => "下车"
+  }
+
+  private def individualSmsEnabled(schoolId: Long, phone: Option[String]): Boolean = phone.isDefined && Relative.findByPhone(schoolId, phone.get).exists(_.ext.exists(_.sms_push == Some(true)))
+
+  private def schoolSmsEnabled(schoolId: Long) = {
+    SchoolConfig.valueOfKey(schoolId, "smsPushAccount").exists(_.nonEmpty) &&
+      SchoolConfig.valueOfKey(schoolId, "smsPushPassword").exists(_.nonEmpty) &&
+      SchoolConfig.valueOfKey(schoolId, "smsPushSignature").exists(_.nonEmpty) &&
+      SchoolConfig.valueOfKey(schoolId, "switch_sms_on_card_wiped").exists(_.equalsIgnoreCase("1"))
+  }
+
+  def smsPushEnabled(schoolId: Long, message: CheckNotification) = schoolSmsEnabled(schoolId) && individualSmsEnabled(schoolId, message.phone)
+
+
+  def sendSmsInstead(schoolId: Long, message: CheckNotification) = {
+    val provider: SMSProvider = new Mb365SMS {
+      override def url() = "http://mb345.com:999/ws/LinkWS.asmx/Send2"
+
+      override def username() = SchoolConfig.valueOfKey(schoolId, "smsPushAccount") getOrElse ""
+
+      override def password() = SchoolConfig.valueOfKey(schoolId, "smsPushPassword") getOrElse ""
+
+
+      override def template(): String = s"${message.smsPushContent.getOrElse(message.aps.get.alert)}【${SchoolConfig.valueOfKey(schoolId, "smsPushSignature").getOrElse("幼乐宝")}】"
+    }
+    message.phone map {
+      p =>
+        val smsReq: String = Verification.generate(p)(provider)
+        Logger.info(s"smsReq = $smsReq")
+        SMSController.sendSMS(smsReq)(provider)
+    }
   }
 }
 

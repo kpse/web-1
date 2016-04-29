@@ -2,9 +2,9 @@ package controllers.V2
 
 import controllers.PushController.createSwipeMessage
 import controllers.Secured
-import models.json_models.{CheckingMessage, CheckChildInfo, CheckInfo}
-import models.json_models.CheckingMessage._
 import models._
+import models.json_models.CheckingMessage._
+import models.json_models.{CheckChildInfo, CheckInfo}
 import play.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.Controller
@@ -58,7 +58,9 @@ object BusLocationController extends Controller with Secured {
     val messages = check.create
     Logger.info("bus location push messages : " + messages)
     messages map {
-      m =>
+      case m if smsPushEnabled(check.school_id, m) =>
+        sendSmsInstead(check.school_id, m)
+      case m =>
         createSwipeMessage(m)
     }
   }
@@ -67,7 +69,9 @@ object BusLocationController extends Controller with Secured {
     val messages = check.create
     Logger.info("bus location push messages : " + messages)
     messages map {
-      m =>
+      case m if smsPushEnabled(check.school_id, m) =>
+        sendSmsInstead(check.school_id, m)
+      case m =>
         createSwipeMessage(m)
     }
   }

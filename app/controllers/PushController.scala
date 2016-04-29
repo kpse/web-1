@@ -6,9 +6,10 @@ import com.baidu.yun.push.client.BaiduPushClient
 import com.baidu.yun.push.constants.BaiduPushConstants
 import com.baidu.yun.push.exception.{PushClientException, PushServerException}
 import com.baidu.yun.push.model.{PushMsgToSingleDeviceRequest, PushMsgToSingleDeviceResponse, PushResponse}
-import models.V3.Relative
 import models._
 import models.json_models.{CheckInfo, CheckNotification, EmployeeCheckInfo, IOSField}
+import json_models.CheckingMessage.sendSmsInstead
+import json_models.CheckingMessage.smsPushEnabled
 import play.Logger
 import play.api.Play
 import play.api.libs.json.{JsError, Json}
@@ -103,35 +104,6 @@ object PushController extends Controller {
       Logger.info("PushController: No channel id available.")
   }
 
-  private def individualSmsEnabled(schoolId: Long, phone: Option[String]): Boolean = phone.isDefined && Relative.findByPhone(schoolId, phone.get).exists(_.ext.exists(_.sms_push == Some(true)))
-
-  private def schoolSmsEnabled(schoolId: Long) = {
-    SchoolConfig.valueOfKey(schoolId, "smsPushAccount").exists(_.nonEmpty) &&
-      SchoolConfig.valueOfKey(schoolId, "smsPushPassword").exists(_.nonEmpty) &&
-      SchoolConfig.valueOfKey(schoolId, "smsPushSignature").exists(_.nonEmpty) &&
-      SchoolConfig.valueOfKey(schoolId, "switch_sms_on_card_wiped").exists(_.equalsIgnoreCase("1"))
-  }
-  def smsPushEnabled(check: CheckInfo, message: CheckNotification) = schoolSmsEnabled(check.school_id) && individualSmsEnabled(check.school_id, message.phone)
-
-
-  def sendSmsInstead(check: CheckInfo, message: CheckNotification) = {
-    val provider: SMSProvider = new Mb365SMS {
-      override def url() = "http://mb345.com:999/ws/LinkWS.asmx/Send2"
-
-      override def username() = SchoolConfig.valueOfKey(check.school_id, "smsPushAccount") getOrElse ""
-
-      override def password() = SchoolConfig.valueOfKey(check.school_id, "smsPushPassword") getOrElse ""
-
-
-      override def template(): String = s"${message.smsPushContent.getOrElse(message.aps.get.alert)}【${SchoolConfig.valueOfKey(check.school_id, "smsPushSignature").getOrElse("幼乐宝")}】"
-    }
-    message.phone map {
-      p =>
-        val smsReq: String = Verification.generate(p)(provider)
-        Logger.info(s"smsReq = $smsReq")
-        SMSController.sendSMS(smsReq)(provider)
-    }
-  }
 
   def forwardSwipe(kg: Long) = Action(parse.json) {
     request =>
@@ -141,8 +113,8 @@ object PushController extends Controller {
           val messages = check.create
           Logger.info("messages : " + messages)
           messages map {
-            case m if smsPushEnabled(check, m) =>
-              sendSmsInstead(check, m)
+            case m if smsPushEnabled(check.school_id, m) =>
+              sendSmsInstead(check.school_id, m)
             case m =>
               createSwipeMessage(m)
           }
