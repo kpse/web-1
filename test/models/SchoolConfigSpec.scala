@@ -35,5 +35,14 @@ class SchoolConfigSpec extends Specification with TestSupport {
       value2 must beSome("vv")
     }
 
+    "be global by default" in new WithApplication {
+
+      SchoolConfig.addConfig(93740562, ConfigItem("this should be global", "guess so", None))
+
+      private val config: SchoolConfig = SchoolConfig.config(93740562)
+
+      config.config must contain(ConfigItem("this should be global", "guess so", SchoolConfig.SUPER_ADMIN_SETTING))
+    }
+
   }
 }
