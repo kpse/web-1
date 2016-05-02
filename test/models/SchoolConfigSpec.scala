@@ -44,5 +44,15 @@ class SchoolConfigSpec extends Specification with TestSupport {
       config.config must contain(ConfigItem("this should be global", "guess so", SchoolConfig.SUPER_ADMIN_SETTING))
     }
 
+    "be able to set to individual" in new WithApplication {
+
+      SchoolConfig.addConfig(93740562, ConfigItem("this should be individual", "yes sir", SchoolConfig.SCHOOL_INDIVIDUAL_SETTING))
+
+      private val config: SchoolConfig = SchoolConfig.config(93740562)
+
+      config.config must not contain ConfigItem("this should be individual", "yes sir", SchoolConfig.SCHOOL_INDIVIDUAL_SETTING)
+      config.school_customized must contain(ConfigItem("this should be individual", "yes sir", SchoolConfig.SCHOOL_INDIVIDUAL_SETTING))
+    }
+
   }
 }
