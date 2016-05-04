@@ -59,3 +59,13 @@ angular.module('kulebao.services')
           cache: true
       }
 ]
+
+angular.module('kulebao.services')
+.factory 'parentV3Service', ['$resource',
+  ($resource) ->
+    $resource '/api/v3/kindergarten/:school_id/relative/:id',
+      {
+        school_id: '@school_id'
+        id: '@id'
+      }
+]

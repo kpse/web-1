@@ -392,8 +392,8 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'ConnectedInClassCtrl',
-  [ '$scope', '$rootScope', '$stateParams', '$state', '$timeout',
-    (scope, rootScope, stateParams, $state, $timeout) ->
+  [ '$scope', '$rootScope', '$stateParams', '$state', '$timeout', 'parentV3Service',
+    (scope, rootScope, stateParams, $state, $timeout, parentV3) ->
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.navigateTo = (c) ->
@@ -410,16 +410,19 @@ angular.module('kulebaoAdmin')
           headCount = if members? then members.length else 0
           $timeout ->
             c.highlightedCount = headCount + '人'
+        _.each data, (r) ->
+          console.log r.parent.id, r.parent.name
+          parentV3.get school_id: stateParams.kindergarten, id: r.parent.id, (p) ->
+            r.parent.ext = p.ext || {}
+            r.parent.basic = p.basic || {}
+
       scope.schoolSmsEnabled = true
-      scope.enableSms = (parent) ->
-        parent.ext = {sms_push : true}
-      scope.disableSms = (parent) ->
-        parent.ext = {sms_push : false}
+
   ]
 
 .controller 'ConnectedRelationshipCtrl',
-  [ '$scope', '$rootScope', '$stateParams', '$location', 'relationshipService', '$http', '$filter', '$q',
-    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q) ->
+  [ '$scope', '$rootScope', '$stateParams', '$location', 'relationshipService', '$http', '$filter', '$q', 'parentV3Service',
+    (scope, rootScope, stateParams, location, Relationship, $http, $filter, $q, parentV3) ->
       extendFilterFriendlyProperties = (r) ->
         r.phone = r.parent.phone
         r.formattedPhone = $filter('phone')(r.parent.phone)
@@ -516,4 +519,13 @@ angular.module('kulebaoAdmin')
 
       scope.selection =
         allCheck: false
+
+      scope.enableSms = (parent) ->
+        parent.ext.sms_push = true
+        parentV3.save school_id: parent.school_id ,id: parent.id, basic: parent.basic, ext: parent.ext, ->
+          scope.refreshRelationship()
+      scope.disableSms = (parent) ->
+        parent.ext.sms_push = false
+        parentV3.save school_id: parent.school_id ,id: parent.id, basic: parent.basic, ext: parent.ext, ->
+          scope.refreshRelationship()
   ]

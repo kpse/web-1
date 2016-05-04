@@ -68,20 +68,30 @@
         </button>
       </div>
 
-      <div class="btn-toolbar-fake-check" role="toolbar" aria-label="fake-check"
-           ng-show="adminUser.privilege_group == 'operator'">
-        <button class="btn btn-xs btn-info" ng-click="sendMessage(r, 1)">到校
+      <div class="dropdown fake-check" ng-show="adminUser.privilege_group == 'operator'">
+        <button class="btn btn-sm dropdown-toggle btn-primary" type="button" id="dropdown-fake-check" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <span class="glyphicon glyphicon-log-in"></span>
+          刷卡模拟
+          <span class="caret"></span>
         </button>
-        <button class="btn btn-xs btn-warning" ng-click="sendMessage(r, 0)">离开
-        </button>
-        <button class="btn btn-xs btn-danger" ng-click="sendBusMessage(r, 11)">上午上车
-        </button>
-        <button class="btn btn-xs btn-info" ng-click="sendBusMessage(r, 21)">上午下车
-        </button>
-        <button class="btn btn-xs btn-success" ng-click="sendBusMessage(r, 20)">下午上车
-        </button>
-        <button class="btn btn-xs btn-warning" ng-click="sendBusMessage(r, 10)">下午下车
-        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li class="dropdown-header">校门刷卡</li>
+          <li><a ng-click="sendMessage(r, 1)">到校
+          </a></li>
+          <li><a ng-click="sendMessage(r, 0)">离开
+          </a></li>
+          <li role="separator" class="divider"></li>
+          <li class="dropdown-header">校车刷卡</li>
+          <li><a ng-click="sendBusMessage(r, 11)">上午上车
+          </a></li>
+          <li><a  ng-click="sendBusMessage(r, 21)">上午下车
+          </a></li>
+          <li><a ng-click="sendBusMessage(r, 20)">下午上车
+          </a></li>
+          <li><a ng-click="sendBusMessage(r, 10)">下午下车
+          </a></li>
+
+        </ul>
       </div>
       <span ng-hide="config.deletable">该数据导入自管理云客户端</span>
     </td>
