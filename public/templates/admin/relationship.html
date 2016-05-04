@@ -4,7 +4,8 @@
 <table class="table table-hover table-condensed">
   <thead>
   <tr class="row">
-    <th class="col-xs-1" ng-if="config.deletable"><input type="checkbox" ng-model="selection.allCheck" ng-disabled="loading"
+    <th class="col-xs-1" ng-if="config.deletable"><input type="checkbox" ng-model="selection.allCheck"
+                                                         ng-disabled="loading"
                                                          ng-change="checkAll(selection.allCheck)"/> 全选
     </th>
     <th class="col-xs-2" ng-if="backend">卡号</th>
@@ -19,10 +20,13 @@
   </thead>
   <tbody>
   <tr ng-repeat="r in relationships | filter: searchText" class="row">
-    <td class="col-xs-1" ng-if="config.deletable"><input type="checkbox" ng-model="r.checked" 
+    <td class="col-xs-1" ng-if="config.deletable"><input type="checkbox" ng-model="r.checked"
                                                          ng-change="singleSelection(r)"/></td>
     <td class="col-xs-2" ng-hide="cardNumberEditing=={{r.id}}" ng-if="backend"><a ng-disabled="loading"
-      ng-click="editing(r)" class="card-number" ng-class="{invalid: invalidCard(r)}">{{r.card | cardDisplay}}</a></td>
+                                                                                  ng-click="editing(r)"
+                                                                                  class="card-number"
+                                                                                  ng-class="{invalid: invalidCard(r)}">{{r.card
+      | cardDisplay}}</a></td>
     <td class="col-xs-2" ng-show="cardNumberEditing=={{r.id}}" ng-if="backend">
       <form name="editCardForm">
         <input class="form-control" ui-mask="{{'99999-99999'}}" ng-model="r.card" kl-unique-card="r" name="card">
@@ -44,27 +48,41 @@
 
 
     <td class="col-xs-4">
-      <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要解除亲属关系，释放卡片{{cardDisplay(r.card)}}吗?"
-              ng-confirm-click="delete(r.card)" ng-show="config.deletable">解除关系
-      </button>
-      <button class="btn btn-xs btn-info" ng-click="sendMessage(r, 1)"
-              ng-show="adminUser.privilege_group == 'operator'">到校
-      </button>
-      <button class="btn btn-xs btn-warning" ng-click="sendMessage(r, 0)"
-              ng-show="adminUser.privilege_group == 'operator'">离开
-      </button>
-      <button class="btn btn-xs btn-danger" ng-click="sendBusMessage(r, 11)"
-              ng-show="adminUser.privilege_group == 'operator'">上午上车
-      </button>
-      <button class="btn btn-xs btn-info" ng-click="sendBusMessage(r, 21)"
-              ng-show="adminUser.privilege_group == 'operator'">上午下车
-      </button>
-      <button class="btn btn-xs btn-success" ng-click="sendBusMessage(r, 20)"
-              ng-show="adminUser.privilege_group == 'operator'">下午上车
-      </button>
-      <button class="btn btn-xs btn-warning" ng-click="sendBusMessage(r, 10)"
-              ng-show="adminUser.privilege_group == 'operator'">下午下车
-      </button>
+      <div class="btn-toolbar-sms" role="toolbar" aria-label="sms-check"
+           ng-show="adminUser.privilege_group == 'operator' && schoolSmsEnabled">
+        <button class="btn btn-sm btn-default"
+                ng-click="enableSms(r.parent)" ng-hide="r.parent.ext.sms_push">
+          <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
+          接受推送
+        </button>
+        <button class="btn btn-sm btn-default"
+                ng-click="disableSms(r.parent)" ng-show="r.parent.ext.sms_push">
+          <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+          只接受短信
+        </button>
+      </div>
+
+      <div class="btn-toolbar-normal" role="toolbar" aria-label="delete">
+        <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要解除亲属关系，释放卡片{{cardDisplay(r.card)}}吗?"
+                ng-confirm-click="delete(r.card)" ng-show="config.deletable">解除关系
+        </button>
+      </div>
+
+      <div class="btn-toolbar-fake-check" role="toolbar" aria-label="fake-check"
+           ng-show="adminUser.privilege_group == 'operator'">
+        <button class="btn btn-xs btn-info" ng-click="sendMessage(r, 1)">到校
+        </button>
+        <button class="btn btn-xs btn-warning" ng-click="sendMessage(r, 0)">离开
+        </button>
+        <button class="btn btn-xs btn-danger" ng-click="sendBusMessage(r, 11)">上午上车
+        </button>
+        <button class="btn btn-xs btn-info" ng-click="sendBusMessage(r, 21)">上午下车
+        </button>
+        <button class="btn btn-xs btn-success" ng-click="sendBusMessage(r, 20)">下午上车
+        </button>
+        <button class="btn btn-xs btn-warning" ng-click="sendBusMessage(r, 10)">下午下车
+        </button>
+      </div>
       <span ng-hide="config.deletable">该数据导入自管理云客户端</span>
     </td>
   </tr>

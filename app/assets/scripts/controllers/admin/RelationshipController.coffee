@@ -410,6 +410,11 @@ angular.module('kulebaoAdmin')
           headCount = if members? then members.length else 0
           $timeout ->
             c.highlightedCount = headCount + '人'
+      scope.schoolSmsEnabled = true
+      scope.enableSms = (parent) ->
+        parent.ext = {sms_push : true}
+      scope.disableSms = (parent) ->
+        parent.ext = {sms_push : false}
   ]
 
 .controller 'ConnectedRelationshipCtrl',
