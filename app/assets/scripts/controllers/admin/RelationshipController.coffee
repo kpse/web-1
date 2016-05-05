@@ -411,7 +411,6 @@ angular.module('kulebaoAdmin')
           $timeout ->
             c.highlightedCount = headCount + '人'
         _.each data, (r) ->
-          console.log r.parent.id, r.parent.name
           parentV3.get school_id: stateParams.kindergarten, id: r.parent.id, (p) ->
             r.parent.ext = p.ext || {}
             r.parent.basic = p.basic || {}
