@@ -392,8 +392,8 @@ angular.module('kulebaoAdmin')
   ]
 
 .controller 'ConnectedInClassCtrl',
-  [ '$scope', '$rootScope', '$stateParams', '$state', '$timeout', 'parentV3Service',
-    (scope, rootScope, stateParams, $state, $timeout, parentV3) ->
+  [ '$scope', '$rootScope', '$stateParams', '$state', '$timeout', 'parentV3Service', 'schoolConfigService', 'schoolConfigExtractService',
+    (scope, rootScope, stateParams, $state, $timeout, parentV3, SchoolConfig, ConfigExtract) ->
       scope.current_class = parseInt(stateParams.class_id)
 
       scope.navigateTo = (c) ->
@@ -416,7 +416,12 @@ angular.module('kulebaoAdmin')
             r.parent.ext = p.ext || {}
             r.parent.basic = p.basic || {}
 
-      scope.schoolSmsEnabled = true
+      SchoolConfig.get school_id: stateParams.kindergarten, (data) ->
+        account = ConfigExtract data['config'], 'smsPushAccount', ''
+        password = ConfigExtract data['config'], 'smsPushPassword', ''
+        signature = ConfigExtract data['school_customized'], 'smsPushSignature', ''
+        enabled = ConfigExtract data['school_customized'], 'switch_sms_on_card_wiped', '0'
+        scope.schoolSmsEnabled = account.length > 0 && password.length > 0 && signature.length > 0 && enabled == '1'
 
   ]
 
