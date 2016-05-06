@@ -50,12 +50,12 @@
     <td class="col-xs-4">
       <div class="btn-toolbar-sms" role="toolbar" aria-label="sms-check"
            ng-show="adminUser.privilege_group == 'operator' && schoolSmsEnabled">
-        <button class="btn btn-sm btn-default"
+        <button class="btn btn-xs btn-default"
                 ng-click="enableSms(r.parent)" ng-hide="r.parent.ext.sms_push">
           <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
           接受推送
         </button>
-        <button class="btn btn-sm btn-default"
+        <button class="btn btn-xs btn-default"
                 ng-click="disableSms(r.parent)" ng-show="r.parent.ext.sms_push">
           <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
           只接受短信
@@ -64,12 +64,15 @@
 
       <div class="btn-toolbar-normal" role="toolbar" aria-label="delete">
         <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要解除亲属关系，释放卡片{{cardDisplay(r.card)}}吗?"
-                ng-confirm-click="delete(r.card)" ng-show="config.deletable">解除关系
+                ng-confirm-click="delete(r.card)" ng-show="config.deletable">
+          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          解除关系
         </button>
       </div>
 
       <div class="dropdown fake-check" ng-show="adminUser.privilege_group == 'operator'">
-        <button class="btn btn-sm dropdown-toggle btn-primary" type="button" id="dropdown-fake-check" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <button class="btn btn-xs dropdown-toggle btn-primary" type="button" id="dropdown-fake-check"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <span class="glyphicon glyphicon-log-in"></span>
           刷卡模拟
           <span class="caret"></span>
@@ -84,7 +87,7 @@
           <li class="dropdown-header">校车刷卡</li>
           <li><a ng-click="sendBusMessage(r, 11)">上午上车
           </a></li>
-          <li><a  ng-click="sendBusMessage(r, 21)">上午下车
+          <li><a ng-click="sendBusMessage(r, 21)">上午下车
           </a></li>
           <li><a ng-click="sendBusMessage(r, 20)">下午上车
           </a></li>
