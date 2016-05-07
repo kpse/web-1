@@ -85,12 +85,6 @@ case class IMBanUserRes(code: Int, users: List[IMBanUserUnit]) extends IMRespons
 
 case class IMBanUserFromServer(id: String, time: String)
 
-case class IMBanUser(id: String, minute: Option[Int]) {
-  def undo(kg: Long, classId: Int): String = s"userId=$id&groupId=${kg}_$classId"
-
-  def execute(kg: Long, classId: Int): String = s"userId=$id&groupId=${kg}_$classId&minute=${minute.getOrElse(99999)}"
-}
-
 object IMToken {
   implicit val writeIMTokenReq = Json.writes[IMTokenReq]
   implicit val readIMTokenRes = Json.reads[IMTokenRes]

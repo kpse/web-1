@@ -108,9 +108,9 @@ object IMServiceController extends Controller with Secured {
 
   def banUser(kg: Long, class_id: Int) = IsLoggedInAsync(parse.json) { username =>
     request =>
-      Logger.info(s"username = $username")
+      Logger.info(s"banUser username = $username")
       val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
-      Logger.info(s"imAccount = $imAccount")
+      Logger.info(s"banUser imAccount = $imAccount")
 
       request.body.validate[List[IMBanUser]].map {
         case all =>
@@ -129,9 +129,9 @@ object IMServiceController extends Controller with Secured {
 
   def allowUser(kg: Long, class_id: Int, id: String) = IsLoggedInAsync { username =>
     request =>
-      Logger.info(s"username = $username")
+      Logger.info(s"allowUser username = $username")
       val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
-      Logger.info(s"imAccount = $imAccount")
+      Logger.info(s"allowUser imAccount = $imAccount")
       IMToken.allowUser(kg, class_id, imAccount, IMBanUser(id, None)).map {
         case Some(res) =>
           Ok(Json.toJson(new SuccessResponse))
@@ -142,12 +142,53 @@ object IMServiceController extends Controller with Secured {
 
   def bannedUserList(kg: Long, class_id: Int) = IsLoggedInAsync { username =>
     request =>
-      Logger.info(s"username = $username")
+      Logger.info(s"bannedUserList username = $username")
       val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
       Logger.info(s"imAccount = $imAccount")
       IMToken.bannedUserList(kg, class_id, imAccount).map {
         case users =>
           Ok(loggedJson(users))
       }
+  }
+
+  def internalBanUser(kg: Long, classId: Int) = IsLoggedIn(parse.json) { username =>
+    request =>
+      Logger.info(s"internalBanUser username = $username")
+      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
+      Logger.info(s"imAccount = $imAccount")
+
+      request.body.validate[List[IMBanUser]].map {
+        case all =>
+          all map {
+            user =>
+              user.ban(kg, classId)
+              user.bannedNotification(kg, classId)
+          }
+          Ok(Json.toJson(new SuccessResponse))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+
+
+  }
+
+  def internalAllowUser(kg: Long, classId: Int, id: String) = IsLoggedIn { username =>
+    request =>
+      Logger.info(s"internalAllowUser username = $username")
+      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
+      Logger.info(s"imAccount = $imAccount")
+      val user: IMBanUser = IMBanUser(id, None)
+      user.approve(kg, classId)
+      user.approvalNotification(kg, classId)
+      Ok(Json.toJson(new SuccessResponse))
+  }
+
+  def internalBannedUserList(kg: Long, class_id: Int) = IsLoggedIn { username =>
+    request =>
+      Logger.info(s"internalBannedUserList username = $username")
+      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
+      Logger.info(s"imAccount = $imAccount")
+      Ok(loggedJson(IMBanUser.bannedUserList(kg, class_id, imAccount)))
+
   }
 }
