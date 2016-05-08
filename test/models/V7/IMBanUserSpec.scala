@@ -27,5 +27,12 @@ class IMBanUserSpec extends Specification with TestSupport {
       IMBanUser.bannedUserList(schoolId, classId, None) must not contain IMBanUserFromServer("123", "0")
     }
 
+    "allow to check banned user list " in new WithApplication {
+
+      IMBanUser.bannedUserList(schoolId, classId, None) must beEmpty
+
+      IMBanUser.bannedUserList(93740362, 777888, None) must not(beEmpty)
+    }
+
   }
 }
