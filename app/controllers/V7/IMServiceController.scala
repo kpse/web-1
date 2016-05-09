@@ -106,6 +106,7 @@ object IMServiceController extends Controller with Secured {
 
   }
 
+  //v7 interface..
   def banUser(kg: Long, class_id: Int) = IsLoggedInAsync(parse.json) { username =>
     request =>
       Logger.info(s"banUser username = $username")
@@ -151,6 +152,7 @@ object IMServiceController extends Controller with Secured {
       }
   }
 
+  //v8 interfaces ...
   def internalBanUser(kg: Long, classId: Int) = IsLoggedIn(parse.json) { username =>
     request =>
       Logger.info(s"internalBanUser username = $username")
