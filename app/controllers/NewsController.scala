@@ -38,7 +38,9 @@ object NewsController extends Controller with Secured {
       "class_id" -> optional(number),
       "image" -> optional(text),
       "publisher_id" -> optional(text),
-      "feedback_required" -> optional(boolean)
+      "feedback_required" -> optional(boolean),
+      "images" -> optional(list(text)),
+      "sms" -> optional(text)
     )
   )
 
@@ -97,7 +99,9 @@ object NewsController extends Controller with Secured {
       "class_id" -> optional(number),
       "image" -> optional(text),
       "publisher_id" -> optional(text),
-      "feedback_required" -> optional(boolean)
+      "feedback_required" -> optional(boolean),
+      "images" -> optional(list(text)),
+      "sms" -> optional(text)
     )
   )
 

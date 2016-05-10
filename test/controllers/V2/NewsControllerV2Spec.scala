@@ -150,7 +150,7 @@ class NewsControllerV2Spec extends Specification with TestSupport {
           published = false, None,
           Some(777666),
           None,
-          Some("3_93740362_1122"), Some(false), List("作业", "活动")))
+          Some("3_93740362_1122"), Some(false), List("作业", "活动"), None, None))
       val newsResponse = route(principalRequest(POST, "/api/v2/kindergarten/93740362/admin/3_93740362_1122/news").withJsonBody(requestBody)).get
 
       status(newsResponse) must equalTo(OK)
@@ -175,7 +175,7 @@ class NewsControllerV2Spec extends Specification with TestSupport {
           false, None,
           Some(777666),
           None,
-          Some("3_93740362_1122"), Some(false), List("作业", "活动")))
+          Some("3_93740362_1122"), Some(false), List("作业", "活动"), None, None))
       val newsResponse = route(principalRequest(POST, "/api/v2/kindergarten/93740362/admin/3_93740362_1122/news/7").withJsonBody(requestBody)).get
 
       status(newsResponse) must equalTo(OK)
