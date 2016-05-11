@@ -41,7 +41,7 @@ case class IMBanUser(id: String, minute: Option[Int]) {
     val groupId = s"${schoolId}_$classId"
     val payload: String = s"""fromUserId=$IMSystemGroupMonitor&toUserId=$id&objectName=CB:CtrlMsg&content={\"content\":\"$approvalBroadcastMessage\"}"""
     Logger.info(s"Approval user $id - sending to group $groupId with approvalBroadcastMessage: $payload")
-    ws(schoolId, "/message/system/publish.json", payload, IMToken.readsIMBasicRes)
+    ws(schoolId, "/message/private/publish.json", payload, IMToken.readsIMBasicRes)
   }
 
 
@@ -50,7 +50,7 @@ case class IMBanUser(id: String, minute: Option[Int]) {
     val groupId = s"${schoolId}_$classId"
     val payload: String = s"""fromUserId=$IMSystemGroupMonitor&toUserId=$id&objectName=CB:CtrlMsg&content={\"content\":\"$banningBroadcastMessage\"}"""
     Logger.info(s"Ban user $id - sending to group $groupId with banningBroadcastMessage: $payload")
-    ws(schoolId, "/message/system/publish.json", payload, IMToken.readsIMBasicRes)
+    ws(schoolId, "/message/private/publish.json", payload, IMToken.readsIMBasicRes)
   }
 
   def undo(kg: Long, classId: Int): String = s"userId=$id&groupId=${kg}_$classId"
