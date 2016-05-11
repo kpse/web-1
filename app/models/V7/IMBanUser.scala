@@ -39,18 +39,18 @@ case class IMBanUser(id: String, minute: Option[Int]) {
   def approvalNotification(schoolId: Long, classId: Int)(implicit ws: IMWS[IMBasicRes] = IMToken.rongyunWS[IMBasicRes]) = {
     val approvalBroadcastMessage = s"approval - $id - $schoolId - $classId"
     val groupId = s"${schoolId}_$classId"
-    val payload: String = s"""fromUserId=$IMSystemGroupMonitor&toGroupId=$groupId&objectName=CB:CtrlMsg&content={\"content\":\"$approvalBroadcastMessage\"}"""
+    val payload: String = s"""fromUserId=$IMSystemGroupMonitor&toUserId=$id&objectName=CB:CtrlMsg&content={\"content\":\"$approvalBroadcastMessage\"}"""
     Logger.info(s"Approval user $id - sending to group $groupId with approvalBroadcastMessage: $payload")
-    ws(schoolId, "/message/group/publish.json", payload, IMToken.readsIMBasicRes)
+    ws(schoolId, "/message/system/publish.json", payload, IMToken.readsIMBasicRes)
   }
 
 
   def bannedNotification(schoolId: Long, classId: Int)(implicit ws: IMWS[IMBasicRes] = IMToken.rongyunWS[IMBasicRes]) = {
     val banningBroadcastMessage = s"ban - $id - $schoolId - $classId"
     val groupId = s"${schoolId}_$classId"
-    val payload: String = s"""fromUserId=$IMSystemGroupMonitor&toGroupId=$groupId&objectName=CB:CtrlMsg&content={\"content\":\"$banningBroadcastMessage\"}"""
+    val payload: String = s"""fromUserId=$IMSystemGroupMonitor&toUserId=$id&objectName=CB:CtrlMsg&content={\"content\":\"$banningBroadcastMessage\"}"""
     Logger.info(s"Ban user $id - sending to group $groupId with banningBroadcastMessage: $payload")
-    ws(schoolId, "/message/group/publish.json", payload, IMToken.readsIMBasicRes)
+    ws(schoolId, "/message/system/publish.json", payload, IMToken.readsIMBasicRes)
   }
 
   def undo(kg: Long, classId: Int): String = s"userId=$id&groupId=${kg}_$classId"
