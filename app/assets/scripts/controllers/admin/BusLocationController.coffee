@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin')
 .controller 'BusLocationCtrl',
-  [ '$scope', '$rootScope', '$stateParams', '$state', 'schoolBusService',
-    (scope, rootScope, stateParams, $state, Bus) ->
+  [ '$scope', '$rootScope', '$stateParams', '$state', 'schoolBusService', '$alert'
+    (scope, rootScope, stateParams, $state, Bus, Alert) ->
       rootScope.tabName = 'bus-location'
       scope.heading = '班车信息查询'
 
@@ -19,7 +19,17 @@ angular.module('kulebaoAdmin')
         scope.navigateTo(scope.allBuses[0]) if scope.allBuses.length > 0 && !$state.includes('kindergarten.bus.plans.driver')
 
       scope.navigateTo = (bus) ->
-        $state.go('kindergarten.bus.plans.driver', kindergarten: stateParams.kindergarten, driver: bus.driver.id)
+        if bus.driver isnt undefined
+          $state.go('kindergarten.bus.plans.driver', kindergarten: stateParams.kindergarten, driver: bus.driver.id)
+        else
+          Alert
+            title: '数据错误'
+            content: '获取校车老师信息失败。'
+            placement: "top"
+            type: "danger"
+            container: '.parents-class-view'
+            duration: 5
+
 
   ]
 
