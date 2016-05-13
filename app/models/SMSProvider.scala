@@ -53,7 +53,7 @@ class AliDayu extends SMSProvider {
   def template(): String = "%s"
 
   def render(ak: String, sk: String, mobile: String, content: String): String = {
-    val timestamp = DateTime.now.toString("yyyy-MM-dd HH:mm:ss")
+    val timestamp = DateTime.now.toString("MM-dd HH:mm:ss")
     val payload = List("app_key" -> ak, "format" -> "xml", "method" -> "alibaba.aliqin.fc.sms.num.send", "partner_id" -> "apidoc",
       "sign_method" -> "md5", "timestamp" -> timestamp, "v" -> "2.0", "rec_num" -> mobile, "sms_free_sign_name" -> "幼乐宝",
       "sms_param" -> s"""{"code":"$content", "time":"$timestamp"}""", "sms_type" -> "normal", "sms_template_code" -> "SMS_3105364")
