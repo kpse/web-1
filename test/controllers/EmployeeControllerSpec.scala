@@ -1,12 +1,12 @@
 package controllers
 
 import _root_.helper.TestSupport
-import models.{Employee, LoginNameCheck, ChildInfo}
+import models.Employee.writeLoginNameCheck
+import models.{ChildInfo, Employee, LoginNameCheck}
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
-import models.Employee.writeLoginNameCheck
-import play.api.libs.json.{JsResult, JsArray, JsValue, Json}
+import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, WithServer}
 
@@ -63,11 +63,11 @@ class EmployeeControllerSpec extends Specification with TestSupport {
 
     "be able to delete in school employees" in new WithServer {
 
-      val response = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/23258249821")).get
+      val response = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/56258249821")).get
 
       status(response) must equalTo(OK)
 
-      val response2 = route(principalLoggedRequest(GET, "/kindergarten/93740362/employee/23258249821")).get
+      val response2 = route(principalLoggedRequest(GET, "/kindergarten/93740362/employee/56258249821")).get
 
       status(response2) must equalTo(NOT_FOUND)
 
@@ -161,11 +161,11 @@ class EmployeeControllerSpec extends Specification with TestSupport {
   }
 
   "reuse deleted login name in creating" in new WithApplication {
-    val response = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/23258249821")).get
+    val response = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/56258249821")).get
 
     status(response) must equalTo(OK)
 
-    private val requestBody = Json.toJson(createEmployee("e0011"))
+    private val requestBody = Json.toJson(createEmployee("e001211"))
 
     val response2 = route(principalLoggedRequest(POST, "/kindergarten/93740362/employee/23258249822").withBody(requestBody)).get
 
@@ -175,33 +175,33 @@ class EmployeeControllerSpec extends Specification with TestSupport {
 
     status(response3) must equalTo(OK)
     val UpdatedLoginName: JsValue = Json.parse(contentAsString(response3))
-    (UpdatedLoginName \ "login_name").as[String] must equalTo("e0011")
+    (UpdatedLoginName \ "login_name").as[String] must equalTo("e001211")
   }
 
   "be able to assign deleted phone to existing employee" in new WithApplication {
-    val deletedResponse = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/13060003702")).get
+    val deletedResponse = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/56258249821")).get
 
     status(deletedResponse) must equalTo(OK)
 
     val existingUser = route(principalLoggedRequest(GET, "/kindergarten/93740362/employee/13258249821")).get
     private val wantToChangePhoneNumber: Employee = Json.fromJson[Employee](Json.parse(contentAsString(existingUser))).get
-    val changingRepsonse = route(principalLoggedRequest(POST, "/kindergarten/93740362/employee/13258249821").withBody(Json.toJson(wantToChangePhoneNumber.copy(phone = "13060003702")))).get
+    val changingRepsonse = route(principalLoggedRequest(POST, "/kindergarten/93740362/employee/13258249821").withBody(Json.toJson(wantToChangePhoneNumber.copy(phone = "56258249821")))).get
 
     status(changingRepsonse) must equalTo(OK)
 
-    val changed = route(principalLoggedRequest(GET, "/kindergarten/93740362/employee/13060003702")).get
+    val changed = route(principalLoggedRequest(GET, "/kindergarten/93740362/employee/56258249821")).get
 
     status(changed) must equalTo(OK)
     val UpdatedLoginName: JsValue = Json.parse(contentAsString(changed))
-    (UpdatedLoginName \ "phone").as[String] must equalTo("13060003702")
+    (UpdatedLoginName \ "phone").as[String] must equalTo("56258249821")
   }
 
   "reuse deleted login name in updating" in new WithApplication {
-    val response = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/13060003702")).get
+    val response = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/56258249821")).get
 
     status(response) must equalTo(OK)
 
-    private val requestBody = Json.toJson(createEmployee("e0003"))
+    private val requestBody = Json.toJson(createEmployee("e001211"))
 
     val response2 = route(principalLoggedRequest(POST, "/kindergarten/93740362/employee/23258249821").withBody(requestBody)).get
 
@@ -211,7 +211,17 @@ class EmployeeControllerSpec extends Specification with TestSupport {
 
     status(response3) must equalTo(OK)
     val UpdatedLoginName: JsValue = Json.parse(contentAsString(response3))
-    (UpdatedLoginName \ "login_name").as[String] must equalTo("e0003")
+    (UpdatedLoginName \ "login_name").as[String] must equalTo("e001211")
+
+  }
+
+  "not allow to delete bus driver" in new WithApplication {
+    val response = route(principalLoggedRequest(DELETE, "/kindergarten/93740362/employee/13060003702")).get
+
+    status(response) must equalTo(INTERNAL_SERVER_ERROR)
+
+    val res: JsValue = Json.parse(contentAsString(response))
+    (res \ "error_code").as[Int] must equalTo(7)
 
   }
 

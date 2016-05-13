@@ -65,7 +65,7 @@ class RemovedListControllerV2Spec extends Specification with TestSupport {
 
     "list deleted employees for principals" in new WithApplication {
 
-      val deleted = route(principalRequest(DELETE, "/kindergarten/93740362/employee/23258249821")).get
+      val deleted = route(principalRequest(DELETE, "/kindergarten/93740362/employee/56258249821")).get
 
       status(deleted) must equalTo(OK)
 
@@ -74,7 +74,7 @@ class RemovedListControllerV2Spec extends Specification with TestSupport {
       status(response) must equalTo(OK)
 
       private val array: JsArray = Json.parse(contentAsString(response)).as[JsArray]
-      (array(0) \ "id").as[String] must equalTo("3_93740362_1022")
+      (array(0) \ "id").as[String] must equalTo("3_93740362_51122")
 
     }
 

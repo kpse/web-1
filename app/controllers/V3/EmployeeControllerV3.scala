@@ -3,6 +3,7 @@ package controllers.V3
 import controllers.EmployeeController._
 import controllers.Secured
 import controllers.helper.JsonLogger._
+import models.V2.SchoolBus
 import models.V3.EmployeeV3
 import models.{Employee, ErrorResponse, SuccessResponse}
 import play.api.Logger
@@ -47,9 +48,9 @@ object EmployeeControllerV3 extends Controller with Secured {
     request.body.validate[EmployeeV3].map {
       case (s) if s.ext.isEmpty =>
         BadRequest(Json.toJson(ErrorResponse("必须提供完整的信息。(no ext part)", 2)))
-      case (s) if s.id != s.basic.uid  =>
+      case (s) if s.id != s.basic.uid =>
         BadRequest(Json.toJson(ErrorResponse("内外id不一致。(ids should be consistent)", 3)))
-      case (s) if s.id.isEmpty  =>
+      case (s) if s.id.isEmpty =>
         BadRequest(Json.toJson(ErrorResponse("没有id无法更新。(no id for update)", 5)))
       case (s) if s.existsInOtherSchool(kg) =>
         InternalServerError(Json.toJson(ErrorResponse("该号码的老师属于另一个学校。(this employee number belongs to another school)", 6)))
@@ -61,14 +62,18 @@ object EmployeeControllerV3 extends Controller with Secured {
   }
 
   def delete(kg: Long, id: Long) = IsLoggedIn { u => _ =>
-    EmployeeV3.deleteById(kg, id)
-    Ok(Json.toJson(new SuccessResponse()))
+    EmployeeV3.show(kg, id) match {
+      case employee if employee.nonEmpty && employee.get.basic.id.nonEmpty && SchoolBus.driverIsExisting(employee.get.basic.id.get) =>
+        InternalServerError(Json.toJson(ErrorResponse("不能删除校车老师,请先更换校车负责老师(Cannot delete on-duty bus driver).", 7)))
+      case _ => EmployeeV3.deleteById(kg, id)
+        Ok(Json.toJson(new SuccessResponse()))
+    }
   }
-  
+
   def ineligibleClasses(kg: Long, id: Long) = IsLoggedIn { u => _ =>
     EmployeeV3.show(kg, id) match {
       case Some(employee) =>
-        Ok(Json.toJson( employee.ineligibleClasses))
+        Ok(Json.toJson(employee.ineligibleClasses))
       case None =>
         NotFound(Json.toJson(ErrorResponse("没有这个老师的信息。(no such employee)")))
     }

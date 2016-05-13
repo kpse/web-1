@@ -120,5 +120,16 @@ object EmployeeV3ControllerSpec extends Specification with TestSupport {
 
     }
 
+    "not allow to delete bus driver" in new WithApplication {
+      val res = route(principalLoggedRequest(DELETE, "/api/v3/kindergarten/93740362/employee/3")).get
+
+      status(res) must equalTo(INTERNAL_SERVER_ERROR)
+
+      val response2: JsValue = Json.parse(contentAsString(res))
+
+      (response2 \ "error_code").as[Int] must equalTo(7)
+
+    }
+
   }
 }

@@ -10,6 +10,7 @@ import models.EmployeePassword
 import models.Employee.readLoginNameCheck
 import models.EmployeeResetPassword
 import models.ErrorResponse
+import models.V2.SchoolBus
 import models.helper.PasswordHelper
 
 object EmployeeController extends Controller with Secured {
@@ -73,6 +74,8 @@ object EmployeeController extends Controller with Secured {
       Employee.show(phone) match {
         case employee if employee.nonEmpty && employee.get.login_name.equalsIgnoreCase(u) =>
           Unauthorized(Json.toJson(ErrorResponse("您要删除自己的账号吗? 请与管理员联系(Cannot delete him/herself).", 3)))
+        case employee if employee.nonEmpty && SchoolBus.driverIsExisting(employee.get.id.get) =>
+          InternalServerError(Json.toJson(ErrorResponse("不能删除校车老师,请先更换校车负责老师(Cannot delete on-duty bus driver).", 7)))
         case _ =>
           Employee.deleteInSchool(kg, phone) match {
             case Some(x) =>
