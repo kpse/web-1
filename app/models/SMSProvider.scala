@@ -53,10 +53,11 @@ class AliDayu extends SMSProvider {
   def template(): String = "%s"
 
   def render(ak: String, sk: String, mobile: String, content: String): String = {
-    val timestamp = DateTime.now.toString("MM-dd HH:mm:ss")
+    val timestamp = DateTime.now.toString("yyyy-MM-dd HH:mm:ss")
+    val shortTimestamp = DateTime.now.toString("MM-dd HH:mm:ss")
     val payload = List("app_key" -> ak, "format" -> "xml", "method" -> "alibaba.aliqin.fc.sms.num.send", "partner_id" -> "apidoc",
       "sign_method" -> "md5", "timestamp" -> timestamp, "v" -> "2.0", "rec_num" -> mobile, "sms_free_sign_name" -> "幼乐宝",
-      "sms_param" -> s"""{"code":"$content", "time":"$timestamp"}""", "sms_type" -> "normal", "sms_template_code" -> "SMS_3105364")
+      "sms_param" -> s"""{"code":"$content", "time":"$shortTimestamp"}""", "sms_type" -> "normal", "sms_template_code" -> "SMS_3105364")
     val sign = md5(s"$sk${payload.sortWith(_._1 < _._1).map(p => s"${p._1}${p._2}").mkString}$sk")
     val debug = payload ++ List("sign" -> sign)
     Logger.debug(s"payload = $debug")
