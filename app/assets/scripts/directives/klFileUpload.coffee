@@ -65,7 +65,7 @@ angular.module("kulebao.directives").directive "klFileUpload",
               if angular.isFunction(f)
                 f(res, other)
               else
-                console.log "上传失败，错误：#{res.error}"
+                console.log "文件上传失败，错误：#{res.error}"
 
           scope.combineSuccess = (f) ->
             (url, size, other)->

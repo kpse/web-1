@@ -50,7 +50,7 @@ angular.module('kulebaoOp').controller 'OpAppCtrl',
         remoteFileSetter pic, scope.adminUser.id, (url) ->
           scope.$apply ->
             scope.app.url = url
-            console.log scope.app
+            console.log scope.app, 'in uploading app package'
             scope.app.$save ->
               scope.lastApp = scope.PackageService.latest ->
                 scope.app = scope.createPkg()
