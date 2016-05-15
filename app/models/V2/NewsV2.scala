@@ -8,6 +8,7 @@ import play.api.db.DB
 import anorm.~
 import play.api.Play.current
 import play.api.libs.json.Json
+import models.News.imagesSplitter
 
 object NewsV2 {
   implicit val writeNewsPreview = Json.writes[NewsPreview]
@@ -32,9 +33,10 @@ object NewsV2 {
     implicit c =>
       var createdId: Option[Long] = None
       try {
+        logger.info(s"news.images = ${news.images}")
         createdId =
-          SQL("insert into news (school_id, title, content, update_at, published, class_id, image, publisher_id, feedback_required) " +
-            "values ({kg}, {title}, {content}, {timestamp}, {published}, {class_id}, {image}, {publisher_id}, {feedback_required})")
+          SQL("insert into news (school_id, title, content, update_at, published, class_id, image, images, publisher_id, feedback_required) " +
+            "values ({kg}, {title}, {content}, {timestamp}, {published}, {class_id}, {image}, {images}, {publisher_id}, {feedback_required})")
             .on('content -> news.content,
               'kg -> news.school_id,
               'title -> news.title,
@@ -43,6 +45,7 @@ object NewsV2 {
               'published -> (if (news.published) 1 else 0),
               'class_id -> news.class_id,
               'image -> news.image,
+              'images -> news.images.getOrElse(List()).mkString(imagesSplitter),
               'feedback_required -> (if (news.feedback_required.getOrElse(false)) 1 else 0)
             ).executeInsert()
         createdId map (id => saveTags(news.copy(news_id = Some(id))))
@@ -60,8 +63,9 @@ object NewsV2 {
   def update(news: News) = DB.withTransaction {
     implicit c =>
       try {
+        logger.info(s"news.images = ${news.images}")
         SQL("update news set content={content}, published={published}, title={title}, " +
-          "update_at={timestamp}, class_id={class_id}, image={image}, feedback_required={feedback_required} where uid={id}")
+          "update_at={timestamp}, class_id={class_id}, image={image}, images={images}, feedback_required={feedback_required} where uid={id}")
           .on('content -> news.content,
             'title -> news.title,
             'id -> news.news_id,
@@ -70,6 +74,7 @@ object NewsV2 {
             'timestamp -> System.currentTimeMillis,
             'class_id -> news.class_id,
             'image -> news.image,
+            'images -> news.images.getOrElse(List()).mkString(imagesSplitter),
             'feedback_required -> (if (news.feedback_required.getOrElse(false)) 1 else 0)
           ).executeUpdate()
         saveTags(news)

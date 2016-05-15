@@ -48,7 +48,7 @@ INSERT INTO news (uid, school_id, title, content, update_at, published, publishe
 
 update news set image='http://www.jslfgz.com.cn/UploadFiles/xxgl/2013/4/201342395834.jpg' where uid=7;
 update news set feedback_required=1 where uid=6;
-update news set class_id=777888, images='http://attachment.van698.com/forum/201305/07/181354wxq8xkv8tccbwc9v.jpg  http://stock.591hx.com/images/hnimg/201401/27/80/14517761501597144164.jpg' where uid=8;
+update news set class_id=777888, images='http://attachment.van698.com/forum/201305/07/181354wxq8xkv8tccbwc9v.jpg,http://stock.591hx.com/images/hnimg/201401/27/80/14517761501597144164.jpg' where uid=8;
 update news set class_id=777999, sms='sms content for news 9' where uid=9;
 
 # --- !Downs

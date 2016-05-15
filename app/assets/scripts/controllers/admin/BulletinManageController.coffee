@@ -106,6 +106,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
       scope.edit = (news) ->
         scope.news = angular.copy(news)
+        scope.news.images = _.map news.images, (image) -> url: image
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/add_news.html'
@@ -126,6 +127,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
       scope.save = (news) ->
         goPage = firstPageOrCurrentPage(news)
+        news.images = _.pluck news.images, 'url'
         news.$save ->
           scope.navigateTo(class_id: news.class_id) unless news.class_id == parseInt stateParams.class
           goPage()
@@ -161,4 +163,17 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
         if tags? then tags.join ', ' else ''
 
       $rootScope.loading = false
+
+
+      scope.onUploadSuccess = (url) ->
+        scope.$apply ->
+          scope.news.images.push url: url if url isnt undefined
+          scope.disableUploading = scope.dynamicDisable(scope.news)
+          scope.buttonLabel = scope.dynamicLabel(scope.news)
+
+      scope.dynamicLabel = (message)->
+        if message.images.length == 0 then '添加' else '继续添加'
+
+      scope.dynamicDisable = (message) ->
+        message.logos && message.images.length > 8
   ]

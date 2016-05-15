@@ -35,8 +35,8 @@ object News {
   def create(form: (Long, String, String, Option[Boolean], Option[Int], Option[String], Option[String], Option[Boolean], Option[List[String]], Option[String])) = DB.withConnection {
     implicit c =>
       val createdId: Option[Long] =
-        SQL("insert into news (school_id, title, content, update_at, published, class_id, image, publisher_id, feedback_required) " +
-          "values ({kg}, {title}, {content}, {timestamp}, {published}, {class_id}, {image}, {publisher_id}, {feedback_required})")
+        SQL("insert into news (school_id, title, content, update_at, published, class_id, image, images, publisher_id, feedback_required) " +
+          "values ({kg}, {title}, {content}, {timestamp}, {published}, {class_id}, {image}, {images}, {publisher_id}, {feedback_required})")
           .on('content -> form._3,
             'kg -> form._1.toString,
             'title -> form._2,
@@ -46,7 +46,7 @@ object News {
             'class_id -> form._5.getOrElse(0),
             'image -> form._6.getOrElse(""),
             'feedback_required -> (if (form._8.getOrElse(false)) 1 else 0),
-            'images -> form._9,
+            'images -> form._9.getOrElse(List()).mkString(imagesSplitter),
             'sms -> form._10
           ).executeInsert()
       findById(form._1, createdId.getOrElse(-1))
@@ -63,7 +63,7 @@ object News {
   def update(form: (Long, Long, String, String, Boolean, Option[Int], Option[String], Option[String], Option[Boolean], Option[List[String]], Option[String]), kg: Long) = DB.withConnection {
     implicit c =>
       SQL("update news set content={content}, published={published}, title={title}, " +
-        "update_at={timestamp}, class_id={class_id}, image={image}, feedback_required={feedback_required} where uid={id}")
+        "update_at={timestamp}, class_id={class_id}, image={image}, images={images}, feedback_required={feedback_required} where uid={id}")
         .on('content -> form._4,
           'title -> form._3,
           'id -> form._1,
@@ -73,7 +73,7 @@ object News {
           'class_id -> form._6,
           'image -> form._7,
           'feedback_required -> (if (form._9.getOrElse(false)) 1 else 0),
-          'images -> form._10,
+          'images -> form._10.getOrElse(List()).mkString(imagesSplitter),
           'sms -> form._11
         ).executeUpdate()
       findById(kg, form._1)
@@ -111,8 +111,9 @@ object News {
     }
   }
 
+  val imagesSplitter = ","
   def splitMultiple(input: Option[String]): Option[List[String]] = input match {
-    case Some(urls) if urls.nonEmpty => Some(urls.split("\\s{2}").toList)
+    case Some(urls) if urls.nonEmpty => Some(urls.split(imagesSplitter).toList)
     case _ => None
   }
 
