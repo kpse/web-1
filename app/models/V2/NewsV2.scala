@@ -35,8 +35,8 @@ object NewsV2 {
       try {
         logger.info(s"news.images = ${news.images}")
         createdId =
-          SQL("insert into news (school_id, title, content, update_at, published, class_id, image, images, publisher_id, feedback_required) " +
-            "values ({kg}, {title}, {content}, {timestamp}, {published}, {class_id}, {image}, {images}, {publisher_id}, {feedback_required})")
+          SQL("insert into news (school_id, title, content, update_at, published, class_id, image, images, sms, publisher_id, feedback_required) " +
+            "values ({kg}, {title}, {content}, {timestamp}, {published}, {class_id}, {image}, {images}, {sms}, {publisher_id}, {feedback_required})")
             .on('content -> news.content,
               'kg -> news.school_id,
               'title -> news.title,
@@ -44,6 +44,7 @@ object NewsV2 {
               'timestamp -> System.currentTimeMillis,
               'published -> (if (news.published) 1 else 0),
               'class_id -> news.class_id,
+              'sms -> news.sms,
               'image -> news.image,
               'images -> news.images.getOrElse(List()).mkString(imagesSplitter),
               'feedback_required -> (if (news.feedback_required.getOrElse(false)) 1 else 0)
@@ -65,7 +66,7 @@ object NewsV2 {
       try {
         logger.info(s"news.images = ${news.images}")
         SQL("update news set content={content}, published={published}, title={title}, " +
-          "update_at={timestamp}, class_id={class_id}, image={image}, images={images}, feedback_required={feedback_required} where uid={id}")
+          "update_at={timestamp}, class_id={class_id}, image={image}, images={images}, feedback_required={feedback_required}, sms={sms} where uid={id}")
           .on('content -> news.content,
             'title -> news.title,
             'id -> news.news_id,
@@ -73,6 +74,7 @@ object NewsV2 {
             'published -> (if (news.published) 1 else 0),
             'timestamp -> System.currentTimeMillis,
             'class_id -> news.class_id,
+            'sms -> news.sms,
             'image -> news.image,
             'images -> news.images.getOrElse(List()).mkString(imagesSplitter),
             'feedback_required -> (if (news.feedback_required.getOrElse(false)) 1 else 0)

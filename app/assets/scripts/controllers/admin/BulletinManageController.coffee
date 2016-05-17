@@ -100,6 +100,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
       scope.create = ->
         scope.news = scope.createNews()
+        scope.eligibleToSendSms = true
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/add_news.html'
@@ -107,6 +108,8 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
       scope.edit = (news) ->
         scope.news = angular.copy(news)
         scope.news.images = _.map news.images, (image) -> url: image
+        scope.eligibleToSendSms = true
+        scope.news.sms_required = scope.news.sms && scope.news.sms.length > 0
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/add_news.html'
@@ -128,6 +131,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
       scope.save = (news) ->
         goPage = firstPageOrCurrentPage(news)
         news.images = _.pluck news.images, 'url'
+        delete news.sms unless news.sms_required
         news.$save ->
           scope.navigateTo(class_id: news.class_id) unless news.class_id == parseInt stateParams.class
           goPage()
