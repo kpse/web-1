@@ -36,8 +36,8 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
 .controller 'BulletinCtrl',
   ['$scope', '$rootScope', '$q', 'adminNewsServiceV2',
-   '$stateParams', '$modal', 'adminNewsPreview', 'senderService', 'newsReadService', 'parentService',
-    (scope, $rootScope, $q, AdminNews, stateParams, Modal, NewsPreview, Sender, NewsRead, Parent) ->
+   '$stateParams', '$modal', 'adminNewsPreview', 'senderService', 'newsReadService', 'parentService', 'schoolConfigService', 'schoolConfigExtractService',
+    (scope, $rootScope, $q, AdminNews, stateParams, Modal, NewsPreview, Sender, NewsRead, Parent, SchoolConfig, ConfigExtract) ->
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
@@ -100,7 +100,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
       scope.create = ->
         scope.news = scope.createNews()
-        scope.eligibleToSendSms = true
+        refreshSmsPrivilege()
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/add_news.html'
@@ -108,12 +108,19 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
       scope.edit = (news) ->
         scope.news = angular.copy(news)
         scope.news.images = _.map news.images, (image) -> url: image
-        scope.eligibleToSendSms = true
+        refreshSmsPrivilege()
         scope.news.sms_required = scope.news.sms && scope.news.sms.length > 0
         scope.currentModal = Modal
           scope: scope
           contentTemplate: 'templates/admin/add_news.html'
 
+      refreshSmsPrivilege = ->
+        SchoolConfig.get school_id: scope.kindergarten.school_id, (data)->
+          account = ConfigExtract data['config'], 'smsPushAccount', ''
+          password = ConfigExtract data['config'], 'smsPushPassword', ''
+          signature = ConfigExtract data['school_customized'], 'smsPushSignature', ''
+          globalSwitch = ConfigExtract data['school_customized'], 'switch_sms_on_card_wiped', ''
+          scope.eligibleToSendSms = account.length > 0 && password.length > 0 && signature.length > 0 && globalSwitch.length > 0
       firstPageOrCurrentPage = (news) ->
         if news.news_id?
           ->
