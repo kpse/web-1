@@ -36,8 +36,10 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 
 .controller 'BulletinCtrl',
   ['$scope', '$rootScope', '$q', 'adminNewsServiceV2',
-   '$stateParams', '$modal', 'adminNewsPreview', 'senderService', 'newsReadService', 'parentService', 'schoolConfigService', 'schoolConfigExtractService',
-    (scope, $rootScope, $q, AdminNews, stateParams, Modal, NewsPreview, Sender, NewsRead, Parent, SchoolConfig, ConfigExtract) ->
+   '$stateParams', '$modal', 'adminNewsPreview', 'senderService', 'newsReadService', 'parentService', 'schoolConfigService', 
+    'schoolConfigExtractService', 'schoolSmsService',
+    (scope, $rootScope, $q, AdminNews, stateParams, Modal, NewsPreview, Sender, NewsRead, Parent, SchoolConfig, ConfigExtract,
+    SmsConfig) ->
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
@@ -115,12 +117,16 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
           contentTemplate: 'templates/admin/add_news.html'
 
       refreshSmsPrivilege = ->
-        SchoolConfig.get school_id: scope.kindergarten.school_id, (data)->
+        SchoolConfig.get school_id: scope.kindergarten.school_id, (data) ->
           account = ConfigExtract data['config'], 'smsPushAccount', ''
           password = ConfigExtract data['config'], 'smsPushPassword', ''
           signature = ConfigExtract data['school_customized'], 'smsPushSignature', ''
           globalSwitch = ConfigExtract data['school_customized'], 'switch_sms_on_card_wiped', ''
           scope.eligibleToSendSms = account.length > 0 && password.length > 0 && signature.length > 0 && globalSwitch.length > 0
+        scope.smsConfig = {}  
+        SmsConfig.query school_id: scope.kindergarten.school_id, (data) ->
+          scope.smsConfig = data[0]
+          
       firstPageOrCurrentPage = (news) ->
         if news.news_id?
           ->

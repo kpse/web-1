@@ -1,11 +1,15 @@
 package controllers
 
+import models.V2.SchoolSms
 import models._
 import models.json_models.SchoolIntro._
 import models.json_models._
 import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
+
+import scala.concurrent.{ExecutionContext, Future}
+import ExecutionContext.Implicits.global
 
 object SchoolSummaryController extends Controller with Secured {
   implicit val writes1 = Json.writes[SchoolIntroPreviewResponse]
@@ -115,5 +119,11 @@ object SchoolSummaryController extends Controller with Secured {
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
+  }
+
+  def smsConfig(schoolId: Long) = IsLoggedInAsync {
+    u => request =>
+      logger.debug(s"smsConfig")
+      Future(Ok(Json.toJson(List(SchoolSms.config(schoolId)))))
   }
 }

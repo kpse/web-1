@@ -62,6 +62,13 @@ angular.module('kulebao.services')
     {
       school_id: '@school_id'
     }
+    
+angular.module('kulebao.services')
+.service 'schoolSmsService', ($resource) ->
+  $resource '/api/v2/kindergarten/:school_id/sms_config',
+    {
+      school_id: '@school_id'
+    }
 
 angular.module('kulebao.services')
 .service 'schoolConfigExtractService', ->
