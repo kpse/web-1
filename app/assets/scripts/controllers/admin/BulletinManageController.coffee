@@ -126,6 +126,11 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
         scope.smsConfig = {}  
         SmsConfig.query school_id: scope.kindergarten.school_id, (data) ->
           scope.smsConfig = data[0]
+
+      scope.smsConsumePredicate = (sms) ->
+        return 0 if sms is undefined
+        smsConfig = scope.smsConfig
+        Math.ceil(sms.length / smsConfig.pagination) * smsConfig.consumers
           
       firstPageOrCurrentPage = (news) ->
         if news.news_id?

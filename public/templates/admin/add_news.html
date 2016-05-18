@@ -102,7 +102,7 @@
             ng-show="newsForm.sms.$dirty && newsForm.sms.$error.maxlength">正文内容请不要超过130个字符</span>
         <textarea ng-disabled="news.published" id="news-sms" name="sms" ng-model="news.sms"
                   class="editing-content form-control" maxlength="130" placeholder="添加内容" ng-required="news.sms_required"/>
-          <span class="error-field">当前短信余额: {{smsConfig.available }}条, 功能机用户共{{smsConfig.consumers }}人, 本次预计消耗短信{{smsConfig.consumers * 1 }}条, 含签名。</span>
+          <span class="error-field">当前短信余额: {{smsConfig.available }}条, 功能机用户共{{smsConfig.consumers }}人, 本次预计消耗短信{{ smsConsumePredicate(news.sms) }}条, 含签名。</span>
         </div>
       </div>
 

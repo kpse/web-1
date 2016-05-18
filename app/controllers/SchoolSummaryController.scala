@@ -8,8 +8,7 @@ import play.api.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 
-import scala.concurrent.{ExecutionContext, Future}
-import ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object SchoolSummaryController extends Controller with Secured {
   implicit val writes1 = Json.writes[SchoolIntroPreviewResponse]
@@ -124,6 +123,6 @@ object SchoolSummaryController extends Controller with Secured {
   def smsConfig(schoolId: Long) = IsLoggedInAsync {
     u => request =>
       logger.debug(s"smsConfig")
-      Future(Ok(Json.toJson(List(SchoolSms.config(schoolId)))))
+      SchoolSms.config(schoolId) map { c => Ok(Json.toJson(List(c))) }
   }
 }
