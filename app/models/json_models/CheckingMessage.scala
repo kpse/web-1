@@ -7,6 +7,7 @@ import anorm.{~, _}
 import controllers.SMSController
 import models._
 import models.V3.{CheckingRecordV3, Relative}
+import models.helper.MD5Helper._
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.Play.current
@@ -258,10 +259,35 @@ object CheckingMessage {
     }
     message.phone map {
       p =>
-        val smsReq: String = Verification.generate(p)(provider)
+        val smsReq: String = provider.template()
         Logger.info(s"smsReq = $smsReq")
         SMSController.sendSMS(smsReq)(provider)
     }
+  }
+
+  def sendNewsSms(schoolId: Long, content: String, phones: List[String]) = {
+    val provider: SMSProvider = new Mb365SMS {
+      override def url() = "http://mb345.com:999/ws/LinkWS.asmx/BatchSend"
+
+      override def username() = SchoolConfig.valueOfKey(schoolId, "smsPushAccount") getOrElse ""
+
+      override def password() = SchoolConfig.valueOfKey(schoolId, "smsPushPassword") getOrElse ""
+
+      override def template(): String = s"$content【${SchoolConfig.valueOfKey(schoolId, "smsPushSignature").getOrElse("幼乐宝")}】"
+
+    }
+    phones.sliding(100, 100).toList map {
+      case every100 =>
+        val smsReq: String = renderNews(provider.username(), provider.password(), every100, provider.template())
+        Logger.info(s"sendNewsSms = $smsReq")
+        SMSController.sendSMS(smsReq)(provider)
+    }
+
+  }
+
+  def renderNews(userName: String, password: String, mobiles: List[String], content: String): String = {
+    Map("CorpID" -> Seq(userName), "Pwd" -> Seq(password), "Mobile" -> mobiles,
+      "Content" -> Seq(content), "Cell" -> Seq(""), "SendTime" -> Seq("")).toList.map(p => s"${p._1}=${urlEncode(p._2.mkString(","))}").mkString("&")
   }
 }
 

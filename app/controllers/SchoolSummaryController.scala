@@ -120,7 +120,7 @@ object SchoolSummaryController extends Controller with Secured {
       }
   }
 
-  def smsConfig(schoolId: Long, classIds: Option[String]) = IsLoggedInAsync {
+  def smsConfig(schoolId: Long, classIds: Option[Int]) = IsLoggedInAsync {
     u => request =>
       logger.debug(s"smsConfig")
       SchoolSms.config(schoolId, classIds) map { c => Ok(Json.toJson(List(c))) }

@@ -1,11 +1,12 @@
 package controllers.V2
 
 import controllers.Secured
-import models.V2.NewsV2
+import models.V2.{NewsV2, SchoolSms}
 import models.V2.NewsV2._
 import models.{SuccessResponse, _}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
+import models.json_models.CheckingMessage.sendNewsSms
 
 object NewsControllerV2 extends Controller with Secured {
   implicit val writes = Json.writes[News]
@@ -49,7 +50,15 @@ object NewsControllerV2 extends Controller with Secured {
           case (news) if news.news_id.getOrElse(0) != newsId =>
             BadRequest(Json.toJson(ErrorResponse("公告ID不匹配URL.(url and news id are not matched)", 22)))
           case (news) =>
-            Ok(Json.toJson(NewsV2.update(news)))
+            val updated: Option[News] = NewsV2.update(news)
+            updated match {
+              case Some(n) =>
+                sendSmsIfNeeded(n)
+                Ok(Json.toJson(n))
+              case None =>
+                InternalServerError(Json.toJson(ErrorResponse("公告保存失败.(news saving failed)", 23)))
+            }
+
         }.recoverTotal {
           e => BadRequest("Detected error:" + JsError.toFlatJson(e))
         }
@@ -65,6 +74,7 @@ object NewsControllerV2 extends Controller with Secured {
         case (news) =>
           NewsV2.create(news.copy(news_id = None)) match {
             case Some(x) =>
+              sendSmsIfNeeded(x)
               Ok(Json.toJson(x))
             case None =>
               InternalServerError(Json.toJson(ErrorResponse("创建公告失败，请与管理员联系(Fail to create news)", 33)))
@@ -72,6 +82,11 @@ object NewsControllerV2 extends Controller with Secured {
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
+  }
+
+  def sendSmsIfNeeded(news: News) = news.sms map {
+    case info if news.published && info.nonEmpty =>
+      sendNewsSms(news.school_id, info, SchoolSms.allFeaturePhones(news.school_id, news.class_id))
   }
 
   def delete(kg: Long, employeeId: String, newsId: Long) = IsLoggedIn {
