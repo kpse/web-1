@@ -117,10 +117,14 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
           scope: scope
           contentTemplate: 'templates/admin/add_news.html'
 
+      refreshSmsConfig = (classId)->
+        SmsConfig.query school_id: scope.kindergarten.school_id, classIds: classId, (data) ->
+          scope.smsConfig = data[0]
       scope.$watch 'news.sms_required', (n, o) ->
-        if n && !scope.smsConfig.available?
-          SmsConfig.query school_id: scope.kindergarten.school_id, (data) ->
-            scope.smsConfig = data[0]
+        refreshSmsConfig(scope.news.class_id) if n && !scope.smsConfig.available?
+
+      scope.$watch 'news.class_id', (n, o) ->
+        refreshSmsConfig(scope.news.class_id) if scope.news && scope.news.sms_required
 
 
       refreshSmsPrivilege = ->

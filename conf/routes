@@ -300,7 +300,7 @@ GET           /api/v2/school_config/:kg                                         
 POST          /api/v2/school_config/:kg                                                        controllers.SchoolSummaryController.addConfig(kg: Long)
 POST          /api/v2/kindergarten/:kg/config                                                  controllers.SchoolSummaryController.addPrivateConfig(kg: Long)
 
-GET           /api/v2/kindergarten/:kg/sms_config                                              controllers.SchoolSummaryController.smsConfig(kg: Long)
+GET           /api/v2/kindergarten/:kg/sms_config                                              controllers.SchoolSummaryController.smsConfig(kg: Long, classIds: Option[String])
 
 GET           /api/v2/relationship/:card                                                       controllers.RelationshipController.search(card: String)
 DELETE        /api/v2/relationship/:card                                                       controllers.RelationshipController.permanentRemove(card: String)
