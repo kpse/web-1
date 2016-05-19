@@ -80,6 +80,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
           news.publisher_id = scope.adminUser.id
           news.publisher =
             name: scope.adminUser.name
+          scope.smsConfig = {}
 
       scope.deleteNews = (news) ->
         news.publisher_id = scope.adminUser.id
@@ -116,6 +117,12 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
           scope: scope
           contentTemplate: 'templates/admin/add_news.html'
 
+      scope.$watch 'news.sms_required', (n, o) ->
+        if n && !scope.smsConfig.available?
+          SmsConfig.query school_id: scope.kindergarten.school_id, (data) ->
+            scope.smsConfig = data[0]
+
+
       refreshSmsPrivilege = ->
         SchoolConfig.get school_id: scope.kindergarten.school_id, (data) ->
           account = ConfigExtract data['config'], 'smsPushAccount', ''
@@ -123,9 +130,8 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
           signature = ConfigExtract data['school_customized'], 'smsPushSignature', ''
           globalSwitch = ConfigExtract data['school_customized'], 'switch_sms_on_card_wiped', ''
           scope.eligibleToSendSms = account.length > 0 && password.length > 0 && signature.length > 0 && globalSwitch.length > 0
-        scope.smsConfig = {}  
-        SmsConfig.query school_id: scope.kindergarten.school_id, (data) ->
-          scope.smsConfig = data[0]
+        scope.smsConfig = {}
+
 
       scope.smsConsumePredicate = (sms) ->
         return 0 if sms is undefined
@@ -154,6 +160,7 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
           scope.navigateTo(class_id: news.class_id) unless news.class_id == parseInt stateParams.class
           goPage()
           scope.currentModal.hide()
+          scope.smsConfig = {}
 
       scope.remove = (news) ->
         news.publisher_id = scope.adminUser.id
