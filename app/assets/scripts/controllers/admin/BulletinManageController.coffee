@@ -37,9 +37,9 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
 .controller 'BulletinCtrl',
   ['$scope', '$rootScope', '$q', 'adminNewsServiceV2',
    '$stateParams', '$modal', 'adminNewsPreview', 'senderService', 'newsReadService', 'parentService', 'schoolConfigService', 
-    'schoolConfigExtractService', 'schoolSmsService',
+    'schoolConfigExtractService', 'schoolSmsService', '$alert',
     (scope, $rootScope, $q, AdminNews, stateParams, Modal, NewsPreview, Sender, NewsRead, Parent, SchoolConfig, ConfigExtract,
-    SmsConfig) ->
+    SmsConfig, Alert) ->
       scope.totalItems = 0
       scope.currentPage = 1
       scope.maxSize = 5
@@ -120,8 +120,20 @@ angular.module('kulebaoAdmin').controller 'BulletinManageCtrl',
       refreshSmsConfig = (classId)->
         SmsConfig.query school_id: scope.kindergarten.school_id, classIds: classId, (data) ->
           scope.smsConfig = data[0]
+          if scope.smsConfig.consumers == 0
+            scope.news.sms_required = false
       scope.$watch 'news.sms_required', (n, o) ->
-        refreshSmsConfig(scope.news.class_id) if n && !scope.smsConfig.available?
+        unless scope.eligibleToSendSms || !n
+          scope.news.sms_required = false
+          Alert
+            title: "未开通"
+            content: '贵园暂未开通短信服务，请联系幼乐宝。'
+            placement: "top"
+            type: "danger"
+            container: '.modal-dialog .panel-body'
+            duration: 3
+        else
+          refreshSmsConfig(scope.news.class_id) if n && !scope.smsConfig.available?
 
       scope.$watch 'news.class_id', (n, o) ->
         refreshSmsConfig(scope.news.class_id) if scope.news && scope.news.sms_required
