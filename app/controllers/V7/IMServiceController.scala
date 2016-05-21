@@ -7,6 +7,9 @@ import models.V7.IMToken.{writeIMBasicRes, writeIMToken}
 import models.V7.{IMBanUser, IMToken}
 import models.V7.IMToken.readsIMBanUser
 import models.V7.IMToken.writeIMBanUserFromServer
+import models.V8.IMHidingChatMessage.readIMHidingChatMessage
+import models.V8.IMHidingChatMessage.readIMHidingPrivateChatMessage
+import models.V8.{IMHidingChatMessage, IMHidingPrivateChatMessage}
 import models._
 import play.Logger
 import play.api.libs.json.{JsError, Json}
@@ -192,5 +195,41 @@ object IMServiceController extends Controller with Secured {
       Logger.info(s"imAccount = $imAccount")
       Ok(loggedJson(IMBanUser.bannedUserList(kg, class_id, imAccount)))
 
+  }
+
+  def hideMessage(kg: Long, classId: Int) = IsLoggedIn(parse.json) { username =>
+    request =>
+      Logger.info(s"internalBanUser username = $username")
+      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
+      Logger.info(s"imAccount = $imAccount")
+
+      request.body.validate[List[IMHidingChatMessage]].map {
+        case all =>
+          all map {
+            message =>
+              message.hideNotification()
+          }
+          Ok(Json.toJson(new SuccessResponse))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
+  }
+
+  def hidePrivateMessage(kg: Long) = IsLoggedIn(parse.json) { username =>
+    request =>
+      Logger.info(s"internalBanUser username = $username")
+      val imAccount: Option[IMAccount] = whoIsRequesting(username, kg)
+      Logger.info(s"imAccount = $imAccount")
+
+      request.body.validate[List[IMHidingPrivateChatMessage]].map {
+        case all =>
+          all map {
+            message =>
+              message.hideNotification()
+          }
+          Ok(Json.toJson(new SuccessResponse))
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
   }
 }

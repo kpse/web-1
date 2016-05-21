@@ -9,7 +9,7 @@ import anorm._
 import play.api.Play.current
 
 case class IMBanUser(id: String, minute: Option[Int]) {
-  val IMSystemGroupMonitor = "IMSystemGroupMonitor"
+  val IMSystemGroupMonitor = IMBanUser.IMSystemGroupMonitor
 
   def ban(schoolId: Long, classId: Int) = DB.withConnection {
     implicit c =>
@@ -59,6 +59,7 @@ case class IMBanUser(id: String, minute: Option[Int]) {
 }
 
 object IMBanUser {
+  val IMSystemGroupMonitor = "IMSystemGroupMonitor"
   def bannedUserList(kg: Long, classId: Int, imAccount: Option[IMAccount]): List[IMBanUserFromServer] = DB.withConnection {
     implicit c =>
       SQL(s"select distinct user_id from im_internal_banned_users where school_id={kg} and status=1 and class_id={class_id}")
