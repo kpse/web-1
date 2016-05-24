@@ -205,11 +205,8 @@ object IMServiceController extends Controller with Secured {
 
       request.body.validate[List[IMHidingChatMessage]].map {
         case all =>
-          all map {
-            message =>
-              message.hideNotification()
-          }
-          Ok(Json.toJson(new SuccessResponse))
+          all foreach (_.hideNotification())
+          Ok(Json.toJson(new SuccessResponse("尝试隐藏群组聊天信息。(try to hide a group chat message)")))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
@@ -223,11 +220,8 @@ object IMServiceController extends Controller with Secured {
 
       request.body.validate[List[IMHidingPrivateChatMessage]].map {
         case all =>
-          all map {
-            message =>
-              message.hideNotification()
-          }
-          Ok(Json.toJson(new SuccessResponse))
+          all foreach (_.hideNotification())
+          Ok(Json.toJson(new SuccessResponse("尝试隐藏单聊信息。(try to hide a private chat message)")))
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
       }
