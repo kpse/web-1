@@ -9,12 +9,12 @@ import play.api.Play.current
 
 case class Visitor(id: Option[Long], name: Option[String], certification_type: Option[String], certification_number: Option[String], reason: Option[String],
                    time: Option[Long], quantity: Option[Int], visitor_user_id: Option[Long], visitor_user_type: Option[Int],
-                   memo: Option[String], photo_record: Option[String], SGID_picture: Option[String]) {
+                   memo: Option[String], photo_record: Option[String], SGID_picture: Option[String], phone: Option[String] = None) {
   def create(kg: Long): Option[Visitor] = DB.withConnection {
     implicit c =>
       val insert: Option[Long] = SQL("insert into visitor (school_id, name,certificate_type, certificate_number, reason, visited_at, quantity, visitor_user_id, visitor_user_type," +
-        "memo, photo_record, SGID_picture) values ({school_id}, {name}, {type}, {number}, {reason}, {time}, {quantity}, {visitor_user_id}, " +
-        "{visitor_user_type}, {memo}, {photo_record}, {SGID_picture})")
+        "memo, photo_record, SGID_picture, phone) values ({school_id}, {name}, {type}, {number}, {reason}, {time}, {quantity}, {visitor_user_id}, " +
+        "{visitor_user_type}, {memo}, {photo_record}, {SGID_picture}, {phone})")
         .on(
           'id -> id,
           'school_id -> kg,
@@ -28,6 +28,7 @@ case class Visitor(id: Option[Long], name: Option[String], certification_type: O
           'visitor_user_type -> visitor_user_type,
           'memo -> memo,
           'photo_record -> photo_record,
+          'phone -> phone,
           'SGID_picture -> SGID_picture
         ).executeInsert()
       Visitor.show(kg, insert.getOrElse(0))
@@ -79,9 +80,10 @@ object Visitor {
       get[Option[Int]]("visitor_user_type") ~
       get[Option[String]]("memo") ~
       get[Option[String]]("photo_record") ~
+      get[Option[String]]("phone") ~
       get[Option[String]]("sgid_picture") map {
-      case id ~ schoolId ~ name ~ cType ~ number ~ reason ~ time ~ quantity ~ user ~ uType ~ memo ~ photo ~ sgid =>
-        Visitor(Some(id), name, cType, number, reason, time, quantity, user, uType, memo, photo, sgid)
+      case id ~ schoolId ~ name ~ cType ~ number ~ reason ~ time ~ quantity ~ user ~ uType ~ memo ~ photo ~ phone ~ sgid =>
+        Visitor(Some(id), name, cType, number, reason, time, quantity, user, uType, memo, photo, sgid, phone)
     }
   }
 }

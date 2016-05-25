@@ -20,6 +20,7 @@ CREATE TABLE visitor (
   certificate_type VARCHAR(10),
   certificate_number VARCHAR(30),
   reason VARCHAR(30),
+  phone VARCHAR(20),
   visited_at BIGINT DEFAULT 0,
   quantity INT,
   visitor_user_id   INT(11),
