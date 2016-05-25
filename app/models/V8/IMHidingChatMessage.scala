@@ -18,7 +18,7 @@ case class IMHidingChatMessage(id: String, school_id: Long, class_id: Int) {
 case class IMHidingPrivateChatMessage(id: String, school_id: Long, user_id: String) {
   def hideNotification()(implicit ws: IMWS[IMBasicRes] = IMToken.rongyunWS[IMBasicRes]) = {
     val hidePrivateBroadcastMessage = s"hidemsg - private - $id - $user_id - $school_id"
-    val payload: String = s"""fromUserId=${IMBanUser.IMSystemGroupMonitor}&toUserId=$id&objectName=CB:CtrlMsg&content={\"content\":\"$hidePrivateBroadcastMessage\"}"""
+    val payload: String = s"""fromUserId=${IMBanUser.IMSystemGroupMonitor}&toUserId=$user_id&objectName=CB:CtrlMsg&content={\"content\":\"$hidePrivateBroadcastMessage\"}"""
     Logger.info(s"Hide private chat message $id - sending to user $user_id with hidePrivateBroadcastMessage: $payload")
     ws(school_id, "/message/private/publish.json", payload, IMToken.readsIMBasicRes)
   }
