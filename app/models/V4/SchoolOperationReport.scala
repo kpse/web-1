@@ -50,6 +50,10 @@ object SchoolOperationReport {
       val lastMilli = end.getMillis
       Logger.debug(s"collectInGivenTimePeriod firstMilli = $firstMilli ${dayPattern.print(start.getMillis)}")
       Logger.debug(s"collectInGivenTimePeriod lastMilli = $lastMilli ${dayPattern.print(start.getMillis)}")
+      val employeeInSchool: Long = SQL("select count(1) from employeeinfo where school_id = {kg} and status =1")
+        .on(
+          'kg -> school_id.toString)
+        .as(get[Long]("count(1)") single)
       val loggedOnce: Long = SQL("SELECT count(distinct b.phone) count" +
         "  FROM bindinghistory b," +
         "       parentinfo p" +
@@ -82,7 +86,7 @@ object SchoolOperationReport {
           'kg -> school_id,
           'end -> lastMilli
         ).as(get[Long]("count") single)
-      SchoolOperationReport(0, school_id, pattern.print(start), dayPattern.print(end), loggedOnce, loggedEver, System.currentTimeMillis, childCount, parentCount)
+      SchoolOperationReport(0, school_id, pattern.print(start), dayPattern.print(end), loggedOnce + employeeInSchool, loggedEver + employeeInSchool, System.currentTimeMillis, childCount, parentCount + employeeInSchool)
   }
 
   def timePeriodOfMonth(lastMonth: DateTime): (DateTime, DateTime) = {
