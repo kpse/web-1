@@ -11,9 +11,9 @@ class AssessSpec extends Specification with TestSupport {
       private val index = Assess.all(93740362L, "1_93740362_374", None, None)
 
       index.size must equalTo(2)
-      index(0).child_id must equalTo("1_93740362_374")
-      index(0).id must equalTo(Some(1))
-      index(0).timestamp must greaterThan(index(1).timestamp)
+      index.head.child_id must equalTo("1_93740362_374")
+      index.head.id must equalTo(Some(1))
+      index.head.timestamp must greaterThan(index(1).timestamp)
 
     }
 
@@ -22,8 +22,8 @@ class AssessSpec extends Specification with TestSupport {
       private val index = Assess.all(93740362L, "1_93740362_374", Some(1), None)
 
       index.size must equalTo(1)
-      index(0).child_id must equalTo("1_93740362_374")
-      index(0).id must equalTo(Some(2))
+      index.head.child_id must equalTo("1_93740362_374")
+      index.head.id must equalTo(Some(2))
 
     }
 
@@ -32,9 +32,9 @@ class AssessSpec extends Specification with TestSupport {
       private val index = Assess.all(93740362L, "1_93740362_374", None, Some(3))
 
       index.size must equalTo(2)
-      index(0).child_id must equalTo("1_93740362_374")
-      index(0).id must equalTo(Some(2))
-      index(0).id must greaterThan(index(1).id)
+      index.head.child_id must equalTo("1_93740362_374")
+      index.head.id must equalTo(Some(2))
+      index.head.id must greaterThan(index(1).id)
 
     }
     "report empty if from the end" in new WithApplication {
