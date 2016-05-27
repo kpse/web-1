@@ -216,6 +216,10 @@
 .keyword-list.table-bordered .central-word {
   text-align: center;
 }
+.new-keywords-editing-group {
+  max-width: 90%;
+  margin: 0 auto;
+}
 .axis path,
 .axis line {
   fill: none;

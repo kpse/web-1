@@ -1,0 +1,27 @@
+<div class="panel panel-default">
+  <div class="panel-heading">添加关键字</div>
+  <div class="panel-body">
+    <form class="form-horizontal row" role="form" name="newKeywordForm">
+
+      <div class="form-group">
+        <div class="new-keywords-editing-group">
+            <textarea id="content" name="content" ng-model="newAddingWords"
+                      class="editing-content form-control new-keywords-editing" ng-maxlength="2000" placeholder="添加内容"
+                      required>
+
+          </textarea>
+
+          <p class="new-keywords-editing">使用回车键分隔多个关键字, 一次最多可以添加2000个字符。</p></div>
+
+      </div>
+
+      <div class="form-group">
+        <a class="btn btn-warning pull-right adding-button"
+           ng-disabled="newKeywordForm.$invalid || loading"
+           ng-click="save(currentClass)">保存</a>
+        <a class="btn btn-default pull-right adding-button"
+           ng-click="$hide()">取消</a>
+      </div>
+    </form>
+  </div>
+</div>
