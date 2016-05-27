@@ -52,13 +52,17 @@
 .news-content .editing-content.form-control {
   height: 200px;
 }
+.news-sms-content .editing-content.form-control {
+  height: 150px;
+}
 .message-content.editing-content {
   height: 100px;
 }
 .message-content.viewing-content {
   height: 200px;
 }
-.adding-for-individual {
+.adding-for-individual,
+.multi-deletion {
   margin: 20px;
 }
 .chat-history {
@@ -197,6 +201,20 @@
 .school-desc-label {
   padding-left: 0;
   margin-left: 0;
+}
+.title-line.disabled {
+  color: #999999;
+}
+.panel-keyword {
+  min-height: 740px;
+}
+.keyword-list.table-bordered {
+  border: 1px solid #ddd !important;
+  max-width: 90%;
+  margin: 0 auto;
+}
+.keyword-list.table-bordered .central-word {
+  text-align: center;
 }
 .axis path,
 .axis line {

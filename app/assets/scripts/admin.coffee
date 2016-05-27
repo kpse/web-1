@@ -101,6 +101,11 @@ angular.module('kulebaoAdmin',
       templateUrl: 'templates/admin/conversation.html',
       controller: 'ConversationCtrl'
 
+    .state 'kindergarten.interaction',
+      url: '/interaction',
+      templateUrl: 'templates/admin/interaction.html',
+      controller: 'InteractionController'
+
     .state 'kindergarten.history',
       url: '/history',
       templateUrl: 'templates/admin/search_panel.html',

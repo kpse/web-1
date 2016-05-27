@@ -1,0 +1,38 @@
+<div class="panel panel-default panel-keyword">
+  <div class="panel-heading"><h4>{{heading}}</h4></div>
+
+  <button type="submit" class="btn btn-primary adding-for-individual" ng-disabled="loading"
+          ng-click="addKeyword()">添加新的关键词
+  </button>
+
+
+  <table class="table table-hover table-striped table-bordered keyword-list">
+    <thead>
+    <tr class="row">
+      <th class="col-xs-2 central-word"><input type="checkbox" ng-model="selection.allCheck"
+                                               ng-change="checkAll(selection.allCheck)"/> 全选
+      </th>
+      <th class="col-xs-8 central-word">关键词</th>
+      <th class="col-xs-2 central-word">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="k in keywords" class="row">
+      <td class="col-xs-2 central-word" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="e.checked"
+                                                                                   ng-change="singleSelection(e)"/></td>
+      <td class="col-xs-8 central-word">{{k.word}}</td>
+      <td class="col-xs-2 central-word">
+        <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
+                ng-confirm-click="deleteKeyword(k);$event.stopPropagation()" ng-show="deleteKeyword">删除
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <button ng-disabled="!hasSelection(keywords)" class="btn btn-danger multi-deletion" ng-confirm-msg="你确定要删除吗?"
+          ng-confirm-click="multipleDelete()">删除选中项
+  </button>
+
+
+</div>

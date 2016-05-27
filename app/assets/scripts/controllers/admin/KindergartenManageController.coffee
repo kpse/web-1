@@ -73,6 +73,9 @@ angular.module('kulebaoAdmin').controller 'KgManageCtrl',
       scope.goEmployeeList = ->
         $state.go 'kindergarten.employee.detail', kindergarten: $stateParams.kindergarten unless $state.includes 'kindergarten.employee', kindergarten: $stateParams.kindergarten
 
+      scope.goInteraction = ->
+        $state.go 'kindergarten.interaction', kindergarten: $stateParams.kindergarten unless $state.includes 'kindergarten.interaction', kindergarten: $stateParams.kindergarten
+
       scope.goBusLocation = ->
         $state.go 'kindergarten.bus.plans', kindergarten: $stateParams.kindergarten unless $state.includes 'kindergarten.bus', kindergarten: $stateParams.kindergarten
 

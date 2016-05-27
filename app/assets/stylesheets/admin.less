@@ -68,6 +68,7 @@
     height: 200px;
   }
 }
+
 .news-sms-content {
   .editing-content.form-control {
     height: 150px;
@@ -82,7 +83,7 @@
   height: 200px;
 }
 
-.adding-for-individual {
+.adding-for-individual, .multi-deletion {
   margin: 20px;
 }
 
@@ -124,7 +125,7 @@
 .dailylog-container {
   margin-left: 10px;
   .dailylog-in-class {
-    margin:10px 10px;
+    margin: 10px 10px;
   }
   .child-in-status {
     color: #ffffff;
@@ -140,7 +141,7 @@
     }
   }
   .specification {
-    .child-in-status{
+    .child-in-status {
       cursor: default;
     }
   }
@@ -149,7 +150,7 @@
 .news-feedback-container {
   margin-left: 10px;
   .news-feedback {
-    margin:10px 10px;
+    margin: 10px 10px;
   }
   .news-feedback-status {
     cursor: default;
@@ -163,7 +164,7 @@
     }
   }
   .specification {
-    .news-feedback-status{
+    .news-feedback-status {
       cursor: default;
     }
   }
@@ -197,7 +198,7 @@
 }
 
 .children-droppable {
-  min-height:100px;
+  min-height: 100px;
 }
 
 .modal-body {
@@ -258,6 +259,20 @@
 .title-line {
   &.disabled {
     color: #999999
+  }
+}
+
+.panel-keyword {
+  min-height: 740px;
+}
+
+.keyword-list.table-bordered {
+  border: 1px solid #ddd !important;
+  max-width: 90%;
+  margin: 0 auto;
+
+  .central-word {
+    text-align: center;
   }
 }
 
