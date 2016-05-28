@@ -727,6 +727,12 @@ GET           /api/v8/kindergarten/:kg/class_im_group/:class_id/ban             
 POST          /api/v8/kindergarten/:kg/class_im_group/:class_id/hide                           controllers.V7.IMServiceController.hideMessage(kg: Long, class_id: Int)
 POST          /api/v8/kindergarten/:kg/hide_im_private                                         controllers.V7.IMServiceController.hidePrivateMessage(kg: Long)
 
+GET           /api/v8/kindergarten/:kg/im_keyword                                              controllers.V8.IMKeywordController.index(kg: Long, from: Option[Long], to: Option[Long], most: Option[Int])
+POST          /api/v8/kindergarten/:kg/im_keyword                                              controllers.V8.IMKeywordController.create(kg: Long)
+POST          /api/v8/kindergarten/:kg/im_keyword/:id                                          controllers.V8.IMKeywordController.update(kg: Long, id: Long)
+DELETE        /api/v8/kindergarten/:kg/im_keyword/:id                                          controllers.V8.IMKeywordController.delete(kg: Long, id: Long)
+
+
 #deprecated
 GET           /kindergarten/:kg/parent/:parentId/child                                         controllers.ChildController.index(kg: Long, parentId: String)
 GET           /kindergarten/:kg/parent/:parentId/child/:childId                                controllers.ChildController.show(kg: Long, parentId: String, childId: String)
