@@ -27,6 +27,10 @@ angular.module('kulebaoAdmin')
         scope.refresh()
 
       scope.deleteKeyword = (keyword) ->
+        Keyword.remove school_id: stateParams.kindergarten, id: keyword.id, ->
+          scope.refresh()
 
       scope.multipleDelete = ->
+
+
   ]
