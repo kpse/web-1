@@ -2,8 +2,8 @@
 
 angular.module('kulebaoAdmin')
 .controller 'InteractionController',
-  [ '$scope', '$rootScope', '$stateParams', '$modal', 'keywordService',
-    (scope, rootScope, stateParams, Modal, Keyword) ->
+  [ '$scope', '$rootScope', '$stateParams', '$q', '$modal', 'keywordService',
+    (scope, rootScope, stateParams, $q, Modal, Keyword) ->
       rootScope.tabName = 'interaction'
       scope.heading = '配置家园互动关键字'
 
@@ -23,8 +23,12 @@ angular.module('kulebaoAdmin')
           contentTemplate: 'templates/admin/add_keyword.html'
 
       scope.saveKeyword = (keywords) ->
-        scope.currentModal.hide()
-        scope.refresh()
+        allNewAdded = _.map _.uniq keywords.split("\n"), (k) ->
+          newKeyword = new Keyword(word: k)
+          newKeyword.$save(school_id: stateParams.kindergarten).$promise
+        $q.all(allNewAdded).then ->
+          scope.currentModal.hide()
+          scope.refresh()
 
       scope.deleteKeyword = (keyword) ->
         Keyword.remove school_id: stateParams.kindergarten, id: keyword.id, ->
