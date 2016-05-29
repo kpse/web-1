@@ -18,8 +18,8 @@
     </thead>
     <tbody>
     <tr ng-repeat="k in keywords" class="row">
-      <td class="col-xs-2 central-word" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="e.checked"
-                                                                                   ng-change="singleSelection(e)"/></td>
+      <td class="col-xs-2 central-word" ng-click="$event.stopPropagation()"><input type="checkbox" ng-model="k.checked"
+                                                                                   ng-change="singleSelection(k)"/></td>
       <td class="col-xs-8 central-word">{{k.word}}</td>
       <td class="col-xs-2 central-word">
         <button class="btn btn-xs btn-danger" ng-confirm-msg="你确定要删除吗?"
