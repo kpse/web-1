@@ -8,6 +8,15 @@ import play.api.db.DB
 import play.api.libs.json.Json
 
 case class IMKeyword(id: Option[Long], word: String) {
+  def exists(kg: Long): Boolean = DB.withConnection {
+    implicit c =>
+      SQL(s"select count(1) from im_keywords where school_id={kg} and word={word} and status=1")
+        .on(
+          'kg -> kg.toString,
+          'word -> word
+        ).as(get[Long]("count(1)") single) > 0
+  }
+
   def update(kg: Long): Option[IMKeyword] = DB.withConnection {
     implicit c =>
       SQL("update im_keywords set word={word} " +

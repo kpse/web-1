@@ -18,8 +18,10 @@ object IMKeywordController extends Controller with Secured {
     request.body.validate[IMKeyword].map {
       case (s) if s.id.isDefined =>
         BadRequest(Json.toJson(ErrorResponse("更新请使用update接口(please use update interface)", 2)))
-      case (s) =>
+      case (s) if !s.exists(kg) =>
         Ok(Json.toJson(s.create(kg)))
+      case (s) =>
+        Ok(Json.toJson(new SuccessResponse("该关键字已存在。(already exists)")))
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
