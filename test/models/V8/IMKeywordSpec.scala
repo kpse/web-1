@@ -27,5 +27,15 @@ class IMKeywordSpec extends Specification with TestSupport {
       result must beEmpty
     }
 
+    "be created with word" in new WithApplication {
+      private val result = IMKeyword(None, "new keyword").create(schoolId).get
+
+      result.word must equalTo("new keyword")
+
+      private val retrieval = IMKeyword.show(schoolId, result.id.get).get
+
+      retrieval.word must equalTo("new keyword")
+    }
+
   }
 }
