@@ -37,5 +37,17 @@ class IMKeywordSpec extends Specification with TestSupport {
       retrieval.word must equalTo("new keyword")
     }
 
+    "be updated with word" in new WithApplication {
+      private val existing = IMKeyword.show(schoolId, 1).get
+
+      existing.word must not beEmpty
+
+      private val updating = existing.copy(word = "changed word").update(schoolId).get
+
+      private val updated = IMKeyword.show(schoolId, updating.id.get).get
+
+      updated.word must equalTo("changed word")
+    }
+
   }
 }
