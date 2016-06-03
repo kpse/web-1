@@ -49,5 +49,15 @@ class IMKeywordSpec extends Specification with TestSupport {
       updated.word must equalTo("changed word")
     }
 
+    "be deleted by id" in new WithApplication {
+      private val deleting = IMKeyword.deleteById(schoolId, 1)
+
+      deleting must beGreaterThan(0)
+
+      private val nonExists = IMKeyword.show(schoolId, 1)
+
+      nonExists must beNone
+    }
+
   }
 }
