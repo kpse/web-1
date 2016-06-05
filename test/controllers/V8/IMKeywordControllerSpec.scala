@@ -25,6 +25,12 @@ class IMKeywordControllerSpec extends Specification with TestSupport {
       status(response) must equalTo(UNAUTHORIZED)
     }
 
+    "check authentication first for post" in new WithApplication {
+      val response = route(FakeRequest(POST, "/api/v8/kindergarten/93740362/im_keyword").withBody(Json.toJson(IMKeyword(None, "new word")))).get
+
+      status(response) must equalTo(UNAUTHORIZED)
+    }
+
     "not allow keywords duplication" in new WithApplication {
       val keywordsRes = route(loggedParent(GET, "/api/v8/kindergarten/93740362/im_keyword")).get
 
