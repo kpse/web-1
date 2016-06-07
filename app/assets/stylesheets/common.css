@@ -193,8 +193,8 @@
 .main-body .modal .image-container .message-video,
 .main-body .main-view .image-preview .message-video,
 .main-body .modal .image-preview .message-video {
-  max-height: 220px;
-  max-width: 220px;
+  max-height: 50px;
+  max-width: 50px;
 }
 .main-body .main-view .image-container .message-audio,
 .main-body .modal .image-container .message-audio,
