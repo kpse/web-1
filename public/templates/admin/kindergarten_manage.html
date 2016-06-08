@@ -45,11 +45,6 @@
           <span>园内公告</span>
         </a>
       </li>
-      <li class="action" ng-class="{active : isSelected('conversation')}" ng-if="false">
-        <a class="btn conversation" ng-click="goConversation()">
-          <span>家园互动</span><p class="badge" ng-show="conversation.missedCount > 0">{{conversation.missedCount}}</p>
-        </a>
-      </li>
       <li class="action" ng-class="{active : isSelected('baby-status')}">
         <a class="btn assess" ng-click="goBabyStatus()">
           <span>在园表现</span>
