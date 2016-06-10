@@ -28,10 +28,11 @@ class IMBanUserSpec extends Specification with TestSupport {
     }
 
     "allow to check banned user list " in new WithApplication {
-
-      IMBanUser.bannedUserList(schoolId, classId, None) must beEmpty
-
       IMBanUser.bannedUserList(93740362, 777888, None) must not(beEmpty)
+    }
+
+    "return empty list for empty school" in new WithApplication {
+      IMBanUser.bannedUserList(schoolId, classId, None) must beEmpty
     }
 
   }
