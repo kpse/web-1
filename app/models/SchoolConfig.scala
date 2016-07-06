@@ -29,7 +29,7 @@ case class ConfigItem(name: String, value: String, category: Option[String] = Sc
   }
 }
 
-case class SchoolConfig(school_id: Long, config: List[ConfigItem], school_customized: List[ConfigItem])
+case class SchoolConfig(school_id: Long, config: List[ConfigItem], school_customized: Option[List[ConfigItem]] = None)
 
 object SchoolConfig {
   implicit val configItemWriter = Json.writes[ConfigItem]
@@ -72,7 +72,7 @@ object SchoolConfig {
         .on('kg -> kg.toString)
         .as(simpleItem *)
       val partitions: (List[ConfigItem], List[ConfigItem]) = appendDefaultValue(configItems).partition(_.category != SchoolConfig.SCHOOL_INDIVIDUAL_SETTING)
-      SchoolConfig(kg, partitions._1, partitions._2)
+      SchoolConfig(kg, partitions._1, Some(partitions._2))
   }
 
   val simpleItem = {
@@ -88,6 +88,6 @@ object SchoolConfig {
 
   def valueOfKey(schoolId: Long, keyName: String): Option[String] = {
     val schoolConfig: SchoolConfig = config(schoolId)
-    (schoolConfig.config ::: schoolConfig.school_customized).find(_.name.equalsIgnoreCase(keyName)) map (_.value)
+    (schoolConfig.config ::: schoolConfig.school_customized.getOrElse(List())).find(_.name.equalsIgnoreCase(keyName)) map (_.value)
   }
 }

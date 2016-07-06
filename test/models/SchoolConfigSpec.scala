@@ -51,7 +51,7 @@ class SchoolConfigSpec extends Specification with TestSupport {
       private val config: SchoolConfig = SchoolConfig.config(93740562)
 
       config.config must not contain ConfigItem("this should be individual", "yes sir", SchoolConfig.SCHOOL_INDIVIDUAL_SETTING)
-      config.school_customized must contain(ConfigItem("this should be individual", "yes sir", SchoolConfig.SCHOOL_INDIVIDUAL_SETTING))
+      config.school_customized.get must contain(ConfigItem("this should be individual", "yes sir", SchoolConfig.SCHOOL_INDIVIDUAL_SETTING))
     }
 
   }

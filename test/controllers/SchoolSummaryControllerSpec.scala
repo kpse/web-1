@@ -137,7 +137,7 @@ class SchoolSummaryControllerSpec extends Specification with TestSupport {
 
       "add school config" in new WithApplication {
 
-        val config = SchoolConfig(93740362, List(ConfigItem("key", "value")), List())
+        val config = SchoolConfig(93740362, List(ConfigItem("key", "value")), None)
         val created = route(requestByOperator(POST, "/api/v2/school_config/93740362").withBody(Json.toJson(config))).get
 
         status(created) must equalTo(OK)
@@ -152,7 +152,7 @@ class SchoolSummaryControllerSpec extends Specification with TestSupport {
 
       "add school private config" in new WithApplication {
 
-        val config = SchoolConfig(93740362, List(), List(ConfigItem("key", "value")))
+        val config = SchoolConfig(93740362, List(), Some(List(ConfigItem("key", "value"))))
         val created = route(requestByOperator(POST, "/api/v2/school_config/93740362").withBody(Json.toJson(config))).get
 
         status(created) must equalTo(OK)
@@ -169,13 +169,13 @@ class SchoolSummaryControllerSpec extends Specification with TestSupport {
         val globalItem = ConfigItem("key", "globalItem")
 
         //add private first
-        val config1 = SchoolConfig(93740362, List(), List(privateItem))
+        val config1 = SchoolConfig(93740362, List(), Some(List(privateItem)))
         val created1 = route(requestByOperator(POST, "/api/v2/school_config/93740362").withBody(Json.toJson(config1))).get
 
         status(created1) must equalTo(OK)
 
         //then add global
-        val config2 = SchoolConfig(93740362, List(globalItem), List())
+        val config2 = SchoolConfig(93740362, List(globalItem), None)
         val created2 = route(requestByOperator(POST, "/api/v2/school_config/93740362").withBody(Json.toJson(config2))).get
 
         status(created2) must equalTo(OK)
@@ -194,13 +194,13 @@ class SchoolSummaryControllerSpec extends Specification with TestSupport {
         val globalItem = ConfigItem("key", "globalItem")
 
         //add global first
-        val config2 = SchoolConfig(93740362, List(globalItem), List())
+        val config2 = SchoolConfig(93740362, List(globalItem), Some(List()))
         val created2 = route(requestByOperator(POST, "/api/v2/school_config/93740362").withBody(Json.toJson(config2))).get
 
         status(created2) must equalTo(OK)
 
         //then try to update private item by principals
-        val config1 = SchoolConfig(93740362, List(), List(privateItem))
+        val config1 = SchoolConfig(93740362, List(), Some(List(privateItem)))
         val created1 = route(requestWithSession(POST, "/api/v2/kindergarten/93740362/config").withBody(Json.toJson(config1))).get
 
         status(created1) must equalTo(OK)
@@ -216,7 +216,7 @@ class SchoolSummaryControllerSpec extends Specification with TestSupport {
 
       "add school private config by principals" in new WithApplication {
 
-        val config = SchoolConfig(93740362, List(), List(ConfigItem("key", "value")))
+        val config = SchoolConfig(93740362, List(), Some(List(ConfigItem("key", "value"))))
         val created = route(requestWithSession(POST, "/api/v2/kindergarten/93740362/config").withBody(Json.toJson(config))).get
 
         status(created) must equalTo(OK)
