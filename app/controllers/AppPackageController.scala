@@ -84,4 +84,11 @@ object AppPackageController extends Controller with Secured {
 
   }
 
+  def downloadWarning() = Action {
+    Ok(views.html.warningDownload("产品升级公告", "/app_package/download_v2"))
+  }
+
+  def downloadWarningTeacher() = Action {
+    Ok(views.html.warningDownload("产品升级公告", "/teacher_app_package/download_v2"))
+  }
 }

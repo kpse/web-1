@@ -1,4 +1,4 @@
-util.print: Use console.log instead
+(node) util.print is deprecated. Use console.log instead.
 html,
 body {
   margin: 0;
@@ -21,85 +21,66 @@ body .static-container .header {
   width: 100%;
 }
 body .static-container .header .logo {
-  position: absolute;
-  top: 65px;
+  display: none;
 }
 body .static-container .prompting {
-  position: absolute;
-  right: 0;
-  background-color: #303537;
-  height: 65px;
-  width: 100%;
-}
-body .static-container .prompting .arrow {
-  background: #303537 url(/assets/images/prompting_arrow.png) no-repeat top right;
-  background-size: 45px 45px;
-  height: 50px;
-  width: 50px;
-  position: absolute;
-  right: 15px;
-  top: 5px;
-}
-body .static-container .prompting span {
-  font-size: 12px;
-  line-height: 26px;
-  color: #fff;
-  width: 80%;
-  display: inline-block;
+  display: none;
 }
 body .static-container .hero {
   width: 100%;
   margin-top: 108px;
 }
+body .static-container .hero-banner {
+  background: url(/assets/images/download-banner.jpg) no-repeat left center;
+  background-size: 100%;
+  width: 100%;
+  height: 100%;
+}
 body .static-container .login-entry {
   display: none;
 }
-body .static-container .title {
-  font-size: 16px;
+body .static-container .download-logo {
+  width: 100px;
+  height: 30px;
+  background: url(/assets/images/download-logo.png) no-repeat;
+  background-size: 100%;
+}
+body .static-container .page-title {
+  line-height: 25px;
+  text-align: center;
+  font-size: 10px;
+  margin: -25px auto 0;
+}
+body .static-container .slogan {
   line-height: 40px;
-  background-color: #d3d3d3;
-  height: 40px;
-  vertical-align: middle;
+  font-size: 24px;
+  color: white;
 }
-body .static-container .app-download {
-  margin-top: 10px;
-  margin-left: -40px;
+body .static-container .slogan.title {
+  margin-top: 87%;
+  text-align: left;
+  margin-left: 7%;
 }
-body .static-container .app-download li {
-  list-style: none;
-  border-bottom: 1px solid;
-  margin-bottom: 20px;
-  height: 58px;
+body .static-container .slogan.desc {
+  margin-top: -10px;
+  text-align: right;
+  margin-right: 7%;
 }
-body .static-container .app-download li a {
+body .static-container .app-download-button {
   display: block;
-  height: 45px;
-  line-height: 45px;
-  padding-left: 60px;
-  vertical-align: middle;
-}
-body .static-container .app-download li a span {
-  font-size: 22px;
-  color: #000;
-  line-height: 45px;
-  vertical-align: middle;
-}
-body .static-container .app-download li a span:hover {
-  text-decoration: underline;
-}
-body .static-container .app-download li a .download {
-  margin-right: 50px;
-  color: #228b22;
-}
-body .static-container .app-download li.app-download-android a {
-  background: url(/assets/images/fn-icon-android.jpg) no-repeat left center;
-}
-body .static-container .app-download li.app-download-iphone a {
-  background: url(/assets/images/fn-icon-iphone.jpg) no-repeat left center;
+  width: 220px;
+  height: 40px;
+  background: url(/assets/images/download-button.png) no-repeat;
+  background-size: 100% 40px;
+  font-size: 21px;
+  line-height: 40px;
+  text-align: center;
+  margin: 20px auto 10%;
+  color: white;
 }
 body .static-container .service-phone {
   margin: 0;
-  height: 142px;
+  height: 182px;
 }
 body .static-container .service-phone .service-phone-number.service-phone-content {
   display: inline-block;
@@ -128,6 +109,7 @@ body .static-container .footer {
   padding: 0;
   width: 100%;
   text-align: center;
+  font-size: 10px;
 }
 body .static-container .footer p {
   margin: 0 auto;
@@ -135,4 +117,12 @@ body .static-container .footer p {
   width: 100%;
   background-color: #fff;
   padding-top: 13px;
+}
+.download-warning-content {
+  font-size: 20px;
+  margin: 25px auto;
+}
+.new-download-button {
+  font-size: 20px;
+  margin: 25px auto;
 }

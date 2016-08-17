@@ -1,0 +1,31 @@
+@(title: String, url: String)
+
+@scripts = {
+}
+@styling = {
+  <link rel="stylesheet" media="screen and (max-width: 1080px)" href="@routes.VersionedAssets.at("stylesheets/mobile-download.css")">
+  <link rel="stylesheet" media="screen and (min-width: 1081px)" href="@routes.VersionedAssets.at("stylesheets/download.css")">
+}
+
+@staticMain(title)(scripts)(styling) {
+  <div class="download-logo">
+  </div>
+  <div class="container">
+    <h1 class="center">幼乐宝产品升级公告</h1>
+    <p class="center download-warning-content">
+      尊敬的用户, 您使用的幼乐宝平台已经并入更新更强大的智慧树平台, 如您所在的园所还未升级, 请下载"幼乐宝"; 如您所在的园所已经升级, 请下载"智慧树".</p>
+  </div>
+  <div class="container">
+    <a class="new-download-button pull-left" href="@url">幼乐宝下载</a>
+    <a class="new-download-button pull-right" href="http://www.bbtree.com/terminals/">智慧树下载</a>
+  </div>
+  <div class="clearfix"></div>
+  <div class="service-phone ui-grid-container">
+    <p>
+      <span class="service-phone-content service-phone-title">幼乐宝热线：</span>
+      <span class="service-phone-content service-phone-number">400-008-0300</span>
+      <span class="service-phone-content service-phone-number">028-61905012</span>
+      <span class="service-phone-content service-phone-number">028-86274527</span>
+    </p>
+  </div>
+}

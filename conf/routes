@@ -166,8 +166,10 @@ DELETE        /phone/:phone                                                     
 GET           /app_package                                                                     controllers.AppPackageController.last(redirect: Option[String])
 POST          /app_package                                                                     controllers.AppPackageController.create
 DELETE        /app_package/:packageId                                                          controllers.AppPackageController.delete(packageId: Long)
-GET           /app_package/download                                                            controllers.AppPackageController.download
-GET           /teacher_app_package/download                                                    controllers.AppPackageController.downloadTeacherClient
+GET           /app_package/download                                                            controllers.AppPackageController.downloadWarning
+GET           /teacher_app_package/download                                                    controllers.AppPackageController.downloadWarningTeacher
+GET           /app_package/download_v2                                                         controllers.AppPackageController.download
+GET           /teacher_app_package/download_v2                                                 controllers.AppPackageController.downloadTeacherClient
 
 POST          /ws/broadcast                                                                    controllers.WSController.sendBroadcastMessage
 
