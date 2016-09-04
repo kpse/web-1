@@ -30,7 +30,7 @@ object SMSController extends Controller with Secured {
         case (code: String) =>
           Future.successful(BadRequest(Json.toJson(ErrorResponse("请求太频繁，目前限制为2分钟。(too frequently requests, current is 2 minutes)"))))
         case null =>
-          val provider: SMSProvider = new AliDayu
+          val provider: SMSProvider = new HuyiSMS
           val smsReq: String = Verification.generate(phone)(provider)
           Logger.info(s"smsReq = $smsReq")
           sendSMS(smsReq)(provider)
