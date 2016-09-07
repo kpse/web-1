@@ -87,7 +87,12 @@ object VideoMember {
 
   def show(kg: Long, id: String) = DB.withConnection {
     implicit c =>
-      trialAccount(kg, id) orElse SQL("select * from videomembers where school_id={kg} and parent_id={id} and status=1")
+      trialAccount(kg, id) orElse findById(kg, id)
+  }
+
+  def findById(kg: Long, id: String) = DB.withConnection {
+    implicit c =>
+      SQL("select * from videomembers where school_id={kg} and parent_id={id} and status=1")
         .on('kg -> kg.toString, 'id -> id).as(simple singleOpt)
   }
 

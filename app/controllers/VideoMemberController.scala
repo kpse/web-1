@@ -51,10 +51,10 @@ object VideoMemberController extends Controller with Secured {
       BadRequest(Json.toJson(ErrorResponse(s"提供的账号${member.account.get}重复。")))
     case (member) if member.isExisting =>
       member.update
-      Ok(Json.toJson(VideoMember.show(member.school_id.get, member.id)))
+      Ok(Json.toJson(VideoMember.findById(member.school_id.get, member.id)))
     case (member) =>
       member.create
-      Ok(Json.toJson(VideoMember.show(member.school_id.get, member.id)))
+      Ok(Json.toJson(VideoMember.findById(member.school_id.get, member.id)))
   }
 
   def externalIndex(token: String) = Action {
