@@ -16,6 +16,8 @@ case class RawVideoMember(account: String)
 
 case class VideoMember(id: String, account: Option[String], password: Option[String], school_id: Option[Long],
                        expire_at: Option[Long] = None, memo: Option[String] = None) {
+  def assumeAccount = copy(account = Some(generateAccount(None)))
+
   def updateDefault(kg: Long) = DB.withConnection {
     implicit c =>
       SQL("update videomemberdefault set status=0").executeUpdate()
@@ -60,8 +62,8 @@ case class VideoMember(id: String, account: Option[String], password: Option[Str
 
   def isAccountDuplicated = DB.withConnection {
     implicit c =>
-      SQL("select count(1) from videomembers where account={account} and status=1")
-        .on('account -> account).as(get[Long]("count(1)") single) > 0
+      SQL("select count(1) from videomembers where account={account} and status=1 and parent_id<>{id}")
+        .on('account -> account, 'id -> id).as(get[Long]("count(1)") single) > 0
   }
 
   private def generateAccount(base: Option[String]) = {
