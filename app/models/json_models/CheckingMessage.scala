@@ -53,6 +53,7 @@ case class CheckInfo(school_id: Long, card_no: String, card_type: Int, notice_ty
           case 0 => "离开幼儿园"
           case 10 => "上车"
           case 13 => "下车"
+          case _ => ""
         }))
     }
     def formatSmsPushContent(parentName: String, childName: String, checkAt: Long, checkingParentName: String, checkType: Int) = {
@@ -232,6 +233,7 @@ object CheckingMessage {
     case 11 => "离开校车"
     case 12 => "坐上校车"
     case 13 => "下车"
+    case _ => "未知"
   }
 
   private def individualSmsEnabled(schoolId: Long, phone: Option[String]): Boolean = phone.isDefined && Relative.findByPhone(schoolId, phone.get).exists(_.ext.exists(_.sms_push == Some(true)))
