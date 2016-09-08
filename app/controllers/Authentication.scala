@@ -180,7 +180,7 @@ object Authentication extends Controller with Secured {
   def bindNumberV1() = Action.async(parse.json) {
     request =>
       request.body.validate[BindingNumber].map {
-        case (login) =>
+        case (login) if login.access_token.nonEmpty =>
           Logger.info(login.toString)
           login.record(request.headers.get("versioncode").getOrElse("unknown"))
           val result = BindingV1(login)
