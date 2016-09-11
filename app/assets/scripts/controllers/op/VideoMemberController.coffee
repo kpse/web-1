@@ -3,7 +3,7 @@ angular.module('kulebaoOp').controller 'OpVideoMemberCtrl',
     (scope, rootScope, $state, School, Charge, VideoMember) ->
       rootScope.tabName = 'video'
       rootScope.loading = true
-      scope.kindergartens = School.query (all)->
+      scope.kindergartens = School.query video_member_enabled: true, (all)->
         _.each all, (k) ->
           k.charge = Charge.query school_id: k.school_id
           k.videoMember = VideoMember.query school_id: k.school_id

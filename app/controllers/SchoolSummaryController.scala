@@ -46,9 +46,9 @@ object SchoolSummaryController extends Controller with Secured {
         }
   }
 
-  def index(q: Option[String]) = IsLoggedIn {
+  def index(q: Option[String], videoMember: Option[Boolean]) = IsLoggedIn {
     u => _ =>
-      Ok(Json.toJson(SchoolIntro.index(q)))
+      Ok(Json.toJson(SchoolIntro.index(q, videoMember)))
   }
 
   def create = IsOperator(parse.json) {

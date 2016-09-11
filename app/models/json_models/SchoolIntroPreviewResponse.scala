@@ -102,9 +102,17 @@ object SchoolIntro {
       ).executeInsert()
   }
 
-  def index(q: Option[String] = None) = DB.withConnection {
+  def index(q: Option[String] = None, videoMember: Option[Boolean] = None) = DB.withConnection {
     implicit c =>
-      SQL(s"select * from schoolinfo where 1=1 ${generateQ(q)} order by school_id").as(sample *)
+      videoMember match {
+        case Some(true) =>
+          SQL(s"select * from schoolinfo where 1=1 ${generateQ(q)} " +
+            s"and school_id in (SELECT DISTINCT(`school_id`) FROM `videomembers` WHERE `status` = 1) " +
+            s"order by school_id").as(sample *)
+        case _ =>
+          SQL(s"select * from schoolinfo where 1=1 ${generateQ(q)} order by school_id").as(sample *)
+      }
+
   }
 
   def allIds = DB.withConnection {
