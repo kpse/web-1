@@ -51,6 +51,8 @@ object VideoMemberController extends Controller with Secured {
       BadRequest(Json.toJson(ErrorResponse(s"提供的账号${member.account.get}重复。")))
     case (member) if member.account.isEmpty && member.assumeAccount.isAccountDuplicated =>
       BadRequest(Json.toJson(ErrorResponse(s"提供的家长ID默认账号${member.assumeAccount.account.get}已被占用。", 11)))
+    case (member) if member.isExistingInOtherSchool =>
+      BadRequest(Json.toJson(ErrorResponse(s"该家长ID已经在其他学校存在。", 12)))
     case (member) if member.isExisting =>
       member.update
       Ok(Json.toJson(VideoMember.findById(member.school_id.get, member.id)))

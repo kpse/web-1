@@ -60,6 +60,12 @@ case class VideoMember(id: String, account: Option[String], password: Option[Str
         .on('kg -> school_id, 'id -> id).as(get[Long]("count(1)") single) > 0
   }
 
+  def isExistingInOtherSchool = DB.withConnection {
+    implicit c =>
+      SQL("select count(1) from videomembers where school_id<>{kg} and parent_id={id}")
+        .on('kg -> school_id, 'id -> id).as(get[Long]("count(1)") single) > 0
+  }
+
   def isAccountDuplicated = DB.withConnection {
     implicit c =>
       SQL("select count(1) from videomembers where account={account} and status=1 and parent_id<>{id}")

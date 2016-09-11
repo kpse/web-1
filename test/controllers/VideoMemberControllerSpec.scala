@@ -1,10 +1,11 @@
 package controllers
 
 import _root_.helper.TestSupport
-import models.{VideoMember, Relationship, Parent, ParentPhoneCheck}
+import models.{Parent, ParentPhoneCheck, Relationship, VideoMember}
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
+import play.Logger
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -17,6 +18,10 @@ class VideoMemberControllerSpec extends Specification with TestSupport {
 
   def ownerTeacherRequest(method: String, url: String) = {
     FakeRequest(method, url).withSession("id" -> "3_93740362_3344", "username" -> "e0002")
+  }
+
+  def superAdminRequest(method: String, url: String) = {
+    FakeRequest(method, url).withSession("id" -> "3_93740362_9972", "username" -> "operator")
   }
 
 
@@ -70,7 +75,18 @@ class VideoMemberControllerSpec extends Specification with TestSupport {
       val createResponse = route(ownerTeacherRequest(POST, "/api/v1/kindergarten/93740362/video_member").withBody(json)).get
 
       status(createResponse) must equalTo(BAD_REQUEST)
+    }
 
+    "not be created if parent id duplicated" in new WithApplication {
+
+      private val json: JsValue = Json.toJson(VideoMember("2_93740362_123", None, None, Some(93740562)))
+
+      val createResponse = route(superAdminRequest(POST, "/api/v1/kindergarten/93740562/video_member").withBody(json)).get
+
+      status(createResponse) must equalTo(BAD_REQUEST)
+
+      val jsonResponse: JsValue = Json.parse(contentAsString(createResponse))
+      (jsonResponse \ "error_code").as[Int] must equalTo(12)
     }
 
     "not be updated if account duplicated" in new WithApplication {
