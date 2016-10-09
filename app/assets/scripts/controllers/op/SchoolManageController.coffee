@@ -13,7 +13,10 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
 
       extractConfig = ConfigExtract
       scope.generateConfigArray = (all) ->
-        _.map all,  (value, key) -> {name: key, value: value}
+        _.map all,  (value, key) ->
+          switch key
+            when 'cardBinding' then {name: "CardBinding", value: value}
+            else {name: key, value: value}
 
       scope.filterConfig = (config, index) ->
         (config.value? && config.value.length > 0) && scope.defaultConfig[config.name] != config.value
@@ -28,6 +31,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
         enableWarehouseManagement: 'true'
         enableDietManagement: 'true'
         displayVideoMemberDetail: 'false'
+        cardBinding: '0'
 
 
       fillSchoolConfig = (kg) ->
@@ -46,6 +50,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             displayVideoMemberDetail: extractConfig data['config'], 'displayVideoMemberDetail', scope.defaultConfig['displayVideoMemberDetail']
             smsPushAccount: extractConfig data['config'], 'smsPushAccount', ''
             smsPushPassword: extractConfig data['config'], 'smsPushPassword', ''
+            cardBinding: extractConfig data['config'], 'CardBinding', '0'
           kg.configArray = scope.generateConfigArray(kg.config)
 
       scope.refresh = (q = scope.currentQuery, page = scope.currentPage) ->
@@ -231,6 +236,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
           when 'enableDietManagement' then 'glyphicon glyphicon-grain'
           when 'displayVideoMemberDetail' then 'glyphicon glyphicon-tasks'
           when 'smsPushAccount' then 'glyphicon glyphicon-envelope'
+          when 'cardBinding' then 'glyphicon glyphicon-credit-card'
 
       scope.titleOf = (config) ->
           switch config.name
@@ -245,6 +251,7 @@ angular.module('kulebaoOp').controller 'OpSchoolCtrl',
             when 'enableDietManagement' then '营养膳食已禁用'
             when 'displayVideoMemberDetail' then '自行管理视频账号'
             when 'smsPushAccount' then '刷卡短信推送'
+            when 'cardBinding' then '教师绑卡'
 
       scope.advancedEdting = 0
       scope.advanced = ->
