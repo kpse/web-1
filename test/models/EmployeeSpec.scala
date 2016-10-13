@@ -68,10 +68,18 @@ class EmployeeSpec extends Specification with TestSupport {
 
       underManagement must beTrue
     }
+
+    "not be able to login if school disabled" in new WithApplication {
+      Charge.delete(93740362)
+
+      private val failure = Employee.authenticate("e0001", "secret")
+
+      failure must beNone
+    }
   }
 
   def createEmployee(phone: String, loginName: String): Employee = {
-    Employee(None, "", phone, 0, "", "", None, "1980-01-01", 123, loginName, None, None)
+    Employee(None, "", phone, 0, "", "", None, "1980-01-01", 93740362, loginName, None, None)
   }
 
   def createPrincipal(phone: String, loginName: String): Employee = {

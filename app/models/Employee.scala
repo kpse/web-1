@@ -541,7 +541,9 @@ object Employee {
 
   def authenticate(loginName: String, password: String) = DB.withConnection {
     implicit c =>
-      SQL("select * from employeeinfo where login_name={login} and login_password={password} and status=1")
+      SQL("select e.* from employeeinfo e " +
+        " inner join chargeinfo c on c.school_id = e.school_id and c.status=1 " +
+        " where login_name={login} and login_password={password} and e.status=1 ")
         .on(
           'login -> loginName,
           'password -> md5(password)
