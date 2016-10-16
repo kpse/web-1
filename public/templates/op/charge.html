@@ -23,7 +23,7 @@
     <td class="col-xs-2">{{kg.videoProvider.token ? kg.charge.total_video_account : '未开通'}}</td>
     <td class="col-xs-3">{{kg.charge.expire | date: 'yyyy-MM-dd'}}</td>
     <td class="col-xs-2"></td>
-    <td class="col-xs-2" ng-if="false">
+    <td class="col-xs-2">
       <button ng-show="kg.charge.status==1" class="btn btn-xs btn-danger" ng-confirm-msg="你确定要让{{kg.name}}的所有账号过期吗?"
               ng-confirm-click="disable(kg.charge)">立刻过期
       </button>
