@@ -3,17 +3,17 @@
     <conversionRule conversionWord="coloredLevel" converterClass="play.api.Logger$ColoredLevel" />
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/log_store/log/kulebao/youlebao.log</file>
+        <file>/var/log/kulebao/youlebao.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>/log_store/log/old/youlebao.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/var/log/kulebao/youlebao.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- or whenever the file size reaches 100MB -->
                 <maxFileSize>50MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
             <!-- keep 60 days' worth of history -->
-            <maxHistory>60</maxHistory>
+            <maxHistory>10</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%date - [%level] - from %logger in %thread %n%message%n%xException%n</pattern>
