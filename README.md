@@ -3,7 +3,7 @@
 [![Circle CI](https://circleci.com/gh/kulebao/web.svg?style=svg)](https://circleci.com/gh/kulebao/web)
 
 Run ./build p for committing please
-Run ./build d for deploying to stage
+Run ./build d for deploying to stage (stage environment is decommissioned)
 Run ./build a for both above
 Run ./build js for js dependencies resolving
 
