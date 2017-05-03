@@ -295,13 +295,19 @@ object IMToken {
     val timestamp: String = String.valueOf(System.currentTimeMillis)
     val sign: String = hexSHA1(s"$secret$nonce$timestamp")
     val url = s"${urlPrefix}${uri}"
+    Logger.info(s"rongyun key : $key <> $secret")
     key match {
       case rongyunAppKey if rongyunAppKey.nonEmpty =>
         WS.url(url).withHeaders("RC-App-Key" -> rongyunAppKey, "RC-Nonce" -> nonce, "RC-Timestamp" -> timestamp,
-          "RC-Signature" -> sign, "Content-Type" -> "application/x-www-form-urlencoded ").post(request).map(_.json).map {
+          "RC-Signature" -> sign, "Content-Type" -> "application/x-www-form-urlencoded ").post(request)
+          .map(_.json).map {
           response =>
             Json.fromJson[T](response)(reads).asOpt
-        }
+        }.recover {
+            case t: Throwable =>
+              Logger.info(s"rongyun ws calling error : ${t.getLocalizedMessage}")
+              None
+          }
       case _ => Future.successful(None)
     }
 
